@@ -1,10 +1,14 @@
-// A page-view analytics event: a typed object emitted through ./trackEvent rather than a
-// raw call against the client. Page views are the only event the docs site emits; widen
-// ./trackEvent to a union when more events are added.
-export class PageViewedEvent {
-  readonly name: string
+import type { AnalyticsEvent } from '@site/types'
+
+/**
+ * Tracks a page view. `name` should be the page title.
+ */
+export class PageViewedEvent implements AnalyticsEvent<{ name: string }> {
+  readonly eventCategory = 'Page'
+  readonly eventName = 'Viewed'
+  readonly data: { name: string }
 
   constructor(name: string) {
-    this.name = name
+    this.data = { name }
   }
 }

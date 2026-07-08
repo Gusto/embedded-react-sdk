@@ -12,7 +12,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const CONFIG = {
   ANALYTICS: {
     /** gusto-analytics CDN bundle (page-view-only usage). */
-    SCRIPT_URL: 'https://static.gusto.com/analytics/gusto-analytics-15.11.4.min.js',
+    SCRIPT_URL: 'https://static.gusto.com/analytics/gusto-analytics-15.11.6.min.js',
 
     SNOWPLOW_APP_ID: 'gusto',
     SNOWPLOW_TRACKER_NAME: 'gusto_sdk_docs',

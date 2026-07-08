@@ -1,5 +1,11 @@
+export interface AnalyticsEvent<Data extends Record<string, unknown> = Record<string, unknown>> {
+  eventCategory: string
+  eventName: string
+  data?: Data
+}
+
 export interface GustoAnalyticsClient {
-  page: (prop: { name: string; data?: Record<string, unknown> }) => void
+  track: (event: AnalyticsEvent) => void
 }
 
 declare global {

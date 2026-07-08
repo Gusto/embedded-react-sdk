@@ -10,7 +10,7 @@ import { CONFIG } from '../config'
 let analyticsScriptInjected = false
 
 // Publishes config and installs the preload stub. The stub is a Proxy over an array:
-// any method call (e.g. page()) is queued until the CDN bundle loads and replaces
+// any method call (e.g. track()) is queued until the CDN bundle loads and replaces
 // window.GustoAnalytics with the loaded client, which then replays the queue.
 export function installAnalyticsStub(): void {
   // The client reads this config on load; set it before the bundle loads.
@@ -20,6 +20,7 @@ export function installAnalyticsStub(): void {
     snowplowTrackerName: CONFIG.ANALYTICS.SNOWPLOW_TRACKER_NAME,
     snowplowTrackingUrl: CONFIG.ANALYTICS.SNOWPLOW_TRACKING_URL,
     snowplowCollectorMode: 'dual_send',
+    serverSideEligibleProviders: ['amplitude'],
     // We fire page views manually on each route change, so disable automatic page events.
     autoPageEvent: false,
   }
