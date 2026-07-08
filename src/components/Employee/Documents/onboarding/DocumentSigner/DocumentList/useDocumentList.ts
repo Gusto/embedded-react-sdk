@@ -1,4 +1,4 @@
-import type { Form } from '@gusto/embedded-api-v-2026-02-01/models/components/form'
+import type { Form } from '@gusto/embedded-api/models/components/form'
 import { createCompoundContext } from '@/components/Base'
 
 type DocumentListContextType = {

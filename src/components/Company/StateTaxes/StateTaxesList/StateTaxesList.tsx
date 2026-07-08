@@ -1,4 +1,4 @@
-import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/taxRequirementsGetAll'
+import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api/react-query/taxRequirementsGetAll'
 import { Head } from './Head'
 import { StateTaxesListProvider } from './context'
 import { Actions } from './Actions'

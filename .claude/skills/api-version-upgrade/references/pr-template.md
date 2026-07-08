@@ -27,15 +27,15 @@ Every breaking change in v<NEW> is either:
 
 ## What's in this PR
 
-- `package.json` + `package-lock.json`: dep swap.
-- N src/ files: import-path rename.
-- N sdk-app/ files: import-path rename.
-- N src/test/mocks/apis/ files: import-path rename.
-- M sites with hardcoded cache-key literals (`['@gusto/embedded-api-v-<OLD>', …]`): namespace flip.
-- Docs + instruction files (`CLAUDE.md`, `AGENTS.md`, `docs/api/*`, `docs/reference/*`): version string updates.
+- `src/contexts/ApiProvider/apiVersion.ts`: `API_VERSION` → v<NEW> (drives the `X-Gusto-API-Version` header and `API_QUERY_NAMESPACE`).
+- `package.json` + `package-lock.json`: update the `@gusto/embedded-api` alias (and direct dated dep) to v<NEW>.
+- `src/models/external.ts`: regenerated via `npm run models:derive`.
+- Bare-date test assertions updated (`apiVersionHook.test.ts`, `ApiProvider.test.tsx`) + pinned-version prose in `CLAUDE.md` / `AGENTS.md`.
 - [list any real type fixes — e.g., `usePreparedPayrollData.ts`: removed `QueryParamSortBy` import (no longer exported)].
 - Drive-by: [list any pre-existing lint fixes surfaced by the touch].
 - N new E2E specs that exercise the breaking-change consumer paths against Demo.
+
+_No import-path or cache-key sweep: imports route through the `@gusto/embedded-api` alias (enforced by the `sdk-conventions/use-embedded-api-alias` lint rule) and cache keys derive from `API_QUERY_NAMESPACE`._
 
 ## Deprecations to flag to partners
 
@@ -47,8 +47,9 @@ Every breaking change in v<NEW> is either:
 
 - [ ] All CI green (unit + e2e + typecheck + lint + build)
 - [ ] `<spec name>` green against Demo
-- [ ] No remaining `@gusto/embedded-api-v-<OLD>` refs outside `CHANGELOG.md` / `.reports/`
-- [ ] Cache-namespace flip verified end-to-end (mutation under new prefix invalidates queries under new prefix)
+- [ ] `API_VERSION` in `apiVersion.ts` matches the `@gusto/embedded-api` alias target in `package.json`
+- [ ] No stray dated import specifiers in source (grep + `sdk-conventions/use-embedded-api-alias` lint clean)
+- [ ] No bare-date `<OLD>` left in runtime code or header test assertions (Storybook date fixtures excepted)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
@@ -72,8 +73,9 @@ The commit message format mirrors the matrix:
 ```text
 feat!: bump @gusto/embedded-api to v<NEW>
 
-Mechanical version-string sweep across src/, sdk-app/, docs/, build/,
-e2e/, and instruction files. package.json swap + lockfile regeneration.
+Update the @gusto/embedded-api alias + API_VERSION source of truth to
+v<NEW>; regenerate derived models and the lockfile. Imports route through
+the alias, so there is no per-file sweep.
 
 Type fixups required for the bump to compile:
 - <file:line>: <what changed and how it was fixed>

@@ -1,5 +1,5 @@
 import { transition, reduce, state } from 'robot3'
-import type { Garnishment } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { DashboardTab } from './Dashboard'
 import {
   DashboardViewContextual,

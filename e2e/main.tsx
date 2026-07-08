@@ -5,6 +5,7 @@ import { OnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingF
 import { SelfOnboardingFlow } from '@/components/Employee/SelfOnboardingFlow/SelfOnboardingFlow'
 import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/OnboardingFlow/OnboardingFlow'
 import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
+import { SelfOnboardingFlow as ContractorSelfOnboardingFlow } from '@/components/Contractor/SelfOnboardingFlow/SelfOnboardingFlow'
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
 import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
@@ -21,6 +22,7 @@ type FlowType =
   | 'employee-self-onboarding'
   | 'company-onboarding'
   | 'contractor-onboarding'
+  | 'contractor-self-onboarding'
   | 'payroll'
   | 'transition'
   | 'contractor-payment'
@@ -33,6 +35,7 @@ interface E2EConfig {
   flow: FlowType
   companyId: string
   employeeId: string
+  contractorId: string
   baseUrl: string
   isLocal: boolean
   startDate: string
@@ -55,6 +58,7 @@ function getConfigFromUrl(): E2EConfig {
     flow: (params.get('flow') as FlowType) || 'employee-onboarding',
     companyId: params.get('companyId') || '123',
     employeeId: params.get('employeeId') || '456',
+    contractorId: params.get('contractorId') || '789',
     baseUrl,
     isLocal,
     startDate: params.get('startDate') || '2025-08-14',
@@ -65,7 +69,8 @@ function getConfigFromUrl(): E2EConfig {
 }
 
 function FlowRenderer({ config }: { config: E2EConfig }) {
-  const { flow, companyId, employeeId, startDate, endDate, payScheduleUuid, state } = config
+  const { flow, companyId, employeeId, contractorId, startDate, endDate, payScheduleUuid, state } =
+    config
   const handleEvent = () => {}
 
   switch (flow) {
@@ -79,6 +84,14 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <CompanyOnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'contractor-onboarding':
       return <ContractorOnboardingFlow companyId={companyId} onEvent={handleEvent} />
+    case 'contractor-self-onboarding':
+      return (
+        <ContractorSelfOnboardingFlow
+          companyId={companyId}
+          contractorId={contractorId}
+          onEvent={handleEvent}
+        />
+      )
     case 'payroll':
       return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
     case 'transition':
@@ -111,6 +124,7 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
   { value: 'employee-self-onboarding', label: 'Employee Self-Onboarding' },
   { value: 'company-onboarding', label: 'Company Onboarding' },
   { value: 'contractor-onboarding', label: 'Contractor Onboarding' },
+  { value: 'contractor-self-onboarding', label: 'Contractor Self-Onboarding' },
   { value: 'payroll', label: 'Payroll' },
   { value: 'transition', label: 'Transition' },
   { value: 'contractor-payment', label: 'Contractor Payment' },

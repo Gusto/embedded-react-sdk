@@ -10,7 +10,7 @@
     "docs/guides/endpoint-reference.md",
     "docs/guides/endpoint-inventory.json",
     "docs/test-fests/**",
-    "docs-site/docusaurus.config.ts",
+    "docs-site/**/*.ts",
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
     "docs-site/versioned_docs/**",

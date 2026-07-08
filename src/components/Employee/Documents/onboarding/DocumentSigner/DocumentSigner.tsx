@@ -1,7 +1,7 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
-import { useEmployeeFormsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsList'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
 import {
   DocumentListContextual,
   EmploymentEligibilityContextual,

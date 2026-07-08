@@ -3,14 +3,11 @@ import type { ComponentType } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type {
-  Contractor,
-  ContractorType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
-import type { ContractorAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/contractoraddress'
-import { useContractorsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
-import { useContractorsGetAddress } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGetAddress'
-import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdateAddress'
+import type { Contractor, ContractorType } from '@gusto/embedded-api/models/components/contractor'
+import type { ContractorAddress } from '@gusto/embedded-api/models/components/contractoraddress'
+import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsGetAddress } from '@gusto/embedded-api/react-query/contractorsGetAddress'
+import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api/react-query/contractorsUpdateAddress'
 import {
   createContractorAddressSchema,
   type ContractorAddressOptionalFieldsToRequire,

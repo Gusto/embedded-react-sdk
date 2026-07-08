@@ -35,13 +35,13 @@ const basePolicyData = {
 
 let mockPolicyData = { ...basePolicyData }
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: { timeOffPolicy: mockPolicyData },
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: [
@@ -63,14 +63,14 @@ vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/employeesList', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesRemoveEmployees', () => ({
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees', () => ({
   useTimeOffPoliciesRemoveEmployeesMutation: () => ({
     mutateAsync: mockRemoveEmployees,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesUpdateBalance', () => ({
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesUpdateBalance', () => ({
   useTimeOffPoliciesUpdateBalanceMutation: () => ({
     mutateAsync: mockUpdateBalance,
     isPending: false,

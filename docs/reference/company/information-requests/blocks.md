@@ -54,6 +54,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
 | `informationRequest/form/cancel` | Fired when the user cancels the form | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |
+| PUT | `/v1/information_requests/:informationRequestUuid/submit` |
+
 <a id="informationrequestlist"></a>
 
 ## InformationRequestList
@@ -83,3 +90,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `informationRequest/respond` | Fired when the user clicks "Respond" on an open request | `{ requestId: string }` |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |

@@ -119,12 +119,14 @@ function Root({ documentUuid, dictionary }: SignatureFormProps) {
               )}
             </Flex>
 
-            {hasFields && <W9Fields hookResult={hookResult} />}
-
-            <Agree
-              label={t('agreeLabel')}
-              validationMessages={{ AGREE_REQUIRED: t('validation.agreeRequired') }}
-            />
+            {hasFields ? (
+              <W9Fields hookResult={hookResult} />
+            ) : (
+              <Agree
+                label={t('agreeLabel')}
+                validationMessages={{ AGREE_REQUIRED: t('validation.agreeRequired') }}
+              />
+            )}
 
             <ActionsLayout>
               <Components.Button variant="secondary" type="button" onClick={handleBack}>
@@ -164,170 +166,203 @@ function W9Fields({ hookResult }: W9FieldsProps) {
   return (
     <>
       {/* Classification */}
-      <Flex flexDirection="column" gap={16}>
-        {Fields.Name && (
-          <Fields.Name
-            label={t('fields.name.label')}
-            description={t('fields.name.description')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.BusinessName && (
-          <Fields.BusinessName
-            label={t('fields.business_name.label')}
-            description={t('fields.business_name.description')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.TaxClassification && (
-          <Fields.TaxClassification
-            label={t('fields.taxClassification.label')}
-            description={t('fields.taxClassification.description')}
-            validationMessages={requiredMessages}
-            getOptionLabel={value => copy.taxClassificationOptions[value] ?? value}
-          />
-        )}
-        {Fields.LlcClassificationCode && (
-          <Fields.LlcClassificationCode
-            label={t('fields.llcClassificationCode.label')}
-            description={t('fields.llcClassificationCode.description')}
-            validationMessages={requiredMessages}
-            placeholder={copy.llcPlaceholder}
-            getOptionLabel={value => copy.llcClassificationOptions[value] ?? value}
-          />
-        )}
-        {Fields.OtherText && (
-          <Fields.OtherText
-            label={t('fields.other_text.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.ForeignPartners && (
-          <Fields.ForeignPartners
-            label={t('fields.foreign_partners.label')}
-            description={t('fields.foreign_partners.description')}
-          />
-        )}
-      </Flex>
+      <Components.Box>
+        <Flex flexDirection="column" gap={16}>
+          {Fields.Name && (
+            <Fields.Name
+              label={t('fields.name.label')}
+              description={t('fields.name.description')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.BusinessName && (
+            <Fields.BusinessName
+              label={t('fields.business_name.label')}
+              description={t('fields.business_name.description')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.TaxClassification && (
+            <Fields.TaxClassification
+              label={t('fields.taxClassification.label')}
+              description={t('fields.taxClassification.description')}
+              validationMessages={requiredMessages}
+              getOptionLabel={value => copy.taxClassificationOptions[value] ?? value}
+            />
+          )}
+          {Fields.LlcClassificationCode && (
+            <Fields.LlcClassificationCode
+              label={t('fields.llcClassificationCode.label')}
+              description={t('fields.llcClassificationCode.description')}
+              validationMessages={requiredMessages}
+              placeholder={copy.llcPlaceholder}
+              getOptionLabel={value => copy.llcClassificationOptions[value] ?? value}
+            />
+          )}
+          {Fields.OtherText && (
+            <Fields.OtherText
+              label={t('fields.other_text.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.ForeignPartners && (
+            <Fields.ForeignPartners
+              label={t('fields.foreign_partners.label')}
+              description={t('fields.foreign_partners.description')}
+            />
+          )}
+        </Flex>
+      </Components.Box>
 
       {/* Exemptions */}
       {(Fields.ExemptPayeeCode || Fields.ExemptionFromFatca) && (
-        <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h3">{t('sections.exemptions')}</Components.Heading>
-            <Components.Text variant="supporting">
-              {t('sectionInstructions.exemptions')}
-            </Components.Text>
+        <Components.Box
+          header={
+            <Flex flexDirection="column" gap={2}>
+              <Components.Heading as="h3">{t('sections.exemptions')}</Components.Heading>
+              <Components.Text variant="supporting">
+                {t('sectionInstructions.exemptions')}
+              </Components.Text>
+            </Flex>
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            {Fields.ExemptPayeeCode && (
+              <Fields.ExemptPayeeCode
+                label={t('fields.exempt_payee_code.label')}
+                validationMessages={requiredMessages}
+              />
+            )}
+            {Fields.ExemptionFromFatca && (
+              <Fields.ExemptionFromFatca
+                label={t('fields.exemption_from_FATCA.label')}
+                description={t('fields.exemption_from_FATCA.description')}
+                validationMessages={requiredMessages}
+              />
+            )}
           </Flex>
-          {Fields.ExemptPayeeCode && (
-            <Fields.ExemptPayeeCode
-              label={t('fields.exempt_payee_code.label')}
-              validationMessages={requiredMessages}
-            />
-          )}
-          {Fields.ExemptionFromFatca && (
-            <Fields.ExemptionFromFatca
-              label={t('fields.exemption_from_FATCA.label')}
-              description={t('fields.exemption_from_FATCA.description')}
-              validationMessages={requiredMessages}
-            />
-          )}
-        </Flex>
+        </Components.Box>
       )}
 
       {/* Address */}
-      <Flex flexDirection="column" gap={16}>
-        <Flex flexDirection="column" gap={4}>
-          <Components.Heading as="h3">{t('sections.address')}</Components.Heading>
-          <Components.Text variant="supporting">{t('sectionInstructions.address')}</Components.Text>
+      <Components.Box
+        header={
+          <Flex flexDirection="column" gap={2}>
+            <Components.Heading as="h3">{t('sections.address')}</Components.Heading>
+            <Components.Text variant="supporting">
+              {t('sectionInstructions.address')}
+            </Components.Text>
+          </Flex>
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          {Fields.HomeAddressStreet1 && (
+            <Fields.HomeAddressStreet1
+              label={t('fields.home_address_street_1.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.HomeAddressStreet2 && (
+            <Fields.HomeAddressStreet2
+              label={t('fields.home_address_street_2.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.HomeAddressCity && (
+            <Fields.HomeAddressCity
+              label={t('fields.home_address_city.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.HomeAddressState && (
+            <Fields.HomeAddressState
+              label={t('fields.home_address_state.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.HomeAddressZip && (
+            <Fields.HomeAddressZip
+              label={t('fields.home_address_zip.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.AccountNumber && (
+            <Fields.AccountNumber
+              label={t('fields.account_number.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          {Fields.CompanyName && (
+            <Fields.CompanyName
+              label={t('fields.company_name.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
         </Flex>
-        {Fields.HomeAddressStreet1 && (
-          <Fields.HomeAddressStreet1
-            label={t('fields.home_address_street_1.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.HomeAddressStreet2 && (
-          <Fields.HomeAddressStreet2
-            label={t('fields.home_address_street_2.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.HomeAddressCity && (
-          <Fields.HomeAddressCity
-            label={t('fields.home_address_city.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.HomeAddressState && (
-          <Fields.HomeAddressState
-            label={t('fields.home_address_state.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.HomeAddressZip && (
-          <Fields.HomeAddressZip
-            label={t('fields.home_address_zip.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.AccountNumber && (
-          <Fields.AccountNumber
-            label={t('fields.account_number.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-        {Fields.CompanyName && (
-          <Fields.CompanyName
-            label={t('fields.company_name.label')}
-            validationMessages={requiredMessages}
-          />
-        )}
-      </Flex>
+      </Components.Box>
 
       {/* Taxpayer Identification Number */}
       {(Fields.Ssn || Fields.Ein) && (
-        <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h3">{t('sections.tin')}</Components.Heading>
-            <Components.Text variant="supporting">{t('sectionInstructions.tin')}</Components.Text>
-            <Components.Text variant="supporting">
-              {t('sectionInstructions.tinSecondary')}
-            </Components.Text>
+        <Components.Box
+          header={
+            <Flex flexDirection="column" gap={2}>
+              <Components.Heading as="h3">{t('sections.tin')}</Components.Heading>
+              <Components.Text variant="supporting">
+                {t('sectionInstructions.tin')} {t('sectionInstructions.tinSecondary')}
+              </Components.Text>
+            </Flex>
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            {Fields.Ssn && (
+              <Fields.Ssn
+                label={t('fields.ssn.label')}
+                validationMessages={{
+                  ...requiredMessages,
+                  INVALID_SSN: t('validation.invalidSsn'),
+                }}
+                placeholder={fieldsMetadata.ssn.placeholder}
+              />
+            )}
+            {Fields.Ein && (
+              <Fields.Ein
+                label={t('fields.ein.label')}
+                validationMessages={{
+                  ...requiredMessages,
+                  INVALID_EIN: t('validation.invalidEin'),
+                }}
+                placeholder={fieldsMetadata.ein.placeholder}
+              />
+            )}
           </Flex>
-          {Fields.Ssn && (
-            <Fields.Ssn
-              label={t('fields.ssn.label')}
-              validationMessages={{ ...requiredMessages, INVALID_SSN: t('validation.invalidSsn') }}
-              placeholder={fieldsMetadata.ssn.placeholder}
-            />
-          )}
-          {Fields.Ein && (
-            <Fields.Ein
-              label={t('fields.ein.label')}
-              validationMessages={{ ...requiredMessages, INVALID_EIN: t('validation.invalidEin') }}
-              placeholder={fieldsMetadata.ein.placeholder}
-            />
-          )}
-        </Flex>
+        </Components.Box>
       )}
 
       {/* Certification */}
-      <Flex flexDirection="column" gap={16}>
-        <Flex flexDirection="column" gap={4}>
-          <Components.Heading as="h3">{t('sections.certification')}</Components.Heading>
-          <Components.Text variant="supporting">
-            {t('sectionInstructions.certification')}
-          </Components.Text>
-        </Flex>
-        <CertificationDeclaration />
-        {Fields.SignatureText && (
-          <Fields.SignatureText
-            label={t('fields.signature_text.label')}
-            validationMessages={requiredMessages}
+      <Components.Box
+        header={
+          <Flex flexDirection="column" gap={2}>
+            <Components.Heading as="h3">{t('sections.certification')}</Components.Heading>
+            <Components.Text variant="supporting">
+              {t('sectionInstructions.certification')}
+            </Components.Text>
+          </Flex>
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          <CertificationDeclaration />
+          {Fields.SignatureText && (
+            <Fields.SignatureText
+              label={t('fields.signature_text.label')}
+              validationMessages={requiredMessages}
+            />
+          )}
+          <Fields.Agree
+            label={t('agreeLabel')}
+            validationMessages={{ AGREE_REQUIRED: t('validation.agreeRequired') }}
           />
-        )}
-      </Flex>
+        </Flex>
+      </Components.Box>
     </>
   )
 }
@@ -338,21 +373,17 @@ function CertificationDeclaration() {
 
   return (
     <Flex flexDirection="column" gap={8}>
-      <Components.Text>{t('certificationIntro')}</Components.Text>
-      <ol>
-        <li>
-          <Components.Text>{t('certificationPoints.taxpayerId')}</Components.Text>
-        </li>
-        <li>
-          <Components.Text>{t('certificationPoints.backupWithholding')}</Components.Text>
-        </li>
-        <li>
-          <Components.Text>{t('certificationPoints.usPerson')}</Components.Text>
-        </li>
-        <li>
-          <Components.Text>{t('certificationPoints.fatca')}</Components.Text>
-        </li>
-      </ol>
+      <Components.Text weight="medium">{t('certificationIntro')}</Components.Text>
+      <Components.OrderedList
+        items={[
+          <Components.Text key="taxpayerId">{t('certificationPoints.taxpayerId')}</Components.Text>,
+          <Components.Text key="backupWithholding">
+            {t('certificationPoints.backupWithholding')}
+          </Components.Text>,
+          <Components.Text key="usPerson">{t('certificationPoints.usPerson')}</Components.Text>,
+          <Components.Text key="fatca">{t('certificationPoints.fatca')}</Components.Text>,
+        ]}
+      />
     </Flex>
   )
 }

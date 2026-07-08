@@ -1,4 +1,4 @@
-import { useBankAccountsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/bankAccountsCreate'
+import { useBankAccountsCreateMutation } from '@gusto/embedded-api/react-query/bankAccountsCreate'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Head } from './Head'

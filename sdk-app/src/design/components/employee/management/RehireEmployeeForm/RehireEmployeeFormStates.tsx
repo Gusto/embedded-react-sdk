@@ -1,5 +1,5 @@
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
-import type { Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { Location } from '@gusto/embedded-api/models/components/location'
 import { RehireEmployeeForm } from './RehireEmployeeForm'
 
 export interface RehireEmployeeFormDemoProps {

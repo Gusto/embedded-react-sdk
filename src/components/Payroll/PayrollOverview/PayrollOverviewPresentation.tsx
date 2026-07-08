@@ -2,15 +2,15 @@ import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype'
-import type { CompanyBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount'
+} from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
+import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type {
   PayrollSubmissionBlockerType,
   UnblockOptions,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype'
-import type { PaymentSpeed } from '@gusto/embedded-api-v-2026-02-01/models/components/paymentconfigs'
+} from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,

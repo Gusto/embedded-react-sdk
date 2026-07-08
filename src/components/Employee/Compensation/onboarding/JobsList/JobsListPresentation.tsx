@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { type Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import { type Job } from '@gusto/embedded-api/models/components/job'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'

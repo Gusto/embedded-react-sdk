@@ -11,7 +11,7 @@ export const Actions = () => {
 
   return (
     <ActionsLayout>
-      <Components.Button variant="secondary" onClick={handleCancel}>
+      <Components.Button type="button" variant="secondary" onClick={handleCancel}>
         {t('cancelCta')}
       </Components.Button>
       <Components.Button type="submit" isLoading={isPending} data-testid="location-submit">

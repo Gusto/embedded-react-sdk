@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
-import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroup'
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 

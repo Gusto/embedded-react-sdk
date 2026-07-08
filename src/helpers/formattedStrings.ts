@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
-import { type Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
-import { type EmployeeAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeaddress'
+import { type Location } from '@gusto/embedded-api/models/components/location'
+import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { type TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'

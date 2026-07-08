@@ -5,12 +5,15 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient } from '@tanstack/react-query'
 import { LocationForm } from './LocationForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { companyEvents } from '@/shared/constants'
+import { companyEvents, componentEvents } from '@/shared/constants'
 import { basicLocation, getCompanyLocation, getLocation } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { GustoProvider } from '@/contexts'
+import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
+import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 
 describe('LocationForm', () => {
   const onEvent = vi.fn()
@@ -112,6 +115,58 @@ describe('LocationForm (edit mode)', () => {
     expect(capturedRequestBody).toBeDefined()
     expect(capturedRequestBody).not.toHaveProperty('mailing_address')
     expect(capturedRequestBody).toHaveProperty('filing_address', false)
+  })
+})
+
+// Regression: pressing Enter in a field must submit the form, not cancel it.
+// The bug only surfaces when the partner supplies a Button that renders a
+// native <button> (whose default type is "submit"): with the Cancel button
+// rendered first and missing type="button", the browser's implicit form
+// submission activates Cancel instead of submitting. This override reproduces
+// that partner setup; the SDK's built-in react-aria Button already forces
+// type="button" and would mask the regression.
+describe('LocationForm (Enter key submits with a native-button component override)', () => {
+  const onEvent = vi.fn()
+  const user = userEvent.setup()
+
+  const NativeButton = ({ children, onClick, type, isDisabled }: ButtonProps) => (
+    <button type={type} onClick={onClick} disabled={isDisabled}>
+      {children}
+    </button>
+  )
+
+  beforeEach(() => {
+    onEvent.mockReset()
+    setupApiTestMocks()
+    server.use(getLocation)
+    server.use(
+      http.put(`${API_BASE_URL}/v1/locations/:location_id`, () =>
+        HttpResponse.json({ ...basicLocation, version: '2.0' }),
+      ),
+    )
+    render(
+      <GustoProvider
+        config={{ baseUrl: API_BASE_URL }}
+        queryClient={createSdkQueryClient()}
+        components={{ Button: NativeButton }}
+      >
+        <LocationForm companyId="company-123" locationId={basicLocation.uuid} onEvent={onEvent} />
+      </GustoProvider>,
+    )
+  })
+
+  it('submits the form when Enter is pressed in a field instead of cancelling', async () => {
+    const streetField = await screen.findByLabelText('Street 1')
+    await user.click(streetField)
+    await user.keyboard('{Enter}')
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        companyEvents.COMPANY_LOCATION_UPDATED,
+        expect.anything(),
+      )
+    })
+    expect(onEvent).not.toHaveBeenCalledWith(componentEvents.CANCEL)
   })
 })
 

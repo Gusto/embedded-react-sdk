@@ -1,5 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
+import type { Document } from '@gusto/embedded-api/models/components/document'
+import {
+  W9_DOCUMENT_NAME,
+  getPresentFieldNames,
+} from '../SignatureForm/useContractorSignatureForm/w9Fields'
 import { useContractorDocumentsList } from './useContractorDocumentsList'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { BaseLayout } from '@/components/Base'
@@ -24,11 +28,30 @@ export interface DocumentsListProps extends BaseComponentInterface<'Contractor.D
  * Returns whether a document still needs the contractor's signature.
  *
  * @remarks
- * A document is outstanding when it requires signing and has not yet been
- * signed (`signedAt` is unset).
+ * In the contractor onboarding flow every listed document must be signed, so a
+ * document is outstanding whenever it has not yet been signed (`signedAt` is
+ * unset). We intentionally do not defer to the API's `requiresSigning` flag
+ * here: an unsigned document whose template is not yet prepared comes back with
+ * `requiresSigning: false`, and treating that as "complete" would render an
+ * unsigned document as signed and let the contractor skip it. Keying off
+ * `signedAt` keeps "complete" meaning "actually signed" for this component.
  */
 function requiresSignature(document: Document): boolean {
-  return Boolean(document.requiresSigning) && !document.signedAt
+  return !document.signedAt
+}
+
+/**
+ * Returns whether a document can be signed right now.
+ *
+ * @remarks
+ * A W-9 whose template has not finished preparing comes back with no signable
+ * fields (this is the same signal the signer keys its `hasFields` state off).
+ * Signing it would submit an empty form, so we block the sign action until the
+ * fields are present. Any non-W-9 document is treated as signable here.
+ */
+function canSignDocument(document: Document): boolean {
+  if (document.name !== W9_DOCUMENT_NAME) return true
+  return getPresentFieldNames(document).size > 0
 }
 
 /**
@@ -37,7 +60,9 @@ function requiresSignature(document: Document): boolean {
  * @remarks
  * Fetches the contractor's documents via {@link useContractorDocumentsList} and
  * renders them in a table. The Continue action is disabled until every document
- * that requires signing has been signed.
+ * the contractor can sign has been signed; a document that isn't signable yet
+ * (e.g. a W-9 whose fields haven't been generated) surfaces a warning instead of
+ * blocking the flow.
  *
  * @events
  * | Event | Description | Data |
@@ -72,7 +97,16 @@ function Root({ contractorId, className, dictionary }: DocumentsListProps) {
 
   const { documents } = result.data
   const hasError = result.errorHandling.errors.length > 0
-  const hasSignedAllDocuments = documents.every(document => !requiresSignature(document))
+  // Only a document the contractor can actually sign should gate the flow. A
+  // document that still needs signing but isn't signable yet (e.g. a W-9 whose
+  // fields haven't been generated) must not trap the user — it surfaces the
+  // "not ready" warning below instead of blocking Continue.
+  const hasOutstandingSignature = documents.some(
+    document => requiresSignature(document) && canSignDocument(document),
+  )
+  const hasUnpreparedDocument = documents.some(
+    document => requiresSignature(document) && !canSignDocument(document),
+  )
 
   const handleRequestSign = (uuid: string) => {
     const document = documents.find(candidate => candidate.uuid === uuid)
@@ -95,6 +129,12 @@ function Root({ contractorId, className, dictionary }: DocumentsListProps) {
             <Components.Text>{t('subtitle')}</Components.Text>
           </Flex>
 
+          {hasUnpreparedDocument && (
+            <Components.Alert status="warning" label={t('notReadyTitle')}>
+              <Components.Text>{t('notReadyBody')}</Components.Text>
+            </Components.Alert>
+          )}
+
           <DocumentList
             forms={documents.map(document => ({
               uuid: document.uuid ?? '',
@@ -102,6 +142,10 @@ function Root({ contractorId, className, dictionary }: DocumentsListProps) {
               description: document.description,
               requires_signing: requiresSignature(document),
             }))}
+            canSign={form => {
+              const document = documents.find(candidate => candidate.uuid === form.uuid)
+              return document ? canSignDocument(document) : true
+            }}
             onRequestSign={form => {
               handleRequestSign(form.uuid)
             }}
@@ -121,7 +165,7 @@ function Root({ contractorId, className, dictionary }: DocumentsListProps) {
           />
 
           <ActionsLayout>
-            <Components.Button onClick={handleContinue} isDisabled={!hasSignedAllDocuments}>
+            <Components.Button onClick={handleContinue} isDisabled={hasOutstandingSignature}>
               {t('continueCta')}
             </Components.Button>
           </ActionsLayout>

@@ -1,15 +1,15 @@
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useMemo, useRef, useState } from 'react'
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
   PayrollEmployeeCompensationsType,
   PayrollEmployeeCompensationsTypePaidTimeOff,
   PayrollEmployeeCompensationsTypeReimbursements as Reimbursement,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleshow'
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'

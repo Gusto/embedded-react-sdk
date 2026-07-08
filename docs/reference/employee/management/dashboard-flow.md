@@ -181,3 +181,32 @@ Some actions stay on the cards view without a screen swap: switching tabs (`empl
 
 Each section handles missing data on its own: compensation shows an empty state whose header CTA switches from "Edit" to "Add job"; payment methods, deductions, and state taxes each show a "none on file" message with the relevant add CTA; paystubs indicate that records appear after payroll is run; documents show a "No forms" message.
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| PUT | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees) |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts) |
+| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-bank_accounts) |
+| DELETE | [`/v1/employees/:employeeId/bank_accounts/:bankAccountUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id) |
+| GET | [`/v1/employees/:employeeId/forms`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-forms) |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf) |
+| GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-home_addresses) |
+| GET | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status) |
+| GET | [`/v1/employees/:employeeId/pay_stubs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_uuid-pay_stubs) |
+| GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method) |
+| PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method) |
+| GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses) |
+| GET | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes) |
+| GET | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-state_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-state_taxes) |
+| DELETE | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-home_addresses-home_address_uuid) |
+| DELETE | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-jobs-job_id) |
+| GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| DELETE | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-work_addresses-work_address_uuid) |

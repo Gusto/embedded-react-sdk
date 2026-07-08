@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form'
 import type {
   Garnishment,
   GarnishmentType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+} from '@gusto/embedded-api/models/components/garnishment'
 import type { Control } from 'react-hook-form'
 import { useDeductionForm } from '../useDeductionForm'
 import type { DeductionFormData } from '../useDeductionForm'

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import {
   useEmployeeEmploymentsGetTerminationsSuspense,
   invalidateAllEmployeeEmploymentsGetTerminations,
-} from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsGetTerminations'
-import { useEmployeeEmploymentsDeleteTerminationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsDeleteTermination'
-import { invalidateAllEmployeesList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesList'
+} from '@gusto/embedded-api/react-query/employeeEmploymentsGetTerminations'
+import { useEmployeeEmploymentsDeleteTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsDeleteTermination'
+import { invalidateAllEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import type { PayrollOption } from '../types'
 import { TerminationSummaryPresentation } from './TerminationSummaryPresentation'
 import { normalizeToDate } from '@/helpers/dateFormatting'

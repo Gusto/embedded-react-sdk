@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "Hey - we need to upgrade the SDK from the unversioned @gusto/embedded-api package (v0.13.0) to the new dated @gusto/embedded-api-v-2025-11-15 package. This is the first time we're moving to the dated-version model. Can you handle it end-to-end? Use --dry-run since I want to inspect the proposed PR before anything pushes.",
-      "expected_output": "Breaking-change matrix containing at minimum: (a) autoPilot field renamed to autoPayroll, (b) PaymentType.Payroll enum case changed from 'Payroll' to lowercase 'payroll', (c) useDataView<T> requires explicit type argument at 4 call sites (RecoveryCasesList, PayScheduleList, DeductionsList, InformationRequestList). The codemod should swap import paths across ~305 files and update the package.json. Cache namespace key in createSdkQueryClient.ts must flip to the new prefix. PR description should follow the template in references/pr-template.md.",
+      "expected_output": "Breaking-change matrix containing at minimum: (a) autoPilot field renamed to autoPayroll, (b) PaymentType.Payroll enum case changed from 'Payroll' to lowercase 'payroll', (c) useDataView<T> requires explicit type argument at 4 call sites (RecoveryCasesList, PayScheduleList, DeductionsList, InformationRequestList). The version bump should update the @gusto/embedded-api alias in package.json and set API_VERSION in apiVersion.ts (which drives both the X-Gusto-API-Version header and API_QUERY_NAMESPACE); imports route through the alias, so there is no per-file import-path sweep. PR description should follow the template in references/pr-template.md.",
       "files": [],
       "assertions": [
         {
@@ -20,8 +20,8 @@
           "text": "Matrix identifies the useDataView<T> explicit-type-argument requirement at 4 call sites"
         },
         {
-          "id": "cache-namespace-swept",
-          "text": "Codemod sweep updates the cache namespace string literal in createSdkQueryClient.ts and ApiProvider.tsx docstrings, not just import paths"
+          "id": "version-source-of-truth-updated",
+          "text": "Version bump updates API_VERSION in apiVersion.ts (which drives API_QUERY_NAMESPACE and the request header) and updates the @gusto/embedded-api alias in package.json — rather than sweeping scattered cache-namespace literals or import paths"
         },
         {
           "id": "single-base-pr",
@@ -56,8 +56,8 @@
           "text": "Self-onboarding email requirement is classified as ✅ trust-the-error-pipeline (server-side validation tightening), NOT 🔴 or ⚠️. The SDK's normalizeToSDKError → form-hook errorHandling pipeline already renders the server's 422 field error inline. Adding an E2E for this would be testing the error pipeline, not the upgrade."
         },
         {
-          "id": "cache-namespace-17-sites",
-          "text": "Codemod sweep accounts for the 17 hardcoded cache-namespace string literal sites across createSdkQueryClient.ts, ApiProvider.tsx, TimeOff, Company/Locations, and sdk-app contractor-management"
+          "id": "version-source-of-truth-single",
+          "text": "Version bump updates the single API_VERSION/API_QUERY_NAMESPACE source of truth in apiVersion.ts and updates the @gusto/embedded-api alias — does NOT attempt a scattered cache-key literal sweep or an import-path sweep (imports use the alias, enforced by the sdk-conventions/use-embedded-api-alias lint rule)"
         },
         {
           "id": "single-pr-no-empty-subprs",

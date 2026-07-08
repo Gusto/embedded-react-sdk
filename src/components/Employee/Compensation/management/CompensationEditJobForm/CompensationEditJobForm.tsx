@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm, type CompensationFormData } from '../../shared/useCompensationForm'
 import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'

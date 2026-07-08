@@ -2,7 +2,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { QueryClient } from '@tanstack/react-query'
-import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
+import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
 import {

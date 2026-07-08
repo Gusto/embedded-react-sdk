@@ -533,3 +533,11 @@ Keys of optional deduction fields that can be promoted to required via the
 hook's `optionalFieldsToRequire` option.
 
 ***
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/garnishments`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-garnishments) |
+| POST | [`/v1/employees/:employeeId/garnishments`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-garnishments) |
+| PUT | [`/v1/garnishments/:garnishmentId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-garnishments-garnishment_id) |

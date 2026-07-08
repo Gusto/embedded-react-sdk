@@ -1,4 +1,4 @@
-import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 

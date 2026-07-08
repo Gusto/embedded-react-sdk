@@ -61,6 +61,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `payroll/wire/form/done` | User completes the wire confirmation form | `{ wireInRequest: WireInRequest }` |
 | `payroll/wire/form/cancel` | User cancels the wire confirmation form | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid) |
+| GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-wire_in_requests-wire_in_request_uuid) |
+| PUT | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-wire_in_requests-wire_in_request_uuid) |
+
 <a id="dismissalpayperiodselection"></a>
 
 ## DismissalPayPeriodSelection
@@ -94,6 +103,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods) |
+| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id) |
 
 <a id="offcyclecreation"></a>
 
@@ -129,6 +146,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Changing the reason updates the deduction and withholding defaults — `'bonus'` skips
 regular deductions and uses the supplemental withholding rate; `'correction'` includes
 regular deductions and uses the regular rate.
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
 
 <a id="offcycledeductionssetting"></a>
 
@@ -221,6 +246,14 @@ Props for [PayrollBlockerList](#payrollblockerlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |
+| GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-recovery-cases) |
+
 <a id="payrollconfiguration"></a>
 
 ## PayrollConfiguration
@@ -260,6 +293,20 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
 | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
 | `runPayroll/grossUp/calculated` | A gross-up amount is calculated from a target net pay | `{ grossUp, netPay, employeeUuid }` |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/calculate`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
+| GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| POST | [`/v1/payrolls/:payrollUuid/gross_up`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-payrolls-gross-up-payroll_uuid) |
 
 <a id="payrolleditemployee"></a>
 
@@ -311,6 +358,16 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |
 | `runPayroll/employee/cancelled` | Fired when the user cancels editing employee payroll compensation | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts) |
+
 <a id="payrollhistory"></a>
 
 ## PayrollHistory
@@ -345,6 +402,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/summary/viewed` | User views a payroll summary | `{ payrollId: string; startDate?: string; endDate?: string }` |
 | `runPayroll/receipt/viewed` | User views a payroll receipt | `{ payrollId: string; startDate?: string; endDate?: string }` |
 | `runPayroll/cancelled` | A payroll is cancelled | `{ payrollId: string; result: PayrollsCancelResponse }` |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
+| GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid) |
 
 <a id="payrolllanding"></a>
 
@@ -396,6 +461,16 @@ period — then skips the payroll and emits `transition/payrollSkipped`. Transit
 periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
 may reject regular payrolls while unresolved transition periods exist.
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_periods) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| POST | [`/v1/companies/:companyUuid/payrolls/skip`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-companies-payroll-skip-company_uuid) |
+| GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid) |
+
 <a id="payrolllist"></a>
 
 ## PayrollList
@@ -440,6 +515,18 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
 | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
 | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_periods) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls) |
+| DELETE | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| POST | [`/v1/companies/:companyUuid/payrolls/skip`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-companies-payroll-skip-company_uuid) |
+| GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid) |
 
 <a id="payrolloverview"></a>
 
@@ -489,6 +576,18 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
+| GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-wire_in_requests-wire_in_request_uuid) |
+
 <a id="payrollreceipts"></a>
 
 ## PayrollReceipts
@@ -522,6 +621,12 @@ Props for [PayrollReceipts](#payrollreceipts).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/payrolls/:payrollUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payment-receipts-payrolls-payroll_uuid) |
+
 <a id="recoverycases"></a>
 
 ## RecoveryCases
@@ -549,6 +654,13 @@ dedicated recovery cases surface.
 | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
 | `recoveryCase/resubmit/done` | User successfully resubmits a recovery case | Resubmit result payload |
 | `recoveryCase/resubmit/cancel` | User cancels the resubmit modal | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-recovery-cases) |
+| PUT | [`/v1/recovery_cases/:recoveryCaseUuid/redebit`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/redebit-recovery-case) |
 
 <a id="transitioncreation"></a>
 
@@ -586,6 +698,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 The check date must be at least the company's ACH lead time (typically two business
 days) from today. Deductions default to included and tax withholding defaults to the
 regular rate with an every-other-week pay period.
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules) |
+| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
 
 ## Utility types
 

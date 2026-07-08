@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { PayrollExecutionFlow } from '../PayrollExecutionFlow/PayrollExecutionFlow'
 import { isDismissalPayroll } from '../helpers'
 import type { PayrollFlowContextInterface } from './PayrollFlowComponents'

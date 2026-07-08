@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { SDKValidationError } from '@gusto/embedded-api-v-2026-02-01/models/errors/sdkvalidationerror'
+import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { z } from 'zod/v3'
 import {
   createValidationErrorCollector,

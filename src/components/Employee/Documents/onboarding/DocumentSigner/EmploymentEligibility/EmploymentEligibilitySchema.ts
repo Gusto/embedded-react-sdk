@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   AuthorizationStatus,
   DocumentType as I9AuthorizationDocumentType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization'
+} from '@gusto/embedded-api/models/components/i9authorization'
 
 const isValidUscisNumber = (value: string) => /^[Aa]?\d{7,9}$/.test(value)
 const isValidI94Number = (value: string) => /^\d{9} ?[A-Za-z\d]\d$/.test(value)

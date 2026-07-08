@@ -1,5 +1,5 @@
-import type { Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
+import type { Location } from '@gusto/embedded-api/models/components/location'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { normalizeToDate } from '@/helpers/dateFormatting'
 import { addressInline } from '@/helpers/formattedStrings'
 

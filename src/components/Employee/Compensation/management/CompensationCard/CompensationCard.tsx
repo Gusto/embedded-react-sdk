@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsDelete'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import {
   useCompensationManagement,
   type UseCompensationManagementReady,

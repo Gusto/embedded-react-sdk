@@ -5,7 +5,7 @@ import type {
   PayrollReceipt,
   Taxes as TaxBreakdownItem,
   PayrollReceiptEmployeeCompensations as EmployeeBreakdownItem,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt'
+} from '@gusto/embedded-api/models/components/payrollreceipt'
 import styles from './PayrollReceiptsPresentation.module.scss'
 import { DataView, DataTable, Flex } from '@/components/Common'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'

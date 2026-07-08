@@ -6,6 +6,7 @@ import { DocumentsList } from './DocumentsList'
 import { server } from '@/test/mocks/server'
 import {
   handleGetContractorDocuments,
+  w9DocumentFields,
   W9_DOCUMENT_UUID,
 } from '@/test/mocks/apis/contractor_documents'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -31,6 +32,59 @@ describe('Contractor DocumentsList', () => {
     renderWithProviders(<DocumentsList contractorId={contractorId} onEvent={vi.fn()} />)
 
     await screen.findByText('Documents')
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled()
+  })
+
+  it('warns about an unprepared W-9, blocks signing it, but does not trap the user on Continue', async () => {
+    server.use(
+      handleGetContractorDocuments(() =>
+        HttpResponse.json([
+          {
+            uuid: W9_DOCUMENT_UUID,
+            title: 'W-9',
+            name: 'taxpayer_identification_form_w_9',
+            requires_signing: false,
+            signed_at: null,
+            fields: [],
+          },
+        ]),
+      ),
+    )
+    renderWithProviders(<DocumentsList contractorId={contractorId} onEvent={vi.fn()} />)
+
+    await screen.findByText('Documents')
+    // The row still reads as outstanding but offers no sign action...
+    expect(screen.getByText('Not signed')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Sign document' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Complete')).not.toBeInTheDocument()
+    // ...a warning explains why...
+    expect(screen.getByText("W-9 isn't ready to sign yet")).toBeInTheDocument()
+    // ...and an un-signable document must not block the flow.
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+  })
+
+  it('offers the sign action for an unsigned W-9 that has fields, without warning', async () => {
+    server.use(
+      handleGetContractorDocuments(() =>
+        HttpResponse.json([
+          {
+            uuid: W9_DOCUMENT_UUID,
+            title: 'W-9',
+            name: 'taxpayer_identification_form_w_9',
+            requires_signing: false,
+            signed_at: null,
+            fields: w9DocumentFields,
+          },
+        ]),
+      ),
+    )
+    renderWithProviders(<DocumentsList contractorId={contractorId} onEvent={vi.fn()} />)
+
+    await screen.findByText('Documents')
+    expect(screen.getByRole('button', { name: 'Sign document' })).toBeInTheDocument()
+    expect(screen.queryByText('Complete')).not.toBeInTheDocument()
+    // A signable, unsigned document has nothing to warn about and still gates Continue.
+    expect(screen.queryByText("W-9 isn't ready to sign yet")).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 

@@ -102,3 +102,31 @@ flowchart LR
 
 When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown.
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyId/pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_periods) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/calculate`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
+| GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| POST | [`/v1/companies/:companyUuid/payrolls/skip`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-companies-payroll-skip-company_uuid) |
+| GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-recovery-cases) |
+| GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts) |
+| GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| POST | [`/v1/payrolls/:payrollUuid/gross_up`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-payrolls-gross-up-payroll_uuid) |
+| GET | [`/v1/payrolls/:payrollUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payment-receipts-payrolls-payroll_uuid) |
+| GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-wire_in_requests-wire_in_request_uuid) |

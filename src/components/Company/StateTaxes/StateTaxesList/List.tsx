@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import {
   SetupStatus,
   type TaxRequirementStatesList,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementstateslist'
+} from '@gusto/embedded-api/models/components/taxrequirementstateslist'
 import { useStateTaxesList } from './context'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'

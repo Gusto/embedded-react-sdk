@@ -85,3 +85,9 @@ Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumen
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 | `status.isFetching` | `boolean` | - |
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-documents) |
