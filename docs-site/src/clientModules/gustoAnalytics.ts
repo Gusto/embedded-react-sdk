@@ -1,5 +1,5 @@
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment'
-import { installAnalyticsStub } from '../analytics/loadAnalytics'
+import { configureAnalytics } from '../analytics/loadAnalytics'
 import { routeChangeListener } from '../analytics/listeners'
 import { hasPerformanceConsent } from '../cookieConsent'
 
@@ -38,7 +38,7 @@ function emitLandingViewWhenConsentResolves(attemptsRemaining: number): void {
 }
 
 if (ExecutionEnvironment.canUseDOM) {
-  installAnalyticsStub()
+  configureAnalytics()
 
   // Bridge OneTrust consent into analytics: OptanonWrapper handles later consent changes,
   // and the poll handles the landing view on load/reload (see note above).

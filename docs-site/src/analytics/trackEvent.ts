@@ -1,6 +1,6 @@
 import type { AnalyticsEvent } from '@site/types'
 import { hasPerformanceConsent } from '../cookieConsent'
-import { ensureAnalyticsLoaded } from './loadAnalytics'
+import { trackWhenReady } from './loadAnalytics'
 
 /**
  * Single entry point for emitting analytics. Consent is enforced here so no call site
@@ -10,10 +10,5 @@ import { ensureAnalyticsLoaded } from './loadAnalytics'
  */
 export function trackEvent(event: AnalyticsEvent): void {
   if (!hasPerformanceConsent()) return
-  ensureAnalyticsLoaded()
-  window.GustoAnalytics?.track({
-    eventCategory: event.eventCategory,
-    eventName: event.eventName,
-    data: event.data,
-  })
+  trackWhenReady(event)
 }
