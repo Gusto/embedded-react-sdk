@@ -4930,7 +4930,7 @@ export namespace Translations {
     onboardedAdminDescription: string
     /** @defaultValue `"{{name}}'s invite is on its way"` */
     handedOffAdminSubtitle: string
-    /** @defaultValue `"They'll complete the remaining setup steps on their own. We'll notify you when they're done."` */
+    /** @defaultValue `"They'll complete the remaining setup steps on their own."` */
     handedOffAdminDescription: string
     /** @defaultValue `"You've completed setup!"` */
     onboardedSelfSubtitle: string
