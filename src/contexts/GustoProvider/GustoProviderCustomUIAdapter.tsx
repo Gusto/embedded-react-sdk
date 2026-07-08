@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { ErrorInfo } from 'react'
+import type { ErrorInfo, JSX, ReactNode } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import type { QueryClient } from '@tanstack/react-query'
@@ -8,7 +8,6 @@ import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
-import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
 import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
 import { SDKI18next } from './SDKI18next'
@@ -62,7 +61,7 @@ export interface GustoProviderProps {
   /** Complete map of UI components the SDK renders. Required because this adapter ships no defaults. */
   components: ComponentsContextType
   /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
-  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
+  LoaderComponent?: ({ children }: { children?: ReactNode }) => JSX.Element
 }
 
 /**

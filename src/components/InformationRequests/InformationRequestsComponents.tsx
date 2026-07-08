@@ -31,5 +31,3 @@ export function InformationRequestFormContextual() {
     />
   )
 }
-
-InformationRequestFormContextual.Footer = InformationRequestForm.Footer

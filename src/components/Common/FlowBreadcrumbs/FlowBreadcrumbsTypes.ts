@@ -12,7 +12,7 @@ import type { EventType } from '@/types/Helpers'
  * `startDate` and `endDate` keys) are auto-formatted with the active locale's
  * short-with-year date format before interpolation.
  *
- * @public
+ * @internal
  */
 export interface FlowBreadcrumb {
   /**

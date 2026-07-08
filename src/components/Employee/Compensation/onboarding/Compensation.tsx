@@ -11,8 +11,6 @@ import {
   type CompensationFlowContextInterface,
 } from './CompensationFlowComponents'
 import { compensationStateMachine } from './compensationStateMachine'
-import { JobsList } from './JobsList'
-import { EditCompensation } from './EditCompensation'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
 import { FlsaStatus } from '@/shared/constants'
@@ -211,6 +209,3 @@ export const CompensationContextual = () => {
     />
   )
 }
-
-Compensation.JobsList = JobsList
-Compensation.EditCompensation = EditCompensation

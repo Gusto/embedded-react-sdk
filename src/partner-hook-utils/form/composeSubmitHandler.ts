@@ -2,6 +2,7 @@ import type { SyntheticEvent } from 'react'
 import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { composeErrorHandler } from '../composeErrorHandler'
 import type { HookErrorHandling, HookFormInternals } from '../types'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 
 /**
  * Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
@@ -98,7 +99,8 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
   const candidates: Candidate[] = []
   for (const { input, formMethods, errors } of results) {
     if (isRawUseForm(input)) continue
-    const registry = input.form.hookFormInternals._fieldElementRegistry
+    const registry = input.form.hookFormInternals._fieldElementRegistry as
+      FieldElementRegistry | undefined
     if (!registry) continue
     for (const name of Object.keys(errors)) {
       const element = registry.get(name)

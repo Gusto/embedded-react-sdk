@@ -476,7 +476,6 @@ export type {
   EmployeeStateTaxesFormData,
   EmployeeStateTaxesSchemaOptions,
   EmployeeStateTaxesQuestionMeta,
-  EmployeeStateTaxesMetadataConfig,
   StateTaxValue,
   StateTaxQuestionVariant,
   StateTaxFieldsGroup,

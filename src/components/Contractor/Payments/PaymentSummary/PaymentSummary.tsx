@@ -19,10 +19,16 @@ export interface PaymentSummaryProps {
   companyId: string
   /** Callback invoked when a flow event occurs, e.g. when the user exits. */
   onEvent: (type: EventType, data?: unknown) => void
-  /**
-   * @internal
-   * Flow-injected alerts (e.g. wire-transfer confirmation).
-   */
+}
+
+/**
+ * Props for the flow-internal {@link PaymentSummaryInternal}, which layers
+ * flow-injected alerts on top of the public {@link PaymentSummaryProps}.
+ *
+ * @internal
+ */
+export interface PaymentSummaryInternalProps extends PaymentSummaryProps {
+  /** Flow-injected alerts (e.g. wire-transfer confirmation). */
   alerts?: InternalAlert[]
 }
 
@@ -66,12 +72,20 @@ const findWireInRequestUuid = (
  * @returns The rendered payment summary, or `null` when the payment group cannot be loaded.
  * @public
  */
-export const PaymentSummary = ({
+export const PaymentSummary = (props: PaymentSummaryProps) => <PaymentSummaryInternal {...props} />
+
+/**
+ * Flow-internal entry point for {@link PaymentSummary} that accepts flow-injected
+ * alerts. Partners use {@link PaymentSummary}; flows render this directly.
+ *
+ * @internal
+ */
+export const PaymentSummaryInternal = ({
   paymentGroupId,
   companyId,
   onEvent,
   alerts,
-}: PaymentSummaryProps) => {
+}: PaymentSummaryInternalProps) => {
   useI18n('Contractor.Payments.PaymentSummary')
 
   const { data: paymentGroupData } = useContractorPaymentGroupsGetSuspense({

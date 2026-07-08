@@ -71,7 +71,6 @@ import { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/componen
 import { ContractorUpdateRequestBodyType } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
 import { ContractorUpdateRequestBodyWageType } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
 import { CustomFieldType } from '@gusto/embedded-api/models/components/customfieldtype';
-import { CustomTypeOptions } from 'i18next';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
 import { Document as Document_2 } from '@gusto/embedded-api/models/components/document';
@@ -108,7 +107,6 @@ import { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/
 import { EmployeeStatus } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress';
 import { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject';
-import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
 import { FederalHolidays } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { FederalTaxDetails } from '@gusto/embedded-api/models/components/federaltaxdetails';
@@ -273,7 +271,6 @@ import { VeteransDay } from '@gusto/embedded-api/models/components/holidaypaypol
 import { WageType as WageType_2 } from '@gusto/embedded-api/models/components/contractor';
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
-import { z } from 'zod';
 
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
@@ -315,7 +312,7 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function Address_2(input: AddressProps): JSX;
+function Address_2(input: AddressProps): JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
 //
@@ -328,8 +325,7 @@ interface AddressProps {
     contractorId: string;
     defaultValues?: AddressDefaultValues;
     dictionary?: ResourceDictionary<'Contractor.Address'>;
-    // Warning: (ae-forgotten-export) The symbol "BaseBoundariesProps" needs to be exported by the entry point index.d.ts
-    FallbackComponent?: BaseBoundariesProps['FallbackComponent'];
+    FallbackComponent?: (props: FallbackProps) => JSX.Element;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1012,18 +1008,8 @@ declare namespace CompanyOnboarding {
     }
 }
 
-// Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function Compensation_2(props: CompensationProps): JSX;
-
-// @public (undocumented)
-namespace Compensation_2 {
-    var // (undocumented)
-    JobsList: JobsList;
-    var // (undocumented)
-    EditCompensation: EditCompensation;
-}
 
 // @public
 function Compensation_3(input: CompensationProps_2): JSX;
@@ -2637,18 +2623,6 @@ export interface EmployeeStateTaxesFormData {
 // @public
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields'];
 
-// Warning: (ae-forgotten-export) The symbol "FieldsMetadataConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesMetadataConfig" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<Record<string, z.ZodType>> {
-    groups: Array<{
-        state: string;
-        isWorkState: boolean;
-        questions: EmployeeStateTaxesQuestionMeta[];
-    }>;
-}
-
 // Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesQuestionMeta" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
@@ -2876,7 +2850,7 @@ export type FormHookResult = {
             formMethods: {
                 control: unknown;
             };
-            _fieldElementRegistry?: FieldElementRegistry;
+            _fieldElementRegistry?: unknown;
         };
     };
 };
@@ -2928,8 +2902,9 @@ export interface GustoProviderProps {
     currency?: string;
     dictionary?: GlobalResourceDictionary;
     lng?: string;
-    // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
-    LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
+    LoaderComponent?: (input: {
+        children?: ReactNode;
+    }) => JSX.Element;
     locale?: string;
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
@@ -3146,7 +3121,7 @@ export type HookFieldProps<TProps extends {
 // @public
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
     // @internal
-    _fieldElementRegistry?: FieldElementRegistry;
+    _fieldElementRegistry?: unknown;
     formMethods: UseFormReturn<TFormData>;
 }
 
@@ -3182,18 +3157,8 @@ interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
     companyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function InformationRequestForm(props: InformationRequestFormProps): JSX;
-
-// @public (undocumented)
-namespace InformationRequestForm {
-    var // (undocumented)
-    Footer: (input: {
-        onEvent: OnEventType<EventType, unknown>;
-    }) => JSX;
-}
 
 // @public
 interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {
@@ -3624,16 +3589,6 @@ interface OffCycleDeductionsSettingProps extends CommonComponentInterface<'Payro
 // @public
 function OffCycleFlow(input: OffCycleFlowProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "FlowContextInterface" needs to be exported by the entry point index.d.ts
-//
-// @public
-interface OffCycleFlowContextInterface extends FlowContextInterface {
-    companyId: string;
-    payrollType?: OffCycleReason;
-    payrollUuid?: string;
-    withReimbursements?: boolean;
-}
-
 // @public
 interface OffCycleFlowProps {
     companyId: string;
@@ -3915,10 +3870,6 @@ function PaymentsList(props: PaymentsListProps): JSX;
 
 // @public
 interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
-    // Warning: (ae-forgotten-export) The symbol "InternalAlert" needs to be exported by the entry point index.d.ts
-    //
-    // @internal
-    alerts?: InternalAlert[];
     companyId: string;
 }
 
@@ -3932,12 +3883,10 @@ interface PaymentStatementProps extends BaseComponentInterface<'Contractor.Payme
 }
 
 // @public
-const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
+const PaymentSummary: (props: PaymentSummaryProps) => JSX;
 
 // @public
 interface PaymentSummaryProps {
-    // @internal
-    alerts?: InternalAlert[];
     companyId: string;
     onEvent: (type: EventType, data?: unknown) => void;
     paymentGroupId: string;
@@ -3996,14 +3945,12 @@ declare namespace Payroll {
         OffCycleCreationProps,
         OffCycleCreationFormData,
         OffCycleFlow,
-        OffCycleFlowContextInterface,
         OffCycleFlowProps,
         DismissalFlow,
         DismissalFlowProps,
         DismissalPayPeriodSelection,
         DismissalPayPeriodSelectionProps,
         TransitionFlow,
-        TransitionFlowContextInterface,
         TransitionFlowProps,
         TransitionCreation,
         TransitionCreationProps,
@@ -4042,7 +3989,7 @@ interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.Payro
 }
 
 // @public
-function PayrollExecutionFlow(input: PayrollExecutionFlowProps): JSX;
+function PayrollExecutionFlow(props: PayrollExecutionFlowProps): JSX;
 
 // @public
 interface PayrollExecutionFlowProps {
@@ -4053,8 +4000,6 @@ interface PayrollExecutionFlowProps {
     isDismissalPayroll?: boolean;
     onEvent: OnEventType<EventType, unknown>;
     payrollId: string;
-    // Warning: (ae-forgotten-export) The symbol "FlowBreadcrumb" needs to be exported by the entry point index.d.ts
-    prefixBreadcrumbs?: FlowBreadcrumb[];
     withReimbursements?: boolean;
 }
 
@@ -5475,15 +5420,6 @@ interface TransitionCreationProps extends BaseComponentInterface<'Payroll.Transi
 function TransitionFlow(input: TransitionFlowProps): JSX;
 
 // @public
-interface TransitionFlowContextInterface extends FlowContextInterface {
-    companyId: string;
-    endDate: string;
-    payrollUuid?: string;
-    payScheduleUuid: string;
-    startDate: string;
-}
-
-// @public
 interface TransitionFlowProps {
     companyId: string;
     endDate: string;
@@ -6356,7 +6292,6 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 // Warnings were encountered during analysis:
 //
 // dist/components/Employee/Compensation/shared/useJobForm/useJobForm.d.ts:215:221 - (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
-// dist/partner-hook-utils/types.d.ts:273:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

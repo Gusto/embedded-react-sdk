@@ -8,7 +8,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
 
 vi.mock('../PayrollExecutionFlow/PayrollExecutionFlow', () => ({
-  PayrollExecutionFlow: (props: Record<string, unknown>) => (
+  PayrollExecutionInternalFlow: (props: Record<string, unknown>) => (
     <div
       data-testid="payroll-execution-flow"
       data-is-dismissal-payroll={props.isDismissalPayroll === true ? 'true' : 'false'}

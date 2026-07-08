@@ -4,6 +4,7 @@ import { FormProvider } from 'react-hook-form'
 import type { FieldMetadata, FieldMetadataWithOptions, HookFormInternals } from '../types'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import { FieldElementRegistryProvider } from '@/components/Common/Fields/hooks/FieldElementRegistryProvider'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 import type { SDKError, SDKFieldError } from '@/types/sdkError'
 
@@ -93,7 +94,9 @@ export function SDKFormProvider<
 
   return (
     <FormFieldsMetadataProvider metadata={form.fieldsMetadata} errors={errorHandling.errors}>
-      <FieldElementRegistryProvider registry={form.hookFormInternals._fieldElementRegistry}>
+      <FieldElementRegistryProvider
+        registry={form.hookFormInternals._fieldElementRegistry as FieldElementRegistry | undefined}
+      >
         <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>
       </FieldElementRegistryProvider>
     </FormFieldsMetadataProvider>

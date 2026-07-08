@@ -60,7 +60,8 @@ export function useHookFieldResolution<
 
   const errorMessage = resolveFieldError(name, formErrors, sdkErrors, validationMessages)
 
-  const fieldElementRegistry = formHookResult?.form.hookFormInternals._fieldElementRegistry
+  const fieldElementRegistry = formHookResult?.form.hookFormInternals._fieldElementRegistry as
+    FieldElementRegistry | undefined
 
   return { metadata, control, errorMessage, fieldElementRegistry }
 }

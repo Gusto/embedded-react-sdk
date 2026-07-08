@@ -770,30 +770,6 @@ Payload emitted by [OffCycleDeductionsSetting](#offcycledeductionssetting) on th
 | ------ | ------ | ------ |
 | `skipRegularDeductions` | `boolean` | Whether the user selected to skip regular deductions. |
 
-<a id="offcycleflowcontextinterface"></a>
-
-### OffCycleFlowContextInterface
-
-Flow context shared across the off-cycle payroll flow steps.
-
-#### Extends
-
-- `FlowContextInterface`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `component` | `ComponentType`\<[`CommonComponentInterface`](../index.md#commoncomponentinterface)\<keyof Resources\>\> \| `null` | - |
-| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | - |
-| `ctaConfig?` | `CtaConfig` \| `null` | - |
-| `defaultValues?` | `Record`\<`string`, `unknown`\> | - |
-| `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
-| `payrollType?` | [`OffCycleReason`](#offcyclereason) | Pre-selected off-cycle reason (bonus or correction). |
-| `payrollUuid?` | `string` | Identifier of the off-cycle payroll created during the flow; set once creation completes. |
-| `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the execution steps. Defaults to true. |
-
 <a id="offcyclepayperioddateformdata"></a>
 
 ### OffCyclePayPeriodDateFormData
@@ -900,31 +876,6 @@ Form values collected by the [TransitionCreation](#transitioncreation) component
 | ------ | ------ | ------ |
 | `checkDate` | `Date` \| `null` | The date employees will be paid. Must be at least the company's ACH lead time from today. |
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
-
-<a id="transitionflowcontextinterface"></a>
-
-### TransitionFlowContextInterface
-
-Flow context shape carried through the transition payroll state machine.
-
-#### Extends
-
-- `FlowContextInterface`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | Company the transition payroll belongs to. |
-| `component` | `ComponentType`\<[`CommonComponentInterface`](../index.md#commoncomponentinterface)\<keyof Resources\>\> \| `null` | - |
-| `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
-| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | - |
-| `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
-| `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
-| `ctaConfig?` | `CtaConfig` \| `null` | - |
-| `defaultValues?` | `Record`\<`string`, `unknown`\> | - |
-| `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
-| `payrollUuid?` | `string` | UUID of the created transition payroll, populated once creation completes. |
 
 <a id="withholdingtype"></a>
 
