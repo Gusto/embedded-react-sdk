@@ -17,12 +17,93 @@
  */
 import {
   Node,
+  Project,
   ts,
   type SourceFile,
   type TypeAliasDeclaration,
+  type UnionTypeNode,
   type VariableStatement,
 } from 'ts-morph'
 import { relative } from 'path'
+
+// TypeScript's `typeToString` emits union members in a checker-internal order
+// that is not stable across builds, producing spurious reordering in the tracked
+// API report. Union member order is semantically irrelevant, so we sort every
+// union alphabetically to make the output deterministic. Parsing/sorting happens
+// in an isolated in-memory project so it never perturbs the build's type checker.
+let sortProject: Project | undefined
+function getSortProject(): Project {
+  sortProject ??= new Project({ useInMemoryFileSystem: true })
+  return sortProject
+}
+
+// Collects the outermost union nodes in a subtree — unions not nested inside
+// another union of the set. Nested unions are handled by recursion instead, so
+// reordering one union never invalidates another's text offsets.
+function collectOutermostUnions(root: Node): UnionTypeNode[] {
+  if (Node.isUnionTypeNode(root)) return [root]
+  const unions: UnionTypeNode[] = []
+  const visit = (node: Node): void => {
+    if (Node.isUnionTypeNode(node)) {
+      unions.push(node)
+      return
+    }
+    node.forEachChild(visit)
+  }
+  root.forEachChild(visit)
+  return unions
+}
+
+// A union is only reordered when every member is a string- or number-literal.
+// Those are the `keyof`- and template-literal-derived unions whose order the
+// checker emits non-deterministically. Unions mixing keywords (`string | null`,
+// `boolean`, `T[] | undefined`) keep their given order — it's already stable and
+// reordering it would churn the report without cause.
+function isReorderableUnion(union: UnionTypeNode): boolean {
+  return union.getTypeNodes().every(member => {
+    if (!Node.isLiteralTypeNode(member)) return false
+    const literal = member.getLiteral()
+    return Node.isStringLiteral(literal) || Node.isNumericLiteral(literal)
+  })
+}
+
+// Returns the node's text with the members of every all-literal union sorted
+// alphabetically at every nesting depth, leaving all other syntax (generics,
+// function types, object shapes, keyword unions, whitespace) byte-for-byte intact.
+function sortUnionsInNode(node: Node): string {
+  const unions = collectOutermostUnions(node)
+  if (unions.length === 0) return node.getText()
+
+  const base = node.getStart()
+  const replacements = unions.map(union => {
+    const members = union.getTypeNodes().map(member => sortUnionsInNode(member))
+    if (isReorderableUnion(union)) members.sort()
+    return { start: union.getStart() - base, end: union.getEnd() - base, text: members.join(' | ') }
+  })
+
+  let text = node.getText()
+  for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
+    text = text.slice(0, replacement.start) + replacement.text + text.slice(replacement.end)
+  }
+  return text
+}
+
+// Sorts union members in a resolved type string. Falls back to the input
+// unchanged if it can't be parsed as a type (never throws).
+function sortUnionMembers(typeText: string): string {
+  try {
+    const sourceFile = getSortProject().createSourceFile(
+      '__union_sort__.ts',
+      `type __T = ${typeText}`,
+      {
+        overwrite: true,
+      },
+    )
+    return sortUnionsInNode(sourceFile.getTypeAliasOrThrow('__T').getTypeNodeOrThrow())
+  } catch {
+    return typeText
+  }
+}
 
 function buildTypeofPattern(names: Set<string>): RegExp {
   const escaped = [...names].map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -68,10 +149,12 @@ function buildTypeWithPropertyJsDocs(
   for (const prop of props) {
     const isOptional = (prop.flags & ts.SymbolFlags.Optional) !== 0
     const propType = checker.getTypeOfSymbolAtLocation(prop, contextNode)
-    const propTypeText = checker.typeToString(
-      propType,
-      contextNode,
-      ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias,
+    const propTypeText = sortUnionMembers(
+      checker.typeToString(
+        propType,
+        contextNode,
+        ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias,
+      ),
     )
     const jsdoc = propJsDocs.get(prop.getName())
     if (jsdoc) lines.push(`  ${jsdoc}`)
@@ -82,8 +165,22 @@ function buildTypeWithPropertyJsDocs(
 }
 
 // Returns true when the declaration carries an `@internal` JSDoc tag.
-function hasInternalTag(node: TypeAliasDeclaration): boolean {
+function hasInternalTag(node: TypeAliasDeclaration | VariableStatement): boolean {
   return node.getJsDocs().some(doc => doc.getTags().some(tag => tag.getTagName() === 'internal'))
+}
+
+// Returns true when an imported binding resolves to a variable declaration in
+// another module that carries an `@internal` JSDoc tag. Requires the target
+// module's .d.ts to be in the program (all dist files are, during build).
+function importedBindingIsInternal(nameNode: Node): boolean {
+  const symbol = nameNode.getSymbol()
+  if (!symbol) return false
+  const target = symbol.getAliasedSymbol() ?? symbol
+  return target.getDeclarations().some(decl => {
+    if (!Node.isVariableDeclaration(decl)) return false
+    const stmt = decl.getVariableStatement()
+    return stmt ? hasInternalTag(stmt) : false
+  })
 }
 
 // Within an exported type alias, rewrites references to `@internal` type aliases
@@ -143,7 +240,11 @@ function expandInternalTypeRefs(
     // Bail rather than emit a degraded type that still leaks an internal name or
     // loses concrete union information to `any`.
     if (/\bany\b/.test(resolved) || internalPattern.test(resolved)) return null
-    replacements.push({ start: node.getStart() - base, end: node.getEnd() - base, text: resolved })
+    replacements.push({
+      start: node.getStart() - base,
+      end: node.getEnd() - base,
+      text: sortUnionMembers(resolved),
+    })
   }
 
   // Apply right-to-left so earlier offsets stay valid as text length changes.
@@ -190,7 +291,33 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     if (hasInternalTag(typeAlias)) internalTypeNames.add(typeAlias.getName())
   }
 
-  if (unexportedTypeofNames.size === 0 && internalTypeNames.size === 0) return null
+  // Consts tagged @internal leak as ae-incompatible-release-tags when a @public
+  // alias references them via `typeof`. Unlike unexported consts we can't delete
+  // the declaration — an exported const is a real runtime export, an imported one
+  // belongs to another module — so we expand the referencing alias to a concrete
+  // type and, for imports, drop the now-orphaned import specifier afterward.
+  const internalTypeofConstNames = new Set<string>()
+  const internalImportedNames = new Set<string>()
+  for (const stmt of sourceFile.getVariableStatements()) {
+    if (!hasInternalTag(stmt)) continue
+    for (const decl of stmt.getDeclarations()) internalTypeofConstNames.add(decl.getName())
+  }
+  for (const importDecl of sourceFile.getImportDeclarations()) {
+    for (const spec of importDecl.getNamedImports()) {
+      const localName = spec.getAliasNode()?.getText() ?? spec.getName()
+      if (importedBindingIsInternal(spec.getNameNode())) {
+        internalTypeofConstNames.add(localName)
+        internalImportedNames.add(localName)
+      }
+    }
+  }
+
+  if (
+    unexportedTypeofNames.size === 0 &&
+    internalTypeNames.size === 0 &&
+    internalTypeofConstNames.size === 0
+  )
+    return null
 
   // For each unexported const with a TypeLiteralNode type, collect JSDoc for
   // each property so we can re-attach them after expansion.
@@ -214,8 +341,13 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     }
   }
 
-  const unexportedTypeofPattern =
-    unexportedTypeofNames.size > 0 ? buildTypeofPattern(unexportedTypeofNames) : null
+  // Whole-alias expansion applies to unexported consts/functions and to
+  // @internal consts alike. The declaration-pruning passes below stay scoped to
+  // the unexported names only, so @internal exports/imports are expanded but
+  // never deleted.
+  const expandableTypeofNames = new Set([...unexportedTypeofNames, ...internalTypeofConstNames])
+  const expandableTypeofPattern =
+    expandableTypeofNames.size > 0 ? buildTypeofPattern(expandableTypeofNames) : null
 
   // Two-pass approach: resolve all types first (using the original checker
   // against the unmodified AST), then apply mutations. Mutating mid-loop via
@@ -239,7 +371,7 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     // Path 2: when the alias doesn't reference an unexported `typeof` const but
     // does reference an @internal type alias, rewrite just those references to
     // their concrete types in place and leave the rest of the alias unchanged.
-    if (!unexportedTypeofPattern || !unexportedTypeofPattern.test(typeNode.getText())) {
+    if (!expandableTypeofPattern || !expandableTypeofPattern.test(typeNode.getText())) {
       if (internalTypeNames.size > 0 && !hasInternalTag(typeAlias)) {
         const expanded = expandInternalTypeRefs(
           typeNode,
@@ -285,8 +417,8 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
       )
       continue
     }
-    // Skip if the resolved text still references an unexported const.
-    if (unexportedTypeofPattern && unexportedTypeofPattern.test(resolvedText)) {
+    // Skip if the resolved text still references a const we meant to expand out.
+    if (expandableTypeofPattern && expandableTypeofPattern.test(resolvedText)) {
       console.warn(
         `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: ${typeAlias.getName()} resolved type still contains unexported typeof — skipping`,
         `\n  resolved: ${truncate(resolvedText, 200)}`,
@@ -306,8 +438,10 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     }
 
     // If the resolved type is an object type and we have property JSDoc for
-    // the referenced const, build a multi-line type with the comments preserved.
-    let finalResolvedText = resolvedText
+    // the referenced const, build a multi-line type with the comments preserved
+    // (which sorts unions per-property itself). Otherwise sort the flat text so
+    // union member order is deterministic across builds.
+    let finalResolvedText = sortUnionMembers(resolvedText)
     if (resolvedText.startsWith('{')) {
       const referencedConst = findSingleReferencedConst(typeNode.getText(), unexportedVarNames)
       const propJsDocs = referencedConst ? constPropJsDocs.get(referencedConst) : undefined
@@ -366,6 +500,34 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
       console.log(
         `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: removed orphaned declare function ${name}`,
       )
+    }
+  }
+
+  // Remove import specifiers for @internal bindings whose only remaining
+  // reference is the import itself (e.g. `import { PAYMENT_METHODS }` after the
+  // sole alias referencing it was expanded). The exporting module is untouched;
+  // only this file's now-dead import is pruned.
+  if (internalImportedNames.size > 0) {
+    const afterExpansion = sourceFile.getFullText()
+    for (const importDecl of sourceFile.getImportDeclarations()) {
+      for (const spec of importDecl.getNamedImports()) {
+        const localName = spec.getAliasNode()?.getText() ?? spec.getName()
+        if (!internalImportedNames.has(localName)) continue
+        const occurrences = afterExpansion.match(new RegExp(`\\b${localName}\\b`, 'g'))?.length ?? 0
+        if (occurrences <= 1) {
+          spec.remove()
+          console.log(
+            `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: removed orphaned import ${localName}`,
+          )
+        }
+      }
+      if (
+        importDecl.getNamedImports().length === 0 &&
+        !importDecl.getDefaultImport() &&
+        !importDecl.getNamespaceImport()
+      ) {
+        importDecl.remove()
+      }
     }
   }
 
