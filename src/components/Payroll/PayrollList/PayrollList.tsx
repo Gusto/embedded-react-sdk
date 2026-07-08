@@ -14,7 +14,7 @@ import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'

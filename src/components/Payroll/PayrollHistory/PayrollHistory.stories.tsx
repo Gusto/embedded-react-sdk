@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { fn } from 'storybook/test'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'

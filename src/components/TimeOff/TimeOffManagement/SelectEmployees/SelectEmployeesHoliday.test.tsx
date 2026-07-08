@@ -56,7 +56,7 @@ vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesGet', () => ({
   }),
   invalidateAllHolidayPayPoliciesGet: vi.fn(),
   queryKeyHolidayPayPoliciesGet: (companyUuid: string) => [
-    '@gusto/embedded-api-v-2026-02-01',
+    '@gusto/embedded-api-v-2026-06-15',
     'holidayPayPolicies',
     'get',
     companyUuid,

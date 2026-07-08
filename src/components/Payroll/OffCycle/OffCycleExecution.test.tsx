@@ -51,9 +51,9 @@ const mockPayrollData = {
       employee_uuid: EMPLOYEE_UUID,
       version: 'v1',
       paid_time_off: [],
-      gross_pay: 880.0,
-      net_pay: 700.0,
-      check_amount: 700.0,
+      gross_pay: '880.0',
+      net_pay: '700.0',
+      check_amount: '700.0',
     },
   ],
   totals: {

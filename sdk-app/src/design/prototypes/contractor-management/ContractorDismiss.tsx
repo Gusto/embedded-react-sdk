@@ -47,7 +47,7 @@ function ContractorDismissContent() {
       const today = new Date().toISOString().slice(0, 10)
       const message =
         endDate <= today ? `${name} has been dismissed` : `Dismissal scheduled for ${name}`
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'] })
       void navigate(`..?success=${encodeURIComponent(message)}`, {
         replace: true,
       })

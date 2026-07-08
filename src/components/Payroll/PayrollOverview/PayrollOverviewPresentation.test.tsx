@@ -1,7 +1,10 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { type PayrollShow, OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
+import {
+  type PayrollShow,
+  OffCycleReasonType,
+} from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -425,9 +428,9 @@ describe('PayrollOverviewPresentation', () => {
           fixedCompensations: [],
           hourlyCompensations: [],
           paidTimeOff: [],
-          grossPay: 0,
-          netPay: 0,
-          checkAmount: 0,
+          grossPay: '0',
+          netPay: '0',
+          checkAmount: '0',
           paymentMethod: 'Direct Deposit',
           memo: null,
         },
@@ -439,9 +442,9 @@ describe('PayrollOverviewPresentation', () => {
           fixedCompensations: [],
           hourlyCompensations: [],
           paidTimeOff: [],
-          grossPay: 5000,
-          netPay: 4000,
-          checkAmount: 4000,
+          grossPay: '5000',
+          netPay: '4000',
+          checkAmount: '4000',
           paymentMethod: 'Direct Deposit',
           memo: null,
         },
@@ -474,9 +477,9 @@ describe('PayrollOverviewPresentation', () => {
             { name: 'Regular Hours', hours: '40.0', amount: '2000.0', flsaStatus: 'Exempt' },
           ],
           paidTimeOff: [],
-          grossPay: 2000,
-          netPay: 1600,
-          checkAmount: 1600,
+          grossPay: '2000',
+          netPay: '1600',
+          checkAmount: '1600',
           paymentMethod: 'Direct Deposit',
           memo: null,
         },
@@ -490,9 +493,9 @@ describe('PayrollOverviewPresentation', () => {
             { name: 'Regular Hours', hours: '40.0', amount: '800.0', flsaStatus: 'Nonexempt' },
           ],
           paidTimeOff: [],
-          grossPay: 800,
-          netPay: 640,
-          checkAmount: 640,
+          grossPay: '800',
+          netPay: '640',
+          checkAmount: '640',
           paymentMethod: 'Direct Deposit',
           memo: null,
         },
@@ -521,9 +524,9 @@ describe('PayrollOverviewPresentation', () => {
           fixedCompensations: [],
           hourlyCompensations: [],
           paidTimeOff: [],
-          grossPay: 1000,
-          netPay: 800,
-          checkAmount: 800,
+          grossPay: '1000',
+          netPay: '800',
+          checkAmount: '800',
           paymentMethod: 'Direct Deposit',
           memo: null,
         },

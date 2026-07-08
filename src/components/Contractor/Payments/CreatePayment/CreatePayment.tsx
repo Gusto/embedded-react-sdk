@@ -1,7 +1,7 @@
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type {
-  ContractorPayments,
+  PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments,
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
   SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'

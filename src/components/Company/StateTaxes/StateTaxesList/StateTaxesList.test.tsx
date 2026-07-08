@@ -58,22 +58,6 @@ describe('StateTaxesList', () => {
       state: 'CA',
     })
   })
-
-  describe('backward compatibility: setup_complete without setup_status', () => {
-    it('shows "Complete" badge when setup_complete is true and setup_status is absent', async () => {
-      await waitFor(() => {
-        expect(screen.getByText('Complete')).toBeInTheDocument()
-        expect(screen.getByText('Edit')).toBeInTheDocument()
-      })
-    })
-
-    it('shows "In progress" badge when setup_complete is false and setup_status is absent', async () => {
-      await waitFor(() => {
-        expect(screen.getByText('In progress')).toBeInTheDocument()
-        expect(screen.getByText('Continue setup')).toBeInTheDocument()
-      })
-    })
-  })
 })
 
 function renderWithSingleState(state: object, onEvent = vi.fn()) {
@@ -92,7 +76,7 @@ function renderWithSingleState(state: object, onEvent = vi.fn()) {
 }
 
 describe('setup_status: not_started', () => {
-  const wyoming = { state: 'WY', setup_complete: false, setup_status: 'not_started' }
+  const wyoming = { state: 'WY', setup_status: 'not_started' }
 
   it('shows "Not started" badge and "Start setup" button', async () => {
     renderWithSingleState(wyoming)
@@ -113,7 +97,7 @@ describe('setup_status: not_started', () => {
 })
 
 describe('setup_status: in_progress', () => {
-  const florida = { state: 'FL', setup_complete: false, setup_status: 'in_progress' }
+  const florida = { state: 'FL', setup_status: 'in_progress' }
 
   it('shows "In progress" badge and "Continue setup" button', async () => {
     renderWithSingleState(florida)
@@ -136,7 +120,6 @@ describe('setup_status: in_progress', () => {
 describe('setup_status: complete + default_rates_applied', () => {
   const georgia = {
     state: 'GA',
-    setup_complete: true,
     setup_status: 'complete',
     default_rates_applied: true,
     ready_to_run_payroll: false,
@@ -157,7 +140,6 @@ describe('setup_status: complete + default_rates_applied', () => {
 describe('setup_status: complete + ready_to_run_payroll', () => {
   const california = {
     state: 'CA',
-    setup_complete: true,
     setup_status: 'complete',
     default_rates_applied: false,
     ready_to_run_payroll: true,
@@ -175,37 +157,11 @@ describe('setup_status: complete + ready_to_run_payroll', () => {
   })
 })
 
-describe('StateTaxesList with legacy setup_complete field only', () => {
-  const onEvent = vi.fn()
-
-  beforeEach(() => {
-    setupApiTestMocks()
-    server.use(
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements`, () =>
-        HttpResponse.json([
-          { state: 'TX', setup_complete: true },
-          { state: 'NY', setup_complete: false },
-        ]),
-      ),
-    )
-    render(
-      <GustoTestProvider>
-        <StateTaxesList companyId="company-123" onEvent={onEvent} />
-      </GustoTestProvider>,
-    )
-  })
-
-  it('falls back to "Complete" + "Edit" for setup_complete: true', async () => {
+describe('setup_status absent', () => {
+  it('defaults to "In progress" + "Continue setup" when setup_status is missing', async () => {
+    renderWithSingleState({ state: 'TX' })
     await waitFor(() => {
       expect(screen.getByText('Texas')).toBeInTheDocument()
-      expect(screen.getByText('Complete')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument()
-    })
-  })
-
-  it('falls back to "In progress" + "Continue setup" for setup_complete: false', async () => {
-    await waitFor(() => {
-      expect(screen.getByText('New York')).toBeInTheDocument()
       expect(screen.getByText('In progress')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Continue setup' })).toBeInTheDocument()
     })

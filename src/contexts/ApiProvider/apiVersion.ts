@@ -9,7 +9,7 @@
  *
  * @internal
  */
-export const API_VERSION = '2026-02-01'
+export const API_VERSION = '2026-06-15'
 
 /**
  * TanStack Query namespace the embedded-api client prefixes onto every generated

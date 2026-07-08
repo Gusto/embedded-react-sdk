@@ -18,11 +18,11 @@ import {
   type Employee,
   EmployeePaymentMethod1,
 } from '@gusto/embedded-api/models/components/employee'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type {
   EmployeeCompensations,
   PayrollShowPaidTimeOff,
-} from '@gusto/embedded-api/models/components/payroll'
+} from '@gusto/embedded-api/models/components/payrollshow'
 import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
@@ -32,8 +32,8 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { TFunction } from 'i18next'
 import { Job } from '@gusto/embedded-api/models/components/job.js'
 import {
-  type PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
-  type PayrollEmployeeCompensationsTypeHourlyCompensations as HourlyCompensations,
+  type FixedCompensations,
+  type HourlyCompensations,
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype.js'
 
 describe('Payroll helpers', () => {

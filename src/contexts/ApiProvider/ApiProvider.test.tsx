@@ -170,6 +170,6 @@ describe('ApiProvider', () => {
 
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest)
 
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-02-01')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-06-15')
   })
 })

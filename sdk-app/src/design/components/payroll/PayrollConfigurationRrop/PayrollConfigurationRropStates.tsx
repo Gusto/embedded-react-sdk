@@ -1,4 +1,4 @@
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
+import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'

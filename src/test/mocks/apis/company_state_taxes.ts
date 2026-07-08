@@ -41,28 +41,24 @@ export const getAllStateTaxRequirementsWithStatus = http.get(
     HttpResponse.json([
       {
         state: 'WY',
-        setup_complete: false,
         setup_status: 'not_started',
         default_rates_applied: false,
         ready_to_run_payroll: false,
       },
       {
         state: 'FL',
-        setup_complete: false,
         setup_status: 'in_progress',
         default_rates_applied: false,
         ready_to_run_payroll: false,
       },
       {
         state: 'GA',
-        setup_complete: true,
         setup_status: 'complete',
         default_rates_applied: true,
         ready_to_run_payroll: false,
       },
       {
         state: 'CA',
-        setup_complete: true,
         setup_status: 'complete',
         default_rates_applied: false,
         ready_to_run_payroll: true,

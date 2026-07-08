@@ -94,5 +94,5 @@ Each piece is also exported as a standalone block (see the Sub-components table)
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
 | PUT | `/v1/information_requests/:informationRequestUuid/submit` |

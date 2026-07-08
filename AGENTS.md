@@ -78,7 +78,7 @@ src/components/
 
 ### API Layer (`@gusto/embedded-api`)
 
-All API calls go through the Gusto Embedded API — imported via the version-agnostic `@gusto/embedded-api` alias, declared in `package.json` as `npm:@gusto/embedded-api-v-<date>` and currently pinned to `@gusto/embedded-api-v-2026-02-01`. Import specifiers must use the alias (enforced by the `sdk-conventions/use-embedded-api-alias` lint rule), so a version bump only updates the alias target plus `API_VERSION` rather than editing import paths.
+All API calls go through the Gusto Embedded API — imported via the version-agnostic `@gusto/embedded-api` alias, declared in `package.json` as `npm:@gusto/embedded-api-v-<date>` and currently pinned to `@gusto/embedded-api-v-2026-06-15`. Import specifiers must use the alias (enforced by the `sdk-conventions/use-embedded-api-alias` lint rule), so a version bump only updates the alias target plus `API_VERSION` rather than editing import paths.
 
 Import paths:
 
@@ -91,7 +91,7 @@ Hook naming: `use<Resource><Action>Suspense` (queries), `use<Resource><Action>Mu
 
 #### Auto-invalidation on mutation success
 
-The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `[API_QUERY_NAMESPACE]` key — the _resolved_ package name `@gusto/embedded-api-v-2026-02-01`, not the `@gusto/embedded-api` alias, since TanStack keys off the real package — it invalidates **every** SDK query. Hand-written keys must read `API_QUERY_NAMESPACE` (enforced by the `sdk-conventions/no-literal-api-query-namespace` lint rule), never the dated string directly. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
+The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `[API_QUERY_NAMESPACE]` key — the _resolved_ package name `@gusto/embedded-api-v-2026-06-15`, not the `@gusto/embedded-api` alias, since TanStack keys off the real package — it invalidates **every** SDK query. Hand-written keys must read `API_QUERY_NAMESPACE` (enforced by the `sdk-conventions/no-literal-api-query-namespace` lint rule), never the dated string directly. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
 
 Implications when writing SDK code:
 

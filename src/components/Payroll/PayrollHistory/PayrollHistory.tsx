@@ -6,9 +6,9 @@ import {
   DateFilterBy,
   ProcessingStatuses,
   QueryParamPayrollTypes,
-  SortOrder,
+  QueryParamSortOrder as SortOrder,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'

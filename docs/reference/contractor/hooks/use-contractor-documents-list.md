@@ -90,4 +90,4 @@ Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumen
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-documents) |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |

@@ -42,9 +42,9 @@
           "amount": "176.0"
         }
       ],
-      "gross_pay": 1056.0,
-      "net_pay": 847.99,
-      "check_amount": 847.99
+      "gross_pay": "1056.0",
+      "net_pay": "847.99",
+      "check_amount": "847.99"
     },
     {
       "excluded": false,
@@ -64,9 +64,9 @@
       "employee_uuid": "emp-uuid-2",
       "version": "v1",
       "paid_time_off": [],
-      "gross_pay": 1000.0,
-      "net_pay": 800.0,
-      "check_amount": 800.0
+      "gross_pay": "1000.0",
+      "net_pay": "800.0",
+      "check_amount": "800.0"
     },
     {
       "excluded": false,
@@ -86,9 +86,9 @@
       "employee_uuid": "emp-uuid-3",
       "version": "v1",
       "paid_time_off": [],
-      "gross_pay": 2500.0,
-      "net_pay": 2000.0,
-      "check_amount": 2000.0
+      "gross_pay": "2500.0",
+      "net_pay": "2000.0",
+      "check_amount": "2000.0"
     }
   ]
 }

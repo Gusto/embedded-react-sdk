@@ -5,7 +5,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/information_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests"
         },
         {
           "method": "PUT",
@@ -22,7 +22,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/information_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests"
         }
       ],
       "variables": [
@@ -34,7 +34,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/information_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests"
         },
         {
           "method": "PUT",
@@ -51,47 +51,47 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "POST",
           "path": "/v1/payrolls/:payrollUuid/gross_up",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-payrolls-gross-up-payroll_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-payrolls-gross-up-payroll_uuid"
         }
       ],
       "variables": [
@@ -108,27 +108,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts"
         }
       ],
       "variables": [
@@ -143,17 +143,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/wire_in_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid"
         }
       ],
       "variables": [
@@ -167,27 +167,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_periods",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_periods"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_periods"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/payrolls/skip",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-companies-payroll-skip-company_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-companies-payroll-skip-company_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/wire_in_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid"
         }
       ],
       "variables": [
@@ -200,37 +200,37 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_periods",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_periods"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_periods"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
         },
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/payrolls/skip",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-companies-payroll-skip-company_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-companies-payroll-skip-company_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/wire_in_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid"
         }
       ],
       "variables": [
@@ -244,37 +244,37 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/submit",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-payrolls-payroll_id-submit"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
         },
         {
           "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub"
         },
         {
           "method": "GET",
           "path": "/v1/wire_in_requests/:wireInRequestUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-wire_in_requests-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-wire_in_requests-wire_in_request_uuid"
         }
       ],
       "variables": [
@@ -290,12 +290,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         }
       ],
       "variables": [
@@ -308,7 +308,7 @@
         {
           "method": "GET",
           "path": "/v1/payrolls/:payrollUuid/receipt",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payment-receipts-payrolls-payroll_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payment-receipts-payrolls-payroll_uuid"
         }
       ],
       "variables": [
@@ -320,22 +320,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/wire_in_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-companies-company_uuid-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/wire_in_requests/:wireInRequestUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-wire_in_requests-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-wire_in_requests-wire_in_request_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/wire_in_requests/:wireInRequestUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-wire_in_requests-wire_in_request_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-wire_in_requests-wire_in_request_uuid"
         }
       ],
       "variables": [
@@ -349,17 +349,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/information_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-payroll-blockers-company_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/recovery_cases",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-recovery-cases"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases"
         }
       ],
       "variables": [
@@ -371,12 +371,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/recovery_cases",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-recovery-cases"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases"
         },
         {
           "method": "PUT",
           "path": "/v1/recovery_cases/:recoveryCaseUuid/redebit",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/redebit-recovery-case"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/redebit-recovery-case"
         }
       ],
       "variables": [
@@ -389,17 +389,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
         }
       ],
       "variables": [
@@ -412,7 +412,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         }
       ],
       "variables": [
@@ -425,17 +425,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         }
       ],
       "variables": [
@@ -448,17 +448,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         }
       ],
       "variables": [
@@ -471,7 +471,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         }
       ],
       "variables": [
@@ -484,17 +484,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
         }
       ],
       "variables": [
@@ -507,27 +507,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/time_off_policies",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-time_off_policies"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-time_off_policies"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-deactivate"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-deactivate"
         }
       ],
       "variables": [
@@ -541,7 +541,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         }
       ],
       "variables": [
@@ -553,17 +553,17 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-time_off_policies"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-time_off_policies"
         },
         {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid"
         }
       ],
       "variables": [
@@ -576,12 +576,12 @@
         {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid"
         }
       ],
       "variables": [
@@ -593,12 +593,12 @@
         {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid"
         }
       ],
       "variables": [
@@ -610,22 +610,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-add_employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-add_employees"
         }
       ],
       "variables": [
@@ -638,17 +638,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy"
         }
       ],
       "variables": [
@@ -660,17 +660,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/add",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-add"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-add"
         }
       ],
       "variables": [
@@ -683,17 +683,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove"
         }
       ],
       "variables": [
@@ -706,17 +706,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove"
         }
       ],
       "variables": [
@@ -729,17 +729,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove"
         }
       ],
       "variables": [
@@ -752,22 +752,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-balance"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-balance"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees"
         }
       ],
       "variables": [
@@ -780,22 +780,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-balance"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-balance"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees"
         }
       ],
       "variables": [
@@ -808,17 +808,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employee"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status"
         }
       ],
       "variables": [
@@ -831,12 +831,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-onboarding_status"
         }
       ],
       "variables": [
@@ -848,12 +848,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         }
       ],
       "variables": [
@@ -866,37 +866,37 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-forms"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-forms"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employee-form-sign"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/i9_authorization",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-i9_authorization"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-i9_authorization"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/i9_authorization",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-i9_authorization"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-i9_authorization"
         }
       ],
       "variables": [
@@ -909,12 +909,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/i9_authorization",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-i9_authorization"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-i9_authorization"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/i9_authorization",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-i9_authorization"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-i9_authorization"
         }
       ],
       "variables": [
@@ -926,7 +926,7 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-forms"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-forms"
         }
       ],
       "variables": [
@@ -938,17 +938,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employee-form-sign"
         }
       ],
       "variables": [
@@ -961,22 +961,22 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employee-form-sign"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/i9_authorization",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-i9_authorization"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-i9_authorization"
         }
       ],
       "variables": [
@@ -989,12 +989,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_documents_config",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_documents_config"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_documents_config"
         }
       ],
       "variables": [
@@ -1006,67 +1006,67 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "GET",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-home_addresses-home_address_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-home_addresses-home_address_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-work_addresses-work_address_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-work_addresses-work_address_uuid"
         }
       ],
       "variables": [
@@ -1081,57 +1081,57 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/federal_tax_details",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-federal_tax_details"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details"
         },
         {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-compensations-compensation_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-compensations-compensation_id"
         },
         {
           "method": "DELETE",
           "path": "/v1/compensations/:compensationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-compensations-compensation_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-compensations-compensation_id"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-jobs"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "PUT",
           "path": "/v1/jobs/:jobId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-jobs-job_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-jobs-job_id"
         },
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-jobs-job_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-jobs-job_id"
         },
         {
           "method": "POST",
           "path": "/v1/jobs/:jobId/compensations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-compensations-compensation_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-compensations-compensation_id"
         },
         {
           "method": "GET",
           "path": "/v1/locations/:locationUuid/minimum_wages",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_uuid-minimum_wages"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_uuid-minimum_wages"
         }
       ],
       "variables": [
@@ -1147,12 +1147,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs"
         },
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-jobs-job_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-jobs-job_id"
         }
       ],
       "variables": [
@@ -1165,12 +1165,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes"
         }
       ],
       "variables": [
@@ -1182,12 +1182,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes"
         }
       ],
       "variables": [
@@ -1199,22 +1199,22 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/garnishments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-garnishments"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-garnishments"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/garnishments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-garnishments"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-garnishments"
         },
         {
           "method": "PUT",
           "path": "/v1/garnishments/:garnishmentId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-garnishments-garnishment_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-garnishments-garnishment_id"
         },
         {
           "method": "GET",
           "path": "/v1/garnishments/child_support",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-garnishments-child_support"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-garnishments-child_support"
         }
       ],
       "variables": [
@@ -1227,27 +1227,27 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts"
         },
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method"
         }
       ],
       "variables": [
@@ -1260,17 +1260,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employee"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status"
         }
       ],
       "variables": [
@@ -1283,17 +1283,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-forms"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-forms"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf"
         }
       ],
       "variables": [
@@ -1306,7 +1306,7 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         }
       ],
       "variables": [
@@ -1318,17 +1318,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "DELETE",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-home_addresses-home_address_uuid"
         }
       ],
       "variables": [
@@ -1341,17 +1341,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "DELETE",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-work_addresses-work_address_uuid"
         }
       ],
       "variables": [
@@ -1364,12 +1364,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes"
         }
       ],
       "variables": [
@@ -1381,12 +1381,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes"
         }
       ],
       "variables": [
@@ -1398,22 +1398,22 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status"
         }
       ],
       "variables": [
@@ -1426,27 +1426,27 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts"
         },
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method"
         }
       ],
       "variables": [
@@ -1459,12 +1459,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/pay_stubs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_uuid-pay_stubs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_uuid-pay_stubs"
         },
         {
           "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub"
         }
       ],
       "variables": [
@@ -1477,12 +1477,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs"
         },
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-jobs-job_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-jobs-job_id"
         }
       ],
       "variables": [
@@ -1495,37 +1495,37 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/terminations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-terminations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-terminations"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/terminations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-terminations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-terminations"
         },
         {
           "method": "PUT",
           "path": "/v1/terminations/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-terminations-employee_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-terminations-employee_id"
         }
       ],
       "variables": [
@@ -1538,22 +1538,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/terminations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-terminations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-terminations"
         },
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/terminations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employees-employee_id-terminations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-terminations"
         }
       ],
       "variables": [
@@ -1566,7 +1566,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-onboarding-status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-onboarding-status"
         }
       ],
       "variables": [
@@ -1578,27 +1578,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/forms",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-forms"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
         },
         {
           "method": "GET",
           "path": "/v1/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form"
         },
         {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/forms/:formId/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-form-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign"
         }
       ],
       "variables": [
@@ -1612,12 +1612,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/forms",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-forms"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
         }
       ],
       "variables": [
@@ -1630,12 +1630,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/industry_selection",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-industry"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-industry"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/industry_selection",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-industry"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-industry"
         }
       ],
       "variables": [
@@ -1647,17 +1647,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-bank-accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-bank-accounts"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-bank-accounts-verify"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-bank-accounts-verify"
         }
       ],
       "variables": [
@@ -1670,22 +1670,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-locations"
         },
         {
           "method": "GET",
           "path": "/v1/locations/:locationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id"
         },
         {
           "method": "PUT",
           "path": "/v1/locations/:locationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-locations-location_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id"
         }
       ],
       "variables": [
@@ -1698,17 +1698,17 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-locations"
         },
         {
           "method": "GET",
           "path": "/v1/locations/:locationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id"
         },
         {
           "method": "PUT",
           "path": "/v1/locations/:locationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-locations-location_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id"
         }
       ],
       "variables": [
@@ -1721,7 +1721,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations"
         }
       ],
       "variables": [
@@ -1733,32 +1733,32 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-pay_schedules"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/preview",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-preview"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
         }
       ],
       "variables": [
@@ -1772,12 +1772,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/federal_tax_details",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-federal_tax_details"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/federal_tax_details",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-federal_tax_details"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-federal_tax_details"
         }
       ],
       "variables": [
@@ -1789,17 +1789,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements-state"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-tax_requirements-state"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state"
         }
       ],
       "variables": [
@@ -1812,12 +1812,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements-state"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-tax_requirements-state"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state"
         }
       ],
       "variables": [
@@ -1830,7 +1830,7 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements"
         }
       ],
       "variables": [
@@ -1842,27 +1842,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-company-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-company-signatories"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-signatories-signatory_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-signatories-signatory_uuid"
         },
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/signatories/invite",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-signatories-invite"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-signatories-invite"
         }
       ],
       "variables": [
@@ -1875,22 +1875,22 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-company-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-company-signatories"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-signatories-signatory_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-signatories-signatory_uuid"
         },
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid"
         }
       ],
       "variables": [
@@ -1903,17 +1903,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
         },
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/signatories/invite",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-signatories-invite"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-signatories-invite"
         }
       ],
       "variables": [
@@ -1926,12 +1926,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
@@ -1944,12 +1944,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
         },
         {
           "method": "DELETE",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
@@ -1962,17 +1962,17 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
@@ -1985,17 +1985,17 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/address",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-address"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/address",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-address"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address"
         }
       ],
       "variables": [
@@ -2007,22 +2007,22 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts"
         },
         {
           "method": "POST",
           "path": "/v1/contractors/:contractorUuid/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-contractors-contractor_uuid-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method"
         }
       ],
       "variables": [
@@ -2034,12 +2034,12 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
@@ -2051,17 +2051,17 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-onboarding_status"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status"
         }
       ],
       "variables": [
@@ -2073,7 +2073,7 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/documents",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-documents"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents"
         }
       ],
       "variables": [
@@ -2085,17 +2085,17 @@
         {
           "method": "GET",
           "path": "/v1/documents/:documentUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document"
         },
         {
           "method": "GET",
           "path": "/v1/documents/:documentUuid/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/documents/:documentUuid/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractor-document-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractor-document-sign"
         }
       ],
       "variables": [
@@ -2107,12 +2107,12 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/contractor_payment_groups",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-contractor_payment_groups"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-contractor_payment_groups"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/information_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests"
         }
       ],
       "variables": [
@@ -2125,27 +2125,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/contractor_payment_groups",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-contractor_payment_groups"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-contractor_payment_groups"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/contractor_payment_groups/preview",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-contractor_payment_groups-preview"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-contractor_payment_groups-preview"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
         }
       ],
       "variables": [
@@ -2158,17 +2158,17 @@
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyId/contractor_payments/:contractorPaymentId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_id-contractor_payment-contractor-payment"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_id-contractor_payment-contractor-payment"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
         },
         {
           "method": "GET",
           "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
         }
       ],
       "variables": [
@@ -2183,17 +2183,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
         },
         {
           "method": "GET",
           "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
         }
       ],
       "variables": [
@@ -2207,17 +2207,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
         },
         {
           "method": "GET",
           "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
         },
         {
           "method": "GET",
           "path": "/v1/contractor_payments/:contractorPaymentUuid/receipt",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payments-contractor_payment_uuid-receipt"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payments-contractor_payment_uuid-receipt"
         }
       ],
       "variables": [
@@ -2391,7 +2391,7 @@
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts"
         }
       ],
       "variables": [
@@ -2403,22 +2403,22 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/garnishments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-garnishments"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-garnishments"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/garnishments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-garnishments"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-garnishments"
         },
         {
           "method": "PUT",
           "path": "/v1/garnishments/:garnishmentId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-garnishments-garnishment_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-garnishments-garnishment_id"
         },
         {
           "method": "GET",
           "path": "/v1/garnishments/child_support",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-garnishments-child_support"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-garnishments-child_support"
         }
       ],
       "variables": [
@@ -2431,32 +2431,32 @@
         {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-compensations-compensation_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-compensations-compensation_id"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/jobs/:jobId/compensations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-compensations-compensation_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-compensations-compensation_id"
         },
         {
           "method": "GET",
           "path": "/v1/locations/:locationUuid/minimum_wages",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_uuid-minimum_wages"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_uuid-minimum_wages"
         }
       ],
       "variables": [
@@ -2471,17 +2471,17 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/address",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-address"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/address",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-address"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address"
         }
       ],
       "variables": [
@@ -2493,12 +2493,12 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts"
         },
         {
           "method": "POST",
           "path": "/v1/contractors/:contractorUuid/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-contractors-contractor_uuid-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts"
         }
       ],
       "variables": [
@@ -2510,17 +2510,17 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/contractors",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-contractors"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors"
         },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
@@ -2533,7 +2533,7 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/documents",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-documents"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents"
         }
       ],
       "variables": [
@@ -2545,12 +2545,12 @@
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method"
         },
         {
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method"
         }
       ],
       "variables": [
@@ -2562,17 +2562,17 @@
         {
           "method": "GET",
           "path": "/v1/documents/:documentUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document"
         },
         {
           "method": "GET",
           "path": "/v1/documents/:documentUuid/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/documents/:documentUuid/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractor-document-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractor-document-sign"
         }
       ],
       "variables": [
@@ -2584,22 +2584,22 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "GET",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-home_addresses-home_address_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-home_addresses-home_address_uuid"
         }
       ],
       "variables": [
@@ -2612,27 +2612,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "GET",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-work_addresses-work_address_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-work_addresses-work_address_uuid"
         }
       ],
       "variables": [
@@ -2646,17 +2646,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/garnishments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-garnishments"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-garnishments"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/garnishments",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-garnishments"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-garnishments"
         },
         {
           "method": "PUT",
           "path": "/v1/garnishments/:garnishmentId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-garnishments-garnishment_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-garnishments-garnishment_id"
         }
       ],
       "variables": [
@@ -2669,22 +2669,22 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status"
         }
       ],
       "variables": [
@@ -2697,17 +2697,17 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employee"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status"
         }
       ],
       "variables": [
@@ -2720,12 +2720,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes"
         }
       ],
       "variables": [
@@ -2737,12 +2737,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes"
         }
       ],
       "variables": [
@@ -2754,22 +2754,22 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-home_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses"
         },
         {
           "method": "GET",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-home_addresses-home_address_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/home_addresses/:homeAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-home_addresses-home_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-home_addresses-home_address_uuid"
         }
       ],
       "variables": [
@@ -2782,37 +2782,37 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/federal_tax_details",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-federal_tax_details"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details"
         },
         {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-compensations-compensation_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-compensations-compensation_id"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/jobs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-jobs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-jobs"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "PUT",
           "path": "/v1/jobs/:jobId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-jobs-job_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-jobs-job_id"
         }
       ],
       "variables": [
@@ -2827,12 +2827,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method"
         }
       ],
       "variables": [
@@ -2844,27 +2844,27 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-pay_schedules"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/preview",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-preview"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
         }
       ],
       "variables": [
@@ -2878,17 +2878,17 @@
         {
           "method": "GET",
           "path": "/v1/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form"
         },
         {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/forms/:formId/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-form-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign"
         }
       ],
       "variables": [
@@ -2900,17 +2900,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employee-form-sign"
         }
       ],
       "variables": [
@@ -2923,17 +2923,17 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/payment_method",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method"
         }
       ],
       "variables": [
@@ -2945,12 +2945,12 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-state_taxes"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes"
         }
       ],
       "variables": [
@@ -2962,27 +2962,27 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-work_addresses"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "GET",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-work_addresses-work_address_uuid"
         },
         {
           "method": "PUT",
           "path": "/v1/work_addresses/:workAddressUuid",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-work_addresses-work_address_uuid"
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-work_addresses-work_address_uuid"
         }
       ],
       "variables": [

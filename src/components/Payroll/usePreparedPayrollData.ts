@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
-import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useBase } from '../Base'

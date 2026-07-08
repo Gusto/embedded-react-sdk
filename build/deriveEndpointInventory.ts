@@ -27,7 +27,7 @@ const MD_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-reference.md')
 
 // The dated API version the SDK targets. Kept in step with the
 // @gusto/embedded-api-v-<version> package the rest of this file references.
-const API_VERSION = '2026-02-01'
+const API_VERSION = '2026-06-15'
 // Public API reference for the targeted version. Each endpoint links to its
 // page here, e.g. PUT /v1/garnishments/:garnishmentId ->
 // .../reference/put-v1-garnishments-garnishment_id
@@ -208,7 +208,7 @@ function warnIfStaleUndocumentedOperations(knownOperationIds: Set<string>): void
 
   console.warn(
     'WARNING: KNOWN_UNDOCUMENTED_OPERATIONS lists operationIDs that no longer exist in ' +
-      '@gusto/embedded-api-v-2026-02-01 (renamed or removed?):',
+      '@gusto/embedded-api-v-2026-06-15 (renamed or removed?):',
   )
   for (const op of stale) console.warn(`  ${op}`)
   console.warn('  Remove each stale entry, or update it to the current operationID.')
@@ -906,7 +906,7 @@ function validateEndpoints(
 
   if (invalid.length > 0) {
     console.error(
-      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2026-02-01:',
+      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2026-06-15:',
     )
     for (const ep of invalid) console.error(`  ${ep}`)
     console.error('')
@@ -983,7 +983,7 @@ function verify() {
   console.error('  - A component added or removed an API hook/function import')
   console.error('  - A flow added or removed a block component')
   console.error('  - A hook added or removed an API function import, or a hook export changed')
-  console.error('  - The @gusto/embedded-api-v-2026-02-01 package was updated')
+  console.error('  - The @gusto/embedded-api-v-2026-06-15 package was updated')
   console.error('')
   if (committedJson !== freshJson) printDiff(JSON_OUTPUT_PATH, freshJson)
   if (committedMd !== freshMd) printDiff(MD_OUTPUT_PATH, freshMd)

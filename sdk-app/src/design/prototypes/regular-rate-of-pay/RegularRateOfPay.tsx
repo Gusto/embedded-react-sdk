@@ -7,7 +7,7 @@ import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/pa
 import type {
   EmployeeCompensations,
   PayrollPrepared,
-} from '@gusto/embedded-api/models/components/payroll'
+} from '@gusto/embedded-api/models/components/payrollshow'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'

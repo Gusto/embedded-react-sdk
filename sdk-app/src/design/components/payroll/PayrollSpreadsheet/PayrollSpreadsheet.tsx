@@ -3,7 +3,7 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   EmployeeCompensations,
   PayrollShowReimbursements,
-} from '@gusto/embedded-api/models/components/payroll'
+} from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'

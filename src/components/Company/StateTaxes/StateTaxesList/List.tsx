@@ -29,8 +29,7 @@ const ctaLabelMap = {
 } as const satisfies Record<SetupStatus, string>
 
 function getSetupStatus(req: TaxRequirementStatesList): SetupStatus {
-  if (req.setupStatus) return req.setupStatus
-  return req.setupComplete ? SetupStatus.Complete : SetupStatus.InProgress
+  return req.setupStatus ?? SetupStatus.InProgress
 }
 
 /** @internal */

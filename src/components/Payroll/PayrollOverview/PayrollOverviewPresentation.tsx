@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api/models/components/payroll'
+} from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
@@ -163,7 +163,7 @@ export const PayrollOverviewPresentation = ({
   }
   const getCompanyCost = (employeeCompensation: EmployeeCompensations) => {
     return (
-      employeeCompensation.grossPay! +
+      Number(employeeCompensation.grossPay!) +
       getReimbursements(employeeCompensation) +
       getCompanyTaxes(employeeCompensation) +
       getCompanyBenefits(employeeCompensation)
@@ -239,7 +239,7 @@ export const PayrollOverviewPresentation = ({
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
       render: (employeeCompensations: EmployeeCompensations) =>
-        formatCurrency(employeeCompensations.grossPay!),
+        formatCurrency(Number(employeeCompensations.grossPay!)),
     },
     ...(withReimbursements
       ? [
@@ -445,7 +445,7 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.grossPay'),
               render: (employeeCompensations: EmployeeCompensations) =>
-                formatCurrency(employeeCompensations.grossPay ?? 0),
+                formatCurrency(Number(employeeCompensations.grossPay ?? 0)),
             },
             {
               title: t('tableHeaders.deductions'),
@@ -489,7 +489,7 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.payment'),
               render: (employeeCompensations: EmployeeCompensations) =>
-                formatCurrency(employeeCompensations.netPay ?? 0),
+                formatCurrency(Number(employeeCompensations.netPay ?? 0)),
             },
           ]}
           data={payrollData.employeeCompensations!}

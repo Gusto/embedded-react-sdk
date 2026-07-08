@@ -1,10 +1,10 @@
 [
   {
     "state": "CA",
-    "setup_complete": true
+    "setup_status": "complete"
   },
   {
     "state": "WA",
-    "setup_complete": false
+    "setup_status": "in_progress"
   }
 ]

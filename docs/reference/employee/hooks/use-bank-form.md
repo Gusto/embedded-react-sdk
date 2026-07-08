@@ -393,4 +393,4 @@ Optional submit-time overrides for [useBankForm](#usebankform)'s `onSubmit`.
 
 | Method | Path |
 | --- | --- |
-| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-bank_accounts) |
+| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts) |
