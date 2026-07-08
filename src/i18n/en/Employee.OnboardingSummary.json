@@ -3,6 +3,8 @@
   "description": "Please complete the following steps in order to continue.",
   "onboardedAdminSubtitle": "That's it! {{name}} is ready to get paid!",
   "onboardedAdminDescription": "We'll begin withholding and reporting their taxes.",
+  "handedOffAdminSubtitle": "{{name}}'s invite is on its way",
+  "handedOffAdminDescription": "They'll complete the remaining setup steps on their own.",
   "onboardedSelfSubtitle": "You've completed setup!",
   "onboardedSelfDescription": "Your account will now be reviewed by your company admin.",
   "doneCta": "Done",

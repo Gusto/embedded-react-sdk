@@ -4928,6 +4928,10 @@ export namespace Translations {
     onboardedAdminSubtitle: string
     /** @defaultValue `"We'll begin withholding and reporting their taxes."` */
     onboardedAdminDescription: string
+    /** @defaultValue `"{{name}}'s invite is on its way"` */
+    handedOffAdminSubtitle: string
+    /** @defaultValue `"They'll complete the remaining setup steps on their own. We'll notify you when they're done."` */
+    handedOffAdminDescription: string
     /** @defaultValue `"You've completed setup!"` */
     onboardedSelfSubtitle: string
     /** @defaultValue `"Your account will now be reviewed by your company admin."` */
