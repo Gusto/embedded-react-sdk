@@ -15,7 +15,7 @@ export const CONFIG = {
     SCRIPT_URL: 'https://static.gusto.com/analytics/gusto-analytics-15.11.6.min.js',
 
     SNOWPLOW_APP_ID: 'gusto',
-    SNOWPLOW_TRACKER_NAME: 'gusto_sdk_docs',
+    SNOWPLOW_TRACKER_NAME: 'embedded-sdk-docs',
     SNOWPLOW_TRACKING_URL: IS_PRODUCTION ? 'snowplow.gusto.com' : 'snowplow.gusto-staging.com',
   },
 
