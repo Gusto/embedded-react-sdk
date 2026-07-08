@@ -88,8 +88,7 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
 
   const isEmployeeCompletingSelfOnboarding =
     onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-    // @ts-expect-error: onboardingStatus during runtime can be one of self onboarding statuses
-    EmployeeSelfOnboardingStatuses.has(onboardingStatus)
+    (onboardingStatus !== undefined && EmployeeSelfOnboardingStatuses.has(onboardingStatus))
 
   const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(firstName), [firstName])
   const sanitizedLastName = useMemo(() => DOMPurify.sanitize(lastName), [lastName])

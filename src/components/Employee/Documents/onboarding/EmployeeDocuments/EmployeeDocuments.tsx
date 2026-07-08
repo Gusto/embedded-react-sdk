@@ -65,8 +65,7 @@ const Root = ({ employeeId, dictionary }: EmployeeDocumentsProps) => {
   const currentI9Status = employee?.onboardingDocumentsConfig?.i9Document ?? false
 
   const isEmployeeSelfOnboarding = employee?.onboardingStatus
-    ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-      EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus) ||
+    ? EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus) ||
       employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
     : false
 
