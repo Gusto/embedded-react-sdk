@@ -2602,7 +2602,7 @@ export const EmployeeOnboardingStatus: {
 };
 
 // @public
-export const EmployeeSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_invited_started" | "self_onboarding_invited_overdue">;
+export const EmployeeSelfOnboardingStatuses: Set<string>;
 
 // @public
 export type EmployeeStateTaxesErrorCode = (typeof EmployeeStateTaxesErrorCodes)[keyof typeof EmployeeStateTaxesErrorCodes];

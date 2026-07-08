@@ -100,11 +100,7 @@ function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): 
   }
 
   // Cancel self onboarding - available for employees in self-onboarding flow
-  if (
-    employee.onboardingStatus &&
-    // @ts-expect-error: onboardingStatus during runtime can be one of self onboarding statuses
-    EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus)
-  ) {
+  if (employee.onboardingStatus && EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus)) {
     actions.push('cancel_self_onboarding')
   }
 

@@ -569,7 +569,7 @@ export const EmployeeOnboardingStatus = {
  *
  * @public
  */
-export const EmployeeSelfOnboardingStatuses = new Set([
+export const EmployeeSelfOnboardingStatuses = new Set<string>([
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE,

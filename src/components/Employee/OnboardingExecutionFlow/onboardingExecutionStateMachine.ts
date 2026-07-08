@@ -50,8 +50,6 @@ const employeeDocumentsGuard = (ctx: OnboardingContextInterface) => {
 const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
   ctx.onboardingStatus
     ? !(
-        // prettier-ignore
-        // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
         EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) ||
         ctx.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
       )

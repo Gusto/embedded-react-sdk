@@ -9,7 +9,11 @@ import { Flex, ActionsLayout } from '@/components/Common'
 import { RequirementsList } from '@/components/Common/RequirementsList/RequirementsList'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import {
+  componentEvents,
+  EmployeeOnboardingStatus,
+  EmployeeSelfOnboardingStatuses,
+} from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary } from '@/i18n/I18n'
 
@@ -82,6 +86,10 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
     (!hasMissingRequirements &&
       onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
 
+  const isEmployeeCompletingSelfOnboarding =
+    onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+    (onboardingStatus !== undefined && EmployeeSelfOnboardingStatuses.has(onboardingStatus))
+
   const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(firstName), [firstName])
   const sanitizedLastName = useMemo(() => DOMPurify.sanitize(lastName), [lastName])
 
@@ -100,6 +108,18 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
                 </Components.Heading>
                 <Components.Text variant="supporting">
                   {t('onboardedAdminDescription')}
+                </Components.Text>
+              </Flex>
+            ) : isEmployeeCompletingSelfOnboarding ? (
+              <Flex flexDirection="column" gap={4} alignItems="center">
+                <Components.Heading as="h2" textAlign="center">
+                  {t('handedOffAdminSubtitle', {
+                    name: `${sanitizedFirstName} ${sanitizedLastName}`,
+                    interpolation: { escapeValue: false },
+                  })}
+                </Components.Heading>
+                <Components.Text variant="supporting">
+                  {t('handedOffAdminDescription')}
                 </Components.Text>
               </Flex>
             ) : (
@@ -154,7 +174,7 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
                     {t('onboardedSelfDescription')}
                   </Components.Text>
                 </Flex>
-                <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
+                <ActionsLayout justifyContent="center">
                   <Components.Button
                     variant="secondary"
                     onClick={() => {
@@ -169,7 +189,7 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
           )}
         </Flex>
 
-        {isAdmin && isOnboardingCompleted && (
+        {isAdmin && (isOnboardingCompleted || isEmployeeCompletingSelfOnboarding) && (
           <ActionsLayout justifyContent={'center'}>
             <Components.Button
               variant="secondary"

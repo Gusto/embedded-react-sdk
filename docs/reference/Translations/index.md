@@ -3351,6 +3351,8 @@ Translation keys for the `Employee.OnboardingSummary` i18n namespace.
 | ------ | ------ |
 | <a id="property-employeeonboardingsummarydescription"></a> `description` | `"Please complete the following steps in order to continue."` |
 | <a id="property-employeeonboardingsummarydonecta"></a> `doneCta` | `"Done"` |
+| <a id="property-employeeonboardingsummaryhandedoffadmindescription"></a> `handedOffAdminDescription` | `"They'll complete the remaining setup steps on their own."` |
+| <a id="property-employeeonboardingsummaryhandedoffadminsubtitle"></a> `handedOffAdminSubtitle` | `"{{name}}'s invite is on its way"` |
 | <a id="property-employeeonboardingsummarymissingrequirementsdescription"></a> `missingRequirementsDescription` | `"Please complete the following steps in order to continue."` |
 | <a id="property-employeeonboardingsummarymissingrequirementssubtitle"></a> `missingRequirementsSubtitle` | `"Missing requirements"` |
 | <a id="property-employeeonboardingsummarynewhirereportcta"></a> `newHireReportCta` | `"New Hire report"` |
