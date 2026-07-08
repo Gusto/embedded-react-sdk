@@ -51,11 +51,21 @@ return (
 | `TFormData` *extends* `FieldValues` | `FieldValues` |
 | `TFieldsMetadata` *extends* \{ \[K in string \| number \| symbol\]: FieldMetadata \| FieldMetadataWithOptions\<unknown\> \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>\> |
 
-#### Parameters
+#### SDKFormProviderProps
 
-| Parameter | Type |
-| ------ | ------ |
-| `__namedParameters` | `SDKFormProviderProps`\<`TFormData`, `TFieldsMetadata`\> |
+<a id="sdkformproviderprops"></a>
+
+Props for [SDKFormProvider](#sdkformprovider).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children` | `ReactNode` | Field components (or any content) that consume the provided form context. |
+| `formHookResult` | `object` | The form hook result whose fields, metadata, and errors are shared with descendant field components. |
+| `formHookResult.errorHandling` | `object` | - |
+| `formHookResult.errorHandling.errors` | [`SDKError`](index.md#sdkerror)[] | - |
+| `formHookResult.form` | `object` | - |
+| `formHookResult.form.fieldsMetadata` | `TFieldsMetadata` | - |
+| `formHookResult.form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 
 ## Functions
 
@@ -128,7 +138,7 @@ A single `HookErrorHandling` covering every source.
 
 ### composeSubmitHandler()
 
-> **composeSubmitHandler**\<`TForms`\>(`forms`: readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\], `onAllValid`: () => `Promise`\<`void`\>): `ComposeSubmitHandlerResult`
+> **composeSubmitHandler**\<`TForms`\>(`forms`: readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\], `onAllValid`: () => `Promise`\<`void`\>): [`ComposeSubmitHandlerResult`](#composesubmithandlerresult)
 
 Coordinates validation and submission across multiple form hooks on the same page.
 
@@ -182,9 +192,9 @@ return <form onSubmit={handleSubmit}>...</form>
 
 #### Returns
 
-`ComposeSubmitHandlerResult`
+[`ComposeSubmitHandlerResult`](#composesubmithandlerresult)
 
-A ComposeSubmitHandlerResult with a unified `handleSubmit` and aggregated `errorHandling`.
+A [ComposeSubmitHandlerResult](#composesubmithandlerresult) with a unified `handleSubmit` and aggregated `errorHandling`.
 
 ## Interfaces
 
@@ -344,6 +354,45 @@ field attributes (`label`, `description`).
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+***
+
+<a id="composableformhookresult"></a>
+
+### ComposableFormHookResult
+
+Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
+Any hook returning `BaseFormHookReady` satisfies this interface.
+
+`formMethods` is declared with method-call syntax (rather than reused from
+`HookFormInternals`) so TypeScript applies bivariant parameter checking,
+allowing hooks with specific form data generics to be passed without casts.
+`_fieldElementRegistry` is reused directly since its type doesn't depend on
+the form's generic.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | The error-handling surface aggregated across the composed forms. |
+| `form` | `object` | The form surface: the react-hook-form internals used to validate and focus fields. |
+| `form.hookFormInternals` | `Pick`\<[`HookFormInternals`](#hookforminternals)\<`FieldValues`\>, `"_fieldElementRegistry"`\> & `object` | - |
+
+***
+
+<a id="composesubmithandlerresult"></a>
+
+### ComposeSubmitHandlerResult
+
+Result returned by [composeSubmitHandler](#composesubmithandler): a single submit handler that
+coordinates validation across the composed forms, and aggregated error state.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Aggregated error state across all composed SDK form hooks. Pass to [composeErrorHandler](#composeerrorhandler) for screen-level error surfaces. |
+| `handleSubmit` | (`e`: `SyntheticEvent`) => `Promise`\<`void`\> | Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. |
 
 ***
 
@@ -625,6 +674,33 @@ attributes (`label`, `description`).
 
 ***
 
+<a id="sdkformproviderprops"></a>
+
+### SDKFormProviderProps
+
+Props for [SDKFormProvider](#sdkformprovider).
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by the wrapped form hook. |
+| `TFieldsMetadata` *extends* \{ \[K in keyof TFieldsMetadata\]: FieldMetadata \| FieldMetadataWithOptions \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\> | The form hook's field-metadata map. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children` | `ReactNode` | Field components (or any content) that consume the provided form context. |
+| `formHookResult` | `object` | The form hook result whose fields, metadata, and errors are shared with descendant field components. |
+| `formHookResult.errorHandling` | `object` | - |
+| `formHookResult.errorHandling.errors` | [`SDKError`](index.md#sdkerror)[] | - |
+| `formHookResult.form` | `object` | - |
+| `formHookResult.form.fieldsMetadata` | `TFieldsMetadata` | - |
+| `formHookResult.form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
+
+***
+
 <a id="selecthookfieldprops"></a>
 
 ### SelectHookFieldProps
@@ -728,6 +804,29 @@ attributes (`label`, `description`).
 
 ## Type Aliases
 
+<a id="composesubmitinput"></a>
+
+### ComposeSubmitInput
+
+> **ComposeSubmitInput**\<`T`\> = [`ComposableFormHookResult`](#composableformhookresult) \| `UseFormReturn`\<`T`\>
+
+Accepted input for a single slot of `composeSubmitHandler`'s `forms` array.
+
+#### Remarks
+
+- SDK form hook results (anything matching `ComposableFormHookResult`) are composed directly.
+- A raw `react-hook-form` `UseFormReturn<T>` is supported for screen-local auxiliary forms
+  that don't warrant a dedicated SDK hook. Raw forms contribute validation/focus behavior
+  but no `errorHandling` (fields surface their own inline errors via react-hook-form).
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `T` *extends* `FieldValues` | `FieldValues` | The shape of the form values when a raw `UseFormReturn` is passed. |
+
+***
+
 <a id="fieldsmetadata"></a>
 
 ### FieldsMetadata
@@ -793,11 +892,22 @@ that bind the form-field name internally.
 
 ### MixedErrorSource
 
-> **MixedErrorSource** = `QueryWithRefetch` \| \{ `errorHandling`: [`HookErrorHandling`](#hookerrorhandling); \}
+> **MixedErrorSource** = [`QueryWithRefetch`](#querywithrefetch) \| \{ `errorHandling`: [`HookErrorHandling`](#hookerrorhandling); \}
 
 Accepted input shape for [composeErrorHandler](#composeerrorhandler): either a React Query result
 (anything with `error` and `refetch`) or another SDK hook result that exposes
 an `errorHandling` object.
+
+***
+
+<a id="querywithrefetch"></a>
+
+### QueryWithRefetch
+
+> **QueryWithRefetch** = `Pick`\<`UseQueryResult`, `"error"` \| `"refetch"`\>
+
+The subset of a TanStack Query result — its `error` and `refetch` — that
+[composeErrorHandler](#composeerrorhandler) reads from an additional query passed as a source.
 
 ***
 

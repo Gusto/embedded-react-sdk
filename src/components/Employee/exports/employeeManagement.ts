@@ -12,7 +12,7 @@ export type {
   DocumentManagerProps,
 } from '../Documents/management'
 export { DashboardFlow, Dashboard } from '../Dashboard'
-export type { DashboardFlowProps, DashboardProps } from '../Dashboard'
+export type { DashboardFlowProps, DashboardProps, DashboardTab } from '../Dashboard'
 export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
 export type {
   HomeAddressProps,

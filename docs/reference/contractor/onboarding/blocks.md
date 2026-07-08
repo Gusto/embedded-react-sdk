@@ -476,7 +476,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ### AddressDefaultValues
 
-> **AddressDefaultValues** = `RequireAtLeastOne`\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
+> **AddressDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
 
@@ -565,7 +565,7 @@ which fields to display.
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\>; \}\>
+> **OnboardingFlowDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\>; \}\>
 
 Default pre-fill values for the contractor onboarding flow.
 At least one of `profile` or `address` must be provided.

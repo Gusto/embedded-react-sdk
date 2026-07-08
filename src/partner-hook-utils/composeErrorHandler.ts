@@ -3,7 +3,13 @@ import { collectErrors } from './collectErrors'
 import type { HookErrorHandling } from './types'
 import type { SDKError } from '@/types/sdkError'
 
-type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
+/**
+ * The subset of a TanStack Query result — its `error` and `refetch` — that
+ * {@link composeErrorHandler} reads from an additional query passed as a source.
+ *
+ * @public
+ */
+export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
 
 /**
  * Submit-side error state to merge into a composed {@link HookErrorHandling}.

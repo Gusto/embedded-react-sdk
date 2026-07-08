@@ -641,11 +641,18 @@ payrolls can run cleanly. This component is also embedded inside
 [PayrollBlockerList](#payrollblockerlist), but can be used standalone when you want a
 dedicated recovery cases surface.
 
-### Parameters
+### RecoveryCasesProps
 
-| Parameter | Type | Description |
+<a id="recoverycasesprops"></a>
+
+Props for [RecoveryCases](#recoverycases).
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `RecoveryCasesInternalProps` | Accepts `companyId` (required) and an optional `onEvent` handler. |
+| `companyId` | `string` | UUID of the company whose recovery cases should be listed. |
+| `onEvent?` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from Omit._
 
 ### Events
 

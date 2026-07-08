@@ -38,12 +38,20 @@ function useSyncFieldErrors<
   }, [fieldErrors, setError, fieldsMetadata])
 }
 
-interface SDKFormProviderProps<
+/**
+ * Props for {@link SDKFormProvider}.
+ *
+ * @typeParam TFormData - Shape of the form values managed by the wrapped form hook.
+ * @typeParam TFieldsMetadata - The form hook's field-metadata map.
+ * @public
+ */
+export interface SDKFormProviderProps<
   TFormData extends FieldValues = FieldValues,
   TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = Record<string, FieldMetadata | FieldMetadataWithOptions>,
 > {
+  /** The form hook result whose fields, metadata, and errors are shared with descendant field components. */
   formHookResult: {
     errorHandling: { errors: SDKError[] }
     form: {
@@ -51,6 +59,7 @@ interface SDKFormProviderProps<
       hookFormInternals: HookFormInternals<TFormData>
     }
   }
+  /** Field components (or any content) that consume the provided form context. */
   children: ReactNode
 }
 

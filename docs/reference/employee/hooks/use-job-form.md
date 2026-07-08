@@ -217,7 +217,7 @@ Bound to `stateWcClassCode`. Washington state workers' compensation risk class c
 
 #### StateWcClassCodeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), [`WARiskClassCode`](../../index.md#wariskclasscode)\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
 
@@ -226,7 +226,7 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` componen
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
-| `getOptionLabel?` | (`entry`: `WARiskClassCode`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: [`WARiskClassCode`](../../index.md#wariskclasscode)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
@@ -383,7 +383,7 @@ import { JobErrorCodes } from '@gusto/embedded-react-sdk'
 | Field | Type |
 | ------ | ------ |
 | `hireDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `stateWcClassCode` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`WARiskClassCode`\> |
+| `stateWcClassCode` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`WARiskClassCode`](../../index.md#wariskclasscode)\> |
 | `stateWcCovered` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
 | `title` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 | `twoPercentShareholder` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |

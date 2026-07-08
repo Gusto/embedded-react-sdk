@@ -1,9 +1,15 @@
 /**
- * A Washington state workers' compensation risk classification entry.
+ * A Washington state workers' compensation risk classification entry, as surfaced
+ * in the job form's `stateWcClassCode` field options.
  *
- * @internal
+ * @public
  */
-export type WARiskClassCode = { code: string; description: string }
+export type WARiskClassCode = {
+  /** The workers' compensation risk class code. */
+  code: string
+  /** Human-readable description of the risk class. */
+  description: string
+}
 
 /**
  * The full set of Washington state workers' compensation risk class codes used to populate the
