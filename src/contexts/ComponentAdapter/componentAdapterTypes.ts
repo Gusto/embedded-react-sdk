@@ -8,6 +8,7 @@ export type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 export type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 export type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 export type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
+export type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 export type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 export type {
   CheckboxGroupProps,

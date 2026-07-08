@@ -27,7 +27,7 @@ export const WithHeader: Story = {
     return (
       <Components.FormBox
         header={
-          <Components.BoxHeader
+          <Components.FormBoxHeader
             title="Hello World"
             description="This is a description of the form box header."
             action={
@@ -70,7 +70,7 @@ export const WithHeaderAndContent: Story = {
     return (
       <Components.FormBox
         header={
-          <Components.BoxHeader
+          <Components.FormBoxHeader
             title="Form Box Header"
             description="This is a super cool description of the form box header."
             action={

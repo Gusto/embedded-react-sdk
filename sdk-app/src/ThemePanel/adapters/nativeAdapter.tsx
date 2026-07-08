@@ -10,6 +10,7 @@ import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
+import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
@@ -286,6 +287,30 @@ function NativeFormBox({ children, header, withPadding }: FormBoxProps) {
 }
 
 function NativeBoxHeader({ title, description, action, headingLevel = 'h3' }: BoxHeaderProps) {
+  const Tag = headingLevel
+  return (
+    <div
+      style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.5rem' }}
+    >
+      <div style={{ flex: 1 }}>
+        <Tag style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>{title}</Tag>
+        {description && (
+          <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+            {description}
+          </div>
+        )}
+      </div>
+      {action && <div>{action}</div>}
+    </div>
+  )
+}
+
+function NativeFormBoxHeader({
+  title,
+  description,
+  action,
+  headingLevel = 'h3',
+}: FormBoxHeaderProps) {
   const Tag = headingLevel
   return (
     <div
@@ -1414,6 +1439,7 @@ export const nativeComponents: ComponentsContextType = {
   Box: (props: BoxProps) => <NativeBox {...props} />,
   BoxHeader: (props: BoxHeaderProps) => <NativeBoxHeader {...props} />,
   FormBox: (props: FormBoxProps) => <NativeFormBox {...props} />,
+  FormBoxHeader: (props: FormBoxHeaderProps) => <NativeFormBoxHeader {...props} />,
   Checkbox: (props: CheckboxProps) => <NativeCheckbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <NativeCheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <NativeComboBox {...props} />,
