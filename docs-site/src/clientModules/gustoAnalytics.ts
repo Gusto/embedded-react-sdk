@@ -1,9 +1,9 @@
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment'
-import { installAnalyticsStub } from '../analytics/loadAnalytics'
+import { configureAnalytics } from '../analytics/loadAnalytics'
 import { routeChangeListener } from '../analytics/listeners'
 import { hasPerformanceConsent } from '../cookieConsent'
 
-// OneTrust re-invokes OptanonWrapper several times per load, so the landing page view is
+// OneTrust re-invokes OptanonWrapper on every consent change, so the landing page view is
 // guarded to fire once; SPA navigations go through onRouteDidUpdate.
 let landingPageViewSent = false
 
@@ -13,14 +13,37 @@ function handleConsent(): void {
   routeChangeListener()
 }
 
-if (ExecutionEnvironment.canUseDOM) {
-  installAnalyticsStub()
+// OneTrust loads asynchronously and can finish after this module hydrates, so its
+// on-load OptanonWrapper invocation may fire before we assign our handler (and it does
+// not re-fire on a reload where consent is unchanged). Poll until OneTrust publishes its
+// groups, then evaluate consent once — otherwise the landing view is lost on reload and
+// only actual consent changes emit. ~5s budget (25 × 200ms); OneTrust is normally ready
+// well within it, and if it never loads we simply stop.
+const CONSENT_POLL_INTERVAL_MS = 200
+const CONSENT_POLL_ATTEMPTS = 25
 
-  // Bridge OneTrust consent into analytics. OneTrust re-invokes OptanonWrapper on load
-  // and on every consent change; the trailing catch-up call covers the case where
-  // consent had already resolved before this module ran.
+function emitLandingViewWhenConsentResolves(attemptsRemaining: number): void {
+  if (landingPageViewSent) return
+  // A groups string means OneTrust has resolved consent (granted or not) — evaluate now.
+  // If not yet granted, a later OptanonWrapper consent-change call emits the view instead.
+  if (typeof window.OnetrustActiveGroups === 'string') {
+    handleConsent()
+    return
+  }
+  if (attemptsRemaining <= 0) return
+  window.setTimeout(
+    () => emitLandingViewWhenConsentResolves(attemptsRemaining - 1),
+    CONSENT_POLL_INTERVAL_MS,
+  )
+}
+
+if (ExecutionEnvironment.canUseDOM) {
+  configureAnalytics()
+
+  // Bridge OneTrust consent into analytics: OptanonWrapper handles later consent changes,
+  // and the poll handles the landing view on load/reload (see note above).
   window.OptanonWrapper = handleConsent
-  handleConsent()
+  emitLandingViewWhenConsentResolves(CONSENT_POLL_ATTEMPTS)
 }
 
 // react-helmet-async flushes the new <title> on an animation frame after the route

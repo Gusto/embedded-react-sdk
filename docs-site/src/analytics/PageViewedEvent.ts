@@ -1,10 +1,11 @@
-// A page-view analytics event: a typed object emitted through ./trackEvent rather than a
-// raw call against the client. Page views are the only event the docs site emits; widen
-// ./trackEvent to a union when more events are added.
-export class PageViewedEvent {
-  readonly name: string
+import type { AnalyticsEvent } from '@site/types'
 
-  constructor(name: string) {
-    this.name = name
-  }
+/**
+ * Tracks a page view. GustoAnalytics enriches all events with page
+ * context (url, path, and title) automatically so no additional data
+ * is required.
+ */
+export class PageViewedEvent implements AnalyticsEvent {
+  readonly eventCategory = 'Page'
+  readonly eventName = 'Viewed'
 }
