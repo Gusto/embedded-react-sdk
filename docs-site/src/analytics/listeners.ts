@@ -6,5 +6,5 @@ import { trackEvent } from './trackEvent'
  * top-level page changes.
  */
 export function routeChangeListener(): void {
-  trackEvent(new PageViewedEvent(document.title || window.location.pathname))
+  trackEvent(new PageViewedEvent())
 }
