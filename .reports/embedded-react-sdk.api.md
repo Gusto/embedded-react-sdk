@@ -1453,6 +1453,8 @@ export interface ComponentsContextType {
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
     FileInput: FunctionComponent<FileInputProps>;
+    FormBox: FunctionComponent<FormBoxProps>;
+    FormBoxHeader: FunctionComponent<FormBoxHeaderProps>;
     Heading: FunctionComponent<HeadingProps>;
     Link: FunctionComponent<LinkProps>;
     LoadingSpinner: FunctionComponent<LoadingSpinnerProps>;
@@ -2849,6 +2851,22 @@ export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameVal
 
 // @public
 export type FlsaStatusFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, FlsaStatusType>>;
+
+// @public
+export interface FormBoxHeaderProps {
+    action?: ReactNode;
+    description?: ReactNode;
+    headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    title: ReactNode;
+}
+
+// @public
+export interface FormBoxProps {
+    children: ReactNode;
+    className?: string;
+    header?: ReactNode;
+    withPadding?: boolean;
+}
 
 // @public
 export type FormHookResult = {

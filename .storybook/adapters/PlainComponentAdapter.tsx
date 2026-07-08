@@ -5,6 +5,8 @@ import type { NumberInputProps } from '@/components/Common/UI/NumberInput/Number
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
+import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
@@ -148,7 +150,36 @@ export const PlainComponentAdapter: ComponentsContextType = {
     </div>
   ),
 
+  FormBox: ({ children, header, withPadding = true, className }: FormBoxProps) => (
+    <div className={`box ${className || ''}`}>
+      {header && <div className="box-header">{header}</div>}
+      <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
+        {children}
+      </div>
+    </div>
+  ),
+
   BoxHeader: ({ title, description, action, headingLevel = 'h3' }: BoxHeaderProps) => {
+    const HeadingTag = headingLevel
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '16px',
+        }}
+      >
+        <div>
+          <HeadingTag>{title}</HeadingTag>
+          {description && <div>{description}</div>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
+    )
+  },
+
+  FormBoxHeader: ({ title, description, action, headingLevel = 'h3' }: FormBoxHeaderProps) => {
     const HeadingTag = headingLevel
     return (
       <div

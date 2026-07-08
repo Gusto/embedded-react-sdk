@@ -516,6 +516,42 @@ Renders a form field wrapping an `<input type="file" />` with a label, descripti
 
 ***
 
+<a id="formboxheaderprops"></a>
+
+### FormBoxHeaderProps
+
+Props your `FormBoxHeader` implementation must accept from the component adapter.
+Renders the header section of a FormBox, combining a title, optional description, and an optional inline action slot.
+
+#### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `title` | `ReactNode` | | Title content rendered as the heading. |
+| `action?` | `ReactNode` | | Optional action content (e.g. a Button) rendered inline opposite the title. |
+| `description?` | `ReactNode` | | Optional supporting description rendered below the title. |
+| `headingLevel?` | `"h1"` \| `"h2"` \| `"h3"` \| `"h4"` \| `"h5"` \| `"h6"` | `'h3'` | Semantic heading level for the title. Defaults to `h3`. |
+
+***
+
+<a id="formboxprops"></a>
+
+### FormBoxProps
+
+Props your `FormBox` implementation must accept from the component adapter.
+Renders a sectioned container used to group related form fields, with an optional header slot.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children` | `ReactNode` | Content rendered inside the form box body. |
+| `className?` | `string` | CSS className to be applied to the root element. |
+| `header?` | `ReactNode` | Optional content rendered above the body in the form box header section. |
+| `withPadding?` | `boolean` | Whether the body should apply the default inner padding. Defaults to true; set to false for content that needs to be flush with the form box edges. |
+
+***
+
 <a id="headingprops"></a>
 
 ### HeadingProps
@@ -1297,6 +1333,8 @@ function App() {
 | `DescriptionList` | `FunctionComponent`\<[`DescriptionListProps`](#descriptionlistprops)\> | HTML `<dl>` of term/description pairs in stacked or horizontal layout. |
 | `Dialog` | `FunctionComponent`\<[`DialogProps`](#dialogprops)\> | Modal confirmation dialog with a primary action and a cancel action. |
 | `FileInput` | `FunctionComponent`\<[`FileInputProps`](#fileinputprops)\> | Form field wrapping an `<input type="file" />`. |
+| `FormBox` | `FunctionComponent`\<[`FormBoxProps`](#formboxprops)\> | Bordered container for grouping related form fields, with an optional header slot. |
+| `FormBoxHeader` | `FunctionComponent`\<[`FormBoxHeaderProps`](#formboxheaderprops)\> | Header section of a FormBox with a title, optional description, and optional inline action. |
 | `Heading` | `FunctionComponent`\<[`HeadingProps`](#headingprops)\> | HTML `<h1>`–`<h6>` with visual style controlled independently from semantic level. |
 | `Link` | `FunctionComponent`\<[`LinkProps`](#linkprops)\> | HTML `<a>` for inline navigation. |
 | `LoadingSpinner` | `FunctionComponent`\<[`LoadingSpinnerProps`](#loadingspinnerprops)\> | Spinner shown while data or an action is pending. |

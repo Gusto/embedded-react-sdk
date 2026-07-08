@@ -40,6 +40,10 @@ import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import { Box } from '@/components/Common/UI/Box/Box'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 import { BoxHeader } from '@/components/Common/UI/BoxHeader'
+import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
+import { FormBox } from '@/components/Common/UI/FormBox/FormBox'
+import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
+import { FormBoxHeader } from '@/components/Common/UI/FormBoxHeader'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { Banner } from '@/components/Common/UI/Banner/Banner'
@@ -85,6 +89,8 @@ export const defaultComponents: ComponentsContextType = {
   Card: (props: CardProps) => <Card {...props} />,
   Box: (props: BoxProps) => <Box {...props} />,
   BoxHeader: (props: BoxHeaderProps) => <BoxHeader {...props} />,
+  FormBox: (props: FormBoxProps) => <FormBox {...props} />,
+  FormBoxHeader: (props: FormBoxHeaderProps) => <FormBoxHeader {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
   TextArea: (props: TextAreaProps) => <TextArea {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
