@@ -33,7 +33,7 @@ export type {
   SDKHooks,
 } from '@/types/hooks'
 export type { SDKError, SDKErrorCategory, SDKFieldError } from '@/types/sdkError'
-export { SDKErrorCategories, normalizeToSDKError, SDKInternalError } from '@/types/sdkError'
+export { SDKErrorCategories } from '@/types/sdkError'
 export type {
   ObservabilityHook,
   ObservabilityError,
@@ -132,7 +132,6 @@ export type {
 export {
   useChildSupportGarnishmentForm,
   ChildSupportGarnishmentFormErrorCodes,
-  getRequiredAttrKeys,
   SUPPORTED_REQUIRED_ATTR_KEYS,
 } from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
 export type {
@@ -471,9 +470,7 @@ export {
 export {
   useEmployeeStateTaxesForm,
   EmployeeStateTaxesErrorCodes,
-  createStateFields,
   useStateFields,
-  getQuestionVariant,
 } from '@/components/Employee/StateTaxes/shared'
 export type {
   UseEmployeeStateTaxesFormProps,
@@ -483,8 +480,6 @@ export type {
   EmployeeStateTaxesFormFields,
   EmployeeStateTaxesErrorCode,
   EmployeeStateTaxesFormData,
-  EmployeeStateTaxesSchemaOptions,
-  EmployeeStateTaxesQuestionMeta,
   StateTaxValue,
   StateTaxQuestionVariant,
   StateTaxFieldsGroup,
@@ -497,7 +492,6 @@ export type {
   NumberStateTaxQuestion,
   CurrencyStateTaxQuestion,
   DateStateTaxQuestion,
-  CreateStateFieldsOptions,
   BaseStateTaxFieldProps,
   StateTaxValidationMessages,
   SelectStateTaxFieldProps,
@@ -532,7 +526,6 @@ export {
   SignEmployeeFormErrorCodes,
   MAX_PREPARERS,
   PREPARER_FIELDS_BY_INDEX,
-  preparerFieldName,
 } from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 export type {
   UseSignEmployeeFormProps,

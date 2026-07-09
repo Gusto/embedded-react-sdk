@@ -2074,19 +2074,6 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
     signatoryId?: string;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "createStateFields" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createStateFields(employeeStateTaxes: EmployeeStateTaxesList[], options: CreateStateFieldsOptions): StateTaxFieldsGroup[];
-
-// Warning: (ae-internal-missing-underscore) The name "CreateStateFieldsOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface CreateStateFieldsOptions {
-    // (undocumented)
-    isAdmin: boolean;
-}
-
 // @public
 export interface CurrencyStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
@@ -2685,34 +2672,6 @@ export interface EmployeeStateTaxesFormData {
 // @public
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields'];
 
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesQuestionMeta" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesQuestionMeta {
-    // (undocumented)
-    apiKey: string;
-    // (undocumented)
-    formKey: string;
-    // (undocumented)
-    isAdminOnly: boolean;
-    // (undocumented)
-    isWireSelectWithBooleanOptions: boolean;
-    // (undocumented)
-    isWorkState: boolean;
-    // (undocumented)
-    state: string;
-    // (undocumented)
-    variant: StateTaxQuestionVariant;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesSchemaOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesSchemaOptions {
-    // (undocumented)
-    isAdmin?: boolean;
-}
-
 // @public
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
 
@@ -2922,16 +2881,6 @@ export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PaySchedul
 
 // @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
-
-// Warning: (ae-internal-missing-underscore) The name "getQuestionVariant" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTaxQuestionVariant;
-
-// Warning: (ae-internal-missing-underscore) The name "getRequiredAttrKeys" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
 
 // @public
 export interface GlobalResourceDictionary extends Record<
@@ -3527,11 +3476,6 @@ interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireR
     contractorId: string;
     selfOnboarding?: boolean;
 }
-
-// Warning: (ae-internal-missing-underscore) The name "normalizeToSDKError" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function normalizeToSDKError(error: unknown): SDKError;
 
 // @public
 export interface NumberInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
@@ -4321,11 +4265,6 @@ export type PreparerFieldGroup = {
     ConfirmSignature: (props: PreparerCheckboxFieldProps) => JSX.Element;
 };
 
-// Warning: (ae-internal-missing-underscore) The name "preparerFieldName" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function preparerFieldName(index: PreparerIndex, field: PreparerFieldSuffix): string;
-
 // @public
 export type PreparerFieldSuffix = 'FirstName' | 'LastName' | 'Street1' | 'Street2' | 'City' | 'State' | 'Zip' | 'Signature' | 'Agree';
 
@@ -4796,15 +4735,6 @@ export interface SDKHooks {
     afterSuccess?: AfterSuccessHook[];
     beforeCreateRequest?: BeforeCreateRequestHook[];
     beforeRequest?: BeforeRequestHook[];
-}
-
-// Warning: (ae-internal-missing-underscore) The name "SDKInternalError" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export class SDKInternalError extends Error {
-    constructor(message: string, category?: SDKErrorCategory);
-    // (undocumented)
-    readonly category: SDKErrorCategory;
 }
 
 // @public
