@@ -2,10 +2,10 @@ import type { Ref, SelectHTMLAttributes } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 /**
- * Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
+ * Option entry your {@link SelectProps | Select} implementation receives in the `options` array when rendering each item in the dropdown.
  *
  * @public
- * @group Utility types
+ * @childOf {@link SelectProps}
  */
 export interface SelectOption {
   /**

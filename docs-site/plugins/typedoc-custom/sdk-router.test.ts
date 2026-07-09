@@ -1211,16 +1211,16 @@ describe('standalonePageFromSources', () => {
     expect(standalonePageFromSources(r)).toBe('theme-variables')
   })
 
-  it('returns the utilities page for a partner-hook-utils source file', () => {
+  it('returns the hooks page for a partner-hook-utils source file', () => {
     const r = new DeclarationReflection('composeErrorHandler', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
-    expect(standalonePageFromSources(r)).toBe('utilities')
+    expect(standalonePageFromSources(r)).toBe('hooks')
   })
 
-  it('returns the utilities page for a file nested under partner-hook-utils', () => {
+  it('returns the hooks page for a file nested under partner-hook-utils', () => {
     const r = new DeclarationReflection('composeSubmitHandler', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/partner-hook-utils/form/composeSubmitHandler.ts')
-    expect(standalonePageFromSources(r)).toBe('utilities')
+    expect(standalonePageFromSources(r)).toBe('hooks')
   })
 
   it('returns null when sources are absent', () => {
@@ -1265,7 +1265,7 @@ describe('buildPages — standalone page routing', () => {
     expect(router.getAnchor(themeType)).toBeDefined()
   })
 
-  it('partner-hook-utils export gets its own page at utilities.md', () => {
+  it('partner-hook-utils export gets its own page at hooks.md', () => {
     const project = makeProject()
     const util = makeChild(project, 'composeErrorHandler', ReflectionKind.Function)
     util.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
@@ -1273,7 +1273,7 @@ describe('buildPages — standalone page routing', () => {
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.map(p => p.url)).toContain('utilities.md')
+    expect(pages.map(p => p.url)).toContain('hooks.md')
     expect(router.hasOwnDocument(util)).toBe(false)
     expect(router.getAnchor(util)).toBeDefined()
   })
@@ -1308,7 +1308,7 @@ describe('buildPages — standalone page routing', () => {
     const urls = pages.map(p => p.url)
 
     expect(urls).toContain('theme-variables.md')
-    expect(urls).toContain('utilities.md')
+    expect(urls).toContain('hooks.md')
   })
 
   it('standalone page model has the display name, not the page path', () => {

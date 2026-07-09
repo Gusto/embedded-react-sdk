@@ -42,7 +42,15 @@
       "allowMultiple": true
     },
     {
-      "tagName": "@groupWith",
+      "tagName": "@siblingOf",
+      "syntaxKind": "block"
+    },
+    {
+      "tagName": "@childOf",
+      "syntaxKind": "block"
+    },
+    {
+      "tagName": "@page",
       "syntaxKind": "block"
     },
     {

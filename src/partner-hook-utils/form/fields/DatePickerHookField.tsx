@@ -15,6 +15,7 @@ import { normalizeToDate } from '@/helpers/dateFormatting'
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @public
+ * @group Hook field props
  */
 export interface DatePickerHookFieldProps<TErrorCode extends string = never>
   extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {

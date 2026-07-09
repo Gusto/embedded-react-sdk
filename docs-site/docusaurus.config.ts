@@ -244,7 +244,7 @@ const config: Config = {
           items: [
             { label: 'Workflows', to: '/docs/guides/workflows-overview' },
             { label: 'Event Handling', to: '/docs/guides/integration-guide/event-handling' },
-            { label: 'Hooks', to: '/docs/reference/utilities' },
+            { label: 'Hooks', to: '/docs/reference/hooks' },
           ],
         },
         {

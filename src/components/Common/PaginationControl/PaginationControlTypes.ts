@@ -1,6 +1,9 @@
 /**
+ * Allowed page-size values a {@link PaginationControlProps | PaginationControl} offers for
+ * how many items to show per page.
+ *
  * @public
- * @group Utility types
+ * @childOf {@link PaginationControlProps}
  */
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50
 

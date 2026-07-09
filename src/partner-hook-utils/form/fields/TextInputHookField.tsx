@@ -14,6 +14,7 @@ import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputT
  * @typeParam TErrorCode - Required validation error code keys mapped via `validationMessages`.
  * @typeParam TOptionalErrorCode - Optional validation error code keys mapped via `validationMessages`.
  * @public
+ * @group Hook field props
  */
 export interface TextInputHookFieldProps<
   TErrorCode extends string = never,

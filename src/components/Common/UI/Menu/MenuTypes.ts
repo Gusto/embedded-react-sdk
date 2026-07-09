@@ -2,11 +2,11 @@ import type { ReactNode, RefObject } from 'react'
 import type { DataAttributes } from '@/types/Helpers'
 
 /**
- * Action entry your `Menu` implementation must accept for each entry in its `items` array
- * from the component adapter.
+ * Action entry your {@link MenuProps | Menu} implementation must accept for each entry in its
+ * `items` array from the component adapter.
  *
  * @public
- * @group Utility types
+ * @childOf {@link MenuProps}
  */
 export interface MenuItem extends DataAttributes {
   /**

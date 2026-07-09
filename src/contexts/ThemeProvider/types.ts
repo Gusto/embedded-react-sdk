@@ -1,7 +1,7 @@
 /**
  * Color tokens that can be overridden to customize the SDK's visual theme.
  * Pass a `Partial<GustoSDKThemeColors>` when constructing a `Partial<GustoSDKTheme>`
- * to supply to `ThemeProvider`.
+ * to supply to {@link GustoProvider}.
  *
  * @public
  */
@@ -60,7 +60,7 @@ export interface GustoSDKThemeColors {
 
 /**
  * Complete set of design tokens that control the SDK's visual theme. Pass a
- * `Partial<GustoSDKTheme>` to `ThemeProvider` to override specific tokens; any
+ * `Partial<GustoSDKTheme>` to {@link GustoProvider} to override specific tokens; any
  * token not supplied falls back to the SDK default.
  *
  * @public

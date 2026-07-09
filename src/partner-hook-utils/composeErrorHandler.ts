@@ -8,6 +8,7 @@ import type { SDKError } from '@/types/sdkError'
  * {@link composeErrorHandler} reads from an additional query passed as a source.
  *
  * @public
+ * @childOf {@link composeErrorHandler}
  */
 export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
 
@@ -20,6 +21,7 @@ export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
  * and can be cleared together with `clearSubmitError`.
  *
  * @public
+ * @childOf {@link composeErrorHandler}
  */
 export type SubmitStateForErrorHandling = {
   /** The current submit error, or `null` when cleared. */
@@ -34,6 +36,7 @@ export type SubmitStateForErrorHandling = {
  * an `errorHandling` object.
  *
  * @public
+ * @childOf {@link composeErrorHandler}
  */
 export type MixedErrorSource = QueryWithRefetch | { errorHandling: HookErrorHandling }
 
@@ -65,6 +68,7 @@ function isHookResultWithErrorHandling(
  * @param submitState - Optional screen-level submit state to fold into the result.
  * @returns A single `HookErrorHandling` covering every source.
  * @public
+ * @group Form composition
  *
  * @example
  * ```tsx
