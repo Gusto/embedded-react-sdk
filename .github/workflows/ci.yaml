@@ -749,15 +749,7 @@ jobs:
     # shard, which runs all 17 canary specs serially across 5 domains on
     # one shared company) with margin for slow demo backend. Tight enough
     # that a stuck run releases CI minutes quickly.
-    #
-    # TEMPORARY (revert after diagnosis): bumped 20 → 40 so the hanging
-    # payroll shard on upgrade/api-2026-06-15-base runs to completion instead
-    # of being cancelled at the timeout. A cancelled job skips the
-    # `if: !cancelled()` artifact-upload steps below, which is why no
-    # Playwright trace/report was uploaded for the failing run. With the
-    # higher ceiling the run finishes, `on-first-retry` traces upload, and we
-    # can open them with `npx playwright show-trace` to read the stuck request.
-    timeout-minutes: 40
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       # Concurrent shard ceiling against flows.gusto-demo.com. We only have 3
