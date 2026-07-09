@@ -214,7 +214,11 @@ export function usePayrollConfigurationData({
   const pagination: PaginationControlProps = getPaginationProps(headers, isPaginationFetching)
 
   return {
-    employeeCompensations: prepareData?.employeeCompensations || [],
+    // The payroll-prepare response returns the full show shape per compensation (taxes, benefits, and
+    // string-formatted deduction amounts), but the v2026-06-15 client types prepare's
+    // `employeeCompensations` as the leaner base shape. Surface the real runtime type to consumers.
+    // TODO(v2026-06-15 regen): drop the assertion once prepare returns `EmployeeCompensations`.
+    employeeCompensations: (prepareData?.employeeCompensations ?? []) as EmployeeCompensations[],
     employeeDetails: displayedEmployees,
     payPeriod: prepareData?.payPeriod,
     paySchedule: payScheduleData?.payScheduleShow,

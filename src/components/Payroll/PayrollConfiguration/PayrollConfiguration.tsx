@@ -8,8 +8,11 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api/react-query/payrollsCalculateGrossUp'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
+import type {
+  PayrollUpdateEmployeeCompensations,
+  PayrollUpdateDeductions,
+} from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { hasDirectDepositEmployees } from '../helpers'
@@ -311,16 +314,26 @@ const Root = ({
   const transformEmployeeCompensation = ({
     paymentMethod,
     reimbursements,
+    customWithholdings,
+    taxes,
+    benefits,
+    additionalProperties,
+    deductions,
     ...compensation
-  }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
+  }: EmployeeCompensations): PayrollUpdateEmployeeCompensations => {
     return {
       ...compensation,
+      // `deductions` are echoed back unchanged on update. The prepared/show shape types their `amount`
+      // as `string` while the v2026-06-15 update body still types it as `number`; both converge to
+      // `string` after the client regen. Bridge the read→write type here rather than mutating values.
+      // TODO(v2026-06-15 regen): drop the assertion once PayrollUpdateDeductions.amount is `string`.
+      ...(deductions ? { deductions: deductions as unknown as PayrollUpdateDeductions[] } : {}),
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
     }
   }
 
-  const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
+  const onToggleExclude = async (employeeCompensation: EmployeeCompensations) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SKIP, {
       employeeId: employeeCompensation.employeeUuid,
     })

@@ -148,7 +148,7 @@ export const PayrollOverviewPresentation = ({
   const getCompanyTaxes = (employeeCompensation: EmployeeCompensations) => {
     return (
       employeeCompensation.taxes?.reduce(
-        (acc, tax) => (tax.employer ? acc + tax.amount : acc),
+        (acc, tax) => (tax.employer ? acc + Number(tax.amount) : acc),
         0,
       ) ?? 0
     )
@@ -156,7 +156,8 @@ export const PayrollOverviewPresentation = ({
   const getCompanyBenefits = (employeeCompensation: EmployeeCompensations) => {
     return (
       employeeCompensation.benefits?.reduce(
-        (acc, benefit) => (benefit.companyContribution ? acc + benefit.companyContribution : acc),
+        (acc, benefit) =>
+          benefit.companyContribution ? acc + Number(benefit.companyContribution) : acc,
         0,
       ) ?? 0
     )
@@ -452,7 +453,7 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.deductions?.reduce(
-                    (acc, deduction) => acc + deduction.amount!,
+                    (acc, deduction) => acc + Number(deduction.amount),
                     0,
                   ) ?? 0,
                 ),
@@ -471,7 +472,7 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.taxes?.reduce(
-                    (acc, tax) => (tax.employer ? acc : acc + tax.amount),
+                    (acc, tax) => (tax.employer ? acc : acc + Number(tax.amount)),
                     0,
                   ) ?? 0,
                 ),
@@ -481,7 +482,7 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.benefits?.reduce(
-                    (acc, benefit) => acc + (benefit.employeeDeduction ?? 0),
+                    (acc, benefit) => acc + Number(benefit.employeeDeduction ?? 0),
                     0,
                   ) ?? 0,
                 ),

@@ -251,7 +251,7 @@ describe('PayrollOverview tax totals', () => {
           fixedCompensations: [],
           hourlyCompensations: [],
           paidTimeOff: [],
-          taxes: [{ name: 'Social Security', employer: false, amount: 1 }],
+          taxes: [{ name: 'Social Security', employer: false, amount: '1' }],
         },
       ],
     }

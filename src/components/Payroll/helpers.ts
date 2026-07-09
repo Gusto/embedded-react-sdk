@@ -24,6 +24,20 @@ import { FlsaStatus } from '@/shared/constants'
 import { MS_PER_HOUR } from '@/helpers/dateFormatting'
 const REGULAR_HOURS_NAME = 'regular hours'
 
+/**
+ * The employee-compensation fields these payroll helpers read.
+ *
+ * @remarks
+ * Modeled as the prepared (base) compensation minus `deductions`. On the base shape
+ * (`PayrollEmployeeCompensationsType`) `deductions[].amount` is typed `number`, while on the show
+ * shape (`EmployeeCompensations`) it is `string`; the two converge to `string` once the v2026-06-15
+ * client is regenerated. No helper here reads `deductions`, so omitting it lets every helper accept
+ * both the prepared and show compensation shapes without a cast.
+ *
+ * @internal
+ */
+type EmployeeCompensationInput = Omit<PayrollEmployeeCompensationsType, 'deductions'>
+
 // Utility to get the primary job from an employee
 const getPrimaryJob = (employee: Employee) => {
   return employee.jobs?.find(job => job.primary) || employee.jobs?.[0] || null
@@ -121,7 +135,7 @@ export const useFormatEmployeePayRate = () => {
  * @returns The total regular hours worked, or `0` when none are recorded.
  * @internal
  */
-export const getRegularHours = (compensation: PayrollEmployeeCompensationsType) => {
+export const getRegularHours = (compensation: EmployeeCompensationInput) => {
   if (!compensation.hourlyCompensations) return 0
 
   return compensation.hourlyCompensations
@@ -136,7 +150,7 @@ export const getRegularHours = (compensation: PayrollEmployeeCompensationsType) 
  * @returns The total overtime hours, or `0` when the compensation is excluded or has none.
  * @internal
  */
-export function getOvertimeHours(compensation: PayrollEmployeeCompensationsType) {
+export function getOvertimeHours(compensation: EmployeeCompensationInput) {
   if (!compensation.hourlyCompensations || compensation.excluded) {
     return 0
   }
@@ -153,7 +167,7 @@ export function getOvertimeHours(compensation: PayrollEmployeeCompensationsType)
  * @returns The total PTO hours, or `0` when none are recorded.
  * @internal
  */
-export const getTotalPtoHours = (compensation: PayrollEmployeeCompensationsType) => {
+export const getTotalPtoHours = (compensation: EmployeeCompensationInput) => {
   if (!compensation.paidTimeOff) {
     return 0
   }
@@ -167,7 +181,7 @@ export const getTotalPtoHours = (compensation: PayrollEmployeeCompensationsType)
  * @returns The total additional earnings amount, or `0` when none qualify.
  * @internal
  */
-export const getAdditionalEarnings = (compensation: PayrollEmployeeCompensationsType) => {
+export const getAdditionalEarnings = (compensation: EmployeeCompensationInput) => {
   if (!compensation.fixedCompensations) {
     return 0
   }
@@ -192,7 +206,7 @@ export const getAdditionalEarnings = (compensation: PayrollEmployeeCompensations
  * @returns The summed reimbursement amount, or `0` when none.
  * @internal
  */
-export const getReimbursements = (compensation: PayrollEmployeeCompensationsType) => {
+export const getReimbursements = (compensation: EmployeeCompensationInput) => {
   if (compensation.reimbursements && compensation.reimbursements.length > 0) {
     return compensation.reimbursements.reduce(
       (sum, reimbursement) => sum + parseFloat(reimbursement.amount || '0'),
@@ -394,7 +408,7 @@ const getPrimaryHourlyRate = (employee: Employee, effectiveDate: Date): number =
   return compensation ? calculateHourlyRate(compensation) : 0
 }
 
-const getTotalOutstandingPtoHours = (compensation: PayrollEmployeeCompensationsType): number => {
+const getTotalOutstandingPtoHours = (compensation: EmployeeCompensationInput): number => {
   if (!compensation.paidTimeOff) {
     return 0
   }
@@ -406,7 +420,7 @@ const getTotalOutstandingPtoHours = (compensation: PayrollEmployeeCompensationsT
 }
 
 const getPtoHours = (
-  compensation: PayrollEmployeeCompensationsType,
+  compensation: EmployeeCompensationInput,
   isSalariedWithExpectedHours: boolean,
   hoursInPayPeriod: number,
   offCycle: boolean,
@@ -427,7 +441,7 @@ const getPtoHours = (
 
 const calculateMinimumWageAdjustment = (
   primaryCompensation: Compensation,
-  compensation: PayrollEmployeeCompensationsType,
+  compensation: EmployeeCompensationInput,
   effectiveDate: Date,
 ): number => {
   if (!primaryCompensation.adjustForMinimumWage) return 0
@@ -455,7 +469,7 @@ const calculateMinimumWageAdjustment = (
 }
 
 const calculateRegularPlusOvertimePay = (
-  compensation: PayrollEmployeeCompensationsType,
+  compensation: EmployeeCompensationInput,
   employee: Employee,
   effectiveDate: Date,
   isSalariedWithExpectedHours: boolean,
@@ -499,7 +513,7 @@ const calculateRegularPlusOvertimePay = (
 }
 
 const calculatePtoPay = (
-  compensation: PayrollEmployeeCompensationsType,
+  compensation: EmployeeCompensationInput,
   employee: Employee,
   effectiveDate: Date,
   isSalariedWithExpectedHours: boolean,
@@ -517,7 +531,7 @@ const calculatePtoPay = (
 }
 
 const isSalariedWithPayPeriodExpectedHours = (
-  compensation: PayrollEmployeeCompensationsType,
+  compensation: EmployeeCompensationInput,
   isSalaried: boolean,
   hoursInPayPeriod: number,
 ): boolean => {
@@ -550,7 +564,7 @@ const isSalariedWithPayPeriodExpectedHours = (
  * @internal
  */
 export const calculateGrossPay = (
-  compensation: PayrollEmployeeCompensationsType,
+  compensation: EmployeeCompensationInput,
   employee: Employee,
   compensationEffectiveDateString?: string,
   paySchedule?: PayScheduleObject,
