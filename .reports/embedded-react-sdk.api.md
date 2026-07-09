@@ -662,18 +662,6 @@ interface ApiPayrollBlocker {
 }
 
 // @public
-export function ApiProvider(input: ApiProviderProps): JSX;
-
-// @public
-export interface ApiProviderProps {
-    children: React.ReactNode;
-    headers?: HeadersInit;
-    hooks?: SDKHooks;
-    queryClient?: QueryClient;
-    url: string;
-}
-
-// @public
 function AssignSignatory(props: AssignSignatoryProps): JSX;
 
 // @public
@@ -2952,25 +2940,7 @@ Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>
 > {}
 
 // @public
-export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
-    children?: default_2.ReactNode;
-    components?: Partial<ComponentsContextType>;
-    queryClient?: QueryClient;
-}
-
-// @public
-export const GustoProvider: default_2.FC<GustoApiProps>;
-
-// @public
-export const GustoProviderCustomUIAdapter: default_2.FC<GustoProviderCustomUIAdapterProps>;
-
-// @public
-export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
-    children?: default_2.ReactNode;
-}
-
-// @public
-export interface GustoProviderProps {
+export interface GustoBaseProviderProps {
     components: ComponentsContextType;
     config: APIConfig;
     currency?: string;
@@ -2983,6 +2953,24 @@ export interface GustoProviderProps {
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
+}
+
+// @public
+export function GustoProvider(props: GustoProviderProps): default_2.JSX.Element;
+
+// @public
+export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapterProps): JSX.Element;
+
+// @public
+export interface GustoProviderCustomUIAdapterProps extends GustoBaseProviderProps {
+    children?: default_2.ReactNode;
+}
+
+// @public
+export interface GustoProviderProps extends Omit<GustoBaseProviderProps, 'components'> {
+    children?: default_2.ReactNode;
+    components?: Partial<ComponentsContextType>;
+    queryClient?: QueryClient;
 }
 
 // @public
@@ -3584,13 +3572,6 @@ export interface NumberStateTaxQuestion extends SharedQuestionMetadata {
     type: 'number';
 }
 
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityContextValue" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface ObservabilityContextValue {
-    observability: ObservabilityHook | undefined;
-}
-
 // @public
 export interface ObservabilityError extends SDKError {
     componentName?: string;
@@ -3616,21 +3597,6 @@ export interface ObservabilityMetric {
 
 // @public
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
-
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityProvider" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX;
-
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityProviderProps" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface ObservabilityProviderProps {
-    // (undocumented)
-    children: ReactNode;
-    // (undocumented)
-    observability?: ObservabilityHook;
-}
 
 // @public
 function OffCycleCreation(props: OffCycleCreationProps): JSX;
@@ -6069,11 +6035,6 @@ export interface UseJobFormReady extends BaseFormHookReady<JobFieldsMetadata, Jo
 
 // @public
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
-
-// Warning: (ae-internal-missing-underscore) The name "useObservability" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const useObservability: () => ObservabilityContextValue;
 
 // @public
 export function usePaymentMethodForm(input: UsePaymentMethodFormProps): HookLoadingResult | UsePaymentMethodFormReady;
