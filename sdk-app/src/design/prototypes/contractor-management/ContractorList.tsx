@@ -12,6 +12,7 @@ import {
   type ContractorListTab,
 } from '../../components/contractor/management/ContractorList/ContractorList'
 import { ContractorOnboardingStatus } from '@/shared/constants'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
 export function ContractorList() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
@@ -29,7 +30,7 @@ export function ContractorList() {
     if (msg) {
       setSuccessMessage(msg)
       setSearchParams({}, { replace: true })
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: [API_QUERY_NAMESPACE, 'Contractors'] })
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -91,7 +92,7 @@ export function ContractorList() {
           ? `Rehire cancelled for ${contractorName(contractor)}`
           : `Dismissal cancelled for ${contractorName(contractor)}`,
       )
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: [API_QUERY_NAMESPACE, 'Contractors'] })
     } catch (error) {
       setErrorMessage(
         error instanceof Error
@@ -146,7 +147,7 @@ export function ContractorList() {
           await deleteContractor({ request: { contractorUuid: contractor.uuid } })
           setSuccessMessage(`${contractorName(contractor)} has been removed`)
           queryClient.removeQueries({
-            queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'],
+            queryKey: [API_QUERY_NAMESPACE, 'Contractors'],
           })
         } catch (error) {
           setErrorMessage(
@@ -167,7 +168,7 @@ export function ContractorList() {
           })
           setSuccessMessage(`Self-onboarding cancelled for ${contractorName(contractor)}`)
           queryClient.removeQueries({
-            queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'],
+            queryKey: [API_QUERY_NAMESPACE, 'Contractors'],
           })
         } catch (error) {
           setErrorMessage(

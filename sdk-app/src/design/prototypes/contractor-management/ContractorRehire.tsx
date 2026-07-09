@@ -7,6 +7,7 @@ import { ContractorRehireForm } from '../../components/contractor/management/Con
 import { Skeleton } from '../../components/common/Skeleton'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
 function RehireSkeleton() {
   return (
@@ -44,7 +45,7 @@ function ContractorRehireContent() {
       }
 
       const name = contractorName(contractor)
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: [API_QUERY_NAMESPACE, 'Contractors'] })
       void navigate(`..?success=${encodeURIComponent(`Rehire scheduled for ${name}`)}`, {
         replace: true,
       })

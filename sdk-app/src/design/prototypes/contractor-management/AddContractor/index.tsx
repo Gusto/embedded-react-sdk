@@ -9,6 +9,7 @@ import { ContractorOnboardingOverview } from './ContractorOnboardingOverview'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 function WizardSkeleton() {
@@ -60,7 +61,7 @@ export function AddContractor() {
             variant="secondary"
             onClick={() => {
               queryClient.removeQueries({
-                queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors', 'list'],
+                queryKey: [API_QUERY_NAMESPACE, 'Contractors', 'list'],
               })
               void navigate('..')
             }}

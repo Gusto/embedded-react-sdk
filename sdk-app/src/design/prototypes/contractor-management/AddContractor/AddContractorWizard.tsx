@@ -10,6 +10,7 @@ import { ContractorSubmit } from './ContractorSubmit'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
 export type WizardStep = 'profile' | 'address' | 'paymentMethod' | 'newHireReport' | 'submit'
 
@@ -84,7 +85,7 @@ export function AddContractorWizard({
       case componentEvents.CONTRACTOR_SUBMIT_DONE: {
         const payload = data as { message?: string } | undefined
         const message = payload?.message ?? 'Contractor added successfully'
-        queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'] })
+        queryClient.removeQueries({ queryKey: [API_QUERY_NAMESPACE, 'Contractors'] })
         void navigate(`..?success=${encodeURIComponent(message)}`, { replace: true })
         break
       }
