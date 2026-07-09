@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   type Employee,
   EmployeePaymentMethod1,
@@ -12,7 +12,7 @@ import { PayrollCategory } from '../payrollTypes'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-const mockEmployeeCompensations: EmployeeCompensations[] = [
+const mockEmployeeCompensations: PayrollEmployeeCompensationsType[] = [
   {
     excluded: false,
     employeeUuid: 'emp-1',

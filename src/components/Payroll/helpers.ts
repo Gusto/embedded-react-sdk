@@ -25,14 +25,14 @@ import { MS_PER_HOUR } from '@/helpers/dateFormatting'
 const REGULAR_HOURS_NAME = 'regular hours'
 
 /**
- * The employee-compensation fields these payroll helpers read.
+ * The compensation fields the payroll math helpers operate on.
  *
  * @remarks
- * Modeled as the prepared (base) compensation minus `deductions`. On the base shape
- * (`PayrollEmployeeCompensationsType`) `deductions[].amount` is typed `number`, while on the show
- * shape (`EmployeeCompensations`) it is `string`; the two converge to `string` once the v2026-06-15
- * client is regenerated. No helper here reads `deductions`, so omitting it lets every helper accept
- * both the prepared and show compensation shapes without a cast.
+ * These helpers run over both compensation representations the API returns: the
+ * prepared (base) shape used when editing a payroll and the calculated (show)
+ * shape rendered after calculation. The two are interchangeable for every field
+ * read here and differ only on `deductions`, which no helper touches. Omitting
+ * `deductions` lets a single input type accept either shape without a cast.
  *
  * @internal
  */

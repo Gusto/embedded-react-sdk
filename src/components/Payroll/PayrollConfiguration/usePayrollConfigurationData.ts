@@ -5,7 +5,7 @@ import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedules
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
 import { employeesGet } from '@gusto/embedded-api/funcs/employeesGet'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
@@ -22,7 +22,7 @@ interface UsePayrollConfigurationDataParams {
 }
 
 interface UsePayrollConfigurationDataReturn {
-  employeeCompensations: EmployeeCompensations[]
+  employeeCompensations: PayrollEmployeeCompensationsType[]
   employeeDetails: Employee[]
   payPeriod: PayrollPayPeriodType | undefined
   paySchedule: PayScheduleShow | undefined
@@ -214,11 +214,7 @@ export function usePayrollConfigurationData({
   const pagination: PaginationControlProps = getPaginationProps(headers, isPaginationFetching)
 
   return {
-    // The payroll-prepare response returns the full show shape per compensation (taxes, benefits, and
-    // string-formatted deduction amounts), but the v2026-06-15 client types prepare's
-    // `employeeCompensations` as the leaner base shape. Surface the real runtime type to consumers.
-    // TODO(v2026-06-15 regen): drop the assertion once prepare returns `EmployeeCompensations`.
-    employeeCompensations: (prepareData?.employeeCompensations ?? []) as EmployeeCompensations[],
+    employeeCompensations: prepareData?.employeeCompensations ?? [],
     employeeDetails: displayedEmployees,
     payPeriod: prepareData?.payPeriod,
     paySchedule: payScheduleData?.payScheduleShow,
