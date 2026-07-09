@@ -14,6 +14,7 @@ import {
   ParameterReflection,
   QueryType,
   ReferenceType,
+  type Reflection,
   ReflectionKind,
   ReflectionType,
   type SignatureReflection,
@@ -44,7 +45,7 @@ import {
   type GuideSlot,
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
-import { TYPE_EMOJIS } from './router.config.ts'
+import { TYPE_EMOJIS, type PageLayout } from './router.config.ts'
 import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
@@ -397,6 +398,87 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
       parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
     }
   }
+  return parts.join('\n\n')
+}
+
+/**
+ * Render a standalone page laid out by an explicit {@link PageLayout} config
+ * (see {@link StandalonePageConfig.layout}). Sections are emitted in this order:
+ * the `feature` groups in the order configured, then everything else per
+ * `default`. A `promote`d group (and the `promote` default) lifts each member to
+ * its own `## H2` with no group heading; otherwise members sit as `### H3` under
+ * a `## H2` heading (the group name, or `Utility types` for the default set).
+ *
+ * Returns the page BODY ONLY — no H1, no frontmatter (attached later by the
+ * page-END handler), matching {@link renderBlocksPage}. Dispatched from the
+ * reflection template only when the page's synthetic namespace is registered in
+ * {@link SDKRouter.standaloneLayouts}; pages without a `layout` fall through to
+ * the default template unchanged.
+ */
+function renderStandalonePage(
+  context: SDKThemeContext,
+  model: DeclarationReflection,
+  layout: PageLayout,
+): string {
+  const groups = model.groups ?? []
+  const featured = layout.feature ?? []
+  const featuredTitles = new Set<string>(featured.map(f => f.group))
+  const defaultMode = layout.default ?? 'utilityTypes'
+
+  const sourceIndex = new Map<Reflection, number>(
+    (model.children ?? []).map((child, index) => [child, index]),
+  )
+  const compare =
+    layout.sort === 'source'
+      ? (a: DeclarationReflection, b: DeclarationReflection): number =>
+          (sourceIndex.get(a) ?? 0) - (sourceIndex.get(b) ?? 0)
+      : undefined
+
+  const declarations = (members: Reflection[]): DeclarationReflection[] =>
+    members.filter((m): m is DeclarationReflection => m instanceof DeclarationReflection)
+
+  // Sibling members within a section are divided by `***`, matching the default
+  // template; a heading (group name or `Utility types`) is itself the divider,
+  // so no `***` runs between a heading and its first member or before a heading.
+  const parts: string[] = []
+  let prevWasMember = false
+  const emitMember = (member: DeclarationReflection, headingLevel: 2 | 3): void => {
+    if (prevWasMember) parts.push('***')
+    parts.push(context.partials.memberContainer(member, { headingLevel }))
+    prevWasMember = true
+  }
+  const emitHeading = (heading: string): void => {
+    parts.push(`## ${heading}`)
+    prevWasMember = false
+  }
+
+  // Preserve the page's summary prose (e.g. a namespace's leading description).
+  // The H1 comes from the frontmatter title, matching the body-only blocks page.
+  const description = model.comment
+    ? (context.helpers.getDescriptionForComment(model.comment) ?? '')
+    : ''
+  if (description) parts.push(description)
+
+  for (const { group: title, promote } of featured) {
+    const group = groups.find(g => g.title === title)
+    if (!group) continue
+    const members = orderByGroupWith(declarations(group.children), undefined, compare)
+    if (members.length === 0) continue
+    if (!promote) emitHeading(title)
+    for (const member of members) emitMember(member, promote ? 2 : 3)
+  }
+
+  const rest = orderByGroupWith(
+    groups.filter(g => !featuredTitles.has(g.title)).flatMap(g => declarations(g.children)),
+    undefined,
+    compare,
+  )
+  if (rest.length > 0) {
+    const promote = defaultMode === 'promote'
+    if (!promote) emitHeading(CUSTOM_GROUPS.utilityTypes)
+    for (const member of rest) emitMember(member, promote ? 2 : 3)
+  }
+
   return parts.join('\n\n')
 }
 
@@ -2090,6 +2172,8 @@ function injectFieldsSummary(rendered: string, summary: string): string {
 function orderByGroupWith(
   members: DeclarationReflection[],
   pinnedFirst?: DeclarationReflection,
+  compare: (a: DeclarationReflection, b: DeclarationReflection) => number = (a, b) =>
+    a.name.localeCompare(b.name),
 ): DeclarationReflection[] {
   const present = new Set([...(pinnedFirst ? [pinnedFirst.name] : []), ...members.map(m => m.name)])
   const followersByTarget = new Map<string, DeclarationReflection[]>()
@@ -2104,10 +2188,8 @@ function orderByGroupWith(
       anchors.push(member)
     }
   }
-  const byName2 = (a: DeclarationReflection, b: DeclarationReflection): number =>
-    a.name.localeCompare(b.name)
-  anchors.sort(byName2)
-  for (const list of followersByTarget.values()) list.sort(byName2)
+  anchors.sort(compare)
+  for (const list of followersByTarget.values()) list.sort(compare)
 
   const emitted = new Set<DeclarationReflection>()
   const ordered: DeclarationReflection[] = []
@@ -2732,6 +2814,8 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (isHooksIndex(page.model)) return renderHooksIndex(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
         if (isBlocksPage(page.model)) return renderBlocksPage(this, page.model)
+        const standaloneLayout = (this.router as SDKRouter).standaloneLayouts.get(page.model)
+        if (standaloneLayout) return renderStandalonePage(this, page.model, standaloneLayout)
 
         // Build the @components table, then strip the tag so the default
         // renderer doesn't also emit it as a raw block-tag section.

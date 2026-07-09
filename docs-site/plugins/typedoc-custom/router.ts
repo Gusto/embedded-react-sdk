@@ -23,7 +23,13 @@ import {
   UnionType,
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
-import { DOMAINS, I18N_RELOCATION, STANDALONE_PAGES } from './router.config.ts'
+import {
+  DOMAINS,
+  I18N_RELOCATION,
+  NAMESPACE_LAYOUTS,
+  STANDALONE_PAGES,
+  type PageLayout,
+} from './router.config.ts'
 import { CUSTOM_GROUPS, GROUP_ORDER } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
@@ -685,6 +691,12 @@ export class SDKRouter extends MemberRouter {
   // Keyed by domain.path; populated in buildPages so renderDomainHub can list hooks.
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
+  // Keyed by the synthetic namespace of a standalone page that opts into a
+  // `layout` config; populated in buildPages so the theme dispatches those pages
+  // to the standalone layout renderer instead of the default template. A page
+  // without `layout` is absent here and falls through to the default template.
+  readonly standaloneLayouts = new Map<DeclarationReflection, PageLayout>()
+
   // Keyed by the flow DeclarationReflection; populated before sources are cleared
   // so the renderer can slot GUIDE.md prose into each flow page.
   readonly flowGuides = new Map<DeclarationReflection, Guide>()
@@ -907,10 +919,28 @@ export class SDKRouter extends MemberRouter {
     }
 
     for (const [page, members] of standaloneGroups) {
-      const { displayName } = STANDALONE_PAGES.find(p => p.id === page)!
+      const { displayName, layout } = STANDALONE_PAGES.find(p => p.id === page)!
       const ns = new DeclarationReflection(displayName, ReflectionKind.Namespace, project)
       ns.children = members
       ns.groups = groupSyntheticMembers(members, ns)
+      if (layout) {
+        // A page laid out by the standalone renderer inlines each component's
+        // props interface into its Parameters section (like every other page),
+        // but the synthetic groups were regrouped fresh above and still list
+        // those interfaces — drop them from the groups so they don't render a
+        // second time as their own sections. `ns.children` keeps them so the
+        // inline anchors still resolve.
+        const propsInterfaces = componentPropsInterfaces(ns)
+        if (propsInterfaces.size > 0) {
+          for (const group of ns.groups) {
+            group.children = group.children.filter(
+              c => !(c instanceof DeclarationReflection && propsInterfaces.has(c)),
+            )
+          }
+          ns.groups = ns.groups.filter(g => g.children.length > 0)
+        }
+        this.standaloneLayouts.set(ns, layout)
+      }
       this.buildSyntheticPage(page, ns, members, pages)
     }
 
@@ -1054,6 +1084,8 @@ export class SDKRouter extends MemberRouter {
       for (const child of children) {
         this.buildAnchors(child, reflection)
       }
+      const layout = NAMESPACE_LAYOUTS[reflection.name]
+      if (layout) this.standaloneLayouts.set(reflection as DeclarationReflection, layout)
       return
     }
 

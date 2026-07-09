@@ -107,6 +107,36 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
   },
 ]
 
+/**
+ * Section-layout overrides for top-level namespace pages, keyed by TypeDoc
+ * namespace name (e.g. `APIModels`). Same semantics as
+ * {@link StandalonePageConfig.layout}: a namespace with an entry here routes
+ * through the standalone layout renderer instead of the default template.
+ * Only flat namespaces (no Flow children — see `FLAT_NAMESPACES` in router.ts)
+ * are supported; the H1 comes from the frontmatter title and the namespace's
+ * summary prose is preserved above the sections.
+ */
+export const NAMESPACE_LAYOUTS: Record<string, PageLayout> = {
+  // Every entity type as its own `## H2`, no "Variables" group heading.
+  APIModels: { default: 'promote' },
+}
+
+/**
+ * Top-level exports relocated from the project index onto the `Translations`
+ * page (grouped under "Types" above the per-namespace key interfaces). Matched
+ * by source path + `@group`, mirroring {@link STANDALONE_PAGES}: a reflection is
+ * moved when its source path contains any `sources` fragment AND it carries a
+ * matching `@group` tag. Targeting the i18n source files narrows the group match
+ * so an unrelated `@group Utility types` export elsewhere can't leak onto the
+ * page. Captures the override types (`Resources`, `ResourceDictionary`,
+ * `GlobalResourceDictionary`) plus i18n-adjacent utilities (`DeepPartial`,
+ * `SupportedLanguages`). See {@link SDKRouter.relocateI18nTypes}.
+ */
+export const I18N_RELOCATION: { sources: string[]; groups: CustomGroupTag[] } = {
+  sources: ['i18n/types', 'types/Helpers'],
+  groups: [CUSTOM_GROUPS.utilityTypes],
+}
+
 /** Emoji for each content type — used in DocCardList item labels and hub section headings. */
 export const TYPE_EMOJIS = {
   namespace: '📁',
@@ -146,20 +176,40 @@ export type StandalonePageConfig = {
   groups?: CustomGroupTag[]
   /** Page H1 and synthetic namespace name. */
   displayName: string
+  /**
+   * Optional per-page section layout. When omitted the page renders with the
+   * default template (kind-based groups as `## H2`, members as `### H3`). When
+   * present the page routes through the standalone layout renderer, which lays
+   * out sections in this order: the `feature` groups (in the order listed),
+   * then everything else per `default`. See {@link PageLayout}.
+   */
+  layout?: PageLayout
 }
 
 /**
- * Top-level exports relocated from the project index onto the `Translations`
- * page (grouped under "Types" above the per-namespace key interfaces). Matched
- * by source path + `@group`, mirroring {@link STANDALONE_PAGES}: a reflection is
- * moved when its source path contains any `sources` fragment AND it carries a
- * matching `@group` tag. Targeting the i18n source files narrows the group match
- * so an unrelated `@group Utility types` export elsewhere can't leak onto the
- * page. Captures the override types (`Resources`, `ResourceDictionary`,
- * `GlobalResourceDictionary`) plus i18n-adjacent utilities (`DeepPartial`,
- * `SupportedLanguages`). See {@link SDKRouter.relocateI18nTypes}.
+ * Declarative section layout for a standalone page. Opting a page in (setting
+ * {@link StandalonePageConfig.layout}) switches it from the default template to
+ * the standalone layout renderer.
  */
-export const I18N_RELOCATION: { sources: string[]; groups: CustomGroupTag[] } = {
-  sources: ['i18n/types', 'types/Helpers'],
-  groups: [CUSTOM_GROUPS.utilityTypes],
+export type PageLayout = {
+  /**
+   * Groups promoted to the top of the page, rendered as leading H2 sections in
+   * the order listed. `promote: true` lifts each member of the group to its own
+   * `## H2` (the group heading is dropped); otherwise the group name is the
+   * `## H2` and its members are `### H3`.
+   */
+  feature?: Array<{ group: CustomGroupTag; promote?: boolean }>
+  /**
+   * How to render every member not claimed by a `feature` group.
+   * `'utilityTypes'` collects them under a single `## Utility types` H2 with
+   * `### H3` members; `'promote'` renders each as its own `## H2`. Defaults to
+   * `'utilityTypes'`.
+   */
+  default?: 'utilityTypes' | 'promote'
+  /**
+   * Member ordering within each section. `'alpha'` (default) sorts by name;
+   * `'source'` preserves declaration order. Either way `@groupWith` still pulls
+   * a member to follow its target.
+   */
+  sort?: 'alpha' | 'source'
 }
