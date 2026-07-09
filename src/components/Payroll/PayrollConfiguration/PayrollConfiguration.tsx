@@ -308,13 +308,18 @@ const Root = ({
     })
   }
 
-  const transformEmployeeCompensation = ({
-    paymentMethod,
-    reimbursements,
-    ...compensation
-  }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
+  const transformEmployeeCompensation = (
+    compensation: PayrollEmployeeCompensationsType,
+  ): PayrollUpdateEmployeeCompensations => {
+    const { paymentMethod } = compensation
     return {
-      ...compensation,
+      employeeUuid: compensation.employeeUuid,
+      version: compensation.version,
+      excluded: compensation.excluded,
+      fixedCompensations: compensation.fixedCompensations,
+      hourlyCompensations: compensation.hourlyCompensations,
+      paidTimeOff: compensation.paidTimeOff,
+      deductions: compensation.deductions,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
     }

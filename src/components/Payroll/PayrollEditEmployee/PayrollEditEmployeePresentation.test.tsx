@@ -133,9 +133,9 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       hours: '0.0',
     },
   ],
-  grossPay: 1787.5,
-  netPay: 1500.0,
-  checkAmount: 1500.0,
+  grossPay: '1787.50',
+  netPay: '1500.00',
+  checkAmount: '1500.00',
   paymentMethod: 'Direct Deposit',
   memo: null,
   version: 'v1',
@@ -455,9 +455,9 @@ describe('PayrollEditEmployeePresentation', () => {
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
         employeeUuid: 'emp-1',
-        grossPay: 1787.5,
-        netPay: 1500.0,
-        checkAmount: 1500.0,
+        grossPay: '1787.50',
+        netPay: '1500.00',
+        checkAmount: '1500.00',
         paymentMethod: 'Direct Deposit',
         version: 'v1',
         hourlyCompensations: expect.arrayContaining([

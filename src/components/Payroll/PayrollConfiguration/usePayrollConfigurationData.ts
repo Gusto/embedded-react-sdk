@@ -5,7 +5,7 @@ import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedules
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
 import { employeesGet } from '@gusto/embedded-api/funcs/employeesGet'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
@@ -22,7 +22,7 @@ interface UsePayrollConfigurationDataParams {
 }
 
 interface UsePayrollConfigurationDataReturn {
-  employeeCompensations: EmployeeCompensations[]
+  employeeCompensations: PayrollEmployeeCompensationsType[]
   employeeDetails: Employee[]
   payPeriod: PayrollPayPeriodType | undefined
   paySchedule: PayScheduleShow | undefined
@@ -214,7 +214,7 @@ export function usePayrollConfigurationData({
   const pagination: PaginationControlProps = getPaginationProps(headers, isPaginationFetching)
 
   return {
-    employeeCompensations: prepareData?.employeeCompensations || [],
+    employeeCompensations: prepareData?.employeeCompensations ?? [],
     employeeDetails: displayedEmployees,
     payPeriod: prepareData?.payPeriod,
     paySchedule: payScheduleData?.payScheduleShow,

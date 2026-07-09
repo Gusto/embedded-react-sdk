@@ -13,7 +13,7 @@ import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
  * @public
  */
 export interface ApiProviderProps {
-  /** Base URL the SDK uses for all `@gusto/embedded-api-v-2026-02-01` requests. */
+  /** Base URL the SDK uses for all `@gusto/embedded-api-v-2026-06-15` requests. */
   url: string
   /** Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. */
   headers?: HeadersInit
@@ -26,13 +26,13 @@ export interface ApiProviderProps {
 }
 
 /**
- * Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
+ * Wires the `@gusto/embedded-api-v-2026-06-15` client and a React Query client into the React tree.
  *
  * @remarks
  * Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
  * and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
  * `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
- * successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
+ * successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
  * query automatically. Partners who supply their own `QueryClient` are responsible for matching that
  * contract.
  *

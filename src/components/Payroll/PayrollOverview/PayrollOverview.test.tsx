@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { PayrollShow } from '@gusto/embedded-api/models/components/payroll'
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
 import { PayrollOverview } from './PayrollOverview'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -251,7 +251,7 @@ describe('PayrollOverview tax totals', () => {
           fixedCompensations: [],
           hourlyCompensations: [],
           paidTimeOff: [],
-          taxes: [{ name: 'Social Security', employer: false, amount: 1 }],
+          taxes: [{ name: 'Social Security', employer: false, amount: '1' }],
         },
       ],
     }

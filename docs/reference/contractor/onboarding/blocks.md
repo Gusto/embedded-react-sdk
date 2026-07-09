@@ -57,9 +57,9 @@ Props for [Address](#address).
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
-| GET | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-address) |
-| PUT | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-address) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address) |
+| PUT | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address) |
 
 <a id="contractorlist"></a>
 
@@ -95,8 +95,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors) |
-| DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-contractors-contractor_uuid) |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors) |
+| DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid) |
 
 <a id="contractorprofile"></a>
 
@@ -133,9 +133,9 @@ fields for the contractor to complete.
 
 | Method | Path |
 | --- | --- |
-| POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-contractors) |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
-| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid) |
+| POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
 
 <a id="contractorsubmit"></a>
 
@@ -170,9 +170,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
-| GET | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-onboarding_status) |
-| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-onboarding_status) |
+| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
 
 <a id="documentsigner"></a>
 
@@ -256,7 +256,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-documents) |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
 
 <a id="landing"></a>
 
@@ -284,8 +284,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies) |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
 
 <a id="newhirereport"></a>
 
@@ -342,8 +342,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
-| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
 
 <a id="onboardingsummary"></a>
 
@@ -425,10 +425,10 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
-| POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
-| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-payment_method) |
-| PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_id-payment_method) |
+| GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
+| POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
+| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
+| PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method) |
 
 <a id="signatureform"></a>
 
@@ -466,9 +466,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/documents/:documentUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document) |
-| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document-pdf) |
-| PUT | [`/v1/documents/:documentUuid/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractor-document-sign) |
+| GET | [`/v1/documents/:documentUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document) |
+| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
+| PUT | [`/v1/documents/:documentUuid/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractor-document-sign) |
 
 ## Utility types
 

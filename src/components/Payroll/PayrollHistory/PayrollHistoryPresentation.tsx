@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel, calculateTotalPayroll, canCancelPayroll } from '../helpers'

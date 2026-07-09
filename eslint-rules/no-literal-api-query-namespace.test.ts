@@ -35,11 +35,6 @@ ruleTester.run('no-literal-api-query-namespace', rule, {
       code: `const key = ['@gusto/embedded-api-v-2026-02-01', 'holidayPayPolicies']`,
       filename: 'src/components/Foo/Foo.test.tsx',
     },
-    // sdk-app is excluded (can't import the SDK-internal constant)
-    {
-      code: `queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Contractors'] })`,
-      filename: 'sdk-app/src/design/prototypes/contractor-management/ContractorList.tsx',
-    },
   ],
   invalid: [
     // Bare namespace literal, no existing import → replace + insert import
@@ -62,6 +57,14 @@ ruleTester.run('no-literal-api-query-namespace', rule, {
       output: `import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'\nconst key = [API_QUERY_NAMESPACE, 'x']`,
       filename: 'src/foo.ts',
       errors: [{ messageId: 'useConstant' }],
+    },
+    // sdk-app prototypes are covered too — they resolve `@/` to the SDK src, so
+    // they can import the constant
+    {
+      code: `queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Contractors'] })`,
+      output: `import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'\nqueryClient.removeQueries({ queryKey: [API_QUERY_NAMESPACE, 'Contractors'] })`,
+      filename: 'sdk-app/src/design/prototypes/contractor-management/ContractorList.tsx',
+      errors: [{ messageId: 'useConstant', data: { value: '@gusto/embedded-api-v-2026-02-01' } }],
     },
   ],
 })

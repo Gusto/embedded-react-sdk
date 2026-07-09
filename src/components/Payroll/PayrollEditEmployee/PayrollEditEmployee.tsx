@@ -108,6 +108,7 @@ const Root = ({
   const transformEmployeeCompensation = ({
     paymentMethod,
     reimbursements,
+    customWithholdings,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     return {

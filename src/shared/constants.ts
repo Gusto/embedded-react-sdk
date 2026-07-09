@@ -1,5 +1,5 @@
 import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
-import { ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
+import { OnboardingStatus as ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
 
 /**
  * Event keys emitted by employee-related components.

@@ -20,17 +20,16 @@
  * rule's fix.
  *
  * @remarks
- * Scoped to SDK `src/`. Skips:
+ * Covers SDK `src/` and the `sdk-app` dev app — both resolve `@/` to the SDK
+ * `src` (sdk-app via its Vite alias and `tsconfig` `baseUrl: '..'`), so both can
+ * import `API_QUERY_NAMESPACE`. Skips:
  * - **Test files** — the drift-prone sites are `vi.mock` factories, which vitest
  *   hoists above imports, so referencing the imported `API_QUERY_NAMESPACE` there
  *   throws "cannot access before initialization".
- * - **`sdk-app`** — the dev app's `@/` alias points at its own `src`, so it can't
- *   import the SDK-internal `API_QUERY_NAMESPACE`; its throwaway prototypes keep
- *   the literal.
  *
- * Drift in those excluded areas is instead caught by the api-version-upgrade
- * skill's verification greps. The `apiVersion.ts` definition uses a template
- * literal (not a plain string), so it never matches; it is also config-excluded.
+ * Drift in test files is instead caught by the api-version-upgrade skill's
+ * verification greps. The `apiVersion.ts` definition uses a template literal (not
+ * a plain string), so it never matches; it is also config-excluded.
  */
 
 import { AST_NODE_TYPES, ESLintUtils } from '@typescript-eslint/utils'
@@ -39,7 +38,7 @@ import type { TSESTree } from '@typescript-eslint/utils'
 const BARE_NAMESPACE = /^@gusto\/embedded-api-v-\d{4}-\d{2}-\d{2}$/
 const CONSTANT = 'API_QUERY_NAMESPACE'
 const MODULE = '@/contexts/ApiProvider/apiVersion'
-const EXCLUDED_FILE = /\.test\.[cm]?[jt]sx?$|(?:^|[/\\])sdk-app[/\\]/
+const EXCLUDED_FILE = /\.test\.[cm]?[jt]sx?$/
 
 /**
  * True when the literal sits in a module-specifier position (import/export source

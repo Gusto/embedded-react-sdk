@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import {
-  WageType as ApiWageType,
+  ContractorWageType as ApiWageType,
   ContractorType as ApiContractorType,
 } from '@gusto/embedded-api/models/components/contractor'
 import {

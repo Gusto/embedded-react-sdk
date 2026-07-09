@@ -2,9 +2,9 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   PayrollEmployeeCompensationsType,
   PayrollEmployeeCompensationsTypePaidTimeOff,
-  PayrollEmployeeCompensationsTypeFixedCompensations,
-  PayrollEmployeeCompensationsTypeHourlyCompensations,
-  PayrollEmployeeCompensationsTypeReimbursements,
+  FixedCompensations as PayrollEmployeeCompensationsTypeFixedCompensations,
+  HourlyCompensations as PayrollEmployeeCompensationsTypeHourlyCompensations,
+  Reimbursements as PayrollEmployeeCompensationsTypeReimbursements,
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'

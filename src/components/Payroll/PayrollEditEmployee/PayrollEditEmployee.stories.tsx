@@ -87,13 +87,13 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       hours: '8.0',
     },
   ],
-  grossPay: 880.0,
+  grossPay: '880.00',
   fixedCompensations: [],
   paymentMethod: 'Direct Deposit',
   memo: null,
   version: 'v1',
-  netPay: 767.99,
-  checkAmount: 767.99,
+  netPay: '767.99',
+  checkAmount: '767.99',
 }
 
 export const Default = () => {

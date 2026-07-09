@@ -38,14 +38,14 @@ custom_edit_url: null
 
 ### ApiProvider
 
-Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
+Wires the `@gusto/embedded-api-v-2026-06-15` client and a React Query client into the React tree.
 
 #### Remarks
 
 Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
 and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
 `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
+successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
 query automatically. Partners who supply their own `QueryClient` are responsible for matching that
 contract.
 
@@ -61,7 +61,7 @@ Props for [ApiProvider](#apiprovider).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-apiproviderpropschildren"></a> `children` | `ReactNode` | Subtree that renders inside the API + React Query providers. |
-| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-02-01` requests. |
+| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-06-15` requests. |
 | <a id="property-apiproviderpropsheaders"></a> `headers?` | `HeadersInit` | Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. |
 | <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
 | <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
@@ -99,7 +99,7 @@ record. The values mirror the strings returned by the API.
 
 ### ContractorSelfOnboardingStatuses
 
-> `const` **ContractorSelfOnboardingStatuses**: `Set`\<[`ContractorOnboardingStatus1`](APIModels/index.md#contractoronboardingstatus1-1)\>
+> `const` **ContractorSelfOnboardingStatuses**: `Set`\<[`OnboardingStatus`](APIModels/index.md#onboardingstatus-1)\>
 
 Set of [ContractorOnboardingStatus](#contractoronboardingstatus) values that indicate the contractor
 is completing self-onboarding.
@@ -834,7 +834,7 @@ Request interceptors for customizing HTTP requests and responses.
 Pass an instance of this interface to [GustoProvider](#gustoprovider) via `config.hooks` to
 inspect or modify requests and responses across the four lifecycle stages.
 Each entry is an array of objects implementing the corresponding hook type
-from `@gusto/embedded-api-v-2026-02-01/hooks/types`.
+from `@gusto/embedded-api-v-2026-06-15/hooks/types`.
 
 | Stage | When it runs |
 | ----- | ------------ |

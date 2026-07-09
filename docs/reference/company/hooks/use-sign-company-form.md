@@ -309,6 +309,6 @@ is typically unnecessary.
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form) |
-| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form-pdf) |
-| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-form-sign) |
+| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
+| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign) |

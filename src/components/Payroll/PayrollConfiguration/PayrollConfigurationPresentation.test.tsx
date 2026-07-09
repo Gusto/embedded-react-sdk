@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   type Employee,
   EmployeePaymentMethod1,
@@ -12,7 +12,7 @@ import { PayrollCategory } from '../payrollTypes'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-const mockEmployeeCompensations: EmployeeCompensations[] = [
+const mockEmployeeCompensations: PayrollEmployeeCompensationsType[] = [
   {
     excluded: false,
     employeeUuid: 'emp-1',
@@ -32,13 +32,13 @@ const mockEmployeeCompensations: EmployeeCompensations[] = [
         hours: '8.0',
       },
     ],
-    grossPay: 880.0,
+    grossPay: '880.00',
     fixedCompensations: [],
     paymentMethod: 'Direct Deposit',
     memo: null,
     version: 'v1',
-    netPay: 767.99,
-    checkAmount: 767.99,
+    netPay: '767.99',
+    checkAmount: '767.99',
   },
 ]
 

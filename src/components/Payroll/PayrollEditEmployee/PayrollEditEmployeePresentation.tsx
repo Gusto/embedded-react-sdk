@@ -2,10 +2,10 @@ import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useMemo, useRef, useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
-  PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
+  FixedCompensations,
   PayrollEmployeeCompensationsType,
   PayrollEmployeeCompensationsTypePaidTimeOff,
-  PayrollEmployeeCompensationsTypeReimbursements as Reimbursement,
+  Reimbursements as Reimbursement,
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'

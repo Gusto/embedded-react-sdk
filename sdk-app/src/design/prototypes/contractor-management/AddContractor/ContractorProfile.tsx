@@ -6,7 +6,7 @@ import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contr
 import { useContractorsCreateMutation } from '@gusto/embedded-api/react-query/contractorsCreate'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
 import {
-  WageType,
+  ContractorWageType as WageType,
   ContractorType,
   type Contractor,
 } from '@gusto/embedded-api/models/components/contractor'

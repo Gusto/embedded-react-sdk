@@ -5,7 +5,7 @@ import {
 } from '@gusto/embedded-api/react-query/employeesList'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { useSuspenseQueries } from '@tanstack/react-query'
-import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
+import { GetV1CompaniesCompanyIdEmployeesQueryParamInclude as Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
 import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { useClientPagination } from '@/hooks/useClientPagination/useClientPagination'
