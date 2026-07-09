@@ -41,7 +41,7 @@ export interface APIConfig {
  *
  * @public
  */
-export interface GustoProviderProps {
+export interface GustoBaseProviderProps {
   /** API client configuration, including the proxy `baseUrl`, request hooks, and observability. See {@link APIConfig}. */
   config: APIConfig
   /** Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. */
@@ -69,7 +69,7 @@ export interface GustoProviderProps {
  *
  * @public
  */
-export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
+export interface GustoProviderCustomUIAdapterProps extends GustoBaseProviderProps {
   /** The application tree that should have access to the SDK. */
   children?: React.ReactNode
 }
@@ -87,7 +87,7 @@ export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
  * @returns The configured provider tree wrapping `children`.
  * @public
  */
-const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> = props => {
+export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapterProps) {
   const {
     children,
     config,
@@ -167,5 +167,3 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     </ComponentsProvider>
   )
 }
-
-export { GustoProviderCustomUIAdapter }
