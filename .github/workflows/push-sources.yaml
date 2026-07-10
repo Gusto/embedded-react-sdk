@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/i18n/en/**.json"
+      - 'src/i18n/en/**.json'
 jobs:
   push-sources:
     runs-on:

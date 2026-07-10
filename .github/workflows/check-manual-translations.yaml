@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
     paths:
-      - "src/i18n/es_US/**.json"
+      - 'src/i18n/es_US/**.json'
 jobs:
   check-for-manual-translations:
     runs-on:
