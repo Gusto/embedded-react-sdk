@@ -1770,6 +1770,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `certificationPoints.fatca` | `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` |
 | `certificationPoints.taxpayerId` | `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` |
 | `certificationPoints.usPerson` | `"I am a U.S. citizen or other U.S. person (defined below);"` |
+| `certificationPoints.usPersonDefinition` | `"For federal tax purposes, you are considered a U.S. person if you are: an individual who is a U.S. citizen or U.S. resident alien; a partnership, corporation, company, or association created or organized in the United States or under the laws of the United States; an estate (other than a foreign estate); or a domestic trust (as defined in Regulations section 301.7701-7)."` |
 | <a id="property-contractorsignatureformdownloadprompt"></a> `downloadPrompt` | `"<downloadLink>Download document</downloadLink>"` |
 | <a id="property-contractorsignatureformfields"></a> `fields` | |
 | `fields.account_number` | |
