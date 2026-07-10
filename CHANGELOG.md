@@ -21,6 +21,7 @@
 ### Fixes
 
 - `OnboardingSummary` now shows confirmation copy instead of a "Missing requirements" checklist when an employee has been invited to self-onboard, since those steps are owned by the employee rather than the admin. ([#2369](https://github.com/Gusto/embedded-react-sdk/issues/2369))
+- `Contractor.SignatureForm` now includes the "U.S. person" definition below the W-9 certification checklist. ([#2382](https://github.com/Gusto/embedded-react-sdk/issues/2382))
 
 ### Chores & Maintenance
 
