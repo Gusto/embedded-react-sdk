@@ -2494,6 +2494,8 @@ export namespace Translations {
       backupWithholding: string
       /** @defaultValue `"I am a U.S. citizen or other U.S. person (defined below);"` */
       usPerson: string
+      /** @defaultValue `"For federal tax purposes, you are considered a U.S. person if you are: an individual who is a U.S. citizen or U.S. resident alien; a partnership, corporation, company, or association created or organized in the United States or under the laws of the United States; an estate (other than a foreign estate); or a domestic trust (as defined in Regulations section 301.7701-7)."` */
+      usPersonDefinition: string
       /** @defaultValue `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` */
       fatca: string
     }

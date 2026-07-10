@@ -20,6 +20,7 @@
     "taxpayerId": "The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);",
     "backupWithholding": "I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;",
     "usPerson": "I am a U.S. citizen or other U.S. person (defined below);",
+    "usPersonDefinition": "For federal tax purposes, you are considered a U.S. person if you are: an individual who is a U.S. citizen or U.S. resident alien; a partnership, corporation, company, or association created or organized in the United States or under the laws of the United States; an estate (other than a foreign estate); or a domestic trust (as defined in Regulations section 301.7701-7).",
     "fatca": "The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."
   },
   "fields": {
