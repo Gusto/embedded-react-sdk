@@ -1749,6 +1749,8 @@ export namespace Translations {
     contractorListLabel: string
     /** @defaultValue `"Edit"` */
     editCta: string
+    /** @defaultValue `"Review"` */
+    reviewCta: string
     /** @defaultValue `"Delete"` */
     deleteCta: string
     /** @defaultValue `"Add contractors to get them setup for payroll."` */

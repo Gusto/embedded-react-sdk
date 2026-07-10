@@ -10,7 +10,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
+import { componentEvents, CONTRACTOR_TYPE, ContractorOnboardingStatus } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 interface HeadProps {
@@ -126,28 +126,34 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       },
     ],
     data: contractors,
-    itemMenu: contractor => (
-      <HamburgerMenu
-        items={[
-          {
-            label: t('editCta'),
-            icon: <PencilSvg aria-hidden />,
-            onClick: () => {
-              handleEdit(contractor.uuid)
+    itemMenu: contractor => {
+      const isAwaitingSelfOnboardingReview =
+        contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
+      const editLabel = isAwaitingSelfOnboardingReview ? t('reviewCta') : t('editCta')
+
+      return (
+        <HamburgerMenu
+          items={[
+            {
+              label: editLabel,
+              icon: <PencilSvg aria-hidden />,
+              onClick: () => {
+                handleEdit(contractor.uuid)
+              },
             },
-          },
-          {
-            label: t('deleteCta'),
-            icon: <TrashCanSvg aria-hidden />,
-            onClick: () => {
-              void handleDelete(contractor.uuid)
+            {
+              label: t('deleteCta'),
+              icon: <TrashCanSvg aria-hidden />,
+              onClick: () => {
+                void handleDelete(contractor.uuid)
+              },
             },
-          },
-        ]}
-        triggerLabel={t('editCta')}
-        isLoading={isPendingDelete}
-      />
-    ),
+          ]}
+          triggerLabel={editLabel}
+          isLoading={isPendingDelete}
+        />
+      )
+    },
     emptyState: () => <EmptyDataContractorsList handleAdd={handleAdd} />,
     pagination: {
       handleNextPage,
