@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
+import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import classNames from 'classnames'
 import {
   useContractorDetailsForm,
@@ -20,6 +21,19 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+
+// Once the contractor has finished self-onboarding (or the record is otherwise
+// under admin review / completed), the admin needs to view and edit SSN/EIN even
+// though the self-onboarding toggle stays on. Mirrors the Employee AdminProfile
+// `checkHasCompletedSelfOnboarding` override.
+function hasCompletedSelfOnboarding(contractor?: Contractor | null): boolean {
+  return (
+    contractor?.onboarded === true ||
+    contractor?.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED ||
+    contractor?.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW ||
+    contractor?.onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW
+  )
+}
 
 // The admin form restores the contractor profile's product requiredness on top
 // of the hook's API-aligned baseline (which leaves ssn/ein optional and
@@ -219,8 +233,12 @@ function ContractorProfileReady({
   const { Fields } = contractor.form
   const mode = contractor.status.mode
 
+  // SSN/EIN are hidden while collection is delegated to the contractor, but must
+  // reappear once they've finished so the admin can review/edit them.
+  const completedSelfOnboarding = hasCompletedSelfOnboarding(contractor.data.contractor)
+  const showTaxId = !watchedSelfOnboarding || completedSelfOnboarding
+
   const handleSubmit = async () => {
-    const onboardingStatus = contractor.data.contractor?.onboardingStatus
     const result = await contractor.actions.onSubmit()
     if (!result) return
 
@@ -233,9 +251,7 @@ function ContractorProfileReady({
 
     onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, {
       contractorId: result.data.uuid,
-      selfOnboarding:
-        watchedSelfOnboarding &&
-        onboardingStatus !== ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
+      selfOnboarding: watchedSelfOnboarding && !completedSelfOnboarding,
     })
   }
 
@@ -298,7 +314,7 @@ function ContractorProfileReady({
                       INVALID_NAME: t('validations.lastNameFormat'),
                     }}
                   />
-                  {Fields.Ssn && !watchedSelfOnboarding && (
+                  {Fields.Ssn && showTaxId && (
                     <Fields.Ssn
                       label={t('fields.ssn.label')}
                       validationMessages={{
@@ -316,7 +332,7 @@ function ContractorProfileReady({
                     label={t('fields.businessName.label')}
                     validationMessages={{ REQUIRED: t('validations.businessName') }}
                   />
-                  {Fields.Ein && !watchedSelfOnboarding && (
+                  {Fields.Ein && showTaxId && (
                     <Fields.Ein
                       label={t('fields.ein.label')}
                       validationMessages={{

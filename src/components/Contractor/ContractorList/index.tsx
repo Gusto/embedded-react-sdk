@@ -1,6 +1,7 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useTranslation } from 'react-i18next'
 import { useContractorsDeleteMutation } from '@gusto/embedded-api/react-query/contractorsDelete'
+import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
 import { useContractors } from './useContractorList'
 import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
@@ -12,6 +13,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, CONTRACTOR_TYPE, ContractorOnboardingStatus } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import XCircleSvg from '@/assets/icons/x-circle.svg?react'
 
 interface HeadProps {
   count: number
@@ -63,7 +65,7 @@ export interface ContractorListProps extends BaseComponentInterface<'Contractor.
 }
 
 /**
- * Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
+ * Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding.
  *
  * @events
  * | Event | Description | Data |
@@ -71,6 +73,7 @@ export interface ContractorListProps extends BaseComponentInterface<'Contractor.
  * | `contractor/create` | The add-contractor action was triggered. | — |
  * | `contractor/update` | A contractor row's edit action was triggered. | `{ contractorId: string }` |
  * | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
+ * | `contractor/selfOnboarding/cancelled` | A contractor's self-onboarding was cancelled, reverting them to admin onboarding. | The updated `contractorOnboardingStatus` returned by the API. |
  * | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
  *
  * @param props - See {@link ContractorListProps}.
@@ -105,6 +108,8 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
   } = useContractors({ companyUuid: companyId })
   const { mutateAsync: deleteContractorMutation, isPending: isPendingDelete } =
     useContractorsDeleteMutation()
+  const { mutateAsync: updateOnboardingStatusMutation, isPending: isPendingCancel } =
+    useContractorsUpdateOnboardingStatusMutation()
 
   const dataViewProps = useDataView<Contractor>({
     columns: [
@@ -130,27 +135,43 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       const isAwaitingSelfOnboardingReview =
         contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
       const editLabel = isAwaitingSelfOnboardingReview ? t('reviewCta') : t('editCta')
+      const canCancelSelfOnboarding =
+        contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_INVITED ||
+        contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_STARTED
+
+      const menuItems = [
+        {
+          label: editLabel,
+          icon: <PencilSvg aria-hidden />,
+          onClick: () => {
+            handleEdit(contractor.uuid)
+          },
+        },
+      ]
+
+      if (canCancelSelfOnboarding) {
+        menuItems.push({
+          label: t('cancelSelfOnboardingCta'),
+          icon: <XCircleSvg aria-hidden />,
+          onClick: () => {
+            void handleCancelSelfOnboarding(contractor.uuid)
+          },
+        })
+      }
+
+      menuItems.push({
+        label: t('deleteCta'),
+        icon: <TrashCanSvg aria-hidden />,
+        onClick: () => {
+          void handleDelete(contractor.uuid)
+        },
+      })
 
       return (
         <HamburgerMenu
-          items={[
-            {
-              label: editLabel,
-              icon: <PencilSvg aria-hidden />,
-              onClick: () => {
-                handleEdit(contractor.uuid)
-              },
-            },
-            {
-              label: t('deleteCta'),
-              icon: <TrashCanSvg aria-hidden />,
-              onClick: () => {
-                void handleDelete(contractor.uuid)
-              },
-            },
-          ]}
+          items={menuItems}
           triggerLabel={editLabel}
-          isLoading={isPendingDelete}
+          isLoading={isPendingDelete || isPendingCancel}
         />
       )
     },
@@ -187,6 +208,24 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       })
 
       onEvent(componentEvents.CONTRACTOR_DELETED, { contractorId: payload })
+    })
+  }
+
+  const handleCancelSelfOnboarding = async (uuid: string) => {
+    await baseSubmitHandler(uuid, async payload => {
+      const response = await updateOnboardingStatusMutation({
+        request: {
+          contractorUuid: payload,
+          contractorOnboardingStatusUpdateRequestBody: {
+            onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+          },
+        },
+      })
+
+      onEvent(
+        componentEvents.CONTRACTOR_SELF_ONBOARDING_CANCELLED,
+        response.contractorOnboardingStatus,
+      )
     })
   }
 

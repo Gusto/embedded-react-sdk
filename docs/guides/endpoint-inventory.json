@@ -1950,6 +1950,11 @@
           "method": "DELETE",
           "path": "/v1/contractors/:contractorUuid",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status"
         }
       ],
       "variables": [

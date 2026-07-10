@@ -1271,6 +1271,7 @@ export const componentEvents: {
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
     readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
     readonly CONTRACTOR_SELF_ONBOARDING_DONE: "contractor/selfOnboarding/done";
+    readonly CONTRACTOR_SELF_ONBOARDING_CANCELLED: "contractor/selfOnboarding/cancelled";
     readonly CONTRACTOR_ADDRESS_UPDATED: "contractor/address/updated";
     readonly CONTRACTOR_ADDRESS_DONE: "contractor/address/done";
     readonly CONTRACTOR_PAYMENT_METHOD_UPDATED: "contractor/paymentMethod/updated";

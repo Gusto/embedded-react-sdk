@@ -82,6 +82,154 @@ describe('Contractor profile component behavior', () => {
       expect(screen.queryByLabelText('Social Security Number')).not.toBeInTheDocument()
     })
 
+    it('shows SSN for an individual under admin review of self-onboarding, with no toggle', async () => {
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Individual',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            first_name: 'John',
+            last_name: 'Doe',
+            email: 'john.doe@example.com',
+            has_ssn: false,
+            has_ein: false,
+            is_active: true,
+            file_new_hire_report: false,
+            onboarding_status: 'self_onboarding_review',
+          }),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByLabelText(/Social Security Number/)).toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
+
+    it('shows EIN for a business under admin review of self-onboarding, with no toggle', async () => {
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Business',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            business_name: 'Acme LLC',
+            email: 'billing@acme.com',
+            has_ssn: false,
+            has_ein: false,
+            is_active: true,
+            file_new_hire_report: false,
+            onboarding_status: 'self_onboarding_review',
+          }),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByLabelText(/EIN/)).toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
+
+    it('hides SSN and the toggle for an admin viewing an invited self-onboarding contractor', async () => {
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Individual',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            first_name: 'John',
+            last_name: 'Doe',
+            email: 'john.doe@example.com',
+            has_ssn: false,
+            has_ein: false,
+            is_active: true,
+            file_new_hire_report: false,
+            onboarding_status: 'self_onboarding_invited',
+          }),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByLabelText('First Name')).toBeInTheDocument()
+      expect(screen.queryByLabelText(/Social Security Number/)).not.toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
+
+    it('shows SSN for an individual under admin onboarding review, with no toggle', async () => {
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Individual',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            first_name: 'John',
+            last_name: 'Doe',
+            has_ssn: false,
+            has_ein: false,
+            is_active: true,
+            file_new_hire_report: false,
+            onboarding_status: 'admin_onboarding_review',
+          }),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByLabelText(/Social Security Number/)).toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
+
+    it('shows EIN for a business once onboarding is complete, with no toggle', async () => {
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Business',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            business_name: 'Acme LLC',
+            has_ssn: false,
+            has_ein: true,
+            is_active: true,
+            onboarded: true,
+            file_new_hire_report: false,
+            onboarding_status: 'onboarding_completed',
+          }),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByLabelText(/EIN/)).toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
+
     it('blocks submission and surfaces errors when required individual fields are empty', async () => {
       const user = userEvent.setup()
       const createResolver = vi.fn<HttpResponseResolver>(() =>
