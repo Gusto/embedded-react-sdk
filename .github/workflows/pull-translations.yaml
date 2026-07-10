@@ -1,0 +1,18 @@
+name: Pull Translations
+on:
+  workflow_dispatch:
+jobs:
+  pull-translations:
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Pull translations
+        uses: Gusto/embedded-i18n-actions/pull_translations@main
+        with:
+          lokalise_project_id: ${{ vars.LOKALISE_PROJECT_ID }}
+          lokalise_api_token: ${{ secrets.LOKALISE_API_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          file_format: json
