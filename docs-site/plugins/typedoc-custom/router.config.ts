@@ -112,7 +112,11 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     ],
     displayName: 'Component inventory',
     layout: {
-      feature: [{ group: 'Component adapter', promote: true }, { group: 'Component props' }],
+      feature: [
+        { group: CUSTOM_GROUPS.componentAdapter, promote: true },
+        { group: CUSTOM_GROUPS.componentProps },
+      ],
+      default: 'utilityTypes',
     },
   },
   {

@@ -583,6 +583,9 @@ export class SDKRouter extends MemberRouter {
       if (!(child instanceof DeclarationReflection)) continue
       const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName ?? ''
       if (!sources.some(fragment => fp.includes(fragment))) continue
+      // Skip types that explicitly opt into a specific standalone page — they
+      // are handled by standalonePageFromSources, not by this relocation pass.
+      if (child.comment?.blockTags.some(t => t.tag === '@page')) continue
       const inGroup = child.comment?.blockTags.some(
         t =>
           t.tag === '@group' &&

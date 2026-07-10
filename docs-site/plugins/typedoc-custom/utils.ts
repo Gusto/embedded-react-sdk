@@ -128,6 +128,15 @@ export function childOfTarget(reflection: Reflection): string | null {
  * key matches.
  */
 export function standalonePageFromSources(reflection: Reflection): string | null {
+  // `@page <id>` overrides source-path routing — check it first.
+  const pageTag = (reflection as DeclarationReflection).comment?.blockTags.find(
+    t => t.tag === '@page',
+  )
+  if (pageTag) {
+    const pageId = Comment.combineDisplayParts(pageTag.content).trim()
+    if (STANDALONE_PAGES.some(p => p.id === pageId)) return pageId
+  }
+
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return null
   const fp = source.fullFileName ?? source.fileName ?? ''

@@ -49,6 +49,7 @@ export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
  * An open map of `data-*` attributes that can be spread onto a rendered DOM element.
  *
  * @public
+ * @page component-inventory
  */
 export type DataAttributes = {
   [key: `data-${string}`]: string | number | boolean
