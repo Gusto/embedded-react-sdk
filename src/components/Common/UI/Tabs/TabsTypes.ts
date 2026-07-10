@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 
 /**
- * Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
+ * Shape of a single tab configuration your {@link TabsProps | Tabs} implementation receives in its `tabs` prop.
  *
  * @public
- * @group Utility types
+ * @childOf {@link TabsProps}
  */
 export interface TabProps {
   /**

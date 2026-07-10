@@ -2,10 +2,10 @@ import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 /**
- * Option entry for a `MultiSelectComboBox` dropdown list.
+ * Option entry for a {@link MultiSelectComboBoxProps | MultiSelectComboBox} dropdown list.
  *
  * @public
- * @group Utility types
+ * @childOf {@link MultiSelectComboBoxProps}
  */
 export interface MultiSelectComboBoxOption {
   /**

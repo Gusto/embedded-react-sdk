@@ -2,10 +2,10 @@ import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 /**
- * Option entry for the ComboBox dropdown list.
+ * Option entry for the {@link ComboBoxProps | ComboBox} dropdown list.
  *
  * @public
- * @group Utility types
+ * @childOf {@link ComboBoxProps}
  */
 export interface ComboBoxOption {
   /**

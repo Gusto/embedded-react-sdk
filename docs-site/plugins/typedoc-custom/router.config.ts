@@ -99,6 +99,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       'contexts/ComponentAdapter',
     ],
     displayName: 'Component inventory',
+    layout: {
+      feature: [{ group: 'Component adapter', promote: true }, { group: 'Component props' }],
+    },
   },
   { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook utilities' },
   {
@@ -220,8 +223,8 @@ export type PageLayout = {
   default?: 'utilityTypes' | 'promote'
   /**
    * Member ordering within each section. `'alpha'` (default) sorts by name;
-   * `'source'` preserves declaration order. Either way `@groupWith` still pulls
-   * a member to follow its target.
+   * `'source'` preserves declaration order. Either way `@siblingOf` and `@childOf`
+   * still pulls a member to follow its target.
    */
   sort?: 'alpha' | 'source'
 }

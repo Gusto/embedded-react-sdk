@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
  * Single entry in a {@link BreadcrumbsProps | Breadcrumbs} trail.
  *
  * @public
- * @group Utility types
+ * @childOf {@link BreadcrumbsProps}
  */
 export interface Breadcrumb {
   /**

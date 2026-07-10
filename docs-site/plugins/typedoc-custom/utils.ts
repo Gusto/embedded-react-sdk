@@ -85,15 +85,13 @@ export function hasGroup(reflection: Reflection, group: string): boolean {
 }
 
 /**
- * The type name a reflection's `@groupWith {@link X}` tag points at — the
- * sibling it should render immediately after — or `null` when the tag is
- * absent. Prefers the resolved `{@link}` target's name; falls back to the raw
- * link text (stripping any `#member` or `| display` suffix).
+ * The type name pointed at by a relationship tag whose content is a single
+ * `{@link X}` (`@siblingOf`, `@childOf`). Prefers the resolved `{@link}`
+ * target's name; falls back to the raw link text (stripping any `#member` or
+ * `| display` suffix). Returns `null` when the tag is absent.
  */
-export function groupWithTarget(reflection: Reflection): string | null {
-  const tag = (reflection as DeclarationReflection).comment?.blockTags.find(
-    t => t.tag === '@groupWith',
-  )
+function linkTagTarget(reflection: Reflection, tagName: string): string | null {
+  const tag = (reflection as DeclarationReflection).comment?.blockTags.find(t => t.tag === tagName)
   if (!tag) return null
   for (const part of tag.content) {
     if (part.kind === 'inline-tag' && part.tag === '@link') {
@@ -103,6 +101,24 @@ export function groupWithTarget(reflection: Reflection): string | null {
   }
   const text = Comment.combineDisplayParts(tag.content).trim()
   return text || null
+}
+
+/**
+ * The type name a reflection's `@siblingOf {@link X}` tag points at — the peer
+ * it should render immediately after, at the same heading level, within its
+ * group — or `null` when the tag is absent.
+ */
+export function siblingOfTarget(reflection: Reflection): string | null {
+  return linkTagTarget(reflection, '@siblingOf')
+}
+
+/**
+ * The type name a reflection's `@childOf {@link X}` tag points at — the parent
+ * it should render nested beneath, at one deeper heading level, instead of as
+ * its own top-level entry — or `null` when the tag is absent.
+ */
+export function childOfTarget(reflection: Reflection): string | null {
+  return linkTagTarget(reflection, '@childOf')
 }
 
 /**

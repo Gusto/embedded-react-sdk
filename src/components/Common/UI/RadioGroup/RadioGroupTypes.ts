@@ -2,10 +2,10 @@ import type { FieldsetHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 /**
- * Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
+ * Option entry your {@link RadioGroupProps | RadioGroup} implementation receives in the `options` array when rendering each radio button.
  *
  * @public
- * @group Utility types
+ * @childOf {@link RadioGroupProps}
  */
 export interface RadioGroupOption {
   /**

@@ -38,6 +38,7 @@ import {
   getHookReadyInterface,
 } from './hook-model.ts'
 import {
+  childOfTarget,
   componentPropsInterfaces,
   domainFromSources,
   hasGroup,
@@ -697,6 +698,12 @@ export class SDKRouter extends MemberRouter {
   // without `layout` is absent here and falls through to the default template.
   readonly standaloneLayouts = new Map<DeclarationReflection, PageLayout>()
 
+  // Parent reflection → the members carrying `@childOf {@link parent}`, which the
+  // theme's `members` partial renders nested one heading level beneath the parent
+  // instead of as their own top-level entries. Populated by `nestChildOfMembers`,
+  // which also removes the children from their groups so they don't render twice.
+  readonly nestedChildrenByParent = new Map<DeclarationReflection, DeclarationReflection[]>()
+
   // Keyed by the flow DeclarationReflection; populated before sources are cleared
   // so the renderer can slot GUIDE.md prose into each flow page.
   readonly flowGuides = new Map<DeclarationReflection, Guide>()
@@ -927,6 +934,10 @@ export class SDKRouter extends MemberRouter {
       }
       ns.children = members
       ns.groups = groupSyntheticMembers(members, ns)
+      // `@childOf` members are pulled from their groups and recorded for nesting
+      // on both the default template and the standalone layout renderer, so this
+      // runs regardless of `layout`.
+      this.nestChildOfMembers(ns)
       if (layout) {
         // A page laid out by the standalone renderer inlines each component's
         // props interface into its Parameters section (like every other page),
@@ -967,6 +978,45 @@ export class SDKRouter extends MemberRouter {
     }
 
     return pages
+  }
+
+  /**
+   * Move members carrying `@childOf {@link X}` out of their own group and record
+   * them under `X` in {@link nestedChildrenByParent}, so the theme's `members`
+   * partial renders each nested one heading level beneath its parent instead of
+   * as a top-level entry. The child stays in `ns.children` so its anchor still
+   * resolves for inbound `{@link}`s; only its group membership is removed, so it
+   * doesn't also render as a sibling section. A `@childOf` pointing at a name not
+   * on the page degrades to a plain top-level entry (left in its group). The
+   * consumed tag is stripped so it doesn't render as a stray "Child Of" block.
+   */
+  private nestChildOfMembers(ns: DeclarationReflection): void {
+    const byName = new Map<string, DeclarationReflection>()
+    for (const child of ns.children ?? []) byName.set(child.name, child)
+
+    const nested = new Set<DeclarationReflection>()
+    for (const child of ns.children ?? []) {
+      const targetName = childOfTarget(child)
+      if (!targetName || targetName === child.name) continue
+      const parent = byName.get(targetName)
+      if (!parent) continue
+      const siblings = this.nestedChildrenByParent.get(parent) ?? []
+      siblings.push(child)
+      this.nestedChildrenByParent.set(parent, siblings)
+      nested.add(child)
+      if (child.comment) {
+        child.comment.blockTags = child.comment.blockTags.filter(t => t.tag !== '@childOf')
+      }
+    }
+    if (nested.size === 0) return
+
+    for (const siblings of this.nestedChildrenByParent.values()) {
+      siblings.sort((a, b) => a.name.localeCompare(b.name))
+    }
+    for (const group of ns.groups ?? []) {
+      group.children = group.children.filter(c => !nested.has(c as DeclarationReflection))
+    }
+    ns.groups = (ns.groups ?? []).filter(g => g.children.length > 0)
   }
 
   /**
