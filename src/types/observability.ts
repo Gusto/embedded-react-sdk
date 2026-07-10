@@ -109,6 +109,7 @@ export interface SanitizationConfig {
  * the hooks are invoked; see {@link SanitizationConfig}.
  *
  * @public
+ * @group Observability
  *
  * @example
  * ```tsx

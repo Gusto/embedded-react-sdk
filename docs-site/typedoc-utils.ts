@@ -36,6 +36,10 @@ export const CUSTOM_GROUPS = {
   formHookResults: 'Form hook results',
   hookFieldProps: 'Hook field props',
 
+  // Standalone reference pages
+  httpInterceptors: 'HTTP interceptors',
+  observability: 'Observability',
+
   // Namespaces and synthetic sections produced by the typedoc-custom plugin
   componentNamespaces: 'Component namespaces',
   domains: 'Domains',

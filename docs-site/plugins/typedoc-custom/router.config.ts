@@ -160,6 +160,42 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       default: 'utilityTypes',
     },
   },
+  {
+    id: 'http-interceptors',
+    // `types/hooks` owns SDKHooks; the hook and context interfaces are re-exported
+    // from the versioned embedded-api package at `hooks/types`, so both fragments
+    // are needed to capture all reflections on this page.
+    sources: ['types/hooks', 'hooks/types'],
+    displayName: 'HTTP interceptors',
+    intro:
+      'Low-level request/response interceptors for customizing HTTP behaviour across the SDK. ' +
+      'Pass an [`SDKHooks`](#sdkhooks) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.hooks`.',
+    layout: {
+      feature: [{ group: CUSTOM_GROUPS.httpInterceptors, promote: true }],
+      default: 'utilityTypes',
+    },
+  },
+  {
+    id: 'observability',
+    sources: ['types/observability'],
+    displayName: 'Observability',
+    intro:
+      'Error-tracking and performance-metric hooks for integrating the SDK with tools like Sentry or Datadog. ' +
+      'Pass an [`ObservabilityHook`](#observabilityhook) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.observability`.',
+    layout: {
+      feature: [{ group: CUSTOM_GROUPS.observability, promote: true }],
+      default: 'utilityTypes',
+    },
+  },
+  {
+    id: 'error-handling',
+    sources: ['types/sdkError'],
+    displayName: 'Error handling',
+    intro:
+      'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
+      'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
+    layout: { default: 'promote' },
+  },
 ]
 
 /**
