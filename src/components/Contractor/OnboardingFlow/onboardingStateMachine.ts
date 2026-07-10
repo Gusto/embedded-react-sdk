@@ -1,4 +1,5 @@
 import { transition, reduce, state, guard } from 'robot3'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import {
   AddressContextual,
   ContractorListContextual,
@@ -9,7 +10,7 @@ import {
   SubmitContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
@@ -17,12 +18,34 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_UPDATE]: {
     contractorId: string
   }
-  [componentEvents.CONTRACTOR_PROFILE_DONE]: { contractorId: string; selfOnboarding: boolean }
+  [componentEvents.CONTRACTOR_PROFILE_DONE]: Contractor & { selfOnboarding: boolean }
   [componentEvents.CONTRACTOR_SUBMIT_DONE]: { message?: string }
 }
 
+// The new hire report belongs to the contractor's initial onboarding pass only.
+// These are the statuses where the admin still owns first-time setup; once the
+// contractor advances to admin review, an active self-onboarding stage, or
+// completion, the report is settled and the step is skipped. A missing status
+// (a just-created contractor) counts as initial. We read the post-save status
+// off the profile/done contractor because the API auto-advances to
+// admin_onboarding_review the instant the last required field is saved.
+const INITIAL_ONBOARDING_STATUSES = new Set<Contractor['onboardingStatus']>([
+  ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+  ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
+])
+
+const showNewHireReportForStatus = (status?: Contractor['onboardingStatus']): boolean =>
+  !status || INITIAL_ONBOARDING_STATUSES.has(status)
+
 const TOTAL_STEPS_DEFAULT = 5
-const TOTAL_STEPS_SELF_ONBOARDING = 3
+
+// Step totals depend on the path taken after the profile step: the self-onboarding
+// path skips address + payment, and either path drops the new hire report once the
+// contractor has advanced past the admin's initial onboarding pass.
+const computeTotalSteps = (selfOnboarding: boolean, showNewHireReport: boolean): number => {
+  if (selfOnboarding) return showNewHireReport ? 3 : 2
+  return showNewHireReport ? 5 : 4
+}
 
 const progressHeader = (
   currentStep: number,
@@ -99,12 +122,16 @@ export const onboardingMachine = {
           ctx: OnboardingFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
         ): OnboardingFlowContextInterface => {
+          const showNewHireReport = showNewHireReportForStatus(ev.payload.onboardingStatus)
+          const totalSteps = computeTotalSteps(false, showNewHireReport)
           return {
             ...ctx,
             component: AddressContextual,
-            header: progressHeader(2),
-            contractorId: ev.payload.contractorId,
+            header: progressHeader(2, totalSteps),
+            contractorId: ev.payload.uuid,
             selfOnboarding: ev.payload.selfOnboarding,
+            showNewHireReport,
+            totalSteps,
           }
         },
       ),
@@ -118,16 +145,47 @@ export const onboardingMachine = {
           ctx: OnboardingFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
         ): OnboardingFlowContextInterface => {
+          const totalSteps = computeTotalSteps(true, true)
           return {
             ...ctx,
             component: NewHireReportContextual,
-            header: progressHeader(2, TOTAL_STEPS_SELF_ONBOARDING),
-            contractorId: ev.payload.contractorId,
+            header: progressHeader(2, totalSteps),
+            contractorId: ev.payload.uuid,
             selfOnboarding: ev.payload.selfOnboarding,
+            showNewHireReport: true,
+            totalSteps,
           }
         },
       ),
-      guard((ctx, ev) => ev.payload.selfOnboarding),
+      guard(
+        (ctx, ev) =>
+          ev.payload.selfOnboarding && showNewHireReportForStatus(ev.payload.onboardingStatus),
+      ),
+    ),
+    transition(
+      componentEvents.CONTRACTOR_PROFILE_DONE,
+      'submit',
+      reduce(
+        (
+          ctx: OnboardingFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
+        ): OnboardingFlowContextInterface => {
+          const totalSteps = computeTotalSteps(true, false)
+          return {
+            ...ctx,
+            component: SubmitContextual,
+            header: progressHeader(2, totalSteps),
+            contractorId: ev.payload.uuid,
+            selfOnboarding: ev.payload.selfOnboarding,
+            showNewHireReport: false,
+            totalSteps,
+          }
+        },
+      ),
+      guard(
+        (ctx, ev) =>
+          ev.payload.selfOnboarding && !showNewHireReportForStatus(ev.payload.onboardingStatus),
+      ),
     ),
   ),
   address: state<MachineTransition>(
@@ -135,7 +193,11 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_ADDRESS_DONE,
       'paymentMethod',
-      reduce(createReducer({ component: PaymentMethodContextual, header: progressHeader(3) })),
+      reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+        ...ctx,
+        component: PaymentMethodContextual,
+        header: progressHeader(3, ctx.totalSteps),
+      })),
     ),
   ),
   paymentMethod: state<MachineTransition>(
@@ -143,12 +205,22 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE,
       'newHireReport',
-      reduce(
-        createReducer({
-          component: NewHireReportContextual,
-          header: progressHeader(4),
-        }),
-      ),
+      reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+        ...ctx,
+        component: NewHireReportContextual,
+        header: progressHeader(4, ctx.totalSteps),
+      })),
+      guard((ctx: OnboardingFlowContextInterface) => ctx.showNewHireReport !== false),
+    ),
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE,
+      'submit',
+      reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+        ...ctx,
+        component: SubmitContextual,
+        header: progressHeader(4, ctx.totalSteps),
+      })),
+      guard((ctx: OnboardingFlowContextInterface) => ctx.showNewHireReport === false),
     ),
   ),
   newHireReport: state<MachineTransition>(
@@ -156,12 +228,11 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE,
       'submit',
-      reduce(
-        createReducer({
-          component: SubmitContextual,
-          header: progressHeader(5),
-        }),
-      ),
+      reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+        ...ctx,
+        component: SubmitContextual,
+        header: progressHeader(ctx.selfOnboarding ? 3 : 5, ctx.totalSteps),
+      })),
     ),
   ),
   submit: state<MachineTransition>(

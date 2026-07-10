@@ -127,7 +127,7 @@ export type ContractorProfileProps =
  * | ----- | ----------- | ---- |
  * | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
  * | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
- * | `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
+ * | `contractor/profile/done` | The contractor profile step finished. | The saved {@link APIModels.Contractor} extended with `selfOnboarding: boolean` |
  *
  * @param props - See {@link ContractorProfileProps}.
  * @returns The rendered contractor profile form.
@@ -251,6 +251,7 @@ function ContractorProfileReady({
 
     onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, {
       contractorId: result.data.uuid,
+      onboardingStatus: result.data.onboardingStatus,
       selfOnboarding: watchedSelfOnboarding && !completedSelfOnboarding,
     })
   }
