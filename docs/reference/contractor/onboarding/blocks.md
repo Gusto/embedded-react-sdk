@@ -129,7 +129,7 @@ fields for the contractor to complete.
 | ----- | ----------- | ---- |
 | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
 | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
-| `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
+| `contractor/profile/done` | The contractor profile step finished. | The saved [APIModels.Contractor](../../APIModels/index.md#contractor) extended with `selfOnboarding: boolean` |
 
 ### Endpoints
 
