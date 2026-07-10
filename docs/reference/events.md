@@ -113,6 +113,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_PAYMENT_VIEW` | `"contractor/payments/view"` |
 | `CONTRACTOR_PAYMENT_VIEW_DETAILS` | `"contractor/payments/view/details"` |
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` |
+| `CONTRACTOR_SELF_ONBOARDING_CANCELLED` | `"contractor/selfOnboarding/cancelled"` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` |
 | `CONTRACTOR_SIGN_DOCUMENT` | `"contractor/documents/sign"` |

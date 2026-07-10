@@ -65,7 +65,7 @@ Props for [Address](#address).
 
 ## ContractorList
 
-Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
+Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding.
 
 ### ContractorListProps
 
@@ -89,6 +89,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/create` | The add-contractor action was triggered. | — |
 | `contractor/update` | A contractor row's edit action was triggered. | `{ contractorId: string }` |
 | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
+| `contractor/selfOnboarding/cancelled` | A contractor's self-onboarding was cancelled, reverting them to admin onboarding. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
 
 ### Endpoints
@@ -97,6 +98,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors) |
 | DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
 
 <a id="contractorprofile"></a>
 

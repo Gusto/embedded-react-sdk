@@ -90,7 +90,7 @@ _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderCom
 
 | Component | Description |
 | ------ | ------ |
-| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
+| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
 | [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
 | [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |

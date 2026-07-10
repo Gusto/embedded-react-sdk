@@ -1265,6 +1265,7 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | ------ | ------ |
 | <a id="property-contractorcontractorlistaddanothercta"></a> `addAnotherCta` | `"+ Add another contractor"` |
 | <a id="property-contractorcontractorlistaddcontractorcta"></a> `addContractorCta` | `"Add a contractor"` |
+| <a id="property-contractorcontractorlistcancelselfonboardingcta"></a> `cancelSelfOnboardingCta` | `"Cancel self-onboarding"` |
 | <a id="property-contractorcontractorlistcontinuecta"></a> `continueCta` | `"Continue"` |
 | <a id="property-contractorcontractorlistcontractorlistlabel"></a> `contractorListLabel` | `"A list of contractors"` |
 | <a id="property-contractorcontractorlistdeletecta"></a> `deleteCta` | `"Delete"` |

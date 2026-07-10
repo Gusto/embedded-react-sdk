@@ -26,7 +26,7 @@ Flows and blocks for onboarding contractors.
 | Component | Description |
 | --------- | ----------- |
 | [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
-| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
+| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
 | [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
 | [DocumentSigner](blocks.md#documentsigner) | Contractor onboarding step for reading and signing required contractor documents. |
