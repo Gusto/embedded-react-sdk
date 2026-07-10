@@ -1753,6 +1753,8 @@ export namespace Translations {
     reviewCta: string
     /** @defaultValue `"Delete"` */
     deleteCta: string
+    /** @defaultValue `"Cancel self-onboarding"` */
+    cancelSelfOnboardingCta: string
     /** @defaultValue `"Add contractors to get them setup for payroll."` */
     emptyTableDescription: string
     /** @defaultValue `"You haven't added any contractors yet"` */

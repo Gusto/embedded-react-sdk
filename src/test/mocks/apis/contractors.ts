@@ -28,6 +28,10 @@ export function handleGetContractorsList(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_uuid/contractors`, resolver)
 }
 
+export function handleUpdateContractorOnboardingStatus(resolver: HttpResponseResolver) {
+  return http.put(`${API_BASE_URL}/v1/contractors/:contractor_uuid/onboarding_status`, resolver)
+}
+
 const contractorFixture = {
   uuid: 'contractor-123',
   company_uuid: '123',
