@@ -437,6 +437,30 @@ function renderStandalonePage(
   const declarations = (members: Reflection[]): DeclarationReflection[] =>
     members.filter((m): m is DeclarationReflection => m instanceof DeclarationReflection)
 
+  // A component inlines its props interface — with that interface's own anchor —
+  // in place of the bare `props:` parameter row (see renderFunctionPropsTable).
+  // The inlined interface must not also render as its own standalone member, or
+  // the props table appears twice. Collect every such interface up front so both
+  // the featured and default member lists can exclude it.
+  const inlinedComponentProps = new Set<Reflection>()
+  for (const group of groups) {
+    for (const member of declarations(group.children)) {
+      const sig = member.signatures?.[0]
+      if (!isComponent(member) || sig?.parameters?.length !== 1) continue
+      const propsType = sig.parameters[0]!.type
+      const propsRef = propsType instanceof ReferenceType ? propsType.reflection : undefined
+      if (
+        propsRef instanceof DeclarationReflection &&
+        propsRef.kind === ReflectionKind.Interface &&
+        (propsRef.parent === member.parent || propsRef.parent === member)
+      ) {
+        inlinedComponentProps.add(propsRef)
+      }
+    }
+  }
+  const pageMembers = (members: DeclarationReflection[]): DeclarationReflection[] =>
+    members.filter(m => !inlinedComponentProps.has(m))
+
   // Sibling members within a section are divided by `***`, matching the default
   // template; a heading (group name or `Utility types`) is itself the divider,
   // so no `***` runs between a heading and its first member or before a heading.
@@ -466,17 +490,25 @@ function renderStandalonePage(
     : ''
   if (description) parts.push(description)
 
-  for (const { group: title, promote } of featured) {
+  for (const { group: title, promote, note } of featured) {
     const group = groups.find(g => g.title === title)
     if (!group) continue
-    const members = orderBySiblingOf(declarations(group.children), undefined, compare)
+    const members = orderBySiblingOf(pageMembers(declarations(group.children)), undefined, compare)
     if (members.length === 0) continue
     if (!promote) emitHeading(title)
+    // A note sits under the group heading; skip it for promoted groups, which
+    // drop the heading and lift members straight to H2 (nowhere for it to go).
+    if (note && !promote) {
+      parts.push(note)
+      prevWasMember = false
+    }
     for (const member of members) emitMember(member, promote ? 2 : 3)
   }
 
   const rest = orderBySiblingOf(
-    groups.filter(g => !featuredTitles.has(g.title)).flatMap(g => declarations(g.children)),
+    pageMembers(
+      groups.filter(g => !featuredTitles.has(g.title)).flatMap(g => declarations(g.children)),
+    ),
     undefined,
     compare,
   )

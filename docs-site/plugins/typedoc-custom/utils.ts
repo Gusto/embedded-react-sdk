@@ -20,6 +20,7 @@ const COMPONENT_GROUP_NAMES = new Set<string>([
   CUSTOM_GROUPS.flowComponents,
   CUSTOM_GROUPS.blockComponents,
   CUSTOM_GROUPS.components,
+  CUSTOM_GROUPS.providers,
 ])
 
 /** Derived from DOMAINS — do not edit directly.

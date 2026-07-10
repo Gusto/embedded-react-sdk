@@ -103,7 +103,35 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       feature: [{ group: 'Component adapter', promote: true }, { group: 'Component props' }],
     },
   },
-  { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook utilities' },
+  {
+    id: 'hooks',
+    sources: ['partner-hook-utils'],
+    displayName: 'Hooks',
+    intro:
+      'The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
+    layout: {
+      feature: [
+        { group: CUSTOM_GROUPS.providers, promote: true },
+        {
+          group: CUSTOM_GROUPS.formComposition,
+          note: '_Usage: [Composing multiple hooks](../guides/hooks/composing-multiple-hooks.md) and [Handling hook errors](../guides/hooks/handling-hook-errors.md)._',
+        },
+        {
+          group: CUSTOM_GROUPS.commonHookResults,
+          note: '_The shape every hook returns — see the [Hooks overview](../guides/hooks/overview.md)._',
+        },
+        {
+          group: CUSTOM_GROUPS.formHookResults,
+          note: '_Returned by form hooks — see the [Hooks overview](../guides/hooks/overview.md)._',
+        },
+        {
+          group: CUSTOM_GROUPS.hookFieldProps,
+          note: '_Configure field behavior in [Configuring form fields](../guides/hooks/configuring-form-fields.md)._',
+        },
+      ],
+      default: 'utilityTypes',
+    },
+  },
   {
     id: 'events',
     // `shared/constants` supplies the event catalog + EventType; `Base/useBase` supplies
@@ -211,9 +239,11 @@ export type PageLayout = {
    * Groups promoted to the top of the page, rendered as leading H2 sections in
    * the order listed. `promote: true` lifts each member of the group to its own
    * `## H2` (the group heading is dropped); otherwise the group name is the
-   * `## H2` and its members are `### H3`.
+   * `## H2` and its members are `### H3`. An optional `note` is Markdown emitted
+   * directly under the group heading (e.g. a cross-link to the relevant guide);
+   * it is ignored for `promote`d groups, which have no heading to sit under.
    */
-  feature?: Array<{ group: CustomGroupTag; promote?: boolean }>
+  feature?: Array<{ group: CustomGroupTag; promote?: boolean; note?: string }>
   /**
    * How to render every member not claimed by a `feature` group.
    * `'utilityTypes'` collects them under a single `## Utility types` H2 with
