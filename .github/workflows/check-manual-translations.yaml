@@ -1,0 +1,19 @@
+name: 'Check for manual translations'
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - 'src/i18n/es_US/**.json'
+jobs:
+  check-for-manual-translations:
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Run manual translations check
+        uses: Gusto/embedded-i18n-actions/manual_translations_check@main
+        with:
+          file_patterns: |
+            **/i18n/es_US/**
