@@ -919,8 +919,12 @@ export class SDKRouter extends MemberRouter {
     }
 
     for (const [page, members] of standaloneGroups) {
-      const { displayName, layout } = STANDALONE_PAGES.find(p => p.id === page)!
+      const { displayName, layout, intro } = STANDALONE_PAGES.find(p => p.id === page)!
       const ns = new DeclarationReflection(displayName, ReflectionKind.Namespace, project)
+      if (intro) {
+        ns.comment = new Comment()
+        ns.comment.summary = [{ kind: 'text', text: intro }]
+      }
       ns.children = members
       ns.groups = groupSyntheticMembers(members, ns)
       if (layout) {

@@ -83,6 +83,10 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'theme-variables',
     sources: ['contexts/ThemeProvider'],
     displayName: 'Theme variables',
+    intro:
+      'These design tokens control the visual appearance of all components and UX within the SDK. ' +
+      'See the [theming guide](../guides/theming.md) for more context.',
+    layout: { default: 'promote' },
   },
   {
     id: 'component-inventory',
@@ -176,6 +180,14 @@ export type StandalonePageConfig = {
   groups?: CustomGroupTag[]
   /** Page H1 and synthetic namespace name. */
   displayName: string
+  /**
+   * Optional Markdown prose rendered as the page's leading description, above
+   * all sections (below the H1). The synthetic namespace carries no TSDoc of its
+   * own, so this is the only page-level intro slot. Use it for a one-line framing
+   * plus cross-links to the relevant guides; relative `.md` links resolve the same
+   * as anywhere else in `docs/` (e.g. `../guides/theming.md`).
+   */
+  intro?: string
   /**
    * Optional per-page section layout. When omitted the page renders with the
    * default template (kind-based groups as `## H2`, members as `### H3`). When

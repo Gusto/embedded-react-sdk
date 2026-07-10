@@ -443,6 +443,15 @@ export function serializeFrontmatter(frontmatter: Record<string, unknown>): stri
 }
 
 /**
+ * Flatten Markdown link syntax (`[text](url)`) to its link text. The frontmatter
+ * `description` becomes a `<meta>` tag, which is plain text — leading-prose intros
+ * may carry cross-links, but those must not surface as literal `[…](…)` markup.
+ */
+function stripMarkdownLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+}
+
+/**
  * Derive a description for frontmatter from the model's comment summary, or
  * fall back to a generated sentence based on the page title.
  */
@@ -453,7 +462,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
     const fromComment =
       model.comment?.summary && Comment.combineDisplayParts(model.comment.summary).trim()
     return (
-      fromComment ||
+      (fromComment && stripMarkdownLinks(fromComment)) ||
       'Reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.'
     )
   }
@@ -461,7 +470,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
   const fromComment =
     decl.comment?.summary && Comment.combineDisplayParts(decl.comment.summary).trim()
-  if (fromComment) return fromComment
+  if (fromComment) return stripMarkdownLinks(fromComment)
 
   const title = pageTitle(page)
   return `${title} reference.`
