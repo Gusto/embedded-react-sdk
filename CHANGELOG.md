@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.52.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.2...v0.52.0) (2026-07-10)
+
+### ⚠ Breaking Changes
+
+- **`@gusto/embedded-api` is now pinned to the dated `v2026-06-15` package** ([#2371](https://github.com/Gusto/embedded-react-sdk/issues/2371)). Update your dependency and imports from `@gusto/embedded-api-v-2026-02-01` to `@gusto/embedded-api-v-2026-06-15`.
+  - `EmployeeCompensations` money fields (`grossPay`, `netPay`, `checkAmount`) are now `string` instead of `number`.
+  - `@gusto/embedded-api/models/components/payroll` was renamed to `@gusto/embedded-api/models/components/payrollshow`.
+  - Company tax requirement records now report `setupStatus` instead of `setupComplete`.
+  - A few exports were renamed: `WageType` → `ContractorWageType`, `SortOrder` → `QueryParamSortOrder`, `Include` → `GetV1CompaniesCompanyIdEmployeesQueryParamInclude`, `ContractorOnboardingStatus1` → `OnboardingStatus`.
+- **`ApiProvider` and `ApiProviderProps` are no longer exported** ([#2376](https://github.com/Gusto/embedded-react-sdk/issues/2376)). If you composed the provider stack manually, use `GustoProvider` or `GustoProviderCustomUIAdapter` instead — both wrap `ApiProvider` internally.
+- **`ObservabilityProvider`, `useObservability`, `ObservabilityProviderProps`, and `ObservabilityContextValue` are no longer exported** ([#2376](https://github.com/Gusto/embedded-react-sdk/issues/2376)). Configure observability via the `observability` field on the `config` prop passed to `GustoProvider` / `GustoProviderCustomUIAdapter` instead.
+- **`GustoApiProps` (the props type for `GustoProvider`) was renamed to `GustoProviderProps`** ([#2376](https://github.com/Gusto/embedded-react-sdk/issues/2376)). The previous `GustoProviderProps` (props for `GustoProviderCustomUIAdapter`) was renamed to `GustoBaseProviderProps`. Update any direct references to these type names.
+
+### Features & Enhancements
+
+- Added `FormBox`, a UI primitive for grouping form sections, alongside the existing `Box` component. Override it via the component adapter like any other UI primitive. ([#2359](https://github.com/Gusto/embedded-react-sdk/issues/2359))
+- `StateTaxes` and `StateTaxesList` accept a new `showContinueButton` prop (defaults to `true`) to hide the Continue button when either is embedded as a step inside a larger flow with its own navigation. ([#2381](https://github.com/Gusto/embedded-react-sdk/issues/2381))
+
+### Fixes
+
+- `OnboardingSummary` now shows confirmation copy instead of a "Missing requirements" checklist when an employee has been invited to self-onboard, since those steps are owned by the employee rather than the admin. ([#2369](https://github.com/Gusto/embedded-react-sdk/issues/2369))
+- `Contractor.SignatureForm` now includes the "U.S. person" definition below the W-9 certification checklist. ([#2382](https://github.com/Gusto/embedded-react-sdk/issues/2382))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@commitlint/cli`, `msw`, `prettier`, `ws`)
+- Bump dependencies (`i18next`, `react-i18next`)
+
 ## [0.51.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.1...v0.51.2) (2026-07-07)
 
 ### Fixes
