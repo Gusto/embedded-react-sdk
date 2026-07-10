@@ -18,6 +18,15 @@ import { useBase } from '@/components/Base'
 export interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
   /** The associated company identifier. */
   companyId: string
+  /**
+   * Controls visibility of the Continue button below the state tax list.
+   *
+   * When `false`, hides the Continue button. Use this when the list is embedded
+   * as one step inside a larger flow that provides its own navigation.
+   *
+   * @defaultValue `true`
+   */
+  showContinueButton?: boolean
 }
 
 /**
@@ -44,7 +53,7 @@ export function StateTaxesList(props: StateTaxesListProps) {
   )
 }
 
-function Root({ className, children, companyId }: StateTaxesListProps) {
+function Root({ className, children, companyId, showContinueButton = true }: StateTaxesListProps) {
   useI18n('Company.StateTaxes')
   const { onEvent } = useBase()
   const { data } = useTaxRequirementsGetAllSuspense({ companyUuid: companyId })
@@ -75,7 +84,7 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
             <>
               <Head />
               <List />
-              <Actions />
+              {showContinueButton && <Actions />}
             </>
           )}
         </Flex>

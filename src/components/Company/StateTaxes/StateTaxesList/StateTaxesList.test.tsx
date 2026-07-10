@@ -60,6 +60,23 @@ describe('StateTaxesList', () => {
   })
 })
 
+describe('showContinueButton', () => {
+  it('hides the Continue button when showContinueButton is false', async () => {
+    setupApiTestMocks()
+    render(
+      <GustoTestProvider>
+        <StateTaxesList companyId="company-123" onEvent={vi.fn()} showContinueButton={false} />
+      </GustoTestProvider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('California')).toBeInTheDocument()
+    })
+
+    expect(screen.queryByRole('button', { name: 'Continue' })).not.toBeInTheDocument()
+  })
+})
+
 function renderWithSingleState(state: object, onEvent = vi.fn()) {
   setupApiTestMocks()
   server.use(
