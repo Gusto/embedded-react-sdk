@@ -80,6 +80,18 @@ export const DOMAINS: DomainConfig[] = [
  */
 export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
+    id: 'providers',
+    sources: ['contexts/GustoProvider'],
+    displayName: 'Providers',
+    intro:
+      'The two top-level providers that connect the SDK to your React tree. ' +
+      'Wrap your application with one of these before rendering any SDK component.',
+    layout: {
+      feature: [{ group: CUSTOM_GROUPS.providers, promote: true }],
+      default: 'utilityTypes',
+    },
+  },
+  {
     id: 'theme-variables',
     sources: ['contexts/ThemeProvider'],
     displayName: 'Theme variables',
