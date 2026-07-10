@@ -662,18 +662,6 @@ interface ApiPayrollBlocker {
 }
 
 // @public
-export function ApiProvider(input: ApiProviderProps): JSX;
-
-// @public
-export interface ApiProviderProps {
-    children: React.ReactNode;
-    headers?: HeadersInit;
-    hooks?: SDKHooks;
-    queryClient?: QueryClient;
-    url: string;
-}
-
-// @public
 function AssignSignatory(props: AssignSignatoryProps): JSX;
 
 // @public
@@ -2086,19 +2074,6 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
     signatoryId?: string;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "createStateFields" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createStateFields(employeeStateTaxes: EmployeeStateTaxesList[], options: CreateStateFieldsOptions): StateTaxFieldsGroup[];
-
-// Warning: (ae-internal-missing-underscore) The name "CreateStateFieldsOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface CreateStateFieldsOptions {
-    // (undocumented)
-    isAdmin: boolean;
-}
-
 // @public
 export interface CurrencyStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
@@ -2697,34 +2672,6 @@ export interface EmployeeStateTaxesFormData {
 // @public
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields'];
 
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesQuestionMeta" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesQuestionMeta {
-    // (undocumented)
-    apiKey: string;
-    // (undocumented)
-    formKey: string;
-    // (undocumented)
-    isAdminOnly: boolean;
-    // (undocumented)
-    isWireSelectWithBooleanOptions: boolean;
-    // (undocumented)
-    isWorkState: boolean;
-    // (undocumented)
-    state: string;
-    // (undocumented)
-    variant: StateTaxQuestionVariant;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesSchemaOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesSchemaOptions {
-    // (undocumented)
-    isAdmin?: boolean;
-}
-
 // @public
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
 
@@ -2935,16 +2882,6 @@ export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PaySchedul
 // @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
 
-// Warning: (ae-internal-missing-underscore) The name "getQuestionVariant" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTaxQuestionVariant;
-
-// Warning: (ae-internal-missing-underscore) The name "getRequiredAttrKeys" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
-
 // @public
 export interface GlobalResourceDictionary extends Record<
 SupportedLanguages,
@@ -2952,25 +2889,7 @@ Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>
 > {}
 
 // @public
-export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
-    children?: default_2.ReactNode;
-    components?: Partial<ComponentsContextType>;
-    queryClient?: QueryClient;
-}
-
-// @public
-export const GustoProvider: default_2.FC<GustoApiProps>;
-
-// @public
-export const GustoProviderCustomUIAdapter: default_2.FC<GustoProviderCustomUIAdapterProps>;
-
-// @public
-export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
-    children?: default_2.ReactNode;
-}
-
-// @public
-export interface GustoProviderProps {
+export interface GustoBaseProviderProps {
     components: ComponentsContextType;
     config: APIConfig;
     currency?: string;
@@ -2983,6 +2902,24 @@ export interface GustoProviderProps {
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
+}
+
+// @public
+export function GustoProvider(props: GustoProviderProps): default_2.JSX.Element;
+
+// @public
+export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapterProps): JSX.Element;
+
+// @public
+export interface GustoProviderCustomUIAdapterProps extends GustoBaseProviderProps {
+    children?: default_2.ReactNode;
+}
+
+// @public
+export interface GustoProviderProps extends Omit<GustoBaseProviderProps, 'components'> {
+    children?: default_2.ReactNode;
+    components?: Partial<ComponentsContextType>;
+    queryClient?: QueryClient;
 }
 
 // @public
@@ -3540,11 +3477,6 @@ interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireR
     selfOnboarding?: boolean;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "normalizeToSDKError" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function normalizeToSDKError(error: unknown): SDKError;
-
 // @public
 export interface NumberInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
@@ -3584,13 +3516,6 @@ export interface NumberStateTaxQuestion extends SharedQuestionMetadata {
     type: 'number';
 }
 
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityContextValue" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface ObservabilityContextValue {
-    observability: ObservabilityHook | undefined;
-}
-
 // @public
 export interface ObservabilityError extends SDKError {
     componentName?: string;
@@ -3616,21 +3541,6 @@ export interface ObservabilityMetric {
 
 // @public
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
-
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityProvider" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX;
-
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityProviderProps" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface ObservabilityProviderProps {
-    // (undocumented)
-    children: ReactNode;
-    // (undocumented)
-    observability?: ObservabilityHook;
-}
 
 // @public
 function OffCycleCreation(props: OffCycleCreationProps): JSX;
@@ -4355,11 +4265,6 @@ export type PreparerFieldGroup = {
     ConfirmSignature: (props: PreparerCheckboxFieldProps) => JSX.Element;
 };
 
-// Warning: (ae-internal-missing-underscore) The name "preparerFieldName" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function preparerFieldName(index: PreparerIndex, field: PreparerFieldSuffix): string;
-
 // @public
 export type PreparerFieldSuffix = 'FirstName' | 'LastName' | 'Street1' | 'Street2' | 'City' | 'State' | 'Zip' | 'Signature' | 'Agree';
 
@@ -4830,15 +4735,6 @@ export interface SDKHooks {
     afterSuccess?: AfterSuccessHook[];
     beforeCreateRequest?: BeforeCreateRequestHook[];
     beforeRequest?: BeforeRequestHook[];
-}
-
-// Warning: (ae-internal-missing-underscore) The name "SDKInternalError" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export class SDKInternalError extends Error {
-    constructor(message: string, category?: SDKErrorCategory);
-    // (undocumented)
-    readonly category: SDKErrorCategory;
 }
 
 // @public
@@ -6069,11 +5965,6 @@ export interface UseJobFormReady extends BaseFormHookReady<JobFieldsMetadata, Jo
 
 // @public
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
-
-// Warning: (ae-internal-missing-underscore) The name "useObservability" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const useObservability: () => ObservabilityContextValue;
 
 // @public
 export function usePaymentMethodForm(input: UsePaymentMethodFormProps): HookLoadingResult | UsePaymentMethodFormReady;

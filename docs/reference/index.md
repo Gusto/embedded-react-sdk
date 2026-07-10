@@ -34,37 +34,72 @@ custom_edit_url: null
 
 ## Components
 
-<a id="apiprovider"></a>
+<a id="gustoprovider"></a>
 
-### ApiProvider
+### GustoProvider
 
-Wires the `@gusto/embedded-api-v-2026-06-15` client and a React Query client into the React tree.
+Top-level provider that configures the SDK at the application level.
 
 #### Remarks
 
-Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
-and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
-`afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
-query automatically. Partners who supply their own `QueryClient` are responsible for matching that
-contract.
+Wrap your application's component tree with `GustoProvider` so that any SDK component below it
+has access to the API client, theme, locale, translations, and UI components. Components you
+provide via the `components` prop override the SDK's React Aria defaults; any component you do
+not supply uses the default.
 
-Typically wrapped by [GustoProvider](#gustoprovider); use directly only when composing the provider stack
-manually.
+For full UI control without the bundled React Aria defaults, use [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter)
+instead and supply a complete component map.
 
-#### ApiProviderProps
+#### GustoProviderProps
 
-<a id="apiproviderprops"></a>
+<a id="gustoproviderprops"></a>
 
-Props for [ApiProvider](#apiprovider).
+Props for [GustoProvider](#gustoprovider).
+
+**Remarks**
+
+Extends [GustoProviderProps](#gustoproviderprops) but makes `components` optional and partial: any components
+you do not supply fall back to the SDK's built-in React Aria implementations.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-apiproviderpropschildren"></a> `children` | `ReactNode` | Subtree that renders inside the API + React Query providers. |
-| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-06-15` requests. |
-| <a id="property-apiproviderpropsheaders"></a> `headers?` | `HeadersInit` | Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. |
-| <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
-| <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
+| <a id="property-gustoproviderpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
+| <a id="property-gustoproviderpropschildren"></a> `children?` | `ReactNode` | The application tree that should have access to the SDK. |
+| <a id="property-gustoproviderpropscomponents"></a> `components?` | `Partial`\<[`ComponentsContextType`](component-inventory.md#componentscontexttype)\> | Partial component overrides. Any component you do not supply uses the SDK's default React Aria implementation. |
+| <a id="property-gustoproviderpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| <a id="property-gustoproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
+
+_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `portalContainer`, `theme` from Omit._
+
+***
+
+<a id="gustoprovidercustomuiadapter"></a>
+
+### GustoProviderCustomUIAdapter
+
+Top-level provider that requires a complete component map and ships no UI defaults.
+
+#### Remarks
+
+Use this adapter when you want full control over every UI primitive the SDK renders, or when
+you want to avoid the React Aria dependency for tree-shaking. Unlike [GustoProvider](#gustoprovider), the
+`components` prop on [GustoProviderProps](#gustoproviderprops) is required and must supply every component the
+SDK renders.
+
+#### GustoProviderCustomUIAdapterProps
+
+<a id="gustoprovidercustomuiadapterprops"></a>
+
+Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-gustoprovidercustomuiadapterpropscomponents"></a> `components` | [`ComponentsContextType`](component-inventory.md#componentscontexttype) | Complete map of UI components the SDK renders. Required because this adapter ships no defaults. |
+| <a id="property-gustoprovidercustomuiadapterpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
+| <a id="property-gustoprovidercustomuiadapterpropschildren"></a> `children?` | `ReactNode` | The application tree that should have access to the SDK. |
+| <a id="property-gustoprovidercustomuiadapterpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+
+_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
 
 ## Variables
 
@@ -153,63 +188,6 @@ completing self-onboarding.
 
 Use this set to check whether an employee is currently in a self-onboarding
 flow (invited, started, or overdue) versus an admin-driven onboarding flow.
-
-***
-
-<a id="gustoprovider"></a>
-
-### GustoProvider
-
-> `const` **GustoProvider**: `React.FC`\<[`GustoApiProps`](#gustoapiprops)\>
-
-Top-level provider that configures the SDK at the application level.
-
-#### Remarks
-
-Wrap your application's component tree with `GustoProvider` so that any SDK component below it
-has access to the API client, theme, locale, translations, and UI components. Components you
-provide via the `components` prop override the SDK's React Aria defaults; any component you do
-not supply uses the default.
-
-For full UI control without the bundled React Aria defaults, use [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter)
-instead and supply a complete component map.
-
-#### Param
-
-**props**
-
-See [GustoApiProps](#gustoapiprops).
-
-#### Returns
-
-The configured provider tree wrapping `children`.
-
-***
-
-<a id="gustoprovidercustomuiadapter"></a>
-
-### GustoProviderCustomUIAdapter
-
-> `const` **GustoProviderCustomUIAdapter**: `React.FC`\<[`GustoProviderCustomUIAdapterProps`](#gustoprovidercustomuiadapterprops)\>
-
-Top-level provider that requires a complete component map and ships no UI defaults.
-
-#### Remarks
-
-Use this adapter when you want full control over every UI primitive the SDK renders, or when
-you want to avoid the React Aria dependency for tree-shaking. Unlike [GustoProvider](#gustoprovider), the
-`components` prop on [GustoProviderProps](#gustoproviderprops) is required and must supply every component the
-SDK renders.
-
-#### Param
-
-**props**
-
-See [GustoProviderCustomUIAdapterProps](#gustoprovidercustomuiadapterprops).
-
-#### Returns
-
-The configured provider tree wrapping `children`.
 
 ***
 
@@ -531,70 +509,9 @@ Props common to all SDK feature components, including children, an optional clas
 
 ***
 
-<a id="gustoapiprops"></a>
+<a id="gustobaseproviderprops"></a>
 
-### GustoApiProps
-
-Props for [GustoProvider](#gustoprovider).
-
-#### Remarks
-
-Extends [GustoProviderProps](#gustoproviderprops) but makes `components` optional and partial: any components
-you do not supply fall back to the SDK's built-in React Aria implementations.
-
-#### Extends
-
-- `Omit`\<[`GustoProviderProps`](#gustoproviderprops), `"components"`\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| <a id="property-gustoapipropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
-| <a id="property-gustoapipropschildren"></a> `children?` | `ReactNode` | The application tree that should have access to the SDK. |
-| <a id="property-gustoapipropscomponents"></a> `components?` | `Partial`\<[`ComponentsContextType`](component-inventory.md#componentscontexttype)\> | Partial component overrides. Any component you do not supply uses the SDK's default React Aria implementation. |
-| <a id="property-gustoapipropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
-| <a id="property-gustoapipropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
-| <a id="property-gustoapipropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
-| <a id="property-gustoapipropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
-| <a id="property-gustoapipropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
-| <a id="property-gustoapipropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
-| <a id="property-gustoapipropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
-| <a id="property-gustoapipropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
-
-***
-
-<a id="gustoprovidercustomuiadapterprops"></a>
-
-### GustoProviderCustomUIAdapterProps
-
-Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
-
-#### Extends
-
-- [`GustoProviderProps`](#gustoproviderprops)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| <a id="property-gustoprovidercustomuiadapterpropscomponents"></a> `components` | [`ComponentsContextType`](component-inventory.md#componentscontexttype) | Complete map of UI components the SDK renders. Required because this adapter ships no defaults. |
-| <a id="property-gustoprovidercustomuiadapterpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
-| <a id="property-gustoprovidercustomuiadapterpropschildren"></a> `children?` | `ReactNode` | The application tree that should have access to the SDK. |
-| <a id="property-gustoprovidercustomuiadapterpropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
-| <a id="property-gustoprovidercustomuiadapterpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
-| <a id="property-gustoprovidercustomuiadapterpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
-| <a id="property-gustoprovidercustomuiadapterpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
-| <a id="property-gustoprovidercustomuiadapterpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
-| <a id="property-gustoprovidercustomuiadapterpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
-| <a id="property-gustoprovidercustomuiadapterpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
-| <a id="property-gustoprovidercustomuiadapterpropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
-
-***
-
-<a id="gustoproviderprops"></a>
-
-### GustoProviderProps
+### GustoBaseProviderProps
 
 Shared configuration props accepted by [GustoProvider](#gustoprovider) and [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
 
@@ -606,16 +523,16 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-gustoproviderpropscomponents"></a> `components` | [`ComponentsContextType`](component-inventory.md#componentscontexttype) | Complete map of UI components the SDK renders. Required because this adapter ships no defaults. |
-| <a id="property-gustoproviderpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
-| <a id="property-gustoproviderpropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
-| <a id="property-gustoproviderpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
-| <a id="property-gustoproviderpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
-| <a id="property-gustoproviderpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
-| <a id="property-gustoproviderpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
-| <a id="property-gustoproviderpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
-| <a id="property-gustoproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
-| <a id="property-gustoproviderpropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
+| <a id="property-gustobaseproviderpropscomponents"></a> `components` | [`ComponentsContextType`](component-inventory.md#componentscontexttype) | Complete map of UI components the SDK renders. Required because this adapter ships no defaults. |
+| <a id="property-gustobaseproviderpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
+| <a id="property-gustobaseproviderpropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
+| <a id="property-gustobaseproviderpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| <a id="property-gustobaseproviderpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
+| <a id="property-gustobaseproviderpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
+| <a id="property-gustobaseproviderpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
+| <a id="property-gustobaseproviderpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
+| <a id="property-gustobaseproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
+| <a id="property-gustobaseproviderpropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
 
 ***
 

@@ -10,7 +10,7 @@ import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 /**
  * Props for {@link ApiProvider}.
  *
- * @public
+ * @internal
  */
 export interface ApiProviderProps {
   /** Base URL the SDK uses for all `@gusto/embedded-api-v-2026-06-15` requests. */
@@ -41,7 +41,7 @@ export interface ApiProviderProps {
  *
  * @param props - See {@link ApiProviderProps}.
  * @returns A React subtree wrapped in `QueryClientProvider` and the embedded API context.
- * @public
+ * @internal
  */
 export function ApiProvider({
   url,

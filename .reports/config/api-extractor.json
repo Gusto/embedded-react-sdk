@@ -52,6 +52,10 @@
       "ae-incompatible-release-tags": {
         "logLevel": "error",
         "addToApiReportFile": false
+      },
+      "ae-internal-missing-underscore": {
+        "logLevel": "error",
+        "addToApiReportFile": false
       }
     }
   }
