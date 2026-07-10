@@ -374,16 +374,23 @@ function CertificationDeclaration() {
   return (
     <Flex flexDirection="column" gap={8}>
       <Components.Text weight="medium">{t('certificationIntro')}</Components.Text>
-      <Components.OrderedList
-        items={[
-          <Components.Text key="taxpayerId">{t('certificationPoints.taxpayerId')}</Components.Text>,
-          <Components.Text key="backupWithholding">
-            {t('certificationPoints.backupWithholding')}
-          </Components.Text>,
-          <Components.Text key="usPerson">{t('certificationPoints.usPerson')}</Components.Text>,
-          <Components.Text key="fatca">{t('certificationPoints.fatca')}</Components.Text>,
-        ]}
-      />
+      <Flex flexDirection="column" gap={16}>
+        <Components.OrderedList
+          items={[
+            <Components.Text key="taxpayerId">
+              {t('certificationPoints.taxpayerId')}
+            </Components.Text>,
+            <Components.Text key="backupWithholding">
+              {t('certificationPoints.backupWithholding')}
+            </Components.Text>,
+            <Components.Text key="usPerson">{t('certificationPoints.usPerson')}</Components.Text>,
+            <Components.Text key="fatca">{t('certificationPoints.fatca')}</Components.Text>,
+          ]}
+        />
+        <Components.Text variant="supporting" size="sm">
+          {t('certificationPoints.usPersonDefinition')}
+        </Components.Text>
+      </Flex>
     </Flex>
   )
 }
