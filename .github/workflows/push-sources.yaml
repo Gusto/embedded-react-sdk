@@ -1,0 +1,21 @@
+name: Push Sources
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/i18n/en/**.json'
+jobs:
+  push-sources:
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: read
+    steps:
+      - name: Push sources
+        uses: Gusto/embedded-i18n-actions/push_sources@main
+        with:
+          lokalise_project_id: ${{ vars.LOKALISE_PROJECT_ID }}
+          lokalise_api_token: ${{ secrets.LOKALISE_API_TOKEN }}
+          locale_paths: |
+            src/i18n/en
