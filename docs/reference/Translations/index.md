@@ -1275,6 +1275,7 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | `listHeaders.name` | `"Name"` |
 | `listHeaders.status` | `"Status"` |
 | <a id="property-contractorcontractorlistprogressbarcta"></a> `progressBarCta` | `"Back to contractors"` |
+| <a id="property-contractorcontractorlistreviewcta"></a> `reviewCta` | `"Review"` |
 | <a id="property-contractorcontractorlisttitle"></a> `title` | `"Contractors"` |
 
 ***
