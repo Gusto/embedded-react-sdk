@@ -5079,6 +5079,7 @@ function StateTaxesList(props: StateTaxesListProps): JSX;
 // @public
 interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
     companyId: string;
+    showContinueButton?: boolean;
 }
 
 // @public
@@ -5095,6 +5096,7 @@ interface StateTaxesProps_2 extends BaseComponentInterface<'Employee.Management.
 // @public
 interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'> {
     companyId: string;
+    showContinueButton?: boolean;
 }
 
 // @public
