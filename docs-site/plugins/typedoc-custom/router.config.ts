@@ -200,6 +200,28 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
     layout: { default: 'promote' },
   },
+  {
+    id: 'employee/types',
+    // No path matching; types must use `@page employee/types` to show up
+    sources: [],
+    displayName: 'Types',
+    sidebarPosition: 101,
+    layout: { default: 'promote' },
+  },
+  {
+    id: 'contractor/types',
+    // No path matching; types must use `@page contractor/types` to show up
+    sources: [],
+    displayName: 'Types',
+    sidebarPosition: 101,
+    layout: { default: 'promote' },
+  },
+  {
+    id: 'workflows-and-blocks',
+    sources: ['components/Base/Base'],
+    displayName: 'Workflows and blocks',
+    layout: { default: 'promote' },
+  },
 ]
 
 /**
@@ -271,6 +293,13 @@ export type StandalonePageConfig = {
   groups?: CustomGroupTag[]
   /** Page H1 and synthetic namespace name. */
   displayName: string
+  /**
+   * Explicit Docusaurus `sidebar_position` for this page. When set, overrides the
+   * default position (`DOMAINS.length + standaloneIdx + 1`). Use for pages nested
+   * inside a domain directory (e.g. `employee/types`) that need to appear after
+   * subdirectory categories with high explicit positions (e.g. `hooks/` at 100).
+   */
+  sidebarPosition?: number
   /**
    * Optional Markdown prose rendered as the page's leading description, above
    * all sections (below the H1). The synthetic namespace carries no TSDoc of its

@@ -22,6 +22,7 @@ export type DeepPartial<T> = {
  *
  * @typeParam T - The object type whose properties are individually optional but collectively required.
  * @public
+ * @page workflows-and-blocks
  */
 export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>

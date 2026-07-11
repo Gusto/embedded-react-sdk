@@ -303,7 +303,9 @@ export function getSidebarPosition(url: string): number | undefined {
   if (url === 'index.md') return 1
   const key = url.replace(/\.md$/, '')
   const standaloneIdx = STANDALONE_PAGES.findIndex(p => p.id === key)
-  if (standaloneIdx !== -1) return DOMAINS.length + standaloneIdx + 1
+  if (standaloneIdx !== -1) {
+    return STANDALONE_PAGES[standaloneIdx]!.sidebarPosition ?? DOMAINS.length + standaloneIdx + 1
+  }
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
   if (filename === 'index' || filename === 'namespace') return 1

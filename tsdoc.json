@@ -50,6 +50,10 @@
       "syntaxKind": "block"
     },
     {
+      "tagName": "@page",
+      "syntaxKind": "block"
+    },
+    {
       "tagName": "@category",
       "syntaxKind": "block",
       "allowMultiple": true
