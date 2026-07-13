@@ -326,7 +326,7 @@ describe('Contractor profile component behavior', () => {
       expect(onEvent).toHaveBeenCalledWith(
         contractorEvents.CONTRACTOR_PROFILE_DONE,
         expect.objectContaining({
-          uuid: 'new-contractor-uuid',
+          contractorId: 'new-contractor-uuid',
           selfOnboarding: false,
         }),
       )
@@ -439,7 +439,7 @@ describe('Contractor profile component behavior', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
           contractorEvents.CONTRACTOR_PROFILE_DONE,
-          expect.objectContaining({ uuid: 'contractor_id' }),
+          expect.objectContaining({ contractorId: 'contractor_id' }),
         )
       })
       return onEvent
@@ -451,11 +451,11 @@ describe('Contractor profile component behavior', () => {
       'admin_onboarding_review',
       'self_onboarding_review',
       'onboarding_completed',
-    ])('forwards the saved contractor with post-save onboarding status %s', async status => {
+    ])('forwards the post-save onboarding status %s', async status => {
       const onEvent = await renderEditForPostSaveStatus(status)
       expect(onEvent).toHaveBeenCalledWith(
         contractorEvents.CONTRACTOR_PROFILE_DONE,
-        expect.objectContaining({ uuid: 'contractor_id', onboardingStatus: status }),
+        expect.objectContaining({ contractorId: 'contractor_id', onboardingStatus: status }),
       )
     })
   })
@@ -560,7 +560,7 @@ describe('Contractor profile component behavior', () => {
       )
       expect(onEvent).toHaveBeenCalledWith(
         contractorEvents.CONTRACTOR_PROFILE_DONE,
-        expect.objectContaining({ uuid: 'contractor_id', selfOnboarding: true }),
+        expect.objectContaining({ contractorId: 'contractor_id', selfOnboarding: true }),
       )
     })
 

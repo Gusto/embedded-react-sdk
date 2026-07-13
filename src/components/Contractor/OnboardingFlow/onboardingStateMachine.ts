@@ -18,7 +18,11 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_UPDATE]: {
     contractorId: string
   }
-  [componentEvents.CONTRACTOR_PROFILE_DONE]: Contractor & { selfOnboarding: boolean }
+  [componentEvents.CONTRACTOR_PROFILE_DONE]: {
+    contractorId: string
+    onboardingStatus?: Contractor['onboardingStatus']
+    selfOnboarding: boolean
+  }
   [componentEvents.CONTRACTOR_SUBMIT_DONE]: { message?: string }
 }
 
@@ -37,25 +41,36 @@ const INITIAL_ONBOARDING_STATUSES = new Set<Contractor['onboardingStatus']>([
 const showNewHireReportForStatus = (status?: Contractor['onboardingStatus']): boolean =>
   !status || INITIAL_ONBOARDING_STATUSES.has(status)
 
-const TOTAL_STEPS_DEFAULT = 5
+type OnboardingStep = 'profile' | 'address' | 'paymentMethod' | 'newHireReport' | 'submit'
 
-// Step totals depend on the path taken after the profile step: the self-onboarding
-// path skips address + payment, and either path drops the new hire report once the
-// contractor has advanced past the admin's initial onboarding pass.
-const computeTotalSteps = (selfOnboarding: boolean, showNewHireReport: boolean): number => {
-  if (selfOnboarding) return showNewHireReport ? 3 : 2
-  return showNewHireReport ? 5 : 4
+// The flow is a linear list of steps. The admin-only steps (address, payment
+// method) drop out when the contractor self-onboards, and the new hire report
+// drops out once past the initial onboarding pass.
+const stepsForPath = (selfOnboarding: boolean, showNewHireReport: boolean): OnboardingStep[] => {
+  const steps: OnboardingStep[] = ['profile']
+  if (!selfOnboarding) steps.push('address', 'paymentMethod')
+  if (showNewHireReport) steps.push('newHireReport')
+  steps.push('submit')
+  return steps
 }
 
+// The defaults describe the profile step, which renders before the path is
+// known: assume the longest path so it reads "1 of 5".
 const progressHeader = (
-  currentStep: number,
-  totalSteps: number = TOTAL_STEPS_DEFAULT,
-): FlowHeaderConfig => ({
-  type: 'progress',
-  currentStep,
-  totalSteps,
-  cta: ProgressBarCta,
-})
+  currentStep: OnboardingStep,
+  {
+    selfOnboarding = false,
+    showNewHireReport = true,
+  }: { selfOnboarding?: boolean; showNewHireReport?: boolean } = {},
+): FlowHeaderConfig => {
+  const steps = stepsForPath(selfOnboarding, showNewHireReport)
+  return {
+    type: 'progress',
+    currentStep: steps.indexOf(currentStep) + 1,
+    totalSteps: steps.length,
+    cta: ProgressBarCta,
+  }
+}
 
 const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   return (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
@@ -87,7 +102,7 @@ export const onboardingMachine = {
       reduce(
         createReducer({
           component: ProfileContextual,
-          header: progressHeader(1),
+          header: progressHeader('profile'),
           contractorId: undefined,
           successMessage: undefined,
         }),
@@ -104,7 +119,7 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: ProfileContextual,
-            header: progressHeader(1),
+            header: progressHeader('profile'),
             contractorId: ev.payload.contractorId,
             successMessage: undefined,
           }
@@ -123,15 +138,16 @@ export const onboardingMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
         ): OnboardingFlowContextInterface => {
           const showNewHireReport = showNewHireReportForStatus(ev.payload.onboardingStatus)
-          const totalSteps = computeTotalSteps(false, showNewHireReport)
           return {
             ...ctx,
             component: AddressContextual,
-            header: progressHeader(2, totalSteps),
-            contractorId: ev.payload.uuid,
+            header: progressHeader('address', {
+              selfOnboarding: ev.payload.selfOnboarding,
+              showNewHireReport,
+            }),
+            contractorId: ev.payload.contractorId,
             selfOnboarding: ev.payload.selfOnboarding,
             showNewHireReport,
-            totalSteps,
           }
         },
       ),
@@ -145,15 +161,16 @@ export const onboardingMachine = {
           ctx: OnboardingFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
         ): OnboardingFlowContextInterface => {
-          const totalSteps = computeTotalSteps(true, true)
           return {
             ...ctx,
             component: NewHireReportContextual,
-            header: progressHeader(2, totalSteps),
-            contractorId: ev.payload.uuid,
+            header: progressHeader('newHireReport', {
+              selfOnboarding: ev.payload.selfOnboarding,
+              showNewHireReport: true,
+            }),
+            contractorId: ev.payload.contractorId,
             selfOnboarding: ev.payload.selfOnboarding,
             showNewHireReport: true,
-            totalSteps,
           }
         },
       ),
@@ -170,15 +187,16 @@ export const onboardingMachine = {
           ctx: OnboardingFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
         ): OnboardingFlowContextInterface => {
-          const totalSteps = computeTotalSteps(true, false)
           return {
             ...ctx,
             component: SubmitContextual,
-            header: progressHeader(2, totalSteps),
-            contractorId: ev.payload.uuid,
+            header: progressHeader('submit', {
+              selfOnboarding: ev.payload.selfOnboarding,
+              showNewHireReport: false,
+            }),
+            contractorId: ev.payload.contractorId,
             selfOnboarding: ev.payload.selfOnboarding,
             showNewHireReport: false,
-            totalSteps,
           }
         },
       ),
@@ -196,7 +214,10 @@ export const onboardingMachine = {
       reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
         ...ctx,
         component: PaymentMethodContextual,
-        header: progressHeader(3, ctx.totalSteps),
+        header: progressHeader('paymentMethod', {
+          selfOnboarding: ctx.selfOnboarding,
+          showNewHireReport: ctx.showNewHireReport,
+        }),
       })),
     ),
   ),
@@ -208,7 +229,10 @@ export const onboardingMachine = {
       reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
         ...ctx,
         component: NewHireReportContextual,
-        header: progressHeader(4, ctx.totalSteps),
+        header: progressHeader('newHireReport', {
+          selfOnboarding: ctx.selfOnboarding,
+          showNewHireReport: ctx.showNewHireReport,
+        }),
       })),
       guard((ctx: OnboardingFlowContextInterface) => ctx.showNewHireReport !== false),
     ),
@@ -218,7 +242,10 @@ export const onboardingMachine = {
       reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
         ...ctx,
         component: SubmitContextual,
-        header: progressHeader(4, ctx.totalSteps),
+        header: progressHeader('submit', {
+          selfOnboarding: ctx.selfOnboarding,
+          showNewHireReport: ctx.showNewHireReport,
+        }),
       })),
       guard((ctx: OnboardingFlowContextInterface) => ctx.showNewHireReport === false),
     ),
@@ -231,7 +258,10 @@ export const onboardingMachine = {
       reduce((ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
         ...ctx,
         component: SubmitContextual,
-        header: progressHeader(ctx.selfOnboarding ? 3 : 5, ctx.totalSteps),
+        header: progressHeader('submit', {
+          selfOnboarding: ctx.selfOnboarding,
+          showNewHireReport: ctx.showNewHireReport,
+        }),
       })),
     ),
   ),

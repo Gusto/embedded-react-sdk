@@ -9,7 +9,7 @@
 - **Admin onboarding** (`selfOnboarding = false`) — the admin completes every step, including address and payment method.
 - **Self-onboarding** (`selfOnboarding = true`) — the admin sets up the basics and the contractor completes their own address and payment method later, so those two steps are skipped here.
 
-The new hire report step appears only on the contractor's initial onboarding pass (while its onboarding status is `admin_onboarding_incomplete` or `self_onboarding_not_invited`). Once the contractor has advanced past that — to admin review, an active self-onboarding stage, or completion — the step is skipped and the flow goes straight to submit. The flow derives this from the contractor's `onboardingStatus`, which it reads off the contractor delivered on `contractor/profile/done`.
+The new hire report step appears only on the contractor's initial onboarding pass (while its onboarding status is `admin_onboarding_incomplete` or `self_onboarding_not_invited`). Once the contractor has advanced past that — to admin review, an active self-onboarding stage, or completion — the step is skipped and the flow goes straight to submit. The flow derives this from the contractor's `onboardingStatus`, which it reads off the `onboardingStatus` carried on `contractor/profile/done`.
 
 The progress bar's secondary button emits `CANCEL` from any step, returning to the list.
 

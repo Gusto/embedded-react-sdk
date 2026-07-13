@@ -48,8 +48,6 @@ export interface OnboardingFlowContextInterface extends FlowContextInterface {
   selfOnboarding?: boolean
   /** True while the new hire report step should be shown; false once the contractor has advanced past the admin's initial onboarding pass. */
   showNewHireReport?: boolean
-  /** Total number of steps in the current flow path, used to render the progress header. */
-  totalSteps?: number
   /** Success message to display on the contractor list when returning from a completed sub-flow. */
   successMessage?: string
 }

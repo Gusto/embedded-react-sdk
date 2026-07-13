@@ -49,7 +49,7 @@ describe('contractor onboarding machine — new hire report gating', () => {
     const service = startFlow()
     advanceToProfile(service)
     send(service, componentEvents.CONTRACTOR_PROFILE_DONE, {
-      uuid: 'c-1',
+      contractorId: 'c-1',
       onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
       selfOnboarding: false,
     })
@@ -60,7 +60,7 @@ describe('contractor onboarding machine — new hire report gating', () => {
 
     send(service, componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
     expect(service.machine.current).toBe('newHireReport')
-    expect(service.context.totalSteps).toBe(5)
+    expect(service.context.header).toMatchObject({ currentStep: 4, totalSteps: 5 })
 
     send(service, componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
     expect(service.machine.current).toBe('submit')
@@ -70,7 +70,7 @@ describe('contractor onboarding machine — new hire report gating', () => {
     const service = startFlow()
     advanceToProfile(service)
     send(service, componentEvents.CONTRACTOR_PROFILE_DONE, {
-      uuid: 'c-1',
+      contractorId: 'c-1',
       onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
       selfOnboarding: false,
     })
@@ -81,19 +81,19 @@ describe('contractor onboarding machine — new hire report gating', () => {
 
     send(service, componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
     expect(service.machine.current).toBe('submit')
-    expect(service.context.totalSteps).toBe(4)
+    expect(service.context.header).toMatchObject({ currentStep: 4, totalSteps: 4 })
   })
 
   it('keeps the new hire report on the self-onboarding path during the initial pass', () => {
     const service = startFlow()
     advanceToProfile(service)
     send(service, componentEvents.CONTRACTOR_PROFILE_DONE, {
-      uuid: 'c-1',
+      contractorId: 'c-1',
       onboardingStatus: ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
       selfOnboarding: true,
     })
     expect(service.machine.current).toBe('newHireReport')
-    expect(service.context.totalSteps).toBe(3)
+    expect(service.context.header).toMatchObject({ currentStep: 2, totalSteps: 3 })
 
     send(service, componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
     expect(service.machine.current).toBe('submit')
@@ -103,11 +103,11 @@ describe('contractor onboarding machine — new hire report gating', () => {
     const service = startFlow()
     advanceToProfile(service)
     send(service, componentEvents.CONTRACTOR_PROFILE_DONE, {
-      uuid: 'c-1',
+      contractorId: 'c-1',
       onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED,
       selfOnboarding: true,
     })
     expect(service.machine.current).toBe('submit')
-    expect(service.context.totalSteps).toBe(2)
+    expect(service.context.header).toMatchObject({ currentStep: 2, totalSteps: 2 })
   })
 })
