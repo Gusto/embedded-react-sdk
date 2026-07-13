@@ -3,6 +3,10 @@
   "businessAddressDescription": "Contractor's business address, within the United States.",
   "homeAddressTitle": "Home address",
   "homeAddressDescription": "Contractor's home mailing address, within the United States.",
+  "w9EditWarning": {
+    "label": "Editing this address will require a new W-9",
+    "body": "This contractor has already signed a W-9. If you change this address, you'll need to have them sign a new W-9."
+  },
   "street1": "Street 1",
   "street2": "Street 2",
   "city": "City",

@@ -1,6 +1,10 @@
 {
   "title": "Contractor profile",
   "subtitle": "This information will be used for payments and on tax documents, so double-check that it's accurate.",
+  "w9EditWarning": {
+    "label": "Editing this profile will require a new W-9",
+    "body": "This contractor has already signed a W-9. If you change these details, you'll need to have them sign a new W-9."
+  },
   "selfOnboarding": {
     "title": "Complete your profile",
     "individualDescription": "Please verify your name and provide your Social Security Number.",
@@ -66,8 +70,8 @@
   "buttons": {
     "cancel": "Cancel",
     "create": "Create Contractor",
-    "update": "Update Contractor",
+    "update": "Continue",
     "creating": "Creating…",
-    "updating": "Updating…"
+    "updating": "Saving…"
   }
 }

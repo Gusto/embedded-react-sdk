@@ -9,6 +9,10 @@ import {
   handleGetContractor,
   handleUpdateContractor,
 } from '@/test/mocks/apis/contractors'
+import {
+  buildContractorDocumentsList,
+  handleGetContractorDocuments,
+} from '@/test/mocks/apis/contractor_documents'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { contractorEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -369,7 +373,7 @@ describe('Contractor profile component behavior', () => {
       await screen.findByText('Contractor profile')
       expect(screen.getByLabelText('First Name')).toHaveValue('John')
 
-      await user.click(screen.getByRole('button', { name: 'Update Contractor' }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
 
       await waitFor(() => {
         expect(updateResolver).toHaveBeenCalledTimes(1)
@@ -544,6 +548,90 @@ describe('Contractor profile component behavior', () => {
       await waitFor(() => {
         expect(updateResolver).toHaveBeenCalledTimes(1)
       })
+    })
+  })
+
+  describe('W-9 edit warning', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Individual',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            first_name: 'John',
+            last_name: 'Doe',
+            has_ssn: true,
+            has_ein: false,
+            is_active: true,
+            file_new_hire_report: false,
+            onboarding_status: 'self_onboarding_review',
+          }),
+        ),
+      )
+    })
+
+    it('renders the warning when the contractor has a signed W-9 on file', async () => {
+      server.use(
+        handleGetContractorDocuments(() =>
+          HttpResponse.json(
+            buildContractorDocumentsList([
+              {
+                uuid: 'signed-w9-uuid',
+                title: 'W-9',
+                name: 'taxpayer_identification_form_w_9',
+                requires_signing: true,
+                signed_at: '2025-01-01T00:00:00Z',
+              },
+            ]),
+          ),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile
+          companyId="company-123"
+          contractorId="contractor_id"
+          onEvent={vi.fn()}
+        />,
+      )
+
+      expect(
+        await screen.findByText('Editing this profile will require a new W-9'),
+      ).toBeInTheDocument()
+    })
+
+    it('does not render the warning when the W-9 is unsigned', async () => {
+      renderWithProviders(
+        <ContractorProfile
+          companyId="company-123"
+          contractorId="contractor_id"
+          onEvent={vi.fn()}
+        />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(
+        screen.queryByText('Editing this profile will require a new W-9'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('does not fetch documents or render the warning in create mode', async () => {
+      const documentsResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json(buildContractorDocumentsList()),
+      )
+      server.use(handleGetContractorDocuments(documentsResolver))
+
+      renderWithProviders(<ContractorProfile companyId="company-123" onEvent={vi.fn()} />)
+
+      await screen.findByText('Contractor profile')
+      expect(
+        screen.queryByText('Editing this profile will require a new W-9'),
+      ).not.toBeInTheDocument()
+      expect(documentsResolver).not.toHaveBeenCalled()
     })
   })
 })

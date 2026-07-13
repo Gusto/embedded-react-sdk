@@ -21,6 +21,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
 
 // Once the contractor has finished self-onboarding (or the record is otherwise
 // under admin review / completed), the admin needs to view and edit SSN/EIN even
@@ -150,6 +151,18 @@ export function ContractorProfile(props: ContractorProfileProps) {
   )
 }
 
+function ContractorProfileW9Warning({ contractorId }: { contractorId: string }) {
+  const hasSignedW9 = useContractorHasSignedW9(contractorId)
+  const { t } = useTranslation('Contractor.Profile')
+  const Components = useComponentContext()
+  if (!hasSignedW9) return null
+  return (
+    <Components.Alert status="warning" disableScrollIntoView label={t('w9EditWarning.label')}>
+      <Components.Text>{t('w9EditWarning.body')}</Components.Text>
+    </Components.Alert>
+  )
+}
+
 function ContractorProfileRoot({
   companyId,
   contractorId,
@@ -261,6 +274,9 @@ function ContractorProfileReady({
         <SDKFormProvider formHookResult={contractor}>
           <Form onSubmit={() => void handleSubmit()}>
             <Flex flexDirection="column" gap={20} alignItems="stretch">
+              {mode === 'update' && contractor.data.contractor?.uuid && (
+                <ContractorProfileW9Warning contractorId={contractor.data.contractor.uuid} />
+              )}
               <header>
                 <Flex flexDirection="column" gap={4}>
                   <Components.Heading as="h2">{t('title')}</Components.Heading>
