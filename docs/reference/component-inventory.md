@@ -3,14 +3,120 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Component inventory
-description: Component inventory reference.
-sidebar_position: 7
+title: UI component inventory
+description: Primitive UI elements that SDK components render internally, and the ComponentsAdapter interface for replacing them with your own design-system components.
+sidebar_position: 14
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Component inventory
+Primitive UI elements that SDK components render internally, and the ComponentsAdapter interface for replacing them with your own design-system components.
+
+<a id="componentscontexttype"></a>
+
+## ComponentsContextType
+
+Full map of UI components used by the SDK. Every property is a React component that the
+SDK renders internally — override any of them to substitute your own design system.
+
+Pass a `Partial<ComponentsContextType>` to [GustoProvider](providers.md#gustoprovider) via the `components` prop to
+replace specific components while keeping SDK defaults for the rest.
+
+To take full control of every UI component (and eliminate the React Aria dependency),
+pass a complete [ComponentsContextType](#componentscontexttype) to [GustoProviderCustomUIAdapter](providers.md#gustoprovidercustomuiadapter) instead.
+All properties are then required except `PaginationControl` and `PayrollLoading`,
+which fall back to built-in SDK implementations when omitted.
+
+### Examples
+
+**Partial override with GustoProvider**
+
+```tsx
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+
+function App() {
+  return (
+    <GustoProvider
+      config={{ baseUrl: '/api/gusto/' }}
+      components={{
+        Button: MyButton,
+        TextInput: MyTextInput,
+      }}
+    >
+      <EmployeeOnboardingFlow companyId="company_123" />
+    </GustoProvider>
+  )
+}
+```
+
+**Full replacement with GustoProviderCustomUIAdapter**
+
+```tsx
+import { GustoProviderCustomUIAdapter, type ComponentsContextType } from '@gusto/embedded-react-sdk'
+
+const myComponents: ComponentsContextType = {
+  Alert: props => <MyAlert {...props} />,
+  Button: props => <MyButton {...props} />,
+  // ... all required components
+}
+
+function App() {
+  return (
+    <GustoProviderCustomUIAdapter
+      config={{ baseUrl: '/api/gusto/' }}
+      components={myComponents}
+    >
+      <EmployeeOnboardingFlow companyId="company_123" />
+    </GustoProviderCustomUIAdapter>
+  )
+}
+```
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Alert` | `FunctionComponent`\<[`AlertProps`](#alertprops)\> | Status message with an optional dismiss action; used for errors, warnings, success, and info. |
+| `Badge` | `FunctionComponent`\<[`BadgeProps`](#badgeprops)\> | Small inline label for status, counts, or tags; optionally dismissible. |
+| `Banner` | `FunctionComponent`\<[`BannerProps`](#bannerprops)\> | Full-width notification banner for prominent warnings and errors. |
+| `Box` | `FunctionComponent`\<[`BoxProps`](#boxprops)\> | Sectioned layout container with distinct header, body, and footer areas. |
+| `BoxHeader` | `FunctionComponent`\<[`BoxHeaderProps`](#boxheaderprops)\> | Header section of a Box with a title, optional description, and optional inline action. |
+| `Breadcrumbs` | `FunctionComponent`\<[`BreadcrumbsProps`](#breadcrumbsprops)\> | Navigation breadcrumb trail showing the user's position in a multi-step flow. |
+| `Button` | `FunctionComponent`\<[`ButtonProps`](#buttonprops)\> | HTML `<button>` with primary, secondary, tertiary, and error variants. |
+| `ButtonIcon` | `FunctionComponent`\<[`ButtonIconProps`](#buttoniconprops)\> | Icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies. |
+| `CalendarPreview` | `FunctionComponent`\<[`CalendarPreviewProps`](#calendarpreviewprops)\> | Read-only calendar for visualizing a date range with optional highlighted dates. |
+| `Card` | `FunctionComponent`\<[`CardProps`](#cardprops)\> | Content container with an optional overflow menu and a leading action slot. |
+| `Checkbox` | `FunctionComponent`\<[`CheckboxProps`](#checkboxprops)\> | Form field wrapping a single `<input type="checkbox" />`. |
+| `CheckboxGroup` | `FunctionComponent`\<[`CheckboxGroupProps`](#checkboxgroupprops)\> | Form field grouping `<input type="checkbox" />` elements for multi-option selection. |
+| `ComboBox` | `FunctionComponent`\<[`ComboBoxProps`](#comboboxprops)\> | Form field wrapping a typeahead `<input />` for single-option selection. |
+| `DatePicker` | `FunctionComponent`\<[`DatePickerProps`](#datepickerprops)\> | Form field wrapping an `<input type="date" />` with a calendar picker popover. |
+| `DateRangePicker` | `FunctionComponent`\<[`DateRangePickerProps`](#daterangepickerprops)\> | Form field wrapping paired `<input type="date" />` elements for a date range. |
+| `DescriptionList` | `FunctionComponent`\<[`DescriptionListProps`](#descriptionlistprops)\> | HTML `<dl>` of term/description pairs in stacked or horizontal layout. |
+| `Dialog` | `FunctionComponent`\<[`DialogProps`](#dialogprops)\> | Modal confirmation dialog with a primary action and a cancel action. |
+| `FileInput` | `FunctionComponent`\<[`FileInputProps`](#fileinputprops)\> | Form field wrapping an `<input type="file" />`. |
+| `FormBox` | `FunctionComponent`\<[`FormBoxProps`](#formboxprops)\> | Bordered container for grouping related form fields, with an optional header slot. |
+| `FormBoxHeader` | `FunctionComponent`\<[`FormBoxHeaderProps`](#formboxheaderprops)\> | Header section of a FormBox with a title, optional description, and optional inline action. |
+| `Heading` | `FunctionComponent`\<[`HeadingProps`](#headingprops)\> | HTML `<h1>`–`<h6>` with visual style controlled independently from semantic level. |
+| `Link` | `FunctionComponent`\<[`LinkProps`](#linkprops)\> | HTML `<a>` for inline navigation. |
+| `LoadingSpinner` | `FunctionComponent`\<[`LoadingSpinnerProps`](#loadingspinnerprops)\> | Spinner shown while data or an action is pending. |
+| `Menu` | `FunctionComponent`\<[`MenuProps`](#menuprops)\> | Popover menu of actions anchored to a trigger element. |
+| `Modal` | `FunctionComponent`\<[`ModalProps`](#modalprops)\> | Overlay modal with customizable body content and footer. |
+| `MultiSelectComboBox` | `FunctionComponent`\<[`MultiSelectComboBoxProps`](#multiselectcomboboxprops)\> | Form field wrapping a typeahead `<input />` for multi-option selection. |
+| `NumberInput` | `FunctionComponent`\<[`NumberInputProps`](#numberinputprops)\> | Form field wrapping a numeric `<input />` for currency, decimal, or percent values. |
+| `OrderedList` | `FunctionComponent`\<[`OrderedListProps`](#orderedlistprops)\> | HTML `<ol>` for a numbered list of items. |
+| `ProgressBar` | `FunctionComponent`\<[`ProgressBarProps`](#progressbarprops)\> | Step-based progress indicator for multi-step flows. |
+| `Radio` | `FunctionComponent`\<[`RadioProps`](#radioprops)\> | Form field wrapping a single `<input type="radio" />`. |
+| `RadioGroup` | `FunctionComponent`\<[`RadioGroupProps`](#radiogroupprops)\> | Form field grouping `<input type="radio" />` elements for single-option selection. |
+| `Select` | `FunctionComponent`\<[`SelectProps`](#selectprops)\> | Form field wrapping a single-select dropdown. |
+| `Switch` | `FunctionComponent`\<[`SwitchProps`](#switchprops)\> | Form field wrapping an `<input type="checkbox" />` styled as a toggle. |
+| `Table` | `FunctionComponent`\<[`TableProps`](#tableprops)\> | Tabular data display with headers, rows, optional footer, and empty state. |
+| `Tabs` | `FunctionComponent`\<[`TabsProps`](#tabsprops)\> | Tabbed navigation with associated content panels. |
+| `Text` | `FunctionComponent`\<[`TextProps`](#textprops)\> | Body text element rendered as `<p>`, `<span>`, `<div>`, or `<pre>`. |
+| `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
+| `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
+| `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
+| `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
+| `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 
 ## Component props
 
@@ -140,6 +246,20 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 | `currentBreadcrumbId?` | `string` | | Current breadcrumb id |
 | `isSmallContainer?` | `boolean` | `false` | Passed to the breadcrumbs when the container size is small (640px and below) At this size, the breadcrumb typically does not have sufficient size to render completely. In our implementation, we switch to a condensed mobile version of the breadcrumbs |
 | `onClick?` | (`id`: `string`) => `void` | | Event handler for breadcrumb navigation |
+
+<a id="breadcrumb"></a>
+
+#### Breadcrumb
+
+Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
+| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
+| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
 
 ***
 
@@ -294,6 +414,21 @@ Renders a form field wrapping multiple `<input type="checkbox" />` elements with
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | | Array of currently selected values |
 
+<a id="checkboxgroupoption"></a>
+
+#### CheckboxGroupOption
+
+Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text or content for the checkbox option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the checkbox option |
+| `isDisabled?` | `boolean` | Disables this specific checkbox option |
+
 ***
 
 <a id="checkboxprops"></a>
@@ -374,6 +509,19 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
 
+<a id="comboboxoption"></a>
+
+#### ComboBoxOption
+
+Option entry for the [ComboBox](#comboboxprops) dropdown list.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
 ***
 
 <a id="datepickerprops"></a>
@@ -437,6 +585,20 @@ Renders a form field wrapping paired `<input type="date" />` elements for select
 | `minValue?` | `Date` | Earliest selectable date. Dates before this are disabled. |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers. |
 
+<a id="daterange"></a>
+
+#### DateRange
+
+Inclusive start/end pair representing a date range selected in a
+[DateRangePicker](#daterangepickerprops).
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `end` | `Date` | Last date in the range, inclusive. |
+| `start` | `Date` | First date in the range, inclusive. |
+
 ***
 
 <a id="descriptionlistprops"></a>
@@ -454,6 +616,19 @@ Renders an HTML `<dl>` of term/description pairs in either a stacked or horizont
 | `className?` | `string` | | Additional class name applied to the root `<dl>`. |
 | `layout?` | `"stacked"` \| `"horizontal"` | `'stacked'` | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
 | `showSeparators?` | `boolean` | `true` | Whether to render dividers between rows. Defaults to `true`. |
+
+<a id="descriptionlistitem"></a>
+
+#### DescriptionListItem
+
+Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
+| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
 
 ***
 
@@ -680,7 +855,7 @@ Renders a popover menu of actions anchored to a trigger element.
 
 #### Extends
 
-- [`DataAttributes`](index.md#dataattributes)
+- [`DataAttributes`](#dataattributes)
 
 #### Indexable
 
@@ -697,6 +872,31 @@ Renders a popover menu of actions anchored to a trigger element.
 | `placement?` | `"top"` \| `"top start"` \| `"top end"` \| `"bottom"` \| `"bottom start"` \| `"bottom end"` \| `"left"` \| `"right"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
 | `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
 | `triggerRef?` | `RefObject`\<`Element` \| `null`\> | `undefined` | Reference to the element that triggers the menu |
+
+<a id="menuitem"></a>
+
+#### MenuItem
+
+Action entry your [Menu](#menuprops) implementation must accept for each entry in its
+`items` array from the component adapter.
+
+##### Extends
+
+- [`DataAttributes`](#dataattributes)
+
+##### Indexable
+
+> \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Text label for the menu item |
+| `onClick` | () => `void` | Callback function when the menu item is clicked |
+| `href?` | `string` | Optional URL to navigate to when clicked |
+| `icon?` | `ReactNode` | Optional icon to display before the label |
+| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
 
 ***
 
@@ -760,6 +960,19 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 | `placeholder?` | `string` | - |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | Currently selected values |
+
+<a id="multiselectcomboboxoption"></a>
+
+#### MultiSelectComboBoxOption
+
+Option entry for a [MultiSelectComboBox](#multiselectcomboboxprops) dropdown list.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
 
 ***
 
@@ -853,6 +1066,15 @@ Renders pagination controls for navigating between pages of results.
 | `itemsPerPage?` | [`PaginationItemsPerPage`](#paginationitemsperpage) | Number of items shown per page. |
 | `totalCount?` | `number` | Total number of items across all pages. |
 
+<a id="paginationitemsperpage"></a>
+
+#### PaginationItemsPerPage
+
+> **PaginationItemsPerPage** = `5` \| `10` \| `25` \| `50`
+
+Allowed page-size values a [PaginationControl](#paginationcontrolprops) offers for
+how many items to show per page.
+
 ***
 
 <a id="payrollloadingprops"></a>
@@ -922,6 +1144,21 @@ Renders a form field wrapping multiple `<input type="radio" />` elements with a 
 | `onChange?` | (`value`: `string`) => `void` | | Callback when selection changes |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | `undefined` | Currently selected value |
+
+<a id="radiogroupoption"></a>
+
+#### RadioGroupOption
+
+Option entry your [RadioGroup](#radiogroupprops) implementation receives in the `options` array when rendering each radio button.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text or content for the radio option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the radio option |
+| `isDisabled?` | `boolean` | Disables this specific radio option |
 
 ***
 
@@ -998,6 +1235,19 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
 
+<a id="selectoption"></a>
+
+#### SelectOption
+
+Option entry your [Select](#selectprops) implementation receives in the `options` array when rendering each item in the dropdown.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
 ***
 
 <a id="switchprops"></a>
@@ -1065,6 +1315,32 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 | `isWithinBox?` | `boolean` | `false` | Removes borders and background for use inside a Box component |
 | `role?` | `AriaRole` | | - |
 
+<a id="tabledata"></a>
+
+#### TableData
+
+Shape of a single cell your [Table](#tableprops) implementation receives for headers, rows, and footers.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to be displayed in the table cell |
+| `key` | `string` | Unique identifier for the table cell |
+
+<a id="tablerow"></a>
+
+#### TableRow
+
+Shape of a single row your [Table](#tableprops) implementation receives, containing an ordered list of cells.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
+| `key` | `string` | Unique identifier for the table row |
+
 ***
 
 <a id="tabsprops"></a>
@@ -1084,6 +1360,21 @@ Renders tabbed navigation with associated content panels.
 | `aria-labelledby?` | `string` | ID of element that labels the tabs |
 | `className?` | `string` | Additional CSS class name |
 | `selectedId?` | `string` | Currently selected tab id |
+
+<a id="tabprops"></a>
+
+#### TabProps
+
+Shape of a single tab configuration your [Tabs](#tabsprops) implementation receives in its `tabs` prop.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to display in the tab panel |
+| `id` | `string` | Unique identifier for the tab |
+| `label` | `ReactNode` | Label to display in the tab button |
+| `isDisabled?` | `boolean` | Whether the tab is disabled |
 
 ***
 
@@ -1244,271 +1535,21 @@ Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
 
 ***
 
-<a id="breadcrumb"></a>
+<a id="dataattributes"></a>
 
-### Breadcrumb
+### DataAttributes
 
-Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
+> **DataAttributes** = `object`
 
-#### Properties
+An open map of `data-*` attributes that can be spread onto a rendered DOM element.
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
-| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
-| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
+#### Index Signature
 
-***
+\[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
 
-<a id="checkboxgroupoption"></a>
+#### Page
 
-### CheckboxGroupOption
-
-Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text or content for the checkbox option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-| `description?` | `ReactNode` | Optional description text for the checkbox option |
-| `isDisabled?` | `boolean` | Disables this specific checkbox option |
-
-***
-
-<a id="comboboxoption"></a>
-
-### ComboBoxOption
-
-Option entry for the ComboBox dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="componentscontexttype"></a>
-
-### ComponentsContextType
-
-Full map of UI components used by the SDK. Every property is a React component that the
-SDK renders internally — override any of them to substitute your own design system.
-
-Pass a `Partial<ComponentsContextType>` to [GustoProvider](index.md#gustoprovider) via the `components` prop to
-replace specific components while keeping SDK defaults for the rest.
-
-To take full control of every UI component (and eliminate the React Aria dependency),
-pass a complete [ComponentsContextType](#componentscontexttype) to [GustoProviderCustomUIAdapter](index.md#gustoprovidercustomuiadapter) instead.
-All properties are then required except `PaginationControl` and `PayrollLoading`,
-which fall back to built-in SDK implementations when omitted.
-
-#### Examples
-
-**Partial override with GustoProvider**
-
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-
-function App() {
-  return (
-    <GustoProvider
-      config={{ baseUrl: '/api/gusto/' }}
-      components={{
-        Button: MyButton,
-        TextInput: MyTextInput,
-      }}
-    >
-      <EmployeeOnboardingFlow companyId="company_123" />
-    </GustoProvider>
-  )
-}
-```
-
-**Full replacement with GustoProviderCustomUIAdapter**
-
-```tsx
-import { GustoProviderCustomUIAdapter, type ComponentsContextType } from '@gusto/embedded-react-sdk'
-
-const myComponents: ComponentsContextType = {
-  Alert: props => <MyAlert {...props} />,
-  Button: props => <MyButton {...props} />,
-  // ... all required components
-}
-
-function App() {
-  return (
-    <GustoProviderCustomUIAdapter
-      config={{ baseUrl: '/api/gusto/' }}
-      components={myComponents}
-    >
-      <EmployeeOnboardingFlow companyId="company_123" />
-    </GustoProviderCustomUIAdapter>
-  )
-}
-```
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Alert` | `FunctionComponent`\<[`AlertProps`](#alertprops)\> | Status message with an optional dismiss action; used for errors, warnings, success, and info. |
-| `Badge` | `FunctionComponent`\<[`BadgeProps`](#badgeprops)\> | Small inline label for status, counts, or tags; optionally dismissible. |
-| `Banner` | `FunctionComponent`\<[`BannerProps`](#bannerprops)\> | Full-width notification banner for prominent warnings and errors. |
-| `Box` | `FunctionComponent`\<[`BoxProps`](#boxprops)\> | Sectioned layout container with distinct header, body, and footer areas. |
-| `BoxHeader` | `FunctionComponent`\<[`BoxHeaderProps`](#boxheaderprops)\> | Header section of a Box with a title, optional description, and optional inline action. |
-| `Breadcrumbs` | `FunctionComponent`\<[`BreadcrumbsProps`](#breadcrumbsprops)\> | Navigation breadcrumb trail showing the user's position in a multi-step flow. |
-| `Button` | `FunctionComponent`\<[`ButtonProps`](#buttonprops)\> | HTML `<button>` with primary, secondary, tertiary, and error variants. |
-| `ButtonIcon` | `FunctionComponent`\<[`ButtonIconProps`](#buttoniconprops)\> | Icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies. |
-| `CalendarPreview` | `FunctionComponent`\<[`CalendarPreviewProps`](#calendarpreviewprops)\> | Read-only calendar for visualizing a date range with optional highlighted dates. |
-| `Card` | `FunctionComponent`\<[`CardProps`](#cardprops)\> | Content container with an optional overflow menu and a leading action slot. |
-| `Checkbox` | `FunctionComponent`\<[`CheckboxProps`](#checkboxprops)\> | Form field wrapping a single `<input type="checkbox" />`. |
-| `CheckboxGroup` | `FunctionComponent`\<[`CheckboxGroupProps`](#checkboxgroupprops)\> | Form field grouping `<input type="checkbox" />` elements for multi-option selection. |
-| `ComboBox` | `FunctionComponent`\<[`ComboBoxProps`](#comboboxprops)\> | Form field wrapping a typeahead `<input />` for single-option selection. |
-| `DatePicker` | `FunctionComponent`\<[`DatePickerProps`](#datepickerprops)\> | Form field wrapping an `<input type="date" />` with a calendar picker popover. |
-| `DateRangePicker` | `FunctionComponent`\<[`DateRangePickerProps`](#daterangepickerprops)\> | Form field wrapping paired `<input type="date" />` elements for a date range. |
-| `DescriptionList` | `FunctionComponent`\<[`DescriptionListProps`](#descriptionlistprops)\> | HTML `<dl>` of term/description pairs in stacked or horizontal layout. |
-| `Dialog` | `FunctionComponent`\<[`DialogProps`](#dialogprops)\> | Modal confirmation dialog with a primary action and a cancel action. |
-| `FileInput` | `FunctionComponent`\<[`FileInputProps`](#fileinputprops)\> | Form field wrapping an `<input type="file" />`. |
-| `FormBox` | `FunctionComponent`\<[`FormBoxProps`](#formboxprops)\> | Bordered container for grouping related form fields, with an optional header slot. |
-| `FormBoxHeader` | `FunctionComponent`\<[`FormBoxHeaderProps`](#formboxheaderprops)\> | Header section of a FormBox with a title, optional description, and optional inline action. |
-| `Heading` | `FunctionComponent`\<[`HeadingProps`](#headingprops)\> | HTML `<h1>`–`<h6>` with visual style controlled independently from semantic level. |
-| `Link` | `FunctionComponent`\<[`LinkProps`](#linkprops)\> | HTML `<a>` for inline navigation. |
-| `LoadingSpinner` | `FunctionComponent`\<[`LoadingSpinnerProps`](#loadingspinnerprops)\> | Spinner shown while data or an action is pending. |
-| `Menu` | `FunctionComponent`\<[`MenuProps`](#menuprops)\> | Popover menu of actions anchored to a trigger element. |
-| `Modal` | `FunctionComponent`\<[`ModalProps`](#modalprops)\> | Overlay modal with customizable body content and footer. |
-| `MultiSelectComboBox` | `FunctionComponent`\<[`MultiSelectComboBoxProps`](#multiselectcomboboxprops)\> | Form field wrapping a typeahead `<input />` for multi-option selection. |
-| `NumberInput` | `FunctionComponent`\<[`NumberInputProps`](#numberinputprops)\> | Form field wrapping a numeric `<input />` for currency, decimal, or percent values. |
-| `OrderedList` | `FunctionComponent`\<[`OrderedListProps`](#orderedlistprops)\> | HTML `<ol>` for a numbered list of items. |
-| `ProgressBar` | `FunctionComponent`\<[`ProgressBarProps`](#progressbarprops)\> | Step-based progress indicator for multi-step flows. |
-| `Radio` | `FunctionComponent`\<[`RadioProps`](#radioprops)\> | Form field wrapping a single `<input type="radio" />`. |
-| `RadioGroup` | `FunctionComponent`\<[`RadioGroupProps`](#radiogroupprops)\> | Form field grouping `<input type="radio" />` elements for single-option selection. |
-| `Select` | `FunctionComponent`\<[`SelectProps`](#selectprops)\> | Form field wrapping a single-select dropdown. |
-| `Switch` | `FunctionComponent`\<[`SwitchProps`](#switchprops)\> | Form field wrapping an `<input type="checkbox" />` styled as a toggle. |
-| `Table` | `FunctionComponent`\<[`TableProps`](#tableprops)\> | Tabular data display with headers, rows, optional footer, and empty state. |
-| `Tabs` | `FunctionComponent`\<[`TabsProps`](#tabsprops)\> | Tabbed navigation with associated content panels. |
-| `Text` | `FunctionComponent`\<[`TextProps`](#textprops)\> | Body text element rendered as `<p>`, `<span>`, `<div>`, or `<pre>`. |
-| `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
-| `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
-| `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
-| `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
-| `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
-
-***
-
-<a id="daterange"></a>
-
-### DateRange
-
-Inclusive start/end pair representing a selected date range.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `end` | `Date` | Last date in the range, inclusive. |
-| `start` | `Date` | First date in the range, inclusive. |
-
-***
-
-<a id="descriptionlistitem"></a>
-
-### DescriptionListItem
-
-Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
-| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
-
-***
-
-<a id="menuitem"></a>
-
-### MenuItem
-
-Action entry your `Menu` implementation must accept for each entry in its `items` array
-from the component adapter.
-
-#### Extends
-
-- [`DataAttributes`](index.md#dataattributes)
-
-#### Indexable
-
-> \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Text label for the menu item |
-| `onClick` | () => `void` | Callback function when the menu item is clicked |
-| `href?` | `string` | Optional URL to navigate to when clicked |
-| `icon?` | `ReactNode` | Optional icon to display before the label |
-| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
-
-***
-
-<a id="multiselectcomboboxoption"></a>
-
-### MultiSelectComboBoxOption
-
-Option entry for a `MultiSelectComboBox` dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="paginationitemsperpage"></a>
-
-### PaginationItemsPerPage
-
-> **PaginationItemsPerPage** = `5` \| `10` \| `25` \| `50`
-
-***
-
-<a id="radiogroupoption"></a>
-
-### RadioGroupOption
-
-Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text or content for the radio option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-| `description?` | `ReactNode` | Optional description text for the radio option |
-| `isDisabled?` | `boolean` | Disables this specific radio option |
-
-***
-
-<a id="selectoption"></a>
-
-### SelectOption
-
-Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
+component-inventory
 
 ***
 
@@ -1525,7 +1566,7 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 #### Extends
 
-- [`DataAttributes`](index.md#dataattributes)
+- [`DataAttributes`](#dataattributes)
 
 #### Extended by
 
@@ -1585,50 +1626,3 @@ Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a dist
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
-
-***
-
-<a id="tabledata"></a>
-
-### TableData
-
-Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to be displayed in the table cell |
-| `key` | `string` | Unique identifier for the table cell |
-
-***
-
-<a id="tablerow"></a>
-
-### TableRow
-
-Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
-| `key` | `string` | Unique identifier for the table row |
-
-***
-
-<a id="tabprops"></a>
-
-### TabProps
-
-Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to display in the tab panel |
-| `id` | `string` | Unique identifier for the tab |
-| `label` | `ReactNode` | Label to display in the tab button |
-| `isDisabled?` | `boolean` | Whether the tab is disabled |

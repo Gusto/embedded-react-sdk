@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Flows and blocks for running and managing payroll across a company's pay schedules.
 
+```ts
+import { Payroll } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |

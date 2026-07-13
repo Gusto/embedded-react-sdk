@@ -57,13 +57,13 @@ function WorkAddressEditor({ employeeId, companyId }: { employeeId: string; comp
 
 [`UseWorkAddressFormResult`](#useworkaddressformresult)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
 
 ***
 
 <a id="useworkaddressform"></a>
 
-> **useWorkAddressForm**(`props`: [`UseWorkAddressFormProps`](#useworkaddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+> **useWorkAddressForm**(`props`: [`UseWorkAddressFormProps`](#useworkaddressformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 Form hook for creating or editing an employee's work address.
 
@@ -133,15 +133,15 @@ the location list; pass it when it is known.
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
 
 <a id="useworkaddressformresult"></a>
 
 ### UseWorkAddressFormResult
 
-> **UseWorkAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+> **UseWorkAddressFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 Discriminated union returned by [useWorkAddressForm](#useworkaddressform).
 
@@ -155,23 +155,23 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 
 **Remarks**
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../hooks.md#baseformhookready) with
 the work-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`callbacks?`: [`WorkAddressSubmitCallbacks`](#workaddresssubmitcallbacks), `options?`: [`WorkAddressSubmitOptions`](#workaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress)\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`callbacks?`: [`WorkAddressSubmitCallbacks`](#workaddresssubmitcallbacks), `options?`: [`WorkAddressSubmitOptions`](#workaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress)\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.companyLocations` | [`Location`](../../APIModels/index.md#location)[] \| `undefined` | Company locations available for selection; `undefined` until the locations query resolves. |
 | `data.workAddress` | [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress) \| `null` | The address row loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`WorkAddressFormFields`](#workaddressformfields) | - |
 | `form.fieldsMetadata` | [`WorkAddressFieldsMetadata`](#workaddressfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`WorkAddressFormData`](#workaddressformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`WorkAddressFormData`](#workaddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`WorkAddressFormData`](#workaddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
@@ -213,7 +213,7 @@ Bound to `effectiveDate`. Effective-date picker. Only available when `withEffect
 
 #### EffectiveDateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
 
 Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveDate` component.
 
@@ -221,9 +221,9 @@ Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveD
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
 
 ***
 
@@ -242,7 +242,7 @@ Bound to `locationUuid`. Location selector. Always available.
 
 #### LocationFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), [`Location`](../../APIModels/index.md#location)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), [`Location`](../../APIModels/index.md#location)\>\>
 
 Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` component.
 
@@ -252,9 +252,9 @@ Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` 
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: [`Location`](../../APIModels/index.md#location)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ## Validations
 
@@ -331,8 +331,8 @@ Field names accepted by the work address form.
 
 | Field | Type |
 | ------ | ------ |
-| `effectiveDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `locationUuid` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`Location`](../../APIModels/index.md#location)\> |
+| `effectiveDate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `locationUuid` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`Location`](../../APIModels/index.md#location)\> |
 
 Type of `form.fieldsMetadata` returned by [useWorkAddressForm](#useworkaddressform).
 

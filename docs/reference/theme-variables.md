@@ -4,25 +4,23 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Theme variables
-description: Theme variables reference.
-sidebar_position: 6
+description: These design tokens control the visual appearance of all components and UX within the SDK. See the theming guide for more context.
+sidebar_position: 13
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Theme variables
-
-## Interfaces
+These design tokens control the visual appearance of all components and UX within the SDK. See the [theming guide](../guides/theming.md) for more context.
 
 <a id="gustosdktheme"></a>
 
-### GustoSDKTheme
+## GustoSDKTheme
 
 Complete set of design tokens that control the SDK's visual theme. Pass a
-`Partial<GustoSDKTheme>` to `ThemeProvider` to override specific tokens; any
+`Partial<GustoSDKTheme>` to [GustoProvider](providers.md#gustoprovider) to override specific tokens; any
 token not supplied falls back to the SDK default.
 
-#### Example
+### Example
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
@@ -42,11 +40,11 @@ function App() {
 }
 ```
 
-#### Extends
+### Extends
 
 - [`GustoSDKThemeColors`](#gustosdkthemecolors)
 
-#### Properties
+### Properties
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
@@ -123,17 +121,17 @@ function App() {
 
 <a id="gustosdkthemecolors"></a>
 
-### GustoSDKThemeColors
+## GustoSDKThemeColors
 
 Color tokens that can be overridden to customize the SDK's visual theme.
 Pass a `Partial<GustoSDKThemeColors>` when constructing a `Partial<GustoSDKTheme>`
-to supply to `ThemeProvider`.
+to supply to [GustoProvider](providers.md#gustoprovider).
 
-#### Extended by
+### Extended by
 
 - [`GustoSDKTheme`](#gustosdktheme)
 
-#### Properties
+### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |

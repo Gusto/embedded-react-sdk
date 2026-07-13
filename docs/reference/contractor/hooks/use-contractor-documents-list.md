@@ -20,7 +20,7 @@ Standalone data hook for a contractor's documents.
 ## Remarks
 
 Wraps the `contractorDocumentsGetAll` query in the standard
-[BaseHookReady](../../utilities.md#basehookready) shape. Read-only — viewing or signing a document is
+[BaseHookReady](../../hooks.md#basehookready) shape. Read-only — viewing or signing a document is
 handled by the screen the parent routes to, so this hook exposes no actions.
 
 ## Example
@@ -59,13 +59,13 @@ Parameters for [useContractorDocumentsList](#usecontractordocumentslist).
 
 [`UseContractorDocumentsListResult`](#usecontractordocumentslistresult)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or the ready state with `data.documents` once loaded.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or the ready state with `data.documents` once loaded.
 
 <a id="usecontractordocumentslistresult"></a>
 
 ### UseContractorDocumentsListResult
 
-> **UseContractorDocumentsListResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDocumentsListReady`](#usecontractordocumentslistready)
+> **UseContractorDocumentsListResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorDocumentsListReady`](#usecontractordocumentslistready)
 
 Result of [useContractorDocumentsList](#usecontractordocumentslist) — a discriminated union of loading and ready states.
 
@@ -81,8 +81,8 @@ Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumen
 | ------ | ------ | ------ |
 | `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
 | `data.documents` | [`Document`](../../APIModels/index.md#document)[] | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 | `status.isFetching` | `boolean` | - |
 

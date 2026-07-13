@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usebankform"></a>
 
-> **useBankForm**(`props`: [`UseBankFormProps`](#usebankformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+> **useBankForm**(`props`: [`UseBankFormProps`](#usebankformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 Headless React Hook Form hook for creating an employee bank account.
 
@@ -73,7 +73,7 @@ Props for [useBankForm](#usebankform).
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 A loading-state result while the hook is initializing, or a [UseBankFormReady](#usebankformready) ready to render.
 
@@ -81,7 +81,7 @@ A loading-state result while the hook is initializing, or a [UseBankFormReady](#
 
 ### UseBankFormResult
 
-> **UseBankFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+> **UseBankFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 Return type of [useBankForm](#usebankform) — a discriminated union on `isLoading`.
 
@@ -96,15 +96,15 @@ Ready-state return value of [useBankForm](#usebankform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Optional [BankFormSubmitOptions](#bankformsubmitoptions) can override the `employeeId` supplied to the hook. |
-| `actions.onSubmit` | (`options?`: [`BankFormSubmitOptions`](#bankformsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeBankAccount`](../../APIModels/index.md#employeebankaccount)\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`BankFormSubmitOptions`](#bankformsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`EmployeeBankAccount`](../../APIModels/index.md#employeebankaccount)\> \| `undefined`\> | - |
 | `data` | `Record`\<`string`, `never`\> | No server-fetched data — the create form derives everything from user input. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`BankFormFields`](#bankformfields) | - |
 | `form.fieldsMetadata` | [`BankFormFieldsMetadata`](#bankformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`BankFormData`](#bankformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` | - |
@@ -141,7 +141,7 @@ Bound to `accountNumber`.
 
 #### AccountNumberFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.AccountNumber` component.
 
@@ -149,9 +149,9 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.AccountNumber` component
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`AccountNumberValidation`](#accountnumbervalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`AccountNumberValidation`](#accountnumbervalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -170,7 +170,7 @@ Bound to `accountType`.
 
 #### AccountTypeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
 
@@ -179,9 +179,9 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`AccountType`](#accounttype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ***
 
@@ -200,7 +200,7 @@ Bound to `name`.
 
 #### NameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
 
@@ -208,9 +208,9 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -229,7 +229,7 @@ Bound to `routingNumber`.
 
 #### RoutingNumberFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component.
 
@@ -237,9 +237,9 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`RoutingNumberValidation`](#routingnumbervalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`RoutingNumberValidation`](#routingnumbervalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ## Validations
 
@@ -355,10 +355,10 @@ Field names accepted by the bank account form.
 
 | Field | Type |
 | ------ | ------ |
-| `accountNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `accountType` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Checking"` \| `"Savings"`\> |
-| `name` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `routingNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `accountNumber` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `accountType` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Checking"` \| `"Savings"`\> |
+| `name` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `routingNumber` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankform).
 

@@ -3,26 +3,56 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Hook utilities
-description: Hook utilities reference.
-sidebar_position: 8
+title: Hooks
+description: The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the Hooks guide.
+sidebar_position: 7
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Hook utilities
+The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).
 
-## Components
+## 🌐 Data hooks
+
+| Hook | Description |
+| --- | --- |
+| [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list) | Standalone data hook for a contractor's documents. |
+| [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
+
+## ✍️ Form hooks
+
+| Hook | Description |
+| --- | --- |
+| [useBankForm](employee/hooks/use-bank-form) | Headless React Hook Form hook for creating an employee bank account. |
+| [useChildSupportGarnishmentForm](employee/hooks/use-child-support-garnishment-form) | Headless hook for creating or updating a child-support garnishment. |
+| [useCompensationForm](employee/hooks/use-compensation-form) | Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment. |
+| [useContractorAddressForm](contractor/hooks/use-contractor-address-form) | Form hook for editing a contractor's address. |
+| [useContractorBankAccountForm](contractor/hooks/use-contractor-bank-account-form) | Headless React Hook Form hook for creating a contractor's bank account. |
+| [useContractorDetailsForm](contractor/hooks/use-contractor-details-form) | Headless hook for creating or updating a contractor's profile details — individual vs. business type, wage type, names, SSN/EIN, work state, and the self-onboarding preference. |
+| [useContractorPaymentMethodForm](contractor/hooks/use-contractor-payment-method-form) | Headless React Hook Form hook for managing a contractor's payment method type. |
+| [useContractorSignatureForm](contractor/hooks/use-contractor-signature-form) | Headless hook for signing a contractor document — collects the document's fields plus a typed signature and consent. |
+| [useDeductionForm](employee/hooks/use-deduction-form) | Headless hook for creating or updating a non-child-support deduction. |
+| [useEmployeeDetailsForm](employee/hooks/use-employee-details-form) | Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference. |
+| [useEmployeeStateTaxesForm](employee/hooks/use-employee-state-taxes-form) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
+| [useFederalTaxesForm](employee/hooks/use-federal-taxes-form) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [useHomeAddressForm](employee/hooks/use-home-address-form) | Form hook for creating or editing an employee's home address. |
+| [useJobForm](employee/hooks/use-job-form) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
+| [usePaymentMethodForm](employee/hooks/use-payment-method-form) | Headless React Hook Form hook for updating an employee's payment method. |
+| [usePayScheduleForm](company/hooks/use-pay-schedule-form) | Form hook for creating or updating a company pay schedule. |
+| [useSignCompanyForm](company/hooks/use-sign-company-form) | Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox. |
+| [useSignEmployeeForm](employee/hooks/use-sign-employee-form) | Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification. |
+| [useSplitPaymentsForm](employee/hooks/use-split-payments-form) | Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts. |
+| [useWorkAddressForm](employee/hooks/use-work-address-form) | Form hook for creating or editing an employee's work address. |
 
 <a id="sdkformprovider"></a>
 
-### SDKFormProvider
+## SDKFormProvider
 
 Provides form context to field components so they can read metadata, control,
 and error state without an explicit `formHookResult` prop on each field.
 Server-side field errors are automatically synced onto their corresponding fields.
 
-#### Example
+### Example
 
 ```tsx
 const formHookResult = useEmployeeDetailsForm({ employeeId })
@@ -44,14 +74,14 @@ return (
 )
 ```
 
-#### Type Parameters
+### Type Parameters
 
 | Type Parameter | Default type |
 | ------ | ------ |
 | `TFormData` *extends* `FieldValues` | `FieldValues` |
 | `TFieldsMetadata` *extends* \{ \[K in string \| number \| symbol\]: FieldMetadata \| FieldMetadataWithOptions\<unknown\> \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>\> |
 
-#### SDKFormProviderProps
+### SDKFormProviderProps
 
 <a id="sdkformproviderprops"></a>
 
@@ -62,12 +92,14 @@ Props for [SDKFormProvider](#sdkformprovider).
 | `children` | `ReactNode` | Field components (or any content) that consume the provided form context. |
 | `formHookResult` | `object` | The form hook result whose fields, metadata, and errors are shared with descendant field components. |
 | `formHookResult.errorHandling` | `object` | - |
-| `formHookResult.errorHandling.errors` | [`SDKError`](index.md#sdkerror)[] | - |
+| `formHookResult.errorHandling.errors` | [`SDKError`](error-handling.md#sdkerror)[] | - |
 | `formHookResult.form` | `object` | - |
 | `formHookResult.form.fieldsMetadata` | `TFieldsMetadata` | - |
 | `formHookResult.form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 
-## Functions
+## Form composition
+
+_Usage: [Composing multiple hooks](../guides/hooks/composing-multiple-hooks.md) and [Handling hook errors](../guides/hooks/handling-hook-errors.md)._
 
 <a id="composeerrorhandler"></a>
 
@@ -131,6 +163,46 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 [`HookErrorHandling`](#hookerrorhandling)
 
 A single `HookErrorHandling` covering every source.
+
+<a id="mixederrorsource"></a>
+
+#### MixedErrorSource
+
+> **MixedErrorSource** = [`QueryWithRefetch`](#querywithrefetch) \| \{ `errorHandling`: [`HookErrorHandling`](#hookerrorhandling); \}
+
+Accepted input shape for [composeErrorHandler](#composeerrorhandler): either a React Query result
+(anything with `error` and `refetch`) or another SDK hook result that exposes
+an `errorHandling` object.
+
+<a id="querywithrefetch"></a>
+
+#### QueryWithRefetch
+
+> **QueryWithRefetch** = `Pick`\<`UseQueryResult`, `"error"` \| `"refetch"`\>
+
+The subset of a TanStack Query result — its `error` and `refetch` — that
+[composeErrorHandler](#composeerrorhandler) reads from an additional query passed as a source.
+
+<a id="submitstateforerrorhandling"></a>
+
+#### SubmitStateForErrorHandling
+
+> **SubmitStateForErrorHandling** = `object`
+
+Submit-side error state to merge into a composed [HookErrorHandling](#hookerrorhandling).
+
+##### Remarks
+
+Pass to [composeErrorHandler](#composeerrorhandler) when a screen has its own submit state outside of
+any SDK form hook, so submit errors appear in the same error surface as query errors
+and can be cleared together with `clearSubmitError`.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `setSubmitError` | (`error`: [`SDKError`](error-handling.md#sdkerror) \| `null`) => `void` | Sets or clears the submit error. |
+| `submitError` | [`SDKError`](error-handling.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
 
 ***
 
@@ -196,32 +268,149 @@ return <form onSubmit={handleSubmit}>...</form>
 
 A [ComposeSubmitHandlerResult](#composesubmithandlerresult) with a unified `handleSubmit` and aggregated `errorHandling`.
 
-## Interfaces
+<a id="composableformhookresult"></a>
 
-<a id="basefieldprops"></a>
+#### ComposableFormHookResult
 
-### BaseFieldProps
+Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
+Any hook returning `BaseFormHookReady` satisfies this interface.
 
-Common presentation props accepted by every hook field component.
+`formMethods` is declared with method-call syntax (rather than reused from
+`HookFormInternals`) so TypeScript applies bivariant parameter checking,
+allowing hooks with specific form data generics to be passed without casts.
+`_fieldElementRegistry` is reused directly since its type doesn't depend on
+the form's generic.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | The error-handling surface aggregated across the composed forms. |
+| `form` | `object` | The form surface: the react-hook-form internals used to validate and focus fields. |
+| `form.hookFormInternals` | `Pick`\<[`HookFormInternals`](#hookforminternals)\<`FieldValues`\>, `"_fieldElementRegistry"`\> & `object` | - |
+
+<a id="composesubmithandlerresult"></a>
+
+#### ComposeSubmitHandlerResult
+
+Result returned by [composeSubmitHandler](#composesubmithandler): a single submit handler that
+coordinates validation across the composed forms, and aggregated error state.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Aggregated error state across all composed SDK form hooks. Pass to [composeErrorHandler](#composeerrorhandler) for screen-level error surfaces. |
+| `handleSubmit` | (`e`: `SyntheticEvent`) => `Promise`\<`void`\> | Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. |
+
+<a id="composesubmitinput"></a>
+
+#### ComposeSubmitInput
+
+> **ComposeSubmitInput**\<`T`\> = [`ComposableFormHookResult`](#composableformhookresult) \| `UseFormReturn`\<`T`\>
+
+Accepted input for a single slot of `composeSubmitHandler`'s `forms` array.
+
+##### Remarks
+
+- SDK form hook results (anything matching `ComposableFormHookResult`) are composed directly.
+- A raw `react-hook-form` `UseFormReturn<T>` is supported for screen-local auxiliary forms
+  that don't warrant a dedicated SDK hook. Raw forms contribute validation/focus behavior
+  but no `errorHandling` (fields surface their own inline errors via react-hook-form).
+
+##### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `T` *extends* `FieldValues` | `FieldValues` | The shape of the form values when a raw `UseFormReturn` is passed. |
+
+## Common hook results
+
+_The shape every hook returns — see the [Hooks overview](../guides/hooks/overview.md)._
+
+<a id="basehookready"></a>
+
+### BaseHookReady
+
+Base ready-state shape for non-form hooks (data-fetching or action hooks without a form).
+
+#### Remarks
+
+Each concrete hook substitutes its own `data` and `status` shape via the
+type parameters so consumers see fully-typed payloads without manual
+narrowing. `isLoading: false` discriminates this branch from
+[HookLoadingResult](#hookloadingresult).
 
 #### Extended by
 
-- [`TextInputHookFieldProps`](#textinputhookfieldprops)
-- [`SelectHookFieldProps`](#selecthookfieldprops)
-- [`CheckboxHookFieldProps`](#checkboxhookfieldprops)
-- [`NumberInputHookFieldProps`](#numberinputhookfieldprops)
-- [`DatePickerHookFieldProps`](#datepickerhookfieldprops)
-- [`RadioGroupHookFieldProps`](#radiogrouphookfieldprops)
-- [`SwitchHookFieldProps`](#switchhookfieldprops)
+- [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TData` *extends* `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the data the hook exposes once loaded. |
+| `TStatus` *extends* `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the status flags the hook exposes. |
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `data` | `TData` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
+| `status` | `TStatus` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 
 ***
+
+<a id="hookerrorhandling"></a>
+
+### HookErrorHandling
+
+Error state and recovery actions returned by every hook in both loading and ready states.
+
+#### Remarks
+
+`errors` aggregates fetch and submit errors as normalized `SDKError` values.
+Recovery is split by source: `retryQueries` refetches every failed
+data-fetching query (dependent queries re-trigger automatically when their
+dependencies resolve), and `clearSubmitError` clears the most recent
+submission error. Inferring which action to offer from those two methods is
+the supported way to discriminate fetch vs submit failures today.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `clearSubmitError` | () => `void` | Clears the most recent submission error. |
+| `errors` | [`SDKError`](error-handling.md#sdkerror)[] | Aggregated fetch and submit errors as normalized [SDKError](error-handling.md#sdkerror) values. |
+| `retryQueries` | () => `void` | Refetches every failed data-fetching query; dependent queries re-trigger automatically when their dependencies resolve. |
+
+***
+
+<a id="hookloadingresult"></a>
+
+### HookLoadingResult
+
+Discriminated union member returned by a hook while async data is being fetched.
+
+#### Remarks
+
+Only `isLoading` and `errorHandling` are available in this branch — query
+errors surfaced before the hook can render its form are exposed via
+`errorHandling.errors`. Once `isLoading` narrows to `false`, the hook's
+ready-state shape (data, form, actions, status) becomes available.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state available before the form loads, e.g. for query errors surfaced during data fetching. |
+| `isLoading` | `true` | Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available. |
+
+## Form hook results
+
+_Returned by form hooks — see the [Hooks overview](../guides/hooks/overview.md)._
 
 <a id="baseformhookready"></a>
 
@@ -291,38 +480,112 @@ parsed values (or `undefined` if invalid).
 
 ***
 
-<a id="basehookready"></a>
+<a id="formhookresult"></a>
 
-### BaseHookReady
+### FormHookResult
 
-Base ready-state shape for non-form hooks (data-fetching or action hooks without a form).
+> **FormHookResult** = `object`
+
+Narrowed shape accepted by the `formHookResult` prop on hook field components.
 
 #### Remarks
 
-Each concrete hook substitutes its own `data` and `status` shape via the
-type parameters so consumers see fully-typed payloads without manual
-narrowing. `isLoading: false` discriminates this branch from
-[HookLoadingResult](#hookloadingresult).
-
-#### Extended by
-
-- [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
-
-#### Type Parameters
-
-| Type Parameter | Default type | Description |
-| ------ | ------ | ------ |
-| `TData` *extends* `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the data the hook exposes once loaded. |
-| `TStatus` *extends* `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the status flags the hook exposes. |
+Derived from [BaseFormHookReady](#baseformhookready) so the prop stays in sync with what
+form hooks return — passing the hook result directly (e.g.
+`formHookResult={employeeDetails}`) is always type-safe. Use this prop when
+fields from multiple hooks need to be interleaved freely instead of grouped
+under an `SDKFormProvider`.
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `data` | `TData` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
-| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state and recovery actions. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
-| `status` | `TStatus` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
+| `errorHandling` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"errorHandling"`\], `"errors"`\> | The error handling surface; pass to [composeErrorHandler](#composeerrorhandler). |
+| `form` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"form"`\], `"fieldsMetadata"`\> & `object` | The form surface; provides field metadata and internal react-hook-form wiring. |
+
+***
+
+<a id="hookforminternals"></a>
+
+### HookFormInternals
+
+Escape hatch exposing react-hook-form's `UseFormReturn` from a form hook.
+
+#### Remarks
+
+Available at `form.hookFormInternals` on every form hook for advanced cases
+not covered by the built-in API — for example, watching a field for reactive
+UI updates outside of the SDK fields, programmatically setting values, or
+triggering validation on specific fields. The built-in `Fields`,
+`actions.onSubmit`, and `form.getFormSubmissionValues` are sufficient for
+most use cases.
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `formMethods` | `UseFormReturn`\<`TFormData`\> | The full react-hook-form return value; use for watching fields, setting values, or triggering validation. |
+
+***
+
+<a id="hooksubmitresult"></a>
+
+### HookSubmitResult
+
+Result returned by a form hook's `actions.onSubmit` after a successful submission.
+
+#### Remarks
+
+`mode` reflects which API path ran — `'create'` when no existing entity was
+loaded, `'update'` when editing one. `data` is the saved entity returned by
+the API. A failed validation or mutation returns `undefined` instead, so
+always null-check before reading `result.data`.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` | Type of the saved entity returned by the underlying mutation. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | `T` | The saved entity returned by the API. |
+| `mode` | `"create"` \| `"update"` | Whether the submission created a new entity or updated an existing one. |
+
+## Hook field props
+
+_Configure field behavior in [Configuring form fields](../guides/hooks/configuring-form-fields.md)._
+
+<a id="basefieldprops"></a>
+
+### BaseFieldProps
+
+Common presentation props accepted by every hook field component.
+
+#### Extended by
+
+- [`TextInputHookFieldProps`](#textinputhookfieldprops)
+- [`SelectHookFieldProps`](#selecthookfieldprops)
+- [`CheckboxHookFieldProps`](#checkboxhookfieldprops)
+- [`NumberInputHookFieldProps`](#numberinputhookfieldprops)
+- [`DatePickerHookFieldProps`](#datepickerhookfieldprops)
+- [`RadioGroupHookFieldProps`](#radiogrouphookfieldprops)
+- [`SwitchHookFieldProps`](#switchhookfieldprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
 
 ***
 
@@ -354,45 +617,6 @@ field attributes (`label`, `description`).
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
-
-***
-
-<a id="composableformhookresult"></a>
-
-### ComposableFormHookResult
-
-Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
-Any hook returning `BaseFormHookReady` satisfies this interface.
-
-`formMethods` is declared with method-call syntax (rather than reused from
-`HookFormInternals`) so TypeScript applies bivariant parameter checking,
-allowing hooks with specific form data generics to be passed without casts.
-`_fieldElementRegistry` is reused directly since its type doesn't depend on
-the form's generic.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | The error-handling surface aggregated across the composed forms. |
-| `form` | `object` | The form surface: the react-hook-form internals used to validate and focus fields. |
-| `form.hookFormInternals` | `Pick`\<[`HookFormInternals`](#hookforminternals)\<`FieldValues`\>, `"_fieldElementRegistry"`\> & `object` | - |
-
-***
-
-<a id="composesubmithandlerresult"></a>
-
-### ComposeSubmitHandlerResult
-
-Result returned by [composeSubmitHandler](#composesubmithandler): a single submit handler that
-coordinates validation across the composed forms, and aggregated error state.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Aggregated error state across all composed SDK form hooks. Pass to [composeErrorHandler](#composeerrorhandler) for screen-level error surfaces. |
-| `handleSubmit` | (`e`: `SyntheticEvent`) => `Promise`\<`void`\> | Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. |
 
 ***
 
@@ -432,175 +656,20 @@ attributes (`label`, `description`).
 
 ***
 
-<a id="fieldmetadata"></a>
+<a id="hookfieldprops"></a>
 
-### FieldMetadata
+### HookFieldProps
 
-Per-field metadata published by a form hook for the matching field component.
+> **HookFieldProps**\<`TProps`\> = `Omit`\<`TProps`, `"name"`\>
 
-#### Remarks
-
-Carries the field's registered `name` plus presentation flags (required, disabled,
-redacted server-side value) and optional date bounds. Consumed by hook field
-components to render labels, inline validation, and bounded date pickers.
-
-#### Extended by
-
-- [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `name` | `string` | Field name as registered with react-hook-form. |
-| `hasRedactedValue?` | `boolean` | Whether the server returned a redacted placeholder instead of the real value. |
-| `isDisabled?` | `boolean` | Whether the field should be rendered in a non-interactive state. |
-| `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
-| `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
-| `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
-| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
-
-***
-
-<a id="fieldmetadatawithoptions"></a>
-
-### FieldMetadataWithOptions
-
-[FieldMetadata](#fieldmetadata) extended with the option list for select-like fields.
-
-#### Remarks
-
-Includes the `label`/`value` pairs used to render the control and, when
-available, the raw `entries` (typed via `TEntry`) the options were derived
-from so callers can read additional attributes off the originating record.
-
-#### Extends
-
-- [`FieldMetadata`](#fieldmetadata)
-
-#### Type Parameters
-
-| Type Parameter | Default type | Description |
-| ------ | ------ | ------ |
-| `TEntry` | `unknown` | Shape of the underlying records that produced `options`. |
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `name` | `string` | Field name as registered with react-hook-form. |
-| `options` | `object`[] | Display options as `label`/`value` pairs used to render the select-like control. |
-| `entries?` | readonly `TEntry`[] | Raw records the options were derived from; present when the hook supplies them for callers that need additional attributes. |
-| `hasRedactedValue?` | `boolean` | Whether the server returned a redacted placeholder instead of the real value. |
-| `isDisabled?` | `boolean` | Whether the field should be rendered in a non-interactive state. |
-| `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
-| `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
-| `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
-| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
-
-***
-
-<a id="hookerrorhandling"></a>
-
-### HookErrorHandling
-
-Error state and recovery actions returned by every hook in both loading and ready states.
-
-#### Remarks
-
-`errors` aggregates fetch and submit errors as normalized `SDKError` values.
-Recovery is split by source: `retryQueries` refetches every failed
-data-fetching query (dependent queries re-trigger automatically when their
-dependencies resolve), and `clearSubmitError` clears the most recent
-submission error. Inferring which action to offer from those two methods is
-the supported way to discriminate fetch vs submit failures today.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `clearSubmitError` | () => `void` | Clears the most recent submission error. |
-| `errors` | [`SDKError`](index.md#sdkerror)[] | Aggregated fetch and submit errors as normalized [SDKError](index.md#sdkerror) values. |
-| `retryQueries` | () => `void` | Refetches every failed data-fetching query; dependent queries re-trigger automatically when their dependencies resolve. |
-
-***
-
-<a id="hookforminternals"></a>
-
-### HookFormInternals
-
-Escape hatch exposing react-hook-form's `UseFormReturn` from a form hook.
-
-#### Remarks
-
-Available at `form.hookFormInternals` on every form hook for advanced cases
-not covered by the built-in API — for example, watching a field for reactive
-UI updates outside of the SDK fields, programmatically setting values, or
-triggering validation on specific fields. The built-in `Fields`,
-`actions.onSubmit`, and `form.getFormSubmissionValues` are sufficient for
-most use cases.
-
-#### Type Parameters
-
-| Type Parameter | Default type | Description |
-| ------ | ------ | ------ |
-| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `formMethods` | `UseFormReturn`\<`TFormData`\> | The full react-hook-form return value; use for watching fields, setting values, or triggering validation. |
-
-***
-
-<a id="hookloadingresult"></a>
-
-### HookLoadingResult
-
-Discriminated union member returned by a hook while async data is being fetched.
-
-#### Remarks
-
-Only `isLoading` and `errorHandling` are available in this branch — query
-errors surfaced before the hook can render its form are exposed via
-`errorHandling.errors`. Once `isLoading` narrows to `false`, the hook's
-ready-state shape (data, form, actions, status) becomes available.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state available before the form loads, e.g. for query errors surfaced during data fetching. |
-| `isLoading` | `true` | Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available. |
-
-***
-
-<a id="hooksubmitresult"></a>
-
-### HookSubmitResult
-
-Result returned by a form hook's `actions.onSubmit` after a successful submission.
-
-#### Remarks
-
-`mode` reflects which API path ran — `'create'` when no existing entity was
-loaded, `'update'` when editing one. `data` is the saved entity returned by
-the API. A failed validation or mutation returns `undefined` instead, so
-always null-check before reading `result.data`.
+Strips `name` from a hook field's props type for domain-specific field components
+that bind the form-field name internally.
 
 #### Type Parameters
 
 | Type Parameter | Description |
 | ------ | ------ |
-| `T` | Type of the saved entity returned by the underlying mutation. |
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `data` | `T` | The saved entity returned by the API. |
-| `mode` | `"create"` \| `"update"` | Whether the submission created a new entity or updated an existing one. |
+| `TProps` *extends* `object` | Original hook field props type that includes a `name` property. |
 
 ***
 
@@ -671,33 +740,6 @@ attributes (`label`, `description`).
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
-
-***
-
-<a id="sdkformproviderprops"></a>
-
-### SDKFormProviderProps
-
-Props for [SDKFormProvider](#sdkformprovider).
-
-#### Type Parameters
-
-| Type Parameter | Default type | Description |
-| ------ | ------ | ------ |
-| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by the wrapped form hook. |
-| `TFieldsMetadata` *extends* \{ \[K in keyof TFieldsMetadata\]: FieldMetadata \| FieldMetadataWithOptions \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\> | The form hook's field-metadata map. |
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `children` | `ReactNode` | Field components (or any content) that consume the provided form context. |
-| `formHookResult` | `object` | The form hook result whose fields, metadata, and errors are shared with descendant field components. |
-| `formHookResult.errorHandling` | `object` | - |
-| `formHookResult.errorHandling.errors` | [`SDKError`](index.md#sdkerror)[] | - |
-| `formHookResult.form` | `object` | - |
-| `formHookResult.form.fieldsMetadata` | `TFieldsMetadata` | - |
-| `formHookResult.form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 
 ***
 
@@ -802,28 +844,73 @@ attributes (`label`, `description`).
 | `transform?` | (`value`: `string`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`, `TOptionalErrorCode`\> | Custom error text keyed by validation error code. |
 
-## Type Aliases
+## Utility types
 
-<a id="composesubmitinput"></a>
+<a id="fieldmetadata"></a>
 
-### ComposeSubmitInput
+### FieldMetadata
 
-> **ComposeSubmitInput**\<`T`\> = [`ComposableFormHookResult`](#composableformhookresult) \| `UseFormReturn`\<`T`\>
-
-Accepted input for a single slot of `composeSubmitHandler`'s `forms` array.
+Per-field metadata published by a form hook for the matching field component.
 
 #### Remarks
 
-- SDK form hook results (anything matching `ComposableFormHookResult`) are composed directly.
-- A raw `react-hook-form` `UseFormReturn<T>` is supported for screen-local auxiliary forms
-  that don't warrant a dedicated SDK hook. Raw forms contribute validation/focus behavior
-  but no `errorHandling` (fields surface their own inline errors via react-hook-form).
+Carries the field's registered `name` plus presentation flags (required, disabled,
+redacted server-side value) and optional date bounds. Consumed by hook field
+components to render labels, inline validation, and bounded date pickers.
+
+#### Extended by
+
+- [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | Field name as registered with react-hook-form. |
+| `hasRedactedValue?` | `boolean` | Whether the server returned a redacted placeholder instead of the real value. |
+| `isDisabled?` | `boolean` | Whether the field should be rendered in a non-interactive state. |
+| `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
+| `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
+
+***
+
+<a id="fieldmetadatawithoptions"></a>
+
+### FieldMetadataWithOptions
+
+[FieldMetadata](#fieldmetadata) extended with the option list for select-like fields.
+
+#### Remarks
+
+Includes the `label`/`value` pairs used to render the control and, when
+available, the raw `entries` (typed via `TEntry`) the options were derived
+from so callers can read additional attributes off the originating record.
+
+#### Extends
+
+- [`FieldMetadata`](#fieldmetadata)
 
 #### Type Parameters
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `T` *extends* `FieldValues` | `FieldValues` | The shape of the form values when a raw `UseFormReturn` is passed. |
+| `TEntry` | `unknown` | Shape of the underlying records that produced `options`. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | Field name as registered with react-hook-form. |
+| `options` | `object`[] | Display options as `label`/`value` pairs used to render the select-like control. |
+| `entries?` | readonly `TEntry`[] | Raw records the options were derived from; present when the hook supplies them for callers that need additional attributes. |
+| `hasRedactedValue?` | `boolean` | Whether the server returned a redacted placeholder instead of the real value. |
+| `isDisabled?` | `boolean` | Whether the field should be rendered in a non-interactive state. |
+| `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
+| `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
 
 ***
 
@@ -843,94 +930,6 @@ up their own metadata by name.
 #### Index Signature
 
 \[`key`: `string`\]: [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>
-
-***
-
-<a id="formhookresult"></a>
-
-### FormHookResult
-
-> **FormHookResult** = `object`
-
-Narrowed shape accepted by the `formHookResult` prop on hook field components.
-
-#### Remarks
-
-Derived from [BaseFormHookReady](#baseformhookready) so the prop stays in sync with what
-form hooks return — passing the hook result directly (e.g.
-`formHookResult={employeeDetails}`) is always type-safe. Use this prop when
-fields from multiple hooks need to be interleaved freely instead of grouped
-under an `SDKFormProvider`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `errorHandling` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"errorHandling"`\], `"errors"`\> | The error handling surface; pass to [composeErrorHandler](#composeerrorhandler). |
-| `form` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"form"`\], `"fieldsMetadata"`\> & `object` | The form surface; provides field metadata and internal react-hook-form wiring. |
-
-***
-
-<a id="hookfieldprops"></a>
-
-### HookFieldProps
-
-> **HookFieldProps**\<`TProps`\> = `Omit`\<`TProps`, `"name"`\>
-
-Strips `name` from a hook field's props type for domain-specific field components
-that bind the form-field name internally.
-
-#### Type Parameters
-
-| Type Parameter | Description |
-| ------ | ------ |
-| `TProps` *extends* `object` | Original hook field props type that includes a `name` property. |
-
-***
-
-<a id="mixederrorsource"></a>
-
-### MixedErrorSource
-
-> **MixedErrorSource** = [`QueryWithRefetch`](#querywithrefetch) \| \{ `errorHandling`: [`HookErrorHandling`](#hookerrorhandling); \}
-
-Accepted input shape for [composeErrorHandler](#composeerrorhandler): either a React Query result
-(anything with `error` and `refetch`) or another SDK hook result that exposes
-an `errorHandling` object.
-
-***
-
-<a id="querywithrefetch"></a>
-
-### QueryWithRefetch
-
-> **QueryWithRefetch** = `Pick`\<`UseQueryResult`, `"error"` \| `"refetch"`\>
-
-The subset of a TanStack Query result — its `error` and `refetch` — that
-[composeErrorHandler](#composeerrorhandler) reads from an additional query passed as a source.
-
-***
-
-<a id="submitstateforerrorhandling"></a>
-
-### SubmitStateForErrorHandling
-
-> **SubmitStateForErrorHandling** = `object`
-
-Submit-side error state to merge into a composed [HookErrorHandling](#hookerrorhandling).
-
-#### Remarks
-
-Pass to [composeErrorHandler](#composeerrorhandler) when a screen has its own submit state outside of
-any SDK form hook, so submit errors appear in the same error surface as query errors
-and can be cleared together with `clearSubmitError`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `setSubmitError` | (`error`: [`SDKError`](index.md#sdkerror) \| `null`) => `void` | Sets or clears the submit error. |
-| `submitError` | [`SDKError`](index.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
 
 ***
 

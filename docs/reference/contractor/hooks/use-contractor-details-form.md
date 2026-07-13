@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecontractordetailsform"></a>
 
-> **useContractorDetailsForm**(`input`: [`UseContractorDetailsFormProps`](#usecontractordetailsformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+> **useContractorDetailsForm**(`input`: [`UseContractorDetailsFormProps`](#usecontractordetailsformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 Headless hook for creating or updating a contractor's profile details —
 individual vs. business type, wage type, names, SSN/EIN, work state, and the
@@ -118,15 +118,15 @@ Supply the fields for exactly one of the following variants:
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
 
 <a id="usecontractordetailsformresult"></a>
 
 ### UseContractorDetailsFormResult
 
-> **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+> **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 Return type of [useContractorDetailsForm](#usecontractordetailsform).
 
@@ -141,16 +141,16 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`options?`: [`ContractorDetailsSubmitOptions`](#contractordetailssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Contractor`](../../APIModels/index.md#contractor)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`options?`: [`ContractorDetailsSubmitOptions`](#contractordetailssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`Contractor`](../../APIModels/index.md#contractor)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
 | `data` | `object` | The loaded contractor data, or `null` in create mode. |
 | `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) \| `null` | The contractor being edited, or `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorDetailsFormFields`](#contractordetailsformfields) | - |
 | `form.fieldsMetadata` | [`ContractorDetailsFieldsMetadata`](#contractordetailsfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorDetailsFormData`](#contractordetailsformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Submit status and form mode. |
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
@@ -205,7 +205,7 @@ Text input bound to `businessName`; available only for business contractors.
 
 #### ContractorBusinessNameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.BusinessName` component.
 
@@ -213,9 +213,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -238,7 +238,7 @@ shows a masked placeholder and the required rule is waived.
 
 #### ContractorEinFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ein` component.
 
@@ -246,9 +246,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -269,7 +269,7 @@ Text input bound to `email`; available only when self-onboarding is enabled.
 
 #### ContractorEmailFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Email` component.
 
@@ -277,9 +277,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -297,7 +297,7 @@ Switch bound to `fileNewHireReport`; available only for individual contractors.
 
 #### ContractorFileNewHireReportFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../hooks.md#switchhookfieldprops)\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FileNewHireReport` component.
 
@@ -306,7 +306,7 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`SwitchProps`](../../component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
 
-_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../hooks.md#switchhookfieldprops)._
 
 ***
 
@@ -327,7 +327,7 @@ Text input bound to `firstName`; available only for individual contractors.
 
 #### ContractorFirstNameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FirstName` component.
 
@@ -335,9 +335,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -358,7 +358,7 @@ Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`.
 
 #### ContractorHourlyRateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
 
@@ -366,9 +366,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
 ***
 
@@ -389,7 +389,7 @@ Text input bound to `lastName`; available only for individual contractors.
 
 #### ContractorLastNameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.LastName` component.
 
@@ -397,9 +397,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -420,7 +420,7 @@ Text input bound to `middleInitial`; available only for individual contractors.
 
 #### ContractorMiddleInitialFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.MiddleInitial` component.
 
@@ -428,9 +428,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -448,7 +448,7 @@ Switch bound to `selfOnboarding`; available only when toggleable.
 
 #### ContractorSelfOnboardingFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../hooks.md#switchhookfieldprops)\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.SelfOnboarding` component.
 
@@ -457,7 +457,7 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`SwitchProps`](../../component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
 
-_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../hooks.md#switchhookfieldprops)._
 
 ***
 
@@ -480,7 +480,7 @@ shows a masked placeholder and the required rule is waived.
 
 #### ContractorSsnFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ssn` component.
 
@@ -488,9 +488,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -509,7 +509,7 @@ Date picker bound to `startDate`. Always available.
 
 #### ContractorStartDateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.StartDate` component.
 
@@ -517,9 +517,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
 
 ***
 
@@ -535,7 +535,7 @@ Radio group bound to `type`. Always available.
 
 #### ContractorTypeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Type` component.
 
@@ -545,7 +545,7 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ***
 
@@ -561,7 +561,7 @@ Radio group bound to `wageType`. Always available.
 
 #### ContractorWageTypeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WageType` component.
 
@@ -571,7 +571,7 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ***
 
@@ -592,7 +592,7 @@ Select bound to `workState`; available only for individual contractors filing a 
 
 #### ContractorWorkStateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation), `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation), `string`\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WorkState` component.
 
@@ -602,9 +602,9 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ## Validations
 
@@ -717,20 +717,20 @@ hook.
 
 | Field | Type |
 | ------ | ------ |
-| `businessName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `ein` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `email` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `fileNewHireReport` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `firstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `hourlyRate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `lastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `middleInitial` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `selfOnboarding` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `ssn` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `startDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Business"` \| `"Individual"`\> |
-| `wageType` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Fixed"` \| `"Hourly"`\> |
-| `workState` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
+| `businessName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `ein` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `email` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `fileNewHireReport` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `firstName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `hourlyRate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `lastName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `middleInitial` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `selfOnboarding` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `ssn` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `startDate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `type` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Business"` \| `"Individual"`\> |
+| `wageType` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Fixed"` \| `"Hourly"`\> |
+| `workState` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
 
 Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontractordetailsform).
 

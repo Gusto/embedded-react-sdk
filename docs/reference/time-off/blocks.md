@@ -27,7 +27,7 @@ Props for [AddEmployeesHoliday](#addemployeesholiday).
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -89,7 +89,7 @@ Props for [AddEmployeesToPolicy](#addemployeestopolicy).
 | `policyId` | `string` | The time off policy identifier. |
 | `policyType` | [`CreatableTimeOffPolicyType`](#creatabletimeoffpolicytype) | The type of policy being edited — `'sick'` or `'vacation'`. |
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -131,7 +131,7 @@ Props for [HolidaySelectionForm](#holidayselectionform).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `mode?` | `"edit"` \| `"create"` | Whether to create a new holiday policy or edit the existing one. Defaults to `'create'`. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -179,7 +179,7 @@ Props for [PolicyConfigurationForm](#policyconfigurationform).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffCreateTimeOffPolicy`](../Translations/index.md#companytimeoffcreatetimeoffpolicy)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `policyId?` | `string` | When set, the form loads the existing policy and submits an update. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -219,7 +219,7 @@ Props for the [PolicyList](#policylist) component.
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicies`](../Translations/index.md#companytimeofftimeoffpolicies)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -262,7 +262,7 @@ Props for [PolicySettings](#policysettings).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffCreateTimeOffPolicy`](../Translations/index.md#companytimeoffcreatetimeoffpolicy)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -339,7 +339,7 @@ Props for [PolicyTypeSelector](#policytypeselector).
 | `defaultPolicyType?` | [`PolicyType`](#policytype) | Pre-selected policy type rendered when the form mounts. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffSelectPolicyType`](../Translations/index.md#companytimeoffselectpolicytype)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -378,7 +378,7 @@ Props for [TimeOffPolicyDetail](#timeoffpolicydetail).
 | `policyId` | `string` | UUID of the time-off policy to display. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicyDetails`](../Translations/index.md#companytimeofftimeoffpolicydetails)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -450,7 +450,7 @@ Props for [ViewHolidayEmployees](#viewholidayemployees).
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -488,7 +488,7 @@ Props for the [ViewHolidayPolicyDetails](#viewholidaypolicydetails) component.
 | `defaultTab?` | `"holidays"` \| `"employees"` | Which tab to display initially. Defaults to `'holidays'`. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
@@ -526,7 +526,7 @@ Props for [ViewHolidaySchedule](#viewholidayschedule).
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../components.md#basecomponentinterface)._
 
 ### Events
 
