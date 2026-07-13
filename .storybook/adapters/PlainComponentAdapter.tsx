@@ -35,6 +35,7 @@ import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPrevie
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+import type { SkeletonProps } from '@/components/Common/UI/Skeleton/SkeletonTypes'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import type { DateRangePickerProps } from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
@@ -1785,6 +1786,36 @@ export const PlainComponentAdapter: ComponentsContextType = {
               to {
                 transform: rotate(360deg);
               }
+            }
+          `}
+        </style>
+      </div>
+    )
+  },
+  Skeleton: ({ width, height, className, ...props }: SkeletonProps) => {
+    const dimension = (value: string | number) => (typeof value === 'number' ? `${value}px` : value)
+    return (
+      <div
+        {...props}
+        className={className}
+        role="status"
+        aria-label={props['aria-label'] || 'Loading'}
+        aria-busy
+        aria-live="polite"
+        style={{
+          width: dimension(width),
+          height: dimension(height),
+          background: 'linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%)',
+          backgroundSize: '200% 100%',
+          animation: 'sdk-skeleton-pulse 1.5s infinite linear',
+          borderRadius: '4px',
+        }}
+      >
+        <style>
+          {`
+            @keyframes sdk-skeleton-pulse {
+              0% { background-position: -200% 0; }
+              100% { background-position: 200% 0; }
             }
           `}
         </style>

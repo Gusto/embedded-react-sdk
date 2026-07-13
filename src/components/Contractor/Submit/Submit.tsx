@@ -2,6 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
 import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/contractorsGetOnboardingStatus'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorDocumentsGetAllSuspense } from '@gusto/embedded-api/react-query/contractorDocumentsGetAll'
+import { useContractorDocumentsGetPdf } from '@gusto/embedded-api/react-query/contractorDocumentsGetPdf'
+import type { Document } from '@gusto/embedded-api/models/components/document'
 import { SubmitDone } from './SubmitDone'
 import { ActionsLayout, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -47,7 +50,7 @@ export function ContractorSubmit(props: ContractorSubmitProps) {
 const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
   useComponentDictionary('Contractor.Submit', dictionary)
-  const { Alert, Box, BoxHeader, Button, Text, Heading, UnorderedList } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading, UnorderedList } = useComponentContext()
   const { t } = useTranslation('Contractor.Submit')
   const { onEvent, baseSubmitHandler } = useBase()
   const items = Object.values(t('warningItems', { returnObjects: true }))
@@ -56,6 +59,16 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
     contractorUuid: contractorId,
   })
   const onboardingStatus = data.contractorOnboardingStatus?.onboardingStatus
+
+  const { data: contractorData } = useContractorsGetSuspense({ contractorUuid: contractorId })
+  const contractor = contractorData.contractor
+  const contractorName =
+    contractor?.type === 'Individual' ? contractor.firstName : contractor?.businessName
+
+  const { data: documentsData } = useContractorDocumentsGetAllSuspense({
+    contractorUuid: contractorId,
+  })
+  const documents = documentsData.documents ?? []
 
   const { mutateAsync } = useContractorsUpdateOnboardingStatusMutation()
 
@@ -110,17 +123,23 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
         header={
           <BoxHeader
             title={t('documentRequirements.title')}
-            description={t('documentRequirements.description')}
+            description={t('documentRequirements.description', { contractorName })}
           />
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {Object.values(t('documentRequirements.items', { returnObjects: true })).map(item => (
-            <div key={item.title}>
-              <Text weight="medium">{item.title}</Text>
-              <Text variant="supporting">{item.description}</Text>
-            </div>
-          ))}
+          {Object.values(t('documentRequirements.items', { returnObjects: true })).map(item => {
+            const document = documents.find(d => d.name === item.documentName)
+            return (
+              <DocumentRequirementItem
+                key={item.documentName}
+                title={item.title}
+                description={item.description}
+                document={document}
+                downloadLabel={t('documentRequirements.downloadCta')}
+              />
+            )
+          })}
           <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>
         </Flex>
       </Box>
@@ -134,6 +153,50 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
           </Button>
         </ActionsLayout>
       </Flex>
+    </Flex>
+  )
+}
+
+const DocumentRequirementItem = ({
+  title,
+  description,
+  document,
+  downloadLabel,
+}: {
+  title: string
+  description: string
+  document: Document | undefined
+  downloadLabel: string
+}) => {
+  const { Text, Button, Skeleton } = useComponentContext()
+  const documentUuid = document?.uuid
+  const { data: pdfData, isLoading } = useContractorDocumentsGetPdf(
+    { documentUuid: documentUuid ?? '' },
+    { enabled: Boolean(documentUuid) },
+  )
+  const pdfUrl = pdfData?.documentPdf?.documentUrl ?? null
+
+  return (
+    <Flex gap={16} justifyContent="space-between" alignItems="center">
+      <Flex flexDirection="column" gap={4}>
+        <Text weight="medium">{title}</Text>
+        <Text variant="supporting">{description}</Text>
+      </Flex>
+      {(isLoading || pdfUrl) && (
+        <Button
+          variant="secondary"
+          isDisabled={isLoading || !pdfUrl}
+          onClick={() => {
+            if (pdfUrl) window.open(pdfUrl, '_blank', 'noopener,noreferrer')
+          }}
+        >
+          {isLoading ? (
+            <Skeleton width={120} height={16} aria-label={downloadLabel} />
+          ) : (
+            downloadLabel
+          )}
+        </Button>
+      )}
     </Flex>
   )
 }

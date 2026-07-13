@@ -7,9 +7,11 @@
   "title": "Please note that after submitting",
   "documentRequirements": {
     "title": "Documents",
-    "description": "You will need to collect these forms from your contractor manually.",
+    "description": "You will need to collect signed copies of the following documents from {{contractorName}}.",
+    "downloadCta": "Download document",
     "items": [
       {
+        "documentName": "taxpayer_identification_form_w_9",
         "title": "Taxpayer Identification (Form W-9)",
         "description": "Verifies your contractor's identity for tax purposes such as generating their Form 1099."
       }

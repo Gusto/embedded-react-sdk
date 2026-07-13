@@ -2657,10 +2657,14 @@ export namespace Translations {
     documentRequirements: {
       /** @defaultValue `"Documents"` */
       title: string
-      /** @defaultValue `"You will need to collect these forms from your contractor manually."` */
+      /** @defaultValue `"You will need to collect signed copies of the following documents from {{contractorName}}."` */
       description: string
+      /** @defaultValue `"Download document"` */
+      downloadCta: string
       items: {
         '0': {
+          /** @defaultValue `"taxpayer_identification_form_w_9"` */
+          documentName: string
           /** @defaultValue `"Taxpayer Identification (Form W-9)"` */
           title: string
           /** @defaultValue `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` */
