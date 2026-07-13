@@ -74,7 +74,7 @@ _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderCom
 | `contractor/onboarding/continue` | Fired when the user chooses to continue onboarding a contractor | — |
 | `contractor/created` | Fired when a new contractor is created successfully | Create contractor API response |
 | `contractor/updated` | Fired when an existing contractor is updated | Update contractor API response |
-| `contractor/profile/done` | Fired when the contractor profile step is complete | The saved contractor extended with `selfOnboarding: boolean` |
+| `contractor/profile/done` | Fired when the contractor profile step is complete | `{ contractorId: string, onboardingStatus?: string, selfOnboarding: boolean }` |
 | `contractor/address/updated` | Fired when the contractor address is updated | Create or update contractor address API response |
 | `contractor/address/done` | Fired when the address step is complete | — |
 | `contractor/bankAccount/created` | Fired when a bank account is created for the contractor | Create contractor bank account API response |
@@ -105,7 +105,7 @@ _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderCom
 - **Admin onboarding** (`selfOnboarding = false`) — the admin completes every step, including address and payment method.
 - **Self-onboarding** (`selfOnboarding = true`) — the admin sets up the basics and the contractor completes their own address and payment method later, so those two steps are skipped here.
 
-The new hire report step appears only on the contractor's initial onboarding pass (while its onboarding status is `admin_onboarding_incomplete` or `self_onboarding_not_invited`). Once the contractor has advanced past that — to admin review, an active self-onboarding stage, or completion — the step is skipped and the flow goes straight to submit. The flow derives this from the contractor's `onboardingStatus`, which it reads off the contractor delivered on `contractor/profile/done`.
+The new hire report step appears only on the contractor's initial onboarding pass (while its onboarding status is `admin_onboarding_incomplete` or `self_onboarding_not_invited`). Once the contractor has advanced past that — to admin review, an active self-onboarding stage, or completion — the step is skipped and the flow goes straight to submit. The flow derives this from the contractor's `onboardingStatus`, which it reads off the `onboardingStatus` carried on `contractor/profile/done`.
 
 The progress bar's secondary button emits `CANCEL` from any step, returning to the list.
 
