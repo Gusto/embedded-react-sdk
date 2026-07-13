@@ -1865,10 +1865,12 @@ Translation keys for the `Contractor.Submit` i18n namespace.
 | ------ | ------ |
 | <a id="property-contractorsubmitdocumentrequirements"></a> `documentRequirements` | |
 | `documentRequirements.alertLabel` | `"The government requires you to have Form W-9 completed and signed."` |
-| `documentRequirements.description` | `"You will need to collect these forms from your contractor manually."` |
+| `documentRequirements.description` | `"You will need to collect signed copies of the following documents from {{contractorName}}."` |
+| `documentRequirements.downloadCta` | `"Download document"` |
 | `documentRequirements.items` | |
 | `documentRequirements.items.0` | |
 | `documentRequirements.items.0.description` | `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` |
+| `documentRequirements.items.0.documentName` | `"taxpayer_identification_form_w_9"` |
 | `documentRequirements.items.0.title` | `"Taxpayer Identification (Form W-9)"` |
 | `documentRequirements.title` | `"Documents"` |
 | <a id="property-contractorsubmitdonecta"></a> `doneCta` | `"Done"` |

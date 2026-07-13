@@ -1000,6 +1000,30 @@ Renders a form field wrapping a single-select dropdown with a label, description
 
 ***
 
+<a id="skeletonprops"></a>
+
+### SkeletonProps
+
+Props your `Skeleton` implementation must accept from the component adapter.
+Renders a shimmering placeholder that reserves layout space for content
+that hasn't loaded yet.
+
+#### Extends
+
+- `Pick`\<`HTMLAttributes`\<`HTMLDivElement`\>, `"className"` \| `"id"` \| `"aria-label"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `height` | `string` \| `number` | Height of the placeholder. Numbers are treated as pixels; strings are passed through as CSS. |
+| `width` | `string` \| `number` | Width of the placeholder. Numbers are treated as pixels; strings are passed through as CSS. |
+| `aria-label?` | `string` | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `className?` | `string` | - |
+| `id?` | `string` | - |
+
+***
+
 <a id="switchprops"></a>
 
 ### SwitchProps
@@ -1388,6 +1412,7 @@ function App() {
 | `Radio` | `FunctionComponent`\<[`RadioProps`](#radioprops)\> | Form field wrapping a single `<input type="radio" />`. |
 | `RadioGroup` | `FunctionComponent`\<[`RadioGroupProps`](#radiogroupprops)\> | Form field grouping `<input type="radio" />` elements for single-option selection. |
 | `Select` | `FunctionComponent`\<[`SelectProps`](#selectprops)\> | Form field wrapping a single-select dropdown. |
+| `Skeleton` | `FunctionComponent`\<[`SkeletonProps`](#skeletonprops)\> | Shimmering placeholder used to reserve layout space while content loads. |
 | `Switch` | `FunctionComponent`\<[`SwitchProps`](#switchprops)\> | Form field wrapping an `<input type="checkbox" />` styled as a toggle. |
 | `Table` | `FunctionComponent`\<[`TableProps`](#tableprops)\> | Tabular data display with headers, rows, optional footer, and empty state. |
 | `Tabs` | `FunctionComponent`\<[`TabsProps`](#tabsprops)\> | Tabbed navigation with associated content panels. |

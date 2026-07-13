@@ -2060,6 +2060,11 @@
         },
         {
           "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents"
+        },
+        {
+          "method": "GET",
           "path": "/v1/contractors/:contractorUuid/onboarding_status",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-onboarding_status"
         },
@@ -2067,10 +2072,16 @@
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/onboarding_status",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
         }
       ],
       "variables": [
-        "contractorUuid"
+        "contractorUuid",
+        "documentUuid"
       ]
     },
     "ContractorOnboarding.DocumentsList": {

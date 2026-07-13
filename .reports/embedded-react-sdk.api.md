@@ -1490,6 +1490,7 @@ export interface ComponentsContextType {
     Radio: FunctionComponent<RadioProps>;
     RadioGroup: FunctionComponent<RadioGroupProps>;
     Select: FunctionComponent<SelectProps>;
+    Skeleton: FunctionComponent<SkeletonProps>;
     Switch: FunctionComponent<SwitchProps>;
     Table: FunctionComponent<TableProps>;
     Tabs: FunctionComponent<TabsProps>;
@@ -4940,6 +4941,12 @@ export type SignEmployeeI9FieldsMetadata = Omit<Record<keyof SignEmployeeFormDat
     preparer3State: FieldMetadataWithOptions<StateAbbreviation>;
     preparer4State: FieldMetadataWithOptions<StateAbbreviation>;
 };
+
+// @public
+export interface SkeletonProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
+    height: string | number;
+    width: string | number;
+}
 
 // @public
 export const SPLIT_BY_VALUES: readonly ["Percentage", "Amount"];
