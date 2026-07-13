@@ -53,12 +53,12 @@ export const DOMAINS: DomainConfig[] = [
     ],
   },
   {
-    label: 'Payroll',
+    label: 'Payrolls',
     path: 'payroll',
     namespaces: [{ id: 'Payroll' }],
   },
   {
-    label: 'Time off',
+    label: 'Time off policies',
     path: 'time-off',
     namespaces: [{ id: 'TimeOff' }],
   },
@@ -80,52 +80,32 @@ export const DOMAINS: DomainConfig[] = [
  */
 export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
-    id: 'providers',
-    sources: ['contexts/GustoProvider'],
-    displayName: 'Providers',
+    id: 'components',
+    sources: ['components/Base/Base'],
+    displayName: 'Components',
+    sidebarGroup: 'build',
     intro:
-      'The two top-level providers that connect the SDK to your React tree. ' +
-      'Wrap your application with one of these before rendering any SDK component.',
+      'All flow and block components across every SDK domain. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.',
     layout: {
-      feature: [{ group: CUSTOM_GROUPS.providers, promote: true }],
-      default: 'utilityTypes',
-    },
-  },
-  {
-    id: 'theme-variables',
-    sources: ['contexts/ThemeProvider'],
-    displayName: 'Theme variables',
-    intro:
-      'These design tokens control the visual appearance of all components and UX within the SDK. ' +
-      'See the [theming guide](../guides/theming.md) for more context.',
-    layout: { default: 'promote' },
-  },
-  {
-    id: 'component-inventory',
-    sources: [
-      'components/Common/UI',
-      'components/Common/FieldLayout',
-      'components/Common/PaginationControl',
-      'components/Common/PayrollLoading',
-      'components/Common/HorizontalFieldLayout',
-      'contexts/ComponentAdapter',
-    ],
-    displayName: 'Component inventory',
-    layout: {
-      feature: [
-        { group: CUSTOM_GROUPS.componentAdapter, promote: true },
-        { group: CUSTOM_GROUPS.componentProps },
+      crossDomainIndex: [
+        { heading: 'Workflows', kind: 'flows' },
+        { heading: 'Blocks', kind: 'blocks' },
       ],
-      default: 'utilityTypes',
+      default: 'promote',
     },
   },
   {
     id: 'hooks',
     sources: ['partner-hook-utils'],
     displayName: 'Hooks',
+    sidebarGroup: 'build',
     intro:
       'The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
     layout: {
+      crossDomainIndex: [
+        { heading: '🌐 Data hooks', kind: 'dataHooks' },
+        { heading: '✍️ Form hooks', kind: 'formHooks' },
+      ],
       feature: [
         { group: CUSTOM_GROUPS.providers, promote: true },
         {
@@ -155,6 +135,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sources: ['shared/constants', 'components/Base/useBase'],
     groups: [CUSTOM_GROUPS.eventNames, CUSTOM_GROUPS.utilityTypes],
     displayName: 'Events',
+    sidebarGroup: 'config',
     intro:
       'Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. ' +
       'Pass a function matching [`OnEventType`](#oneventtype) as the `onEvent` prop. ' +
@@ -165,12 +146,36 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     },
   },
   {
+    id: 'providers',
+    sources: ['contexts/GustoProvider'],
+    displayName: 'Providers',
+    sidebarGroup: 'config',
+    intro:
+      'The two top-level providers that connect the SDK to your React tree. ' +
+      'Wrap your application with one of these before rendering any SDK component.',
+    layout: {
+      feature: [{ group: CUSTOM_GROUPS.providers, promote: true }],
+      default: 'utilityTypes',
+    },
+  },
+  {
+    id: 'error-handling',
+    sources: ['types/sdkError'],
+    displayName: 'Error handling',
+    sidebarGroup: 'config',
+    intro:
+      'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
+      'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
+    layout: { default: 'promote' },
+  },
+  {
     id: 'http-interceptors',
     // `types/hooks` owns SDKHooks; the hook and context interfaces are re-exported
     // from the versioned embedded-api package at `hooks/types`, so both fragments
     // are needed to capture all reflections on this page.
     sources: ['types/hooks', 'hooks/types'],
     displayName: 'HTTP interceptors',
+    sidebarGroup: 'config',
     intro:
       'Low-level request/response interceptors for customizing HTTP behaviour across the SDK. ' +
       'Pass an [`SDKHooks`](#sdkhooks) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.hooks`.',
@@ -183,6 +188,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'observability',
     sources: ['types/observability'],
     displayName: 'Observability',
+    sidebarGroup: 'config',
     intro:
       'Error-tracking and performance-metric hooks for integrating the SDK with tools like Sentry or Datadog. ' +
       'Pass an [`ObservabilityHook`](#observabilityhook) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.observability`.',
@@ -192,13 +198,36 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     },
   },
   {
-    id: 'error-handling',
-    sources: ['types/sdkError'],
-    displayName: 'Error handling',
+    id: 'theme-variables',
+    sources: ['contexts/ThemeProvider'],
+    displayName: 'Theme variables',
+    sidebarGroup: 'config',
     intro:
-      'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
-      'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
+      'These design tokens control the visual appearance of all components and UX within the SDK. ' +
+      'See the [theming guide](../guides/theming.md) for more context.',
     layout: { default: 'promote' },
+  },
+  {
+    id: 'component-inventory',
+    sidebarGroup: 'config',
+    sources: [
+      'components/Common/UI',
+      'components/Common/FieldLayout',
+      'components/Common/PaginationControl',
+      'components/Common/PayrollLoading',
+      'components/Common/HorizontalFieldLayout',
+      'contexts/ComponentAdapter',
+    ],
+    displayName: 'UI component inventory',
+    intro:
+      'Primitive UI elements that SDK components render internally, and the ComponentsAdapter interface for replacing them with your own design-system components.',
+    layout: {
+      feature: [
+        { group: CUSTOM_GROUPS.componentAdapter, promote: true },
+        { group: CUSTOM_GROUPS.componentProps },
+      ],
+      default: 'utilityTypes',
+    },
   },
   {
     id: 'employee/types',
@@ -214,12 +243,6 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sources: [],
     displayName: 'Types',
     sidebarPosition: 101,
-    layout: { default: 'promote' },
-  },
-  {
-    id: 'workflows-and-blocks',
-    sources: ['components/Base/Base'],
-    displayName: 'Workflows and blocks',
     layout: { default: 'promote' },
   },
 ]
@@ -284,6 +307,9 @@ type DomainConfig = {
   namespaces: NamespaceConfig[]
 }
 
+/** Top-level sidebar section a standalone page belongs to. Domain-scoped pages omit this. */
+export type StandaloneSidebarGroup = 'build' | 'config'
+
 export type StandalonePageConfig = {
   /** Output page slug (e.g. `theme-variables` → `docs/reference/theme-variables.md`). */
   id: string
@@ -293,6 +319,12 @@ export type StandalonePageConfig = {
   groups?: CustomGroupTag[]
   /** Page H1 and synthetic namespace name. */
   displayName: string
+  /**
+   * Which top-level sidebar section this page belongs to. Omit for domain-scoped pages
+   * (e.g. `employee/types`) that live inside a domain directory rather than appearing
+   * in the top-level reference sidebar groups.
+   */
+  sidebarGroup?: StandaloneSidebarGroup
   /**
    * Explicit Docusaurus `sidebar_position` for this page. When set, overrides the
    * default position (`DOMAINS.length + standaloneIdx + 1`). Use for pages nested
@@ -346,4 +378,18 @@ export type PageLayout = {
    * still pulls a member to follow its target.
    */
   sort?: 'alpha' | 'source'
+  /**
+   * Cross-domain index tables rendered at the top of the page (after the intro
+   * prose, before any `feature` sections). Each entry produces one `## H2` table
+   * that lists every matching reflection across all domain namespaces, alpha-sorted.
+   *
+   * - `'flows'`: all `*Flow` components; first column is `Namespace.ComponentName`.
+   * - `'blocks'`: all non-flow components; first column is `Namespace.ComponentName`.
+   * - `'formHooks'`: per-domain hooks whose name ends in `Form`; first column is the plain hook name.
+   * - `'dataHooks'`: per-domain hooks whose name does NOT end in `Form`; first column is the plain hook name.
+   */
+  crossDomainIndex?: Array<{
+    heading: string
+    kind: 'flows' | 'blocks' | 'formHooks' | 'dataHooks'
+  }>
 }

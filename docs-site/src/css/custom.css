@@ -1109,3 +1109,15 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
     padding-bottom: 200px;
   }
 }
+
+/* ── Reference sidebar dividers ── */
+
+.sidebar-divider {
+  margin: 0.35rem 0.75rem;
+  border: none;
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+
+[data-theme='dark'] .sidebar-divider {
+  border-top-color: var(--ifm-hr-border-color);
+}
