@@ -124,10 +124,37 @@ const config: Config = {
               filtered.find(i => i.type === 'category' && i.label === label)
             const hr = { type: 'html' as const, value: '<hr class="sidebar-divider" />' }
 
-            // Domain categories, alpha sorted
+            // Domain categories, alpha sorted. For single-namespace domains (no subpath),
+            // Docusaurus generates flat items under the domain category; wrap them in a
+            // namespace sub-category to match the nesting of multi-namespace domains.
             const domainItems = [...DOMAINS]
               .sort((a, b) => a.label.localeCompare(b.label))
-              .map(d => filtered.find(i => i.type === 'category' && i.label === d.label))
+              .map(d => {
+                const cat = filtered.find(i => i.type === 'category' && i.label === d.label)
+                if (!cat || cat.type !== 'category') return cat
+                if (d.namespaces.length !== 1 || d.namespaces[0].subpath) return cat
+                const ns = d.namespaces[0]
+                const nsDocs = cat.items.filter(i => i.type === 'doc')
+                const otherCats = cat.items.filter(i => i.type !== 'doc')
+                if (nsDocs.length === 0) return cat
+                const nsIndex = nsDocs.find(i => i.type === 'doc' && i.id.endsWith('/namespace'))
+                const nsChildren = nsDocs.filter(i => i !== nsIndex)
+                return {
+                  ...cat,
+                  items: [
+                    {
+                      type: 'category' as const,
+                      label: ns.id,
+                      collapsed: false,
+                      ...(nsIndex?.type === 'doc' && {
+                        link: { type: 'doc' as const, id: nsIndex.id },
+                      }),
+                      items: nsChildren,
+                    },
+                    ...otherCats,
+                  ],
+                }
+              })
               .filter((i): i is NonNullable<typeof i> => i !== undefined)
 
             // Standalone pages grouped and alpha sorted by displayName.

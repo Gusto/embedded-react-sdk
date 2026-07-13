@@ -53,12 +53,12 @@ export const DOMAINS: DomainConfig[] = [
     ],
   },
   {
-    label: 'Payroll',
+    label: 'Payrolls',
     path: 'payroll',
     namespaces: [{ id: 'Payroll' }],
   },
   {
-    label: 'Time off',
+    label: 'Time off policies',
     path: 'time-off',
     namespaces: [{ id: 'TimeOff' }],
   },

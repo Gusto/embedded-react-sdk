@@ -177,7 +177,17 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
 
   const domainPath = getDomainPath(model)
   for (const ns of namespaces) {
-    parts.push(`## ${TYPE_EMOJIS.namespace} ${ns.name}`, '')
+    const nsAnchor = ns.name.replace(/([A-Z])/g, m => `-${m.toLowerCase()}`).replace(/^-/, '')
+    parts.push(`## ${TYPE_EMOJIS.namespace} ${ns.name} {#${nsAnchor}}`, '')
+
+    const nsDesc = ns.comment ? (context.helpers.getDescriptionForComment(ns.comment) ?? '') : ''
+    if (nsDesc) parts.push(nsDesc, '')
+
+    const nsRemarksTag = ns.comment?.blockTags.find(t => t.tag === '@remarks')
+    if (nsRemarksTag) {
+      const remarksMd = context.helpers.getCommentParts(nsRemarksTag.content)
+      if (remarksMd.trim()) parts.push(remarksMd, '')
+    }
 
     const flows = (ns.children ?? []).filter(
       (c): c is DeclarationReflection =>
@@ -266,6 +276,12 @@ function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflec
     ? (context.helpers.getDescriptionForComment(model.comment) ?? '')
     : ''
   if (nsComment) parts.push(nsComment, '')
+
+  const remarksTag = model.comment?.blockTags.find(t => t.tag === '@remarks')
+  if (remarksTag) {
+    const remarksMd = context.helpers.getCommentParts(remarksTag.content)
+    if (remarksMd.trim()) parts.push(remarksMd, '')
+  }
 
   const components = (model.children ?? []).filter(
     (c): c is DeclarationReflection => c instanceof DeclarationReflection && isComponent(c),
