@@ -83,12 +83,14 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'workflows-and-blocks',
     sources: ['components/Base/Base'],
     displayName: 'Workflows and blocks',
+    sidebarGroup: 'build',
     layout: { default: 'promote' },
   },
   {
     id: 'hooks',
     sources: ['partner-hook-utils'],
     displayName: 'Hooks',
+    sidebarGroup: 'build',
     intro:
       'The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
     layout: {
@@ -121,6 +123,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sources: ['shared/constants', 'components/Base/useBase'],
     groups: [CUSTOM_GROUPS.eventNames, CUSTOM_GROUPS.utilityTypes],
     displayName: 'Events',
+    sidebarGroup: 'config',
     intro:
       'Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. ' +
       'Pass a function matching [`OnEventType`](#oneventtype) as the `onEvent` prop. ' +
@@ -134,6 +137,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'providers',
     sources: ['contexts/GustoProvider'],
     displayName: 'Providers',
+    sidebarGroup: 'config',
     intro:
       'The two top-level providers that connect the SDK to your React tree. ' +
       'Wrap your application with one of these before rendering any SDK component.',
@@ -146,6 +150,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'error-handling',
     sources: ['types/sdkError'],
     displayName: 'Error handling',
+    sidebarGroup: 'config',
     intro:
       'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
       'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
@@ -158,6 +163,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     // are needed to capture all reflections on this page.
     sources: ['types/hooks', 'hooks/types'],
     displayName: 'HTTP interceptors',
+    sidebarGroup: 'config',
     intro:
       'Low-level request/response interceptors for customizing HTTP behaviour across the SDK. ' +
       'Pass an [`SDKHooks`](#sdkhooks) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.hooks`.',
@@ -170,6 +176,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'observability',
     sources: ['types/observability'],
     displayName: 'Observability',
+    sidebarGroup: 'config',
     intro:
       'Error-tracking and performance-metric hooks for integrating the SDK with tools like Sentry or Datadog. ' +
       'Pass an [`ObservabilityHook`](#observabilityhook) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.observability`.',
@@ -182,6 +189,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'theme-variables',
     sources: ['contexts/ThemeProvider'],
     displayName: 'Theme variables',
+    sidebarGroup: 'config',
     intro:
       'These design tokens control the visual appearance of all components and UX within the SDK. ' +
       'See the [theming guide](../guides/theming.md) for more context.',
@@ -189,6 +197,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
   },
   {
     id: 'component-inventory',
+    sidebarGroup: 'config',
     sources: [
       'components/Common/UI',
       'components/Common/FieldLayout',
@@ -284,6 +293,9 @@ type DomainConfig = {
   namespaces: NamespaceConfig[]
 }
 
+/** Top-level sidebar section a standalone page belongs to. Domain-scoped pages omit this. */
+export type StandaloneSidebarGroup = 'build' | 'config'
+
 export type StandalonePageConfig = {
   /** Output page slug (e.g. `theme-variables` → `docs/reference/theme-variables.md`). */
   id: string
@@ -293,6 +305,12 @@ export type StandalonePageConfig = {
   groups?: CustomGroupTag[]
   /** Page H1 and synthetic namespace name. */
   displayName: string
+  /**
+   * Which top-level sidebar section this page belongs to. Omit for domain-scoped pages
+   * (e.g. `employee/types`) that live inside a domain directory rather than appearing
+   * in the top-level reference sidebar groups.
+   */
+  sidebarGroup?: StandaloneSidebarGroup
   /**
    * Explicit Docusaurus `sidebar_position` for this page. When set, overrides the
    * default position (`DOMAINS.length + standaloneIdx + 1`). Use for pages nested

@@ -4,7 +4,7 @@ import type { Config } from '@docusaurus/types'
 import type * as Preset from '@docusaurus/preset-classic'
 import { themes as prismThemes } from 'prism-react-renderer'
 import { CONFIG } from './src/config'
-import { DOMAINS } from './plugins/typedoc-custom/router.config.ts'
+import { DOMAINS, STANDALONE_PAGES } from './plugins/typedoc-custom/router.config.ts'
 
 // Versioning is owned by Gusto/embedded-sdk-docs, not this repo. When this
 // config builds there, `versions.json` exists and lists the cut minors; when it
@@ -119,35 +119,40 @@ const config: Config = {
 
             const filtered = items.filter(i => !(i.type === 'doc' && i.id === 'reference/index'))
 
-            // Domain categories in DOMAINS-config order
-            const domainLabelOrder = DOMAINS.map(d => d.label)
-            const domainItems = domainLabelOrder
-              .map(label => filtered.find(i => i.type === 'category' && i.label === label))
-              .filter((i): i is NonNullable<typeof i> => i !== undefined)
-
             const findDoc = (id: string) => filtered.find(i => i.type === 'doc' && i.id === id)
             const findCat = (label: string) =>
               filtered.find(i => i.type === 'category' && i.label === label)
             const hr = { type: 'html' as const, value: '<hr class="sidebar-divider" />' }
 
+            // Domain categories, alpha sorted
+            const domainItems = [...DOMAINS]
+              .sort((a, b) => a.label.localeCompare(b.label))
+              .map(d => filtered.find(i => i.type === 'category' && i.label === d.label))
+              .filter((i): i is NonNullable<typeof i> => i !== undefined)
+
+            // Standalone pages grouped and alpha sorted by displayName.
+            // Categories (Translations, API models) are interleaved by their label.
+            const byGroup = (group: 'build' | 'config') => {
+              const pages = STANDALONE_PAGES.filter(p => p.sidebarGroup === group)
+              const entries: Array<{ label: string; item: ReturnType<typeof findDoc> }> = pages.map(
+                p => ({ label: p.displayName, item: findDoc(`reference/${p.id}`) }),
+              )
+              if (group === 'config') {
+                entries.push({ label: 'Translations', item: findCat('Translations') })
+              }
+              return entries
+                .sort((a, b) => a.label.localeCompare(b.label))
+                .map(e => e.item)
+                .filter((i): i is NonNullable<typeof i> => i !== undefined)
+            }
+
             return [
               ...domainItems,
               hr,
-              // Component types
-              findDoc('reference/workflows-and-blocks'),
-              findDoc('reference/hooks'),
-              findDoc('reference/events'),
+              ...byGroup('build'),
               hr,
-              // SDK config
-              findDoc('reference/providers'),
-              findDoc('reference/error-handling'),
-              findDoc('reference/http-interceptors'),
-              findDoc('reference/observability'),
-              findDoc('reference/theme-variables'),
-              findCat('Translations'),
-              findDoc('reference/component-inventory'),
+              ...byGroup('config'),
               hr,
-              // Appendix
               findCat('API models'),
             ].filter((i): i is NonNullable<typeof i> => i !== undefined)
           },
