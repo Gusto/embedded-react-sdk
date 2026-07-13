@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecontractoraddressform"></a>
 
-> **useContractorAddressForm**(`props`: [`UseContractorAddressFormProps`](#usecontractoraddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+> **useContractorAddressForm**(`props`: [`UseContractorAddressFormProps`](#usecontractoraddressformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 Form hook for editing a contractor's address.
 
@@ -82,15 +82,15 @@ Configuration options for [useContractorAddressForm](#usecontractoraddressform).
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
 
 <a id="usecontractoraddressformresult"></a>
 
 ### UseContractorAddressFormResult
 
-> **UseContractorAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+> **UseContractorAddressFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 Discriminated union returned by [useContractorAddressForm](#usecontractoraddressform).
 
@@ -104,24 +104,24 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 
 **Remarks**
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../hooks.md#baseformhookready) with
 the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`: [`ContractorAddressSubmitOptions`](#contractoraddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorAddress`](../../APIModels/index.md#contractoraddress)\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`ContractorAddressSubmitOptions`](#contractoraddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`ContractorAddress`](../../APIModels/index.md#contractoraddress)\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) | The full contractor entity loaded alongside the address. |
 | `data.contractorAddress` | [`ContractorAddress`](../../APIModels/index.md#contractoraddress) | The contractor address row loaded for update. |
 | `data.contractorType` | [`ContractorType`](../../APIModels/index.md#contractortype-1) \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorAddressFormFields`](#contractoraddressformfields) | - |
 | `form.fieldsMetadata` | [`ContractorAddressFieldsMetadata`](#contractoraddressfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorAddressFormData`](#contractoraddressformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
@@ -159,7 +159,7 @@ Bound to `city`. Text input for the city. Required.
 
 #### ContractorAddressCityFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.City` component.
 
@@ -167,9 +167,9 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -189,7 +189,7 @@ abbreviations. Supply `getOptionLabel` to localize the option labels. Required.
 
 #### ContractorAddressStateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.State` component.
 
@@ -199,9 +199,9 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -220,7 +220,7 @@ Bound to `street1`. Text input for the first street address line. Required.
 
 #### ContractorAddressStreet1FieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street1` component.
 
@@ -228,9 +228,9 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -249,7 +249,7 @@ Bound to `street2`. Text input for the second street address line. Optional.
 
 #### ContractorAddressStreet2FieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street2` component.
 
@@ -257,9 +257,9 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -279,7 +279,7 @@ format and emits `INVALID_ZIP` when the value does not match.
 
 #### ContractorAddressZipFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Zip` component.
 
@@ -287,9 +287,9 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ## Validations
 
@@ -368,11 +368,11 @@ Field names accepted by the contractor address form.
 
 | Field | Type |
 | ------ | ------ |
-| `city` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `state` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
-| `street1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `street2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `zip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `city` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `state` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
+| `street1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `street2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `zip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 
 Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontractoraddressform).
 

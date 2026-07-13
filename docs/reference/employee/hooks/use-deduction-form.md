@@ -100,19 +100,19 @@ post-tax custom variant and the court-ordered garnishment variant.
 
 [`UseDeductionFormResult`](#usedeductionformresult)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseDeductionFormReady](#usedeductionformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseDeductionFormReady](#usedeductionformready) once ready.
 
 <a id="usedeductionformresult"></a>
 
 ### UseDeductionFormResult
 
-> **UseDeductionFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseDeductionFormReady`](#usedeductionformready)
+> **UseDeductionFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseDeductionFormReady`](#usedeductionformready)
 
 Return value of [useDeductionForm](#usedeductionform).
 
 #### Remarks
 
-Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) while the existing garnishment
+Discriminated union: [HookLoadingResult](../../hooks.md#hookloadingresult) while the existing garnishment
 is loading (update mode only); [UseDeductionFormReady](#usedeductionformready) once data is
 ready. In create mode the hook returns the ready branch immediately.
 
@@ -126,7 +126,7 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 
 **Remarks**
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../hooks.md#baseformhookready) with
 the deduction-specific `data`, `status`, `actions`, and `form.Fields` shape.
 Static, entity-derived values live under `data.*`; reactive values that
 flip with form input live under `status.*`.
@@ -134,16 +134,16 @@ flip with form input live under `status.*`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Garnishment`](../../APIModels/index.md#garnishment)\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`Garnishment`](../../APIModels/index.md#garnishment)\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
 | `data` | `object` | Deduction-specific data payload: the loaded garnishment for update mode, or `null` in create mode. |
 | `data.deduction` | [`Garnishment`](../../APIModels/index.md#garnishment) \| `null` | The garnishment loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`DeductionFormFields`](#deductionformfields) | - |
 | `form.fieldsMetadata` | [`DeductionFormFieldsMetadata`](#deductionformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`DeductionFormData`](#deductionformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. |
 | `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
 | `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
@@ -191,7 +191,7 @@ Bound to `amount`. Deduction amount input. Always available.
 
 #### DeductionAmountFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
 
@@ -199,9 +199,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` compon
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
 ***
 
@@ -222,7 +222,7 @@ Bound to `annualMaximum`. Only available when `status.isRecurring` is true.
 
 #### AnnualMaximumFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
 
@@ -230,9 +230,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum`
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
 ***
 
@@ -251,7 +251,7 @@ Bound to `deductAsPercentage`. Fixed-amount vs percentage radio group. Always av
 
 #### DeductAsPercentageFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
 
@@ -260,9 +260,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercen
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ***
 
@@ -281,7 +281,7 @@ Bound to `description`. Description text input. Always available.
 
 #### DescriptionFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
 
@@ -289,9 +289,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` c
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -312,7 +312,7 @@ Bound to `garnishmentType`. Only available when `courtOrdered: true`.
 
 #### GarnishmentTypeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), [`GarnishmentType`](../../APIModels/index.md#garnishmenttype-1)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), [`GarnishmentType`](../../APIModels/index.md#garnishmenttype-1)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
 
@@ -322,9 +322,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentTyp
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: [`GarnishmentType`](../../APIModels/index.md#garnishmenttype-1)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -343,7 +343,7 @@ Bound to `recurring`. Recurring vs one-time radio group. Always available.
 
 #### RecurringFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
 
@@ -352,9 +352,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` com
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ***
 
@@ -375,7 +375,7 @@ Bound to `totalAmount`. Only available when `status.isRecurring` is true.
 
 #### TotalAmountFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.
 
@@ -383,9 +383,9 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` c
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
 ## Validations
 
@@ -504,13 +504,13 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 | Field | Type |
 | ------ | ------ |
-| `amount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `annualMaximum` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `deductAsPercentage` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
-| `description` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `garnishmentType` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `recurring` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
-| `totalAmount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `amount` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `annualMaximum` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `deductAsPercentage` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`boolean`\> |
+| `description` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `garnishmentType` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `recurring` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`boolean`\> |
+| `totalAmount` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 
 Per-field metadata returned by [useDeductionForm](#usedeductionform) as `form.fieldsMetadata`.
 

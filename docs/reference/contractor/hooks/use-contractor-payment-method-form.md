@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecontractorpaymentmethodform"></a>
 
-> **useContractorPaymentMethodForm**(`props`: [`UseContractorPaymentMethodFormProps`](#usecontractorpaymentmethodformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
+> **useContractorPaymentMethodForm**(`props`: [`UseContractorPaymentMethodFormProps`](#usecontractorpaymentmethodformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
 
 Headless React Hook Form hook for managing a contractor's payment method type.
 
@@ -73,7 +73,7 @@ Props for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
 
 A loading-state result while data loads, or a [UseContractorPaymentMethodFormReady](#usecontractorpaymentmethodformready) once ready.
 
@@ -81,7 +81,7 @@ A loading-state result while data loads, or a [UseContractorPaymentMethodFormRea
 
 ### UseContractorPaymentMethodFormResult
 
-> **UseContractorPaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
+> **UseContractorPaymentMethodFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
 
 Return type of [useContractorPaymentMethodForm](#usecontractorpaymentmethodform) — a discriminated union on `isLoading`.
 
@@ -96,16 +96,16 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod)\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod)\> \| `undefined`\> | - |
 | `data` | `object` | The contractor's current payment method, loaded from the API. |
 | `data.paymentMethod` | [`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod) | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorPaymentMethodFormFields`](#contractorpaymentmethodformfields) | - |
 | `form.fieldsMetadata` | [`ContractorPaymentMethodFieldsMetadata`](#contractorpaymentmethodfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. `isDirectDeposit` reflects the currently selected type so a composing component can render bank fields and decide whether to submit the bank-account form. |
 | `status.isDirectDeposit` | `boolean` | - |
 | `status.isPending` | `boolean` | - |
@@ -139,7 +139,7 @@ labels.
 
 #### ContractorPaymentMethodTypeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<`never`, [`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\>\>
 
 Props accepted by [useContractorPaymentMethodForm](#usecontractorpaymentmethodform)'s `Fields.Type` component.
 
@@ -149,7 +149,7 @@ Props accepted by [useContractorPaymentMethodForm](#usecontractorpaymentmethodfo
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ## Utility types
 <a id="contractorpaymentmethoderrorcode"></a>
@@ -187,7 +187,7 @@ hook.
 
 | Field | Type |
 | ------ | ------ |
-| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\> |
+| `type` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\> |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 

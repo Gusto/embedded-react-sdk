@@ -101,7 +101,7 @@ A loading-state result while the payment method and bank accounts are loading, o
 
 ### UseSplitPaymentsFormResult
 
-> **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+> **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 Return type of [useSplitPaymentsForm](#usesplitpaymentsform) — a discriminated union on `isLoading`.
 
@@ -116,20 +116,20 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Actions that mutate the form or submit it. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod)\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod)\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
 | `actions.reorderSplits` | (`orderedUuids`: `string`[]) => `void` | Reorder splits by uuid (Amount mode). Pass the ordered list of split uuids; the last uuid becomes the remainder. The hook writes the new priority map and re-anchors the remainder's `splitAmount` to `null` (clearing the previous remainder to `0`). |
 | `data` | `object` | Server-fetched data and derived working values. |
 | `data.bankAccounts` | [`EmployeeBankAccount`](../../APIModels/index.md#employeebankaccount)[] | All bank accounts available to allocate splits across. |
 | `data.paymentMethod` | [`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod) | The employee's current payment method. |
 | `data.remainderId` | `string` | UUID of the split that absorbs the remainder in Amount mode (always the last by priority). |
 | `data.splits` | [`WorkingSplit`](#workingsplit)[] | The current working split entries, one per bank account. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`SplitPaymentsFormFields`](#splitpaymentsformfields) | - |
 | `form.fieldsMetadata` | [`SplitPaymentsFormFieldsMetadata`](#splitpaymentsformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`SplitPaymentsFormData`](#splitpaymentsformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive form-level flags. |
 | `status.hasPercentageImbalance` | `boolean` | `true` after a failed Percentage-mode Save when the splits don't sum to 100; clears live as the user corrects the total. Follows the standard react-hook-form validation lifecycle (controlled by `validationMode`). Only surfaces in Percentage mode. |
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
@@ -167,7 +167,7 @@ Radio group bound to `splitBy`; selects Percentage or Amount split mode.
 
 #### SplitByFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
 
 Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitBy` component.
 
@@ -176,9 +176,9 @@ Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitB
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`SplitByValue`](#splitbyvalue)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ***
 
@@ -230,11 +230,11 @@ required by the hook; the rest are required.
 | `label` | `string` | Label shown above the input. |
 | `description?` | `ReactNode` | Optional descriptive text rendered below the label. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Override the rendered number input component. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
 | `max?` | `string` \| `number` | Forwarded to the underlying number input. |
 | `min?` | `string` \| `number` | Forwarded to the underlying number input. |
 | `placeholder?` | `string` | Forwarded to the underlying number input. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
 
 ## Validations
 
@@ -358,15 +358,15 @@ runtime.
 
 #### Indexable
 
-> \[`key`: `` `splitAmount.${string}` ``\]: [`FieldMetadata`](../../utilities.md#fieldmetadata)
+> \[`key`: `` `splitAmount.${string}` ``\]: [`FieldMetadata`](../../hooks.md#fieldmetadata)
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `priority` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | The `priority` container field. |
-| `splitAmount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | The `splitAmount` container field. Per-split values live at `splitAmount.<uuid>`. |
-| `splitBy` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Percentage"` \| `"Amount"`\> | Split mode selector (by percentage or by fixed amount). |
+| `priority` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | The `priority` container field. |
+| `splitAmount` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | The `splitAmount` container field. Per-split values live at `splitAmount.<uuid>`. |
+| `splitBy` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Percentage"` \| `"Amount"`\> | Split mode selector (by percentage or by fixed amount). |
 
 ***
 

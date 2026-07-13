@@ -105,7 +105,7 @@ form data, fields, status, actions, and error handling.
 
 ### UseEmployeeStateTaxesFormResult
 
-> **UseEmployeeStateTaxesFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)
+> **UseEmployeeStateTaxesFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)
 
 Discriminated union returned by [useEmployeeStateTaxesForm](#useemployeestatetaxesform). Loading
 branch carries only `errorHandling`; ready branch carries form data,
@@ -123,16 +123,16 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Form actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
 | `data` | `object` | Current per-state tax records returned by the server. |
 | `data.employeeStateTaxes` | [`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[] | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`StateTaxFields`](#statetaxfields) | - |
 | `form.fieldsMetadata` | [`EmployeeStateTaxesFieldsMetadata`](#employeestatetaxesfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
@@ -356,7 +356,7 @@ a `placeholder`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
@@ -381,7 +381,7 @@ validation messages.
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
@@ -406,7 +406,7 @@ validation messages.
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
@@ -450,7 +450,7 @@ only a single error code: every required field that is empty emits
 
 ### EmployeeStateTaxesFieldsMetadata
 
-> **EmployeeStateTaxesFieldsMetadata** = `Record`\<`` `states.${string}.${string}` ``, [`FieldMetadata`](../../utilities.md#fieldmetadata) \| [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\>
+> **EmployeeStateTaxesFieldsMetadata** = `Record`\<`` `states.${string}.${string}` ``, [`FieldMetadata`](../../hooks.md#fieldmetadata) \| [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\>
 
 Field metadata for [useEmployeeStateTaxesForm](#useemployeestatetaxesform), keyed by full form path.
 
@@ -458,7 +458,7 @@ Field metadata for [useEmployeeStateTaxesForm](#useemployeestatetaxesform), keye
 
 The set of keys is determined at runtime: one entry per state tax question,
 keyed as `states.<STATE>.<camelCaseQuestionKey>`. Each entry is a
-[FieldMetadata](../../utilities.md#fieldmetadata), or a [FieldMetadataWithOptions](../../utilities.md#fieldmetadatawithoptions) for questions the
+[FieldMetadata](../../hooks.md#fieldmetadata), or a [FieldMetadataWithOptions](../../hooks.md#fieldmetadatawithoptions) for questions the
 API exposes as a select or radio. Both the questions and their options are
 driven by the API response per state, so neither the keys nor which entries
 carry options are known ahead of time.
@@ -510,7 +510,7 @@ validation messages.
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
@@ -535,7 +535,7 @@ validation messages.
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
@@ -560,7 +560,7 @@ placeholder, and validation messages.
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
@@ -607,7 +607,7 @@ UI input variant for a state-tax question — determines which field type render
 
 ### StateTaxValidationMessages
 
-> **StateTaxValidationMessages** = [`ValidationMessages`](../../utilities.md#validationmessages)\<*typeof* `EmployeeStateTaxesErrorCodes.REQUIRED`\>
+> **StateTaxValidationMessages** = [`ValidationMessages`](../../hooks.md#validationmessages)\<*typeof* `EmployeeStateTaxesErrorCodes.REQUIRED`\>
 
 Localized validation messages supported by the state-tax field components.
 Every variant surfaces a single error code, `REQUIRED`.
@@ -644,7 +644,7 @@ placeholder, and validation messages.
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `formHookResult?` | [`FormHookResult`](../../hooks.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
 | `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |

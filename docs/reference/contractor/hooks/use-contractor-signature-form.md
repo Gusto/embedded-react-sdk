@@ -92,13 +92,13 @@ Props for [useContractorSignatureForm](#usecontractorsignatureform).
 
 [`UseContractorSignatureFormResult`](#usecontractorsignatureformresult)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorSignatureFormReady](#usecontractorsignatureformready) once loaded.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseContractorSignatureFormReady](#usecontractorsignatureformready) once loaded.
 
 <a id="usecontractorsignatureformresult"></a>
 
 ### UseContractorSignatureFormResult
 
-> **UseContractorSignatureFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorSignatureFormReady`](#usecontractorsignatureformready)
+> **UseContractorSignatureFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseContractorSignatureFormReady`](#usecontractorsignatureformready)
 
 Result of [useContractorSignatureForm](#usecontractorsignatureform) — a discriminated union on `isLoading`.
 
@@ -114,18 +114,18 @@ document metadata has loaded.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`DocumentSigned`](../../APIModels/index.md#documentsigned)\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed document on success, or `undefined` on validation or API failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`DocumentSigned`](../../APIModels/index.md#documentsigned)\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed document on success, or `undefined` on validation or API failure. |
 | `data` | `object` | Loaded data — the document being signed and a downloadable PDF URL. |
 | `data.document` | [`Document`](../../APIModels/index.md#document) | The document entity fetched from the API. |
 | `data.hasFields` | `boolean` | Whether the document carries signable fields (vs. acknowledge-only). |
 | `data.pdfUrl` | `string` \| `null` | URL to the document's PDF, or `null` when unavailable. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorSignatureFormFieldComponents`](#contractorsignatureformfieldcomponents) | - |
 | `form.fieldsMetadata` | [`ContractorSignatureFieldsMetadata`](#contractorsignaturefieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorSignatureFormData`](#contractorsignatureformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorSignatureFormData`](#contractorsignatureformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`ContractorSignatureFormData`](#contractorsignatureformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Submit-state flags. |
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
@@ -189,7 +189,7 @@ Account number(s); defined only when the API returns `account_number`.
 
 #### ContractorSignatureAccountNumberFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.AccountNumber` component.
 
@@ -197,9 +197,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -218,7 +218,7 @@ Electronic-signature consent checkbox; always present (synthesized, not an API f
 
 #### ContractorSignatureAgreeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`ContractorSignatureAgreeValidation`](#contractorsignatureagreevalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\<[`ContractorSignatureAgreeValidation`](#contractorsignatureagreevalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.Agree` component.
 
@@ -226,9 +226,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureAgreeValidation`](#contractorsignatureagreevalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureAgreeValidation`](#contractorsignatureagreevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
 
 ***
 
@@ -249,7 +249,7 @@ Business name; defined only when the API returns `business_name`.
 
 #### ContractorSignatureBusinessNameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.BusinessName` component.
 
@@ -257,9 +257,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -280,7 +280,7 @@ Requester's name and address; defined only when the API returns `company_name`.
 
 #### ContractorSignatureCompanyNameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.CompanyName` component.
 
@@ -288,9 +288,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -311,7 +311,7 @@ Employer Identification Number; defined only when the API returns `ein`.
 
 #### ContractorSignatureEinFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureEinValidation`](#contractorsignatureeinvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureEinValidation`](#contractorsignatureeinvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.Ein` component.
 
@@ -319,9 +319,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureEinValidation`](#contractorsignatureeinvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureEinValidation`](#contractorsignatureeinvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -342,7 +342,7 @@ FATCA exemption code; defined only when the API returns `exemption_from_FATCA`.
 
 #### ContractorSignatureExemptionFromFatcaFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.ExemptionFromFatca` component.
 
@@ -350,9 +350,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -373,7 +373,7 @@ Exempt payee code; defined only when the API returns `exempt_payee_code`.
 
 #### ContractorSignatureExemptPayeeCodeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.ExemptPayeeCode` component.
 
@@ -381,9 +381,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -401,7 +401,7 @@ Foreign partners checkbox; defined only when the API returns `foreign_partners`.
 
 #### ContractorSignatureForeignPartnersFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.ForeignPartners` component.
 
@@ -410,7 +410,7 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 
-_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
 
 ***
 
@@ -431,7 +431,7 @@ City; defined only when the API returns `home_address_city`.
 
 #### ContractorSignatureHomeAddressCityFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.HomeAddressCity` component.
 
@@ -439,9 +439,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -462,7 +462,7 @@ State; defined only when the API returns `home_address_state`.
 
 #### ContractorSignatureHomeAddressStateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.HomeAddressState` component.
 
@@ -470,9 +470,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -493,7 +493,7 @@ Street address line 1; defined only when the API returns `home_address_street_1`
 
 #### ContractorSignatureHomeAddressStreet1FieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.HomeAddressStreet1` component.
 
@@ -501,9 +501,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -524,7 +524,7 @@ Street address line 2; defined only when the API returns `home_address_street_2`
 
 #### ContractorSignatureHomeAddressStreet2FieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.HomeAddressStreet2` component.
 
@@ -532,9 +532,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -555,7 +555,7 @@ ZIP code; defined only when the API returns `home_address_zip`.
 
 #### ContractorSignatureHomeAddressZipFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.HomeAddressZip` component.
 
@@ -563,9 +563,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -586,7 +586,7 @@ LLC tax classification code select; defined only when classification checkboxes 
 
 #### ContractorSignatureLlcClassificationCodeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation), `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation), `string`\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.LlcClassificationCode` component.
 
@@ -596,9 +596,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -619,7 +619,7 @@ Entity or individual name; defined only when the API returns `name`.
 
 #### ContractorSignatureNameFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.Name` component.
 
@@ -627,9 +627,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -650,7 +650,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 #### ContractorSignatureOtherTextFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.OtherText` component.
 
@@ -658,9 +658,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -681,7 +681,7 @@ Typed signature; defined only when the API returns `signature_text`.
 
 #### ContractorSignatureSignatureTextFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.SignatureText` component.
 
@@ -689,9 +689,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -712,7 +712,7 @@ Social Security Number; defined only when the API returns `ssn`.
 
 #### ContractorSignatureSsnFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorSignatureSsnValidation`](#contractorsignaturessnvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ContractorSignatureSsnValidation`](#contractorsignaturessnvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.Ssn` component.
 
@@ -720,9 +720,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureSsnValidation`](#contractorsignaturessnvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureSsnValidation`](#contractorsignaturessnvalidation), [`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -743,7 +743,7 @@ Federal tax classification radio group; defined only when the document carries c
 
 #### ContractorSignatureTaxClassificationFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation), `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation), `string`\>\>
 
 Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `Fields.TaxClassification` component.
 
@@ -752,9 +752,9 @@ Props accepted by [useContractorSignatureForm](#usecontractorsignatureform)'s `F
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorSignatureRequiredValidation`](#contractorsignaturerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ## Validations
 
@@ -823,25 +823,25 @@ Use as a key in `validationMessages` on `Fields.Ssn`. See
 
 | Field | Type |
 | ------ | ------ |
-| `accountNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `agree` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `businessName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `companyName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `ein` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `exemptionFromFatca` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `exemptPayeeCode` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `foreignPartners` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `homeAddressCity` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `homeAddressState` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `homeAddressStreet1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `homeAddressStreet2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `homeAddressZip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `llcClassificationCode` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"c"` \| `"s"` \| `"p"`\> |
-| `name` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `otherText` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `signatureText` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `ssn` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `taxClassification` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"other"` \| `"individual_proprietor"` \| `"c_corporation"` \| `"s_corporation"` \| `"partnership"` \| `"trust_estate"` \| `"limited_liability_company"`\> |
+| `accountNumber` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `agree` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `businessName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `companyName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `ein` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `exemptionFromFatca` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `exemptPayeeCode` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `foreignPartners` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `homeAddressCity` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `homeAddressState` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `homeAddressStreet1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `homeAddressStreet2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `homeAddressZip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `llcClassificationCode` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"c"` \| `"s"` \| `"p"`\> |
+| `name` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `otherText` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `signatureText` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `ssn` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `taxClassification` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"other"` \| `"individual_proprietor"` \| `"c_corporation"` \| `"s_corporation"` \| `"partnership"` \| `"trust_estate"` \| `"limited_liability_company"`\> |
 
 Per-field metadata exposed by [useContractorSignatureForm](#usecontractorsignatureform) as `form.fieldsMetadata`.
 

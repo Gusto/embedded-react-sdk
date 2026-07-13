@@ -69,13 +69,13 @@ Props for [useEmployeeList](#useemployeelist).
 
 [`UseEmployeeListResult`](#useemployeelistresult)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
 
 <a id="useemployeelistresult"></a>
 
 ### UseEmployeeListResult
 
-> **UseEmployeeListResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeListReady`](#useemployeelistready)
+> **UseEmployeeListResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseEmployeeListReady`](#useemployeelistready)
 
 Return type of [useEmployeeList](#useemployeelist).
 
@@ -95,8 +95,8 @@ Ready state of [useEmployeeList](#useemployeelist).
 | `actions.onReview` | (`employeeId`: `string`) => `Promise`\<[`EmployeeOnboardingStatus`](../../APIModels/index.md#employeeonboardingstatus) \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
 | `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
 | `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `pagination` | [`PaginationControlProps`](../../component-inventory.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 | `status.isFetching` | `boolean` | - |
