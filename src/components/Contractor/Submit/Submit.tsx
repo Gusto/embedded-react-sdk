@@ -57,7 +57,7 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
   })
   const onboardingStatus = data.contractorOnboardingStatus?.onboardingStatus
 
-  const { mutateAsync } = useContractorsUpdateOnboardingStatusMutation()
+  const { mutateAsync, isPending } = useContractorsUpdateOnboardingStatusMutation()
 
   const onSubmit = async () => {
     await baseSubmitHandler(null, async () => {
@@ -129,7 +129,7 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
           <UnorderedList items={items} />
         </Alert>
         <ActionsLayout justifyContent="end">
-          <Button title={t('submitCta')} onClick={onSubmit}>
+          <Button title={t('submitCta')} onClick={onSubmit} isLoading={isPending}>
             {t('submitCta')}
           </Button>
         </ActionsLayout>
