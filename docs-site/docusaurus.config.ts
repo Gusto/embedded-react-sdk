@@ -119,7 +119,7 @@ const config: Config = {
 
             const filtered = items.filter(i => !(i.type === 'doc' && i.id === 'reference/index'))
 
-            // Domain categories in DOMAINS-config order, wrapped in a non-collapsible group
+            // Domain categories in DOMAINS-config order
             const domainLabelOrder = DOMAINS.map(d => d.label)
             const domainItems = domainLabelOrder
               .map(label => filtered.find(i => i.type === 'category' && i.label === label))
@@ -131,13 +131,7 @@ const config: Config = {
             const hr = { type: 'html' as const, value: '<hr class="sidebar-divider" />' }
 
             return [
-              {
-                type: 'category' as const,
-                label: 'Domains',
-                collapsible: false,
-                collapsed: false,
-                items: domainItems,
-              },
+              ...domainItems,
               hr,
               // Component types
               findDoc('reference/workflows-and-blocks'),
