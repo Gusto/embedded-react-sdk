@@ -80,44 +80,10 @@ export const DOMAINS: DomainConfig[] = [
  */
 export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
-    id: 'providers',
-    sources: ['contexts/GustoProvider'],
-    displayName: 'Providers',
-    intro:
-      'The two top-level providers that connect the SDK to your React tree. ' +
-      'Wrap your application with one of these before rendering any SDK component.',
-    layout: {
-      feature: [{ group: CUSTOM_GROUPS.providers, promote: true }],
-      default: 'utilityTypes',
-    },
-  },
-  {
-    id: 'theme-variables',
-    sources: ['contexts/ThemeProvider'],
-    displayName: 'Theme variables',
-    intro:
-      'These design tokens control the visual appearance of all components and UX within the SDK. ' +
-      'See the [theming guide](../guides/theming.md) for more context.',
+    id: 'workflows-and-blocks',
+    sources: ['components/Base/Base'],
+    displayName: 'Workflows and blocks',
     layout: { default: 'promote' },
-  },
-  {
-    id: 'component-inventory',
-    sources: [
-      'components/Common/UI',
-      'components/Common/FieldLayout',
-      'components/Common/PaginationControl',
-      'components/Common/PayrollLoading',
-      'components/Common/HorizontalFieldLayout',
-      'contexts/ComponentAdapter',
-    ],
-    displayName: 'Component inventory',
-    layout: {
-      feature: [
-        { group: CUSTOM_GROUPS.componentAdapter, promote: true },
-        { group: CUSTOM_GROUPS.componentProps },
-      ],
-      default: 'utilityTypes',
-    },
   },
   {
     id: 'hooks',
@@ -165,6 +131,27 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     },
   },
   {
+    id: 'providers',
+    sources: ['contexts/GustoProvider'],
+    displayName: 'Providers',
+    intro:
+      'The two top-level providers that connect the SDK to your React tree. ' +
+      'Wrap your application with one of these before rendering any SDK component.',
+    layout: {
+      feature: [{ group: CUSTOM_GROUPS.providers, promote: true }],
+      default: 'utilityTypes',
+    },
+  },
+  {
+    id: 'error-handling',
+    sources: ['types/sdkError'],
+    displayName: 'Error handling',
+    intro:
+      'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
+      'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
+    layout: { default: 'promote' },
+  },
+  {
     id: 'http-interceptors',
     // `types/hooks` owns SDKHooks; the hook and context interfaces are re-exported
     // from the versioned embedded-api package at `hooks/types`, so both fragments
@@ -192,13 +179,32 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     },
   },
   {
-    id: 'error-handling',
-    sources: ['types/sdkError'],
-    displayName: 'Error handling',
+    id: 'theme-variables',
+    sources: ['contexts/ThemeProvider'],
+    displayName: 'Theme variables',
     intro:
-      'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
-      'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
+      'These design tokens control the visual appearance of all components and UX within the SDK. ' +
+      'See the [theming guide](../guides/theming.md) for more context.',
     layout: { default: 'promote' },
+  },
+  {
+    id: 'component-inventory',
+    sources: [
+      'components/Common/UI',
+      'components/Common/FieldLayout',
+      'components/Common/PaginationControl',
+      'components/Common/PayrollLoading',
+      'components/Common/HorizontalFieldLayout',
+      'contexts/ComponentAdapter',
+    ],
+    displayName: 'UI component inventory',
+    layout: {
+      feature: [
+        { group: CUSTOM_GROUPS.componentAdapter, promote: true },
+        { group: CUSTOM_GROUPS.componentProps },
+      ],
+      default: 'utilityTypes',
+    },
   },
   {
     id: 'employee/types',
@@ -214,12 +220,6 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sources: [],
     displayName: 'Types',
     sidebarPosition: 101,
-    layout: { default: 'promote' },
-  },
-  {
-    id: 'workflows-and-blocks',
-    sources: ['components/Base/Base'],
-    displayName: 'Workflows and blocks',
     layout: { default: 'promote' },
   },
 ]
