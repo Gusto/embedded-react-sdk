@@ -2463,11 +2463,11 @@ export namespace Translations {
       cancel: string
       /** @defaultValue `"Create Contractor"` */
       create: string
-      /** @defaultValue `"Update Contractor"` */
+      /** @defaultValue `"Continue"` */
       update: string
       /** @defaultValue `"Creating…"` */
       creating: string
-      /** @defaultValue `"Updating…"` */
+      /** @defaultValue `"Saving…"` */
       updating: string
     }
   }
