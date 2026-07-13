@@ -74,8 +74,6 @@ import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import { Modal } from '@/components/Common/UI/Modal'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import { LoadingSpinner } from '@/components/Common/UI/LoadingSpinner'
-import type { SkeletonProps } from '@/components/Common/UI/Skeleton/SkeletonTypes'
-import { Skeleton } from '@/components/Common/UI/Skeleton'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { DescriptionList } from '@/components/Common/UI/DescriptionList'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
@@ -120,7 +118,6 @@ export const defaultComponents: ComponentsContextType = {
   Dialog: (props: DialogProps) => <Dialog {...props} />,
   Modal: (props: ModalProps) => <Modal {...props} />,
   LoadingSpinner: (props: LoadingSpinnerProps) => <LoadingSpinner {...props} />,
-  Skeleton: (props: SkeletonProps) => <Skeleton {...props} />,
   DescriptionList: (props: DescriptionListProps) => <DescriptionList {...props} />,
   FileInput: (props: FileInputProps) => <FileInput {...props} />,
 }

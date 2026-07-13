@@ -168,7 +168,7 @@ const DocumentRequirementItem = ({
   document: Document | undefined
   downloadLabel: string
 }) => {
-  const { Text, Button, Skeleton } = useComponentContext()
+  const { Text, Button, LoadingSpinner } = useComponentContext()
   const documentUuid = document?.uuid
   const { data: pdfData, isLoading } = useContractorDocumentsGetPdf(
     { documentUuid: documentUuid ?? '' },
@@ -191,7 +191,7 @@ const DocumentRequirementItem = ({
           }}
         >
           {isLoading ? (
-            <Skeleton width={120} height={16} aria-label={downloadLabel} />
+            <LoadingSpinner size="sm" style="inline" aria-label={downloadLabel} />
           ) : (
             downloadLabel
           )}

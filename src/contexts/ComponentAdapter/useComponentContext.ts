@@ -33,7 +33,6 @@ import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
-import type { SkeletonProps } from '@/components/Common/UI/Skeleton/SkeletonTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
@@ -162,8 +161,6 @@ export interface ComponentsContextType {
   RadioGroup: FunctionComponent<RadioGroupProps>
   /** Form field wrapping a single-select dropdown. */
   Select: FunctionComponent<SelectProps>
-  /** Shimmering placeholder used to reserve layout space while content loads. */
-  Skeleton: FunctionComponent<SkeletonProps>
   /** Form field wrapping an `<input type="checkbox" />` styled as a toggle. */
   Switch: FunctionComponent<SwitchProps>
   /** Tabbed navigation with associated content panels. */

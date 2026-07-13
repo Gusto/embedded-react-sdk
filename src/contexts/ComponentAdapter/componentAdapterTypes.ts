@@ -61,5 +61,4 @@ export type {
 export type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 export type { TabsProps, TabProps } from '@/components/Common/UI/Tabs/TabsTypes'
 export type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
-export type { SkeletonProps } from '@/components/Common/UI/Skeleton/SkeletonTypes'
 export type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
