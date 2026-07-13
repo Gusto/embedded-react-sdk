@@ -823,6 +823,18 @@ export class SDKRouter extends MemberRouter {
 
     const pages = super.buildPages(project)
 
+    // The project index is rendered as .mdx (JSX required for DocCardList).
+    // Update the pages array entry and all fullUrls that reference index.md so
+    // TypeDoc generates cross-links with the correct extension. This must happen
+    // after super.buildPages(), which sets fullUrls for anchored project members.
+    const projectPage = pages.find(p => p.model === project)
+    if (projectPage) projectPage.url = projectPage.url.replace(/index\.md$/, 'index.mdx')
+    for (const [refl, url] of this.fullUrls) {
+      if (url === 'index.md' || url.startsWith('index.md#')) {
+        this.fullUrls.set(refl, url.replace('index.md', 'index.mdx'))
+      }
+    }
+
     for (const [domainPath, hooks] of hooksByDomain) {
       // Group hooks by hook directory name (e.g. 'useCompensationForm').
       const byHookDir = new Map<string, DeclarationReflection[]>()

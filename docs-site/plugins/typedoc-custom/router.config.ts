@@ -80,10 +80,12 @@ export const DOMAINS: DomainConfig[] = [
  */
 export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
-    id: 'workflows-and-blocks',
+    id: 'components',
     sources: ['components/Base/Base'],
-    displayName: 'Workflows and blocks',
+    displayName: 'Components',
     sidebarGroup: 'build',
+    intro:
+      'All flow and block components across every SDK domain. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.',
     layout: {
       crossDomainIndex: [
         { heading: 'Workflows', kind: 'flows' },
@@ -100,7 +102,10 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     intro:
       'The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
     layout: {
-      crossDomainIndex: [{ heading: 'Hooks', kind: 'hooks' }],
+      crossDomainIndex: [
+        { heading: '🌐 Data hooks', kind: 'dataHooks' },
+        { heading: '✍️ Form hooks', kind: 'formHooks' },
+      ],
       feature: [
         { group: CUSTOM_GROUPS.providers, promote: true },
         {
@@ -214,6 +219,8 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       'contexts/ComponentAdapter',
     ],
     displayName: 'UI component inventory',
+    intro:
+      'Primitive UI elements that SDK components render internally, and the ComponentsAdapter interface for replacing them with your own design-system components.',
     layout: {
       feature: [
         { group: CUSTOM_GROUPS.componentAdapter, promote: true },
@@ -378,7 +385,11 @@ export type PageLayout = {
    *
    * - `'flows'`: all `*Flow` components; first column is `Namespace.ComponentName`.
    * - `'blocks'`: all non-flow components; first column is `Namespace.ComponentName`.
-   * - `'hooks'`: all per-domain hooks; first column is the plain hook name.
+   * - `'formHooks'`: per-domain hooks whose name ends in `Form`; first column is the plain hook name.
+   * - `'dataHooks'`: per-domain hooks whose name does NOT end in `Form`; first column is the plain hook name.
    */
-  crossDomainIndex?: Array<{ heading: string; kind: 'flows' | 'blocks' | 'hooks' }>
+  crossDomainIndex?: Array<{
+    heading: string
+    kind: 'flows' | 'blocks' | 'formHooks' | 'dataHooks'
+  }>
 }
