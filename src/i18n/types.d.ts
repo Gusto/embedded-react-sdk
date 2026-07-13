@@ -2661,10 +2661,8 @@ export namespace Translations {
       description: string
       /** @defaultValue `"Download document"` */
       downloadCta: string
-      items: {
-        '0': {
-          /** @defaultValue `"taxpayer_identification_form_w_9"` */
-          documentName: string
+      documents: {
+        taxpayer_identification_form_w_9: {
           /** @defaultValue `"Taxpayer Identification (Form W-9)"` */
           title: string
           /** @defaultValue `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` */

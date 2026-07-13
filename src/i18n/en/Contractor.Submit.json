@@ -9,13 +9,12 @@
     "title": "Documents",
     "description": "You will need to collect signed copies of the following documents from {{contractorName}}.",
     "downloadCta": "Download document",
-    "items": [
-      {
-        "documentName": "taxpayer_identification_form_w_9",
+    "documents": {
+      "taxpayer_identification_form_w_9": {
         "title": "Taxpayer Identification (Form W-9)",
         "description": "Verifies your contractor's identity for tax purposes such as generating their Form 1099."
       }
-    ],
+    },
     "alertLabel": "The government requires you to have Form W-9 completed and signed."
   },
   "warningItems": [

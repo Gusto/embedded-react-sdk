@@ -12,6 +12,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
+import { W9_DOCUMENT_NAME } from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm/w9Fields'
 
 /**
  * Props for {@link ContractorSubmit}.
@@ -68,7 +69,10 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
   const { data: documentsData } = useContractorDocumentsGetAllSuspense({
     contractorUuid: contractorId,
   })
-  const documents = documentsData.documents ?? []
+  const documentsToCollect = (documentsData.documents ?? []).filter(
+    d => d.requiresSigning && !d.signedAt,
+  )
+  const hasW9 = documentsToCollect.some(d => d.name === W9_DOCUMENT_NAME)
 
   const { mutateAsync } = useContractorsUpdateOnboardingStatusMutation()
 
@@ -119,30 +123,38 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
         <Heading as="h2">{t('heading')}</Heading>
       </FlexItem>
 
-      <Box
-        header={
-          <BoxHeader
-            title={t('documentRequirements.title')}
-            description={t('documentRequirements.description', { contractorName })}
-          />
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          {Object.values(t('documentRequirements.items', { returnObjects: true })).map(item => {
-            const document = documents.find(d => d.name === item.documentName)
-            return (
-              <DocumentRequirementItem
-                key={item.documentName}
-                title={item.title}
-                description={item.description}
-                document={document}
-                downloadLabel={t('documentRequirements.downloadCta')}
-              />
-            )
-          })}
-          <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>
-        </Flex>
-      </Box>
+      {documentsToCollect.length > 0 && (
+        <Box
+          header={
+            <BoxHeader
+              title={t('documentRequirements.title')}
+              description={t('documentRequirements.description', { contractorName })}
+            />
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            {documentsToCollect.map(document => {
+              const isW9 = document.name === W9_DOCUMENT_NAME
+              const title = isW9
+                ? t('documentRequirements.documents.taxpayer_identification_form_w_9.title')
+                : (document.title ?? '')
+              const description = isW9
+                ? t('documentRequirements.documents.taxpayer_identification_form_w_9.description')
+                : (document.description ?? '')
+              return (
+                <DocumentRequirementItem
+                  key={document.uuid}
+                  title={title}
+                  description={description}
+                  document={document}
+                  downloadLabel={t('documentRequirements.downloadCta')}
+                />
+              )
+            })}
+            {hasW9 && <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>}
+          </Flex>
+        </Box>
+      )}
       <Flex flexDirection="column" gap={8}>
         <Alert status="warning" label={t('title')}>
           <UnorderedList items={items} />
