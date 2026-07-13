@@ -198,7 +198,6 @@ const DocumentRequirementItem = ({
         <Button
           variant="secondary"
           isLoading={isPdfLoading}
-          isDisabled={!pdfUrl}
           onClick={() => {
             if (pdfUrl) window.open(pdfUrl, '_blank', 'noopener,noreferrer')
           }}
