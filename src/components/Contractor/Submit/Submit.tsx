@@ -180,9 +180,9 @@ const DocumentRequirementItem = ({
   document: Document | undefined
   downloadLabel: string
 }) => {
-  const { Text, Button, LoadingSpinner } = useComponentContext()
+  const { Text, Button } = useComponentContext()
   const documentUuid = document?.uuid
-  const { data: pdfData, isLoading } = useContractorDocumentsGetPdf(
+  const { data: pdfData, isLoading: isPdfLoading } = useContractorDocumentsGetPdf(
     { documentUuid: documentUuid ?? '' },
     { enabled: Boolean(documentUuid) },
   )
@@ -194,19 +194,16 @@ const DocumentRequirementItem = ({
         <Text weight="medium">{title}</Text>
         <Text variant="supporting">{description}</Text>
       </Flex>
-      {(isLoading || pdfUrl) && (
+      {(isPdfLoading || pdfUrl) && (
         <Button
           variant="secondary"
-          isDisabled={isLoading || !pdfUrl}
+          isLoading={isPdfLoading}
+          isDisabled={!pdfUrl}
           onClick={() => {
             if (pdfUrl) window.open(pdfUrl, '_blank', 'noopener,noreferrer')
           }}
         >
-          {isLoading ? (
-            <LoadingSpinner size="sm" style="inline" aria-label={downloadLabel} />
-          ) : (
-            downloadLabel
-          )}
+          {downloadLabel}
         </Button>
       )}
     </Flex>
