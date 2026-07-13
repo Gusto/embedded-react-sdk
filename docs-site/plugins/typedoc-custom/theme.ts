@@ -45,7 +45,7 @@ import {
   type GuideSlot,
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
-import { TYPE_EMOJIS, type PageLayout } from './router.config.ts'
+import { DOMAINS, STANDALONE_PAGES, TYPE_EMOJIS, type PageLayout } from './router.config.ts'
 import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
@@ -160,6 +160,98 @@ function getReflectionDescription(
   const comment = reflection.signatures?.[0]?.comment ?? reflection.comment
   if (!comment) return ''
   return context.helpers.getDescriptionForComment(comment) ?? ''
+}
+
+function stripMarkdownLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+}
+
+function renderProjectIndex(context: SDKThemeContext): string {
+  const project = context.page.project
+  const parts: string[] = []
+
+  // Domain cards — one per domain, linking to the domain hub page.
+  const domainCards = DOMAINS.map(domain => {
+    const firstNsId = domain.namespaces[0]!.id
+    const nsRef = project.children?.find(
+      (c): c is DeclarationReflection =>
+        c instanceof DeclarationReflection &&
+        c.name === firstNsId &&
+        c.kind === ReflectionKind.Namespace,
+    )
+    const description = nsRef?.comment
+      ? (context.helpers.getDescriptionForComment(nsRef.comment) ?? '')
+      : ''
+    const item: Record<string, string> = { type: 'link', href: domain.path, label: domain.label }
+    if (description) item.description = description
+    return item
+  })
+  parts.push(`<DocCardList items={${JSON.stringify(domainCards)}} />`)
+
+  // Build group: Hooks, Workflows and blocks.
+  const buildCards = STANDALONE_PAGES.filter(p => p.sidebarGroup === 'build')
+    .sort((a, b) => a.displayName.localeCompare(b.displayName))
+    .map(p => {
+      const raw = p.intro ? stripMarkdownLinks(p.intro) : ''
+      const description = raw ? (raw.split(/\.(?:\s|$)/)[0]! + '.').trim() : ''
+      const item: Record<string, string> = { type: 'link', href: p.id, label: p.displayName }
+      if (description) item.description = description
+      return item
+    })
+  if (buildCards.length > 0) {
+    parts.push('## Build', `<DocCardList items={${JSON.stringify(buildCards)}} />`)
+  }
+
+  // Config group: top-level standalone pages + the Translations namespace.
+  const translationsNs = project.children?.find(
+    (c): c is DeclarationReflection =>
+      c instanceof DeclarationReflection &&
+      c.name === 'Translations' &&
+      c.kind === ReflectionKind.Namespace,
+  )
+  const configItems: Record<string, string>[] = STANDALONE_PAGES.filter(
+    p => p.sidebarGroup === 'config' && !p.id.includes('/'),
+  ).map(p => {
+    const raw = p.intro ? stripMarkdownLinks(p.intro) : ''
+    const description = raw ? (raw.split(/\.(?:\s|$)/)[0]! + '.').trim() : ''
+    const item: Record<string, string> = { type: 'link', href: p.id, label: p.displayName }
+    if (description) item.description = description
+    return item
+  })
+  if (translationsNs) {
+    const description = translationsNs.comment
+      ? (context.helpers.getDescriptionForComment(translationsNs.comment) ?? '')
+      : ''
+    const item: Record<string, string> = {
+      type: 'link',
+      href: 'Translations/',
+      label: 'Translations',
+    }
+    if (description) item.description = description
+    configItems.push(item)
+  }
+  configItems.sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
+  if (configItems.length > 0) {
+    parts.push('## Configuration', `<DocCardList items={${JSON.stringify(configItems)}} />`)
+  }
+
+  // API models namespace.
+  const apiModelsNs = project.children?.find(
+    (c): c is DeclarationReflection =>
+      c instanceof DeclarationReflection &&
+      c.name === 'APIModels' &&
+      c.kind === ReflectionKind.Namespace,
+  )
+  if (apiModelsNs) {
+    const description = apiModelsNs.comment
+      ? (context.helpers.getDescriptionForComment(apiModelsNs.comment) ?? '')
+      : ''
+    const item: Record<string, string> = { type: 'link', href: 'APIModels/', label: 'API models' }
+    if (description) item.description = description
+    parts.push('## API models', `<DocCardList items={${JSON.stringify([item])}} />`)
+  }
+
+  return parts.join('\n\n')
 }
 
 function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
@@ -505,6 +597,57 @@ function renderStandalonePage(
     ? (context.helpers.getDescriptionForComment(model.comment) ?? '')
     : ''
   if (description) parts.push(description)
+
+  for (const { heading, kind } of layout.crossDomainIndex ?? []) {
+    emitHeading(heading)
+    if (kind === 'flows' || kind === 'blocks') {
+      const project = context.page.project
+      const rows: Array<{ name: string; href: string; description: string }> = []
+      for (const domain of DOMAINS) {
+        for (const nsConfig of domain.namespaces) {
+          const nsRef = project.children?.find(
+            (c): c is DeclarationReflection =>
+              c instanceof DeclarationReflection &&
+              c.name === nsConfig.id &&
+              c.kind === ReflectionKind.Namespace,
+          )
+          if (!nsRef) continue
+          for (const comp of (nsRef.children ?? []).filter(
+            (c): c is DeclarationReflection => c instanceof DeclarationReflection && isComponent(c),
+          )) {
+            if (kind === 'flows' ? !comp.name.endsWith('Flow') : comp.name.endsWith('Flow'))
+              continue
+            rows.push({
+              name: `${nsConfig.id}.${comp.name}`,
+              href: context.urlTo(comp).replace(/\.md(?=#|$)/, ''),
+              description: getReflectionDescription(comp, context),
+            })
+          }
+        }
+      }
+      rows.sort((a, b) => a.name.localeCompare(b.name))
+      const tableLines = ['| Component | Description |', '| --- | --- |']
+      for (const row of rows) tableLines.push(`| [${row.name}](${row.href}) | ${row.description} |`)
+      parts.push(tableLines.join('\n'))
+    } else {
+      const rows: Array<{ name: string; href: string; description: string }> = []
+      for (const hooksIndexNs of (context.router as SDKRouter).hooksNsByDomain.values()) {
+        for (const hookNs of (hooksIndexNs.children ?? []) as DeclarationReflection[]) {
+          const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
+            hookNs.children?.[0]) as DeclarationReflection | undefined
+          rows.push({
+            name: hookNs.name,
+            href: context.urlTo(hookNs).replace(/\.md$/, ''),
+            description: primaryHook ? getReflectionDescription(primaryHook, context) : '',
+          })
+        }
+      }
+      rows.sort((a, b) => a.name.localeCompare(b.name))
+      const tableLines = ['| Hook | Description |', '| --- | --- |']
+      for (const row of rows) tableLines.push(`| [${row.name}](${row.href}) | ${row.description} |`)
+      parts.push(tableLines.join('\n'))
+    }
+  }
 
   for (const { group: title, promote, note } of featured) {
     const group = groups.find(g => g.title === title)
@@ -2471,8 +2614,15 @@ export class SDKTheme extends MarkdownTheme {
   // read or override it before END. custom_edit_url is null because these files
   // are autogenerated — partners should not see an "Edit this page" link.
   static injectFrontmatter(page: MarkdownPageEvent): void {
+    // The project index must be .mdx so DocCardList JSX renders correctly.
+    if (page.model.kind === ReflectionKind.Project) {
+      page.filename = page.filename.replace(/index\.md$/, 'index.mdx')
+    }
     const sidebarPosition = getSidebarPosition(page.url)
-    const isHub = isDomainHub(page.model) || isHooksIndex(page.model)
+    const isHub =
+      isDomainHub(page.model) ||
+      isHooksIndex(page.model) ||
+      page.model.kind === ReflectionKind.Project
     page.frontmatter = {
       title: pageTitle(page),
       description: pageDescription(page),
@@ -2900,6 +3050,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
     this.templates = {
       ...this.templates,
       reflection: (page: MarkdownPageEvent<DeclarationReflection>) => {
+        if (page.model.kind === ReflectionKind.Project) return renderProjectIndex(this)
         if (isDomainHub(page.model)) return renderDomainHub(this, page.model)
         if (isHooksIndex(page.model)) return renderHooksIndex(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)

@@ -84,7 +84,13 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sources: ['components/Base/Base'],
     displayName: 'Workflows and blocks',
     sidebarGroup: 'build',
-    layout: { default: 'promote' },
+    layout: {
+      crossDomainIndex: [
+        { heading: 'Workflows', kind: 'flows' },
+        { heading: 'Blocks', kind: 'blocks' },
+      ],
+      default: 'promote',
+    },
   },
   {
     id: 'hooks',
@@ -94,6 +100,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     intro:
       'The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
     layout: {
+      crossDomainIndex: [{ heading: 'Hooks', kind: 'hooks' }],
       feature: [
         { group: CUSTOM_GROUPS.providers, promote: true },
         {
@@ -364,4 +371,14 @@ export type PageLayout = {
    * still pulls a member to follow its target.
    */
   sort?: 'alpha' | 'source'
+  /**
+   * Cross-domain index tables rendered at the top of the page (after the intro
+   * prose, before any `feature` sections). Each entry produces one `## H2` table
+   * that lists every matching reflection across all domain namespaces, alpha-sorted.
+   *
+   * - `'flows'`: all `*Flow` components; first column is `Namespace.ComponentName`.
+   * - `'blocks'`: all non-flow components; first column is `Namespace.ComponentName`.
+   * - `'hooks'`: all per-domain hooks; first column is the plain hook name.
+   */
+  crossDomainIndex?: Array<{ heading: string; kind: 'flows' | 'blocks' | 'hooks' }>
 }
