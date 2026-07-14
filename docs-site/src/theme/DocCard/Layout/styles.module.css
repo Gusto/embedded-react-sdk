@@ -3,7 +3,8 @@
   --ifm-link-hover-color: var(--ifm-color-emphasis-700);
   --ifm-link-hover-decoration: none;
 
-  display: block;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   padding: 2rem;
   background-color: #ffffff;
@@ -33,4 +34,20 @@
 
 .cardContainer *:last-child {
   margin-bottom: 0;
+}
+
+.cardFooter {
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #777e8a;
+  border-top: 1px solid #ebedf0;
+  margin-bottom: 0;
+  white-space: pre-line;
+}
+
+[data-theme='dark'] .cardFooter {
+  color: rgba(255, 255, 255, 0.45);
+  border-top-color: rgba(255, 255, 255, 0.1);
 }

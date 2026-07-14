@@ -35,10 +35,6 @@ record. The values mirror the strings returned by the API.
 | `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorOnboardingStatus1.SelfOnboardingReview` |
 | `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorOnboardingStatus1.SelfOnboardingStarted` |
 
-### Page
-
-contractor/types
-
 ***
 
 <a id="contractorselfonboardingstatuses"></a>
@@ -55,7 +51,3 @@ is completing self-onboarding.
 Use this set to check whether a contractor is currently in a self-onboarding
 flow (not invited, invited, started, or under review) versus an admin-driven
 onboarding flow.
-
-### Page
-
-contractor/types

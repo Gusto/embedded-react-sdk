@@ -56,13 +56,7 @@ useCompensationForm({
 })
 ```
 
-Each hook's reference page documents which fields are available to require and which are required by default in each mode. See:
-
-- [useEmployeeDetailsForm required fields](../../reference/employee/hooks/use-employee-details-form.md)
-- [useJobForm configurable required fields](../../reference/employee/hooks/use-job-form.md)
-- [useCompensationForm configurable required fields](../../reference/employee/hooks/use-compensation-form.md)
-- [useWorkAddressForm required fields](../../reference/employee/hooks/use-work-address-form.md)
-- [usePayScheduleForm configurable required fields](../../reference/company/hooks/use-pay-schedule-form.md)
+Each hook's reference page documents which fields are available to require and which are required by default in each mode.
 
 ---
 
@@ -101,14 +95,7 @@ useCompensationForm({
 
 In **create mode** (no existing entity), `defaultValues` populate the form directly. In **update mode**, server data always takes precedence — `defaultValues` only fill in fields the server doesn't provide.
 
-Each hook's reference page documents the full form data shape accepted by `defaultValues`:
-
-- [useEmployeeDetailsForm form data](../../reference/employee/hooks/use-employee-details-form.md)
-- [useJobForm form data](../../reference/employee/hooks/use-job-form.md)
-- [useCompensationForm form data](../../reference/employee/hooks/use-compensation-form.md)
-- [useWorkAddressForm form data](../../reference/employee/hooks/use-work-address-form.md)
-- [usePayScheduleForm form data](../../reference/company/hooks/use-pay-schedule-form.md)
-- [useSignCompanyForm form data](../../reference/company/hooks/use-sign-company-form.md)
+Each hook's reference page documents the full form data shape accepted by `defaultValues`.
 
 ---
 
@@ -138,11 +125,4 @@ import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk'
 
 If you omit `validationMessages`, validation still runs and the field is marked as invalid, but the displayed text falls back to the raw error code (e.g., `REQUIRED`, `INVALID_EMAIL`, `INVALID_AMOUNT`). Always supply `validationMessages` for production UI so you control the user-facing copy.
 
-Error codes for each hook are exported alongside the hook:
-
-- `EmployeeDetailsErrorCodes` — see [useEmployeeDetailsForm field reference](../../reference/employee/hooks/use-employee-details-form.md#fields)
-- `JobErrorCodes` — see [useJobForm field reference](../../reference/employee/hooks/use-job-form.md#fields)
-- `CompensationErrorCodes` — see [useCompensationForm field reference](../../reference/employee/hooks/use-compensation-form.md#fields)
-- `WorkAddressErrorCodes` — see [useWorkAddressForm field reference](../../reference/employee/hooks/use-work-address-form.md#fields)
-- `PayScheduleErrorCodes` — see [usePayScheduleForm field reference](../../reference/company/hooks/use-pay-schedule-form.md#fields)
-- `SignCompanyFormErrorCodes` — see [useSignCompanyForm field reference](../../reference/company/hooks/use-sign-company-form.md#fields)
+Error codes for each hook are exported alongside the hook — check each hook's [reference page](../../reference/hooks.md) for the full list of codes per field.

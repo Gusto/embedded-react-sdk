@@ -2,9 +2,12 @@ export * from '@/components'
 export * from '@/contexts'
 
 /**
- * Gusto API entity types returned by SDK hooks and components. These are
- * re-exported from the Gusto Embedded API client so their shapes are
- * documented here in the SDK reference.
+ * Entity types returned by the Gusto Embedded Payroll API.
+ *
+ * @remarks
+ * Re-exported from `@gusto/embedded-api` for use in SDK hook results and component props.
+ * Properties are camelCase — the underlying API returns snake_case JSON, but the Typescript
+ * client normalizes them.
  *
  * @public
  */

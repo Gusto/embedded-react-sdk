@@ -5,10 +5,10 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Translations
 description: |-
-  Per-namespace SDK i18n keys, each namespace browsable as its own reference
-  (e.g. {@link Translations.CompanyAddresses}) with every key's English default.
-  Override defaults through a component's `dictionary` prop or the global
-  `GustoProvider` dictionary.
+  All user-facing text rendered by SDK components, organized by namespace.
+
+  Every key includes its English default; pass overrides through a component's
+  `dictionary` prop or the global `GustoProvider` dictionary.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -16,10 +16,10 @@ custom_edit_url: null
 
 # Translations
 
-Per-namespace SDK i18n keys, each namespace browsable as its own reference
-(e.g. [Translations.CompanyAddresses](#companyaddresses)) with every key's English default.
-Override defaults through a component's `dictionary` prop or the global
-`GustoProvider` dictionary.
+All user-facing text rendered by SDK components, organized by namespace.
+
+Every key includes its English default; pass overrides through a component's
+`dictionary` prop or the global `GustoProvider` dictionary.
 
 ## Translation namespaces
 

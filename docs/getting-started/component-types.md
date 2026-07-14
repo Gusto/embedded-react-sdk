@@ -38,7 +38,7 @@ See the [Hooks reference](../reference/hooks.md) and each domain's Hooks referen
 
 ## Navigating the Reference
 
-The [Reference](../reference/index.md) is organized by **Domain** > **Namespace** > **Component type**, meaning the three component types described on this guide (**Workflows**, **Blocks**, and **Hooks**).
+The [Reference](../reference/index.mdx) is organized by **Domain** > **Namespace** > **Component type**, meaning the three component types described on this guide (**Workflows**, **Blocks**, and **Hooks**).
 
 Namespaces correspond to exports from the SDK. For example, to use `CompanyOnboarding` components, you'd import `CompanyOnboarding`:
 

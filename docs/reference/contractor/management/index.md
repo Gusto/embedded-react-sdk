@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Flows and blocks for managing contractors after onboarding — payments, payment methods, and profile details.
 
+```ts
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |

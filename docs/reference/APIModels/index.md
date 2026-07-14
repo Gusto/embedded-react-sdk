@@ -4,16 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: APIModels
-description: |-
-  Gusto API entity types returned by SDK hooks and components. These are
-  re-exported from the Gusto Embedded API client so their shapes are
-  documented here in the SDK reference.
+description: Entity types returned by the Gusto Embedded Payroll API.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference.
+Entity types returned by the Gusto Embedded Payroll API.
 
 <a id="accounttype"></a>
 

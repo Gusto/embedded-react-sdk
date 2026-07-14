@@ -36,10 +36,6 @@ record. The values mirror the strings returned by the API.
 | `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `OnboardingStatus.SelfOnboardingInvitedStarted` |
 | `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `OnboardingStatus.SelfOnboardingPendingInvite` |
 
-### Page
-
-employee/types
-
 ***
 
 <a id="employeeselfonboardingstatuses"></a>
@@ -56,10 +52,6 @@ completing self-onboarding.
 Use this set to check whether an employee is currently in a self-onboarding
 flow (invited, started, or overdue) versus an admin-driven onboarding flow.
 
-### Page
-
-employee/types
-
 ***
 
 <a id="i9_form_name"></a>
@@ -75,10 +67,6 @@ The form `name` identifying the federal I-9 (Employment Eligibility Verification
 `DocumentList` emits `employee/forms/view` with `{ uuid, name }`. Compare `name` against this
 constant to decide whether to route a form to `I9SignatureForm` (when it matches) or the standard
 `SignatureForm`.
-
-### Page
-
-employee/types
 
 ***
 
@@ -100,10 +88,6 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 | `WEEK` | `"Week"` |
 | `YEAR` | `"Year"` |
 
-### Page
-
-employee/types
-
 ***
 
 <a id="stateabbreviation"></a>
@@ -114,10 +98,6 @@ employee/types
 
 A two-letter US state abbreviation (including `'DC'`). Derived from
 [STATES\_ABBR](#states_abbr).
-
-### Page
-
-employee/types
 
 ***
 
@@ -130,10 +110,6 @@ employee/types
 Two-letter US state abbreviations (including `'DC'`), in the order presented
 in state selection controls.
 
-### Page
-
-employee/types
-
 ***
 
 <a id="wariskclasscode"></a>
@@ -144,10 +120,6 @@ employee/types
 
 A Washington state workers' compensation risk classification entry, as surfaced
 in the job form's `stateWcClassCode` field options.
-
-### Page
-
-employee/types
 
 ### Properties
 
