@@ -63,12 +63,12 @@ Props for OnboardingFlow.
 | ------ | ------ | ------ | ------ |
 | `companyId` | `string` | | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | [`RequireAtLeastOne`](../../workflows-and-blocks.md#requireatleastone)\<[`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues)\> | | Default values for individual flow step components. |
+| `defaultValues?` | [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<[`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues)\> | | Default values for individual flow step components. |
 | `isSelfOnboardingEnabled?` | `boolean` | | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. Defaults to `true`. |
 | `showContinueButton?` | `boolean` | `false` | Controls visibility of the Continue button in the employee list. When `true`, shows a Continue button allowing navigation to the next step. Use this when the employee onboarding flow is embedded as a step within a larger flow (e.g., company onboarding). When `false` (default), hides the Continue button. Use this for standalone employee onboarding where the list is the terminal screen. |
 | `withEmployeeI9?` | `boolean` | | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
 
-_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../workflows-and-blocks.md#basecomponentinterface)._
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ## Sub-components
 

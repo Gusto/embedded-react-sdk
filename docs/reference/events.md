@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Events
-description: Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. Pass a function matching `OnEventType` as the `onEvent` prop. See the Event handling guide for usage patterns.
-sidebar_position: 10
+description: Event types fired when users take actions or complete steps in SDK components. Pass a function matching `OnEventType` as the `onEvent` prop. See the Event handling guide for usage patterns.
+sidebar_position: 9
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. Pass a function matching [`OnEventType`](#oneventtype) as the `onEvent` prop. See the [Event handling guide](../guides/integration-guide/event-handling.md) for usage patterns.
+Event types fired when users take actions or complete steps in SDK components. Pass a function matching [`OnEventType`](#oneventtype) as the `onEvent` prop. See the [Event handling guide](../guides/integration-guide/event-handling.md) for usage patterns.
 
 <a id="componentevents"></a>
 

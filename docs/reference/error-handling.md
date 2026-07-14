@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Error handling
-description: Unified error types surfaced by every form hook and error-handling surface in the SDK. Every caught error — API, validation, network, or runtime — is normalized into `SDKError`.
-sidebar_position: 13
+description: Unified error shape returned by all SDK form hooks and error handlers. Every caught error — API, validation, network, or runtime — is normalized into `SDKError`.
+sidebar_position: 11
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Unified error types surfaced by every form hook and error-handling surface in the SDK. Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).
+Unified error shape returned by all SDK form hooks and error handlers. Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).
 
 <a id="sdkerror"></a>
 

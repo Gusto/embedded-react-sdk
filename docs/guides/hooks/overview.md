@@ -353,6 +353,7 @@ In most cases the built-in Fields, `onSubmit`, and `getFormSubmissionValues` are
 
 ## Further reading
 
+- [Hooks reference](../../reference/hooks.md) — all available hooks with full API signatures
 - [Configuring form fields](./configuring-form-fields.md) — required fields, default values, and validation messages
 - [Handling hook errors](./handling-hook-errors.md) — the `HookErrorHandling` surface, retries, and submit errors
 - [Composing multiple hooks](./composing-multiple-hooks.md) — coordinating several hooks on one screen with `composeSubmitHandler` / `composeErrorHandler`

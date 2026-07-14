@@ -11,6 +11,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
  * the hook resolves the current home address itself.
  *
  * @public
+ * @interface
  */
 export type UseCurrentHomeAddressFormProps = Omit<UseHomeAddressFormProps, 'homeAddressUuid'>
 

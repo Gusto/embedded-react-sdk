@@ -11,59 +11,6 @@ custom_edit_url: null
 
 # useHomeAddressForm
 
-<a id="usecurrenthomeaddressform"></a>
-
-### useCurrentHomeAddressForm()
-
-> **useCurrentHomeAddressForm**(`props`: [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops)): [`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-resolves the employee's current home address.
-
-#### Remarks
-
-Lists the employee's home addresses and selects the active one (or the
-first when none are active) as the row to edit. When the employee has no
-home address on file the hook operates in create mode. The returned
-shape is identical to [useHomeAddressForm](#usehomeaddressform), so the same `Fields`,
-`actions.onSubmit`, and `errorHandling` apply.
-
-#### Example
-
-```tsx
-import { useCurrentHomeAddressForm } from '@gusto/embedded-react-sdk'
-
-function HomeAddressEditor({ employeeId }: { employeeId: string }) {
-  const homeAddress = useCurrentHomeAddressForm({ employeeId })
-
-  if (homeAddress.isLoading) return <div>Loading...</div>
-
-  const { Fields } = homeAddress.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
-      <Fields.Street1 label="Street" />
-      <Fields.City label="City" />
-      <Fields.State label="State" />
-      <Fields.Zip label="ZIP" />
-      <button type="submit">Save</button>
-    </form>
-  )
-}
-```
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops) | See [UseCurrentHomeAddressFormProps](#usecurrenthomeaddressformprops). |
-
-#### Returns
-
-[`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
-
-***
-
 <a id="usehomeaddressform"></a>
 
 > **useHomeAddressForm**(`props`: [`UseHomeAddressFormProps`](#usehomeaddressformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
@@ -545,26 +492,10 @@ Optional overrides passed to [onSubmit](#usehomeaddressformready).
 
 ***
 
-<a id="usecurrenthomeaddressformprops"></a>
-
-### UseCurrentHomeAddressFormProps
-
-> **UseCurrentHomeAddressFormProps** = `Omit`\<[`UseHomeAddressFormProps`](#usehomeaddressformprops), `"homeAddressUuid"`\>
-
-Options for [useCurrentHomeAddressForm](#usecurrenthomeaddressform).
-
-#### Remarks
-
-Same shape as [UseHomeAddressFormProps](#usehomeaddressformprops) minus `homeAddressUuid` —
-the hook resolves the current home address itself.
-
-***
-
 ## Endpoints
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses) |
 | POST | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses) |
 | GET | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-home_addresses-home_address_uuid) |
 | PUT | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-home_addresses-home_address_uuid) |

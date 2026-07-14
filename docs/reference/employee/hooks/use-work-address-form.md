@@ -11,56 +11,6 @@ custom_edit_url: null
 
 # useWorkAddressForm
 
-<a id="usecurrentworkaddressform"></a>
-
-### useCurrentWorkAddressForm()
-
-> **useCurrentWorkAddressForm**(`props`: [`UseCurrentWorkAddressFormProps`](#usecurrentworkaddressformprops)): [`UseWorkAddressFormResult`](#useworkaddressformresult)
-
-Convenience wrapper around [useWorkAddressForm](#useworkaddressform) that auto-resolves the employee's current work address.
-
-#### Remarks
-
-Lists the employee's work addresses and selects the active one (or the
-first when none are active) as the row to edit. When the employee has no
-work address on file the hook operates in create mode. The returned shape
-is identical to [useWorkAddressForm](#useworkaddressform), so the same `Fields`,
-`actions.onSubmit`, and `errorHandling` apply.
-
-#### Example
-
-```tsx
-import { useCurrentWorkAddressForm } from '@gusto/embedded-react-sdk'
-
-function WorkAddressEditor({ employeeId, companyId }: { employeeId: string; companyId: string }) {
-  const workAddress = useCurrentWorkAddressForm({ employeeId, companyId })
-
-  if (workAddress.isLoading) return <div>Loading...</div>
-
-  const { Fields } = workAddress.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); void workAddress.actions.onSubmit() }}>
-      <Fields.Location label="Work location" />
-      <button type="submit">Save</button>
-    </form>
-  )
-}
-```
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseCurrentWorkAddressFormProps`](#usecurrentworkaddressformprops) | See [UseCurrentWorkAddressFormProps](#usecurrentworkaddressformprops). |
-
-#### Returns
-
-[`UseWorkAddressFormResult`](#useworkaddressformresult)
-
-A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
-
-***
-
 <a id="useworkaddressform"></a>
 
 > **useWorkAddressForm**(`props`: [`UseWorkAddressFormProps`](#useworkaddressformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
@@ -272,21 +222,6 @@ Used as the `validationMessages` key for the location and effective date fields.
 See `WorkAddressErrorCodes`.
 
 ## Utility types
-<a id="usecurrentworkaddressformprops"></a>
-
-### UseCurrentWorkAddressFormProps
-
-> **UseCurrentWorkAddressFormProps** = `Omit`\<[`UseWorkAddressFormProps`](#useworkaddressformprops), `"workAddressUuid"`\>
-
-Options for [useCurrentWorkAddressForm](#usecurrentworkaddressform).
-
-#### Remarks
-
-Same shape as [UseWorkAddressFormProps](#useworkaddressformprops) minus `workAddressUuid` —
-the hook resolves the current work address itself.
-
-***
-
 <a id="workaddresserrorcode"></a>
 
 ### WorkAddressErrorCode
@@ -402,7 +337,6 @@ Optional overrides passed to [onSubmit](#useworkaddressformready).
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations) |
-| GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses) |
 | POST | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-work_addresses) |
 | GET | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-work_addresses-work_address_uuid) |
 | PUT | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-work_addresses-work_address_uuid) |

@@ -12,7 +12,6 @@ export default function CodeBlockLayout({ className }: { className?: string }): 
   const hasTitle = Boolean(metadata.title)
 
   return (
-    // @ts-expect-error - Container is polymorphic and not fully typed
     <Container as="div" className={clsx(className, metadata.className)}>
       {hasTitle && (
         <div className={styles.codeBlockTitle}>

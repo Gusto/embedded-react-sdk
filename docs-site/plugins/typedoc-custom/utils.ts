@@ -61,6 +61,13 @@ export function hookDirFromSources(reflection: Reflection): string | null {
   return seg ? seg.replace(/\.[^.]+$/, '') : null
 }
 
+/** The source file path (fullFileName or fileName) for a reflection, or null. */
+export function sourceFilePath(reflection: Reflection): string | null {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return null
+  return source.fullFileName ?? source.fileName ?? null
+}
+
 /**
  * Return true if the reflection's source file is, or lives inside, a hook
  * directory/file — i.e. any path segment (after stripping its extension)

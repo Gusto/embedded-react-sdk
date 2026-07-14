@@ -50,6 +50,7 @@ import {
   readHookGuide,
   type Guide,
   reparentDeprecatedMembers,
+  sourceFilePath,
   standalonePageFromSources,
 } from './utils.ts'
 
@@ -751,6 +752,10 @@ export class SDKRouter extends MemberRouter {
       // caught by isHookSourceFile and silently skipped.
       const page = standalonePageFromSources(child)
       if (page) {
+        // @page is a routing directive — strip it so it doesn't render as a doc section.
+        if (child.comment) {
+          child.comment.blockTags = child.comment.blockTags.filter(t => t.tag !== '@page')
+        }
         const bucket = standaloneGroups.get(page) ?? []
         bucket.push(child)
         standaloneGroups.set(page, bucket)
@@ -771,16 +776,6 @@ export class SDKRouter extends MemberRouter {
             bucket.push(child)
             hooksByDomain.set(domainPath, bucket)
             this.handledHooks.add(child)
-
-            const hookDir = hookDirFromSources(child)
-            if (hookDir) {
-              hookGroupMap.set(child, hookDir)
-              if (!hookGuidesByDir.has(hookDir)) {
-                const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName
-                const guide = fp ? readHookGuide(fp, hookDir) : null
-                if (guide) hookGuidesByDir.set(hookDir, guide)
-              }
-            }
           }
         }
         continue
@@ -800,6 +795,44 @@ export class SDKRouter extends MemberRouter {
     }
     if (project.groups) {
       project.groups = project.groups.filter(g => g.children.length > 0)
+    }
+
+    // Assign each hook reflection to its hookGroupMap page key.
+    //
+    // Two-pass so companion types can follow non-utility hook functions that
+    // live in the same source file (e.g. UseCurrentHomeAddressFormProps from
+    // useCurrentHomeAddressForm.tsx follows useCurrentHomeAddressForm, not
+    // the useHomeAddressForm directory bucket).
+    //
+    // Pass 1 — hook functions: non-utility hooks own a page named after
+    // themselves; utility hooks stay on the primary hook's page.
+    const hookFileToHookDir = new Map<string, string>() // source path → hookDir
+    for (const hooks of hooksByDomain.values()) {
+      for (const hook of hooks) {
+        if (!(hook instanceof DeclarationReflection)) continue
+        if (hook.kind !== ReflectionKind.Function) continue
+        const isUtilityHook = hasGroup(hook, CUSTOM_GROUPS.utilityHooks)
+        const hookDir = isUtilityHook ? hookDirFromSources(hook) : hook.name
+        if (!hookDir) continue
+        hookGroupMap.set(hook, hookDir)
+        const fp = sourceFilePath(hook)
+        if (fp && !isUtilityHook) hookFileToHookDir.set(fp, hookDir)
+        if (!hookGuidesByDir.has(hookDir)) {
+          const guide = fp ? readHookGuide(fp, hookDir) : null
+          if (guide) hookGuidesByDir.set(hookDir, guide)
+        }
+      }
+    }
+    // Pass 2 — companion types: follow the non-utility hook in their source
+    // file if one exists, otherwise fall back to hookDirFromSources.
+    for (const hooks of hooksByDomain.values()) {
+      for (const hook of hooks) {
+        if (!(hook instanceof DeclarationReflection)) continue
+        if (hook.kind === ReflectionKind.Function) continue
+        const fp = sourceFilePath(hook)
+        const hookDir = (fp && hookFileToHookDir.get(fp)) ?? hookDirFromSources(hook)
+        if (hookDir) hookGroupMap.set(hook, hookDir)
+      }
     }
 
     // Read GUIDE.md files for Flow components before sources are cleared.
@@ -822,6 +855,18 @@ export class SDKRouter extends MemberRouter {
     SDKRouter.clearSources(project)
 
     const pages = super.buildPages(project)
+
+    // The project index is rendered as .mdx (JSX required for DocCardList).
+    // Update the pages array entry and all fullUrls that reference index.md so
+    // TypeDoc generates cross-links with the correct extension. This must happen
+    // after super.buildPages(), which sets fullUrls for anchored project members.
+    const projectPage = pages.find(p => p.model === project)
+    if (projectPage) projectPage.url = projectPage.url.replace(/index\.md$/, 'index.mdx')
+    for (const [refl, url] of this.fullUrls) {
+      if (url === 'index.md' || url.startsWith('index.md#')) {
+        this.fullUrls.set(refl, url.replace('index.md', 'index.mdx'))
+      }
+    }
 
     for (const [domainPath, hooks] of hooksByDomain) {
       // Group hooks by hook directory name (e.g. 'useCompensationForm').
@@ -926,6 +971,15 @@ export class SDKRouter extends MemberRouter {
       this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages, hooksIndexUrl)
       this.hooksNsByDomain.set(domainPath, hooksIndexNs)
       SDKRouter.domainsWithHooks.add(domainPath)
+    }
+
+    // Force-create standalone pages that rely entirely on crossDomainIndex.
+    // They have no reflections matching their `sources`, so standaloneGroups
+    // would otherwise skip them — but the index table renders from DOMAINS, not members.
+    for (const pageConfig of STANDALONE_PAGES) {
+      if (!standaloneGroups.has(pageConfig.id) && pageConfig.layout?.crossDomainIndex?.length) {
+        standaloneGroups.set(pageConfig.id, [])
+      }
     }
 
     for (const [page, members] of standaloneGroups) {

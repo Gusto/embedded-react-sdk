@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Flows and blocks for managing an employee after onboarding.
 
+```ts
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |

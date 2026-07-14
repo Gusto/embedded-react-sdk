@@ -3,12 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Component inventory
-description: Component inventory reference.
-sidebar_position: 8
+title: UI component inventory
+description: Design system components for advanced customization of all SDK UI. See the component adapter guide for more context.
+sidebar_position: 15
 generated_by: typedoc
 custom_edit_url: null
 ---
+
+Design system components for advanced customization of all SDK UI. See the [component adapter guide](../guides/component-adapter/component-adapter.md) for more context.
 
 <a id="componentscontexttype"></a>
 
@@ -1544,10 +1546,6 @@ An open map of `data-*` attributes that can be spread onto a rendered DOM elemen
 #### Index Signature
 
 \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
-
-#### Page
-
-component-inventory
 
 ***
 

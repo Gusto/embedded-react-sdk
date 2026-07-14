@@ -40,10 +40,12 @@ export default function DocCardLayout({
   title,
   description,
 }: Props): ReactNode {
+  const footer = typeof item.customProps?.footer === 'string' ? item.customProps.footer : undefined
   return (
     <Container href={href} className={className}>
       <Heading item={item} icon={icon} title={title} />
       {description && <Description item={item} description={description} />}
+      {footer && <p className={styles.cardFooter}>{footer}</p>}
     </Container>
   )
 }

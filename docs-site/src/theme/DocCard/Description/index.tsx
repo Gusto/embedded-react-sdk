@@ -7,14 +7,7 @@ import styles from './styles.module.css'
 
 export default function DocCardDescription({ description }: Props): ReactNode {
   return (
-    <p
-      className={clsx(
-        'text--truncate',
-        ThemeClassNames.docs.docCard.description,
-        styles.cardDescription,
-      )}
-      title={description}
-    >
+    <p className={clsx(ThemeClassNames.docs.docCard.description, styles.cardDescription)}>
       {description}
     </p>
   )

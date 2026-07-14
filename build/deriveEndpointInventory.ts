@@ -474,6 +474,49 @@ function resolveAliasPath(moduleSpecifier: string): string | undefined {
   return candidates.find(candidate => existsSync(candidate))
 }
 
+/**
+ * Given a barrel file and a hook name exported from it, returns the path of the file
+ * that actually defines the hook (following both named and wildcard re-exports), so the
+ * transitive scan starts from the hook's own file rather than the shared barrel. Falls
+ * back to `barrelFilePath` when the hook is defined directly in the barrel or not found.
+ */
+function resolveHookSourceFile(
+  project: Project,
+  barrelFilePath: string,
+  hookName: string,
+  depth = 0,
+): string | undefined {
+  if (depth > 5) return undefined
+
+  const barrelSource = project.addSourceFileAtPathIfExists(barrelFilePath)
+  if (!barrelSource) return undefined
+
+  for (const exportDecl of barrelSource.getExportDeclarations()) {
+    if (exportDecl.isTypeOnly()) continue
+    const namedExports = exportDecl.getNamedExports()
+
+    if (namedExports.length > 0) {
+      // Named re-export: export { useStateFields } from './fields'
+      for (const exportSpec of namedExports) {
+        if (exportSpec.isTypeOnly()) continue
+        const name = exportSpec.getAliasNode()?.getText() ?? exportSpec.getName()
+        if (name === hookName) {
+          return exportDecl.getModuleSpecifierSourceFile()?.getFilePath()
+        }
+      }
+    } else if (exportDecl.getModuleSpecifierValue()) {
+      // Wildcard re-export: export * from './useEmployeeStateTaxesForm' — recurse in
+      const wildcardTarget = exportDecl.getModuleSpecifierSourceFile()?.getFilePath()
+      if (wildcardTarget) {
+        const found = resolveHookSourceFile(project, wildcardTarget, hookName, depth + 1)
+        if (found !== undefined) return found
+      }
+    }
+  }
+
+  return undefined
+}
+
 // Domain grouping mirrors the reference-docs sidebar (DOMAINS in router.config.ts),
 // so this file's sections line up with the Reference nav. Sidebar order is preserved.
 const DOMAIN_ORDER: string[] = DOMAINS.map(domain => domain.label)
@@ -518,7 +561,8 @@ function discoverHooks(project: Project): HookMapping[] {
       const hookName = named.getAliasNode()?.getText() ?? named.getName()
       if (!/^use[A-Z]/.test(hookName) || seen.has(hookName)) continue
       seen.add(hookName)
-      hooks.push({ hookName, domain: deriveHookDomain(spec), sourceFile })
+      const resolvedSourceFile = resolveHookSourceFile(project, sourceFile, hookName) ?? sourceFile
+      hooks.push({ hookName, domain: deriveHookDomain(spec), sourceFile: resolvedSourceFile })
     }
   }
 
@@ -778,15 +822,15 @@ function deriveInventory(): DerivationResult {
 function generateMarkdown(inventory: Inventory, hookDomains: Record<string, string>): string {
   const lines: string[] = [
     '---',
-    "title: 'Endpoint Reference'",
+    "title: 'Endpoint reference'",
     'description: Auto-generated list of every Gusto Embedded API endpoint each SDK block and hook calls, with HTTP methods, paths, and URL parameters for proxy allowlisting.',
     '---',
     '',
     '<!-- AUTO-GENERATED FILE. Do not edit manually. Run "npm run endpoints:derive" to regenerate. -->',
     '',
-    '# Endpoint Reference',
+    '# Endpoint reference',
     '',
-    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.md) navigation. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
+    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.mdx) navigation. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
     '',
     "Within each domain, **Components** and **Hooks** list the endpoints they call, and **Flows** list the blocks they compose (a flow's endpoints are the union of its blocks' endpoints).",
     '',

@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Flows and blocks for viewing and responding to information requests from Gusto.
 
+```ts
+import { InformationRequests } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |
