@@ -570,6 +570,7 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
 
   const parts: string[] = []
   for (const block of blockComps) {
+    if (parts.length > 0) parts.push('***')
     parts.push(context.partials.memberContainer(block, { headingLevel: 2 }))
     const section = renderEndpointsSection(
       endpointsForBlockOrHook((context.router as SDKRouter).endpointKeys.get(block)),
@@ -578,6 +579,7 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
     if (section) parts.push(section)
   }
   if (utilities.length > 0) {
+    if (parts.length > 0) parts.push('***')
     parts.push(`## ${CUSTOM_GROUPS.utilityTypes}`)
     for (const util of utilities) {
       parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
