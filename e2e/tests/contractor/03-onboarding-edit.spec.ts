@@ -29,7 +29,7 @@ test.describe('ContractorOnboardingFlow - edit re-entry from list lifecycle', ()
       .first()
     await expect(businessRow).toBeVisible({ timeout: 15000 })
 
-    const menuTrigger = businessRow.getByRole('button', { name: /^edit$/i }).first()
+    const menuTrigger = businessRow.getByRole('button', { name: /open menu/i }).first()
     await expect(menuTrigger).toBeVisible()
     await menuTrigger.click()
 
