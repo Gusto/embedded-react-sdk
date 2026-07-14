@@ -1250,8 +1250,8 @@ Translation keys for the `Contractor.Address` i18n namespace.
 | `validations.zip` | `"Please provide valid zip code"` |
 | `validations.zipInvalid` | `"Please enter a valid ZIP code"` |
 | <a id="property-contractoraddressw9editwarning"></a> `w9EditWarning` | |
-| `w9EditWarning.body` | `"This contractor has already signed a W-9. If you change this address, you'll need to have them sign a new W-9."` |
-| `w9EditWarning.label` | `"Editing this address will require a new W-9"` |
+| `w9EditWarning.body` | `"This contractor has already signed a Form W-9. If you edit this address, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."` |
+| `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
 | <a id="property-contractoraddresszip"></a> `zip` | `"Zip"` |
 
 ***
@@ -1752,8 +1752,8 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.ssnFormat` | `"SSN must be valid format"` |
 | `validations.startDate` | `"Start date is required"` |
 | <a id="property-contractorprofilew9editwarning"></a> `w9EditWarning` | |
-| `w9EditWarning.body` | `"This contractor has already signed a W-9. If you change these details, you'll need to have them sign a new W-9."` |
-| `w9EditWarning.label` | `"Editing this profile will require a new W-9"` |
+| `w9EditWarning.body` | `"This contractor has already signed a Form W-9. If you edit these details, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."` |
+| `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
 
 ***
 
