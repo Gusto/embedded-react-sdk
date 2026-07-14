@@ -104,7 +104,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     intro:
       'Full multi-step user experiences as a single component — the fastest path to a working feature. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.',
     layout: {
-      crossDomainIndex: [{ heading: 'Workflows', kind: 'flows' }],
+      crossDomainIndex: [{ heading: '🚂 Workflows', kind: 'flows' }],
     },
   },
   {
@@ -116,7 +116,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     intro:
       'Individual form and UI components with SDK logic built in — use these for custom layouts, step reordering, or inserting your own content between SDK steps. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.',
     layout: {
-      crossDomainIndex: [{ heading: 'Blocks', kind: 'blocks' }],
+      crossDomainIndex: [{ heading: '🧩 Blocks', kind: 'blocks' }],
       default: 'promote',
     },
   },
