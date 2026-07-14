@@ -1782,6 +1782,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `fields.company_name` | |
 | `fields.company_name.label` | `"Requester's name and address"` |
 | `fields.ein` | |
+| `fields.ein.changeCta` | `"Change EIN"` |
 | `fields.ein.label` | `"Employer Identification Number (EIN)"` |
 | `fields.exempt_payee_code` | |
 | `fields.exempt_payee_code.label` | `"Exempt payee code"` |
@@ -1812,6 +1813,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `fields.signature_text` | |
 | `fields.signature_text.label` | `"Signature"` |
 | `fields.ssn` | |
+| `fields.ssn.changeCta` | `"Change SSN"` |
 | `fields.ssn.label` | `"Social Security Number (SSN)"` |
 | `fields.taxClassification` | |
 | `fields.taxClassification.description` | `"Select the type of business you are."` |
