@@ -555,6 +555,9 @@ $shadow: 0 8px 30px rgba(20, 20, 40, 0.18);
 /* Mentions */
 .composer {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .mentionAnchor {
