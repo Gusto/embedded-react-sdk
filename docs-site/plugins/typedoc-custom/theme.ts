@@ -571,18 +571,22 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
   const parts: string[] = []
   for (const block of blockComps) {
     if (parts.length > 0) parts.push('***')
-    parts.push(context.partials.memberContainer(block, { headingLevel: 2 }))
+    const rendered = context.partials.memberContainer(block, { headingLevel: 2 })
+    // Inject a forced blank line before each H3 subsection (Remarks → Props → Events).
+    parts.push(rendered.replace(/\n\n(### (?!Remarks))/g, '\n\n<br />\n\n$1'))
     const section = renderEndpointsSection(
       endpointsForBlockOrHook((context.router as SDKRouter).endpointKeys.get(block)),
       3,
     )
-    if (section) parts.push(section)
+    // Force the same blank line before Endpoints (which lives outside memberContainer).
+    if (section) parts.push(`<br />\n\n${section}`)
   }
   if (utilities.length > 0) {
     if (parts.length > 0) parts.push('***')
     parts.push(`## ${CUSTOM_GROUPS.utilityTypes}`)
-    for (const util of utilities) {
-      parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
+    for (let i = 0; i < utilities.length; i++) {
+      if (i > 0) parts.push('***')
+      parts.push(context.partials.memberContainer(utilities[i]!, { headingLevel: 3 }))
     }
   }
   return parts.join('\n\n')
