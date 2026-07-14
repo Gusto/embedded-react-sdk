@@ -2579,10 +2579,14 @@ export namespace Translations {
       ssn: {
         /** @defaultValue `"Social Security Number (SSN)"` */
         label: string
+        /** @defaultValue `"Change SSN"` */
+        changeCta: string
       }
       ein: {
         /** @defaultValue `"Employer Identification Number (EIN)"` */
         label: string
+        /** @defaultValue `"Change EIN"` */
+        changeCta: string
       }
       signature_text: {
         /** @defaultValue `"Signature"` */
