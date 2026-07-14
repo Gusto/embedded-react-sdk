@@ -21,7 +21,7 @@ import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
  *
  * @typeParam TResourceKey - The i18n resource namespace key whose dictionary entries can be overridden.
  * @public
- * @page components
+ * @page blocks
  */
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   /** Optional child content rendered inside the component's layout. */
@@ -51,7 +51,7 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
  *
  * @typeParam TResourceKey - The i18n resource namespace key whose dictionary entries can be overridden.
  * @public
- * @page components
+ * @page blocks
  */
 export interface BaseComponentInterface<
   TResourceKey extends keyof Resources = keyof Resources,

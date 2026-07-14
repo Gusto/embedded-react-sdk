@@ -96,18 +96,27 @@ export const DOMAINS: DomainConfig[] = [
  */
 export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
-    id: 'components',
+    id: 'workflows',
+    sources: [],
+    displayName: 'Workflows',
+    emoji: '🚂',
+    sidebarGroup: 'build-type',
+    intro:
+      'Full multi-step user experiences as a single component — the fastest path to a working feature. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.',
+    layout: {
+      crossDomainIndex: [{ heading: 'Workflows', kind: 'flows' }],
+    },
+  },
+  {
+    id: 'blocks',
     sources: ['components/Base/Base'],
-    displayName: 'Components',
+    displayName: 'Blocks',
     emoji: '🧩',
     sidebarGroup: 'build-type',
     intro:
-      'Shared types and utilities for all SDK workflow and block components. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.',
+      'Individual form and UI components with SDK logic built in — use these for custom layouts, step reordering, or inserting your own content between SDK steps. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.',
     layout: {
-      crossDomainIndex: [
-        { heading: 'Workflows', kind: 'flows' },
-        { heading: 'Blocks', kind: 'blocks' },
-      ],
+      crossDomainIndex: [{ heading: 'Blocks', kind: 'blocks' }],
       default: 'promote',
     },
   },
@@ -118,7 +127,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     emoji: '🪝',
     sidebarGroup: 'build-type',
     intro:
-      'Shared types and utilities behind every SDK hook. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
+      'Headless utilities that handle data fetching, form state, validation, and API submission — you own the layout, the SDK handles the business logic. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
     layout: {
       crossDomainIndex: [
         { heading: '🌐 Data hooks', kind: 'dataHooks' },

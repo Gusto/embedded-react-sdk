@@ -751,6 +751,10 @@ export class SDKRouter extends MemberRouter {
       // caught by isHookSourceFile and silently skipped.
       const page = standalonePageFromSources(child)
       if (page) {
+        // @page is a routing directive — strip it so it doesn't render as a doc section.
+        if (child.comment) {
+          child.comment.blockTags = child.comment.blockTags.filter(t => t.tag !== '@page')
+        }
         const bucket = standaloneGroups.get(page) ?? []
         bucket.push(child)
         standaloneGroups.set(page, bucket)
@@ -938,6 +942,15 @@ export class SDKRouter extends MemberRouter {
       this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages, hooksIndexUrl)
       this.hooksNsByDomain.set(domainPath, hooksIndexNs)
       SDKRouter.domainsWithHooks.add(domainPath)
+    }
+
+    // Force-create standalone pages that rely entirely on crossDomainIndex.
+    // They have no reflections matching their `sources`, so standaloneGroups
+    // would otherwise skip them — but the index table renders from DOMAINS, not members.
+    for (const pageConfig of STANDALONE_PAGES) {
+      if (!standaloneGroups.has(pageConfig.id) && pageConfig.layout?.crossDomainIndex?.length) {
+        standaloneGroups.set(pageConfig.id, [])
+      }
     }
 
     for (const [page, members] of standaloneGroups) {
