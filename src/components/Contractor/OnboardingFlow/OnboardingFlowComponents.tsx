@@ -46,6 +46,8 @@ export interface OnboardingFlowContextInterface extends FlowContextInterface {
   defaultValues?: OnboardingFlowDefaultValues
   /** True when the contractor will be self-onboarding; switches the flow to the shorter self-onboarding path. */
   selfOnboarding?: boolean
+  /** True while the new hire report step should be shown; false once the contractor has advanced past the admin's initial onboarding pass. */
+  showNewHireReport?: boolean
   /** Success message to display on the contractor list when returning from a completed sub-flow. */
   successMessage?: string
 }

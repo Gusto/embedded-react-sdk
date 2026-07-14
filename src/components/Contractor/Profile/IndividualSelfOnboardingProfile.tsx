@@ -51,6 +51,7 @@ export function IndividualSelfOnboardingProfile({
     onEvent(componentEvents.CONTRACTOR_UPDATED, result.data)
     onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, {
       contractorId: result.data.uuid,
+      onboardingStatus: result.data.onboardingStatus,
       selfOnboarding: true,
     })
   }

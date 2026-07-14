@@ -325,7 +325,10 @@ describe('Contractor profile component behavior', () => {
       )
       expect(onEvent).toHaveBeenCalledWith(
         contractorEvents.CONTRACTOR_PROFILE_DONE,
-        expect.objectContaining({ contractorId: 'new-contractor-uuid', selfOnboarding: false }),
+        expect.objectContaining({
+          contractorId: 'new-contractor-uuid',
+          selfOnboarding: false,
+        }),
       )
     })
 
@@ -377,6 +380,82 @@ describe('Contractor profile component behavior', () => {
       expect(onEvent).toHaveBeenCalledWith(
         contractorEvents.CONTRACTOR_UPDATED,
         expect.objectContaining({ uuid: 'contractor_id' }),
+      )
+    })
+  })
+
+  describe('contractor/profile/done payload', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+    })
+
+    const companyId = 'company-123'
+
+    // The machine gates the new hire report on the contractor's onboarding
+    // status, so profile/done must forward the post-save status the API returns
+    // (which can differ from the status on entry, since the API auto-advances to
+    // admin_onboarding_review once the last required field is saved).
+    const renderEditForPostSaveStatus = async (postSaveStatus: string) => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            version: 'version-1',
+            type: 'Individual',
+            wage_type: 'Fixed',
+            start_date: '2024-01-01',
+            first_name: 'John',
+            last_name: 'Doe',
+            email: 'john.doe@example.com',
+            has_ssn: true,
+            has_ein: false,
+            is_active: true,
+            file_new_hire_report: false,
+            onboarding_status: 'admin_onboarding_incomplete',
+          }),
+        ),
+        handleUpdateContractor(() =>
+          HttpResponse.json({
+            uuid: 'contractor_id',
+            type: 'Individual',
+            first_name: 'John',
+            last_name: 'Doe',
+            is_active: true,
+            version: 'updated-version',
+            onboarding_status: postSaveStatus,
+          }),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={onEvent} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      await user.click(screen.getByRole('button', { name: 'Update Contractor' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_PROFILE_DONE,
+          expect.objectContaining({ contractorId: 'contractor_id' }),
+        )
+      })
+      return onEvent
+    }
+
+    it.each([
+      'admin_onboarding_incomplete',
+      'self_onboarding_not_invited',
+      'admin_onboarding_review',
+      'self_onboarding_review',
+      'onboarding_completed',
+    ])('forwards the post-save onboarding status %s', async status => {
+      const onEvent = await renderEditForPostSaveStatus(status)
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_PROFILE_DONE,
+        expect.objectContaining({ contractorId: 'contractor_id', onboardingStatus: status }),
       )
     })
   })
