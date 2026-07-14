@@ -19,6 +19,8 @@ Wire transfer confirmation workflow for payroll funding.
 Displays a banner when wire transfers are awaiting funds and walks the user
 through viewing wire instructions and confirming transfer details via a modal.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -35,6 +37,8 @@ function MyComponent() {
 }
 ```
 
+<br />
+
 ### ConfirmWireDetailsProps
 
 <a id="confirmwiredetailsprops"></a>
@@ -50,6 +54,8 @@ Props for the [ConfirmWireDetails](#confirmwiredetails) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -60,6 +66,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `payroll/wire/instructions/cancel` | User cancels viewing wire instructions | — |
 | `payroll/wire/form/done` | User completes the wire confirmation form | `{ wireInRequest: WireInRequest }` |
 | `payroll/wire/form/cancel` | User cancels the wire confirmation form | — |
+
+<br />
 
 ### Endpoints
 
@@ -84,6 +92,8 @@ Lists the terminated employee's unprocessed termination pay periods and, on subm
 
 Events:
 
+<br />
+
 ### DismissalPayPeriodSelectionProps
 
 <a id="dismissalpayperiodselectionprops"></a>
@@ -100,11 +110,15 @@ Props for [DismissalPayPeriodSelection](#dismissalpayperiodselection).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |
+
+<br />
 
 ### Endpoints
 
@@ -126,6 +140,8 @@ Walks the user through configuring pay period dates, selecting a reason, choosin
 employees, and setting deduction and tax withholding preferences, then submits the
 resulting payroll for execution.
 
+<br />
+
 ### OffCycleCreationProps
 
 <a id="offcyclecreationprops"></a>
@@ -141,6 +157,8 @@ Props for the [OffCycleCreation](#offcyclecreation) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -150,6 +168,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Changing the reason updates the deduction and withholding defaults — `'bonus'` skips
 regular deductions and uses the supplemental withholding rate; `'correction'` includes
 regular deductions and uses the regular rate.
+
+<br />
 
 ### Endpoints
 
@@ -173,6 +193,8 @@ Taxes are always included regardless of the selection. Selecting "Skip" blocks a
 deductions and contributions except 401(k); selecting "Include" runs all regular deductions
 and contributions normally.
 
+<br />
+
 ### OffCycleDeductionsSettingProps
 
 <a id="offcycledeductionssettingprops"></a>
@@ -186,6 +208,8 @@ Props for [OffCycleDeductionsSetting](#offcycledeductionssetting).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleDeductionsSetting`](../Translations/index.md#payrolloffcycledeductionssetting)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../blocks.md#commoncomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -206,6 +230,8 @@ Presents the reason selection UI for choosing between a bonus and correction off
 Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
 so a surrounding form can update its state to match.
 
+<br />
+
 ### OffCycleReasonSelectionProps
 
 <a id="offcyclereasonselectionprops"></a>
@@ -219,6 +245,8 @@ Props for the [OffCycleReasonSelection](#offcyclereasonselection) component.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleReasonSelection`](../Translations/index.md#payrolloffcyclereasonselection)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -242,6 +270,8 @@ company configuration. The component also renders open recovery cases and outsta
 information requests for the company when present, and re-emits any events those
 embedded surfaces fire through `onEvent`.
 
+<br />
+
 ### PayrollBlockerListProps
 
 <a id="payrollblockerlistprops"></a>
@@ -255,6 +285,8 @@ Props for [PayrollBlockerList](#payrollblockerlist).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollBlocker`](../Translations/index.md#payrollpayrollblocker)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Endpoints
 
@@ -276,6 +308,8 @@ Handles the configuration phase of payroll processing, allowing users to review 
 
 Emits the following events:
 
+<br />
+
 ### PayrollConfigurationProps
 
 <a id="payrollconfigurationprops"></a>
@@ -293,6 +327,8 @@ Props for [PayrollConfiguration](#payrollconfiguration).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -305,6 +341,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
 | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
 | `runPayroll/grossUp/calculated` | A gross-up amount is calculated from a target net pay | `{ grossUp, netPay, employeeUuid }` |
+
+<br />
 
 ### Endpoints
 
@@ -331,6 +369,8 @@ Editor for an individual employee's compensation within a payroll run.
 Allows modification of pay rates, hours, time off, additional earnings,
 reimbursements, and payment method for a single employee on the specified payroll.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -347,6 +387,8 @@ function MyComponent() {
   )
 }
 ```
+
+<br />
 
 ### PayrollEditEmployeeProps
 
@@ -365,12 +407,16 @@ Props for [PayrollEditEmployee](#payrolleditemployee).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |
 | `runPayroll/employee/cancelled` | Fired when the user cancels editing employee payroll compensation | — |
+
+<br />
 
 ### Endpoints
 
@@ -397,6 +443,8 @@ check date (3 months, 6 months, or 1 year), viewing payroll summaries and receip
 cancelling processed payrolls when they remain within the cancellation window. Each row shows
 the pay period, payroll type, pay date, status, and total pay amount.
 
+<br />
+
 ### PayrollHistoryProps
 
 <a id="payrollhistoryprops"></a>
@@ -411,6 +459,8 @@ Props for the [PayrollHistory](#payrollhistory) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -418,6 +468,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/summary/viewed` | User views a payroll summary | `{ payrollId: string; startDate?: string; endDate?: string }` |
 | `runPayroll/receipt/viewed` | User views a payroll receipt | `{ payrollId: string; startDate?: string; endDate?: string }` |
 | `runPayroll/cancelled` | A payroll is cancelled | `{ payrollId: string; result: PayrollsCancelResponse }` |
+
+<br />
 
 ### Endpoints
 
@@ -436,6 +488,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Main landing surface for payroll operations, with tabs for running payroll and
 viewing payroll history, plus inline navigation to a payroll's overview and receipt.
 
+<br />
+
 ### PayrollLandingProps
 
 <a id="payrolllandingprops"></a>
@@ -452,6 +506,8 @@ Props for [PayrollLanding](#payrolllanding).
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -478,6 +534,8 @@ Skipping opens a confirmation dialog — warning that employees will not be paid
 period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
 periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
 may reject regular payrolls while unresolved transition periods exist.
+
+<br />
 
 ### Endpoints
 
@@ -513,6 +571,8 @@ list with an alert that lets users run or skip the pending transition; when
 using `PayrollList` directly, render an equivalent resolution surface
 alongside it.
 
+<br />
+
 ### PayrollListBlockProps
 
 <a id="payrolllistblockprops"></a>
@@ -526,6 +586,8 @@ Props for [PayrollList](#payrolllist).
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -535,6 +597,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
 | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
 | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
+
+<br />
 
 ### Endpoints
 
@@ -566,6 +630,8 @@ wire-in funding) are surfaced inline and the submit action stays disabled until 
 blocker has a selected unblock option. While the payroll is processing, the component
 polls until success or failure and emits the corresponding event.
 
+<br />
+
 ### PayrollOverviewProps
 
 <a id="payrolloverviewprops"></a>
@@ -584,6 +650,8 @@ Props for [PayrollOverview](#payrolloverview).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -597,6 +665,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+
+<br />
 
 ### Endpoints
 
@@ -620,6 +690,8 @@ Displays a detailed receipt for a completed payroll, including the debited total
 breakdown, tax breakdown, and a per-employee summary of payment method, garnishments,
 reimbursements, taxes, and net pay.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -629,6 +701,8 @@ function MyComponent() {
   return <Payroll.PayrollReceipts payrollId="your-payroll-id" onEvent={() => {}} />
 }
 ```
+
+<br />
 
 ### PayrollReceiptsProps
 
@@ -644,6 +718,8 @@ Props for [PayrollReceipts](#payrollreceipts).
 | `withReimbursements?` | `boolean` | Whether to include reimbursement amounts in the breakdown and employee tables. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Endpoints
 
@@ -667,6 +743,8 @@ payrolls can run cleanly. This component is also embedded inside
 [PayrollBlockerList](#payrollblockerlist), but can be used standalone when you want a
 dedicated recovery cases surface.
 
+<br />
+
 ### RecoveryCasesProps
 
 <a id="recoverycasesprops"></a>
@@ -680,6 +758,8 @@ Props for [RecoveryCases](#recoverycases).
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from Omit._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -687,6 +767,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
 | `recoveryCase/resubmit/done` | User successfully resubmits a recovery case | Resubmit result payload |
 | `recoveryCase/resubmit/cancel` | User cancels the resubmit modal | — |
+
+<br />
 
 ### Endpoints
 
@@ -707,6 +789,8 @@ Displays the transition pay period and pay schedule information, and collects a 
 date, deduction preference, and tax withholding configuration before submitting the
 resulting off-cycle payroll for execution.
 
+<br />
+
 ### TransitionCreationProps
 
 <a id="transitioncreationprops"></a>
@@ -724,6 +808,8 @@ Props for the [TransitionCreation](#transitioncreation) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -733,6 +819,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 The check date must be at least the company's ACH lead time (typically two business
 days) from today. Deductions default to included and tax withholding defaults to the
 regular rate with an every-other-week pay period.
+
+<br />
 
 ### Endpoints
 
@@ -761,6 +849,8 @@ or incomplete company configuration).
 | `key` | `string` | Stable identifier for the blocker type, used to look up display copy and behavior. |
 | `message?` | `string` | Human-readable message describing the blocker, when provided by the API. |
 
+***
+
 <a id="confirmwiredetailscomponenttype"></a>
 
 ### ConfirmWireDetailsComponentType
@@ -771,6 +861,8 @@ Component type matching the [ConfirmWireDetails](#confirmwiredetails) signature.
 
 Use this when supplying a custom wire-confirmation UI to a payroll flow via a
 `ConfirmWireDetailsComponent` prop.
+
+***
 
 <a id="offcyclecreationformdata"></a>
 
@@ -795,6 +887,8 @@ Form values collected by the [OffCycleCreation](#offcyclecreation) component.
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
 | `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
 
+***
+
 <a id="offcycledeductionssettingchangepayload"></a>
 
 ### OffCycleDeductionsSettingChangePayload
@@ -806,6 +900,8 @@ Payload emitted by [OffCycleDeductionsSetting](#offcycledeductionssetting) on th
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `skipRegularDeductions` | `boolean` | Whether the user selected to skip regular deductions. |
+
+***
 
 <a id="offcyclepayperioddateformdata"></a>
 
@@ -826,6 +922,8 @@ Pay-period date selections collected for an off-cycle payroll.
 | `isCheckOnly` | `boolean` | When true, all employees are paid by check rather than direct deposit; start and end dates become optional and the check date may be today or any future date. |
 | `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
 
+***
+
 <a id="offcyclepayrolldatetype"></a>
 
 ### OffCyclePayrollDateType
@@ -838,6 +936,8 @@ Off-cycle payroll reason that drives pay-period date validation rules.
 
 `'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
 
+***
+
 <a id="offcyclereason"></a>
 
 ### OffCycleReason
@@ -847,6 +947,8 @@ Off-cycle payroll reason that drives pay-period date validation rules.
 Reason for running an off-cycle payroll.
 
 `bonus` covers bonuses, gifts, or commissions; `correction` covers any payroll run outside the regular pay schedule.
+
+***
 
 <a id="offcyclereasondefaults"></a>
 
@@ -861,6 +963,8 @@ Recommended deduction and withholding defaults paired with an off-cycle reason.
 | `skipDeductions` | `boolean` | Whether regular deductions and contributions should be skipped for this payroll. |
 | `withholdingType` | [`WithholdingType`](#withholdingtype) | Withholding rate to apply for this payroll. |
 
+***
+
 <a id="payrollexecutioninitialstate"></a>
 
 ### PayrollExecutionInitialState
@@ -868,6 +972,8 @@ Recommended deduction and withholding defaults paired with an off-cycle reason.
 > **PayrollExecutionInitialState** = `"configuration"` \| `"overview"`
 
 Entry point for [PayrollExecutionFlow](payroll-execution-flow.md). Determines which screen the flow renders first.
+
+***
 
 <a id="payrollflowalert"></a>
 
@@ -888,6 +994,8 @@ An alert banner rendered above payroll content in [PayrollOverview](#payrollover
 | `content?` | `ReactNode` | Optional body content rendered below the title. |
 | `onDismiss?` | () => `void` | Called when the user dismisses the alert. When omitted, the alert is not dismissible. |
 
+***
+
 <a id="selectreasonpayload"></a>
 
 ### SelectReasonPayload
@@ -901,6 +1009,8 @@ Payload emitted with the `offCycle/selectReason` event when a reason is chosen.
 | `defaults` | [`OffCycleReasonDefaults`](#offcyclereasondefaults) | Recommended deduction and withholding defaults for the selected reason. |
 | `reason` | [`OffCycleReason`](#offcyclereason) | The reason the user selected. |
 
+***
+
 <a id="transitioncreationformdata"></a>
 
 ### TransitionCreationFormData
@@ -913,6 +1023,8 @@ Form values collected by the [TransitionCreation](#transitioncreation) component
 | ------ | ------ | ------ |
 | `checkDate` | `Date` \| `null` | The date employees will be paid. Must be at least the company's ACH lead time from today. |
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
+
+***
 
 <a id="withholdingtype"></a>
 

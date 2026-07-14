@@ -32,6 +32,8 @@ PNG, or PDF.
 
 Events emitted via `onEvent`:
 
+<br />
+
 ### InformationRequestFormProps
 
 <a id="informationrequestformprops"></a>
@@ -47,12 +49,16 @@ Props for [InformationRequestForm](#informationrequestform).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
 | `informationRequest/form/cancel` | Fired when the user cancels the form | — |
+
+<br />
 
 ### Endpoints
 
@@ -73,6 +79,8 @@ Displays the list of outstanding information requests for a company with a "Resp
 
 Renders status badges for each request and an extra "Payroll blocking" badge when the request is currently blocking payroll. Approved requests are filtered out of the list. Used as the top-level surface of `InformationRequests.InformationRequestsFlow`, but can be rendered directly when you want to host the response form yourself (e.g. in a custom modal or page).
 
+<br />
+
 ### InformationRequestListProps
 
 <a id="informationrequestlistprops"></a>
@@ -87,11 +95,15 @@ Props for [InformationRequestList](#informationrequestlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `informationRequest/respond` | Fired when the user clicks "Respond" on an open request | `{ requestId: string }` |
+
+<br />
 
 ### Endpoints
 

@@ -20,6 +20,8 @@ Lets a user either create a new signatory with full details or invite someone el
 
 For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
 
+<br />
+
 ### AssignSignatoryProps
 
 <a id="assignsignatoryprops"></a>
@@ -36,6 +38,8 @@ Props for [AssignSignatory](#assignsignatory).
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -45,6 +49,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/signatory/created` | A new signatory was created (create mode) | Response from the create signatory API request |
 | `company/signatory/updated` | An existing signatory was updated (create mode) | Response from the update signatory API request |
 | `company/signatory/invited` | A signatory invitation was sent (invite mode) | Response from the invite signatory API request |
+
+<br />
 
 ### Endpoints
 
@@ -70,6 +76,8 @@ Currently supports a single default bank account per company. When no bank accou
 the component renders the add-account form; once one is on file it renders the list view
 with controls to change or verify the account via micro-deposits.
 
+<br />
+
 ### BankAccountProps
 
 <a id="bankaccountprops"></a>
@@ -84,6 +92,8 @@ Props for the [BankAccount](#bankaccount) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -93,6 +103,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/bankAccount/verify` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
 | `company/bankAccount/verified` | Fired when the bank account has been successfully verified | The verified [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
 | `company/bankAccount/done` | Fired when the user chooses to proceed to the next step | — |
+
+<br />
 
 ### Endpoints
 
@@ -110,6 +122,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address.
 
+<br />
+
 ### CreateSignatoryProps
 
 <a id="createsignatoryprops"></a>
@@ -126,6 +140,8 @@ Props for [CreateSignatory](#createsignatory).
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -133,6 +149,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/signatory/created` | A new signatory was created successfully | The created signatory record |
 | `company/signatory/updated` | An existing signatory was updated successfully | The updated signatory record |
 | `company/signatory/createSignatory/done` | The create-signatory flow completed | — |
+
+<br />
 
 ### Endpoints
 
@@ -160,6 +178,8 @@ document list and the signature form.
 When `signatoryId` matches the currently saved signatory's id, the user is treated as the
 signatory and is allowed to sign documents.
 
+<br />
+
 ### DocumentListProps
 
 <a id="documentlistprops"></a>
@@ -175,6 +195,8 @@ Props for [DocumentList](#documentlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -182,6 +204,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
 | `company/forms/editSignatory` | Fired when user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when user completes the document signing process | — |
+
+<br />
 
 ### Endpoints
 
@@ -204,6 +228,8 @@ Handles document listing, signatory management, and the signing workflow. If no 
 been assigned for the company yet, the flow starts on the assign-signatory step before
 presenting the document list.
 
+<br />
+
 ### DocumentSignerProps
 
 <a id="documentsignerprops"></a>
@@ -218,6 +244,8 @@ Props for [DocumentSigner](#documentsigner).
 | `signatoryId?` | `string` | ID of the signatory. When set and matching the current signatory, the user is treated as the signatory and is allowed to sign documents — the signature form is pre-populated with their information. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -234,6 +262,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/signatory/created` | Fired when a new signatory is created successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
 | `company/signatory/updated` | Fired when an existing signatory is updated successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
 | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+
+<br />
 
 ### Endpoints
 
@@ -253,6 +283,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Collects company federal tax information including EIN, tax payer type, filing form, and legal name.
 
+<br />
+
 ### FederalTaxesProps
 
 <a id="federaltaxesprops"></a>
@@ -268,12 +300,16 @@ Props for the [FederalTaxes](#federaltaxes) component.
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/federalTaxes/updated` | Federal tax details were successfully updated | [APIModels.FederalTaxDetails](../../APIModels/index.md#federaltaxdetails) |
 | `company/federalTaxes/done` | The federal tax update step is complete | — |
+
+<br />
 
 ### Endpoints
 
@@ -292,6 +328,8 @@ Selects and saves the company's industry classification (NAICS code).
 
 Presents a searchable list of industry options and persists the selection for the given company.
 
+<br />
+
 ### IndustryProps
 
 <a id="industryprops"></a>
@@ -306,11 +344,15 @@ Props for the [Industry](#industry) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+
+<br />
 
 ### Endpoints
 
@@ -332,6 +374,8 @@ Standalone form for inviting someone else to become the company signatory.
 The invited person receives an email to complete their signatory information. Use this when
 you want to provide only the invite flow without the create option.
 
+<br />
+
 ### InviteSignatoryProps
 
 <a id="invitesignatoryprops"></a>
@@ -347,12 +391,16 @@ Props for the [InviteSignatory](#invitesignatory) component.
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
 | `company/signatory/inviteSignatory/done` | The invite signatory process is complete. | — |
+
+<br />
 
 ### Endpoints
 
@@ -374,6 +422,8 @@ Standalone form for creating a new company location or editing an existing one.
 
 Pass a `locationId` to edit an existing location; omit it to create a new one.
 
+<br />
+
 ### LocationFormProps
 
 <a id="locationformprops"></a>
@@ -389,6 +439,8 @@ Props for the [LocationForm](#locationform) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -396,6 +448,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/location/add/done` | Fired when a new location is created | The created location |
 | `company/location/edit/done` | Fired when a location has been successfully edited | The updated location |
 | `CANCEL` | Fired when the user cancels editing | — |
+
+<br />
 
 ### Endpoints
 
@@ -418,6 +472,8 @@ Orchestrated component for managing a company's mailing and filing addresses.
 Internally switches between a list view and a create/edit form. For more granular control,
 use the standalone `LocationForm` component directly.
 
+<br />
+
 ### LocationsProps
 
 <a id="locationsprops"></a>
@@ -432,6 +488,8 @@ Props for the [Locations](#locations) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -442,6 +500,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/location/edit/done` | A location is successfully edited | Response from the update location API |
 | `company/location/done` | A user chooses to proceed to the next step | — |
 | `cancel` | A user cancels the create or edit form | — |
+
+<br />
 
 ### Endpoints
 
@@ -464,6 +524,8 @@ Displays the list of work locations for a company.
 
 Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
+<br />
+
 ### LocationsListProps
 
 <a id="locationslistprops"></a>
@@ -478,6 +540,8 @@ Props for the [LocationsList](#locationslist) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -485,6 +549,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/location/add` | A user chose to add a new location | — |
 | `company/location/edit` | A user chose to edit a specific location | `{ uuid: string }` |
 | `company/location/done` | The user chose to proceed to the next step | — |
+
+<br />
 
 ### Endpoints
 
@@ -507,6 +573,8 @@ is true, a completion message and "done" action are shown; otherwise a checklist
 steps is rendered with a continue action. Provide `children` to override the default layout while
 still consuming the onboarding status via context.
 
+<br />
+
 ### OnboardingOverviewProps
 
 <a id="onboardingoverviewprops"></a>
@@ -521,12 +589,16 @@ Props for the [OnboardingOverview](#onboardingoverview) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
 | `company/overview/done` | Fired when the user signals they are done with the overview screen, typically after onboarding ends | — |
+
+<br />
 
 ### Endpoints
 
@@ -547,6 +619,8 @@ Manages a company's pay schedules, including listing existing schedules and crea
 Renders the schedule list when at least one pay schedule exists and the create form otherwise.
 Emits the following events through `onEvent`:
 
+<br />
+
 ### PayScheduleProps
 
 <a id="payscheduleprops"></a>
@@ -562,12 +636,16 @@ Props for the [PaySchedule](#payschedule) component.
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |
 | `paySchedule/updated` | An existing pay schedule was updated | The updated pay schedule entity |
+
+<br />
 
 ### Endpoints
 
@@ -594,6 +672,8 @@ Lower-level building block used internally by the document signer for its signin
 Use this component directly when you need full control over navigation between the document
 list and the signature form (e.g. routing the user yourself after they select a form).
 
+<br />
+
 ### SignatureFormProps
 
 <a id="signatureformprops"></a>
@@ -609,6 +689,8 @@ Props for [SignatureForm](#signatureform).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanySignatureForm`](../../Translations/index.md#companysignatureform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -632,6 +714,8 @@ Switches internally between a list of states with tax requirements and a per-sta
 For finer-grained control over navigation, use the standalone [StateTaxesList](#statetaxeslist) and
 [StateTaxesForm](#statetaxesform) building blocks directly.
 
+<br />
+
 ### StateTaxesProps
 
 <a id="statetaxesprops"></a>
@@ -647,6 +731,8 @@ Props for the [StateTaxes](#statetaxes) flow.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -655,6 +741,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/stateTaxes/updated` | State tax requirements were saved | — |
 | `company/stateTaxes/done` | The list view was completed | — |
 | `CANCEL` | Editing was cancelled and the form was closed | — |
+
+<br />
 
 ### Endpoints
 
@@ -677,6 +765,8 @@ Standalone form for editing a company's state tax requirements for a single stat
 Lower-level building block used by [StateTaxes](#statetaxes) for its edit view. Use directly when
 you need full control over navigation between the list and edit views.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -693,6 +783,8 @@ function MyComponent() {
 }
 ```
 
+<br />
+
 ### StateTaxesFormProps
 
 <a id="statetaxesformprops"></a>
@@ -708,12 +800,16 @@ Props for [StateTaxesForm](#statetaxesform).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
 | `CANCEL` | The user cancelled editing | — |
+
+<br />
 
 ### Endpoints
 
@@ -734,6 +830,8 @@ Displays the list of state tax requirements for a company with their setup statu
 
 Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
+<br />
+
 ### StateTaxesListProps
 
 <a id="statetaxeslistprops"></a>
@@ -749,12 +847,16 @@ Props for the [StateTaxesList](#statetaxeslist) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
 | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
+
+<br />
 
 ### Endpoints
 
@@ -778,6 +880,8 @@ Default values for the create and invite forms rendered by [AssignSignatory](#as
 
 At least one of `create` or `invite` must be provided.
 
+***
+
 <a id="createsignatorydefaultvalues"></a>
 
 ### CreateSignatoryDefaultValues
@@ -785,6 +889,8 @@ At least one of `create` or `invite` must be provided.
 > **CreateSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
+
+***
 
 <a id="federaltaxesdefaultvalues"></a>
 
@@ -795,6 +901,8 @@ Initial values for the [CreateSignatory](#createsignatory) form fields. At least
 Pre-populated values for the company federal tax form, supplied via [FederalTaxesProps](#federaltaxesprops).
 At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
+***
+
 <a id="invitesignatorydefaultvalues"></a>
 
 ### InviteSignatoryDefaultValues
@@ -803,6 +911,8 @@ At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.
+
+***
 
 <a id="onboardingflowdefaultvalues"></a>
 
@@ -818,6 +928,8 @@ At least one of the step-level keys must be provided. Per-step values are
 forwarded to the matching step component. If company data is already
 available via the API, the corresponding values are overwritten.
 
+***
+
 <a id="payscheduledefaultfields"></a>
 
 ### PayScheduleDefaultFields
@@ -825,6 +937,8 @@ available via the API, the corresponding values are overwritten.
 > **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
 
 The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
+
+***
 
 <a id="payscheduledefaultvalues"></a>
 

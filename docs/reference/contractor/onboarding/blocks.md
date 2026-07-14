@@ -16,6 +16,8 @@ custom_edit_url: null
 
 Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -30,6 +32,8 @@ function MyComponent() {
   )
 }
 ```
+
+<br />
 
 ### AddressProps
 
@@ -46,12 +50,16 @@ Props for [Address](#address).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorAddress`](../../Translations/index.md#contractoraddress)\>\> | Overrides for the component's i18n strings. |
 | `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |
 | `contractor/address/done` | Fired after a successful save so the parent flow can advance | — |
+
+<br />
 
 ### Endpoints
 
@@ -69,6 +77,8 @@ Props for [Address](#address).
 
 Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding.
 
+<br />
+
 ### ContractorListProps
 
 <a id="contractorlistprops"></a>
@@ -84,6 +94,8 @@ Props for [ContractorList](#contractorlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -93,6 +105,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
 | `contractor/selfOnboarding/cancelled` | A contractor's self-onboarding was cancelled, reverting them to admin onboarding. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
+
+<br />
 
 ### Endpoints
 
@@ -121,11 +135,15 @@ When `isAdmin` is `false`, renders the contractor self-onboarding profile instea
 existing contractor's type and presents the individual (name + SSN) or business (business name + EIN)
 fields for the contractor to complete.
 
+<br />
+
 ### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`ContractorProfileProps`](#contractorprofileprops) | See [ContractorProfileProps](#contractorprofileprops). |
+
+<br />
 
 ### Events
 
@@ -134,6 +152,8 @@ fields for the contractor to complete.
 | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
 | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
 | `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, onboardingStatus?: string, selfOnboarding: boolean }` |
+
+<br />
 
 ### Endpoints
 
@@ -151,6 +171,8 @@ fields for the contractor to complete.
 
 Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor.
 
+<br />
+
 ### ContractorSubmitProps
 
 <a id="contractorsubmitprops"></a>
@@ -166,6 +188,8 @@ Props for [ContractorSubmit](#contractorsubmit).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -173,6 +197,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/onboardingStatus/updated` | The contractor's onboarding status was successfully updated. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
 | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
+
+<br />
 
 ### Endpoints
 
@@ -201,6 +227,8 @@ returns to the list. The list refetches automatically once a document is
 signed. The flow completes when every document that requires signing has been
 signed and the user continues.
 
+<br />
+
 ### DocumentSignerProps
 
 <a id="documentsignerprops"></a>
@@ -215,6 +243,8 @@ Props for [DocumentSigner](#documentsigner).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -223,6 +253,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/documents/sign` | Fired after a document is successfully signed | The signed document |
 | `contractor/documents/done` | Fired when all required documents have been signed and the parent flow can advance | — |
 | `cancel` | Fired when the user navigates back from the signature form to the document list | — |
+
+<br />
 
 ### Components
 
@@ -245,6 +277,8 @@ the contractor can sign has been signed; a document that isn't signable yet
 (e.g. a W-9 whose fields haven't been generated) surfaces a warning instead of
 blocking the flow.
 
+<br />
+
 ### DocumentsListProps
 
 <a id="documentslistprops"></a>
@@ -259,12 +293,16 @@ Props for [DocumentsList](#documentslist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/documents/view` | Fired when a document's "Sign" action is selected | `{ uuid?: string; title?: string }` |
 | `contractor/documents/done` | Fired when all required documents are signed and the user continues | — |
+
+<br />
 
 ### Endpoints
 
@@ -281,6 +319,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Landing page for the contractor self-onboarding flow. Displays a welcome
 message and the list of onboarding steps the contractor needs to complete.
 
+<br />
+
 ### LandingProps
 
 <a id="landingprops"></a>
@@ -295,6 +335,8 @@ Props for the [Landing](#landing) component.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorLanding`](../../Translations/index.md#contractorlanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Endpoints
 
@@ -319,6 +361,8 @@ work state used for filing. Submitting writes both values back to the contractor
 Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
 own self-onboarding flow rather than admin onboarding.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -333,6 +377,8 @@ function NewHireReportStep() {
   )
 }
 ```
+
+<br />
 
 ### NewHireReportProps
 
@@ -349,12 +395,16 @@ Props for the [NewHireReport](#newhirereport) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
 | `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
+
+<br />
 
 ### Endpoints
 
@@ -373,6 +423,8 @@ Confirmation screen shown at the end of the contractor self-onboarding flow.
 Lets the contractor know their information has been submitted and emits
 `contractor/selfOnboarding/done` when they acknowledge it.
 
+<br />
+
 ### OnboardingSummaryProps
 
 <a id="onboardingsummaryprops"></a>
@@ -386,6 +438,8 @@ Props for [OnboardingSummary](#onboardingsummary).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorOnboardingSummary`](../../Translations/index.md#contractoronboardingsummary)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -406,6 +460,8 @@ collects bank account details (account holder name, routing number, account numb
 type) when direct deposit is selected. Direct deposit creates the bank account (which updates the
 payment method server-side); check updates the contractor's payment method type directly.
 
+<br />
+
 ### Example
 
 ```tsx
@@ -421,6 +477,8 @@ function PaymentMethodStep() {
 }
 ```
 
+<br />
+
 ### PaymentMethodProps
 
 <a id="paymentmethodprops"></a>
@@ -435,6 +493,8 @@ Props for the [PaymentMethod](#paymentmethod) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
+<br />
+
 ### Events
 
 | Event | Description | Data |
@@ -442,6 +502,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/bankAccount/created` | Fired on the direct deposit path after the bank account is created | The created bank account at `.contractorBankAccount` |
 | `contractor/paymentMethod/updated` | Fired on the check path after the payment method type is updated | The updated payment method at `.contractorPaymentMethod` |
 | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
+
+<br />
 
 ### Endpoints
 
@@ -471,6 +533,8 @@ navigation between the document list and the signature form.
 | `contractor/documents/sign` | Fired when the document is successfully signed | The signed document |
 | `CANCEL` | Fired when the user navigates back from the signature form | — |
 
+<br />
+
 ### SignatureFormProps
 
 <a id="signatureformprops"></a>
@@ -485,6 +549,8 @@ Props for [SignatureForm](#signatureform).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorSignatureForm`](../../Translations/index.md#contractorsignatureform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Endpoints
 
@@ -505,6 +571,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 > **AddressDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+
+***
 
 <a id="contractorprofileadminprops"></a>
 
@@ -537,11 +605,15 @@ updates the existing contractor.
 | `isAdmin?` | `true` | When `true` (the default), renders the admin create/edit form. |
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
+***
+
 <a id="contractorprofileformdata"></a>
 
 ### ContractorProfileFormData
 
 Renames and re-exports [ContractorDetailsFormData](../hooks/use-contractor-details-form.md#contractordetailsformdata)
+
+***
 
 <a id="contractorprofileprops"></a>
 
@@ -555,6 +627,8 @@ Props for [ContractorProfile](#contractorprofile).
 
 Discriminated by `isAdmin`. See [ContractorProfileAdminProps](#contractorprofileadminprops) and
 [ContractorProfileSelfOnboardingProps](#contractorprofileselfonboardingprops) for the specific prop shapes.
+
+***
 
 <a id="contractorprofileselfonboardingprops"></a>
 
@@ -586,6 +660,8 @@ which fields to display.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorProfile`](../../Translations/index.md#contractorprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+
+***
 
 <a id="onboardingflowdefaultvalues"></a>
 
