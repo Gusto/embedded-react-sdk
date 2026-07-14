@@ -34,9 +34,9 @@ jobs:
       - name: Authenticate with Cloudsmith via OIDC
         uses: cloudsmith-io/cloudsmith-cli-action@v2
         with:
-          oidc-namespace: "gusto"
-          oidc-service-slug: "gusto-cloudsmith-write-svc-01"
-          oidc-auth-only: "true"
+          oidc-namespace: 'gusto'
+          oidc-service-slug: 'gusto-cloudsmith-write-svc-01'
+          oidc-auth-only: 'true'
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
