@@ -60,6 +60,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs) |
 | DELETE | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-jobs-job_id) |
 
+***
+
 <a id="compensationaddanotherjobform"></a>
 
 ## CompensationAddAnotherJobForm
@@ -90,6 +92,8 @@ _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterfac
 | ----- | ----------- | ---- |
 | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after the secondary job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
 | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+
+***
 
 <a id="compensationaddjobform"></a>
 
@@ -122,6 +126,8 @@ _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterfac
 | `employee/management/compensation/addJobForm/submitted` | Fired after the job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
 | `employee/management/compensation/addJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
+***
+
 <a id="compensationcard"></a>
 
 ## CompensationCard
@@ -152,6 +158,8 @@ Props for [CompensationCard](#compensationcard).
 | `employee/management/compensation/card/addAnotherRequested` | Fired when the "Add another job" CTA is clicked | `{ employeeId: string }` |
 | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
 | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
+
+***
 
 <a id="compensationeditform"></a>
 
@@ -184,6 +192,8 @@ _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterfac
 | ----- | ----------- | ---- |
 | `employee/management/compensation/editForm/submitted` | Fired after the compensation change is saved; use it to return to the card | The updated `Compensation` entity |
 | `employee/management/compensation/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+
+***
 
 <a id="dashboard"></a>
 
@@ -223,6 +233,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 - [StateTaxesCard](#statetaxescard)
 - [DocumentsCard](#documentscard)
 
+***
+
 <a id="deductions"></a>
 
 ## Deductions
@@ -261,6 +273,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
 | `employee/management/deductions/alertDismissed` | Fired when the user dismisses a success alert above the card | `null` |
 
+***
+
 <a id="deductionscard"></a>
 
 ## DeductionsCard
@@ -289,6 +303,8 @@ Props for [DeductionsCard](#deductionscard).
 | `employee/management/deductions/card/addRequested` | Fired when the "Add deduction" CTA is clicked | `{ employeeId: string }` |
 | `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction | The matching `Garnishment` |
 | `employee/management/deductions/card/deleted` | Fired after a deduction is deleted via the confirm dialog | The deleted `Garnishment` |
+
+***
 
 <a id="deductionseditform"></a>
 
@@ -323,6 +339,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/management/deductions/editForm/updated` | Fired after an existing deduction is updated | The updated `Garnishment` |
 | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the form | — |
 
+***
+
 <a id="documentmanager"></a>
 
 ## DocumentManager
@@ -356,6 +374,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `CANCEL` | The back button is selected | — |
+
+***
 
 <a id="documents"></a>
 
@@ -398,6 +418,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form) |
 | GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf) |
 
+***
+
 <a id="documentscard"></a>
 
 ## DocumentsCard
@@ -421,6 +443,8 @@ Props for [DocumentsCard](#documentscard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+
+***
 
 <a id="employeelist"></a>
 
@@ -460,6 +484,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | DELETE | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee) |
 | PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |
+
+***
 
 <a id="federaltaxes"></a>
 
@@ -503,6 +529,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes) |
 | PUT | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes) |
 
+***
+
 <a id="federaltaxescard"></a>
 
 ## FederalTaxesCard
@@ -523,6 +551,8 @@ Props for [FederalTaxesCard](#federaltaxescard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+
+***
 
 <a id="federaltaxeseditform"></a>
 
@@ -555,6 +585,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | ----- | ----------- | ---- |
 | `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card | The updated `EmployeeFederalTax` entity |
 | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+
+***
 
 <a id="homeaddress"></a>
 
@@ -594,6 +626,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses) |
 | DELETE | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-home_addresses-home_address_uuid) |
 
+***
+
 <a id="homeaddresscard"></a>
 
 ## HomeAddressCard
@@ -620,6 +654,8 @@ Props for [HomeAddressCard](#homeaddresscard).
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
+
+***
 
 <a id="homeaddresseditform"></a>
 
@@ -649,6 +685,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/management/homeAddress/updated` | An existing home address was updated | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
 | `employee/management/homeAddress/deleted` | A home address was deleted | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
 | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
+
+***
 
 <a id="paymentmethod"></a>
 
@@ -707,6 +745,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method) |
 | PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method) |
 
+***
+
 <a id="paymentmethodbankform"></a>
 
 ## PaymentMethodBankForm
@@ -741,6 +781,8 @@ _Inherits `optionalFieldsToRequire`, `shouldFocusError`, `validationMode` from O
 | `employee/management/paymentMethod/bankForm/submitted` | Fired after the bank account is successfully created | The created bank account |
 | `employee/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the form | — |
 
+***
+
 <a id="paymentmethodcard"></a>
 
 ## PaymentMethodCard
@@ -772,6 +814,8 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | `employee/management/paymentMethod/card/addRequested` | Fired when the user clicks the add-account CTA | — |
 | `employee/management/paymentMethod/card/splitRequested` | Fired when the user clicks the split-paycheck CTA | — |
 | `employee/management/paymentMethod/card/bankAccountDeleted` | Fired after a bank account is successfully deleted | The delete response payload |
+
+***
 
 <a id="paymentmethodsplitform"></a>
 
@@ -806,6 +850,8 @@ _Inherits `optionalFieldsToRequire`, `shouldFocusError`, `validationMode` from O
 | `employee/management/paymentMethod/splitForm/submitted` | Fired after the splits are successfully saved | The updated payment method |
 | `employee/management/paymentMethod/splitForm/cancelled` | Fired when the user cancels the form | — |
 
+***
+
 <a id="paystubscard"></a>
 
 ## PaystubsCard
@@ -835,6 +881,8 @@ Props for [PaystubsCard](#paystubscard).
 | --- | --- |
 | GET | [`/v1/employees/:employeeId/pay_stubs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_uuid-pay_stubs) |
 | GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+
+***
 
 <a id="profile"></a>
 
@@ -879,6 +927,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | PUT | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees) |
 | PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |
 
+***
+
 <a id="profilecard"></a>
 
 ## ProfileCard
@@ -908,6 +958,8 @@ Props for [ProfileCard](#profilecard).
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ employeeId: string }` |
+
+***
 
 <a id="profileeditform"></a>
 
@@ -942,6 +994,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
 
 <a id="statetaxes"></a>
 
@@ -981,6 +1035,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes) |
 | PUT | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes) |
 
+***
+
 <a id="statetaxescard"></a>
 
 ## StateTaxesCard
@@ -1011,6 +1067,8 @@ Props for [StateTaxesCard](#statetaxescard).
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |
 
+***
+
 <a id="statetaxeseditform"></a>
 
 ## StateTaxesEditForm
@@ -1040,6 +1098,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 | `employee/management/stateTaxes/editCancelled` | Cancel button was clicked | — |
+
+***
 
 <a id="terminateemployee"></a>
 
@@ -1109,6 +1169,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | POST | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-terminations) |
 | PUT | [`/v1/terminations/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-terminations-employee_id) |
 
+***
+
 <a id="terminationsummary"></a>
 
 ## TerminationSummary
@@ -1176,6 +1238,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-terminations) |
 | DELETE | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-terminations) |
 
+***
+
 <a id="workaddress"></a>
 
 ## WorkAddress
@@ -1214,6 +1278,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses) |
 | DELETE | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-work_addresses-work_address_uuid) |
 
+***
+
 <a id="workaddresscard"></a>
 
 ## WorkAddressCard
@@ -1240,6 +1306,8 @@ Props for [WorkAddressCard](#workaddresscard).
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
+
+***
 
 <a id="workaddresseditform"></a>
 
@@ -1269,6 +1337,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/management/workAddress/updated` | An existing work address was updated | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
 | `employee/management/workAddress/deleted` | A work address was deleted | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
 | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
+
+***
 
 ## Utility types
 

@@ -44,6 +44,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
 | PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/add`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-add) |
 
+***
+
 <a id="addemployeestopolicy"></a>
 
 ## AddEmployeesToPolicy
@@ -107,6 +109,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/add_employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-add_employees) |
 
+***
+
 <a id="holidayselectionform"></a>
 
 ## HolidaySelectionForm
@@ -148,6 +152,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
 | POST | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-holiday_pay_policy) |
 | PUT | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy) |
+
+***
 
 <a id="policyconfigurationform"></a>
 
@@ -196,6 +202,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
 
+***
+
 <a id="policylist"></a>
 
 ## PolicyList
@@ -239,6 +247,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-time_off_policies) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/deactivate`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-deactivate) |
 
+***
+
 <a id="policysettings"></a>
 
 ## PolicySettings
@@ -278,6 +288,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
 
+***
+
 <a id="policysettingspresentation"></a>
 
 ## PolicySettingsPresentation
@@ -314,6 +326,8 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | --- | --- |
 | GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+
+***
 
 <a id="policytypeselector"></a>
 
@@ -353,6 +367,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+
+***
 
 <a id="timeoffpolicydetail"></a>
 
@@ -398,6 +414,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |
 
+***
+
 <a id="timeoffpolicydetailpresentation"></a>
 
 ## TimeOffPolicyDetailPresentation
@@ -426,6 +444,8 @@ up the callbacks. The corresponding container component is [TimeOffPolicyDetail]
 | GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
 | PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |
+
+***
 
 <a id="viewholidayemployees"></a>
 
@@ -468,6 +488,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
 | PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
 
+***
+
 <a id="viewholidaypolicydetails"></a>
 
 ## ViewHolidayPolicyDetails
@@ -506,6 +528,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
 | PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
 
+***
+
 <a id="viewholidayschedule"></a>
 
 ## ViewHolidaySchedule
@@ -543,6 +567,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
 | PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+
+***
 
 ## Utility types
 

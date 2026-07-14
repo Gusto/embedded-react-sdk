@@ -61,6 +61,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
 | PUT | `/v1/information_requests/:informationRequestUuid/submit` |
 
+***
+
 <a id="informationrequestlist"></a>
 
 ## InformationRequestList

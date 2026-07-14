@@ -12,7 +12,7 @@ custom_edit_url: null
 
 Full multi-step user experiences as a single component — the fastest path to a working feature. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.
 
-## Workflows
+## 🚂 Workflows
 
 | Component | Description |
 | --- | --- |

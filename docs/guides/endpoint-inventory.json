@@ -2768,11 +2768,6 @@
     "useHomeAddressForm": {
       "endpoints": [
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses"
-        },
-        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses"
@@ -2956,34 +2951,12 @@
         "employeeId"
       ]
     },
-    "useStateFields": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/state_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes"
-        }
-      ],
-      "variables": [
-        "employeeUuid"
-      ]
-    },
     "useWorkAddressForm": {
       "endpoints": [
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses"
         },
         {
           "method": "POST",

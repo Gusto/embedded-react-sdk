@@ -56,6 +56,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
 | POST | [`/v1/companies/:companyUuid/signatories/invite`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-signatories-invite) |
 
+***
+
 <a id="bankaccount"></a>
 
 ## BankAccount
@@ -100,6 +102,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | POST | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-bank-accounts) |
 | PUT | [`/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-bank-accounts-verify) |
 
+***
+
 <a id="createsignatory"></a>
 
 ## CreateSignatory
@@ -138,6 +142,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | POST | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-company-signatories) |
 | PUT | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
 | DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
+
+***
 
 <a id="documentlist"></a>
 
@@ -183,6 +189,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | --- | --- |
 | GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms) |
 | GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+
+***
 
 <a id="documentsigner"></a>
 
@@ -237,6 +245,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
 | PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign) |
 
+***
+
 <a id="federaltaxes"></a>
 
 ## FederalTaxes
@@ -272,6 +282,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details) |
 | PUT | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-federal_tax_details) |
 
+***
+
 <a id="industry"></a>
 
 ## Industry
@@ -306,6 +318,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | --- | --- |
 | GET | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-industry) |
 | PUT | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-industry) |
+
+***
 
 <a id="invitesignatory"></a>
 
@@ -348,6 +362,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
 | POST | [`/v1/companies/:companyUuid/signatories/invite`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-signatories-invite) |
 
+***
+
 <a id="locationform"></a>
 
 ## LocationForm
@@ -388,6 +404,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-locations) |
 | GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id) |
 | PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id) |
+
+***
 
 <a id="locations"></a>
 
@@ -434,6 +452,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id) |
 | PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id) |
 
+***
+
 <a id="locationslist"></a>
 
 ## LocationsList
@@ -471,6 +491,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations) |
+
+***
 
 <a id="onboardingoverview"></a>
 
@@ -511,6 +533,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-onboarding-status) |
+
+***
 
 <a id="payschedule"></a>
 
@@ -556,6 +580,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
 
+***
+
 <a id="signatureform"></a>
 
 ## SignatureForm
@@ -591,6 +617,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/forms/sign/signForm` | Fired when a form is successfully signed | Response from the sign company form API request |
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
+
+***
 
 <a id="statetaxes"></a>
 
@@ -635,6 +663,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
 | GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
 | PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+
+***
 
 <a id="statetaxesform"></a>
 
@@ -692,6 +722,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
 | PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 
+***
+
 <a id="statetaxeslist"></a>
 
 ## StateTaxesList
@@ -729,6 +761,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
+
+***
 
 ## Utility types
 

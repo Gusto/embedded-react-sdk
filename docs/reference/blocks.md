@@ -12,7 +12,7 @@ custom_edit_url: null
 
 Individual form and UI components with SDK logic built in — use these for custom layouts, step reordering, or inserting your own content between SDK steps. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.
 
-## Blocks
+## 🧩 Blocks
 
 | Component | Description |
 | --- | --- |
