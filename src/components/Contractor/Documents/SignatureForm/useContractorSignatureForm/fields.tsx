@@ -1,6 +1,5 @@
 import type { ComponentType } from 'react'
 import type { ContractorSignatureFormErrorCodes } from './contractorSignatureFormSchema'
-import { normalizeEinOrNotApplicable, normalizeSsnOrNotApplicable } from './w9Fields'
 import type { TextInputHookFieldProps } from '@/partner-hook-utils/form/fields/TextInputHookField'
 import type { CheckboxHookFieldProps } from '@/partner-hook-utils/form/fields/CheckboxHookField'
 import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/RadioGroupHookField'
@@ -12,6 +11,8 @@ import {
   SelectHookField,
 } from '@/partner-hook-utils/form/fields'
 import type { HookFieldProps } from '@/partner-hook-utils/types'
+import { normalizeSSN } from '@/helpers/ssn'
+import { normalizeEin } from '@/helpers/federalEin'
 
 /**
  * The form-field name of the electronic-signature consent checkbox.
@@ -249,12 +250,12 @@ export function HomeAddressZipField(props: HomeAddressZipFieldProps) {
 
 /** @internal */
 export function SsnField(props: SsnFieldProps) {
-  return <TextInputHookField {...props} name="ssn" transform={normalizeSsnOrNotApplicable} />
+  return <TextInputHookField {...props} name="ssn" transform={normalizeSSN} />
 }
 
 /** @internal */
 export function EinField(props: EinFieldProps) {
-  return <TextInputHookField {...props} name="ein" transform={normalizeEinOrNotApplicable} />
+  return <TextInputHookField {...props} name="ein" transform={normalizeEin} />
 }
 
 /** @internal */

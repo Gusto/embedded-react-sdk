@@ -13,6 +13,7 @@ import {
   getRedactionState,
   serializeW9Fields,
   EMPTY_W9_DEFAULTS,
+  NOT_APPLICABLE_VALUE,
   TAX_CLASSIFICATION_OPTION_KEYS,
   LLC_CLASSIFICATION_CODES,
   LLC_CLASSIFICATION_OPTION,
@@ -136,6 +137,7 @@ export type ContractorSignatureFieldsMetadata = ReturnType<
 function buildFields(
   presentFieldNames: Set<string>,
   classification: string,
+  defaultValues: ContractorSignatureFormData,
 ): ContractorSignatureFormFieldComponents {
   return {
     // Every field is presence-gated to guard against the document API diverging
@@ -150,8 +152,17 @@ function buildFields(
     HomeAddressCity: presentFieldNames.has('homeAddressCity') ? HomeAddressCityField : undefined,
     HomeAddressState: presentFieldNames.has('homeAddressState') ? HomeAddressStateField : undefined,
     HomeAddressZip: presentFieldNames.has('homeAddressZip') ? HomeAddressZipField : undefined,
-    Ssn: presentFieldNames.has('ssn') ? SsnField : undefined,
-    Ein: presentFieldNames.has('ein') ? EinField : undefined,
+    // The non-applicable TIN (an individual's EIN, a business's SSN) arrives as
+    // the `N/A` sentinel and is never rendered, while its `N/A` default stays in
+    // form state and still serializes onto the W-9.
+    Ssn:
+      presentFieldNames.has('ssn') && defaultValues.ssn !== NOT_APPLICABLE_VALUE
+        ? SsnField
+        : undefined,
+    Ein:
+      presentFieldNames.has('ein') && defaultValues.ein !== NOT_APPLICABLE_VALUE
+        ? EinField
+        : undefined,
     SignatureText: presentFieldNames.has('signatureText') ? SignatureTextField : undefined,
     Agree: AgreeField,
     BusinessName: presentFieldNames.has('businessName') ? BusinessNameField : undefined,
@@ -304,7 +315,6 @@ export function useContractorSignatureForm({
     () => (document ? getRedactionState(document) : { ssnRedacted: false, einRedacted: false }),
     [document],
   )
-
   const [schema, metadataConfig] = useMemo(
     () =>
       createContractorSignatureFormSchema({
@@ -336,8 +346,8 @@ export function useContractorSignatureForm({
     name: 'taxClassification',
   })
   const Fields = useMemo(
-    () => buildFields(presentFieldNames, watchedClassification),
-    [presentFieldNames, watchedClassification],
+    () => buildFields(presentFieldNames, watchedClassification, defaultValues),
+    [presentFieldNames, watchedClassification, defaultValues],
   )
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)

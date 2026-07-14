@@ -6,8 +6,6 @@ import {
   getPresentFieldNames,
   getRedactionState,
   isW9Document,
-  normalizeEinOrNotApplicable,
-  normalizeSsnOrNotApplicable,
   TAX_CLASSIFICATION_FIELD,
   LLC_CLASSIFICATION_FIELD,
 } from './w9Fields'
@@ -69,40 +67,6 @@ function w9Document(overrides: Partial<Document> = {}): Document {
     ...overrides,
   }
 }
-
-describe('normalizeEinOrNotApplicable', () => {
-  it('lets the N/A sentinel be typed through, normalized to uppercase', () => {
-    expect(normalizeEinOrNotApplicable('N/A')).toBe('N/A')
-    expect(normalizeEinOrNotApplicable('n/a')).toBe('N/A')
-    expect(normalizeEinOrNotApplicable('na')).toBe('N/A')
-  })
-
-  it('preserves in-progress prefixes while the user types toward N/A', () => {
-    expect(normalizeEinOrNotApplicable('N')).toBe('N')
-    expect(normalizeEinOrNotApplicable('N/')).toBe('N/')
-  })
-
-  it('formats numeric input as a standard EIN', () => {
-    expect(normalizeEinOrNotApplicable('123456789')).toBe('12-3456789')
-  })
-})
-
-describe('normalizeSsnOrNotApplicable', () => {
-  it('lets the N/A sentinel be typed through, normalized to uppercase', () => {
-    expect(normalizeSsnOrNotApplicable('N/A')).toBe('N/A')
-    expect(normalizeSsnOrNotApplicable('n/a')).toBe('N/A')
-    expect(normalizeSsnOrNotApplicable('na')).toBe('N/A')
-  })
-
-  it('preserves in-progress prefixes while the user types toward N/A', () => {
-    expect(normalizeSsnOrNotApplicable('N')).toBe('N')
-    expect(normalizeSsnOrNotApplicable('N/')).toBe('N/')
-  })
-
-  it('formats numeric input as a standard SSN', () => {
-    expect(normalizeSsnOrNotApplicable('123456789')).toBe('123-45-6789')
-  })
-})
 
 describe('isW9Document', () => {
   it('identifies the W-9 by name', () => {
