@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Theme variables
 description: Design tokens for lightweight customization of all SDK UI. See the theming guide for more context.
-sidebar_position: 13
+sidebar_position: 14
 generated_by: typedoc
 custom_edit_url: null
 ---

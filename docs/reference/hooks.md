@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Hooks
-description: Shared types and utilities behind every SDK hook. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the Hooks guide.
-sidebar_position: 7
+description: Headless utilities that handle data fetching, form state, validation, and API submission — you own the layout, the SDK handles the business logic. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the Hooks guide.
+sidebar_position: 8
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Shared types and utilities behind every SDK hook. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).
+Headless utilities that handle data fetching, form state, validation, and API submission — you own the layout, the SDK handles the business logic. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).
 
 ## 🌐 Data hooks
 

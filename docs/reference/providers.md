@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Providers
 description: Top-level providers for configuring auth, locale, and your design system. Wrap your application with one of these before rendering any SDK component.
-sidebar_position: 9
+sidebar_position: 10
 generated_by: typedoc
 custom_edit_url: null
 ---

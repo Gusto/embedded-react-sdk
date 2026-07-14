@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: UI component inventory
 description: Design system components for advanced customization of all SDK UI. See the component adapter guide for more context.
-sidebar_position: 14
+sidebar_position: 15
 generated_by: typedoc
 custom_edit_url: null
 ---
@@ -1546,10 +1546,6 @@ An open map of `data-*` attributes that can be spread onto a rendered DOM elemen
 #### Index Signature
 
 \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
-
-#### Page
-
-component-inventory
 
 ***
 

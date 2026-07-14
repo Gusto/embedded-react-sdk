@@ -3129,9 +3129,9 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (isDomainHub(page.model)) return renderDomainHub(this, page.model)
         if (isHooksIndex(page.model)) return renderHooksIndex(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
-        if (isBlocksPage(page.model)) return renderBlocksPage(this, page.model)
         const standaloneLayout = (this.router as SDKRouter).standaloneLayouts.get(page.model)
         if (standaloneLayout) return renderStandalonePage(this, page.model, standaloneLayout)
+        if (isBlocksPage(page.model)) return renderBlocksPage(this, page.model)
 
         // Build the @components table, then strip the tag so the default
         // renderer doesn't also emit it as a raw block-tag section.
