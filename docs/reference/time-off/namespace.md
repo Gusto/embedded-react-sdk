@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday.
 
+```ts
+import { TimeOff } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |

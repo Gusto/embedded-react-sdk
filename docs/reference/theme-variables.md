@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Theme variables
-description: These design tokens control the visual appearance of all components and UX within the SDK. See the theming guide for more context.
-sidebar_position: 7
+description: Design tokens for lightweight customization of all SDK UI. See the theming guide for more context.
+sidebar_position: 13
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-These design tokens control the visual appearance of all components and UX within the SDK. See the [theming guide](../guides/theming.md) for more context.
+Design tokens for lightweight customization of all SDK UI. See the [theming guide](../guides/theming.md) for more context.
 
 <a id="gustosdktheme"></a>
 

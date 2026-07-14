@@ -12,13 +12,31 @@ custom_edit_url: null
 
 # Employees
 
-## 📁 EmployeeOnboarding
+Onboard and manage W-2 workers (hourly, salary, commissioned, and more) — compensation, banking, tax withholding, documents, and terminations.
+
+---
+## 📁 EmployeeOnboarding {#employee-onboarding}
+
+Flows and blocks for onboarding employees.
+
+```ts
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+```
 
 <DocCardList items={[{"type":"link","href":"onboarding/onboarding-execution-flow","label":"🚂 OnboardingExecutionFlow","description":"Guided flow to onboard an employee."},{"type":"link","href":"onboarding/onboarding-flow","label":"🚂 OnboardingFlow","description":"Guided flow to onboard multiple employees, one at a time."},{"type":"link","href":"onboarding/self-onboarding-flow","label":"🚂 SelfOnboardingFlow","description":"Guided flow for employees to complete their own onboarding."},{"type":"link","href":"onboarding/blocks","label":"🧩 17 blocks"}]} />
 
-## 📁 EmployeeManagement
+---
+## 📁 EmployeeManagement {#employee-management}
+
+Flows and blocks for managing an employee after onboarding.
+
+```ts
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+```
 
 <DocCardList items={[{"type":"link","href":"management/dashboard-flow","label":"🚂 DashboardFlow","description":"Hub for viewing and managing a single employee's profile, pay, and documents."},{"type":"link","href":"management/employee-list-flow","label":"🚂 EmployeeListFlow","description":"Hub for viewing and managing all employees, including onboarding new ones."},{"type":"link","href":"management/termination-flow","label":"🚂 TerminationFlow","description":"Guided flow to terminate an employee and arrange their final paycheck."},{"type":"link","href":"management/blocks","label":"🧩 35 blocks"}]} />
+
+---
 
 ## 🪝 Hooks
 

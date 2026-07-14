@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Providers
-description: The two top-level providers that connect the SDK to your React tree. Wrap your application with one of these before rendering any SDK component.
-sidebar_position: 6
+description: Top-level providers for configuring auth, locale, and your design system. Wrap your application with one of these before rendering any SDK component.
+sidebar_position: 9
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-The two top-level providers that connect the SDK to your React tree. Wrap your application with one of these before rendering any SDK component.
+Top-level providers for configuring auth, locale, and your design system. Wrap your application with one of these before rendering any SDK component.
 
 <a id="gustoprovider"></a>
 

@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: HTTP interceptors
-description: Low-level request/response interceptors for customizing HTTP behaviour across the SDK. Pass an `SDKHooks` instance to `GustoProvider` via `config.hooks`.
+description: Callback hooks for intercepting and modifying HTTP requests and responses. Pass an `SDKHooks` instance to `GustoProvider` via `config.hooks`.
 sidebar_position: 11
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Low-level request/response interceptors for customizing HTTP behaviour across the SDK. Pass an [`SDKHooks`](#sdkhooks) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.hooks`.
+Callback hooks for intercepting and modifying HTTP requests and responses. Pass an [`SDKHooks`](#sdkhooks) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.hooks`.
 
 <a id="sdkhooks"></a>
 

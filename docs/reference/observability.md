@@ -4,13 +4,13 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Observability
-description: Error-tracking and performance-metric hooks for integrating the SDK with tools like Sentry or Datadog. Pass an `ObservabilityHook` instance to `GustoProvider` via `config.observability`.
+description: Callback hooks for error tracking and performance metrics, compatible with tools like Sentry or Datadog. Pass an `ObservabilityHook` instance to `GustoProvider` via `config.observability`.
 sidebar_position: 12
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Error-tracking and performance-metric hooks for integrating the SDK with tools like Sentry or Datadog. Pass an [`ObservabilityHook`](#observabilityhook) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.observability`.
+Callback hooks for error tracking and performance metrics, compatible with tools like Sentry or Datadog. Pass an [`ObservabilityHook`](#observabilityhook) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.observability`.
 
 <a id="observabilityhook"></a>
 
