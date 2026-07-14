@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.52.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.0...v0.52.1) (2026-07-14)
+
+### Features & Enhancements
+
+- Contractor self-onboarding now mirrors the employee self-onboarding experience, giving contractors a guided flow to complete their own profile, address, and signature steps. ([#2385](https://github.com/Gusto/embedded-react-sdk/issues/2385))
+- The Contractor `Submit` step now lets contractors download their signed W-9. ([#2392](https://github.com/Gusto/embedded-react-sdk/issues/2392))
+
+### Fixes
+
+- The contractor new hire report is now only triggered during the initial onboarding pass, so re-editing an already-onboarded contractor no longer re-files the report. ([#2386](https://github.com/Gusto/embedded-react-sdk/issues/2386))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`storybook` and its addons to 10.5.0, `eslint`, `@eslint/js`, `@typescript-eslint/rule-tester`, `@typescript-eslint/utils`)
+- Bump dependencies (`dompurify`)
+
 ## [0.52.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.2...v0.52.0) (2026-07-10)
 
 ### ⚠ Breaking Changes
