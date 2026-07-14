@@ -50,6 +50,7 @@ import {
   readHookGuide,
   type Guide,
   reparentDeprecatedMembers,
+  sourceFilePath,
   standalonePageFromSources,
 } from './utils.ts'
 
@@ -775,16 +776,6 @@ export class SDKRouter extends MemberRouter {
             bucket.push(child)
             hooksByDomain.set(domainPath, bucket)
             this.handledHooks.add(child)
-
-            const hookDir = hookDirFromSources(child)
-            if (hookDir) {
-              hookGroupMap.set(child, hookDir)
-              if (!hookGuidesByDir.has(hookDir)) {
-                const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName
-                const guide = fp ? readHookGuide(fp, hookDir) : null
-                if (guide) hookGuidesByDir.set(hookDir, guide)
-              }
-            }
           }
         }
         continue
@@ -804,6 +795,44 @@ export class SDKRouter extends MemberRouter {
     }
     if (project.groups) {
       project.groups = project.groups.filter(g => g.children.length > 0)
+    }
+
+    // Assign each hook reflection to its hookGroupMap page key.
+    //
+    // Two-pass so companion types can follow non-utility hook functions that
+    // live in the same source file (e.g. UseCurrentHomeAddressFormProps from
+    // useCurrentHomeAddressForm.tsx follows useCurrentHomeAddressForm, not
+    // the useHomeAddressForm directory bucket).
+    //
+    // Pass 1 — hook functions: non-utility hooks own a page named after
+    // themselves; utility hooks stay on the primary hook's page.
+    const hookFileToHookDir = new Map<string, string>() // source path → hookDir
+    for (const hooks of hooksByDomain.values()) {
+      for (const hook of hooks) {
+        if (!(hook instanceof DeclarationReflection)) continue
+        if (hook.kind !== ReflectionKind.Function) continue
+        const isUtilityHook = hasGroup(hook, CUSTOM_GROUPS.utilityHooks)
+        const hookDir = isUtilityHook ? hookDirFromSources(hook) : hook.name
+        if (!hookDir) continue
+        hookGroupMap.set(hook, hookDir)
+        const fp = sourceFilePath(hook)
+        if (fp && !isUtilityHook) hookFileToHookDir.set(fp, hookDir)
+        if (!hookGuidesByDir.has(hookDir)) {
+          const guide = fp ? readHookGuide(fp, hookDir) : null
+          if (guide) hookGuidesByDir.set(hookDir, guide)
+        }
+      }
+    }
+    // Pass 2 — companion types: follow the non-utility hook in their source
+    // file if one exists, otherwise fall back to hookDirFromSources.
+    for (const hooks of hooksByDomain.values()) {
+      for (const hook of hooks) {
+        if (!(hook instanceof DeclarationReflection)) continue
+        if (hook.kind === ReflectionKind.Function) continue
+        const fp = sourceFilePath(hook)
+        const hookDir = (fp && hookFileToHookDir.get(fp)) ?? hookDirFromSources(hook)
+        if (hookDir) hookGroupMap.set(hook, hookDir)
+      }
     }
 
     // Read GUIDE.md files for Flow components before sources are cleared.
