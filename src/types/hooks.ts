@@ -41,6 +41,7 @@ export type {
  * | `afterError` | After an error response (4xx, 5xx) or network failure |
  *
  * @public
+ * @group HTTP interceptors
  *
  * @example
  * ```tsx

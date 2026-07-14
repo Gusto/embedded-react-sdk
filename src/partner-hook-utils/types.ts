@@ -80,6 +80,7 @@ export type ValidationMessages<
  * Common presentation props accepted by every hook field component.
  *
  * @public
+ * @group Hook field props
  */
 export interface BaseFieldProps {
   /** Visible label rendered above the field. */
@@ -94,6 +95,7 @@ export interface BaseFieldProps {
  *
  * @typeParam TProps - Original hook field props type that includes a `name` property.
  * @public
+ * @group Hook field props
  */
 export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name'>
 
@@ -110,6 +112,7 @@ export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name
  *
  * @typeParam TFormData - Shape of the form values managed by react-hook-form.
  * @public
+ * @group Form hook results
  */
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
   /** The full react-hook-form return value; use for watching fields, setting values, or triggering validation. */
@@ -142,6 +145,7 @@ export interface HookFormInternals<TFormData extends FieldValues = FieldValues> 
  * ready-state shape (data, form, actions, status) becomes available.
  *
  * @public
+ * @group Common hook results
  */
 export interface HookLoadingResult {
   /** Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available. */
@@ -161,6 +165,7 @@ export interface HookLoadingResult {
  *
  * @typeParam T - Type of the saved entity returned by the underlying mutation.
  * @public
+ * @group Form hook results
  */
 export interface HookSubmitResult<T> {
   /** Whether the submission created a new entity or updated an existing one. */
@@ -181,6 +186,7 @@ export interface HookSubmitResult<T> {
  * the supported way to discriminate fetch vs submit failures today.
  *
  * @public
+ * @group Common hook results
  */
 export interface HookErrorHandling {
   /** Aggregated fetch and submit errors as normalized {@link SDKError} values. */
@@ -203,6 +209,7 @@ export interface HookErrorHandling {
  * @typeParam TData - Shape of the data the hook exposes once loaded.
  * @typeParam TStatus - Shape of the status flags the hook exposes.
  * @public
+ * @group Common hook results
  */
 export interface BaseHookReady<
   TData extends Record<string, unknown> = Record<string, unknown>,
@@ -236,6 +243,7 @@ export interface BaseHookReady<
  * @typeParam TFields - Shape of the pre-bound `Fields` component map.
  * @typeParam TFormOutputs - Shape of the values produced once the schema parses on submit (the resolver output / `TTransformedValues`). Defaults to `TFormData`, which holds whenever the form's input and parsed-output shapes coincide; pass it explicitly when a schema transform makes them diverge.
  * @public
+ * @group Form hook results
  */
 export interface BaseFormHookReady<
   TFieldsMetadata extends FieldsMetadata = FieldsMetadata,
@@ -273,6 +281,7 @@ export interface BaseFormHookReady<
  * under an `SDKFormProvider`.
  *
  * @public
+ * @group Form hook results
  * @privateRemarks
  * `_fieldElementRegistry` is forwarded from {@link HookFormInternals} so HookFields
  * can self-publish the registry for descendant `useField` calls when partners

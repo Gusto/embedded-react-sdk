@@ -69,6 +69,7 @@ export interface SDKFormProviderProps<
  * Server-side field errors are automatically synced onto their corresponding fields.
  *
  * @public
+ * @group Providers
  *
  * @example
  * ```tsx

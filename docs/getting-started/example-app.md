@@ -21,7 +21,7 @@ It's the best place to see how the individual pieces connect into a cohesive int
 
 ## What it doesn't yet demonstrate
 
-- **Hooks.** The demo app uses the component-based workflows to show the end-to-end experience. If you prefer a headless integration, the SDK also exports [hooks](../reference/utilities.md) that give you full control over UI and state management. You can use hooks to replicate the experience shown in the demo app in a way that aligns better with your own design system.
+- **Hooks.** The demo app uses the component-based workflows to show the end-to-end experience. If you prefer a headless integration, the SDK also exports [hooks](../reference/hooks.md) that give you full control over UI and state management. You can use hooks to replicate the experience shown in the demo app in a way that aligns better with your own design system.
 - **Contractor functionality.** The SDK includes components for contractor onboarding and payments. These will be added to the demo app soon. In the meantime, you can learn more about contractor workflows in the [Contractor onboarding](../reference/contractor/onboarding/onboarding-flow.md) and [Contractor payments](../reference/contractor/management/payment-flow.md) reference pages.
 
 ## Running it

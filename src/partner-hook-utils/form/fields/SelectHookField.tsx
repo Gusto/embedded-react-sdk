@@ -16,6 +16,7 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
  * @public
+ * @group Hook field props
  */
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown>
   extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {

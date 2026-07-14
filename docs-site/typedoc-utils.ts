@@ -12,6 +12,7 @@ export const CUSTOM_GROUPS = {
   flowComponents: 'Flow components',
   blockComponents: 'Block components',
   components: 'Components',
+  providers: 'Providers',
 
   // Hooks
   formHooks: 'Form hooks',
@@ -22,11 +23,22 @@ export const CUSTOM_GROUPS = {
   // Hook components are exposed as fields, usually auto-tagged by typedoc-custom plugin
   fields: 'Fields',
 
-  // Component adapter prop types
+  // Component adapter + all the props for each slot
+  componentAdapter: 'Component adapter',
   componentProps: 'Component props',
 
   // Catch-all for types that support the main focus of the documentation
   utilityTypes: 'Utility types',
+
+  // Hooks reference page (partner-hook-utils)
+  formComposition: 'Form composition',
+  commonHookResults: 'Common hook results',
+  formHookResults: 'Form hook results',
+  hookFieldProps: 'Hook field props',
+
+  // Standalone reference pages
+  httpInterceptors: 'HTTP interceptors',
+  observability: 'Observability',
 
   // Namespaces and synthetic sections produced by the typedoc-custom plugin
   componentNamespaces: 'Component namespaces',
@@ -94,11 +106,18 @@ export const GROUP_ORDER = [
 
   CUSTOM_GROUPS.fields,
   CUSTOM_GROUPS.components,
+  CUSTOM_GROUPS.providers,
+  CUSTOM_GROUPS.componentAdapter,
   CUSTOM_GROUPS.componentProps,
   CUSTOM_GROUPS.eventNames,
   CUSTOM_GROUPS.validations,
 
   DEFAULT_GROUPS.functions,
+
+  CUSTOM_GROUPS.formComposition,
+  CUSTOM_GROUPS.commonHookResults,
+  CUSTOM_GROUPS.formHookResults,
+  CUSTOM_GROUPS.hookFieldProps,
 
   CUSTOM_GROUPS.utilityTypes,
   DEFAULT_GROUPS.variables,

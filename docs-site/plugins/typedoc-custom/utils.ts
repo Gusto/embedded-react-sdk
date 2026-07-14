@@ -20,6 +20,7 @@ const COMPONENT_GROUP_NAMES = new Set<string>([
   CUSTOM_GROUPS.flowComponents,
   CUSTOM_GROUPS.blockComponents,
   CUSTOM_GROUPS.components,
+  CUSTOM_GROUPS.providers,
 ])
 
 /** Derived from DOMAINS — do not edit directly.
@@ -85,15 +86,13 @@ export function hasGroup(reflection: Reflection, group: string): boolean {
 }
 
 /**
- * The type name a reflection's `@groupWith {@link X}` tag points at — the
- * sibling it should render immediately after — or `null` when the tag is
- * absent. Prefers the resolved `{@link}` target's name; falls back to the raw
- * link text (stripping any `#member` or `| display` suffix).
+ * The type name pointed at by a relationship tag whose content is a single
+ * `{@link X}` (`@siblingOf`, `@childOf`). Prefers the resolved `{@link}`
+ * target's name; falls back to the raw link text (stripping any `#member` or
+ * `| display` suffix). Returns `null` when the tag is absent.
  */
-export function groupWithTarget(reflection: Reflection): string | null {
-  const tag = (reflection as DeclarationReflection).comment?.blockTags.find(
-    t => t.tag === '@groupWith',
-  )
+function linkTagTarget(reflection: Reflection, tagName: string): string | null {
+  const tag = (reflection as DeclarationReflection).comment?.blockTags.find(t => t.tag === tagName)
   if (!tag) return null
   for (const part of tag.content) {
     if (part.kind === 'inline-tag' && part.tag === '@link') {
@@ -106,11 +105,38 @@ export function groupWithTarget(reflection: Reflection): string | null {
 }
 
 /**
+ * The type name a reflection's `@siblingOf {@link X}` tag points at — the peer
+ * it should render immediately after, at the same heading level, within its
+ * group — or `null` when the tag is absent.
+ */
+export function siblingOfTarget(reflection: Reflection): string | null {
+  return linkTagTarget(reflection, '@siblingOf')
+}
+
+/**
+ * The type name a reflection's `@childOf {@link X}` tag points at — the parent
+ * it should render nested beneath, at one deeper heading level, instead of as
+ * its own top-level entry — or `null` when the tag is absent.
+ */
+export function childOfTarget(reflection: Reflection): string | null {
+  return linkTagTarget(reflection, '@childOf')
+}
+
+/**
  * Return the standalone page key for a project-level reflection, based on its
  * source file path matching a key in STANDALONE_PAGES. Returns null when no
  * key matches.
  */
 export function standalonePageFromSources(reflection: Reflection): string | null {
+  // `@page <id>` overrides source-path routing — check it first.
+  const pageTag = (reflection as DeclarationReflection).comment?.blockTags.find(
+    t => t.tag === '@page',
+  )
+  if (pageTag) {
+    const pageId = Comment.combineDisplayParts(pageTag.content).trim()
+    if (STANDALONE_PAGES.some(p => p.id === pageId)) return pageId
+  }
+
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return null
   const fp = source.fullFileName ?? source.fileName ?? ''
@@ -277,7 +303,9 @@ export function getSidebarPosition(url: string): number | undefined {
   if (url === 'index.md') return 1
   const key = url.replace(/\.md$/, '')
   const standaloneIdx = STANDALONE_PAGES.findIndex(p => p.id === key)
-  if (standaloneIdx !== -1) return DOMAINS.length + standaloneIdx + 1
+  if (standaloneIdx !== -1) {
+    return STANDALONE_PAGES[standaloneIdx]!.sidebarPosition ?? DOMAINS.length + standaloneIdx + 1
+  }
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
   if (filename === 'index' || filename === 'namespace') return 1
@@ -443,6 +471,15 @@ export function serializeFrontmatter(frontmatter: Record<string, unknown>): stri
 }
 
 /**
+ * Flatten Markdown link syntax (`[text](url)`) to its link text. The frontmatter
+ * `description` becomes a `<meta>` tag, which is plain text — leading-prose intros
+ * may carry cross-links, but those must not surface as literal `[…](…)` markup.
+ */
+function stripMarkdownLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+}
+
+/**
  * Derive a description for frontmatter from the model's comment summary, or
  * fall back to a generated sentence based on the page title.
  */
@@ -453,7 +490,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
     const fromComment =
       model.comment?.summary && Comment.combineDisplayParts(model.comment.summary).trim()
     return (
-      fromComment ||
+      (fromComment && stripMarkdownLinks(fromComment)) ||
       'Reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.'
     )
   }
@@ -461,7 +498,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
   const fromComment =
     decl.comment?.summary && Comment.combineDisplayParts(decl.comment.summary).trim()
-  if (fromComment) return fromComment
+  if (fromComment) return stripMarkdownLinks(fromComment)
 
   const title = pageTitle(page)
   return `${title} reference.`

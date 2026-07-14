@@ -4,25 +4,23 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Events
-description: Events reference.
-sidebar_position: 9
+description: Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. Pass a function matching `OnEventType` as the `onEvent` prop. See the Event handling guide for usage patterns.
+sidebar_position: 10
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Events
-
-## Event names
+Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. Pass a function matching [`OnEventType`](#oneventtype) as the `onEvent` prop. See the [Event handling guide](../guides/integration-guide/event-handling.md) for usage patterns.
 
 <a id="componentevents"></a>
 
-### componentEvents
+## componentEvents
 
 > `const` **componentEvents**: `object`
 
 Catalog of every event key that an SDK component can emit through `onEvent`.
 
-#### Remarks
+### Remarks
 
 Components surface user actions and lifecycle transitions to the integrating
 application through an `onEvent(type, data)` callback. The `type` argument is
@@ -32,7 +30,7 @@ against the incoming `type` rather than hard-coding strings.
 All domain-specific event groups are spread into this object alongside
 a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
 
-#### Example
+### Example
 
 ```tsx
 import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -47,7 +45,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 />
 ```
 
-#### Type Declaration
+### Type Declaration
 
 | Name | Type |
 | ------ | ------ |

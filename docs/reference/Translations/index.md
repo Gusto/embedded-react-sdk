@@ -4939,7 +4939,7 @@ Recursively makes every property of `T` optional, descending into nested objects
 ### GlobalResourceDictionary
 
 Translation overrides for **every** SDK namespace at once, keyed by language then
-namespace — the global dictionary accepted by [GustoProvider](../index.md#gustoprovider). Each namespace
+namespace — the global dictionary accepted by [GustoProvider](../providers.md#gustoprovider). Each namespace
 maps to a deep-partial of its keys (see [Resources](#resources)); override only what you need.
 For a single component's namespace, use [ResourceDictionary](#resourcedictionary) instead.
 

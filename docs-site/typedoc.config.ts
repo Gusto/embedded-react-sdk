@@ -53,9 +53,20 @@ export const baseOptions = {
 
   // Custom block tags. `@components` lists the components/hooks a flow composes
   // (rendered as a table by the SDK theme); `@events` documents events separately
-  // from `@remarks`; `@groupWith {@link X}` pins a type to render immediately after
-  // sibling `X` in its group. Spread the defaults so the built-in tags are kept.
-  blockTags: [...OptionDefaults.blockTags, '@components', '@events', '@groupWith'],
+  // from `@remarks`; `@siblingOf {@link X}` pins a type to render immediately after
+  // peer `X` at the same level in its group; `@childOf {@link X}` renders a type
+  // nested beneath `X` (one deeper heading level) instead of as its own top-level
+  // entry; `@page <id>` overrides source-path routing to pin a type to a specific
+  // standalone reference page regardless of which file it lives in. Spread the
+  // defaults so the built-in tags are kept.
+  blockTags: [
+    ...OptionDefaults.blockTags,
+    '@components',
+    '@events',
+    '@siblingOf',
+    '@childOf',
+    '@page',
+  ],
 } satisfies TypeDocOptions & PluginOptions
 
 export default {

@@ -3,6 +3,7 @@
  * in the job form's `stateWcClassCode` field options.
  *
  * @public
+ * @page employee/types
  */
 export type WARiskClassCode = {
   /** The workers' compensation risk class code. */

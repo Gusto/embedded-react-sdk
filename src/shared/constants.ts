@@ -548,6 +548,7 @@ export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
  * record. The values mirror the strings returned by the API.
  *
  * @public
+ * @page employee/types
  */
 export const EmployeeOnboardingStatus = {
   ADMIN_ONBOARDING_INCOMPLETE: OnboardingStatus.AdminOnboardingIncomplete,
@@ -569,6 +570,7 @@ export const EmployeeOnboardingStatus = {
  * flow (invited, started, or overdue) versus an admin-driven onboarding flow.
  *
  * @public
+ * @page employee/types
  */
 export const EmployeeSelfOnboardingStatuses = new Set<string>([
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
@@ -584,6 +586,7 @@ export const EmployeeSelfOnboardingStatuses = new Set<string>([
  * record. The values mirror the strings returned by the API.
  *
  * @public
+ * @page contractor/types
  */
 export const ContractorOnboardingStatus = {
   ADMIN_ONBOARDING_INCOMPLETE: ContractorOnboardingStatus1.AdminOnboardingIncomplete,
@@ -605,6 +608,7 @@ export const ContractorOnboardingStatus = {
  * onboarding flow.
  *
  * @public
+ * @page contractor/types
  */
 export const ContractorSelfOnboardingStatuses = new Set<ContractorOnboardingStatus1>([
   ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
@@ -661,6 +665,7 @@ export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
  * `SignatureForm`.
  *
  * @public
+ * @page employee/types
  */
 export const I9_FORM_NAME = 'US_I-9'
 
@@ -669,6 +674,7 @@ export const I9_FORM_NAME = 'US_I-9'
  * in state selection controls.
  *
  * @public
+ * @page employee/types
  */
 export const STATES_ABBR = [
   'AL',
@@ -729,6 +735,7 @@ export const STATES_ABBR = [
  * {@link STATES_ABBR}.
  *
  * @public
+ * @page employee/types
  */
 export type StateAbbreviation = (typeof STATES_ABBR)[number]
 
@@ -747,6 +754,7 @@ export const SIGNATORY_TITLES = {
  * Pay period unit values for the `paymentUnit` field on a compensation, describing the unit a pay rate is expressed against.
  *
  * @public
+ * @page employee/types
  */
 export const PAY_PERIODS = {
   HOUR: 'Hour',

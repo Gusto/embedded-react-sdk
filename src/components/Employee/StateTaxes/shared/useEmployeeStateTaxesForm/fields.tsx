@@ -147,7 +147,7 @@ export interface DateStateTaxQuestion extends SharedQuestionMetadata {
  *
  * @public
  * @group Fields
- * @groupWith {@link StateTaxFieldsGroup}
+ * @siblingOf {@link StateTaxFieldsGroup}
  */
 export type StateTaxQuestionFieldEntry =
   | SelectStateTaxQuestion
@@ -163,7 +163,7 @@ export type StateTaxQuestionFieldEntry =
  *
  * @public
  * @group Fields
- * @groupWith {@link StateTaxFields}
+ * @siblingOf {@link StateTaxFields}
  */
 export interface StateTaxFieldsGroup {
   /** Two-letter state code. */

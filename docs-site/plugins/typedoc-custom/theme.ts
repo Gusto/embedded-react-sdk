@@ -14,6 +14,7 @@ import {
   ParameterReflection,
   QueryType,
   ReferenceType,
+  type Reflection,
   ReflectionKind,
   ReflectionType,
   type SignatureReflection,
@@ -28,7 +29,6 @@ import {
   componentPropsInterfaces,
   getDomainPath,
   getSidebarPosition,
-  groupWithTarget,
   hasGroup,
   isComponent,
   isDomainHub,
@@ -40,11 +40,12 @@ import {
   pageTitle,
   readDomainGuide,
   serializeFrontmatter as buildFrontmatterYaml,
+  siblingOfTarget,
   type Guide,
   type GuideSlot,
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
-import { TYPE_EMOJIS } from './router.config.ts'
+import { TYPE_EMOJIS, type PageLayout } from './router.config.ts'
 import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
@@ -397,6 +398,126 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
       parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
     }
   }
+  return parts.join('\n\n')
+}
+
+/**
+ * Render a standalone page laid out by an explicit {@link PageLayout} config
+ * (see {@link StandalonePageConfig.layout}). Sections are emitted in this order:
+ * the `feature` groups in the order configured, then everything else per
+ * `default`. A `promote`d group (and the `promote` default) lifts each member to
+ * its own `## H2` with no group heading; otherwise members sit as `### H3` under
+ * a `## H2` heading (the group name, or `Utility types` for the default set).
+ *
+ * Returns the page BODY ONLY — no H1, no frontmatter (attached later by the
+ * page-END handler), matching {@link renderBlocksPage}. Dispatched from the
+ * reflection template only when the page's synthetic namespace is registered in
+ * {@link SDKRouter.standaloneLayouts}; pages without a `layout` fall through to
+ * the default template unchanged.
+ */
+function renderStandalonePage(
+  context: SDKThemeContext,
+  model: DeclarationReflection,
+  layout: PageLayout,
+): string {
+  const groups = model.groups ?? []
+  const featured = layout.feature ?? []
+  const featuredTitles = new Set<string>(featured.map(f => f.group))
+  const defaultMode = layout.default ?? 'utilityTypes'
+
+  const sourceIndex = new Map<Reflection, number>(
+    (model.children ?? []).map((child, index) => [child, index]),
+  )
+  const compare =
+    layout.sort === 'source'
+      ? (a: DeclarationReflection, b: DeclarationReflection): number =>
+          (sourceIndex.get(a) ?? 0) - (sourceIndex.get(b) ?? 0)
+      : undefined
+
+  const declarations = (members: Reflection[]): DeclarationReflection[] =>
+    members.filter((m): m is DeclarationReflection => m instanceof DeclarationReflection)
+
+  // A component inlines its props interface — with that interface's own anchor —
+  // in place of the bare `props:` parameter row (see renderFunctionPropsTable).
+  // The inlined interface must not also render as its own standalone member, or
+  // the props table appears twice. Collect every such interface up front so both
+  // the featured and default member lists can exclude it.
+  const inlinedComponentProps = new Set<Reflection>()
+  for (const group of groups) {
+    for (const member of declarations(group.children)) {
+      const sig = member.signatures?.[0]
+      if (!isComponent(member) || sig?.parameters?.length !== 1) continue
+      const propsType = sig.parameters[0]!.type
+      const propsRef = propsType instanceof ReferenceType ? propsType.reflection : undefined
+      if (
+        propsRef instanceof DeclarationReflection &&
+        propsRef.kind === ReflectionKind.Interface &&
+        (propsRef.parent === member.parent || propsRef.parent === member)
+      ) {
+        inlinedComponentProps.add(propsRef)
+      }
+    }
+  }
+  const pageMembers = (members: DeclarationReflection[]): DeclarationReflection[] =>
+    members.filter(m => !inlinedComponentProps.has(m))
+
+  // Sibling members within a section are divided by `***`, matching the default
+  // template; a heading (group name or `Utility types`) is itself the divider,
+  // so no `***` runs between a heading and its first member or before a heading.
+  const nestedChildren = (context.router as SDKRouter).nestedChildrenByParent
+  const parts: string[] = []
+  let prevWasMember = false
+  const emitMember = (member: DeclarationReflection, headingLevel: 2 | 3): void => {
+    if (prevWasMember) parts.push('***')
+    parts.push(context.partials.memberContainer(member, { headingLevel }))
+    // Emit `@childOf` members nested one heading level beneath their parent,
+    // matching the default template's `members` partial. They were pulled from
+    // the page's groups by nestChildOfMembers, so they only render here.
+    for (const child of nestedChildren.get(member) ?? []) {
+      parts.push(context.partials.memberContainer(child, { headingLevel: headingLevel + 1 }))
+    }
+    prevWasMember = true
+  }
+  const emitHeading = (heading: string): void => {
+    parts.push(`## ${heading}`)
+    prevWasMember = false
+  }
+
+  // Preserve the page's summary prose (e.g. a namespace's leading description).
+  // The H1 comes from the frontmatter title, matching the body-only blocks page.
+  const description = model.comment
+    ? (context.helpers.getDescriptionForComment(model.comment) ?? '')
+    : ''
+  if (description) parts.push(description)
+
+  for (const { group: title, promote, note } of featured) {
+    const group = groups.find(g => g.title === title)
+    if (!group) continue
+    const members = orderBySiblingOf(pageMembers(declarations(group.children)), undefined, compare)
+    if (members.length === 0) continue
+    if (!promote) emitHeading(title)
+    // A note sits under the group heading; skip it for promoted groups, which
+    // drop the heading and lift members straight to H2 (nowhere for it to go).
+    if (note && !promote) {
+      parts.push(note)
+      prevWasMember = false
+    }
+    for (const member of members) emitMember(member, promote ? 2 : 3)
+  }
+
+  const rest = orderBySiblingOf(
+    pageMembers(
+      groups.filter(g => !featuredTitles.has(g.title)).flatMap(g => declarations(g.children)),
+    ),
+    undefined,
+    compare,
+  )
+  if (rest.length > 0) {
+    const promote = defaultMode === 'promote'
+    if (!promote) emitHeading(CUSTOM_GROUPS.utilityTypes)
+    for (const member of rest) emitMember(member, promote ? 2 : 3)
+  }
+
   return parts.join('\n\n')
 }
 
@@ -2078,24 +2199,26 @@ function injectFieldsSummary(rendered: string, summary: string): string {
 
 /**
  * Order field-section members alphabetically by name, except that a member
- * carrying `@groupWith {@link X}` is pulled out of the alphabetical run and
+ * carrying `@siblingOf {@link X}` is pulled out of the alphabetical run and
  * rendered immediately after `X` (chained — a follower can itself be a target).
  * `pinnedFirst`, when given, always leads the list regardless of name and may
- * itself be a `@groupWith` target (e.g. the fields source-of-truth alias).
+ * itself be a `@siblingOf` target (e.g. the fields source-of-truth alias).
  *
- * A `@groupWith` pointing at a name that isn't in this set degrades to a plain
+ * A `@siblingOf` pointing at a name that isn't in this set degrades to a plain
  * alphabetical anchor; a cycle can't drop members — the trailing safety pass
  * emits anything left over.
  */
-function orderByGroupWith(
+function orderBySiblingOf(
   members: DeclarationReflection[],
   pinnedFirst?: DeclarationReflection,
+  compare: (a: DeclarationReflection, b: DeclarationReflection) => number = (a, b) =>
+    a.name.localeCompare(b.name),
 ): DeclarationReflection[] {
   const present = new Set([...(pinnedFirst ? [pinnedFirst.name] : []), ...members.map(m => m.name)])
   const followersByTarget = new Map<string, DeclarationReflection[]>()
   const anchors: DeclarationReflection[] = []
   for (const member of members) {
-    const target = groupWithTarget(member)
+    const target = siblingOfTarget(member)
     if (target && target !== member.name && present.has(target)) {
       const list = followersByTarget.get(target) ?? []
       list.push(member)
@@ -2104,10 +2227,8 @@ function orderByGroupWith(
       anchors.push(member)
     }
   }
-  const byName2 = (a: DeclarationReflection, b: DeclarationReflection): number =>
-    a.name.localeCompare(b.name)
-  anchors.sort(byName2)
-  for (const list of followersByTarget.values()) list.sort(byName2)
+  anchors.sort(compare)
+  for (const list of followersByTarget.values()) list.sort(compare)
 
   const emitted = new Set<DeclarationReflection>()
   const ordered: DeclarationReflection[] = []
@@ -2172,7 +2293,7 @@ function renderFieldsMemberWithInheritance(
  * There's no per-key quick-reference table to build, so the alias is documented
  * in its own right under the same `## Fields` heading the flat case uses — at
  * H3, keeping its symbol name and anchor so cross-references stay valid — with
- * its `@group Fields` companion types following it in {@link orderByGroupWith}
+ * its `@group Fields` companion types following it in {@link orderBySiblingOf}
  * order. The caller must only invoke this when `fieldsArrayAlias` is set; a
  * missing alias is a hard {@link HookModelError}, never a silently field-less page.
  */
@@ -2191,13 +2312,13 @@ function buildFieldsArraySection(
   const companions = (hookNs.children ?? [])
     .filter((c): c is DeclarationReflection => c instanceof DeclarationReflection)
     .filter(c => hasGroup(c, CUSTOM_GROUPS.fields))
-  const ordered = [alias, ...orderByGroupWith(companions, alias)]
-  // `@groupWith` is a layout directive consumed by orderByGroupWith above, not
-  // documentation — drop it so it doesn't render as a "Group With" block on the
+  const ordered = [alias, ...orderBySiblingOf(companions, alias)]
+  // `@siblingOf` is a layout directive consumed by orderBySiblingOf above, not
+  // documentation — drop it so it doesn't render as a "Sibling Of" block on the
   // member (mirrors how `@components` is stripped after it's consumed).
   for (const member of ordered) {
     if (member.comment) {
-      member.comment.blockTags = member.comment.blockTags.filter(t => t.tag !== '@groupWith')
+      member.comment.blockTags = member.comment.blockTags.filter(t => t.tag !== '@siblingOf')
     }
   }
   // Separate entries with the same `***` divider the standard `members` partial
@@ -2533,6 +2654,41 @@ export class SDKThemeContext extends MarkdownThemeContext {
 
     this.partials = {
       ...this.partials,
+      // Render members carrying `@childOf {@link X}` nested one heading level
+      // beneath X rather than as their own top-level entries. The router
+      // (nestChildOfMembers) has already pulled these children out of their
+      // groups and recorded them under their parent in `nestedChildrenByParent`,
+      // so the parent is still in `model` here and its children are appended
+      // right after it. Otherwise this mirrors the stock `members` partial: the
+      // same `displayHr` rule for dividers, and `\n\n***\n\n` is horizontalRule().
+      members: (
+        model: DeclarationReflection[],
+        options: { headingLevel: number; groupTitle?: string },
+      ) => {
+        const nested = (this.router as SDKRouter).nestedChildrenByParent
+        const displayHr = (reflection: DeclarationReflection): boolean => {
+          const parent = reflection.parent
+          if (parent && this.router.hasOwnDocument(parent)) return true
+          return this.helpers.isGroupKind(reflection)
+        }
+        const items = model.filter(item => !this.router.hasOwnDocument(item))
+        const md: string[] = []
+        items.forEach((item, index) => {
+          md.push(
+            this.partials.memberContainer(item, {
+              headingLevel: options.headingLevel,
+              groupTitle: options.groupTitle,
+            }),
+          )
+          for (const child of nested.get(item) ?? []) {
+            md.push(
+              this.partials.memberContainer(child, { headingLevel: options.headingLevel + 1 }),
+            )
+          }
+          if (index < items.length - 1 && displayHr(item)) md.push('\n\n***\n\n')
+        })
+        return md.join('\n\n')
+      },
       memberTitle: (model: DeclarationReflection) => {
         const title = origMemberTitle(model)
         // Strip trailing () for components. Deprecated titles are wrapped in ~~...~~
@@ -2732,6 +2888,8 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (isHooksIndex(page.model)) return renderHooksIndex(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
         if (isBlocksPage(page.model)) return renderBlocksPage(this, page.model)
+        const standaloneLayout = (this.router as SDKRouter).standaloneLayouts.get(page.model)
+        if (standaloneLayout) return renderStandalonePage(this, page.model, standaloneLayout)
 
         // Build the @components table, then strip the tag so the default
         // renderer doesn't also emit it as a raw block-tag section.

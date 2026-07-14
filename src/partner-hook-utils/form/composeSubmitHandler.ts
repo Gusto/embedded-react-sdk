@@ -15,6 +15,7 @@ import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fiel
  * the form's generic.
  *
  * @public
+ * @childOf {@link composeSubmitHandler}
  */
 export interface ComposableFormHookResult {
   /** The form surface: the react-hook-form internals used to validate and focus fields. */
@@ -45,6 +46,7 @@ export interface ComposableFormHookResult {
  *
  * @typeParam T - The shape of the form values when a raw `UseFormReturn` is passed.
  * @public
+ * @childOf {@link composeSubmitHandler}
  */
 export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
   ComposableFormHookResult | UseFormReturn<T>
@@ -61,6 +63,7 @@ interface FormValidationResult {
  * coordinates validation across the composed forms, and aggregated error state.
  *
  * @public
+ * @childOf {@link composeSubmitHandler}
  */
 export interface ComposeSubmitHandlerResult {
   /** Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. */
@@ -162,6 +165,7 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  * @param onAllValid - Async callback invoked once every form has passed validation.
  * @returns A {@link ComposeSubmitHandlerResult} with a unified `handleSubmit` and aggregated `errorHandling`.
  * @public
+ * @group Form composition
  *
  * @example
  * ```tsx

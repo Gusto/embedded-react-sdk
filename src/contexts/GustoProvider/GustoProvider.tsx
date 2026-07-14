@@ -42,6 +42,7 @@ export interface GustoProviderProps extends Omit<GustoBaseProviderProps, 'compon
  * @param props - See {@link GustoProviderProps}.
  * @returns The configured provider tree wrapping `children`.
  * @public
+ * @group Providers
  */
 export function GustoProvider(props: GustoProviderProps) {
   const { children, components = {}, locale, queryClient, ...remainingProps } = props
