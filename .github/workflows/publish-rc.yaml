@@ -60,10 +60,17 @@ jobs:
             exit 1
           fi
 
+      - name: Authenticate with Cloudsmith via OIDC
+        uses: cloudsmith-io/cloudsmith-cli-action@v2
+        with:
+          oidc-namespace: "gusto"
+          oidc-service-slug: "gusto-cloudsmith-write-svc-01"
+          oidc-auth-only: "true"
+
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: 'https://cloudsmith.io/gusto/gusto'
 
       - name: Restore node_modules cache
         id: cache-node-modules
@@ -169,7 +176,7 @@ jobs:
       - name: Publish RC version
         run: npm publish --access public --tag rc
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ env.CLOUDSMITH_API_KEY }}
 
       - name: Output published version
         run: |
