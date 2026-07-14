@@ -45,7 +45,13 @@ import {
   type GuideSlot,
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
-import { DOMAINS, STANDALONE_PAGES, TYPE_EMOJIS, type PageLayout } from './router.config.ts'
+import {
+  DOMAINS,
+  SIDEBAR_GROUPS,
+  STANDALONE_PAGES,
+  TYPE_EMOJIS,
+  type PageLayout,
+} from './router.config.ts'
 import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
@@ -172,37 +178,92 @@ function renderProjectIndex(context: SDKThemeContext): string {
 
   // Domain cards — one per domain, linking to the domain hub page.
   const domainCards = DOMAINS.map(domain => {
-    const firstNsId = domain.namespaces[0]!.id
-    const nsRef = project.children?.find(
-      (c): c is DeclarationReflection =>
-        c instanceof DeclarationReflection &&
-        c.name === firstNsId &&
-        c.kind === ReflectionKind.Namespace,
-    )
-    const description = nsRef?.comment
-      ? (context.helpers.getDescriptionForComment(nsRef.comment) ?? '')
-      : ''
-    const item: Record<string, string> = { type: 'link', href: domain.path, label: domain.label }
+    const description =
+      domain.description ??
+      (() => {
+        const firstNsId = domain.namespaces[0]!.id
+        const nsRef = project.children?.find(
+          (c): c is DeclarationReflection =>
+            c instanceof DeclarationReflection &&
+            c.name === firstNsId &&
+            c.kind === ReflectionKind.Namespace,
+        )
+        return nsRef?.comment ? (context.helpers.getDescriptionForComment(nsRef.comment) ?? '') : ''
+      })()
+
+    // Footer: per-namespace flow/block counts + domain hook count.
+    const nsFooterParts = domain.namespaces.flatMap(nsConfig => {
+      const ns = project.children?.find(
+        (c): c is DeclarationReflection =>
+          c instanceof DeclarationReflection &&
+          c.name === nsConfig.id &&
+          c.kind === ReflectionKind.Namespace,
+      )
+      if (!ns) return []
+      const children = ns.children ?? []
+      const flowCount = children.filter(
+        (c): c is DeclarationReflection =>
+          c instanceof DeclarationReflection && isComponent(c) && c.name.endsWith('Flow'),
+      ).length
+      const blockCount = children.filter(
+        (c): c is DeclarationReflection =>
+          c instanceof DeclarationReflection && isComponent(c) && !c.name.endsWith('Flow'),
+      ).length
+      const counts: string[] = []
+      if (flowCount > 0)
+        counts.push(`${TYPE_EMOJIS.flow} ${flowCount} workflow${flowCount === 1 ? '' : 's'}`)
+      if (blockCount > 0)
+        counts.push(`${TYPE_EMOJIS.block} ${blockCount} block${blockCount === 1 ? '' : 's'}`)
+      return [
+        `${TYPE_EMOJIS.namespace} ${nsConfig.id}${counts.length > 0 ? ` : ${counts.join(', ')}` : ''}`,
+      ]
+    })
+    const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(domain.path)
+    const hookPages = (hooksNs?.children ?? []) as DeclarationReflection[]
+    const formHookCount = hookPages.filter(h => h.name.endsWith('Form')).length
+    const dataHookCount = hookPages.filter(h => !h.name.endsWith('Form')).length
+    const footerParts = [...nsFooterParts]
+    if (formHookCount > 0) {
+      footerParts.push(
+        `${TYPE_EMOJIS.formHook} ${formHookCount} form hook${formHookCount === 1 ? '' : 's'}`,
+      )
+    }
+    if (dataHookCount > 0) {
+      footerParts.push(
+        `${TYPE_EMOJIS.dataHook} ${dataHookCount} data hook${dataHookCount === 1 ? '' : 's'}`,
+      )
+    }
+    const footer = footerParts.join('\n')
+
+    const item: Record<string, unknown> = { type: 'link', href: domain.path, label: domain.label }
     if (description) item.description = description
+    if (footer) item.customProps = { footer }
     return item
   })
-  parts.push(`<DocCardList items={${JSON.stringify(domainCards)}} />`)
+  const domainsGroup = SIDEBAR_GROUPS.find(g => g.id === 'domains')!
+  parts.push(`## ${domainsGroup.header}`, `<DocCardList items={${JSON.stringify(domainCards)}} />`)
 
-  // Build group: Hooks, Workflows and blocks.
-  const buildCards = STANDALONE_PAGES.filter(p => p.sidebarGroup === 'build')
+  const buildTypeGroup = SIDEBAR_GROUPS.find(g => g.id === 'build-type')!
+  const buildCards = STANDALONE_PAGES.filter(p => p.sidebarGroup === 'build-type')
     .sort((a, b) => a.displayName.localeCompare(b.displayName))
     .map(p => {
       const raw = p.intro ? stripMarkdownLinks(p.intro) : ''
       const description = raw ? (raw.split(/\.(?:\s|$)/)[0]! + '.').trim() : ''
-      const item: Record<string, string> = { type: 'link', href: p.id, label: p.displayName }
+      const label = p.emoji ? `${p.emoji} ${p.displayName}` : p.displayName
+      const item: Record<string, string> = { type: 'link', href: p.id, label }
       if (description) item.description = description
       return item
     })
   if (buildCards.length > 0) {
-    parts.push('## Build', `<DocCardList items={${JSON.stringify(buildCards)}} />`)
+    parts.push(
+      '---',
+      `## ${buildTypeGroup.header}`,
+      `<DocCardList items={${JSON.stringify(buildCards)}} />`,
+    )
   }
 
-  // Config group: top-level standalone pages + the Translations namespace.
+  const defaultGroup = SIDEBAR_GROUPS.find(g => g.id === 'default')!
+  // Default group: top-level standalone pages with no sidebarGroup + Translations + API models namespaces.
   const translationsNs = project.children?.find(
     (c): c is DeclarationReflection =>
       c instanceof DeclarationReflection &&
@@ -210,11 +271,12 @@ function renderProjectIndex(context: SDKThemeContext): string {
       c.kind === ReflectionKind.Namespace,
   )
   const configItems: Record<string, string>[] = STANDALONE_PAGES.filter(
-    p => p.sidebarGroup === 'config' && !p.id.includes('/'),
+    p => !p.sidebarGroup && !p.id.includes('/'),
   ).map(p => {
     const raw = p.intro ? stripMarkdownLinks(p.intro) : ''
     const description = raw ? (raw.split(/\.(?:\s|$)/)[0]! + '.').trim() : ''
-    const item: Record<string, string> = { type: 'link', href: p.id, label: p.displayName }
+    const label = p.emoji ? `${p.emoji} ${p.displayName}` : p.displayName
+    const item: Record<string, string> = { type: 'link', href: p.id, label }
     if (description) item.description = description
     return item
   })
@@ -225,17 +287,11 @@ function renderProjectIndex(context: SDKThemeContext): string {
     const item: Record<string, string> = {
       type: 'link',
       href: 'Translations/',
-      label: 'Translations',
+      label: '🌍 Translations',
     }
     if (description) item.description = description
     configItems.push(item)
   }
-  configItems.sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
-  if (configItems.length > 0) {
-    parts.push('## Configuration', `<DocCardList items={${JSON.stringify(configItems)}} />`)
-  }
-
-  // API models namespace.
   const apiModelsNs = project.children?.find(
     (c): c is DeclarationReflection =>
       c instanceof DeclarationReflection &&
@@ -246,9 +302,23 @@ function renderProjectIndex(context: SDKThemeContext): string {
     const description = apiModelsNs.comment
       ? (context.helpers.getDescriptionForComment(apiModelsNs.comment) ?? '')
       : ''
-    const item: Record<string, string> = { type: 'link', href: 'APIModels/', label: 'API models' }
+    const item: Record<string, string> = {
+      type: 'link',
+      href: 'APIModels/',
+      label: '🔷 API models',
+    }
     if (description) item.description = description
-    parts.push('## API models', `<DocCardList items={${JSON.stringify([item])}} />`)
+    configItems.push(item)
+  }
+  // Sort by text only — strip leading emoji so alpha order isn't driven by codepoints.
+  const labelText = (label: string) => label.replace(/^[^\w]+/, '').trim()
+  configItems.sort((a, b) => labelText(a.label ?? '').localeCompare(labelText(b.label ?? '')))
+  if (configItems.length > 0) {
+    parts.push(
+      '---',
+      `## ${defaultGroup.header}`,
+      `<DocCardList items={${JSON.stringify(configItems)}} />`,
+    )
   }
 
   return parts.join('\n\n')
@@ -257,7 +327,13 @@ function renderProjectIndex(context: SDKThemeContext): string {
 function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
   const parts: string[] = [`# ${model.name}`, '']
 
-  const domainGuide = readDomainGuide(getDomainPath(model))
+  const domainPath = getDomainPath(model)
+  const domainConfig = DOMAINS.find(d => d.path === domainPath)
+  if (domainConfig?.description) {
+    parts.push(domainConfig.description, '')
+  }
+
+  const domainGuide = readDomainGuide(domainPath)
   if (domainGuide?.slots.overview) {
     parts.push(fenceSlot(domainGuide.slots.overview, domainGuide.source, 'overview', true), '')
   }
@@ -267,8 +343,8 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       c instanceof DeclarationReflection && c.kind === ReflectionKind.Namespace,
   )
 
-  const domainPath = getDomainPath(model)
   for (const ns of namespaces) {
+    parts.push('---')
     const nsAnchor = ns.name.replace(/([A-Z])/g, m => `-${m.toLowerCase()}`).replace(/^-/, '')
     parts.push(`## ${TYPE_EMOJIS.namespace} ${ns.name} {#${nsAnchor}}`, '')
 
@@ -320,10 +396,11 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
     }
   }
 
-  const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(getDomainPath(model))
+  const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(domainPath)
   const hookPages = (hooksNs?.children ?? []) as DeclarationReflection[]
 
   if (hookPages.length > 0) {
+    if (namespaces.length > 0) parts.push('---', '')
     parts.push(`## ${TYPE_EMOJIS.hooks} Hooks`, '')
     const hookItems = hookPages.map(hookNs => {
       const href = context.urlTo(hookNs).replace(/\.md$/, '')
@@ -1124,8 +1201,8 @@ function renderComponentsTable(
 
   const rows: string[] = []
   for (const part of links) {
-    const target = part.target
-    if (target instanceof DeclarationReflection) {
+    const target = 'target' in part && part.target
+    if (target && target instanceof DeclarationReflection) {
       // A same-namespace target's page (blocks.md or a sibling flow page) sits
       // in the flow's own directory, so its relative URL never traverses up
       // (`../`) — show it bare. A cross-namespace target's URL does traverse
@@ -2620,7 +2697,7 @@ export class SDKTheme extends MarkdownTheme {
     const isHub =
       isDomainHub(page.model) ||
       isHooksIndex(page.model) ||
-      page.model.kind === ReflectionKind.Project
+      ('kind' in page.model && page.model.kind === ReflectionKind.Project)
     page.frontmatter = {
       title: pageTitle(page),
       description: pageDescription(page),

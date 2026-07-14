@@ -27,10 +27,20 @@
  */
 import { CUSTOM_GROUPS, type CustomGroupTag } from '../../typedoc-utils.ts'
 
+export const SIDEBAR_GROUPS = [
+  { id: 'domains', header: 'Browse by domain' },
+  { id: 'build-type', header: 'Browse by type' },
+  { id: 'default', header: 'Configuration' },
+] as const
+
+export type SidebarGroup = (typeof SIDEBAR_GROUPS)[number]['id']
+
 export const DOMAINS: DomainConfig[] = [
   {
     label: 'Companies',
     path: 'company',
+    description:
+      'Enroll a business with Gusto — company setup, pay schedules, and required form signing — and respond to ongoing compliance information requests.',
     namespaces: [
       { id: 'CompanyOnboarding', subpath: 'onboarding' },
       { id: 'InformationRequests', subpath: 'information-requests' },
@@ -39,6 +49,8 @@ export const DOMAINS: DomainConfig[] = [
   {
     label: 'Employees',
     path: 'employee',
+    description:
+      'Onboard and manage W-2 workers (hourly, salary, commissioned, and more) — compensation, banking, tax withholding, documents, and terminations.',
     namespaces: [
       { id: 'EmployeeOnboarding', subpath: 'onboarding' },
       { id: 'EmployeeManagement', subpath: 'management' },
@@ -47,6 +59,8 @@ export const DOMAINS: DomainConfig[] = [
   {
     label: 'Contractors',
     path: 'contractor',
+    description:
+      'Onboard and manage 1099 contractors (individual or business) — profile, payment methods, documents, and contractor payments.',
     namespaces: [
       { id: 'ContractorOnboarding', subpath: 'onboarding' },
       { id: 'ContractorManagement', subpath: 'management' },
@@ -55,11 +69,14 @@ export const DOMAINS: DomainConfig[] = [
   {
     label: 'Payrolls',
     path: 'payroll',
+    description:
+      'Pay employees and contractors across all pay schedules, including off-cycle, dismissal, and transition payrolls.',
     namespaces: [{ id: 'Payroll' }],
   },
   {
     label: 'Time off policies',
     path: 'time-off',
+    description: 'Create and manage policies for vacation, sick leave, and company holidays.',
     namespaces: [{ id: 'TimeOff' }],
   },
 ]
@@ -68,8 +85,7 @@ export const DOMAINS: DomainConfig[] = [
  * Project-level reflections that don't belong to a domain, each consolidated onto
  * one top-level page (instead of being anchored on the project index). A reflection
  * is routed here when its source path contains any `sources` fragment; `groups`
- * narrows further to reflections carrying a matching `@group` tag. Array order sets
- * sidebar position (after all domains: DOMAINS.length + index + 1).
+ * narrows further to reflections carrying a matching `@group` tag.
  *
  *   {id}.md                          title: {displayName}
  *     ← every reflection whose source path contains a `sources` fragment
@@ -83,9 +99,10 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'components',
     sources: ['components/Base/Base'],
     displayName: 'Components',
-    sidebarGroup: 'build',
+    emoji: '🧩',
+    sidebarGroup: 'build-type',
     intro:
-      'All flow and block components across every SDK domain. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.',
+      'Shared types and utilities for all SDK workflow and block components. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.',
     layout: {
       crossDomainIndex: [
         { heading: 'Workflows', kind: 'flows' },
@@ -98,9 +115,10 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'hooks',
     sources: ['partner-hook-utils'],
     displayName: 'Hooks',
-    sidebarGroup: 'build',
+    emoji: '🪝',
+    sidebarGroup: 'build-type',
     intro:
-      'The shared types and helpers behind the SDK hooks. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
+      'Shared types and utilities behind every SDK hook. For concepts and usage — the form vs. data hook distinction, connecting fields, error handling, and composition — see the [Hooks guide](../guides/hooks/overview.md).',
     layout: {
       crossDomainIndex: [
         { heading: '🌐 Data hooks', kind: 'dataHooks' },
@@ -135,9 +153,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sources: ['shared/constants', 'components/Base/useBase'],
     groups: [CUSTOM_GROUPS.eventNames, CUSTOM_GROUPS.utilityTypes],
     displayName: 'Events',
-    sidebarGroup: 'config',
+    emoji: '⚡',
     intro:
-      'Every SDK component exposes an `onEvent` callback that fires when the user takes an action or completes a step. ' +
+      'Event types fired when users take actions or complete steps in SDK components. ' +
       'Pass a function matching [`OnEventType`](#oneventtype) as the `onEvent` prop. ' +
       'See the [Event handling guide](../guides/integration-guide/event-handling.md) for usage patterns.',
     layout: {
@@ -149,9 +167,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'providers',
     sources: ['contexts/GustoProvider'],
     displayName: 'Providers',
-    sidebarGroup: 'config',
+    emoji: '⚙️',
     intro:
-      'The two top-level providers that connect the SDK to your React tree. ' +
+      'Top-level providers for configuring auth, locale, and your design system. ' +
       'Wrap your application with one of these before rendering any SDK component.',
     layout: {
       feature: [{ group: CUSTOM_GROUPS.providers, promote: true }],
@@ -162,9 +180,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'error-handling',
     sources: ['types/sdkError'],
     displayName: 'Error handling',
-    sidebarGroup: 'config',
+    emoji: '⚠️',
     intro:
-      'Unified error types surfaced by every form hook and error-handling surface in the SDK. ' +
+      'Unified error shape returned by all SDK form hooks and error handlers. ' +
       'Every caught error — API, validation, network, or runtime — is normalized into [`SDKError`](#sdkerror).',
     layout: { default: 'promote' },
   },
@@ -175,9 +193,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     // are needed to capture all reflections on this page.
     sources: ['types/hooks', 'hooks/types'],
     displayName: 'HTTP interceptors',
-    sidebarGroup: 'config',
+    emoji: '🔌',
     intro:
-      'Low-level request/response interceptors for customizing HTTP behaviour across the SDK. ' +
+      'Callback hooks for intercepting and modifying HTTP requests and responses. ' +
       'Pass an [`SDKHooks`](#sdkhooks) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.hooks`.',
     layout: {
       feature: [{ group: CUSTOM_GROUPS.httpInterceptors, promote: true }],
@@ -188,9 +206,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'observability',
     sources: ['types/observability'],
     displayName: 'Observability',
-    sidebarGroup: 'config',
+    emoji: '📊',
     intro:
-      'Error-tracking and performance-metric hooks for integrating the SDK with tools like Sentry or Datadog. ' +
+      'Callback hooks for error tracking and performance metrics, compatible with tools like Sentry or Datadog. ' +
       'Pass an [`ObservabilityHook`](#observabilityhook) instance to [`GustoProvider`](providers.md#gustoprovider) via `config.observability`.',
     layout: {
       feature: [{ group: CUSTOM_GROUPS.observability, promote: true }],
@@ -201,15 +219,14 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'theme-variables',
     sources: ['contexts/ThemeProvider'],
     displayName: 'Theme variables',
-    sidebarGroup: 'config',
+    emoji: '🎨',
     intro:
-      'These design tokens control the visual appearance of all components and UX within the SDK. ' +
+      'Design tokens for lightweight customization of all SDK UI. ' +
       'See the [theming guide](../guides/theming.md) for more context.',
     layout: { default: 'promote' },
   },
   {
     id: 'component-inventory',
-    sidebarGroup: 'config',
     sources: [
       'components/Common/UI',
       'components/Common/FieldLayout',
@@ -219,8 +236,10 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       'contexts/ComponentAdapter',
     ],
     displayName: 'UI component inventory',
+    emoji: '🖼️',
     intro:
-      'Primitive UI elements that SDK components render internally, and the ComponentsAdapter interface for replacing them with your own design-system components.',
+      'Design system components for advanced customization of all SDK UI. ' +
+      'See the [component adapter guide](../guides/component-adapter/component-adapter.md) for more context.',
     layout: {
       feature: [
         { group: CUSTOM_GROUPS.componentAdapter, promote: true },
@@ -305,10 +324,9 @@ type DomainConfig = {
   path: string
   /** Namespaces under this domain, in render order. */
   namespaces: NamespaceConfig[]
+  /** Description for the reference index card. Describes the full domain scope across all namespaces. */
+  description?: string
 }
-
-/** Top-level sidebar section a standalone page belongs to. Domain-scoped pages omit this. */
-export type StandaloneSidebarGroup = 'build' | 'config'
 
 export type StandalonePageConfig = {
   /** Output page slug (e.g. `theme-variables` → `docs/reference/theme-variables.md`). */
@@ -324,7 +342,7 @@ export type StandalonePageConfig = {
    * (e.g. `employee/types`) that live inside a domain directory rather than appearing
    * in the top-level reference sidebar groups.
    */
-  sidebarGroup?: StandaloneSidebarGroup
+  sidebarGroup?: SidebarGroup
   /**
    * Explicit Docusaurus `sidebar_position` for this page. When set, overrides the
    * default position (`DOMAINS.length + standaloneIdx + 1`). Use for pages nested
@@ -332,6 +350,8 @@ export type StandalonePageConfig = {
    * subdirectory categories with high explicit positions (e.g. `hooks/` at 100).
    */
   sidebarPosition?: number
+  /** Emoji prefix for the reference index card label. Does not affect the page H1. */
+  emoji?: string
   /**
    * Optional Markdown prose rendered as the page's leading description, above
    * all sections (below the H1). The synthetic namespace carries no TSDoc of its

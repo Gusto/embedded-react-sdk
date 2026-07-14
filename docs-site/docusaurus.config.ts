@@ -4,7 +4,11 @@ import type { Config } from '@docusaurus/types'
 import type * as Preset from '@docusaurus/preset-classic'
 import { themes as prismThemes } from 'prism-react-renderer'
 import { CONFIG } from './src/config'
-import { DOMAINS, STANDALONE_PAGES } from './plugins/typedoc-custom/router.config.ts'
+import {
+  DOMAINS,
+  SIDEBAR_GROUPS,
+  STANDALONE_PAGES,
+} from './plugins/typedoc-custom/router.config.ts'
 
 // Versioning is owned by Gusto/embedded-sdk-docs, not this repo. When this
 // config builds there, `versions.json` exists and lists the cut minors; when it
@@ -159,29 +163,43 @@ const config: Config = {
 
             // Standalone pages grouped and alpha sorted by displayName.
             // Categories (Translations, API models) are interleaved by their label.
-            const byGroup = (group: 'build' | 'config') => {
+            const byGroup = (group: 'build-type') => {
               const pages = STANDALONE_PAGES.filter(p => p.sidebarGroup === group)
               const entries: Array<{ label: string; item: ReturnType<typeof findDoc> }> = pages.map(
                 p => ({ label: p.displayName, item: findDoc(`reference/${p.id}`) }),
               )
-              if (group === 'config') {
-                entries.push({ label: 'Translations', item: findCat('Translations') })
-              }
+
               return entries
                 .sort((a, b) => a.label.localeCompare(b.label))
                 .map(e => e.item)
                 .filter((i): i is NonNullable<typeof i> => i !== undefined)
             }
 
-            return [
-              ...domainItems,
-              hr,
-              ...byGroup('build'),
-              hr,
-              ...byGroup('config'),
-              hr,
-              findCat('API models'),
-            ].filter((i): i is NonNullable<typeof i> => i !== undefined)
+            const domainLabels = new Set(DOMAINS.map(d => d.label))
+            const ungroupedEntries: Array<{ label: string; item: (typeof filtered)[number] }> = []
+
+            for (const item of filtered) {
+              if (item.type === 'category' && !domainLabels.has(item.label)) {
+                ungroupedEntries.push({ label: item.label, item })
+              }
+            }
+            for (const p of STANDALONE_PAGES.filter(p => !p.sidebarGroup && !p.id.includes('/'))) {
+              const item = findDoc(`reference/${p.id}`)
+              if (item) ungroupedEntries.push({ label: p.displayName, item })
+            }
+
+            const ungrouped = ungroupedEntries
+              .sort((a, b) => a.label.localeCompare(b.label))
+              .map(e => e.item)
+
+            const result: (typeof filtered)[number][] = []
+            for (const [i, group] of SIDEBAR_GROUPS.entries()) {
+              if (i > 0) result.push(hr)
+              if (group.id === 'domains') result.push(...domainItems)
+              else if (group.id === 'build-type') result.push(...byGroup('build-type'))
+              else result.push(...ungrouped)
+            }
+            return result.filter((i): i is NonNullable<typeof i> => i !== undefined)
           },
           ...(hasVersions && {
             lastVersion,
