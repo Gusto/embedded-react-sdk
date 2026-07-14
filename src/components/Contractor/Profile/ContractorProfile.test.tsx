@@ -600,7 +600,7 @@ describe('Contractor profile component behavior', () => {
       )
 
       expect(
-        await screen.findByText('Editing this profile will require a new W-9'),
+        await screen.findByText('Changes will require an updated Form W-9'),
       ).toBeInTheDocument()
     })
 
@@ -614,9 +614,7 @@ describe('Contractor profile component behavior', () => {
       )
 
       await screen.findByText('Contractor profile')
-      expect(
-        screen.queryByText('Editing this profile will require a new W-9'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText('Changes will require an updated Form W-9')).not.toBeInTheDocument()
     })
 
     it('does not fetch documents or render the warning in create mode', async () => {
@@ -628,9 +626,7 @@ describe('Contractor profile component behavior', () => {
       renderWithProviders(<ContractorProfile companyId="company-123" onEvent={vi.fn()} />)
 
       await screen.findByText('Contractor profile')
-      expect(
-        screen.queryByText('Editing this profile will require a new W-9'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText('Changes will require an updated Form W-9')).not.toBeInTheDocument()
       expect(documentsResolver).not.toHaveBeenCalled()
     })
   })

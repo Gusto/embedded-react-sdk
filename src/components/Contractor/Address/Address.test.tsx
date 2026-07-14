@@ -462,7 +462,7 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={() => {}} />)
 
       expect(
-        await screen.findByText('Editing this address will require a new W-9'),
+        await screen.findByText('Changes will require an updated Form W-9'),
       ).toBeInTheDocument()
     })
 
@@ -470,9 +470,7 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={() => {}} />)
 
       await screen.findByText('Home address')
-      expect(
-        screen.queryByText('Editing this address will require a new W-9'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText('Changes will require an updated Form W-9')).not.toBeInTheDocument()
     })
   })
 })

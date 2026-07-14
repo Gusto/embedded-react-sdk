@@ -2,8 +2,8 @@
   "title": "Contractor profile",
   "subtitle": "This information will be used for payments and on tax documents, so double-check that it's accurate.",
   "w9EditWarning": {
-    "label": "Editing this profile will require a new W-9",
-    "body": "This contractor has already signed a W-9. If you change these details, you'll need to have them sign a new W-9."
+    "label": "Changes will require an updated Form W-9",
+    "body": "This contractor has already signed a Form W-9. If you edit these details, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."
   },
   "selfOnboarding": {
     "title": "Complete your profile",

@@ -1711,9 +1711,9 @@ export namespace Translations {
     /** @defaultValue `"Contractor's home mailing address, within the United States."` */
     homeAddressDescription: string
     w9EditWarning: {
-      /** @defaultValue `"Editing this address will require a new W-9"` */
+      /** @defaultValue `"Changes will require an updated Form W-9"` */
       label: string
-      /** @defaultValue `"This contractor has already signed a W-9. If you change this address, you'll need to have them sign a new W-9."` */
+      /** @defaultValue `"This contractor has already signed a Form W-9. If you edit this address, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."` */
       body: string
     }
     /** @defaultValue `"Street 1"` */
@@ -2359,9 +2359,9 @@ export namespace Translations {
     /** @defaultValue `"This information will be used for payments and on tax documents, so double-check that it's accurate."` */
     subtitle: string
     w9EditWarning: {
-      /** @defaultValue `"Editing this profile will require a new W-9"` */
+      /** @defaultValue `"Changes will require an updated Form W-9"` */
       label: string
-      /** @defaultValue `"This contractor has already signed a W-9. If you change these details, you'll need to have them sign a new W-9."` */
+      /** @defaultValue `"This contractor has already signed a Form W-9. If you edit these details, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."` */
       body: string
     }
     selfOnboarding: {
