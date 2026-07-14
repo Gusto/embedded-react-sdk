@@ -34,7 +34,7 @@ Props for [AssignSignatory](#assignsignatory).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../../Translations/index.md#companyassignsignatory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `signatoryId?` | `string` | Identifier of an existing signatory. When set and matching the current signatory, the create form pre-populates with their information for editing. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -80,7 +80,7 @@ Props for the [BankAccount](#bankaccount) component.
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyBankAccount`](../../Translations/index.md#companybankaccount)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -120,7 +120,7 @@ Props for [CreateSignatory](#createsignatory).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../../Translations/index.md#companyassignsignatory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `signatoryId?` | `string` | Identifier of an existing signatory. When provided and matching an existing signatory on the company, the form pre-populates with their information for editing. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -167,7 +167,7 @@ Props for [DocumentList](#documentlist).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyDocumentList`](../../Translations/index.md#companydocumentlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `signatoryId?` | `string` | Identifier of the signatory viewing the documents. When it matches the company's saved signatory, the user is treated as that signatory and is allowed to sign documents. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -209,7 +209,7 @@ Props for [DocumentSigner](#documentsigner).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyDocumentList`](../../Translations/index.md#companydocumentlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `signatoryId?` | `string` | ID of the signatory. When set and matching the current signatory, the user is treated as the signatory and is allowed to sign documents — the signature form is pre-populated with their information. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -256,7 +256,7 @@ Props for the [FederalTaxes](#federaltaxes) component.
 | `defaultValues?` | [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues) | Pre-populated values for the federal tax form. At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided — see [FederalTaxesDefaultValues](#federaltaxesdefaultvalues). |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyFederalTaxes`](../../Translations/index.md#companyfederaltaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -292,7 +292,7 @@ Props for the [Industry](#industry) component.
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyIndustry`](../../Translations/index.md#companyindustry)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -331,7 +331,7 @@ Props for the [InviteSignatory](#invitesignatory) component.
 | `defaultValues?` | [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues) | Default values to pre-populate the invite form fields. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../../Translations/index.md#companyassignsignatory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -371,7 +371,7 @@ Props for the [LocationForm](#locationform) component.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyLocations`](../../Translations/index.md#companylocations)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `locationId?` | `string` | Identifier of an existing location. When provided, the form loads and edits that location; when omitted, the form creates a new location. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -412,7 +412,7 @@ Props for the [Locations](#locations) component.
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyLocations`](../../Translations/index.md#companylocations)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -456,7 +456,7 @@ Props for the [LocationsList](#locationslist) component.
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyLocations`](../../Translations/index.md#companylocations)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -497,7 +497,7 @@ Props for the [OnboardingOverview](#onboardingoverview) component.
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyOnboardingOverview`](../../Translations/index.md#companyonboardingoverview)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -536,7 +536,7 @@ Props for the [PaySchedule](#payschedule) component.
 | `defaultValues?` | [`PayScheduleDefaultValues`](#payscheduledefaultvalues) | Default values used to pre-fill the create form. Ignored fields not listed in [PayScheduleDefaultValues](#payscheduledefaultvalues). |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyPaySchedule`](../../Translations/index.md#companypayschedule)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -582,7 +582,7 @@ Props for [SignatureForm](#signatureform).
 | `defaultValues?` | `undefined` | Not applicable to this component — form fields are populated from the API using `formId`. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanySignatureForm`](../../Translations/index.md#companysignatureform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -617,7 +617,7 @@ Props for the [StateTaxes](#statetaxes) flow.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `showContinueButton?` | `boolean` | `true` | Controls visibility of the Continue button below the state tax list. When `false`, hides the Continue button. Use this when the flow is embedded as one step inside a larger flow that provides its own navigation. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -676,7 +676,7 @@ Props for [StateTaxesForm](#statetaxesform).
 | `state` | `string` | Two-letter code of the state whose tax requirements are edited. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -715,7 +715,7 @@ Props for the [StateTaxesList](#statetaxeslist) component.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `showContinueButton?` | `boolean` | `true` | Controls visibility of the Continue button below the state tax list. When `false`, hides the Continue button. Use this when the list is embedded as one step inside a larger flow that provides its own navigation. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../components.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
 ### Events
 
@@ -736,7 +736,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ### AssignSignatoryDefaultValues
 
-> **AssignSignatoryDefaultValues** = [`RequireAtLeastOne`](../../components.md#requireatleastone)\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
+> **AssignSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
 
 Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
 
@@ -748,7 +748,7 @@ At least one of `create` or `invite` must be provided.
 
 ### CreateSignatoryDefaultValues
 
-> **CreateSignatoryDefaultValues** = [`RequireAtLeastOne`](../../components.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+> **CreateSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
 
@@ -756,7 +756,7 @@ Initial values for the [CreateSignatory](#createsignatory) form fields. At least
 
 ### FederalTaxesDefaultValues
 
-> **FederalTaxesDefaultValues** = [`RequireAtLeastOne`](../../components.md#requireatleastone)\<\{ `filingForm?`: `FederalTaxFormInputs`\[`"filingForm"`\]; `legalName?`: `FederalTaxFormInputs`\[`"legalName"`\]; `taxPayerType?`: `FederalTaxFormInputs`\[`"taxPayerType"`\]; \}\>
+> **FederalTaxesDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `filingForm?`: `FederalTaxFormInputs`\[`"filingForm"`\]; `legalName?`: `FederalTaxFormInputs`\[`"legalName"`\]; `taxPayerType?`: `FederalTaxFormInputs`\[`"taxPayerType"`\]; \}\>
 
 Pre-populated values for the company federal tax form, supplied via [FederalTaxesProps](#federaltaxesprops).
 At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
@@ -765,7 +765,7 @@ At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
 ### InviteSignatoryDefaultValues
 
-> **InviteSignatoryDefaultValues** = [`RequireAtLeastOne`](../../components.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+> **InviteSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.
@@ -774,7 +774,7 @@ Default values for the invite signatory form fields: `firstName`, `lastName`, `e
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = [`RequireAtLeastOne`](../../components.md#requireatleastone)\<\{ `federalTaxes?`: [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues); `paySchedule?`: [`PayScheduleDefaultValues`](#payscheduledefaultvalues); \}\>
+> **OnboardingFlowDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `federalTaxes?`: [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues); `paySchedule?`: [`PayScheduleDefaultValues`](#payscheduledefaultvalues); \}\>
 
 Default values for the company onboarding flow's per-step form components.
 
@@ -796,7 +796,7 @@ The full set of fields that may be pre-filled on the [PaySchedule](#payschedule)
 
 ### PayScheduleDefaultValues
 
-> **PayScheduleDefaultValues** = [`RequireAtLeastOne`](../../components.md#requireatleastone)\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
+> **PayScheduleDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
 
 Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
 takes precedence over these defaults when editing.

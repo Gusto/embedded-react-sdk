@@ -3,36 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Components
-description: Shared types and utilities for all SDK workflow and block components. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.
-sidebar_position: 6
+title: Blocks
+description: Individual form and UI components with SDK logic built in — use these for custom layouts, step reordering, or inserting your own content between SDK steps. See the Component types guide for a comparison of workflows, blocks, and hooks.
+sidebar_position: 7
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-Shared types and utilities for all SDK workflow and block components. Flows guide users through multi-step tasks; blocks let you compose individual steps into a custom UI.
-
-## Workflows
-
-| Component | Description |
-| --- | --- |
-| [CompanyOnboarding.OnboardingFlow](company/onboarding/onboarding-flow) | Guided flow to onboard a company to Gusto. |
-| [ContractorManagement.PaymentFlow](contractor/management/payment-flow) | Hub for creating and managing contractor payments for a company. |
-| [ContractorOnboarding.OnboardingFlow](contractor/onboarding/onboarding-flow) | Guided flow for admins to onboard a contractor to the company. |
-| [ContractorOnboarding.SelfOnboardingFlow](contractor/onboarding/self-onboarding-flow) | Guided flow for contractors to complete their own onboarding. |
-| [EmployeeManagement.DashboardFlow](employee/management/dashboard-flow) | Hub for viewing and managing a single employee's profile, pay, and documents. |
-| [EmployeeManagement.EmployeeListFlow](employee/management/employee-list-flow) | Hub for viewing and managing all employees, including onboarding new ones. |
-| [EmployeeManagement.TerminationFlow](employee/management/termination-flow) | Guided flow to terminate an employee and arrange their final paycheck. |
-| [EmployeeOnboarding.OnboardingExecutionFlow](employee/onboarding/onboarding-execution-flow) | Guided flow to onboard an employee. |
-| [EmployeeOnboarding.OnboardingFlow](employee/onboarding/onboarding-flow) | Guided flow to onboard multiple employees, one at a time. |
-| [EmployeeOnboarding.SelfOnboardingFlow](employee/onboarding/self-onboarding-flow) | Guided flow for employees to complete their own onboarding. |
-| [InformationRequests.InformationRequestsFlow](company/information-requests/information-requests-flow) | Hub for viewing and responding to outstanding information requests from Gusto. |
-| [Payroll.DismissalFlow](payroll/dismissal-flow) | Guided flow to run a dismissed employee's final payroll. |
-| [Payroll.OffCycleFlow](payroll/off-cycle-flow) | Guided flow to create and run a bonus or correction payroll. |
-| [Payroll.PayrollExecutionFlow](payroll/payroll-execution-flow) | Guided flow to configure, review, and submit a single payroll. |
-| [Payroll.PayrollFlow](payroll/payroll-flow) | Hub for running and managing all payrolls across a company's pay schedules. |
-| [Payroll.TransitionFlow](payroll/transition-flow) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
-| [TimeOff.TimeOffFlow](time-off/time-off-flow) | Hub for creating and managing a company's time off policies. |
+Individual form and UI components with SDK logic built in — use these for custom layouts, step reordering, or inserting your own content between SDK steps. See the [Component types guide](../getting-started/component-types.md) for a comparison of workflows, blocks, and hooks.
 
 ## Blocks
 
@@ -165,10 +143,6 @@ Props for SDK feature components that participate in the standard error/loading/
 Extends [CommonComponentInterface](#commoncomponentinterface) with the `onEvent` callback that emits component events
 and optional overrides for the error-boundary fallback and loading indicator. This is the prop
 shape mixed into every public SDK feature component.
-
-### Page
-
-components
 
 ### Extends
 
@@ -307,10 +281,6 @@ components
 
 Props common to all SDK feature components, including children, an optional className, default form values, and an i18n resource dictionary override.
 
-### Page
-
-components
-
 ### Extended by
 
 - [`BaseComponentInterface`](#basecomponentinterface)
@@ -350,7 +320,3 @@ Requires at least one property of `T` to be provided while leaving the rest opti
 | Type Parameter | Description |
 | ------ | ------ |
 | `T` | The object type whose properties are individually optional but collectively required. |
-
-### Page
-
-components

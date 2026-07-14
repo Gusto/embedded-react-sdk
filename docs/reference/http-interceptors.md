@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: HTTP interceptors
 description: Callback hooks for intercepting and modifying HTTP requests and responses. Pass an `SDKHooks` instance to `GustoProvider` via `config.hooks`.
-sidebar_position: 11
+sidebar_position: 12
 generated_by: typedoc
 custom_edit_url: null
 ---

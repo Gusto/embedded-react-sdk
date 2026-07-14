@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Observability
 description: Callback hooks for error tracking and performance metrics, compatible with tools like Sentry or Datadog. Pass an `ObservabilityHook` instance to `GustoProvider` via `config.observability`.
-sidebar_position: 12
+sidebar_position: 13
 generated_by: typedoc
 custom_edit_url: null
 ---

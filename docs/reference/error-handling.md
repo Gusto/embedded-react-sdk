@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Error handling
 description: Unified error shape returned by all SDK form hooks and error handlers. Every caught error — API, validation, network, or runtime — is normalized into `SDKError`.
-sidebar_position: 10
+sidebar_position: 11
 generated_by: typedoc
 custom_edit_url: null
 ---
