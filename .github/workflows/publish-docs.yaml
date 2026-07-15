@@ -33,10 +33,12 @@ name: Sync Docs Source
 #
 #   Patch refresh: walks versioned_docs/version-<X.Y>/ and refreshes the
 #   content of each file from the matching path in the freshly-synced docs/.
-#   Files in the snapshot that have no live counterpart are left as-is.
-#   Files in live docs/ that aren't already in the snapshot are NOT added —
-#   adding a doc to a released minor is an intentional change made directly
-#   in the downstream repo.
+#   Files in live docs/ that are absent from the snapshot are added — a patch
+#   may rename or add files, and without them updated cross-links break the
+#   build. Files in the snapshot with no live counterpart (orphans from a
+#   rename or deletion) are left as-is so existing external links keep
+#   resolving. If any structural changes occur (additions or orphans), a
+#   Slack notification fires so someone can verify the snapshot looks right.
 #
 # Auth: a GitHub App installed on Gusto/embedded-sdk-docs with
 # Contents: write. Credentials live in this repo's `publish-docs`
@@ -136,6 +138,7 @@ jobs:
           SDK_VERSION: ${{ steps.version.outputs.version }}
           MINOR: ${{ steps.version.outputs.minor }}
           TRIGGER: ${{ github.event_name }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           set -euo pipefail
 
@@ -230,6 +233,8 @@ jobs:
             fi
             updated=0
             orphan=0
+            added=0
+            # Update content for files already in the snapshot.
             while IFS= read -r snap_file; do
               rel="${snap_file#${VERSIONED_DIR}/}"
               live="docs/${rel}"
@@ -237,10 +242,36 @@ jobs:
                 cp "$live" "$snap_file"
                 updated=$((updated + 1))
               else
+                # File exists in snapshot but not in live docs — structural change
+                # (rename or deletion upstream). Leave the orphan in place so
+                # existing external links keep resolving; notify below.
                 orphan=$((orphan + 1))
               fi
             done < <(find "$VERSIONED_DIR" -type f)
-            echo "Refreshed ${updated} file(s) in version-${MINOR}; ${orphan} orphan(s) left as-is."
+            # Add files present in live docs/ but absent from the snapshot.
+            # This covers renames and new files added in a patch — without them
+            # updated content that links to the new paths would break the build.
+            while IFS= read -r live_file; do
+              rel="${live_file#docs/}"
+              snap="${VERSIONED_DIR}/${rel}"
+              if [ ! -f "$snap" ]; then
+                mkdir -p "$(dirname "$snap")"
+                cp "$live_file" "$snap"
+                added=$((added + 1))
+              fi
+            done < <(find docs -type f)
+            echo "Refreshed ${updated} file(s) in version-${MINOR}; ${added} added; ${orphan} orphan(s) left as-is."
+            # Structural changes in a patch (renames, additions, deletions) mean
+            # the live docs diverged structurally from the snapshot. Notify so
+            # someone can verify the versioned snapshot still looks right.
+            if [ "${added}" -gt 0 ] || [ "${orphan}" -gt 0 ]; then
+              echo "::warning::SDK ${SDK_VERSION} patch had structural doc changes: ${added} file(s) added to snapshot, ${orphan} orphan(s) left in place."
+              if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+                curl -s -X POST -H 'Content-type: application/json' \
+                  --data "{\"text\":\":warning: *SDK ${SDK_VERSION} patch sync* had structural doc changes in the version-${MINOR} snapshot: *${added}* file(s) added, *${orphan}* orphan(s) left in place. Verify the <https://github.com/Gusto/embedded-sdk-docs/tree/main/docs-site/versioned_docs/version-${MINOR}|version-${MINOR} snapshot> looks correct.\"}" \
+                  "${SLACK_WEBHOOK_URL}" || true
+              fi
+            fi
           fi
 
           # ---- Step 5: stage and validate ----
