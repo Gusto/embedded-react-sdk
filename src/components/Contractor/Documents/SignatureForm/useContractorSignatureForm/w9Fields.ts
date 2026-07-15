@@ -3,8 +3,6 @@ import type {
   Fields as DocumentField,
 } from '@gusto/embedded-api/models/components/document'
 import type { ContractorSignatureFormData } from './contractorSignatureFormSchema'
-import { normalizeEin } from '@/helpers/federalEin'
-import { normalizeSSN } from '@/helpers/ssn'
 
 /**
  * The `name` of the W-9 document — the only contractor document type that
@@ -23,51 +21,6 @@ export const W9_DOCUMENT_NAME = 'taxpayer_identification_form_w_9'
  * @internal
  */
 export const NOT_APPLICABLE_VALUE = 'N/A'
-
-/**
- * EIN input transform that preserves the `N/A` sentinel (and the in-progress
- * prefixes a user types toward it) while formatting numeric input as a standard
- * EIN (`NN-NNNNNNN`).
- *
- * @remarks
- * The W-9 accepts `N/A` for a taxpayer who supplies an SSN instead of an EIN,
- * but the plain `normalizeEin` formatter strips every non-digit on each
- * keystroke — making the sentinel impossible to type. This wrapper lets the
- * sentinel through (normalized to uppercase) and defers to `normalizeEin` for
- * everything else.
- *
- * @param value - Raw user input.
- * @returns The `N/A` sentinel (or an in-progress prefix), otherwise the EIN-formatted value.
- * @internal
- */
-export function normalizeEinOrNotApplicable(value: string): string {
-  const sentinel = value.replace(/\s/g, '').toUpperCase()
-  if (sentinel === 'NA') return NOT_APPLICABLE_VALUE
-  if (sentinel === 'N' || sentinel === 'N/' || sentinel === NOT_APPLICABLE_VALUE) return sentinel
-  return normalizeEin(value)
-}
-
-/**
- * SSN input transform that preserves the `N/A` sentinel (and the in-progress
- * prefixes `N` and `N/`) while otherwise deferring to {@link normalizeSSN}.
- *
- * @remarks
- * The W-9 accepts `N/A` for a taxpayer who supplies an EIN instead of an SSN,
- * but the plain `normalizeSSN` formatter strips every non-digit on each
- * keystroke — making the sentinel impossible to type. This wrapper lets the
- * sentinel through (normalized to uppercase) and defers to `normalizeSSN` for
- * everything else.
- *
- * @param value - Raw user input.
- * @returns The `N/A` sentinel (or an in-progress prefix), otherwise the SSN-formatted value.
- * @internal
- */
-export function normalizeSsnOrNotApplicable(value: string): string {
-  const sentinel = value.replace(/\s/g, '').toUpperCase()
-  if (sentinel === 'NA') return NOT_APPLICABLE_VALUE
-  if (sentinel === 'N' || sentinel === 'N/' || sentinel === NOT_APPLICABLE_VALUE) return sentinel
-  return normalizeSSN(value)
-}
 
 /**
  * Form-field name for the synthesized federal tax classification radio group.

@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   useContractorSignatureForm,
   type UseContractorSignatureFormReady,
 } from './useContractorSignatureForm'
+import styles from './SignatureForm.module.scss'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, BaseLayout } from '@/components/Base'
@@ -159,6 +161,12 @@ function W9Fields({ hookResult }: W9FieldsProps) {
   const { Fields, fieldsMetadata } = hookResult.form
   const copy = useSignatureFormCopy()
 
+  // A TIN already on file is shown masked and locked until the signer opts to
+  // replace it; nothing on file starts editable. Editing reveals the empty input
+  // so an untouched value is omitted on submit and the server keeps the real TIN.
+  const [isEditingSsn, setIsEditingSsn] = useState(!fieldsMetadata.ssn.hasRedactedValue)
+  const [isEditingEin, setIsEditingEin] = useState(!fieldsMetadata.ein.hasRedactedValue)
+
   const requiredMessages = {
     REQUIRED: t('validation.required'),
   }
@@ -314,26 +322,44 @@ function W9Fields({ hookResult }: W9FieldsProps) {
           }
         >
           <Flex flexDirection="column" gap={16}>
-            {Fields.Ssn && (
-              <Fields.Ssn
-                label={t('fields.ssn.label')}
-                validationMessages={{
-                  ...requiredMessages,
-                  INVALID_SSN: t('validation.invalidSsn'),
-                }}
-                placeholder={fieldsMetadata.ssn.placeholder}
-              />
-            )}
-            {Fields.Ein && (
-              <Fields.Ein
-                label={t('fields.ein.label')}
-                validationMessages={{
-                  ...requiredMessages,
-                  INVALID_EIN: t('validation.invalidEin'),
-                }}
-                placeholder={fieldsMetadata.ein.placeholder}
-              />
-            )}
+            {Fields.Ssn &&
+              (fieldsMetadata.ssn.hasRedactedValue && !isEditingSsn ? (
+                <MaskedTaxIdField
+                  label={t('fields.ssn.label')}
+                  maskedValue={fieldsMetadata.ssn.placeholder ?? ''}
+                  changeLabel={t('fields.ssn.changeCta')}
+                  onChange={() => {
+                    setIsEditingSsn(true)
+                  }}
+                />
+              ) : (
+                <Fields.Ssn
+                  label={t('fields.ssn.label')}
+                  validationMessages={{
+                    ...requiredMessages,
+                    INVALID_SSN: t('validation.invalidSsn'),
+                  }}
+                />
+              ))}
+            {Fields.Ein &&
+              (fieldsMetadata.ein.hasRedactedValue && !isEditingEin ? (
+                <MaskedTaxIdField
+                  label={t('fields.ein.label')}
+                  maskedValue={fieldsMetadata.ein.placeholder ?? ''}
+                  changeLabel={t('fields.ein.changeCta')}
+                  onChange={() => {
+                    setIsEditingEin(true)
+                  }}
+                />
+              ) : (
+                <Fields.Ein
+                  label={t('fields.ein.label')}
+                  validationMessages={{
+                    ...requiredMessages,
+                    INVALID_EIN: t('validation.invalidEin'),
+                  }}
+                />
+              ))}
           </Flex>
         </Components.Box>
       )}
@@ -391,6 +417,54 @@ function CertificationDeclaration() {
           {t('certificationPoints.usPersonDefinition')}
         </Components.Text>
       </Flex>
+    </Flex>
+  )
+}
+
+interface MaskedTaxIdFieldProps {
+  /** Visible field label (also the disabled input's hidden accessible label). */
+  label: string
+  /** The server-provided mask (e.g. `XXX-XX-3123`) shown in the disabled input. */
+  maskedValue: string
+  /** Text for the button that reveals the editable input (e.g. "Change SSN"). */
+  changeLabel: string
+  /** Called when the signer opts to replace the value on file. */
+  onChange: () => void
+}
+
+/**
+ * Displays a taxpayer-ID value already on file as a disabled, masked input with
+ * a button that reveals an empty editable input in its place. Submitting the
+ * mask would stamp it verbatim onto the W-9, so replacing the value must go
+ * through an empty input the server can backfill.
+ */
+function MaskedTaxIdField({ label, maskedValue, changeLabel, onChange }: MaskedTaxIdFieldProps) {
+  const Components = useComponentContext()
+
+  return (
+    <Flex flexDirection="column" gap={4} alignItems="stretch">
+      <Components.Text weight="medium" size="sm">
+        {label}
+      </Components.Text>
+      <div className={styles.tinRow}>
+        <div className={styles.tinInput}>
+          <Components.TextInput
+            name=""
+            label={label}
+            shouldVisuallyHideLabel
+            value={maskedValue}
+            isDisabled
+          />
+        </div>
+        <Components.Button
+          variant="secondary"
+          type="button"
+          className={styles.tinButton}
+          onClick={onChange}
+        >
+          {changeLabel}
+        </Components.Button>
+      </div>
     </Flex>
   )
 }
