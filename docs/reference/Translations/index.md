@@ -5,10 +5,10 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Translations
 description: |-
-  Per-namespace SDK i18n keys, each namespace browsable as its own reference
-  (e.g. {@link Translations.CompanyAddresses}) with every key's English default.
-  Override defaults through a component's `dictionary` prop or the global
-  `GustoProvider` dictionary.
+  All user-facing text rendered by SDK components, organized by namespace.
+
+  Every key includes its English default; pass overrides through a component's
+  `dictionary` prop or the global `GustoProvider` dictionary.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -16,10 +16,10 @@ custom_edit_url: null
 
 # Translations
 
-Per-namespace SDK i18n keys, each namespace browsable as its own reference
-(e.g. [Translations.CompanyAddresses](#companyaddresses)) with every key's English default.
-Override defaults through a component's `dictionary` prop or the global
-`GustoProvider` dictionary.
+All user-facing text rendered by SDK components, organized by namespace.
+
+Every key includes its English default; pass overrides through a component's
+`dictionary` prop or the global `GustoProvider` dictionary.
 
 ## Translation namespaces
 
@@ -1788,6 +1788,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `fields.company_name` | |
 | `fields.company_name.label` | `"Requester's name and address"` |
 | `fields.ein` | |
+| `fields.ein.changeCta` | `"Change EIN"` |
 | `fields.ein.label` | `"Employer Identification Number (EIN)"` |
 | `fields.exempt_payee_code` | |
 | `fields.exempt_payee_code.label` | `"Exempt payee code"` |
@@ -1818,6 +1819,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `fields.signature_text` | |
 | `fields.signature_text.label` | `"Signature"` |
 | `fields.ssn` | |
+| `fields.ssn.changeCta` | `"Change SSN"` |
 | `fields.ssn.label` | `"Social Security Number (SSN)"` |
 | `fields.taxClassification` | |
 | `fields.taxClassification.description` | `"Select the type of business you are."` |
@@ -1871,11 +1873,12 @@ Translation keys for the `Contractor.Submit` i18n namespace.
 | ------ | ------ |
 | <a id="property-contractorsubmitdocumentrequirements"></a> `documentRequirements` | |
 | `documentRequirements.alertLabel` | `"The government requires you to have Form W-9 completed and signed."` |
-| `documentRequirements.description` | `"You will need to collect these forms from your contractor manually."` |
-| `documentRequirements.items` | |
-| `documentRequirements.items.0` | |
-| `documentRequirements.items.0.description` | `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` |
-| `documentRequirements.items.0.title` | `"Taxpayer Identification (Form W-9)"` |
+| `documentRequirements.description` | `"You will need to collect signed copies of the following documents from {{contractorName}}."` |
+| `documentRequirements.documents` | |
+| `documentRequirements.documents.taxpayer_identification_form_w_9` | |
+| `documentRequirements.documents.taxpayer_identification_form_w_9.description` | `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` |
+| `documentRequirements.documents.taxpayer_identification_form_w_9.title` | `"Taxpayer Identification (Form W-9)"` |
+| `documentRequirements.downloadCta` | `"Download document"` |
 | `documentRequirements.title` | `"Documents"` |
 | <a id="property-contractorsubmitdonecta"></a> `doneCta` | `"Done"` |
 | <a id="property-contractorsubmitdonedescription"></a> `doneDescription` | `"This contractor has been successfully onboarded."` |
@@ -4944,7 +4947,7 @@ Recursively makes every property of `T` optional, descending into nested objects
 ### GlobalResourceDictionary
 
 Translation overrides for **every** SDK namespace at once, keyed by language then
-namespace — the global dictionary accepted by [GustoProvider](../index.md#gustoprovider). Each namespace
+namespace — the global dictionary accepted by [GustoProvider](../providers.md#gustoprovider). Each namespace
 maps to a deep-partial of its keys (see [Resources](#resources)); override only what you need.
 For a single component's namespace, use [ResourceDictionary](#resourcedictionary) instead.
 

@@ -164,6 +164,9 @@ $shadow: 0 8px 30px rgba(20, 20, 40, 0.18);
   border-top: 1px solid $border;
   padding: 10px 14px;
   background: #fafafe;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .textarea {
@@ -189,7 +192,6 @@ $shadow: 0 8px 30px rgba(20, 20, 40, 0.18);
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
 }
 
 .select {
@@ -553,6 +555,9 @@ $shadow: 0 8px 30px rgba(20, 20, 40, 0.18);
 /* Mentions */
 .composer {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .mentionAnchor {

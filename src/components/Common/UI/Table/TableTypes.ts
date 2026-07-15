@@ -1,10 +1,10 @@
 import type { ReactNode, TableHTMLAttributes } from 'react'
 
 /**
- * Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
+ * Shape of a single cell your {@link TableProps | Table} implementation receives for headers, rows, and footers.
  *
  * @public
- * @group Utility types
+ * @childOf {@link TableProps}
  */
 export interface TableData {
   /**
@@ -18,10 +18,10 @@ export interface TableData {
 }
 
 /**
- * Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
+ * Shape of a single row your {@link TableProps | Table} implementation receives, containing an ordered list of cells.
  *
  * @public
- * @group Utility types
+ * @childOf {@link TableProps}
  */
 export interface TableRow {
   /**

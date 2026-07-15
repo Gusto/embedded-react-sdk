@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Flows and blocks for onboarding a company.
 
+```ts
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |

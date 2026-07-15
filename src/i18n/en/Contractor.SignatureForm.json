@@ -76,10 +76,12 @@
       "label": "Requester's name and address"
     },
     "ssn": {
-      "label": "Social Security Number (SSN)"
+      "label": "Social Security Number (SSN)",
+      "changeCta": "Change SSN"
     },
     "ein": {
-      "label": "Employer Identification Number (EIN)"
+      "label": "Employer Identification Number (EIN)",
+      "changeCta": "Change EIN"
     },
     "signature_text": {
       "label": "Signature"

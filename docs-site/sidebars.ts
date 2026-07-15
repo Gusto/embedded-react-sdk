@@ -51,6 +51,17 @@ const sidebars: SidebarsConfig = {
             'guides/component-adapter/component-adapter-faq',
           ],
         },
+        {
+          type: 'category',
+          label: 'Hooks',
+          link: { type: 'doc', id: 'guides/hooks/overview' },
+          items: [
+            'guides/hooks/configuring-form-fields',
+            'guides/hooks/handling-hook-errors',
+            'guides/hooks/composing-multiple-hooks',
+            'guides/hooks/jobs-and-compensations',
+          ],
+        },
         'guides/workflows-overview',
         'guides/endpoint-reference',
       ],

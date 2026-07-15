@@ -11,62 +11,9 @@ custom_edit_url: null
 
 # useHomeAddressForm
 
-<a id="usecurrenthomeaddressform"></a>
-
-### useCurrentHomeAddressForm()
-
-> **useCurrentHomeAddressForm**(`props`: [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops)): [`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-resolves the employee's current home address.
-
-#### Remarks
-
-Lists the employee's home addresses and selects the active one (or the
-first when none are active) as the row to edit. When the employee has no
-home address on file the hook operates in create mode. The returned
-shape is identical to [useHomeAddressForm](#usehomeaddressform), so the same `Fields`,
-`actions.onSubmit`, and `errorHandling` apply.
-
-#### Example
-
-```tsx
-import { useCurrentHomeAddressForm } from '@gusto/embedded-react-sdk'
-
-function HomeAddressEditor({ employeeId }: { employeeId: string }) {
-  const homeAddress = useCurrentHomeAddressForm({ employeeId })
-
-  if (homeAddress.isLoading) return <div>Loading...</div>
-
-  const { Fields } = homeAddress.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
-      <Fields.Street1 label="Street" />
-      <Fields.City label="City" />
-      <Fields.State label="State" />
-      <Fields.Zip label="ZIP" />
-      <button type="submit">Save</button>
-    </form>
-  )
-}
-```
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops) | See [UseCurrentHomeAddressFormProps](#usecurrenthomeaddressformprops). |
-
-#### Returns
-
-[`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
-
-***
-
 <a id="usehomeaddressform"></a>
 
-> **useHomeAddressForm**(`props`: [`UseHomeAddressFormProps`](#usehomeaddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+> **useHomeAddressForm**(`props`: [`UseHomeAddressFormProps`](#usehomeaddressformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Form hook for creating or editing an employee's home address.
 
@@ -139,15 +86,15 @@ Presence or absence of `homeAddressUuid` selects the API verb — see the
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
 
 <a id="usehomeaddressformresult"></a>
 
 ### UseHomeAddressFormResult
 
-> **UseHomeAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+> **UseHomeAddressFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Discriminated union returned by [useHomeAddressForm](#usehomeaddressform).
 
@@ -161,22 +108,22 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 
 **Remarks**
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../hooks.md#baseformhookready) with
 the home-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`: [`HomeAddressSubmitOptions`](#homeaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeAddress`](../../APIModels/index.md#employeeaddress)\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`HomeAddressSubmitOptions`](#homeaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`EmployeeAddress`](../../APIModels/index.md#employeeaddress)\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.homeAddress` | [`EmployeeAddress`](../../APIModels/index.md#employeeaddress) \| `null` | The address row loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`HomeAddressFormFields`](#homeaddressformfields) | - |
 | `form.fieldsMetadata` | [`HomeAddressFieldsMetadata`](#homeaddressfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`HomeAddressFormData`](#homeaddressformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
@@ -221,7 +168,7 @@ Bound to `city`. City text input. Always available.
 
 #### CityFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` component.
 
@@ -229,9 +176,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` comp
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -250,7 +197,7 @@ Bound to `courtesyWithholding`. Courtesy withholding checkbox. Always available.
 
 #### CourtesyWithholdingFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWithholding` component.
 
@@ -258,9 +205,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWi
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
 
 ***
 
@@ -281,7 +228,7 @@ Bound to `effectiveDate`. Effective-date picker. Only available when `withEffect
 
 #### HomeAddressEffectiveDateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.EffectiveDate` component.
 
@@ -289,9 +236,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.EffectiveD
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
 
 ***
 
@@ -310,7 +257,7 @@ Bound to `state`. State selector. Always available.
 
 #### StateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation), `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation), `string`\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.State` component.
 
@@ -320,9 +267,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.State` com
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -341,7 +288,7 @@ Bound to `street1`. Street address line 1 text input. Always available.
 
 #### Street1FieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street1` component.
 
@@ -349,9 +296,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street1` c
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -370,7 +317,7 @@ Bound to `street2`. Street address line 2 text input. Always available.
 
 #### Street2FieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street2` component.
 
@@ -378,9 +325,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street2` c
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ***
 
@@ -399,7 +346,7 @@ Bound to `zip`. ZIP code text input. Always available.
 
 #### ZipFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ZipValidation`](#zipvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`ZipValidation`](#zipvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Zip` component.
 
@@ -407,9 +354,9 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Zip` compo
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ZipValidation`](#zipvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ZipValidation`](#zipvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ## Validations
 
@@ -487,13 +434,13 @@ Field names accepted by the home address form.
 
 | Field | Type |
 | ------ | ------ |
-| `city` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `courtesyWithholding` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `effectiveDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `state` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
-| `street1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `street2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `zip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `city` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `courtesyWithholding` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `effectiveDate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `state` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
+| `street1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `street2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `zip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 
 Type of `form.fieldsMetadata` returned by [useHomeAddressForm](#usehomeaddressform).
 
@@ -545,26 +492,10 @@ Optional overrides passed to [onSubmit](#usehomeaddressformready).
 
 ***
 
-<a id="usecurrenthomeaddressformprops"></a>
-
-### UseCurrentHomeAddressFormProps
-
-> **UseCurrentHomeAddressFormProps** = `Omit`\<[`UseHomeAddressFormProps`](#usehomeaddressformprops), `"homeAddressUuid"`\>
-
-Options for [useCurrentHomeAddressForm](#usecurrenthomeaddressform).
-
-#### Remarks
-
-Same shape as [UseHomeAddressFormProps](#usehomeaddressformprops) minus `homeAddressUuid` —
-the hook resolves the current home address itself.
-
-***
-
 ## Endpoints
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses) |
 | POST | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-home_addresses) |
 | GET | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-home_addresses-home_address_uuid) |
 | PUT | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-home_addresses-home_address_uuid) |

@@ -12,7 +12,7 @@ Error handling in the React SDK occurs across multiple layers:
 2. **Component-Level Error Boundary** — in `Base.tsx`
 3. **Form Submission Error Processing** — in `useBaseSubmit.ts`
 4. **Observability Hooks** — for error tracking (see [Observability](./observability.md))
-5. **Partner hook error bags** — headless hooks expose `errorHandling` built with **`composeErrorHandler`** (merged query + submit errors). See the [Hook utilities reference](../../reference/utilities.md) for **`composeErrorHandler`** and **`composeSubmitHandler`**.
+5. **Partner hook error bags** — headless hooks expose `errorHandling` built with **`composeErrorHandler`** (merged query + submit errors). See the [Hooks reference](../../reference/hooks.md) for **`composeErrorHandler`** and **`composeSubmitHandler`**.
 
 ---
 

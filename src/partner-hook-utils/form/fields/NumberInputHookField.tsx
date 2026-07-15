@@ -13,6 +13,7 @@ import type { NumberInputProps } from '@/components/Common/UI/NumberInput/Number
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @public
+ * @group Hook field props
  */
 export interface NumberInputHookFieldProps<
   TErrorCode extends string = never,

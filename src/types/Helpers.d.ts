@@ -22,6 +22,7 @@ export type DeepPartial<T> = {
  *
  * @typeParam T - The object type whose properties are individually optional but collectively required.
  * @public
+ * @page blocks
  */
 export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
@@ -49,6 +50,7 @@ export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
  * An open map of `data-*` attributes that can be spread onto a rendered DOM element.
  *
  * @public
+ * @page component-inventory
  */
 export type DataAttributes = {
   [key: `data-${string}`]: string | number | boolean

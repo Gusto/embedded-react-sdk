@@ -32,13 +32,13 @@ See the [Workflows overview](../guides/workflows-overview.md) for the blocks ava
 
 Hooks are headless—they handle data fetching, form state, validation, and API submission while you supply all markup and styling. If your team has a mature design system and wants the SDK to stay out of your UI, hooks are the right choice.
 
-See the [Hook utilities reference](../reference/utilities.md) and each domain's Hooks reference for available hooks and usage examples.
+See the [Hooks reference](../reference/hooks.md) and each domain's Hooks reference for available hooks and usage examples.
 
 > Not sure which type is right for you? Starting with a workflow and dropping down to blocks or hooks for areas that need more control is a common pattern.
 
 ## Navigating the Reference
 
-The [Reference](../reference/index.md) is organized by **Domain** > **Namespace** > **Component type**, meaning the three component types described on this guide (**Workflows**, **Blocks**, and **Hooks**).
+The [Reference](../reference/index.mdx) is organized by **Domain** > **Namespace** > **Component type**, meaning the three component types described on this guide (**Workflows**, **Blocks**, and **Hooks**).
 
 Namespaces correspond to exports from the SDK. For example, to use `CompanyOnboarding` components, you'd import `CompanyOnboarding`:
 

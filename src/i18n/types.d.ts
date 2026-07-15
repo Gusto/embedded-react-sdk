@@ -126,10 +126,10 @@ export interface Resources {
 }
 
 /**
- * Per-namespace SDK i18n keys, each namespace browsable as its own reference
- * (e.g. {@link Translations.CompanyAddresses}) with every key's English default.
- * Override defaults through a component's `dictionary` prop or the global
- * `GustoProvider` dictionary.
+ * All user-facing text rendered by SDK components, organized by namespace.
+ *
+ * Every key includes its English default; pass overrides through a component's
+ * `dictionary` prop or the global `GustoProvider` dictionary.
  *
  * @public
  */
@@ -2591,10 +2591,14 @@ export namespace Translations {
       ssn: {
         /** @defaultValue `"Social Security Number (SSN)"` */
         label: string
+        /** @defaultValue `"Change SSN"` */
+        changeCta: string
       }
       ein: {
         /** @defaultValue `"Employer Identification Number (EIN)"` */
         label: string
+        /** @defaultValue `"Change EIN"` */
+        changeCta: string
       }
       signature_text: {
         /** @defaultValue `"Signature"` */
@@ -2669,10 +2673,12 @@ export namespace Translations {
     documentRequirements: {
       /** @defaultValue `"Documents"` */
       title: string
-      /** @defaultValue `"You will need to collect these forms from your contractor manually."` */
+      /** @defaultValue `"You will need to collect signed copies of the following documents from {{contractorName}}."` */
       description: string
-      items: {
-        '0': {
+      /** @defaultValue `"Download document"` */
+      downloadCta: string
+      documents: {
+        taxpayer_identification_form_w_9: {
           /** @defaultValue `"Taxpayer Identification (Form W-9)"` */
           title: string
           /** @defaultValue `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` */

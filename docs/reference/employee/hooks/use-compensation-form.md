@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecompensationform"></a>
 
-> **useCompensationForm**(`input`: [`UseCompensationFormProps`](#usecompensationformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+> **useCompensationForm**(`input`: [`UseCompensationFormProps`](#usecompensationformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
 
@@ -103,15 +103,15 @@ the same submit chain.
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
 
 <a id="usecompensationformresult"></a>
 
 ### UseCompensationFormResult
 
-> **UseCompensationFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+> **UseCompensationFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 Discriminated union returned by [useCompensationForm](#usecompensationform) — either the loading state or the ready state.
 
@@ -131,7 +131,7 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 
 **Remarks**
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../hooks.md#baseformhookready) with
 the compensation-specific `data`, `status`, `actions`, and `form.Fields`
 shape. Static, entity-derived values live under `data.*`; reactive values
 that flip with form input live under `status.*`.
@@ -139,7 +139,7 @@ that flip with form input live under `status.*`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`: [`CompensationSubmitOptions`](#compensationsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Compensation`](../../APIModels/index.md#compensation)\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
+| `actions.onSubmit` | (`options?`: [`CompensationSubmitOptions`](#compensationsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`Compensation`](../../APIModels/index.md#compensation)\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../hooks.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
 | `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
 | `data.compensation` | [`Compensation`](../../APIModels/index.md#compensation) \| `null` | The compensation row loaded for update; `null` in create mode. |
 | `data.currentJob` | [`Job`](../../APIModels/index.md#job) \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
@@ -147,13 +147,13 @@ that flip with form input live under `status.*`.
 | `data.maximumEffectiveDate` | `string` \| `null` | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. |
 | `data.minimumEffectiveDate` | `string` \| `null` | Lower bound for `effectiveDate` (typically the parent job's hire date). |
 | `data.minimumWages` | [`MinimumWage`](../../APIModels/index.md#minimumwage)[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
 | `form.fieldsMetadata` | [`CompensationFieldsMetadata`](#compensationfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`CompensationFormData`](#compensationformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings. |
 | `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new compensation or PUT an existing one. |
@@ -203,7 +203,7 @@ Bound to `adjustForMinimumWage`. Minimum-wage adjustment checkbox. `undefined` u
 
 #### AdjustForMinimumWageFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustForMinimumWage` component.
 
@@ -212,7 +212,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustFo
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 
-_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
 
 ***
 
@@ -237,7 +237,7 @@ Bound to `effectiveDate`. Effective-date picker. `undefined` when `withEffective
 
 #### CompensationEffectiveDateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.EffectiveDate` component.
 
@@ -245,9 +245,9 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Effectiv
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
 
 ***
 
@@ -268,7 +268,7 @@ Bound to `flsaStatus`. FLSA classification select. `undefined` when the status i
 
 #### FlsaStatusFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStatus` component.
 
@@ -278,9 +278,9 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStat
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -301,7 +301,7 @@ Bound to `minimumWageId`. Minimum-wage selection. `undefined` unless `Fields.Adj
 
 #### MinimumWageIdFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`MinimumWage`](../../APIModels/index.md#minimumwage)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`MinimumWage`](../../APIModels/index.md#minimumwage)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumWageId` component.
 
@@ -311,9 +311,9 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumW
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: [`MinimumWage`](../../APIModels/index.md#minimumwage)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -334,7 +334,7 @@ Bound to `paymentUnit`. Payment unit select. `undefined` for commission-only FLS
 
 #### PaymentUnitFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentUnit` component.
 
@@ -344,9 +344,9 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentU
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: [`PaymentUnit`](../../APIModels/index.md#paymentunit-1)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
 ***
 
@@ -371,7 +371,7 @@ Bound to `rate`. Compensation amount input. `undefined` for commission-only FLSA
 
 #### RateFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`RateValidation`](#ratevalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`RateValidation`](#ratevalidation)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Rate` component.
 
@@ -379,9 +379,9 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Rate` co
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`RateValidation`](#ratevalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`RateValidation`](#ratevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
 ***
 
@@ -400,7 +400,7 @@ Bound to `title`. Title text input. Always available. Optional in both modes unl
 
 #### CompensationTitleFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` component.
 
@@ -408,9 +408,9 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` c
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
 
 ## Validations
 
@@ -528,13 +528,13 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
 
 | Field | Type |
 | ------ | ------ |
-| `adjustForMinimumWage` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `effectiveDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `flsaStatus` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\> |
-| `minimumWageId` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`MinimumWage`](../../APIModels/index.md#minimumwage)\> |
-| `paymentUnit` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\> |
-| `rate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
-| `title` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `adjustForMinimumWage` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `effectiveDate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `flsaStatus` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\> |
+| `minimumWageId` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`MinimumWage`](../../APIModels/index.md#minimumwage)\> |
+| `paymentUnit` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\> |
+| `rate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `title` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 
 Metadata for each [useCompensationForm](#usecompensationform) field, exposed on `form.fieldsMetadata`.
 

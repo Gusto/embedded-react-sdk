@@ -45,15 +45,22 @@ describe('Contractor SignatureForm', () => {
     expect(screen.getByLabelText('Entity or individual name (1)')).toHaveValue('Klay Thompson')
   })
 
-  it('shows the masked SSN as a placeholder instead of seeding it as the value', async () => {
+  it('shows the on-file SSN masked and locked, revealing an empty input after Change', async () => {
+    const user = userEvent.setup()
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
+    const lockedSsn = screen.getByLabelText(/Social Security Number \(SSN\)/)
+    expect(lockedSsn).toHaveValue('XXX-XX-3123')
+    expect(lockedSsn).toBeDisabled()
+
+    await user.click(screen.getByRole('button', { name: 'Change SSN' }))
+
     // The redacted SSN is optional (a value is already on file), so its label
     // carries an "(optional)" suffix — match on the stable prefix.
-    const ssnInput = screen.getByLabelText(/Social Security Number \(SSN\)/)
-    expect(ssnInput).toHaveValue('')
-    expect(ssnInput).toHaveAttribute('placeholder', 'XXX-XX-3123')
+    const editableSsn = screen.getByLabelText(/Social Security Number \(SSN\)/)
+    expect(editableSsn).toHaveValue('')
+    expect(editableSsn).toBeEnabled()
   })
 
   it('does not send the masked SSN back in the sign payload', async () => {
@@ -81,36 +88,88 @@ describe('Contractor SignatureForm', () => {
     expect(signBody!.fields.find(f => f.key === 'ssn')).toBeUndefined()
   })
 
-  it('auto-formats SSN input as XXX-XX-XXXX', async () => {
+  it('auto-formats SSN input as XXX-XX-XXXX once the field is editable', async () => {
     const user = userEvent.setup()
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
+    await user.click(screen.getByRole('button', { name: 'Change SSN' }))
     const ssnInput = screen.getByLabelText(/Social Security Number \(SSN\)/)
     await user.type(ssnInput, '123456789')
     expect(ssnInput).toHaveValue('123-45-6789')
   })
 
-  it('lets the N/A sentinel be typed into the EIN field', async () => {
+  it('hides the non-applicable EIN for an individual and still submits ein N/A', async () => {
+    let signBody: SignRequestBody | null = null
+    const signResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      signBody = (await request.json()) as SignRequestBody
+      return HttpResponse.json({ uuid: W9_DOCUMENT_UUID, signed_at: '2025-06-26T00:00:00Z' })
+    })
+    server.use(handleSignContractorDocument(signResolver))
+
     const user = userEvent.setup()
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
-    const einInput = screen.getByLabelText(/Employer Identification Number \(EIN\)/)
-    await user.clear(einInput)
-    await user.type(einInput, 'n/a')
-    expect(einInput).toHaveValue('N/A')
+    expect(
+      screen.queryByLabelText(/Employer Identification Number \(EIN\)/),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Change EIN' })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
+    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.click(
+      screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
+    )
+    await user.click(screen.getByRole('button', { name: 'Sign' }))
+
+    await waitFor(() => {
+      expect(signResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(signBody!.fields).toContainEqual({ key: 'ein', value: 'N/A' })
   })
 
-  it('lets the N/A sentinel be typed into the SSN field', async () => {
+  it('locks the on-file EIN for a business, hides the SSN, and submits ssn N/A', async () => {
+    const businessFields = w9DocumentFields.map(field => {
+      if (field.key === 'ssn') return { ...field, value: 'N/A' }
+      if (field.key === 'ein') return { ...field, value: 'XX-XXX4567' }
+      return field
+    })
+    server.use(
+      handleGetContractorDocument(() =>
+        HttpResponse.json(buildW9Document({ fields: businessFields })),
+      ),
+    )
+    let signBody: SignRequestBody | null = null
+    const signResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      signBody = (await request.json()) as SignRequestBody
+      return HttpResponse.json({ uuid: W9_DOCUMENT_UUID, signed_at: '2025-06-26T00:00:00Z' })
+    })
+    server.use(handleSignContractorDocument(signResolver))
+
     const user = userEvent.setup()
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
-    const ssnInput = screen.getByLabelText(/Social Security Number \(SSN\)/)
-    await user.clear(ssnInput)
-    await user.type(ssnInput, 'n/a')
-    expect(ssnInput).toHaveValue('N/A')
+    const lockedEin = screen.getByLabelText(/Employer Identification Number \(EIN\)/)
+    expect(lockedEin).toHaveValue('XX-XXX4567')
+    expect(lockedEin).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Change EIN' })).toBeInTheDocument()
+    expect(screen.queryByLabelText(/Social Security Number \(SSN\)/)).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
+    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.click(
+      screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
+    )
+    await user.click(screen.getByRole('button', { name: 'Sign' }))
+
+    await waitFor(() => {
+      expect(signResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(signBody!.fields).toContainEqual({ key: 'ssn', value: 'N/A' })
+    // The on-file EIN was left untouched, so its mask is omitted rather than sent back.
+    expect(signBody!.fields.find(f => f.key === 'ein')).toBeUndefined()
   })
 
   it('rejects a malformed SSN with a validation message', async () => {
@@ -118,6 +177,7 @@ describe('Contractor SignatureForm', () => {
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
+    await user.click(screen.getByRole('button', { name: 'Change SSN' }))
     await user.type(screen.getByLabelText(/Social Security Number \(SSN\)/), '123')
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
     await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')

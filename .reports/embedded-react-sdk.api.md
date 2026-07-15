@@ -3732,7 +3732,7 @@ export interface PaginationControlProps {
     totalPages: number;
 }
 
-// @public (undocumented)
+// @public
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50;
 
 // @public

@@ -12,6 +12,7 @@ import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxType
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @public
+ * @group Hook field props
  */
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   /** The field name; must match the corresponding key in the form schema. */

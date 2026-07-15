@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usepaymentmethodform"></a>
 
-> **usePaymentMethodForm**(`props`: [`UsePaymentMethodFormProps`](#usepaymentmethodformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+> **usePaymentMethodForm**(`props`: [`UsePaymentMethodFormProps`](#usepaymentmethodformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Headless React Hook Form hook for updating an employee's payment method.
 
@@ -80,7 +80,7 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 A loading-state result while the current payment method is loading, or a [UsePaymentMethodFormReady](#usepaymentmethodformready) once ready.
 
@@ -88,7 +88,7 @@ A loading-state result while the current payment method is loading, or a [UsePay
 
 ### UsePaymentMethodFormResult
 
-> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.
 
@@ -103,16 +103,16 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod)\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod)\> \| `undefined`\> | - |
 | `data` | `object` | The employee's current payment method, loaded from the API. |
 | `data.paymentMethod` | [`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod) | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |
 | `form.fieldsMetadata` | [`PaymentMethodFormFieldsMetadata`](#paymentmethodformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`PaymentMethodFormData`](#paymentmethodformdata) \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
@@ -146,7 +146,7 @@ Bound to `type`.
 
 #### TypeFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
 
 Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.
 
@@ -155,9 +155,9 @@ Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` 
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`PaymentMethodType`](#paymentmethodtype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
 ## Validations
 
@@ -238,7 +238,7 @@ Field names accepted by the payment method form.
 
 | Field | Type |
 | ------ | ------ |
-| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Check"` \| `"Direct Deposit"`\> |
+| `type` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Check"` \| `"Direct Deposit"`\> |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [usePaymentMethodForm](#usepaymentmethodform).
 

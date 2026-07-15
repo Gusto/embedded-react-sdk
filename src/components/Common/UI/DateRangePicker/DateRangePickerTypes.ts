@@ -1,8 +1,9 @@
 /**
- * Inclusive start/end pair representing a selected date range.
+ * Inclusive start/end pair representing a date range selected in a
+ * {@link DateRangePickerProps | DateRangePicker}.
  *
  * @public
- * @group Utility types
+ * @childOf {@link DateRangePickerProps}
  */
 export interface DateRange {
   /**

@@ -32,6 +32,8 @@ PNG, or PDF.
 
 Events emitted via `onEvent`:
 
+<br />
+
 ### InformationRequestFormProps
 
 <a id="informationrequestformprops"></a>
@@ -45,7 +47,9 @@ Props for [InformationRequestForm](#informationrequestform).
 | `requestId` | `string` | The identifier of the information request to respond to. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`InformationRequestsInformationRequestForm`](../../Translations/index.md#informationrequestsinformationrequestform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
@@ -54,12 +58,16 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
 | `informationRequest/form/cancel` | Fired when the user cancels the form | — |
 
+<br />
+
 ### Endpoints
 
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
 | PUT | `/v1/information_requests/:informationRequestUuid/submit` |
+
+***
 
 <a id="informationrequestlist"></a>
 
@@ -70,6 +78,8 @@ Displays the list of outstanding information requests for a company with a "Resp
 ### Remarks
 
 Renders status badges for each request and an extra "Payroll blocking" badge when the request is currently blocking payroll. Approved requests are filtered out of the list. Used as the top-level surface of `InformationRequests.InformationRequestsFlow`, but can be rendered directly when you want to host the response form yourself (e.g. in a custom modal or page).
+
+<br />
 
 ### InformationRequestListProps
 
@@ -83,13 +93,17 @@ Props for [InformationRequestList](#informationrequestlist).
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`InformationRequestsInformationRequestList`](../../Translations/index.md#informationrequestsinformationrequestlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
 
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `informationRequest/respond` | Fired when the user clicks "Respond" on an open request | `{ requestId: string }` |
+
+<br />
 
 ### Endpoints
 

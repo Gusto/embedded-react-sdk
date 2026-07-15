@@ -23,7 +23,13 @@ import {
   UnionType,
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
-import { DOMAINS, I18N_RELOCATION, STANDALONE_PAGES } from './router.config.ts'
+import {
+  DOMAINS,
+  I18N_RELOCATION,
+  NAMESPACE_LAYOUTS,
+  STANDALONE_PAGES,
+  type PageLayout,
+} from './router.config.ts'
 import { CUSTOM_GROUPS, GROUP_ORDER } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
@@ -32,6 +38,7 @@ import {
   getHookReadyInterface,
 } from './hook-model.ts'
 import {
+  childOfTarget,
   componentPropsInterfaces,
   domainFromSources,
   hasGroup,
@@ -43,6 +50,7 @@ import {
   readHookGuide,
   type Guide,
   reparentDeprecatedMembers,
+  sourceFilePath,
   standalonePageFromSources,
 } from './utils.ts'
 
@@ -576,6 +584,9 @@ export class SDKRouter extends MemberRouter {
       if (!(child instanceof DeclarationReflection)) continue
       const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName ?? ''
       if (!sources.some(fragment => fp.includes(fragment))) continue
+      // Skip types that explicitly opt into a specific standalone page — they
+      // are handled by standalonePageFromSources, not by this relocation pass.
+      if (child.comment?.blockTags.some(t => t.tag === '@page')) continue
       const inGroup = child.comment?.blockTags.some(
         t =>
           t.tag === '@group' &&
@@ -685,6 +696,18 @@ export class SDKRouter extends MemberRouter {
   // Keyed by domain.path; populated in buildPages so renderDomainHub can list hooks.
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
+  // Keyed by the synthetic namespace of a standalone page that opts into a
+  // `layout` config; populated in buildPages so the theme dispatches those pages
+  // to the standalone layout renderer instead of the default template. A page
+  // without `layout` is absent here and falls through to the default template.
+  readonly standaloneLayouts = new Map<DeclarationReflection, PageLayout>()
+
+  // Parent reflection → the members carrying `@childOf {@link parent}`, which the
+  // theme's `members` partial renders nested one heading level beneath the parent
+  // instead of as their own top-level entries. Populated by `nestChildOfMembers`,
+  // which also removes the children from their groups so they don't render twice.
+  readonly nestedChildrenByParent = new Map<DeclarationReflection, DeclarationReflection[]>()
+
   // Keyed by the flow DeclarationReflection; populated before sources are cleared
   // so the renderer can slot GUIDE.md prose into each flow page.
   readonly flowGuides = new Map<DeclarationReflection, Guide>()
@@ -729,6 +752,10 @@ export class SDKRouter extends MemberRouter {
       // caught by isHookSourceFile and silently skipped.
       const page = standalonePageFromSources(child)
       if (page) {
+        // @page is a routing directive — strip it so it doesn't render as a doc section.
+        if (child.comment) {
+          child.comment.blockTags = child.comment.blockTags.filter(t => t.tag !== '@page')
+        }
         const bucket = standaloneGroups.get(page) ?? []
         bucket.push(child)
         standaloneGroups.set(page, bucket)
@@ -749,16 +776,6 @@ export class SDKRouter extends MemberRouter {
             bucket.push(child)
             hooksByDomain.set(domainPath, bucket)
             this.handledHooks.add(child)
-
-            const hookDir = hookDirFromSources(child)
-            if (hookDir) {
-              hookGroupMap.set(child, hookDir)
-              if (!hookGuidesByDir.has(hookDir)) {
-                const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName
-                const guide = fp ? readHookGuide(fp, hookDir) : null
-                if (guide) hookGuidesByDir.set(hookDir, guide)
-              }
-            }
           }
         }
         continue
@@ -778,6 +795,44 @@ export class SDKRouter extends MemberRouter {
     }
     if (project.groups) {
       project.groups = project.groups.filter(g => g.children.length > 0)
+    }
+
+    // Assign each hook reflection to its hookGroupMap page key.
+    //
+    // Two-pass so companion types can follow non-utility hook functions that
+    // live in the same source file (e.g. UseCurrentHomeAddressFormProps from
+    // useCurrentHomeAddressForm.tsx follows useCurrentHomeAddressForm, not
+    // the useHomeAddressForm directory bucket).
+    //
+    // Pass 1 — hook functions: non-utility hooks own a page named after
+    // themselves; utility hooks stay on the primary hook's page.
+    const hookFileToHookDir = new Map<string, string>() // source path → hookDir
+    for (const hooks of hooksByDomain.values()) {
+      for (const hook of hooks) {
+        if (!(hook instanceof DeclarationReflection)) continue
+        if (hook.kind !== ReflectionKind.Function) continue
+        const isUtilityHook = hasGroup(hook, CUSTOM_GROUPS.utilityHooks)
+        const hookDir = isUtilityHook ? hookDirFromSources(hook) : hook.name
+        if (!hookDir) continue
+        hookGroupMap.set(hook, hookDir)
+        const fp = sourceFilePath(hook)
+        if (fp && !isUtilityHook) hookFileToHookDir.set(fp, hookDir)
+        if (!hookGuidesByDir.has(hookDir)) {
+          const guide = fp ? readHookGuide(fp, hookDir) : null
+          if (guide) hookGuidesByDir.set(hookDir, guide)
+        }
+      }
+    }
+    // Pass 2 — companion types: follow the non-utility hook in their source
+    // file if one exists, otherwise fall back to hookDirFromSources.
+    for (const hooks of hooksByDomain.values()) {
+      for (const hook of hooks) {
+        if (!(hook instanceof DeclarationReflection)) continue
+        if (hook.kind === ReflectionKind.Function) continue
+        const fp = sourceFilePath(hook)
+        const hookDir = (fp && hookFileToHookDir.get(fp)) ?? hookDirFromSources(hook)
+        if (hookDir) hookGroupMap.set(hook, hookDir)
+      }
     }
 
     // Read GUIDE.md files for Flow components before sources are cleared.
@@ -800,6 +855,18 @@ export class SDKRouter extends MemberRouter {
     SDKRouter.clearSources(project)
 
     const pages = super.buildPages(project)
+
+    // The project index is rendered as .mdx (JSX required for DocCardList).
+    // Update the pages array entry and all fullUrls that reference index.md so
+    // TypeDoc generates cross-links with the correct extension. This must happen
+    // after super.buildPages(), which sets fullUrls for anchored project members.
+    const projectPage = pages.find(p => p.model === project)
+    if (projectPage) projectPage.url = projectPage.url.replace(/index\.md$/, 'index.mdx')
+    for (const [refl, url] of this.fullUrls) {
+      if (url === 'index.md' || url.startsWith('index.md#')) {
+        this.fullUrls.set(refl, url.replace('index.md', 'index.mdx'))
+      }
+    }
 
     for (const [domainPath, hooks] of hooksByDomain) {
       // Group hooks by hook directory name (e.g. 'useCompensationForm').
@@ -906,11 +973,46 @@ export class SDKRouter extends MemberRouter {
       SDKRouter.domainsWithHooks.add(domainPath)
     }
 
+    // Force-create standalone pages that rely entirely on crossDomainIndex.
+    // They have no reflections matching their `sources`, so standaloneGroups
+    // would otherwise skip them — but the index table renders from DOMAINS, not members.
+    for (const pageConfig of STANDALONE_PAGES) {
+      if (!standaloneGroups.has(pageConfig.id) && pageConfig.layout?.crossDomainIndex?.length) {
+        standaloneGroups.set(pageConfig.id, [])
+      }
+    }
+
     for (const [page, members] of standaloneGroups) {
-      const { displayName } = STANDALONE_PAGES.find(p => p.id === page)!
+      const { displayName, layout, intro } = STANDALONE_PAGES.find(p => p.id === page)!
       const ns = new DeclarationReflection(displayName, ReflectionKind.Namespace, project)
+      if (intro) {
+        ns.comment = new Comment()
+        ns.comment.summary = [{ kind: 'text', text: intro }]
+      }
       ns.children = members
       ns.groups = groupSyntheticMembers(members, ns)
+      // `@childOf` members are pulled from their groups and recorded for nesting
+      // on both the default template and the standalone layout renderer, so this
+      // runs regardless of `layout`.
+      this.nestChildOfMembers(ns)
+      if (layout) {
+        // A page laid out by the standalone renderer inlines each component's
+        // props interface into its Parameters section (like every other page),
+        // but the synthetic groups were regrouped fresh above and still list
+        // those interfaces — drop them from the groups so they don't render a
+        // second time as their own sections. `ns.children` keeps them so the
+        // inline anchors still resolve.
+        const propsInterfaces = componentPropsInterfaces(ns)
+        if (propsInterfaces.size > 0) {
+          for (const group of ns.groups) {
+            group.children = group.children.filter(
+              c => !(c instanceof DeclarationReflection && propsInterfaces.has(c)),
+            )
+          }
+          ns.groups = ns.groups.filter(g => g.children.length > 0)
+        }
+        this.standaloneLayouts.set(ns, layout)
+      }
       this.buildSyntheticPage(page, ns, members, pages)
     }
 
@@ -933,6 +1035,45 @@ export class SDKRouter extends MemberRouter {
     }
 
     return pages
+  }
+
+  /**
+   * Move members carrying `@childOf {@link X}` out of their own group and record
+   * them under `X` in {@link nestedChildrenByParent}, so the theme's `members`
+   * partial renders each nested one heading level beneath its parent instead of
+   * as a top-level entry. The child stays in `ns.children` so its anchor still
+   * resolves for inbound `{@link}`s; only its group membership is removed, so it
+   * doesn't also render as a sibling section. A `@childOf` pointing at a name not
+   * on the page degrades to a plain top-level entry (left in its group). The
+   * consumed tag is stripped so it doesn't render as a stray "Child Of" block.
+   */
+  private nestChildOfMembers(ns: DeclarationReflection): void {
+    const byName = new Map<string, DeclarationReflection>()
+    for (const child of ns.children ?? []) byName.set(child.name, child)
+
+    const nested = new Set<DeclarationReflection>()
+    for (const child of ns.children ?? []) {
+      const targetName = childOfTarget(child)
+      if (!targetName || targetName === child.name) continue
+      const parent = byName.get(targetName)
+      if (!parent) continue
+      const siblings = this.nestedChildrenByParent.get(parent) ?? []
+      siblings.push(child)
+      this.nestedChildrenByParent.set(parent, siblings)
+      nested.add(child)
+      if (child.comment) {
+        child.comment.blockTags = child.comment.blockTags.filter(t => t.tag !== '@childOf')
+      }
+    }
+    if (nested.size === 0) return
+
+    for (const siblings of this.nestedChildrenByParent.values()) {
+      siblings.sort((a, b) => a.name.localeCompare(b.name))
+    }
+    for (const group of ns.groups ?? []) {
+      group.children = group.children.filter(c => !nested.has(c as DeclarationReflection))
+    }
+    ns.groups = (ns.groups ?? []).filter(g => g.children.length > 0)
   }
 
   /**
@@ -1054,6 +1195,8 @@ export class SDKRouter extends MemberRouter {
       for (const child of children) {
         this.buildAnchors(child, reflection)
       }
+      const layout = NAMESPACE_LAYOUTS[reflection.name]
+      if (layout) this.standaloneLayouts.set(reflection as DeclarationReflection, layout)
       return
     }
 

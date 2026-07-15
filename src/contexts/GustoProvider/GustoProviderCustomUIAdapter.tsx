@@ -86,6 +86,7 @@ export interface GustoProviderCustomUIAdapterProps extends GustoBaseProviderProp
  * @param props - See {@link GustoProviderCustomUIAdapterProps}.
  * @returns The configured provider tree wrapping `children`.
  * @public
+ * @group Providers
  */
 export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapterProps) {
   const {

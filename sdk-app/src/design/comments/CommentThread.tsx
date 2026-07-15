@@ -59,21 +59,9 @@ export function CommentThread({ comment }: { comment: SandboxComment }) {
 
       <div className={styles.footer}>
         {comment.resolved ? (
-          <div className={styles.formRow}>
-            <span className={styles.resolvedTag}>
-              Resolved{comment.resolved_by ? ` by ${comment.resolved_by.name}` : ''}
-            </span>
-            <span className={styles.spacer} />
-            {canWrite ? (
-              <button
-                type="button"
-                className={`${styles.button} ${styles.buttonGhost}`}
-                onClick={() => void toggleResolve(comment)}
-              >
-                Reopen
-              </button>
-            ) : null}
-          </div>
+          <span className={styles.resolvedTag}>
+            Resolved{comment.resolved_by ? ` by ${comment.resolved_by.name}` : ''}
+          </span>
         ) : null}
 
         {replying ? (
@@ -100,16 +88,14 @@ export function CommentThread({ comment }: { comment: SandboxComment }) {
               >
                 Reply
               </button>
+              <button
+                type="button"
+                className={`${styles.button} ${styles.buttonGhost}`}
+                onClick={() => void toggleResolve(comment)}
+              >
+                {comment.resolved ? 'Reopen' : 'Resolve'}
+              </button>
               <span className={styles.spacer} />
-              {!comment.resolved ? (
-                <button
-                  type="button"
-                  className={`${styles.button} ${styles.buttonGhost}`}
-                  onClick={() => void toggleResolve(comment)}
-                >
-                  Resolve
-                </button>
-              ) : null}
               {isAuthor ? (
                 <button
                   type="button"

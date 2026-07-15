@@ -45,7 +45,7 @@ describe('ContractorList hamburger menu edit/review CTA', () => {
     renderWithProviders(<ContractorList companyId="company-123" onEvent={() => {}} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
     expect(await screen.findByRole('menuitem', { name: 'Edit' })).toBeTruthy()
   })
@@ -57,7 +57,7 @@ describe('ContractorList hamburger menu edit/review CTA', () => {
     renderWithProviders(<ContractorList companyId="company-123" onEvent={() => {}} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Review' }))
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
     expect(await screen.findByRole('menuitem', { name: 'Review' })).toBeTruthy()
   })
@@ -69,7 +69,7 @@ describe('ContractorList hamburger menu edit/review CTA', () => {
     renderWithProviders(<ContractorList companyId="company-123" onEvent={() => {}} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
     expect(await screen.findByRole('menuitem', { name: 'Edit' })).toBeTruthy()
   })
@@ -81,7 +81,7 @@ describe('ContractorList hamburger menu edit/review CTA', () => {
     renderWithProviders(<ContractorList companyId="company-123" onEvent={() => {}} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
     expect(await screen.findByRole('menuitem', { name: 'Edit' })).toBeTruthy()
   })
@@ -89,7 +89,7 @@ describe('ContractorList hamburger menu edit/review CTA', () => {
 
 describe('ContractorList cancel self-onboarding action', () => {
   it.each(['self_onboarding_invited', 'self_onboarding_started'])(
-    'offers "Cancel self-onboarding" for %s',
+    'offers "Cancel self-onboarding" but not "Edit" for %s',
     async status => {
       mockContractorWithStatus(status)
 
@@ -97,9 +97,12 @@ describe('ContractorList cancel self-onboarding action', () => {
       renderWithProviders(<ContractorList companyId="company-123" onEvent={() => {}} />)
 
       await screen.findByText('Ada Lovelace')
-      await user.click(screen.getByRole('button', { name: 'Edit' }))
+      await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
       expect(await screen.findByRole('menuitem', { name: 'Cancel self-onboarding' })).toBeTruthy()
+      // Editing is blocked mid self-onboarding — the admin must cancel it first.
+      expect(screen.queryByRole('menuitem', { name: 'Edit' })).not.toBeInTheDocument()
+      expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument()
     },
   )
 
@@ -112,7 +115,7 @@ describe('ContractorList cancel self-onboarding action', () => {
       renderWithProviders(<ContractorList companyId="company-123" onEvent={() => {}} />)
 
       await screen.findByText('Ada Lovelace')
-      await user.click(screen.getByRole('button', { name: /Edit|Review/ }))
+      await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
       await screen.findByRole('menuitem', { name: /Edit|Review/ })
       expect(
@@ -140,7 +143,7 @@ describe('ContractorList cancel self-onboarding action', () => {
     renderWithProviders(<ContractorList companyId="company-123" onEvent={onEvent} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Cancel self-onboarding' }))
 
     await waitFor(() => {
