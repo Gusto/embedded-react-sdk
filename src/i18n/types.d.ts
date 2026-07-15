@@ -1713,7 +1713,7 @@ export namespace Translations {
     w9EditWarning: {
       /** @defaultValue `"Changes will require an updated Form W-9"` */
       label: string
-      /** @defaultValue `"This contractor has already signed a Form W-9. If you edit this address, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."` */
+      /** @defaultValue `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` */
       body: string
     }
     /** @defaultValue `"Street 1"` */
@@ -2361,7 +2361,7 @@ export namespace Translations {
     w9EditWarning: {
       /** @defaultValue `"Changes will require an updated Form W-9"` */
       label: string
-      /** @defaultValue `"This contractor has already signed a Form W-9. If you edit these details, you'll need to retain an updated and signed version of Form W-9 reflecting the corrected information."` */
+      /** @defaultValue `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` */
       body: string
     }
     selfOnboarding: {
