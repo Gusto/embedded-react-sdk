@@ -6,6 +6,7 @@ import { useContractors } from './useContractorList'
 import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
+import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
@@ -139,15 +140,20 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
         contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_INVITED ||
         contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_STARTED
 
-      const menuItems = [
-        {
+      // While the contractor is mid self-onboarding, editing is blocked: the
+      // admin must first cancel self-onboarding. So the Edit item is omitted
+      // whenever cancelling is available.
+      const menuItems: MenuItem[] = []
+
+      if (!canCancelSelfOnboarding) {
+        menuItems.push({
           label: editLabel,
           icon: <PencilSvg aria-hidden />,
           onClick: () => {
             handleEdit(contractor.uuid)
           },
-        },
-      ]
+        })
+      }
 
       if (canCancelSelfOnboarding) {
         menuItems.push({
@@ -167,13 +173,7 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
         },
       })
 
-      return (
-        <HamburgerMenu
-          items={menuItems}
-          triggerLabel={editLabel}
-          isLoading={isPendingDelete || isPendingCancel}
-        />
-      )
+      return <HamburgerMenu items={menuItems} isLoading={isPendingDelete || isPendingCancel} />
     },
     emptyState: () => <EmptyDataContractorsList handleAdd={handleAdd} />,
     pagination: {

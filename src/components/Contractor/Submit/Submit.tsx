@@ -13,6 +13,7 @@ import { BaseComponent, useBase, type BaseComponentInterface } from '@/component
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { W9_DOCUMENT_NAME } from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm/w9Fields'
+import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
 
 /**
  * Props for {@link ContractorSubmit}.
@@ -51,7 +52,7 @@ export function ContractorSubmit(props: ContractorSubmitProps) {
 const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
   useComponentDictionary('Contractor.Submit', dictionary)
-  const { Alert, Box, BoxHeader, Button, Heading, UnorderedList } = useComponentContext()
+  const { Alert, Button, Heading, UnorderedList } = useComponentContext()
   const { t } = useTranslation('Contractor.Submit')
   const { onEvent, baseSubmitHandler } = useBase()
   const items = Object.values(t('warningItems', { returnObjects: true }))
@@ -123,38 +124,12 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
         <Heading as="h2">{t('heading')}</Heading>
       </FlexItem>
 
-      {documentsToCollect.length > 0 && (
-        <Box
-          header={
-            <BoxHeader
-              title={t('documentRequirements.title')}
-              description={t('documentRequirements.description', { contractorName })}
-            />
-          }
-        >
-          <Flex flexDirection="column" gap={16}>
-            {documentsToCollect.map(document => {
-              const isW9 = document.name === W9_DOCUMENT_NAME
-              const title = isW9
-                ? t('documentRequirements.documents.taxpayer_identification_form_w_9.title')
-                : (document.title ?? '')
-              const description = isW9
-                ? t('documentRequirements.documents.taxpayer_identification_form_w_9.description')
-                : (document.description ?? '')
-              return (
-                <DocumentRequirementItem
-                  key={document.uuid}
-                  title={title}
-                  description={description}
-                  document={document}
-                  downloadLabel={t('documentRequirements.downloadCta')}
-                />
-              )
-            })}
-            {hasW9 && <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>}
-          </Flex>
-        </Box>
-      )}
+      <ContractorSubmitDocuments
+        contractorId={contractorId}
+        documentsToCollect={documentsToCollect}
+        contractorName={contractorName}
+        hasW9={hasW9}
+      />
       <Flex flexDirection="column" gap={8}>
         <Alert status="warning" label={t('title')}>
           <UnorderedList items={items} />
@@ -166,6 +141,65 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
         </ActionsLayout>
       </Flex>
     </Flex>
+  )
+}
+
+const ContractorSubmitDocuments = ({
+  contractorId,
+  documentsToCollect,
+  contractorName,
+  hasW9,
+}: {
+  contractorId: string
+  documentsToCollect: Document[]
+  contractorName: string | null | undefined
+  hasW9: boolean
+}) => {
+  const hasSignedW9 = useContractorHasSignedW9(contractorId)
+  const { Alert, Box, BoxHeader } = useComponentContext()
+  const { t } = useTranslation('Contractor.Submit')
+
+  // If the contractor already signed a W-9 during self-onboarding, we don't
+  // show manual collection instructions.
+  if (hasSignedW9) {
+    return null
+  }
+
+  if (documentsToCollect.length === 0) {
+    return null
+  }
+
+  return (
+    <Box
+      header={
+        <BoxHeader
+          title={t('documentRequirements.title')}
+          description={t('documentRequirements.description', { contractorName })}
+        />
+      }
+    >
+      <Flex flexDirection="column" gap={16}>
+        {documentsToCollect.map(document => {
+          const isW9 = document.name === W9_DOCUMENT_NAME
+          const title = isW9
+            ? t('documentRequirements.documents.taxpayer_identification_form_w_9.title')
+            : (document.title ?? '')
+          const description = isW9
+            ? t('documentRequirements.documents.taxpayer_identification_form_w_9.description')
+            : (document.description ?? '')
+          return (
+            <DocumentRequirementItem
+              key={document.uuid}
+              title={title}
+              description={description}
+              document={document}
+              downloadLabel={t('documentRequirements.downloadCta')}
+            />
+          )
+        })}
+        {hasW9 && <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>}
+      </Flex>
+    </Box>
   )
 }
 
