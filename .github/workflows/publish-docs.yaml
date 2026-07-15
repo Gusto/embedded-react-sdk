@@ -138,7 +138,6 @@ jobs:
           SDK_VERSION: ${{ steps.version.outputs.version }}
           MINOR: ${{ steps.version.outputs.minor }}
           TRIGGER: ${{ github.event_name }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           set -euo pipefail
 
@@ -197,18 +196,13 @@ jobs:
           done
 
           # ---- Step 4: snapshot creation or refresh ----
-          # Snapshot ACTION is determined by trigger + downstream state:
-          #   workflow_run, minor missing  -> create (new minor)
-          #   workflow_run, minor present  -> refresh (patch)
-          #   workflow_dispatch, missing   -> create (bootstrap / recover)
-          #   workflow_dispatch, present   -> none
-          #   push                         -> none
+          # Determine the action before running the script so we have it
+          # for the commit message label regardless of what the script changes.
           MINOR_IN_VERSIONS=false
           if [ -f docs-site/versions.json ] \
              && jq -e --arg key "${MINOR}" 'index($key) != null' docs-site/versions.json > /dev/null 2>&1; then
             MINOR_IN_VERSIONS=true
           fi
-
           SNAPSHOT_ACTION=none
           if [ "$TRIGGER" = "workflow_run" ] || [ "$TRIGGER" = "workflow_dispatch" ]; then
             if [ "$MINOR_IN_VERSIONS" = "false" ]; then
@@ -217,62 +211,14 @@ jobs:
               SNAPSHOT_ACTION=refresh
             fi
           fi
-          echo "Snapshot action for SDK ${SDK_VERSION} (minor ${MINOR}, trigger ${TRIGGER}): ${SNAPSHOT_ACTION}"
 
-          if [ "$SNAPSHOT_ACTION" = "create" ]; then
-            # docusaurus docs:version copies docs/ -> versioned_docs/version-<minor>/,
-            # captures the sidebar, prepends <minor> to versions.json.
-            # The conditional config picks up versions.json[0] as lastVersion automatically.
-            (cd docs-site && npm ci && npx docusaurus docs:version "${MINOR}")
-            echo "Created snapshot version-${MINOR} in downstream."
-          elif [ "$SNAPSHOT_ACTION" = "refresh" ]; then
-            VERSIONED_DIR="docs-site/versioned_docs/version-${MINOR}"
-            if [ ! -d "$VERSIONED_DIR" ]; then
-              echo "::error::${MINOR} is in versions.json but ${VERSIONED_DIR}/ is missing in downstream."
-              exit 1
-            fi
-            updated=0
-            orphan=0
-            added=0
-            # Update content for files already in the snapshot.
-            while IFS= read -r snap_file; do
-              rel="${snap_file#${VERSIONED_DIR}/}"
-              live="docs/${rel}"
-              if [ -f "$live" ]; then
-                cp "$live" "$snap_file"
-                updated=$((updated + 1))
-              else
-                # File exists in snapshot but not in live docs — structural change
-                # (rename or deletion upstream). Leave the orphan in place so
-                # existing external links keep resolving; notify below.
-                orphan=$((orphan + 1))
-              fi
-            done < <(find "$VERSIONED_DIR" -type f)
-            # Add files present in live docs/ but absent from the snapshot.
-            # This covers renames and new files added in a patch — without them
-            # updated content that links to the new paths would break the build.
-            while IFS= read -r live_file; do
-              rel="${live_file#docs/}"
-              snap="${VERSIONED_DIR}/${rel}"
-              if [ ! -f "$snap" ]; then
-                mkdir -p "$(dirname "$snap")"
-                cp "$live_file" "$snap"
-                added=$((added + 1))
-              fi
-            done < <(find docs -type f)
-            echo "Refreshed ${updated} file(s) in version-${MINOR}; ${added} added; ${orphan} orphan(s) left as-is."
-            # Structural changes in a patch (renames, additions, deletions) mean
-            # the live docs diverged structurally from the snapshot. Notify so
-            # someone can verify the versioned snapshot still looks right.
-            if [ "${added}" -gt 0 ] || [ "${orphan}" -gt 0 ]; then
-              echo "::warning::SDK ${SDK_VERSION} patch had structural doc changes: ${added} file(s) added to snapshot, ${orphan} orphan(s) left in place."
-              if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
-                curl -s -X POST -H 'Content-type: application/json' \
-                  --data "{\"text\":\":warning: *SDK ${SDK_VERSION} patch sync* had structural doc changes in the version-${MINOR} snapshot: *${added}* file(s) added, *${orphan}* orphan(s) left in place. Verify the <https://github.com/Gusto/embedded-sdk-docs/tree/main/docs-site/versioned_docs/version-${MINOR}|version-${MINOR} snapshot> looks correct.\"}" \
-                  "${SLACK_WEBHOOK_URL}" || true
-              fi
-            fi
-          fi
+          # Delegate to the script so this logic can also be run locally.
+          # In CI $(pwd) is the cloned downstream working tree (docs-repo/).
+          # The create path runs npm ci inside the downstream docs-site/.
+          "${GITHUB_WORKSPACE}/.github/scripts/sync-snapshot.sh" \
+            --downstream "$(pwd)" \
+            --trigger "${TRIGGER}" \
+            --version "${SDK_VERSION}"
 
           # ---- Step 5: stage and validate ----
           # Stage only the paths we manage. NOT `git add -A` — that could
