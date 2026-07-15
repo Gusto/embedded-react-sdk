@@ -9,6 +9,10 @@ import {
   handleGetContractorAddress,
   handleUpdateContractorAddress,
 } from '@/test/mocks/apis/contractor_address'
+import {
+  buildContractorDocumentsList,
+  handleGetContractorDocuments,
+} from '@/test/mocks/apis/contractor_documents'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { contractorEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -429,6 +433,44 @@ describe('Contractor/Address', () => {
       expect(
         screen.getByText("Contractor's business address, within the United States."),
       ).toBeInTheDocument()
+    })
+  })
+
+  describe('W-9 edit warning', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+      server.use(handleGetContractorAddress(() => HttpResponse.json(emptyAddressResponse)))
+    })
+
+    it('renders the warning when the contractor has a signed W-9 on file', async () => {
+      server.use(
+        handleGetContractorDocuments(() =>
+          HttpResponse.json(
+            buildContractorDocumentsList([
+              {
+                uuid: 'signed-w9-uuid',
+                title: 'W-9',
+                name: 'taxpayer_identification_form_w_9',
+                requires_signing: true,
+                signed_at: '2025-01-01T00:00:00Z',
+              },
+            ]),
+          ),
+        ),
+      )
+
+      renderWithProviders(<Address contractorId="contractor_id" onEvent={() => {}} />)
+
+      expect(
+        await screen.findByText('Changes will require an updated Form W-9'),
+      ).toBeInTheDocument()
+    })
+
+    it('does not render the warning when the W-9 is unsigned', async () => {
+      renderWithProviders(<Address contractorId="contractor_id" onEvent={() => {}} />)
+
+      await screen.findByText('Home address')
+      expect(screen.queryByText('Changes will require an updated Form W-9')).not.toBeInTheDocument()
     })
   })
 })

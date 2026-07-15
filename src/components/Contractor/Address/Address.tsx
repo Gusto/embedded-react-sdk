@@ -15,6 +15,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
 import { contractorEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
 
 // The hook defaults to the API contract, which treats every address field as
 // optional. The SDK's address form has always required a complete mailing
@@ -78,6 +79,18 @@ export function Address({ onEvent, FallbackComponent, ...rootProps }: AddressPro
   )
 }
 
+function ContractorAddressW9Warning({ contractorId }: { contractorId: string }) {
+  const hasSignedW9 = useContractorHasSignedW9(contractorId)
+  const { t } = useTranslation('Contractor.Address')
+  const Components = useComponentContext()
+  if (!hasSignedW9) return null
+  return (
+    <Components.Alert status="warning" disableScrollIntoView label={t('w9EditWarning.label')}>
+      <Components.Text>{t('w9EditWarning.body')}</Components.Text>
+    </Components.Alert>
+  )
+}
+
 function AddressRoot({
   contractorId,
   defaultValues,
@@ -117,6 +130,8 @@ function AddressRoot({
       <BaseLayout error={contractorAddress.errorHandling.errors}>
         <SDKFormProvider formHookResult={contractorAddress}>
           <Form onSubmit={() => void handleSubmit()}>
+            <ContractorAddressW9Warning contractorId={contractorId} />
+
             <Flex flexDirection="column" gap={32} alignItems="stretch">
               <header>
                 <Flex flexDirection="column" gap={4}>

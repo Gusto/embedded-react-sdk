@@ -1710,6 +1710,12 @@ export namespace Translations {
     homeAddressTitle: string
     /** @defaultValue `"Contractor's home mailing address, within the United States."` */
     homeAddressDescription: string
+    w9EditWarning: {
+      /** @defaultValue `"Changes will require an updated Form W-9"` */
+      label: string
+      /** @defaultValue `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` */
+      body: string
+    }
     /** @defaultValue `"Street 1"` */
     street1: string
     /** @defaultValue `"Street 2"` */
@@ -2352,6 +2358,12 @@ export namespace Translations {
     title: string
     /** @defaultValue `"This information will be used for payments and on tax documents, so double-check that it's accurate."` */
     subtitle: string
+    w9EditWarning: {
+      /** @defaultValue `"Changes will require an updated Form W-9"` */
+      label: string
+      /** @defaultValue `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` */
+      body: string
+    }
     selfOnboarding: {
       /** @defaultValue `"Complete your profile"` */
       title: string
@@ -2451,11 +2463,11 @@ export namespace Translations {
       cancel: string
       /** @defaultValue `"Create Contractor"` */
       create: string
-      /** @defaultValue `"Update Contractor"` */
+      /** @defaultValue `"Continue"` */
       update: string
       /** @defaultValue `"Creating…"` */
       creating: string
-      /** @defaultValue `"Updating…"` */
+      /** @defaultValue `"Saving…"` */
       updating: string
     }
   }

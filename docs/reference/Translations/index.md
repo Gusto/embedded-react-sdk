@@ -1249,6 +1249,9 @@ Translation keys for the `Contractor.Address` i18n namespace.
 | `validations.street1` | `"Street address is required"` |
 | `validations.zip` | `"Please provide valid zip code"` |
 | `validations.zipInvalid` | `"Please enter a valid ZIP code"` |
+| <a id="property-contractoraddressw9editwarning"></a> `w9EditWarning` | |
+| `w9EditWarning.body` | `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` |
+| `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
 | <a id="property-contractoraddresszip"></a> `zip` | `"Zip"` |
 
 ***
@@ -1697,8 +1700,8 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `buttons.cancel` | `"Cancel"` |
 | `buttons.create` | `"Create Contractor"` |
 | `buttons.creating` | `"Creating…"` |
-| `buttons.update` | `"Update Contractor"` |
-| `buttons.updating` | `"Updating…"` |
+| `buttons.update` | `"Continue"` |
+| `buttons.updating` | `"Saving…"` |
 | <a id="property-contractorprofilefields"></a> `fields` | |
 | `fields.businessName` | |
 | `fields.businessName.label` | `"Business Name"` |
@@ -1748,6 +1751,9 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.ssn` | `"SSN is required for individual contractors"` |
 | `validations.ssnFormat` | `"SSN must be valid format"` |
 | `validations.startDate` | `"Start date is required"` |
+| <a id="property-contractorprofilew9editwarning"></a> `w9EditWarning` | |
+| `w9EditWarning.body` | `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` |
+| `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
 
 ***
 
