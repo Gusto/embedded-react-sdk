@@ -431,6 +431,7 @@ describe('Contractor profile component behavior', () => {
             onboarding_status: postSaveStatus,
           }),
         ),
+        handleGetContractorDocuments(() => HttpResponse.json(buildContractorDocumentsList())),
       )
 
       renderWithProviders(
@@ -438,7 +439,7 @@ describe('Contractor profile component behavior', () => {
       )
 
       await screen.findByText('Contractor profile')
-      await user.click(screen.getByRole('button', { name: 'Update Contractor' }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
