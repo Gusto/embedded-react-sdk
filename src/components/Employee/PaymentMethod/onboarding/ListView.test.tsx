@@ -119,7 +119,7 @@ describe('PaymentMethod onboarding ListView', () => {
     expect(screen.queryByRole('button', { name: /split paycheck/i })).not.toBeInTheDocument()
   })
 
-  it('navigates to standalone BankForm when Add another bank account is clicked', async () => {
+  it('shows inline bank form below DataView when Add another bank account is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -137,6 +137,7 @@ describe('PaymentMethod onboarding ListView', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
     })
+    expect(screen.getByText('Chase')).toBeInTheDocument()
   })
 
   it('fires EMPLOYEE_PAYMENT_METHOD_UPDATED and EMPLOYEE_PAYMENT_METHOD_DONE when Continue is clicked', async () => {
@@ -266,8 +267,8 @@ describe('PaymentMethod onboarding ListView', () => {
     })
   })
 
-  describe('BankForm validation (standalone form via Add another)', () => {
-    it('shows required-field errors when submitting an empty bank form', async () => {
+  describe('BankForm validation (inline form via Add another)', () => {
+    it('shows required-field errors when submitting an empty inline Add another form', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -294,7 +295,7 @@ describe('PaymentMethod onboarding ListView', () => {
       expect(screen.getByText('Account number is a required field')).toBeInTheDocument()
     })
 
-    it('shows format errors when routing/account numbers are not 9 digits', async () => {
+    it('shows format errors when routing/account numbers are invalid', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -325,7 +326,7 @@ describe('PaymentMethod onboarding ListView', () => {
       ).toBeInTheDocument()
     })
 
-    it('returns to list view when Cancel is clicked from standalone BankForm', async () => {
+    it('hides inline form and restores footer when Cancel is clicked', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -342,11 +343,14 @@ describe('PaymentMethod onboarding ListView', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
       })
+      expect(screen.getByText('Chase')).toBeInTheDocument()
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
       await waitFor(() => {
-        expect(screen.getByText('Chase')).toBeInTheDocument()
+        expect(
+          screen.getByRole('button', { name: /add another bank account/i }),
+        ).toBeInTheDocument()
       })
       expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
     })
