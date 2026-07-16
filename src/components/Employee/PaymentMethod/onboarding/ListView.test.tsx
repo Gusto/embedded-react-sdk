@@ -88,7 +88,7 @@ describe('PaymentMethod onboarding ListView', () => {
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
-  it('shows Add bank account button when direct deposit is selected', async () => {
+  it('shows Add another bank account button in footer when direct deposit is selected with accounts', async () => {
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
     await waitFor(
@@ -101,23 +101,25 @@ describe('PaymentMethod onboarding ListView', () => {
     expect(screen.getByRole('button', { name: /add another bank account/i })).toBeInTheDocument()
   })
 
-  it('hides Add bank account button when Check is selected', async () => {
+  it('hides DataView, Add another, and Split paycheck when Check is selected', async () => {
     const user = userEvent.setup()
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
     await waitFor(
       () => {
-        expect(screen.getByRole('radio', { name: /check/i })).toBeInTheDocument()
+        expect(screen.getByText('Chase')).toBeInTheDocument()
       },
       { timeout: 5000 },
     )
 
-    await user.click(screen.getByRole('radio', { name: /check/i }))
+    await user.click(screen.getByRole('radio', { name: 'Check' }))
 
+    expect(screen.queryByText('Chase')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /add.*bank account/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /split paycheck/i })).not.toBeInTheDocument()
   })
 
-  it('navigates to BankForm when Add bank account is clicked', async () => {
+  it('navigates to standalone BankForm when Add another bank account is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -169,11 +171,102 @@ describe('PaymentMethod onboarding ListView', () => {
       { timeout: 5000 },
     )
 
-    // With no accounts and Check payment method, add bank account is not shown
     expect(screen.queryByRole('button', { name: /add.*bank account/i })).not.toBeInTheDocument()
   })
 
-  describe('BankForm validation', () => {
+  describe('Inline bank form (Direct Deposit, no accounts)', () => {
+    beforeEach(() => {
+      server.use(
+        getEmptyEmployeeBankAccounts,
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
+          HttpResponse.json({
+            version: 'ad88c4e3c40f122582e425030d5c2771',
+            type: 'Direct Deposit',
+          }),
+        ),
+      )
+    })
+
+    it('shows bank form fields immediately when Direct Deposit is selected with no accounts', async () => {
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
+      expect(screen.getByLabelText('Account number')).toBeInTheDocument()
+    })
+
+    it('does not show a Cancel button on the inline bank form', async () => {
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      expect(screen.queryByRole('button', { name: /cancel/i })).not.toBeInTheDocument()
+    })
+
+    it('hides Continue button while in inline bank form mode', async () => {
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      expect(screen.queryByRole('button', { name: 'Continue' })).not.toBeInTheDocument()
+    })
+
+    it('switching to Check dismisses inline bank form and shows Continue', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      // Use exact name to avoid matching "Checking" in the account type radio group
+      await user.click(screen.getByRole('radio', { name: 'Check' }))
+
+      expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    })
+
+    it('shows required-field errors when submitting empty inline bank form', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Account name is required')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Routing number should be a number (9 digits)')).toBeInTheDocument()
+      expect(screen.getByText('Account number is a required field')).toBeInTheDocument()
+    })
+  })
+
+  describe('BankForm validation (standalone form via Add another)', () => {
     it('shows required-field errors when submitting an empty bank form', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
@@ -232,7 +325,7 @@ describe('PaymentMethod onboarding ListView', () => {
       ).toBeInTheDocument()
     })
 
-    it('returns to list view when Cancel is clicked from BankForm', async () => {
+    it('returns to list view when Cancel is clicked from standalone BankForm', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -273,7 +366,7 @@ describe('PaymentMethod onboarding ListView', () => {
       expect(screen.queryByRole('button', { name: /split paycheck/i })).not.toBeInTheDocument()
     })
 
-    it('shows Split paycheck button when 2+ bank accounts exist', async () => {
+    it('shows Split paycheck button in footer when 2+ bank accounts exist', async () => {
       mockTwoBankAccounts()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 

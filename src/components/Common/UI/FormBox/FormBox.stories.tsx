@@ -108,6 +108,25 @@ export const WithCustomClassName: Story = {
   },
 }
 
+export const WithFooter: Story = {
+  render: () => {
+    const Components = useComponentContext()
+    return (
+      <Components.FormBox
+        header={<Components.FormBoxHeader title="Form Box Header" />}
+        withPadding={false}
+        footer={
+          <Components.Button variant="secondary" onClick={() => {}}>
+            Footer action
+          </Components.Button>
+        }
+      >
+        <Components.Text>This form box has header and footer sections.</Components.Text>
+      </Components.FormBox>
+    )
+  },
+}
+
 export const FlushContent: Story = {
   render: () => {
     const Components = useComponentContext()
