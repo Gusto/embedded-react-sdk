@@ -5106,7 +5106,7 @@ export namespace Translations {
     splitCta: string
     /** @defaultValue `"Continue"` */
     submitCta: string
-    /** @defaultValue `"Employee payment details"` */
+    /** @defaultValue `"Payment method"` */
     title: string
     /** @defaultValue `"Fixed amount"` */
     amountLabel: string

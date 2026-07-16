@@ -3460,7 +3460,7 @@ Translation keys for the `Employee.PaymentMethod` i18n namespace.
 | <a id="property-employeepaymentmethodsplittitle"></a> `splitTitle` | `"Split employee paycheck"` |
 | <a id="property-employeepaymentmethodsplitviewsuccessalert"></a> `splitViewSuccessAlert` | `"Payment split was successfully updated"` |
 | <a id="property-employeepaymentmethodsubmitcta"></a> `submitCta` | `"Continue"` |
-| <a id="property-employeepaymentmethodtitle"></a> `title` | `"Employee payment details"` |
+| <a id="property-employeepaymentmethodtitle"></a> `title` | `"Payment method"` |
 | <a id="property-employeepaymentmethodvalidations"></a> `validations` | |
 | `validations.accountName` | `"Account name is required"` |
 | `validations.accountNumber` | `"Account number is a required field"` |
