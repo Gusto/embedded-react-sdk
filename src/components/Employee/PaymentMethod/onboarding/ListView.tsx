@@ -205,7 +205,13 @@ function ListViewReady({
                   {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
                 </Components.Button>
               )}
-              <Components.Button type="submit" isLoading={paymentMethodForm.status.isPending}>
+              <Components.Button
+                type="submit"
+                isLoading={paymentMethodForm.status.isPending}
+                isDisabled={
+                  watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length === 0
+                }
+              >
                 {t('submitCta')}
               </Components.Button>
             </ActionsLayout>
