@@ -1,4 +1,4 @@
-import { reduce, state, state as final, transition } from 'robot3'
+import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { StateTaxesContextInterface } from './StateTaxesComponents'
 import { StateTaxesFormContextual, StateTaxesListContextual } from './StateTaxesComponents'
@@ -27,7 +27,6 @@ export const stateTaxesStateMachine = {
         }),
       ),
     ),
-    transition(componentEvents.COMPANY_STATE_TAX_DONE, 'done'),
   ),
   editStateTaxes: state<MachineTransition>(
     transition(
@@ -54,5 +53,4 @@ export const stateTaxesStateMachine = {
       })),
     ),
   ),
-  done: final(),
 }
