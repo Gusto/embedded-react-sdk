@@ -3867,7 +3867,6 @@ Translation keys for the `Payroll.Common` i18n namespace.
 | `status.processing` |
 | `status.readyToSubmit` |
 | `status.submitted` |
-| `status.unprocessed` |
 | `status.waitingForWireIn` |
 
 ***
