@@ -113,7 +113,7 @@ describe('usePayrollStatusBadges', () => {
       const wireInRequest = { status: 'awaiting_funds', paymentUuid: 'payroll-1' }
       const result = getPayrollStatusBadges(payroll, wireInRequest)
 
-      expect(result.badges[0]!.variant).toBe('info')
+      expect(result.badges).toHaveLength(0)
     })
   })
 
@@ -172,14 +172,6 @@ describe('usePayrollStatusBadges', () => {
   })
 
   describe('fallback statuses', () => {
-    it('returns Unprocessed for unprocessed payrolls without deadline', () => {
-      const payroll = { processed: false }
-      const result = getPayrollStatusBadges(payroll)
-
-      expect(result.badges[0]!.variant).toBe('info')
-      expect(result.badges[0]!.translationKey).toBe('unprocessed')
-    })
-
     it('returns Complete for processed payrolls with past check date', () => {
       const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
       const payroll = { processed: true, checkDate: pastDate }
@@ -241,7 +233,7 @@ describe('usePayrollStatusBadges', () => {
       }
       const result = getPayrollStatusBadges(payroll)
 
-      expect(result.badges[0]!.variant).toBe('info')
+      expect(result.badges).toHaveLength(0)
     })
 
     it('handles wire request with undefined status', () => {
@@ -270,7 +262,7 @@ describe('usePayrollStatusBadges', () => {
       }
       const result = getPayrollStatusBadges(payroll)
 
-      expect(result.badges[0]!.variant).toBe('info')
+      expect(result.badges).toHaveLength(0)
     })
 
     it('handles Date objects for checkDate', () => {

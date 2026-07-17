@@ -160,14 +160,6 @@ export const AllStatusesShowcase = () => {
 
     // Priority 4: Fallback Statuses
     {
-      ...createBasePayroll('unprocessed'),
-      payPeriod: {
-        ...createBasePayroll('unprocessed').payPeriod,
-        startDate: '2025-11-12',
-        endDate: '2025-11-26',
-      },
-    },
-    {
       ...createBasePayroll('pending'),
       processed: true,
       checkDate: sevenDaysFromNow.toISOString(),
@@ -399,9 +391,6 @@ export const Priority4_FallbackStatuses = () => {
   const yesterday = new Date(now - 24 * 60 * 60 * 1000)
 
   const payrolls: (Payroll & { payrollType: 'Regular' })[] = [
-    {
-      ...createBasePayroll('unprocessed'),
-    },
     {
       ...createBasePayroll('pending'),
       processed: true,
