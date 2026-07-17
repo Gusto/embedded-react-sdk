@@ -20,22 +20,12 @@
   white-space: nowrap;
 }
 
-.offCycleCta[data-testid] {
-  background-color: var(--g-colorBodyAccent);
-}
-
-.offCycleCtaText {
-  display: flex;
-  flex-direction: column;
-  gap: toRem(4);
-  min-width: 0;
+.offCycleCta {
+  width: 100%;
+  max-width: toRem(640);
 }
 
 .menuPlaceholder {
   visibility: hidden;
 }
 
-.offCycleCtaButton {
-  flex-shrink: 0;
-  white-space: nowrap;
-}

@@ -11,7 +11,7 @@ export interface BoxProps {
   /**
    * Content rendered inside the box body.
    */
-  children: ReactNode
+  children?: ReactNode
   /**
    * Optional content rendered above the body in the box header section.
    */
