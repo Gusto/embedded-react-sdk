@@ -387,6 +387,32 @@ describe('PaySchedule', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE, undefined)
     })
 
+    it('remains editable after the "done" event instead of getting stuck on the list view', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE, undefined)
+
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
+      })
+    })
+
     it('propagates navigation events when transitioning between views', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()

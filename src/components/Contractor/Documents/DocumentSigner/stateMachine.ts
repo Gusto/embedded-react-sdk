@@ -1,4 +1,4 @@
-import { state, transition, reduce, state as final } from 'robot3'
+import { state, transition, reduce } from 'robot3'
 import type { DocumentSignerContextInterface, EventPayloads } from './documentSignerStateMachine'
 import { SignatureFormContextual, DocumentsListContextual } from './documentSignerStateMachine'
 import { componentEvents } from '@/shared/constants'
@@ -24,7 +24,6 @@ export const documentSignerMachine = {
         }),
       ),
     ),
-    transition(componentEvents.CONTRACTOR_DOCUMENTS_DONE, 'done'),
   ),
   signatureForm: state<MachineTransition>(
     transition(
@@ -46,5 +45,4 @@ export const documentSignerMachine = {
       })),
     ),
   ),
-  done: final(),
 }
