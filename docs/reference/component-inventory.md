@@ -221,7 +221,7 @@ Renders a sectioned layout container with distinct header, body, and footer area
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `children` | `ReactNode` | Content rendered inside the box body. |
+| `children?` | `ReactNode` | Content rendered inside the box body. |
 | `className?` | `string` | CSS className to be applied to the root element. |
 | `footer?` | `ReactNode` | Optional content rendered below the body in the box footer section. |
 | `header?` | `ReactNode` | Optional content rendered above the body in the box header section. |
