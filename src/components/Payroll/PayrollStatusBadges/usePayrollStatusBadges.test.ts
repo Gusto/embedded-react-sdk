@@ -254,7 +254,7 @@ describe('usePayrollStatusBadges', () => {
       expect(result.badges[0]!.variant).toBe('info')
     })
 
-    it('handles deadline beyond 30 days', () => {
+    it('handles deadline beyond 14 days', () => {
       const futureTime = new Date(Date.now() + 45 * 24 * 60 * 60 * 1000)
       const payroll = {
         processed: false,
