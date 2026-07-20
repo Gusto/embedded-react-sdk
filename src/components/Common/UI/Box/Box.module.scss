@@ -28,3 +28,7 @@
   padding: toRem(20);
   border-top: 1px solid var(--g-colorBorderSecondary);
 }
+
+.header + .footer {
+  border-top: none;
+}
