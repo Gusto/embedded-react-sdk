@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.52.1",
+  "version": "0.52.2",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -96,13 +96,13 @@
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "@eslint/js": "^9.39.5",
-    "@microsoft/api-extractor": "^7.58.9",
+    "@microsoft/api-extractor": "^7.58.11",
     "@playwright/test": "^1.61.1",
     "@release-it/conventional-changelog": "^11.0.1",
     "@storybook/addon-a11y": "^10.5.0",
     "@storybook/addon-docs": "^10.5.0",
     "@storybook/addon-onboarding": "^10.5.0",
-    "@storybook/react-vite": "^10.5.0",
+    "@storybook/react-vite": "^10.5.3",
     "@storybook/test-runner": "^0.24.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -128,7 +128,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "eslint-plugin-storybook": "^10.5.0",
+    "eslint-plugin-storybook": "^10.5.3",
     "eslint-plugin-tsdoc": "^0.5.2",
     "fuse.js": "^7.5.0",
     "globals": "^17.7.0",
@@ -192,7 +192,7 @@
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.2",
     "react-hook-form": "^7.81.0",
-    "react-i18next": "^17.0.9",
+    "react-i18next": "^17.0.10",
     "react-robot": "^1.2.1",
     "robot3": "^1.2.0",
     "zod": "^4.3.6"

@@ -1,5 +1,5 @@
-import { type ReactNode, useEffect } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
+import { type ReactNode, useEffect, useRef } from 'react'
+import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form'
 import { FormProvider } from 'react-hook-form'
 import type { FieldMetadata, FieldMetadataWithOptions, HookFormInternals } from '../types'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
@@ -8,34 +8,89 @@ import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fiel
 import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 import type { SDKError, SDKFieldError } from '@/types/sdkError'
 
-function useSyncFieldErrors<
-  TFormData extends FieldValues,
-  TFieldsMetadata extends {
-    [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
-  },
->(
+interface ApplicableFieldError {
+  /** Field name normalized to the form-side dotted path (e.g. `homeAddress.street1`). */
+  name: string
+  message: string
+}
+
+/**
+ * Produces a referentially-stable list of API field errors that apply to this
+ * form — normalized to form-side keys and filtered to known fields.
+ *
+ * The array reference only changes when the error content changes. `fieldErrors`
+ * is a fresh array on every render (`collectErrors` + `flatMap`), so keying an
+ * effect on it directly would re-run every render and re-apply an error the user
+ * just cleared. Following React's guidance to depend on a primitive rather than a
+ * freshly-created object, we derive a content key and swap the returned reference
+ * only when that key changes. The list is sorted first so the key is order-agnostic,
+ * and `JSON.stringify` avoids delimiter collisions.
+ */
+function useApplicableFieldErrors(
   fieldErrors: SDKFieldError[],
-  form: {
-    fieldsMetadata: TFieldsMetadata
-    hookFormInternals: HookFormInternals<TFormData>
-  },
+  fieldsMetadata: Record<string, unknown>,
+): ApplicableFieldError[] {
+  const knownFields = new Set(Object.keys(fieldsMetadata))
+  const applicable = fieldErrors
+    .filter(
+      fieldError =>
+        fieldError.message && knownFields.has(normalizeErrorKeyForForm(fieldError.field)),
+    )
+    .map(fieldError => ({
+      name: normalizeErrorKeyForForm(fieldError.field),
+      message: fieldError.message,
+    }))
+    .sort((a, b) =>
+      a.name === b.name ? a.message.localeCompare(b.message) : a.name.localeCompare(b.name),
+    )
+
+  const key = JSON.stringify(applicable)
+  const stableRef = useRef<{ key: string; value: ApplicableFieldError[] }>({
+    key,
+    value: applicable,
+  })
+  if (stableRef.current.key !== key) {
+    stableRef.current = { key, value: applicable }
+  }
+  return stableRef.current.value
+}
+
+/**
+ * Applies API-derived field errors to their fields and clears each one as soon
+ * as the user changes that field's value.
+ *
+ * In the absence of client-side validation for these fields, a server field
+ * error would otherwise persist until the next submit. A single `watch(callback)`
+ * subscription reacts to the changed field by name — no value comparison, no
+ * re-renders — clearing the error so a fresh submit can surface a fresh result.
+ * The top-level error alert is intentionally left untouched.
+ */
+function useSyncFieldErrors<TFormData extends FieldValues>(
+  applicableFieldErrors: ApplicableFieldError[],
+  formMethods: UseFormReturn<TFormData>,
 ) {
-  const { fieldsMetadata } = form
-  const { setError } = form.hookFormInternals.formMethods
+  const { setError, clearErrors, watch } = formMethods
 
   useEffect(() => {
-    if (!fieldErrors.length) return
-    const knownFields = new Set(Object.keys(fieldsMetadata))
-    for (const fieldError of fieldErrors) {
-      const normalizedField = normalizeErrorKeyForForm(fieldError.field)
-      if (knownFields.has(normalizedField)) {
-        setError(normalizedField as FieldPath<TFormData>, {
-          type: 'custom',
-          message: fieldError.message,
-        })
-      }
+    if (!applicableFieldErrors.length) return
+
+    const apiErrorFields = new Set<string>()
+    for (const { name, message } of applicableFieldErrors) {
+      setError(name as FieldPath<TFormData>, { type: 'custom', message })
+      apiErrorFields.add(name)
     }
-  }, [fieldErrors, setError, fieldsMetadata])
+
+    const subscription = watch((_values, { name }) => {
+      if (name && apiErrorFields.has(name)) {
+        clearErrors(name)
+        apiErrorFields.delete(name)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [applicableFieldErrors, watch, setError, clearErrors])
 }
 
 /**
@@ -100,7 +155,8 @@ export function SDKFormProvider<
 >({ formHookResult, children }: SDKFormProviderProps<TFormData, TFieldsMetadata>) {
   const { errorHandling, form } = formHookResult
   const allFieldErrors = errorHandling.errors.flatMap(e => e.fieldErrors)
-  useSyncFieldErrors(allFieldErrors, form)
+  const applicableFieldErrors = useApplicableFieldErrors(allFieldErrors, form.fieldsMetadata)
+  useSyncFieldErrors(applicableFieldErrors, form.hookFormInternals.formMethods)
 
   return (
     <FormFieldsMetadataProvider metadata={form.fieldsMetadata} errors={errorHandling.errors}>
