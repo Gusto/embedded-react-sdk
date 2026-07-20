@@ -72,6 +72,8 @@ See the [endpoint reference tables](../appendix/endpoint-reference.md) for a hum
 
 The SDK ships a static stylesheet at `@gusto/embedded-react-sdk/style.css` and injects two runtime `<style>` elements at the browser: one for active theme variables, and one inside the new window opened during a paystub PDF download. Both accept a CSP nonce.
 
+`react-aria-components`, a dependency the SDK uses for accessible UI primitives, separately injects one global `<style>` element of its own (a `touch-action` rule that lets pressable elements distinguish a tap from a scroll gesture) the first time any pressable component mounts. This element has no nonce and the library exposes no option to add one, so it's blocked under a `style-src` policy that doesn't also allow `'unsafe-inline'`. Its content is static and version-pinned, so as a narrower alternative to `'unsafe-inline'`, you can allow it by hash instead — see [Minimum policy](#minimum-policy).
+
 ### Passing a nonce
 
 Pass the same per-request nonce your app uses for `style-src 'nonce-…'` to `GustoProvider`. The SDK applies it to every `<style>` element it creates.
@@ -115,13 +117,13 @@ function InjectedStyles({ css }: { css: string }) {
 
 ```http
 Content-Security-Policy:
-  style-src 'self' 'nonce-XYZ';
+  style-src 'self' 'nonce-XYZ' 'sha256-38RhXrc7EdReTKsOm23ZPOCUgniTUUcjky8QOOrQx6o=';
   style-src-attr 'unsafe-inline';
   script-src 'self' 'nonce-XYZ';
   img-src 'self' data:;
 ```
 
-- `style-src 'self' 'nonce-XYZ'` covers the bundled stylesheet and the two runtime `<style>` elements once the nonce is wired through `GustoProvider`.
+- `style-src 'self' 'nonce-XYZ'` covers the bundled stylesheet and the two runtime `<style>` elements once the nonce is wired through `GustoProvider`. The additional hash covers the one `<style>` element `react-aria-components` injects that can't be given a nonce (see above), as pinned in the SDK version you're on; without it, or `'unsafe-inline'`, that one rule is dropped and pressable elements fall back to default touch-action handling. Because the hash is tied to that exact dependency version, verify it against your own build rather than trusting this value indefinitely — recompute it from the CSP violation report, or from `sha256(document.getElementById('react-aria-pressable-style').textContent)`, after any SDK upgrade.
 - `style-src-attr 'unsafe-inline'` is required by inline `style="…"` attributes the SDK uses to apply runtime-computed CSS custom properties (responsive flex and grid layouts, progress-bar fill width, animation timings) and by `react-aria-components` for overlay positioning. The CSP specification does not allow per-attribute nonces, so this directive cannot be tightened further without dropping these features upstream.
 - `script-src 'self' 'nonce-XYZ'` — the SDK does not use `eval` or inject `<script>` elements. The nonce is for your own scripts.
 - `img-src 'self' data:` is only required if your integration uploads images. The SDK converts uploaded files to `data:` URLs before submitting them.
