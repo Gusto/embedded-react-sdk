@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidjobs'
-import { useJobsAndCompensationsDeleteCompensationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDeleteCompensation'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
+import { useJobsAndCompensationsDeleteCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDeleteCompensation'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import {
   getPendingCompensationChanges,
   type PendingCompensationChange,

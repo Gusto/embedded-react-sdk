@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
@@ -30,8 +30,32 @@ import {
   useDesignSystemState,
 } from './ThemePanel'
 import { RightPanelShell } from './RightPanelShell'
+import { CommentsProvider, CommentLayer, CommentControls } from './design/comments'
+import { useComments } from './design/comments/CommentsContext'
+import { BreakpointSwitcher } from './design/BreakpointSwitcher'
+import { useViewportBreakpoint } from './design/useViewportBreakpoint'
+import type { BreakpointOption } from './design/breakpointConstants'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
+
+/**
+ * App-wide viewport switcher. Rendered inside CommentsProvider so it can slide
+ * clear of the comments tray drawer when it's open.
+ */
+function ViewportSwitcher({
+  breakpoint,
+  onChange,
+}: {
+  breakpoint: BreakpointOption
+  onChange: (key: BreakpointOption) => void
+}) {
+  const { trayOpen } = useComments()
+  return (
+    <div className={`viewport-switcher${trayOpen ? ' viewport-switcher-shifted' : ''}`}>
+      <BreakpointSwitcher value={breakpoint} onChange={onChange} />
+    </div>
+  )
+}
 
 function entitiesFromManualConfig(config: ManualConfig): EntityIds {
   return {
@@ -80,6 +104,8 @@ export function App() {
   const designSystemState = useDesignSystemState()
   const { chromeId, setChromeId } = useDemoChrome()
   const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
+  const mainRef = useRef<HTMLElement>(null)
+  const viewport = useViewportBreakpoint()
 
   const activePanel: 'theme' | 'settings' | 'code' | null = codePanel.isOpen
     ? 'code'
@@ -284,12 +310,27 @@ export function App() {
   ) : (
     outletEl
   )
+  // Design routes constrain their own preview column (DesignLayout); everywhere
+  // else the switcher constrains the whole content area via a centered frame.
+  const framedOutlet =
+    appMode === 'design' ? (
+      chromedOutlet
+    ) : (
+      <div
+        className="viewport-frame"
+        style={viewport.maxWidth ? { maxWidth: viewport.maxWidth } : undefined}
+      >
+        {chromedOutlet}
+      </div>
+    )
   const mainEl = (
     <main
+      ref={mainRef}
       className="main-content"
       style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
     >
-      {chromedOutlet}
+      {framedOutlet}
+      <CommentLayer containerRef={mainRef} />
     </main>
   )
 
@@ -325,35 +366,42 @@ export function App() {
       <ThemeEditorContext.Provider value={themeEditorState}>
         <DesignSystemContext.Provider value={designSystemState}>
           <CurrentComponentProvider>
-            <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-              {bodyEl}
-              {chromeHidden && panelsOpen && (
-                <RightPanelShell floating>{panelsContent}</RightPanelShell>
-              )}
-              {chromeHidden && (
-                <button
-                  type="button"
-                  className="chrome-restore-pill"
-                  onClick={showChrome}
-                  aria-label="Show chrome"
-                >
-                  <span className="chrome-restore-pill-key">\</span> Show chrome
-                </button>
-              )}
-              <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-              <CommandPalette
-                isOpen={commandPalette.isOpen}
-                onClose={commandPalette.close}
-                entries={paletteEntries}
-              />
-              {!isManual && demoManager.tokenStatus === 'expired' && (
-                <TokenExpiredOverlay
-                  onRefresh={demoManager.refreshToken}
-                  isRefreshing={demoManager.isCreatingDemo}
-                  error={demoManager.demoError}
+            <CommentsProvider>
+              <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
+                {bodyEl}
+                {chromeHidden && panelsOpen && (
+                  <RightPanelShell floating>{panelsContent}</RightPanelShell>
+                )}
+                {chromeHidden && (
+                  <button
+                    type="button"
+                    className="chrome-restore-pill"
+                    onClick={showChrome}
+                    aria-label="Show chrome"
+                  >
+                    <span className="chrome-restore-pill-key">\</span> Show chrome
+                  </button>
+                )}
+                <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+                <CommandPalette
+                  isOpen={commandPalette.isOpen}
+                  onClose={commandPalette.close}
+                  entries={paletteEntries}
                 />
-              )}
-            </div>
+                {!isManual && demoManager.tokenStatus === 'expired' && (
+                  <TokenExpiredOverlay
+                    onRefresh={demoManager.refreshToken}
+                    isRefreshing={demoManager.isCreatingDemo}
+                    error={demoManager.demoError}
+                  />
+                )}
+                <CommentControls />
+                <ViewportSwitcher
+                  breakpoint={viewport.breakpoint}
+                  onChange={viewport.setBreakpoint}
+                />
+              </div>
+            </CommentsProvider>
           </CurrentComponentProvider>
         </DesignSystemContext.Provider>
       </ThemeEditorContext.Provider>

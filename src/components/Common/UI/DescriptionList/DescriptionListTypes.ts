@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
  * Single term/description pair rendered as a row within a {@link DescriptionListProps | DescriptionList}.
  *
  * @public
- * @group Utility Types
+ * @childOf {@link DescriptionListProps}
  */
 export interface DescriptionListItem {
   /**
@@ -22,7 +22,7 @@ export interface DescriptionListItem {
  * Renders an HTML `<dl>` of term/description pairs in either a stacked or horizontal layout.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface DescriptionListProps {
   /**

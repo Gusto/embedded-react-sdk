@@ -1,4 +1,4 @@
-import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
+import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { Head } from './Head'
 import { AccountView } from './AccountView'
 import { BankAccountProvider } from './context'

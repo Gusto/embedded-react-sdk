@@ -15,6 +15,15 @@ import { useComponentDictionary } from '@/i18n/I18n'
 export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTaxes'> {
   /** UUID of the company whose state taxes are being managed. */
   companyId: string
+  /**
+   * Controls visibility of the Continue button below the state tax list.
+   *
+   * When `false`, hides the Continue button. Use this when the flow is embedded
+   * as one step inside a larger flow that provides its own navigation.
+   *
+   * @defaultValue `true`
+   */
+  showContinueButton?: boolean
 }
 
 /**
@@ -25,6 +34,7 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * For finer-grained control over navigation, use the standalone {@link StateTaxesList} and
  * {@link StateTaxesForm} building blocks directly.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |
@@ -36,7 +46,12 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * @returns The rendered state taxes flow.
  * @public
  */
-export function StateTaxes({ companyId, onEvent, dictionary }: StateTaxesProps) {
+export function StateTaxes({
+  companyId,
+  onEvent,
+  dictionary,
+  showContinueButton = true,
+}: StateTaxesProps) {
   useComponentDictionary('Company.StateTaxes', dictionary)
   const manageStateTaxes = useMemo(
     () =>
@@ -47,9 +62,10 @@ export function StateTaxes({ companyId, onEvent, dictionary }: StateTaxesProps) 
           ...initialContext,
           component: StateTaxesListContextual,
           companyId,
+          showContinueButton,
         }),
       ),
-    [companyId],
+    [companyId, showContinueButton],
   )
   return <Flow machine={manageStateTaxes} onEvent={onEvent} />
 }

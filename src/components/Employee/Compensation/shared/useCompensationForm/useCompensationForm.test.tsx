@@ -2,7 +2,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { QueryClient } from '@tanstack/react-query'
-import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
+import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
 import {
@@ -542,7 +542,7 @@ describe('useCompensationForm', () => {
         expect(result.current.isLoading).toBe(false)
       })
       assertReady(result.current)
-      expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+      expect(result.current.form.fieldsMetadata.effectiveDate.isDisabled).toBeFalsy()
 
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
@@ -551,7 +551,7 @@ describe('useCompensationForm', () => {
 
       await waitFor(() => {
         if (result.current.isLoading) throw new Error('still loading')
-        expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBe(true)
+        expect(result.current.form.fieldsMetadata.effectiveDate.isDisabled).toBe(true)
       })
     })
 
@@ -593,7 +593,7 @@ describe('useCompensationForm', () => {
       await waitFor(() => {
         if (result.current.isLoading) throw new Error('still loading')
         expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
-        expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+        expect(result.current.form.fieldsMetadata.effectiveDate.isDisabled).toBeFalsy()
         expect(formMethods.getValues('effectiveDate')).toBe(priorEffectiveDate)
       })
     })
@@ -632,7 +632,7 @@ describe('useCompensationForm', () => {
       // In create mode: date must NOT be forced to today
       expect(formMethods.getValues('effectiveDate')).toBeNull()
       // In create mode: effective date field must NOT be disabled
-      expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+      expect(result.current.form.fieldsMetadata.effectiveDate.isDisabled).toBeFalsy()
     })
 
     it('willDeleteSecondaryJobs=false when employee has no secondary jobs (single primary)', async () => {
@@ -837,8 +837,8 @@ describe('useCompensationForm', () => {
         expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
         expect(result.current.form.Fields.Rate).toBeUndefined()
         expect(result.current.form.Fields.PaymentUnit).toBeUndefined()
-        expect(result.current.form.fieldsMetadata.rate?.isDisabled).toBe(true)
-        expect(result.current.form.fieldsMetadata.paymentUnit?.isDisabled).toBe(true)
+        expect(result.current.form.fieldsMetadata.rate.isDisabled).toBe(true)
+        expect(result.current.form.fieldsMetadata.paymentUnit.isDisabled).toBe(true)
       })
 
       act(() => {

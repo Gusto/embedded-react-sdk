@@ -8,6 +8,7 @@ import type { InputHTMLAttributes, ReactNode, Ref } from 'react'
  * `adornmentStart` and `adornmentEnd` slots from this interface.
  *
  * @public
+ * @group Component props
  */
 export interface InputProps extends Pick<
   InputHTMLAttributes<HTMLInputElement>,

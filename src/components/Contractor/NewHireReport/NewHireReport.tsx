@@ -4,8 +4,8 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useMemo } from 'react'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdate'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
 import type { NewHireReportProps } from './types'
 import { useI18n } from '@/i18n'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -38,6 +38,7 @@ type NewHireReportSchemaInputs = z.input<typeof NewHireReportSchema>
  * Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
  * own self-onboarding flow rather than admin onboarding.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |

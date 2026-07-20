@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetUnprocessedTerminationPeriods'
-import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle'
-import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/unprocessedterminationpayperiod'
-import { OffCycleReason } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
+import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
+import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useTranslation } from 'react-i18next'
 import { DismissalPayPeriodSelectionPresentation } from './DismissalPayPeriodSelectionPresentation'
 import { BaseComponent } from '@/components/Base/Base'
@@ -37,6 +37,7 @@ export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface
  * @remarks
  * Events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |

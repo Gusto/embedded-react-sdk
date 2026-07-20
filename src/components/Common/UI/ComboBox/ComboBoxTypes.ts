@@ -2,10 +2,10 @@ import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 /**
- * Option entry for the ComboBox dropdown list.
+ * Option entry for the {@link ComboBoxProps | ComboBox} dropdown list.
  *
  * @public
- * @group Utility Types
+ * @childOf {@link ComboBoxProps}
  */
 export interface ComboBoxOption {
   /**
@@ -23,7 +23,7 @@ export interface ComboBoxOption {
  * Renders a form field wrapping a filterable `<input />` for single-option selection, optionally allowing free-form values.
  *
  * @public
- * @group Component Props
+ * @group Component props
  * @see {@link MultiSelectComboBoxProps}
  */
 export interface ComboBoxProps

@@ -3,8 +3,8 @@ rfc/
 openapi/api.spec.json
 src/generated
 src/types/i18nresources.d.ts
-docs/appendix/endpoint-inventory.json
-docs/appendix/endpoint-reference.md
+docs/guides/endpoint-inventory.json
+docs/guides/endpoint-reference.md
 .claude/settings.local.json
 .reports/*.md
 docs-site/build/

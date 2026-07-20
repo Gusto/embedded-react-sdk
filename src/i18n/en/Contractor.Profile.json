@@ -1,6 +1,17 @@
 {
   "title": "Contractor profile",
   "subtitle": "This information will be used for payments and on tax documents, so double-check that it's accurate.",
+  "w9EditWarning": {
+    "label": "Changes will require an updated Form W-9",
+    "body": "This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."
+  },
+  "selfOnboarding": {
+    "title": "Complete your profile",
+    "individualDescription": "Please verify your name and provide your Social Security Number.",
+    "businessDescription": "Please verify your business name and provide your EIN.",
+    "continue": "Continue",
+    "submitting": "Saving…"
+  },
   "fields": {
     "selfOnboarding": {
       "label": "Invite this contractor to enter some of their own details online",
@@ -43,20 +54,24 @@
   },
   "validations": {
     "email": "Email is required when inviting contractor",
+    "emailFormat": "Email must be a valid email address",
     "firstName": "First name is required for individual contractors",
+    "firstNameFormat": "First name is not valid",
     "lastName": "Last name is required for individual contractors",
+    "lastNameFormat": "Last name is not valid",
     "ssn": "SSN is required for individual contractors",
     "ssnFormat": "SSN must be valid format",
     "businessName": "Business name is required for business contractors",
     "ein": "EIN is required for business contractors",
     "einFormat": "EIN must be valid format (XX-XXXXXXX)",
-    "hourlyRate": "Hourly rate is required for hourly contractors"
+    "hourlyRate": "Hourly rate is required for hourly contractors",
+    "startDate": "Start date is required"
   },
   "buttons": {
     "cancel": "Cancel",
     "create": "Create Contractor",
-    "update": "Update Contractor",
-    "creating": "Creating...",
-    "updating": "Updating..."
+    "update": "Continue",
+    "creating": "Creating…",
+    "updating": "Saving…"
   }
 }

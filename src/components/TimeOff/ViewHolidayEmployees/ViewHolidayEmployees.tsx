@@ -20,6 +20,7 @@ export interface ViewHolidayEmployeesProps extends BaseComponentInterface<
  * Shows enrolled employees with search filtering, and provides actions to add employees,
  * edit the holiday selection, or remove employees.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/holidayAddEmployees` | User clicks to add employees | — |

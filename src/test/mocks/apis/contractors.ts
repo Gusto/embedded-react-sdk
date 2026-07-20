@@ -1,8 +1,8 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1contractorscontractoruuid'
-import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorcreaterequestbody'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody'
+import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuid'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -26,6 +26,18 @@ export function handleUpdateContractor(
 
 export function handleGetContractorsList(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_uuid/contractors`, resolver)
+}
+
+export function handleGetContractorOnboardingStatus(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/contractors/:contractor_uuid/onboarding_status`, resolver)
+}
+
+export function handleUpdateContractorOnboardingStatus(resolver: HttpResponseResolver) {
+  return http.put(`${API_BASE_URL}/v1/contractors/:contractor_uuid/onboarding_status`, resolver)
+}
+
+export function handleGetContractorDocuments(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/contractors/:contractor_uuid/documents`, resolver)
 }
 
 const contractorFixture = {
@@ -94,5 +106,29 @@ export const updateContractor = handleUpdateContractor(async ({ request }) => {
     version: 'updated-version',
   })
 })
+
+/**
+ * Factory to create a GET onboarding status handler with custom response data.
+ */
+handleGetContractorOnboardingStatus.with = (data: Partial<Record<string, unknown>> = {}) =>
+  handleGetContractorOnboardingStatus(() =>
+    HttpResponse.json({
+      contractor_onboarding_status: {
+        onboarding_status: 'admin_onboarding_incomplete',
+        ...data,
+      },
+    }),
+  )
+
+/**
+ * Factory to create a GET documents handler with custom response data.
+ */
+handleGetContractorDocuments.with = (data: Partial<{ documents: unknown[] }> = {}) =>
+  handleGetContractorDocuments(() =>
+    HttpResponse.json({
+      documents: [],
+      ...data,
+    }),
+  )
 
 export default [getContractorsList, getContractor, createContractor, updateContractor]

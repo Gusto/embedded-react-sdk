@@ -1,19 +1,19 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import {
   useEmployeeEmploymentsGetTerminationsSuspense,
   invalidateAllEmployeeEmploymentsGetTerminations,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsGetTerminations'
-import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsCreateTermination'
-import { useEmployeeEmploymentsUpdateTerminationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsUpdateTermination'
-import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle'
+} from '@gusto/embedded-api/react-query/employeeEmploymentsGetTerminations'
+import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsCreateTermination'
+import { useEmployeeEmploymentsUpdateTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsUpdateTermination'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import {
   usePaySchedulesGetUnprocessedTerminationPeriods,
   invalidateAllPaySchedulesGetUnprocessedTerminationPeriods,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetUnprocessedTerminationPeriods'
-import { invalidateAllPayrollsList } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
-import { OffCycleReason } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+} from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
+import { invalidateAllPayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
+import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { PayrollOption } from '../types'
 import { TerminateEmployeePresentation } from './TerminateEmployeePresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -56,6 +56,7 @@ export interface TerminateEmployeeFormData {
  * the summary view (via the `employee/termination/viewSummary` event) when the
  * employee is already terminated.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
@@ -69,7 +70,7 @@ export interface TerminateEmployeeFormData {
  * @param props - See {@link TerminateEmployeeProps}.
  * @returns The termination form.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx

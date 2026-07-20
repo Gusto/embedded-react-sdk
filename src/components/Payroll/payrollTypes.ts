@@ -1,4 +1,4 @@
-import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
 
 /**
  * Enum-like map of payroll categories combining `Regular`, `External`, and every off-cycle reason.

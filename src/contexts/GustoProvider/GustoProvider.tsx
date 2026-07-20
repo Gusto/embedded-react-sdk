@@ -6,10 +6,8 @@ import { I18nProvider } from 'react-aria-components'
 import type { QueryClient } from '@tanstack/react-query'
 import { createComponents } from '../ComponentAdapter/createComponentsWithDefaults'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
-import {
-  GustoProviderCustomUIAdapter,
-  type GustoProviderProps,
-} from './GustoProviderCustomUIAdapter'
+import type { GustoBaseProviderProps } from './GustoProviderCustomUIAdapter'
+import { GustoProviderCustomUIAdapter } from './GustoProviderCustomUIAdapter'
 
 /**
  * Props for {@link GustoProvider}.
@@ -20,7 +18,7 @@ import {
  *
  * @public
  */
-export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
+export interface GustoProviderProps extends Omit<GustoBaseProviderProps, 'components'> {
   /** Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. */
   queryClient?: QueryClient
   /** Partial component overrides. Any component you do not supply uses the SDK's default React Aria implementation. */
@@ -41,11 +39,12 @@ export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
  * For full UI control without the bundled React Aria defaults, use {@link GustoProviderCustomUIAdapter}
  * instead and supply a complete component map.
  *
- * @param props - See {@link GustoApiProps}.
+ * @param props - See {@link GustoProviderProps}.
  * @returns The configured provider tree wrapping `children`.
  * @public
+ * @group Providers
  */
-const GustoProvider: React.FC<GustoApiProps> = props => {
+export function GustoProvider(props: GustoProviderProps) {
   const { children, components = {}, locale, queryClient, ...remainingProps } = props
 
   return (
@@ -60,5 +59,3 @@ const GustoProvider: React.FC<GustoApiProps> = props => {
     </GustoProviderCustomUIAdapter>
   )
 }
-
-export { GustoProvider }

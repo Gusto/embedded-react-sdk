@@ -16,29 +16,7 @@ custom_edit_url: null
 
 Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type.
 
-### AddressProps
-
-<a id="addressprops"></a>
-
-Props for [Address](#address).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `contractorId` | `string` | The associated contractor identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?` | `ReactNode` | Custom composition slot. When provided, replaces the default Head, Form, and Actions layout — use the bundled subcomponents alongside useAddress to read form context. |
-| `className?` | `string` | Optional class applied to the wrapping `<section>`. |
-| `defaultValues?` | [`AddressDefaultValues`](#addressdefaultvalues) | Pre-fill values for address fields. Server data takes precedence when the contractor already has an address on file. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |
-| `contractor/address/done` | Fired after a successful save so the parent flow can advance | — |
+<br />
 
 ### Example
 
@@ -55,11 +33,51 @@ function MyComponent() {
 }
 ```
 
+<br />
+
+### AddressProps
+
+<a id="addressprops"></a>
+
+Props for [Address](#address).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event. |
+| `className?` | `string` | Optional class applied to the wrapping `<section>`. |
+| `defaultValues?` | [`AddressDefaultValues`](#addressdefaultvalues) | Pre-fill values for address fields. Server data takes precedence when the contractor already has an address on file. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorAddress`](../../Translations/index.md#contractoraddress)\>\> | Overrides for the component's i18n strings. |
+| `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |
+| `contractor/address/done` | Fired after a successful save so the parent flow can advance | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address) |
+| PUT | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address) |
+
+***
+
 <a id="contractorlist"></a>
 
 ## ContractorList
 
-Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
+Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding.
+
+<br />
 
 ### ContractorListProps
 
@@ -70,20 +88,35 @@ Props for [ContractorList](#contractorlist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company whose contractors should be listed. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorContractorList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorContractorList`](../../Translations/index.md#contractorcontractorlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `successMessage?` | `string` | Success message to display in an alert above the list, typically after a create, update, or delete action. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/create` | The add-contractor action was triggered. | — |
 | `contractor/update` | A contractor row's edit action was triggered. | `{ contractorId: string }` |
 | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
+| `contractor/selfOnboarding/cancelled` | A contractor's self-onboarding was cancelled, reverting them to admin onboarding. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors) |
+| DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
+
+***
 
 <a id="contractorprofile"></a>
 
@@ -91,40 +124,54 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Form for creating or editing a contractor profile, supporting both individual and business contractor types.
 
-### ContractorProfileProps
-
-<a id="contractorprofileprops"></a>
-
-Props for [ContractorProfile](#contractorprofile).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company the contractor belongs to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
-| `defaultValues?` | `Partial`\<\{ `contractorType`: `"Business"` \| `"Individual"`; `selfOnboarding`: `boolean`; `startDate`: `Date`; `wageType`: `"Fixed"` \| `"Hourly"`; `businessName?`: `string`; `ein?`: `string`; `email?`: `string`; `firstName?`: `string`; `hourlyRate?`: `number`; `lastName?`: `string`; `middleInitial?`: `string`; `ssn?`: `string`; \}\> | Initial values for the contractor profile form fields. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
 ### Remarks
 
-Renders different field sets depending on the contractor type (individual vs. business) and wage type
-(hourly vs. fixed), and exposes a self-onboarding toggle that invites the contractor to complete their
-own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
-submit; otherwise it creates a new contractor under `companyId`.
+In admin mode (the default), renders different field sets depending on the contractor type (individual
+vs. business) and wage type (hourly vs. fixed), and exposes a self-onboarding toggle that invites the
+contractor to complete their own setup. When `contractorId` is provided, the form fetches the existing
+contractor and updates it on submit; otherwise it creates a new contractor under `companyId`.
+
+When `isAdmin` is `false`, renders the contractor self-onboarding profile instead: it resolves the
+existing contractor's type and presents the individual (name + SSN) or business (business name + EIN)
+fields for the contractor to complete.
+
+<br />
+
+### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`ContractorProfileProps`](#contractorprofileprops) | See [ContractorProfileProps](#contractorprofileprops). |
+
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
 | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
-| `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
+| `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, onboardingStatus?: string, selfOnboarding: boolean }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
+
+***
 
 <a id="contractorsubmit"></a>
 
 ## ContractorSubmit
 
 Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor.
+
+<br />
 
 ### ContractorSubmitProps
 
@@ -135,19 +182,170 @@ Props for [ContractorSubmit](#contractorsubmit).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `contractorId` | `string` | UUID of the contractor being submitted. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorSubmit`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorSubmit`](../../Translations/index.md#contractorsubmit)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `selfOnboarding?` | `boolean` | When true, adjusts the submission for the self-onboarding flow, surfacing the invite step before the contractor's onboarding status is finalized. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/onboardingStatus/updated` | The contractor's onboarding status was successfully updated. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
 | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
+| GET | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-onboarding_status) |
+| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
+| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
+
+***
+
+<a id="documentsigner"></a>
+
+## DocumentSigner
+
+Contractor onboarding step for reading and signing required contractor documents.
+
+### Remarks
+
+Composes the contractor [DocumentsList](#documentslist) and [SignatureForm](#signatureform) into a
+single signing workflow: the document list is shown first, selecting a
+document routes to its signature form, and signing (or navigating back)
+returns to the list. The list refetches automatically once a document is
+signed. The flow completes when every document that requires signing has been
+signed and the user continues.
+
+<br />
+
+### DocumentSignerProps
+
+<a id="documentsignerprops"></a>
+
+Props for [DocumentSigner](#documentsigner).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorDocumentsList`](../../Translations/index.md#contractordocumentslist)\>\> | Overrides for the document list copy shown by the signing flow. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/view` | Fired when a document's "Sign" action is selected from the document list | `{ uuid: string; title?: string }` |
+| `contractor/documents/sign` | Fired after a document is successfully signed | The signed document |
+| `contractor/documents/done` | Fired when all required documents have been signed and the parent flow can advance | — |
+| `cancel` | Fired when the user navigates back from the signature form to the document list | — |
+
+<br />
+
+### Components
+
+- [DocumentsList](#documentslist)
+- [SignatureForm](#signatureform)
+
+***
+
+<a id="documentslist"></a>
+
+## DocumentsList
+
+Lists a contractor's documents and lets the contractor open each one for signing.
+
+### Remarks
+
+Fetches the contractor's documents via [useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and
+renders them in a table. The Continue action is disabled until every document
+the contractor can sign has been signed; a document that isn't signable yet
+(e.g. a W-9 whose fields haven't been generated) surfaces a warning instead of
+blocking the flow.
+
+<br />
+
+### DocumentsListProps
+
+<a id="documentslistprops"></a>
+
+Props for [DocumentsList](#documentslist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorDocumentsList`](../../Translations/index.md#contractordocumentslist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/view` | Fired when a document's "Sign" action is selected | `{ uuid?: string; title?: string }` |
+| `contractor/documents/done` | Fired when all required documents are signed and the user continues | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
+
+***
+
+<a id="landing"></a>
+
+## Landing
+
+Landing page for the contractor self-onboarding flow. Displays a welcome
+message and the list of onboarding steps the contractor needs to complete.
+
+<br />
+
+### LandingProps
+
+<a id="landingprops"></a>
+
+Props for the [Landing](#landing) component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `contractorId` | `string` | UUID of the contractor entering the self-onboarding flow. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorLanding`](../../Translations/index.md#contractorlanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+
+***
 
 <a id="newhirereport"></a>
 
@@ -158,30 +356,12 @@ Collects new hire reporting information for a contractor and persists it to the 
 Asks whether a new hire report should be filed and, when the answer is yes, captures the
 work state used for filing. Submitting writes both values back to the contractor.
 
-### NewHireReportProps
-
-<a id="newhirereportprops"></a>
-
-Props for the [NewHireReport](#newhirereport) component.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `contractorId` | `string` | Identifier of the contractor whose new hire report is being collected. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorNewHireReport`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `selfOnboarding?` | `boolean` | When `true`, adjusts the form for the contractor self-onboarding flow. Defaults to `false`. |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
 ### Remarks
 
 Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
 own self-onboarding flow rather than admin onboarding.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
-| `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
+<br />
 
 ### Example
 
@@ -198,6 +378,77 @@ function NewHireReportStep() {
 }
 ```
 
+<br />
+
+### NewHireReportProps
+
+<a id="newhirereportprops"></a>
+
+Props for the [NewHireReport](#newhirereport) component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | Identifier of the contractor whose new hire report is being collected. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorNewHireReport`](../../Translations/index.md#contractornewhirereport)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `selfOnboarding?` | `boolean` | When `true`, adjusts the form for the contractor self-onboarding flow. Defaults to `false`. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
+| `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
+
+***
+
+<a id="onboardingsummary"></a>
+
+## OnboardingSummary
+
+Confirmation screen shown at the end of the contractor self-onboarding flow.
+Lets the contractor know their information has been submitted and emits
+`contractor/selfOnboarding/done` when they acknowledge it.
+
+<br />
+
+### OnboardingSummaryProps
+
+<a id="onboardingsummaryprops"></a>
+
+Props for [OnboardingSummary](#onboardingsummary).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | UUID of the contractor who completed self-onboarding. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorOnboardingSummary`](../../Translations/index.md#contractoronboardingsummary)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/selfOnboarding/done` | Fired when the contractor acknowledges completion and clicks the Done button | `{ contractorId: string }` |
+
+***
+
 <a id="paymentmethod"></a>
 
 ## PaymentMethod
@@ -206,30 +457,10 @@ Manages a contractor's payment method, capturing a bank account for direct depos
 
 Displays the current payment type, lets the user switch between direct deposit and check, and
 collects bank account details (account holder name, routing number, account number, and account
-type) when direct deposit is selected. Submitting creates the bank account if needed and then
-updates the contractor's payment method.
+type) when direct deposit is selected. Direct deposit creates the bank account (which updates the
+payment method server-side); check updates the contractor's payment method type directly.
 
-### PaymentMethodProps
-
-<a id="paymentmethodprops"></a>
-
-Props for the [PaymentMethod](#paymentmethod) component.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `contractorId` | `string` | Identifier of the contractor whose payment method is being managed. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The API response object; access the created bank account at `.contractorBankAccount` |
-| `contractor/paymentMethod/updated` | Fired after the payment method is updated | The API response object; access the updated payment method at `.contractorPaymentMethod` |
-| `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
+<br />
 
 ### Example
 
@@ -246,29 +477,197 @@ function PaymentMethodStep() {
 }
 ```
 
+<br />
+
+### PaymentMethodProps
+
+<a id="paymentmethodprops"></a>
+
+Props for the [PaymentMethod](#paymentmethod) component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | Identifier of the contractor whose payment method is being managed. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentMethod`](../../Translations/index.md#contractorpaymentmethod)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/bankAccount/created` | Fired on the direct deposit path after the bank account is created | The created bank account at `.contractorBankAccount` |
+| `contractor/paymentMethod/updated` | Fired on the check path after the payment method type is updated | The updated payment method at `.contractorPaymentMethod` |
+| `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
+| POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
+| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
+| PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method) |
+
+***
+
+<a id="signatureform"></a>
+
+## SignatureForm
+
+Standalone form for signing an individual contractor document (W-9).
+
+### Remarks
+
+Lower-level building block used internally by `ContractorDocumentSigner` for
+its signing view. Use this component directly when you need full control over
+navigation between the document list and the signature form.
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/sign` | Fired when the document is successfully signed | The signed document |
+| `CANCEL` | Fired when the user navigates back from the signature form | — |
+
+<br />
+
+### SignatureFormProps
+
+<a id="signatureformprops"></a>
+
+Props for [SignatureForm](#signatureform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `documentUuid` | `string` | The UUID of the contractor document to sign. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorSignatureForm`](../../Translations/index.md#contractorsignatureform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/documents/:documentUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document) |
+| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
+| PUT | [`/v1/documents/:documentUuid/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractor-document-sign) |
+
+***
+
 ## Utility types
 
 <a id="addressdefaultvalues"></a>
 
 ### AddressDefaultValues
 
-> **AddressDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`ContractorAddress`, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\>\>
+> **AddressDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+
+***
+
+<a id="contractorprofileadminprops"></a>
+
+### ContractorProfileAdminProps
+
+Props for [ContractorProfile](#contractorprofile) in admin mode.
+
+#### Remarks
+
+Renders the admin create/edit form. When `contractorId` is omitted, the form
+creates a new contractor under `companyId`. When provided, it fetches and
+updates the existing contractor.
+
+#### Extends
+
+- [`BaseComponentInterface`](../../blocks.md#basecomponentinterface)\<`"Contractor.Profile"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorProfile`](../../Translations/index.md#contractorprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `isAdmin?` | `true` | When `true` (the default), renders the admin create/edit form. |
+| `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+
+***
 
 <a id="contractorprofileformdata"></a>
 
 ### ContractorProfileFormData
 
-> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
+Renames and re-exports [ContractorDetailsFormData](../hooks/use-contractor-details-form.md#contractordetailsformdata)
 
-Form field values for the contractor profile form.
+***
+
+<a id="contractorprofileprops"></a>
+
+### ContractorProfileProps
+
+> **ContractorProfileProps** = [`ContractorProfileAdminProps`](#contractorprofileadminprops) \| [`ContractorProfileSelfOnboardingProps`](#contractorprofileselfonboardingprops)
+
+Props for [ContractorProfile](#contractorprofile).
+
+#### Remarks
+
+Discriminated by `isAdmin`. See [ContractorProfileAdminProps](#contractorprofileadminprops) and
+[ContractorProfileSelfOnboardingProps](#contractorprofileselfonboardingprops) for the specific prop shapes.
+
+***
+
+<a id="contractorprofileselfonboardingprops"></a>
+
+### ContractorProfileSelfOnboardingProps
+
+Props for [ContractorProfile](#contractorprofile) in self-onboarding mode.
+
+#### Remarks
+
+Renders the contractor self-onboarding profile. The contractor must already
+exist so its type (individual vs. business) can be resolved to determine
+which fields to display.
+
+#### Extends
+
+- [`BaseComponentInterface`](../../blocks.md#basecomponentinterface)\<`"Contractor.Profile"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `contractorId` | `string` | UUID of the existing contractor completing self-onboarding. Required in self-onboarding mode. |
+| `isAdmin` | `false` | When `false`, renders the contractor self-onboarding profile. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorProfile`](../../Translations/index.md#contractorprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+
+***
 
 <a id="onboardingflowdefaultvalues"></a>
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorProfileFormData`](#contractorprofileformdata)\>; \}\>
+> **OnboardingFlowDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\>; \}\>
 
 Default pre-fill values for the contractor onboarding flow.
 At least one of `profile` or `address` must be provided.

@@ -17,24 +17,24 @@ import { PayrollCategory } from './payrollTypes'
 import {
   type Employee,
   EmployeePaymentMethod1,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+} from '@gusto/embedded-api/models/components/employee'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type {
   EmployeeCompensations,
   PayrollShowPaidTimeOff,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
-import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
-import { PayScheduleFrequency } from '@gusto/embedded-api-v-2025-11-15/models/components/payschedulefrequency'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+} from '@gusto/embedded-api/models/components/payrollshow'
+import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
+import { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { TFunction } from 'i18next'
-import { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job.js'
+import { Job } from '@gusto/embedded-api/models/components/job.js'
 import {
-  type PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
-  type PayrollEmployeeCompensationsTypeHourlyCompensations as HourlyCompensations,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype.js'
+  type FixedCompensations,
+  type HourlyCompensations,
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype.js'
 
 describe('Payroll helpers', () => {
   describe('formatEmployeePayRate', () => {

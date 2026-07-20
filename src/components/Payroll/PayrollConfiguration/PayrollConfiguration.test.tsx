@@ -47,9 +47,9 @@ const createCompensation = (employeeUuid: string, grossPay = 1000) => ({
   employee_uuid: employeeUuid,
   version: 'v1',
   paid_time_off: [],
-  gross_pay: grossPay,
-  net_pay: grossPay * 0.8,
-  check_amount: grossPay * 0.8,
+  gross_pay: String(grossPay),
+  net_pay: String(grossPay * 0.8),
+  check_amount: String(grossPay * 0.8),
 })
 
 const page1Employees = [
@@ -695,8 +695,8 @@ describe('PayrollConfiguration', () => {
       const excludedCompensation = {
         ...createCompensation('emp-excluded'),
         excluded: true,
-        gross_pay: 0,
-        net_pay: 0,
+        gross_pay: '0',
+        net_pay: '0',
       }
 
       const payrollDataWithExcluded = {

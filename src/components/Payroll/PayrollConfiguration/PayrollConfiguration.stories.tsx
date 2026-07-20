@@ -33,9 +33,9 @@ export const PayrollConfigurationStory = () => {
               hours: '0.0',
             },
           ],
-          grossPay: 880.0,
-          netPay: 767.99,
-          checkAmount: 767.99,
+          grossPay: '880.0',
+          netPay: '767.99',
+          checkAmount: '767.99',
         },
       ]}
       employeeDetails={[
@@ -154,9 +154,9 @@ export const WithBlockers = () => {
               hours: '0.0',
             },
           ],
-          grossPay: 880.0,
-          netPay: 767.99,
-          checkAmount: 767.99,
+          grossPay: '880.0',
+          netPay: '767.99',
+          checkAmount: '767.99',
         },
       ]}
       employeeDetails={[
@@ -259,9 +259,9 @@ export const WithLatePayrollBanner = () => {
           employeeUuid: 'test-employee-uuid',
           version: 'test-version',
           paidTimeOff: [],
-          grossPay: 880.0,
-          netPay: 767.99,
-          checkAmount: 767.99,
+          grossPay: '880.0',
+          netPay: '767.99',
+          checkAmount: '767.99',
         },
       ]}
       employeeDetails={[

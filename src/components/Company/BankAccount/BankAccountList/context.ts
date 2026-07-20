@@ -1,4 +1,4 @@
-import type { CompanyBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccount'
+import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { createCompoundContext } from '@/components/Base/createCompoundContext'
 type BankAccountListContextType = {
   bankAccount: CompanyBankAccount | null

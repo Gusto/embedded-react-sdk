@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { usePayrollsPrepareMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsPrepare'
-import { usePaySchedulesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGet'
-import type { PayrollPrepared } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
-import type { QueryParamSortBy } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
+import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
+import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useBase } from '../Base'
 import { retryAsync } from '@/helpers/retryAsync'
 
@@ -12,7 +11,7 @@ interface UsePreparedPayrollDataParams {
   companyId: string
   payrollId: string
   employeeUuids?: string[]
-  sortBy?: QueryParamSortBy
+  sortBy?: string
   onDataReady?: (preparedPayroll: PayrollPrepared) => void
 }
 

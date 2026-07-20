@@ -1,5 +1,5 @@
-import type { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import type { OnboardingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidonboardingstatus'
+import type { OnboardingStatus as ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
+import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 

@@ -1,5 +1,5 @@
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
 import type { PrototypeConfiguration } from '../../../../prototypes/prototypeTypes'
 import { CompensationHistoryDemo } from './CompensationHistoryStates'
 
@@ -91,9 +91,9 @@ const multipleJobs: Job[] = [
     uuid: 'job-2',
     currentCompensationUuid: 'comp-2',
     title: 'Team lead',
-    rate: '120000',
-    paymentUnit: 'Year',
-    flsaStatus: 'Exempt',
+    rate: '110',
+    paymentUnit: 'Hour',
+    flsaStatus: 'Nonexempt',
   }),
 ]
 
@@ -110,8 +110,8 @@ const mixedWages: Job[] = [
     uuid: 'job-2',
     currentCompensationUuid: 'comp-2',
     title: 'Bookkeeper',
-    rate: '44000',
-    paymentUnit: 'Year',
+    rate: '28',
+    paymentUnit: 'Hour',
     flsaStatus: 'Nonexempt',
   }),
   buildJob({

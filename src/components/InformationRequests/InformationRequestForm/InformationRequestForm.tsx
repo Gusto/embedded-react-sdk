@@ -4,14 +4,14 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useIsMutating } from '@tanstack/react-query'
-import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/informationRequestsGetInformationRequests'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
 import {
   useInformationRequestsSubmitMutation,
   mutationKeyInformationRequestsSubmit,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/informationRequestsSubmit'
-import type { RequiredQuestions } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
-import { ResponseType } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
-import { ResponseType as SubmitResponseType } from '@gusto/embedded-api-v-2025-11-15/models/operations/submitinformationrequest'
+} from '@gusto/embedded-api/react-query/informationRequestsSubmit'
+import type { RequiredQuestions } from '@gusto/embedded-api/models/components/informationrequest'
+import { ResponseType } from '@gusto/embedded-api/models/components/informationrequest'
+import { ResponseType as SubmitResponseType } from '@gusto/embedded-api/models/operations/submitinformationrequest'
 import type { InformationRequestsContextInterface } from '../InformationRequestsComponents'
 import styles from './InformationRequestForm.module.scss'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -73,6 +73,7 @@ export interface InformationRequestFormProps extends BaseComponentInterface<'Inf
  * @remarks
  * Events emitted via `onEvent`:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
@@ -290,7 +291,8 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
   )
 }
 
-const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
+/** @internal */
+export function Footer({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) {
   useI18n('InformationRequests.InformationRequestForm')
   const { t } = useTranslation('InformationRequests.InformationRequestForm')
   const { Button } = useComponentContext()
@@ -339,5 +341,3 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
     </Flex>
   )
 }
-
-InformationRequestForm.Footer = Footer

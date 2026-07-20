@@ -60,15 +60,12 @@ export type PayScheduleField = keyof typeof fieldValidators
  * Shape of the values managed by the pay schedule form.
  *
  * @public
+ * @interface
  */
 export type PayScheduleFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the pay schedule form on submit.
- *
- * @public
- */
+/** @internal */
 export type PayScheduleFormOutputs = PayScheduleFormData
 
 // ── Required fields config ─────────────────────────────────────────────

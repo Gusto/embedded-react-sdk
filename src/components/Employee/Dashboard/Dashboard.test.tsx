@@ -5,7 +5,7 @@ import { http, HttpResponse, type HttpResponseResolver, type PathParams } from '
 import type {
   DeleteV1JobsJobIdRequest,
   DeleteV1JobsJobIdResponse,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/deletev1jobsjobid'
+} from '@gusto/embedded-api/models/operations/deletev1jobsjobid'
 import { Dashboard, type DashboardProps } from './Dashboard'
 import { DashboardFlow } from './DashboardFlow'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

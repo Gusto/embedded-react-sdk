@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion'
+import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { useStateTaxesSummary } from '../../shared/useStateTaxesSummary'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Loading } from '@/components/Common'
@@ -31,6 +31,7 @@ export interface StateTaxesCardProps {
  * The Edit button is hidden when no state on record has any tax-withholding
  * questions (e.g. states with no income tax), since there is nothing to edit.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |

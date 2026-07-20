@@ -1,5 +1,18 @@
 export * from '@/components'
 export * from '@/contexts'
+
+/**
+ * Entity types returned by the Gusto Embedded Payroll API.
+ *
+ * @remarks
+ * Re-exported from `@gusto/embedded-api` for use in SDK hook results and component props.
+ * Properties are camelCase — the underlying API returns snake_case JSON, but the Typescript
+ * client normalizes them.
+ *
+ * @public
+ */
+export type * as APIModels from '@/models/external'
+export type { WARiskClassCode } from '@/models/WA_RISK_CODES'
 export {
   componentEvents,
   EmployeeOnboardingStatus,
@@ -8,8 +21,9 @@ export {
   ContractorSelfOnboardingStatuses,
   PAY_PERIODS,
   I9_FORM_NAME,
+  STATES_ABBR,
 } from '@/shared/constants'
-export type { EventType } from '@/shared/constants'
+export type { EventType, StateAbbreviation } from '@/shared/constants'
 export type {
   BeforeCreateRequestHook,
   BeforeRequestHook,
@@ -22,7 +36,7 @@ export type {
   SDKHooks,
 } from '@/types/hooks'
 export type { SDKError, SDKErrorCategory, SDKFieldError } from '@/types/sdkError'
-export { normalizeToSDKError, SDKInternalError } from '@/types/sdkError'
+export { SDKErrorCategories } from '@/types/sdkError'
 export type {
   ObservabilityHook,
   ObservabilityError,
@@ -38,32 +52,25 @@ export type {
 } from '@/components/Base'
 export type {
   ResourceDictionary,
+  GlobalResourceDictionary,
   Resources,
+  Translations,
   DeepPartial,
   SupportedLanguages,
+  DataAttributes,
+  RequireAtLeastOne,
 } from '@/types/Helpers'
 
 // Partner hook infrastructure
-export {
-  composeErrorHandler,
-  collectErrors,
-  SDKFormProvider,
-  composeSubmitHandler,
-  useFieldErrorMessage,
-  useDeriveFieldsMetadata,
-  withOptions,
-  FormFieldsMetadataProvider,
-  TextInputHookField,
-  SelectHookField,
-  CheckboxHookField,
-  NumberInputHookField,
-  DatePickerHookField,
-  RadioGroupHookField,
-  SwitchHookField,
-} from '@/partner-hook-utils'
+export { composeErrorHandler, SDKFormProvider, composeSubmitHandler } from '@/partner-hook-utils'
 export type {
   MixedErrorSource,
+  QueryWithRefetch,
   SubmitStateForErrorHandling,
+  SDKFormProviderProps,
+  ComposeSubmitInput,
+  ComposeSubmitHandlerResult,
+  ComposableFormHookResult,
   HookFormInternals,
   HookLoadingResult,
   HookSubmitResult,
@@ -77,6 +84,7 @@ export type {
   ValidationMessages,
   BaseFieldProps,
   HookFieldProps,
+  InputProps,
   TextInputHookFieldProps,
   SelectHookFieldProps,
   CheckboxHookFieldProps,
@@ -95,21 +103,12 @@ export type {
   RadioGroupProps,
   RadioGroupOption,
   SwitchProps,
-  FormFieldsMetadataContextValue,
 } from '@/partner-hook-utils'
 
 // Domain hooks - Employee
 export {
   useDeductionForm,
   DeductionFormErrorCodes,
-  createDeductionFormSchema,
-  DescriptionField,
-  RecurringField,
-  DeductAsPercentageField,
-  AmountField as DeductionAmountField,
-  TotalAmountField,
-  AnnualMaximumField,
-  GarnishmentTypeField,
 } from '@/components/Employee/Deductions/shared/useDeductionForm'
 export type {
   UseDeductionFormProps,
@@ -120,7 +119,6 @@ export type {
   DeductionFormErrorCode,
   DeductionFormOptionalFieldsToRequire,
   DeductionFormData,
-  DeductionFormOutputs,
   DeductionFormRequiredValidation,
   DeductionFormNegativeAmountValidation,
   DeductionFormAmountValidation,
@@ -137,17 +135,7 @@ export type {
 export {
   useChildSupportGarnishmentForm,
   ChildSupportGarnishmentFormErrorCodes,
-  createChildSupportGarnishmentFormSchema,
-  getRequiredAttrKeys,
   SUPPORTED_REQUIRED_ATTR_KEYS,
-  StateField as ChildSupportStateField,
-  FipsCodeField,
-  CaseNumberField,
-  OrderNumberField,
-  RemittanceNumberField,
-  PayPeriodMaximumField,
-  AmountField as ChildSupportAmountField,
-  PaymentPeriodField,
 } from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
 export type {
   UseChildSupportGarnishmentFormProps,
@@ -157,7 +145,6 @@ export type {
   ChildSupportGarnishmentFormFieldsMetadata,
   ChildSupportGarnishmentFormErrorCode,
   ChildSupportGarnishmentFormData,
-  ChildSupportGarnishmentFormOutputs,
   SupportedRequiredAttrKey,
   ChildSupportGarnishmentRequiredValidation,
   ChildSupportGarnishmentNegativeAmountValidation,
@@ -179,14 +166,6 @@ export type {
 export {
   useCompensationForm,
   CompensationErrorCodes,
-  createCompensationSchema,
-  TitleField as CompensationTitleField,
-  FlsaStatusField as CompensationFlsaStatusField,
-  RateField as CompensationRateField,
-  PaymentUnitField as CompensationPaymentUnitField,
-  AdjustForMinimumWageField as CompensationAdjustForMinimumWageField,
-  MinimumWageIdField as CompensationMinimumWageIdField,
-  EffectiveDateField as CompensationEffectiveDateField,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 export type {
   CompensationSubmitOptions,
@@ -197,9 +176,7 @@ export type {
   CompensationFormFields,
   CompensationErrorCode,
   CompensationOptionalFieldsToRequire,
-  CompensationSchemaOptions,
   CompensationFormData,
-  CompensationFormOutputs,
   RequiredValidation as CompensationRequiredValidation,
   RateValidation,
   EffectiveDateValidation as CompensationEffectiveDateValidation,
@@ -212,16 +189,7 @@ export type {
   MinimumWageIdFieldProps,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 
-export {
-  useJobForm,
-  JobErrorCodes,
-  createJobSchema,
-  JobTitleField,
-  HireDateField,
-  TwoPercentShareholderField,
-  StateWcCoveredField,
-  StateWcClassCodeField,
-} from '@/components/Employee/Compensation/shared/useJobForm'
+export { useJobForm, JobErrorCodes } from '@/components/Employee/Compensation/shared/useJobForm'
 export type {
   JobSubmitOptions,
   UseJobFormProps,
@@ -232,7 +200,6 @@ export type {
   JobErrorCode,
   JobOptionalFieldsToRequire,
   JobFormData,
-  JobFormOutputs,
   JobRequiredValidation,
   JobTitleFieldProps,
   HireDateFieldProps,
@@ -244,14 +211,6 @@ export type {
 export {
   useEmployeeDetailsForm,
   EmployeeDetailsErrorCodes,
-  createEmployeeDetailsSchema,
-  FirstNameField,
-  MiddleInitialField,
-  LastNameField,
-  EmailField,
-  DateOfBirthField,
-  SsnField,
-  SelfOnboardingField,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 export type {
   EmployeeDetailsSubmitCallbacks,
@@ -264,7 +223,6 @@ export type {
   EmployeeDetailsFormFields,
   EmployeeDetailsErrorCode,
   EmployeeDetailsFormData,
-  EmployeeDetailsFormOutputs,
   EmployeeDetailsField,
   EmployeeDetailsRequiredValidation,
   NameValidation,
@@ -278,16 +236,94 @@ export type {
   SsnFieldProps,
   SelfOnboardingFieldProps,
   SsnRequiredValidation,
-  EmployeeDetailsFields,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
+
+export {
+  useContractorDetailsForm,
+  ContractorType,
+  WageType,
+  ContractorDetailsErrorCodes,
+} from '@/components/Contractor/Profile/shared/useContractorDetailsForm'
+export type {
+  ContractorDetailsSubmitOptions,
+  ContractorDetailsOptionalFieldsToRequire,
+  UseContractorDetailsFormSharedProps,
+  UseContractorDetailsFormProps,
+  UseContractorDetailsFormResult,
+  UseContractorDetailsFormReady,
+  ContractorDetailsFieldsMetadata,
+  ContractorDetailsFormFields,
+  ContractorDetailsErrorCode,
+  ContractorDetailsFormData,
+  ContractorDetailsRequiredValidation,
+  ContractorDetailsNameValidation,
+  ContractorDetailsEmailValidation,
+  ContractorDetailsSsnValidation,
+  ContractorDetailsSsnRequiredValidation,
+  ContractorDetailsEinValidation,
+  ContractorDetailsEinRequiredValidation,
+  TypeFieldProps as ContractorTypeFieldProps,
+  WageTypeFieldProps as ContractorWageTypeFieldProps,
+  StartDateFieldProps as ContractorStartDateFieldProps,
+  HourlyRateFieldProps as ContractorHourlyRateFieldProps,
+  SelfOnboardingFieldProps as ContractorSelfOnboardingFieldProps,
+  FileNewHireReportFieldProps as ContractorFileNewHireReportFieldProps,
+  EmailFieldProps as ContractorEmailFieldProps,
+  FirstNameFieldProps as ContractorFirstNameFieldProps,
+  LastNameFieldProps as ContractorLastNameFieldProps,
+  MiddleInitialFieldProps as ContractorMiddleInitialFieldProps,
+  BusinessNameFieldProps as ContractorBusinessNameFieldProps,
+  SsnFieldProps as ContractorSsnFieldProps,
+  EinFieldProps as ContractorEinFieldProps,
+  WorkStateFieldProps as ContractorWorkStateFieldProps,
+} from '@/components/Contractor/Profile/shared/useContractorDetailsForm'
+
+export {
+  useContractorBankAccountForm,
+  ContractorBankAccountErrorCodes,
+  ACCOUNT_TYPES as ContractorBankAccountTypes,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorBankAccountForm'
+export type {
+  UseContractorBankAccountFormProps,
+  UseContractorBankAccountFormResult,
+  UseContractorBankAccountFormReady,
+  ContractorBankAccountFormFields,
+  ContractorBankAccountFieldsMetadata,
+  ContractorBankAccountErrorCode,
+  ContractorAccountType,
+  ContractorBankAccountFormData,
+  ContractorBankAccountFormField,
+  ContractorBankAccountOptionalFieldsToRequire,
+  ContractorBankAccountRequiredValidation,
+  ContractorBankAccountRoutingNumberValidation,
+  ContractorBankAccountAccountNumberValidation,
+  NameFieldProps as ContractorBankAccountNameFieldProps,
+  RoutingNumberFieldProps as ContractorBankAccountRoutingNumberFieldProps,
+  AccountNumberFieldProps as ContractorBankAccountAccountNumberFieldProps,
+  AccountTypeFieldProps as ContractorBankAccountAccountTypeFieldProps,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorBankAccountForm'
+
+export {
+  useContractorPaymentMethodForm,
+  ContractorPaymentMethodErrorCodes,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
+export type {
+  UseContractorPaymentMethodFormProps,
+  UseContractorPaymentMethodFormResult,
+  UseContractorPaymentMethodFormReady,
+  ContractorPaymentMethodFormFields,
+  ContractorPaymentMethodFieldsMetadata,
+  ContractorPaymentMethodErrorCode,
+  ContractorPaymentMethodFormType,
+  ContractorPaymentMethodFormData,
+  ContractorPaymentMethodFormField,
+  TypeFieldProps as ContractorPaymentMethodTypeFieldProps,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
 
 export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
-  createWorkAddressSchema,
-  LocationField as WorkAddressLocationField,
-  EffectiveDateField as WorkAddressEffectiveDateField,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 export type {
   WorkAddressSubmitCallbacks,
@@ -301,26 +337,16 @@ export type {
   WorkAddressFormFields,
   WorkAddressErrorCode,
   WorkAddressFormData,
-  WorkAddressFormOutputs,
   WorkAddressField,
   WorkAddressRequiredValidation,
   LocationFieldProps,
   EffectiveDateFieldProps,
-  WorkAddressFields,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 
 export {
   useHomeAddressForm,
   useCurrentHomeAddressForm,
   HomeAddressErrorCodes,
-  createHomeAddressSchema,
-  Street1Field,
-  Street2Field,
-  CityField,
-  StateField as HomeAddressStateField,
-  ZipField,
-  CourtesyWithholdingField,
-  EffectiveDateField as HomeAddressEffectiveDateField,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 export type {
   HomeAddressSubmitOptions,
@@ -333,7 +359,6 @@ export type {
   HomeAddressFormFields,
   HomeAddressErrorCode,
   HomeAddressFormData,
-  HomeAddressFormOutputs,
   HomeAddressField,
   HomeAddressRequiredValidation,
   ZipValidation,
@@ -344,18 +369,36 @@ export type {
   ZipFieldProps,
   CourtesyWithholdingFieldProps,
   HomeAddressEffectiveDateFieldProps,
-  HomeAddressFields,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
+
+export {
+  useContractorAddressForm,
+  ContractorAddressErrorCodes,
+} from '@/components/Contractor/Address/shared/useContractorAddressForm'
+export type {
+  ContractorAddressSubmitOptions,
+  ContractorAddressOptionalFieldsToRequire,
+  UseContractorAddressFormProps,
+  UseContractorAddressFormResult,
+  UseContractorAddressFormReady,
+  ContractorAddressFieldsMetadata,
+  ContractorAddressFormFields,
+  ContractorAddressErrorCode,
+  ContractorAddressFormData,
+  ContractorAddressField,
+  ContractorAddressRequiredValidation,
+  ContractorAddressZipValidation,
+  ContractorAddressStreet1FieldProps,
+  ContractorAddressStreet2FieldProps,
+  ContractorAddressCityFieldProps,
+  ContractorAddressStateFieldProps,
+  ContractorAddressZipFieldProps,
+} from '@/components/Contractor/Address/shared/useContractorAddressForm'
 
 export {
   useBankForm,
   BankFormErrorCodes,
-  createBankFormSchema,
   ACCOUNT_TYPES,
-  NameField,
-  RoutingNumberField,
-  AccountNumberField,
-  AccountTypeField,
 } from '@/components/Employee/PaymentMethod/shared/useBankForm'
 export type {
   BankFormSubmitOptions,
@@ -366,7 +409,6 @@ export type {
   BankFormFieldsMetadata,
   BankFormErrorCode,
   BankFormData,
-  BankFormOutputs,
   BankFormField,
   BankFormOptionalFieldsToRequire,
   AccountType,
@@ -382,9 +424,7 @@ export type {
 export {
   usePaymentMethodForm,
   PaymentMethodFormErrorCodes,
-  createPaymentMethodFormSchema,
   PAYMENT_METHOD_TYPES,
-  PaymentMethodTypeField,
 } from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
 export type {
   UsePaymentMethodFormProps,
@@ -394,7 +434,6 @@ export type {
   PaymentMethodFormFieldsMetadata,
   PaymentMethodFormErrorCode,
   PaymentMethodFormData,
-  PaymentMethodFormOutputs,
   PaymentMethodFormField,
   PaymentMethodFormOptionalFieldsToRequire,
   PaymentMethodType,
@@ -405,7 +444,6 @@ export type {
 export {
   useSplitPaymentsForm,
   SplitPaymentsFormErrorCodes,
-  createSplitPaymentsFormSchema,
   SPLIT_BY_VALUES,
 } from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
 export type {
@@ -416,7 +454,6 @@ export type {
   SplitPaymentsFormFieldsMetadata,
   SplitPaymentsFormErrorCode,
   SplitPaymentsFormData,
-  SplitPaymentsFormOutputs,
   SplitPaymentsFormField,
   SplitPaymentsFormOptionalFieldsToRequire,
   SplitByValue,
@@ -431,22 +468,12 @@ export type {
 export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,
-  createFederalTaxesSchema,
   FILING_STATUS_VALUES,
-  FilingStatusField,
-  TwoJobsField,
-  DependentsAmountField,
-  OtherIncomeField,
-  DeductionsField,
-  ExtraWithholdingField,
 } from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
 export {
   useEmployeeStateTaxesForm,
-  createEmployeeStateTaxesSchema,
   EmployeeStateTaxesErrorCodes,
-  createStateFields,
   useStateFields,
-  getQuestionVariant,
 } from '@/components/Employee/StateTaxes/shared'
 export type {
   UseEmployeeStateTaxesFormProps,
@@ -456,15 +483,20 @@ export type {
   EmployeeStateTaxesFormFields,
   EmployeeStateTaxesErrorCode,
   EmployeeStateTaxesFormData,
-  EmployeeStateTaxesFormOutputs,
-  EmployeeStateTaxesSchemaOptions,
-  EmployeeStateTaxesQuestionMeta,
-  EmployeeStateTaxesMetadataConfig,
   StateTaxValue,
   StateTaxQuestionVariant,
   StateTaxFieldsGroup,
+  StateTaxFields,
   StateTaxQuestionFieldEntry,
-  CreateStateFieldsOptions,
+  SharedQuestionMetadata,
+  SelectStateTaxQuestion,
+  RadioStateTaxQuestion,
+  TextStateTaxQuestion,
+  NumberStateTaxQuestion,
+  CurrencyStateTaxQuestion,
+  DateStateTaxQuestion,
+  BaseStateTaxFieldProps,
+  StateTaxValidationMessages,
   SelectStateTaxFieldProps,
   RadioStateTaxFieldProps,
   TextStateTaxFieldProps,
@@ -479,10 +511,8 @@ export type {
   UseFederalTaxesFormReady,
   FederalTaxesFieldsMetadata,
   FederalTaxesFormFields,
-  FederalTaxesFields,
   FederalTaxesErrorCode,
   FederalTaxesFormData,
-  FederalTaxesFormOutputs,
   FederalTaxesField,
   FilingStatusValue,
   FederalTaxesRequiredValidation,
@@ -497,25 +527,20 @@ export type {
 export {
   useSignEmployeeForm,
   SignEmployeeFormErrorCodes,
-  createSignEmployeeFormSchema,
   MAX_PREPARERS,
   PREPARER_FIELDS_BY_INDEX,
-  preparerFieldName,
-  SignatureField,
-  ConfirmSignatureField,
-  UsedPreparerField,
 } from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
-  SignEmployeeFormFieldComponents,
   SignEmployeeFormFieldsMetadata,
+  SignEmployeeBaseFieldsMetadata,
+  SignEmployeeI9FieldsMetadata,
   SignEmployeeFormFields,
   PreparerFieldGroup,
   SignEmployeeFormErrorCode,
   SignEmployeeFormData,
-  SignEmployeeFormOutputs,
   SignEmployeeFormField,
   PreparerIndex,
   PreparerFieldSuffix,
@@ -543,14 +568,6 @@ export type {
 export {
   usePayScheduleForm,
   PayScheduleErrorCodes,
-  createPayScheduleSchema,
-  CustomNameField,
-  FrequencyField,
-  CustomTwicePerMonthField,
-  AnchorPayDateField,
-  AnchorEndOfPayPeriodField,
-  Day1Field,
-  Day2Field,
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
 export type {
   PayScheduleOptionalFieldsToRequire,
@@ -559,10 +576,8 @@ export type {
   UsePayScheduleFormReady,
   PayScheduleFieldsMetadata,
   PayScheduleFormFields,
-  PayScheduleFields,
   PayScheduleErrorCode,
   PayScheduleFormData,
-  PayScheduleFormOutputs,
   PayScheduleField,
   PayScheduleFrequency,
   PayScheduleRequiredValidation,
@@ -579,7 +594,6 @@ export type {
 export {
   useSignCompanyForm,
   SignCompanyFormErrorCodes,
-  createSignCompanyFormSchema,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
 export type {
   SignCompanyFormOptionalFieldsToRequire,
@@ -590,9 +604,54 @@ export type {
   SignCompanyFormFields,
   SignCompanyFormErrorCode,
   SignCompanyFormData,
-  SignCompanyFormOutputs,
   SignCompanyFormField,
   SignCompanyFormRequiredValidation,
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
+
+// Domain data hooks - Contractor
+export { useContractorDocumentsList } from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+export type {
+  UseContractorDocumentsListParams,
+  UseContractorDocumentsListResult,
+  UseContractorDocumentsListReady,
+} from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+
+export {
+  useContractorSignatureForm,
+  ContractorSignatureFormErrorCodes,
+} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
+export type {
+  UseContractorSignatureFormProps,
+  UseContractorSignatureFormResult,
+  UseContractorSignatureFormReady,
+  ContractorSignatureFormErrorCode,
+  ContractorSignatureFormData,
+  ContractorSignatureOptionalFieldsToRequire,
+  ContractorSignatureFormFieldComponents,
+  ContractorSignatureAgreeFieldProps,
+  ContractorSignatureSsnFieldProps,
+  ContractorSignatureEinFieldProps,
+  NameFieldProps as ContractorSignatureNameFieldProps,
+  TaxClassificationFieldProps as ContractorSignatureTaxClassificationFieldProps,
+  HomeAddressStreet1FieldProps as ContractorSignatureHomeAddressStreet1FieldProps,
+  HomeAddressCityFieldProps as ContractorSignatureHomeAddressCityFieldProps,
+  HomeAddressStateFieldProps as ContractorSignatureHomeAddressStateFieldProps,
+  HomeAddressZipFieldProps as ContractorSignatureHomeAddressZipFieldProps,
+  SignatureTextFieldProps as ContractorSignatureSignatureTextFieldProps,
+  BusinessNameFieldProps as ContractorSignatureBusinessNameFieldProps,
+  LlcClassificationCodeFieldProps as ContractorSignatureLlcClassificationCodeFieldProps,
+  OtherTextFieldProps as ContractorSignatureOtherTextFieldProps,
+  ForeignPartnersFieldProps as ContractorSignatureForeignPartnersFieldProps,
+  ExemptPayeeCodeFieldProps as ContractorSignatureExemptPayeeCodeFieldProps,
+  ExemptionFromFatcaFieldProps as ContractorSignatureExemptionFromFatcaFieldProps,
+  HomeAddressStreet2FieldProps as ContractorSignatureHomeAddressStreet2FieldProps,
+  AccountNumberFieldProps as ContractorSignatureAccountNumberFieldProps,
+  CompanyNameFieldProps as ContractorSignatureCompanyNameFieldProps,
+  ContractorSignatureFieldsMetadata,
+  ContractorSignatureRequiredValidation,
+  ContractorSignatureAgreeValidation,
+  ContractorSignatureSsnValidation,
+  ContractorSignatureEinValidation,
+} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'

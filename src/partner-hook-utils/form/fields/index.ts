@@ -1,3 +1,4 @@
+export type { InputProps } from '@/components/Common/UI/Input/InputTypes'
 export { TextInputHookField, type TextInputHookFieldProps } from './TextInputHookField'
 export { SelectHookField, type SelectHookFieldProps } from './SelectHookField'
 export { CheckboxHookField, type CheckboxHookFieldProps } from './CheckboxHookField'

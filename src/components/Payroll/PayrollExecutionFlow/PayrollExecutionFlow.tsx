@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import {
   PayrollConfigurationContextual,
@@ -54,15 +54,24 @@ export interface PayrollExecutionFlowProps {
   /** Optional custom component to replace the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   /**
-   * Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside
-   * a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent.
-   */
-  prefixBreadcrumbs?: FlowBreadcrumb[]
-  /**
    * Where the flow starts. Use `'overview'` when you want to drop the user directly on the review
    * screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`.
    */
   initialState?: PayrollExecutionInitialState
+}
+
+/**
+ * Props for the flow-internal {@link PayrollExecutionInternalFlow}, which layers flow-injected
+ * prefix breadcrumbs on top of the public {@link PayrollExecutionFlowProps}.
+ *
+ * @internal
+ */
+export interface PayrollExecutionInternalFlowProps extends PayrollExecutionFlowProps {
+  /**
+   * Breadcrumbs prepended to the flow's own breadcrumb trail. Set by a parent flow (e.g. an
+   * off-cycle creation step) so the breadcrumb history remains coherent across the handoff.
+   */
+  prefixBreadcrumbs?: FlowBreadcrumb[]
 }
 
 const INITIAL_COMPONENT_MAP = {
@@ -76,8 +85,7 @@ const INITIAL_NAMESPACE_MAP = {
 } as const
 
 /**
- * Shared execution flow that runs the configuration, overview, submission, and receipt steps for a
- * single payroll.
+ * Guided flow to configure, review, and submit a single payroll.
  *
  * @remarks
  * This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
@@ -86,10 +94,10 @@ const INITIAL_NAMESPACE_MAP = {
  * the user off to the standard execution experience without re-implementing it. The flow ships
  * with breadcrumb navigation and the standard wire-confirmation UX.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/edit` | Fired when user chooses to edit payroll | — |
- * | `runPayroll/back` | Fired when user navigates back | — |
  * | `runPayroll/calculated` | Fired when payroll calculation completes | `{ payrollUuid, payPeriod?, alert? }` |
  * | `runPayroll/employee/edit` | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }` |
  * | `runPayroll/employee/saved` | Fired when employee edits are saved | — |
@@ -105,11 +113,49 @@ const INITIAL_NAMESPACE_MAP = {
  * | `runPayroll/blockers/viewAll` | Fired when user opens the full blockers list | — |
  * | `payroll/saveAndExit` | Fired when user uses the save-and-exit CTA | — |
  *
+ * @components
+ * - {@link PayrollConfiguration}
+ * - {@link PayrollOverview}
+ * - {@link PayrollEditEmployee}
+ * - {@link PayrollReceipts}
+ * - {@link PayrollBlockerList}
+ *
  * @param input - {@link PayrollExecutionFlowProps}
  * @returns The rendered execution flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <Payroll.PayrollExecutionFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       payrollId="0987fcea-7b59-4907-a301-f232b5aff508"
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'runPayroll/submitted') {
+ *           // Payroll submitted — navigate to your next screen
+ *         }
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
  */
-export function PayrollExecutionFlow({
+export function PayrollExecutionFlow(props: PayrollExecutionFlowProps) {
+  return <PayrollExecutionInternalFlow {...props} />
+}
+
+/**
+ * Flow-internal entry point for {@link PayrollExecutionFlow} that additionally accepts
+ * flow-injected `prefixBreadcrumbs`. Partners use {@link PayrollExecutionFlow}; our own parent
+ * flows (off-cycle, dismissal, transition, and `PayrollFlow`) render this directly to prepend
+ * their own breadcrumb trail.
+ *
+ * @internal
+ */
+export function PayrollExecutionInternalFlow({
   companyId,
   payrollId,
   onEvent,
@@ -119,7 +165,7 @@ export function PayrollExecutionFlow({
   ConfirmWireDetailsComponent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
   initialState = 'configuration',
-}: PayrollExecutionFlowProps) {
+}: PayrollExecutionInternalFlowProps) {
   const executionFlowMachine = useMemo(() => {
     const breadcrumbNodes = getPayrollExecutionBreadcrumbsNodes(isDismissal)
     const baseBreadcrumbs = buildBreadcrumbs(breadcrumbNodes)

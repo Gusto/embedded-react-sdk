@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import { useMemo } from 'react'
-import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist'
+import type { EmployeeStateTaxesList } from '@gusto/embedded-api/models/components/employeestatetaxeslist'
 import { getQuestionVariant, type StateTaxQuestionVariant } from './fieldMapping'
 import {
   CurrencyStateTaxField,
@@ -22,6 +22,8 @@ import type {
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 export type {
+  BaseStateTaxFieldProps,
+  StateTaxValidationMessages,
   CurrencyStateTaxFieldProps,
   DateStateTaxFieldProps,
   NumberStateTaxFieldProps,
@@ -32,7 +34,13 @@ export type {
 
 // ── Discriminated union surfaced to partners ───────────────────────────
 
-interface SharedQuestionMetadata {
+/**
+ * Metadata shared by every {@link StateTaxQuestionFieldEntry} variant,
+ * independent of which input the question renders.
+ *
+ * @public
+ */
+export interface SharedQuestionMetadata {
   /** Stable identifier for this question (camelCase form of the API key). */
   questionId: string
   /** API-supplied label; default text for the rendered Field. */
@@ -42,29 +50,120 @@ interface SharedQuestionMetadata {
 }
 
 /**
+ * A state-tax question that renders as a select (dropdown). Includes read-only
+ * question metadata from the API and a bound select field, exposed as
+ * `<question.Field />`.
+ *
+ * @public
+ * @group Fields
+ */
+export interface SelectStateTaxQuestion extends SharedQuestionMetadata {
+  /** Discriminant identifying the select variant. */
+  type: 'select'
+  /** Field component pre-bound to this question's API-supplied metadata. */
+  Field: ComponentType<SelectStateTaxFieldProps>
+}
+
+/**
+ * A state-tax question that renders as a radio group. Includes read-only
+ * question metadata from the API and a bound radio field, exposed as
+ * `<question.Field />`.
+ *
+ * @public
+ * @group Fields
+ */
+export interface RadioStateTaxQuestion extends SharedQuestionMetadata {
+  /** Discriminant identifying the radio variant. */
+  type: 'radio'
+  /** Field component pre-bound to this question's API-supplied metadata. */
+  Field: ComponentType<RadioStateTaxFieldProps>
+}
+
+/**
+ * A state-tax question that renders as a single-line text input. Includes
+ * read-only question metadata from the API and a bound text field, exposed as
+ * `<question.Field />`.
+ *
+ * @public
+ * @group Fields
+ */
+export interface TextStateTaxQuestion extends SharedQuestionMetadata {
+  /** Discriminant identifying the text variant. */
+  type: 'text'
+  /** Field component pre-bound to this question's API-supplied metadata. */
+  Field: ComponentType<TextStateTaxFieldProps>
+}
+
+/**
+ * A state-tax question that renders as a decimal number input. Includes
+ * read-only question metadata from the API and a bound number field, exposed as
+ * `<question.Field />`.
+ *
+ * @public
+ * @group Fields
+ */
+export interface NumberStateTaxQuestion extends SharedQuestionMetadata {
+  /** Discriminant identifying the number variant. */
+  type: 'number'
+  /** Field component pre-bound to this question's API-supplied metadata. */
+  Field: ComponentType<NumberStateTaxFieldProps>
+}
+
+/**
+ * A state-tax question that renders as a currency-formatted number input. Includes
+ * read-only question metadata from the API and a bound currency field, exposed as
+ * `<question.Field />`.
+ *
+ * @public
+ * @group Fields
+ */
+export interface CurrencyStateTaxQuestion extends SharedQuestionMetadata {
+  /** Discriminant identifying the currency variant. */
+  type: 'currency'
+  /** Field component pre-bound to this question's API-supplied metadata. */
+  Field: ComponentType<CurrencyStateTaxFieldProps>
+}
+
+/**
+ * A state-tax question that renders as a date picker. Includes read-only
+ * question metadata from the API and a bound date field, exposed as
+ * `<question.Field />`.
+ *
+ * @public
+ * @group Fields
+ */
+export interface DateStateTaxQuestion extends SharedQuestionMetadata {
+  /** Discriminant identifying the date variant. */
+  type: 'date'
+  /** Field component pre-bound to this question's API-supplied metadata. */
+  Field: ComponentType<DateStateTaxFieldProps>
+}
+
+/**
  * One question entry within a {@link StateTaxFieldsGroup}, discriminated by
  * `type` to identify which input variant the question uses. Each entry carries
  * a `Field` component pre-bound to its API-supplied metadata so callers can
  * render the input directly.
  *
  * @public
+ * @group Fields
+ * @siblingOf {@link StateTaxFieldsGroup}
  */
 export type StateTaxQuestionFieldEntry =
-  | ({ type: 'select'; Field: ComponentType<SelectStateTaxFieldProps> } & SharedQuestionMetadata)
-  | ({ type: 'radio'; Field: ComponentType<RadioStateTaxFieldProps> } & SharedQuestionMetadata)
-  | ({ type: 'text'; Field: ComponentType<TextStateTaxFieldProps> } & SharedQuestionMetadata)
-  | ({ type: 'number'; Field: ComponentType<NumberStateTaxFieldProps> } & SharedQuestionMetadata)
-  | ({
-      type: 'currency'
-      Field: ComponentType<CurrencyStateTaxFieldProps>
-    } & SharedQuestionMetadata)
-  | ({ type: 'date'; Field: ComponentType<DateStateTaxFieldProps> } & SharedQuestionMetadata)
+  | SelectStateTaxQuestion
+  | RadioStateTaxQuestion
+  | TextStateTaxQuestion
+  | NumberStateTaxQuestion
+  | CurrencyStateTaxQuestion
+  | DateStateTaxQuestion
 
 /**
  * Group of state-tax questions for a single jurisdiction returned by
  * {@link useStateFields}.
  *
  * @public
+ * @group Fields
+ * @siblingOf {@link StateTaxFields}
  */
 export interface StateTaxFieldsGroup {
   /** Two-letter state code. */
@@ -72,6 +171,31 @@ export interface StateTaxFieldsGroup {
   /** Ordered list of question entries for this state, post admin-only filtering. */
   questions: StateTaxQuestionFieldEntry[]
 }
+
+/**
+ * Iterable, render-ready group + question entries with bound Field components,
+ * grouped by state.
+ *
+ * @public
+ *
+ * @example
+ * The value exposed on `form.Fields`: one entry per state, each carrying its
+ * questions as pre-bound `Field` components you render directly.
+ *
+ * ```tsx
+ * function StateTaxQuestions({ fields }: { fields: StateTaxFields }) {
+ *   return fields.map(group => (
+ *     <section key={group.state}>
+ *       <h3>{group.state}</h3>
+ *       {group.questions.map(question => (
+ *         <question.Field key={question.questionId} />
+ *       ))}
+ *     </section>
+ *   ))
+ * }
+ * ```
+ */
+export type StateTaxFields = StateTaxFieldsGroup[]
 
 // ── Factory ────────────────────────────────────────────────────────────
 
@@ -186,7 +310,7 @@ function buildEntry(
  * @param isAdmin - When `true`, admin-only questions are included; when `false`, they are filtered out.
  * @returns An array of {@link StateTaxFieldsGroup} — one entry per state, each with a `questions` array of bound field components.
  * @public
- * @group Utility Hooks
+ * @group Utility hooks
  */
 export function useStateFields(
   employeeStateTaxes: EmployeeStateTaxesList[],

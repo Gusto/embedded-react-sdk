@@ -1,4 +1,4 @@
-import { useHolidayPayPoliciesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesGet } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { PolicyTypeSelectorPresentation } from './PolicyTypeSelectorPresentation'
 import type { PolicyType } from './PolicyTypeSelectorTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -24,6 +24,7 @@ export interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company
  * The holiday option is omitted when the company already has a holiday pay policy, since a company
  * can only have one.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |

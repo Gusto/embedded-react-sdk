@@ -40,7 +40,7 @@ return (
 
 ## Component Organization
 
-```
+```text
 src/components/
 ├── Common/         # Shared UI primitives and Field components
 │   ├── Fields/     # Form-connected Field components (use these for forms)
@@ -52,23 +52,23 @@ src/components/
 └── Flow/           # Multi-step flow orchestration
 ```
 
-## API Layer (`@gusto/embedded-api-v-2025-11-15`)
+## API Layer (`@gusto/embedded-api`)
 
-All API calls go through the `@gusto/embedded-api-v-2025-11-15` package, which provides React Query hooks with Zod schema validation.
+All API calls go through the `@gusto/embedded-api` package, which provides React Query hooks with Zod schema validation.
 
 ### Import Paths
 
 ```tsx
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsUpdate'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { APIError } from '@gusto/embedded-api-v-2025-11-15/models/errors/apierror'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
 ```
 
-- `@gusto/embedded-api-v-2025-11-15/react-query/<operation>` -- React Query hooks
-- `@gusto/embedded-api-v-2025-11-15/models/components/<name>` -- Component/entity types
-- `@gusto/embedded-api-v-2025-11-15/models/operations/<name>` -- Operation request/response types
-- `@gusto/embedded-api-v-2025-11-15/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityError`)
+- `@gusto/embedded-api/react-query/<operation>` -- React Query hooks
+- `@gusto/embedded-api/models/components/<name>` -- Component/entity types
+- `@gusto/embedded-api/models/operations/<name>` -- Operation request/response types
+- `@gusto/embedded-api/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityError`)
 
 ### Hook Naming Convention
 
@@ -118,7 +118,7 @@ All user-facing text uses i18next. Translation types are generated via `npm run 
 
 ## Provider Stack
 
-```
+```text
 GustoProvider
   → ComponentsProvider (UI component map)
   → ThemeProvider

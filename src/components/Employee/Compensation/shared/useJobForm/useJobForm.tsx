@@ -1,17 +1,18 @@
+import type { ComponentType } from 'react'
 import { useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsCreateJob'
-import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsUpdate'
-import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsUpdateCompensation'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useFederalTaxDetailsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/federalTaxDetailsGet'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
+import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
+import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
+import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import {
   createJobSchema,
   type JobOptionalFieldsToRequire,
@@ -25,13 +26,22 @@ import {
   StateWcCoveredField,
   StateWcClassCodeField,
 } from './fields'
+import type {
+  JobTitleFieldProps,
+  HireDateFieldProps,
+  TwoPercentShareholderFieldProps,
+  StateWcCoveredFieldProps,
+  StateWcClassCodeFieldProps,
+} from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
+import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -123,16 +133,16 @@ export interface UseJobFormProps {
  * @public
  */
 export interface JobFormFields {
-  /** Job title text input. `undefined` when `withTitleField: false`. */
-  Title: typeof JobTitleField | undefined
-  /** Hire date picker. `undefined` when `withHireDateField: false`. */
-  HireDate: typeof HireDateField | undefined
-  /** S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). */
-  TwoPercentShareholder: typeof TwoPercentShareholderField | undefined
-  /** Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). */
-  StateWcCovered: typeof StateWcCoveredField | undefined
-  /** Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. */
-  StateWcClassCode: typeof StateWcClassCodeField | undefined
+  /** Bound to `title`. Job title text input. `undefined` when `withTitleField: false`. */
+  Title: ComponentType<JobTitleFieldProps> | undefined
+  /** Bound to `hireDate`. Hire date picker. `undefined` when `withHireDateField: false`. */
+  HireDate: ComponentType<HireDateFieldProps> | undefined
+  /** Bound to `twoPercentShareholder`. S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). */
+  TwoPercentShareholder: ComponentType<TwoPercentShareholderFieldProps> | undefined
+  /** Bound to `stateWcCovered`. Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). */
+  StateWcCovered: ComponentType<StateWcCoveredFieldProps> | undefined
+  /** Bound to `stateWcClassCode`. Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. */
+  StateWcClassCode: ComponentType<StateWcClassCodeFieldProps> | undefined
 }
 
 /**
@@ -146,7 +156,7 @@ export interface JobFormFields {
  * @public
  */
 export interface UseJobFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  JobFieldsMetadata,
   JobFormData,
   JobFormFields
 > {
@@ -182,6 +192,39 @@ export interface UseJobFormReady extends BaseFormHookReady<
 function findJob(jobs: Job[] | undefined, jobId: string | undefined): Job | null {
   if (!jobs || !jobId) return null
   return jobs.find(j => j.uuid === jobId) ?? null
+}
+
+/** @internal */
+function buildJobFieldsMetadata(
+  base: Record<keyof JobFormData, FieldMetadata>,
+  {
+    showTwoPercentShareholder,
+    showStateWc,
+  }: { showTwoPercentShareholder: boolean; showStateWc: boolean },
+) {
+  return {
+    title: base.title,
+    hireDate: base.hireDate,
+    twoPercentShareholder: withFlags(base.twoPercentShareholder, {
+      isDisabled: !showTwoPercentShareholder,
+    }),
+    stateWcCovered: withOptions<boolean>(
+      withFlags(base.stateWcCovered, { isDisabled: !showStateWc }),
+      [
+        { label: 'Yes', value: 'true' },
+        { label: 'No', value: 'false' },
+      ],
+      [true, false],
+    ),
+    stateWcClassCode: withOptions<WARiskClassCode>(
+      withFlags(base.stateWcClassCode, { isDisabled: !showStateWc }),
+      WA_RISK_CLASS_CODES.map(({ code, description }) => ({
+        value: code,
+        label: `${code}: ${description}`,
+      })),
+      WA_RISK_CLASS_CODES,
+    ),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -324,33 +367,11 @@ export function useJobForm({
   const queriesForErrors = employeeId ? [jobsQuery, addressesQuery, employeeQuery, taxQuery] : []
   const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
-  const stateWcClassCodeOptions = WA_RISK_CLASS_CODES.map(({ code, description }) => ({
-    value: code,
-    label: `${code}: ${description}`,
-  }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    title: baseMetadata.title,
-    hireDate: baseMetadata.hireDate,
-    twoPercentShareholder: {
-      ...baseMetadata.twoPercentShareholder,
-      isDisabled: !showTwoPercentShareholder,
-    },
-    stateWcCovered: withOptions<boolean>(
-      { ...baseMetadata.stateWcCovered, isDisabled: !showStateWc },
-      [
-        { label: 'Yes', value: 'true' },
-        { label: 'No', value: 'false' },
-      ],
-      [true, false],
-    ),
-    stateWcClassCode: withOptions<WARiskClassCode>(
-      { ...baseMetadata.stateWcClassCode, isDisabled: !showStateWc },
-      stateWcClassCodeOptions,
-      WA_RISK_CLASS_CODES,
-    ),
-  }
+  const fieldsMetadata = buildJobFieldsMetadata(baseMetadata, {
+    showTwoPercentShareholder,
+    showStateWc,
+  })
 
   const onSubmit = async (
     options?: JobSubmitOptions,
@@ -579,4 +600,4 @@ export type UseJobFormResult = HookLoadingResult | UseJobFormReady
  *
  * @public
  */
-export type JobFieldsMetadata = UseJobFormReady['form']['fieldsMetadata']
+export type JobFieldsMetadata = ReturnType<typeof buildJobFieldsMetadata>

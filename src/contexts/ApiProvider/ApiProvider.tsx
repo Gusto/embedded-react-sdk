@@ -1,7 +1,7 @@
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
-import { GustoEmbeddedProvider } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
-import { GustoEmbeddedCore } from '@gusto/embedded-api-v-2025-11-15/core'
-import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api-v-2025-11-15/hooks/hooks'
+import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query/_context'
+import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
+import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
@@ -10,10 +10,10 @@ import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 /**
  * Props for {@link ApiProvider}.
  *
- * @public
+ * @internal
  */
 export interface ApiProviderProps {
-  /** Base URL the SDK uses for all `@gusto/embedded-api-v-2025-11-15` requests. */
+  /** Base URL the SDK uses for all `@gusto/embedded-api-v-2026-06-15` requests. */
   url: string
   /** Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. */
   headers?: HeadersInit
@@ -26,13 +26,13 @@ export interface ApiProviderProps {
 }
 
 /**
- * Wires the `@gusto/embedded-api-v-2025-11-15` client and a React Query client into the React tree.
+ * Wires the `@gusto/embedded-api-v-2026-06-15` client and a React Query client into the React tree.
  *
  * @remarks
  * Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
  * and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
  * `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
- * successful mutations under the `['@gusto/embedded-api-v-2025-11-15']` key invalidate every SDK
+ * successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
  * query automatically. Partners who supply their own `QueryClient` are responsible for matching that
  * contract.
  *
@@ -41,7 +41,7 @@ export interface ApiProviderProps {
  *
  * @param props - See {@link ApiProviderProps}.
  * @returns A React subtree wrapped in `QueryClientProvider` and the embedded API context.
- * @public
+ * @internal
  */
 export function ApiProvider({
   url,

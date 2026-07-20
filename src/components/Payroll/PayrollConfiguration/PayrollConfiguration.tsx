@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
-import { payrollsCalculate } from '@gusto/embedded-api-v-2025-11-15/funcs/payrollsCalculate'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
-import type { PayrollProcessingRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprocessingrequest'
-import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprocessingrequest'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsUpdate'
-import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCalculateGrossUp'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollupdate'
-import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGetBlockers'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api/react-query/payrollsCalculateGrossUp'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { hasDirectDepositEmployees } from '../helpers'
 import { GrossUpModal } from '../GrossUpModal'
@@ -58,6 +58,7 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * @remarks
  * Emits the following events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/employee/edit` | An employee row is selected for editing | `{ employeeId, firstName, lastName }` |
@@ -307,13 +308,18 @@ const Root = ({
     })
   }
 
-  const transformEmployeeCompensation = ({
-    paymentMethod,
-    reimbursements,
-    ...compensation
-  }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
+  const transformEmployeeCompensation = (
+    compensation: PayrollEmployeeCompensationsType,
+  ): PayrollUpdateEmployeeCompensations => {
+    const { paymentMethod } = compensation
     return {
-      ...compensation,
+      employeeUuid: compensation.employeeUuid,
+      version: compensation.version,
+      excluded: compensation.excluded,
+      fixedCompensations: compensation.fixedCompensations,
+      hourlyCompensations: compensation.hourlyCompensations,
+      paidTimeOff: compensation.paidTimeOff,
+      deductions: compensation.deductions,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
     }

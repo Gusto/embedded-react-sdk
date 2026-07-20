@@ -1,4 +1,4 @@
-import type { CompanyBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccount'
+import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { BankAccountList } from './BankAccountList/BankAccountList'
 import { BankAccountForm } from './BankAccountForm/BankAccountForm'
 import { BankAccountVerify } from './BankAccountVerify/BankAccountVerify'

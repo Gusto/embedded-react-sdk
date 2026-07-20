@@ -301,6 +301,100 @@ describe('buildFormSchema', () => {
     })
   })
 
+  describe('excludeFields as a value-aware function', () => {
+    const fieldValidators = {
+      kind: z.enum(['individual', 'business']),
+      firstName: z.string(),
+      businessName: z.string(),
+    }
+
+    const requiredFieldsConfig = {
+      firstName: 'create',
+      businessName: 'create',
+    } as const
+
+    // firstName applies only to individuals; businessName only to businesses.
+    const excludeFields = (data: { kind: 'individual' | 'business' }) =>
+      data.kind === 'individual'
+        ? (['businessName'] as const).slice()
+        : (['firstName'] as const).slice()
+
+    it('skips the required check for a statically-required field the function excludes', () => {
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        excludeFields,
+      })
+
+      const result = schema.safeParse({ kind: 'business', firstName: '', businessName: 'Acme' })
+      expect(result.success).toBe(true)
+    })
+
+    it('still flags a statically-required field the function does not exclude', () => {
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        excludeFields,
+      })
+
+      const result = schema.safeParse({ kind: 'business', firstName: '', businessName: '' })
+      expect(result.success).toBe(false)
+      const errors = getErrorFields(result)
+      expect(errors).toContain('businessName')
+      expect(errors).not.toContain('firstName')
+    })
+
+    it('re-evaluates applicability as the discriminating value changes', () => {
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        excludeFields,
+      })
+
+      const asIndividual = schema.safeParse({
+        kind: 'individual',
+        firstName: '',
+        businessName: '',
+      })
+      expect(getErrorFields(asIndividual)).toContain('firstName')
+      expect(getErrorFields(asIndividual)).not.toContain('businessName')
+    })
+
+    it('keeps function-excluded fields in the schema shape (validated as optional)', () => {
+      const [, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        excludeFields,
+      })
+      const metadata = getFieldsMetadata()
+
+      expect(metadata.firstName).toBeDefined()
+      expect(metadata.businessName).toBeDefined()
+    })
+
+    it('promotes an optional field only while the function deems it applicable', () => {
+      const optionalConfig = {
+        firstName: 'never',
+        businessName: 'never',
+      } as const
+
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig: optionalConfig,
+        mode: 'create',
+        optionalFieldsToRequire: { create: ['firstName'] },
+        excludeFields,
+      })
+
+      // Applicable to individuals: promotion takes effect.
+      const asIndividual = schema.safeParse({ kind: 'individual', firstName: '', businessName: '' })
+      expect(getErrorFields(asIndividual)).toContain('firstName')
+
+      // Not applicable to businesses: promotion is suppressed by the function.
+      const asBusiness = schema.safeParse({ kind: 'business', firstName: '', businessName: '' })
+      expect(getErrorFields(asBusiness)).not.toContain('firstName')
+    })
+  })
+
   describe('function rules (predicates)', () => {
     const fieldValidators = {
       adjustForMinimumWage: z.boolean(),
@@ -490,12 +584,70 @@ describe('buildFormSchema', () => {
         mode: 'create',
         optionalFieldsToRequire: {
           create: ['dependent'],
-        } as unknown as OptionalFieldsToRequire<typeof requiredFieldsConfig>,
+        },
       })
 
       const result = schema.safeParse({ toggle: false, dependent: '' })
       expect(result.success).toBe(false)
       expect(getErrorFields(result)).toContain('dependent')
+    })
+  })
+
+  describe('promotable predicate fields', () => {
+    const fieldValidators = {
+      toggle: z.boolean(),
+      dependent: z.string(),
+    }
+
+    const requiredFieldsConfig = {
+      dependent: (data: { toggle: boolean }) => data.toggle,
+    } as const
+
+    it('a predicate field is assignable to optionalFieldsToRequire without a cast', () => {
+      // Type-level proof that the framework exposes predicate ("sometimes")
+      // fields as promotable. If OptionalOnCreate/OptionalOnUpdate stopped
+      // including predicate rules, this annotation would fail to compile.
+      const optionalFieldsToRequire: OptionalFieldsToRequire<typeof requiredFieldsConfig> = {
+        create: ['dependent'],
+        update: ['dependent'],
+      }
+
+      expect(optionalFieldsToRequire.create).toContain('dependent')
+    })
+
+    it('promoting a predicate field makes it required regardless of the predicate', () => {
+      const [schema, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        optionalFieldsToRequire: { create: ['dependent'] },
+      })
+
+      const toggleOff = schema.safeParse({ toggle: false, dependent: '' })
+      expect(toggleOff.success).toBe(false)
+      expect(getErrorFields(toggleOff)).toContain('dependent')
+
+      const toggleOn = schema.safeParse({ toggle: true, dependent: '' })
+      expect(toggleOn.success).toBe(false)
+      expect(getErrorFields(toggleOn)).toContain('dependent')
+
+      expect(getFieldsMetadata({ toggle: false }).dependent.isRequired).toBe(true)
+    })
+
+    it('an unpromoted predicate field stays conditional', () => {
+      const [schema, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
+
+      const toggleOff = schema.safeParse({ toggle: false, dependent: '' })
+      expect(toggleOff.success).toBe(true)
+
+      const toggleOn = schema.safeParse({ toggle: true, dependent: '' })
+      expect(toggleOn.success).toBe(false)
+      expect(getErrorFields(toggleOn)).toContain('dependent')
+
+      expect(getFieldsMetadata({ toggle: false }).dependent.isRequired).toBe(false)
+      expect(getFieldsMetadata({ toggle: true }).dependent.isRequired).toBe(true)
     })
   })
 
@@ -665,7 +817,7 @@ describe('buildFormSchema', () => {
         mode: 'create',
         optionalFieldsToRequire: {
           create: ['minimumWageId'],
-        } as unknown as OptionalFieldsToRequire<typeof requiredFieldsConfig>,
+        },
       })
       const metadata = getFieldsMetadata({ adjustForMinimumWage: false })
 
@@ -773,9 +925,7 @@ describe('buildFormSchema', () => {
           mode: 'create',
           optionalFieldsToRequire: {
             create: ['dependent'],
-          } as unknown as OptionalFieldsToRequire<{
-            dependent: (data: Record<string, unknown>) => boolean
-          }>,
+          },
         },
       )
       expect(predicateDeps).toEqual([])

@@ -1,0 +1,106 @@
+{
+  "company_uuid": "1a5edee4-7672-40f7-afdf-0483f396b8d1",
+  "state": "ID",
+  "requirement_sets": [
+    {
+      "state": "ID",
+      "key": "registrations",
+      "label": "Department of Labor",
+      "effective_from": null,
+      "requirements": [
+        {
+          "key": "id_ui_account_number",
+          "applicable_if": [],
+          "label": "Idaho UI Account Number",
+          "description": "You receive this number after registering with the Idaho Department of Labor.",
+          "value": null,
+          "metadata": {
+            "type": "account_number",
+            "mask": null,
+            "prefix": null
+          },
+          "editable": true
+        }
+      ]
+    },
+    {
+      "state": "ID",
+      "key": "taxrates",
+      "label": "Tax Rates",
+      "effective_from": "2025-01-01",
+      "requirements": [
+        {
+          "key": "suireimbursable",
+          "applicable_if": [],
+          "label": "Are you a reimbursable employer for unemployment insurance?",
+          "description": "Reimbursable employers reimburse the state for unemployment benefits paid out rather than paying SUI tax.",
+          "value": false,
+          "metadata": {
+            "type": "radio",
+            "options": [
+              {
+                "label": "Yes, we're a reimbursable employer",
+                "short_label": "Yes",
+                "value": true
+              },
+              {
+                "label": "No, we pay SUI tax",
+                "short_label": "No",
+                "value": false
+              }
+            ]
+          },
+          "editable": true
+        },
+        {
+          "key": "id_ui_contribution_rate",
+          "applicable_if": [
+            {
+              "key": "suireimbursable",
+              "value": false
+            }
+          ],
+          "label": "UI Contribution Rate",
+          "description": "Your assigned UI contribution rate from the Idaho Department of Labor.",
+          "value": "0.01",
+          "metadata": {
+            "type": "tax_rate"
+          },
+          "editable": true
+        },
+        {
+          "key": "id_admin_rate",
+          "applicable_if": [
+            {
+              "key": "suireimbursable",
+              "value": false
+            }
+          ],
+          "label": "Administrative Reserve Rate",
+          "description": "Your assigned administrative reserve rate from the Idaho Department of Labor.",
+          "value": "0.0002",
+          "metadata": {
+            "type": "tax_rate"
+          },
+          "editable": true
+        },
+        {
+          "key": "id_workforce_rate",
+          "applicable_if": [
+            {
+              "key": "suireimbursable",
+              "value": false
+            }
+          ],
+          "label": "Workforce Development Rate",
+          "description": "Your assigned workforce development training fund rate from the Idaho Department of Labor.",
+          "value": "0.0003",
+          "metadata": {
+            "type": "tax_rate"
+          },
+          "editable": true
+        }
+      ]
+    }
+  ]
+}

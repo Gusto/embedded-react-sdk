@@ -12,13 +12,48 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
+Guided flow to onboard a company to Gusto.
 
 ## Remarks
 
 The flow begins on the overview screen and steps through locations, federal taxes, industry,
 bank account, employee onboarding, pay schedule, state taxes, and document signing before
 returning to the overview.
+
+## Example
+
+```tsx title="App.tsx"
+import { CompanyOnboarding, type EventType } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <CompanyOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'company/overview/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
+    />
+  )
+}
+```
+
+## OnboardingFlowProps
+
+<a id="onboardingflowprops"></a>
+
+Props for the company onboarding flow orchestrator.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values applied to individual flow step components (federal taxes, pay schedule). |
+
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -33,8 +68,77 @@ returning to the overview.
 | `company/stateTaxes/done` | User completed the state taxes step | — |
 | `company/forms/done` | User completed signing company documents | — |
 
-## Parameters
+Each step is also exported as a standalone block (see the Sub-components
+table) for composing a custom workflow when this orchestration is the wrong
+fit. See the
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
+for how to recompose these blocks into your own flow.
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `OnboardingFlowProps` | See OnboardingFlowProps. |
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [OnboardingOverview](blocks.md#onboardingoverview) | Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements. |
+| [Locations](blocks.md#locations) | Orchestrated component for managing a company's mailing and filing addresses. |
+| [FederalTaxes](blocks.md#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
+| [Industry](blocks.md#industry) | Selects and saves the company's industry classification (NAICS code). |
+| [BankAccount](blocks.md#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
+| [EmployeeOnboarding.OnboardingFlow](../../employee/onboarding/onboarding-flow.md) | Guided flow to onboard multiple employees, one at a time. |
+| [PaySchedule](blocks.md#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
+| [StateTaxes](blocks.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
+| [DocumentSigner](blocks.md#documentsigner) | Company onboarding step for reading and signing required company documents. |
+
+<!-- guide-source: src/components/Company/OnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow opens on the overview, then runs the linear step sequence below before returning to the overview to finish. Every step is a `CompanyOnboarding` block except the Employees step, which embeds `EmployeeOnboarding.OnboardingFlow` and owns its own internal navigation.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> Overview
+  Overview -->|"company/overview/continue"| Locations
+  Locations -->|"company/location/done"| FederalTaxes
+  FederalTaxes -->|"company/federalTaxes/done"| Industry
+  Industry -->|"company/industry/selected"| BankAccount
+  BankAccount -->|"company/bankAccount/done"| Employees["EmployeeOnboarding.OnboardingFlow"]
+  Employees -->|"employee/onboarding/done"| PaySchedule
+  PaySchedule -->|"paySchedule/done"| StateTaxes
+  StateTaxes -->|"company/stateTaxes/done"| DocumentSigner
+  DocumentSigner -->|"company/forms/done"| Overview
+  Overview -->|"company/overview/done"| done@{ shape: fr-circ, label: " " }
+  class Employees flow
+```
+
+Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition) for how to recompose these blocks into your own flow.
+<!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+| POST | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-bank-accounts) |
+| PUT | [`/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-bank-accounts-verify) |
+| GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details) |
+| PUT | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-federal_tax_details) |
+| GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms) |
+| GET | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-industry) |
+| PUT | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-industry) |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations) |
+| POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-locations) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
+| POST | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview) |
+| GET | [`/v1/companies/:companyUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-onboarding-status) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+| GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
+| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign) |
+| GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id) |
+| PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id) |

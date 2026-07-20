@@ -4,18 +4,31 @@ import {
   Comment,
   CommentTag,
   DeclarationReflection,
+  IndexedAccessType,
+  IntrinsicType,
+  LiteralType,
   ParameterReflection,
   ProjectReflection,
+  QueryType,
   ReferenceReflection,
   ReferenceType,
   ReflectionGroup,
   ReflectionKind,
   SignatureReflection,
   SourceReference,
+  TypeOperatorType,
+  UnionType,
   FileRegistry,
 } from 'typedoc'
 import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import { SDKRouter } from './router'
+import {
+  defaultValueRestatesLiteralType,
+  documentedUnderlyingConst,
+  dropTableColumn,
+  isOpaqueConstDerivedType,
+  isTranslationsMember,
+} from './theme'
 import {
   componentPropsInterfaces,
   domainFromSources,
@@ -885,6 +898,132 @@ describe('reparentDeprecatedMembers', () => {
 })
 
 // ---------------------------------------------------------------------------
+// relocateI18nTypes (moves the i18n types onto the Translations page)
+// ---------------------------------------------------------------------------
+
+describe('relocateI18nTypes', () => {
+  type RelocateContext = Parameters<typeof SDKRouter.relocateI18nTypes>[0]
+
+  // Selection is by source path (i18n/types or types/Helpers) + `@group Utility types`.
+  function makeI18nType(
+    project: ProjectReflection,
+    name: string,
+    kind: ReflectionKind,
+    fullFileName: string,
+  ): DeclarationReflection {
+    const ref = makeChild(project, name, kind)
+    ref.sources = sourceRef(fullFileName)
+    ref.comment = new Comment()
+    ref.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Utility types' }]))
+    return ref
+  }
+
+  it('reparents source+group-matched i18n types under Translations, keeping their natural group', () => {
+    const project = makeProject()
+    const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
+    const resources = makeI18nType(
+      project,
+      'Resources',
+      ReflectionKind.Interface,
+      '/workspace/src/i18n/types.d.ts',
+    )
+    const dictionary = makeI18nType(
+      project,
+      'ResourceDictionary',
+      ReflectionKind.TypeAlias,
+      '/workspace/src/types/Helpers.d.ts',
+    )
+    const deepPartial = makeI18nType(
+      project,
+      'DeepPartial',
+      ReflectionKind.TypeAlias,
+      '/workspace/src/types/Helpers.d.ts',
+    )
+    const unrelated = makeChild(project, 'APIConfig', ReflectionKind.Interface)
+
+    SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
+
+    for (const ref of [resources, dictionary, deepPartial]) {
+      expect(ref.parent).toBe(translations)
+      expect(translations.children).toContain(ref)
+      // The source `@group` is left untouched so the type renders under its
+      // natural section (here "Utility types") on the Translations page.
+      const groupTags = ref.comment?.blockTags.filter(t => t.tag === '@group') ?? []
+      expect(groupTags).toHaveLength(1)
+      expect(groupTags[0]?.content[0]?.text).toBe('Utility types')
+    }
+    // Removed from the project so they no longer render on the index page.
+    expect(project.children).not.toContain(resources)
+    expect(project.children).toContain(unrelated)
+  })
+
+  it('leaves same-file exports outside the matched group in place', () => {
+    const project = makeProject()
+    makeChild(project, 'Translations', ReflectionKind.Namespace)
+    // Same source file as the dictionary types, but no `@group Utility types`.
+    const machineEvent = makeChild(project, 'MachineEventType', ReflectionKind.TypeAlias)
+    machineEvent.sources = sourceRef('/workspace/src/types/Helpers.d.ts')
+
+    SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
+
+    expect(project.children).toContain(machineEvent)
+    expect(machineEvent.parent).toBe(project)
+  })
+
+  it('is a no-op when there is no Translations namespace', () => {
+    const project = makeProject()
+    const resources = makeI18nType(
+      project,
+      'Resources',
+      ReflectionKind.Interface,
+      '/workspace/src/i18n/types.d.ts',
+    )
+
+    SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
+
+    expect(project.children).toContain(resources)
+    expect(resources.parent).toBe(project)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// groupTranslationInterfaces (stamps the leaf key interfaces @group Translation namespaces)
+// ---------------------------------------------------------------------------
+
+describe('groupTranslationInterfaces', () => {
+  type GroupContext = Parameters<typeof SDKRouter.groupTranslationInterfaces>[0]
+
+  const groupOf = (ref: DeclarationReflection): string | undefined =>
+    ref.comment?.blockTags.find(t => t.tag === '@group')?.content[0]?.text
+
+  it('stamps the leaf key interfaces without touching already-grouped members', () => {
+    const project = makeProject()
+    const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
+    const keyInterface = makeChild(translations, 'CompanyAddresses', ReflectionKind.Interface)
+    // A relocated i18n type already carries its own @group and must be left alone.
+    const relocated = makeChild(translations, 'GlobalResourceDictionary', ReflectionKind.Interface)
+    relocated.comment = new Comment()
+    relocated.comment.blockTags.push(
+      new CommentTag('@group', [{ kind: 'text', text: 'Utility types' }]),
+    )
+
+    SDKRouter.groupTranslationInterfaces({ project } as unknown as GroupContext)
+
+    expect(groupOf(keyInterface)).toBe('Translation namespaces')
+    expect(groupOf(relocated)).toBe('Utility types')
+  })
+
+  it('is a no-op when there is no Translations namespace', () => {
+    const project = makeProject()
+    const iface = makeChild(project, 'CompanyAddresses', ReflectionKind.Interface)
+
+    SDKRouter.groupTranslationInterfaces({ project } as unknown as GroupContext)
+
+    expect(iface.comment?.blockTags.some(t => t.tag === '@group')).toBeFalsy()
+  })
+})
+
+// ---------------------------------------------------------------------------
 // buildPages — hook directory controls per-hook page membership
 //
 // Each hook directory gets its own page under domain/hooks/. groupSyntheticMembers
@@ -944,13 +1083,13 @@ describe('buildPages — hook directory controls per-hook page membership', () =
       '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
     )
     hook.comment = new Comment()
-    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data Hooks' }]))
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data hooks' }]))
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    // Goes to its hook dir page, not a 'Data Hooks' page.
+    // Goes to its hook dir page, not a 'Data hooks' page.
     expect(urls).toContain('employee/hooks/use-compensation-form.md')
     expect(urls.some(u => u.includes('data-hooks'))).toBe(false)
   })
@@ -1012,12 +1151,12 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     expect(hookPageModel.children).toContain(hook)
     expect(hookPageModel.children).toContain(errorCodes)
     expect(hookPageModel.children).toContain(propsIface)
-    // Members are grouped by kind within the page.
+    // The hook function keeps its own group; everything else (variables,
+    // interfaces, type aliases) collapses into a single Utility types group.
     expect(hookPageModel.groups?.find(g => g.title === 'Functions')?.children).toContain(hook)
-    expect(hookPageModel.groups?.find(g => g.title === 'Variables')?.children).toContain(errorCodes)
-    expect(hookPageModel.groups?.find(g => g.title === 'Interfaces')?.children).toContain(
-      propsIface,
-    )
+    const utilityTypes = hookPageModel.groups?.find(g => g.title === 'Utility types')?.children
+    expect(utilityTypes).toContain(errorCodes)
+    expect(utilityTypes).toContain(propsIface)
   })
 
   it('hook function in a non-hook directory falls back to @group tag when present', () => {
@@ -1025,7 +1164,7 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     const hook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/utils/someUtil.ts')
     hook.comment = new Comment()
-    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Form Hooks' }]))
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Form hooks' }]))
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
@@ -1035,7 +1174,7 @@ describe('buildPages — hook directory controls per-hook page membership', () =
       ?.model as DeclarationReflection
     expect(hookPage).toBeDefined()
     // Within that page, the @group tag controls the group title.
-    const group = hookPage.groups?.find(g => g.title === 'Form Hooks')
+    const group = hookPage.groups?.find(g => g.title === 'Form hooks')
     expect(group?.children).toContain(hook)
   })
 
@@ -1072,16 +1211,16 @@ describe('standalonePageFromSources', () => {
     expect(standalonePageFromSources(r)).toBe('theme-variables')
   })
 
-  it('returns the utilities page for a partner-hook-utils source file', () => {
+  it('returns the hooks page for a partner-hook-utils source file', () => {
     const r = new DeclarationReflection('composeErrorHandler', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
-    expect(standalonePageFromSources(r)).toBe('utilities')
+    expect(standalonePageFromSources(r)).toBe('hooks')
   })
 
-  it('returns the utilities page for a file nested under partner-hook-utils', () => {
+  it('returns the hooks page for a file nested under partner-hook-utils', () => {
     const r = new DeclarationReflection('composeSubmitHandler', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/partner-hook-utils/form/composeSubmitHandler.ts')
-    expect(standalonePageFromSources(r)).toBe('utilities')
+    expect(standalonePageFromSources(r)).toBe('hooks')
   })
 
   it('returns null when sources are absent', () => {
@@ -1126,7 +1265,7 @@ describe('buildPages — standalone page routing', () => {
     expect(router.getAnchor(themeType)).toBeDefined()
   })
 
-  it('partner-hook-utils export gets its own page at utilities.md', () => {
+  it('partner-hook-utils export gets its own page at hooks.md', () => {
     const project = makeProject()
     const util = makeChild(project, 'composeErrorHandler', ReflectionKind.Function)
     util.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
@@ -1134,7 +1273,7 @@ describe('buildPages — standalone page routing', () => {
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.map(p => p.url)).toContain('utilities.md')
+    expect(pages.map(p => p.url)).toContain('hooks.md')
     expect(router.hasOwnDocument(util)).toBe(false)
     expect(router.getAnchor(util)).toBeDefined()
   })
@@ -1169,7 +1308,7 @@ describe('buildPages — standalone page routing', () => {
     const urls = pages.map(p => p.url)
 
     expect(urls).toContain('theme-variables.md')
-    expect(urls).toContain('utilities.md')
+    expect(urls).toContain('hooks.md')
   })
 
   it('standalone page model has the display name, not the page path', () => {
@@ -1181,7 +1320,7 @@ describe('buildPages — standalone page routing', () => {
     const pages = router.buildPages(project)
 
     const page = pages.find(p => p.url === 'theme-variables.md')
-    expect((page?.model as DeclarationReflection).name).toBe('Theme Variables')
+    expect((page?.model as DeclarationReflection).name).toBe('Theme variables')
   })
 
   it('standalone members are removed from project groups', () => {
@@ -1379,14 +1518,6 @@ describe('pageTitle', () => {
     expect(pageTitle(page)).toBe('DashboardFlow')
   })
 
-  it('returns "Sub-components" for a sub-components page', () => {
-    const page = makePage(
-      new DeclarationReflection('Block Components', ReflectionKind.Namespace),
-      'employee/management/blocks.md',
-    )
-    expect(pageTitle(page)).toBe('Sub-components')
-  })
-
   it('returns the namespace name for a regular namespace page', () => {
     const page = makePage(
       new DeclarationReflection('Payroll', ReflectionKind.Namespace),
@@ -1486,5 +1617,173 @@ describe('serializeFrontmatter', () => {
   it('serializes custom_edit_url: null as null', () => {
     const result = serializeFrontmatter(sample)
     expect(result).toContain('custom_edit_url: null')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// isOpaqueConstDerivedType (gate for expandConstDerivedAliases)
+// ---------------------------------------------------------------------------
+
+describe('isOpaqueConstDerivedType', () => {
+  const project = makeProject()
+  const constRef = ReferenceType.createResolvedReference(
+    'fieldValidators',
+    makeChild(project, 'fieldValidators', ReflectionKind.Variable),
+    project,
+  )
+
+  it('matches `keyof typeof <const>`', () => {
+    expect(isOpaqueConstDerivedType(new TypeOperatorType(new QueryType(constRef), 'keyof'))).toBe(
+      true,
+    )
+  })
+
+  it('matches indexed access (`typeof <const>[…]`)', () => {
+    const indexed = new IndexedAccessType(
+      new QueryType(constRef),
+      new TypeOperatorType(new QueryType(constRef), 'keyof'),
+    )
+    expect(isOpaqueConstDerivedType(indexed)).toBe(true)
+  })
+
+  it('matches a bare `typeof <const>` query', () => {
+    expect(isOpaqueConstDerivedType(new QueryType(constRef))).toBe(true)
+  })
+
+  it('leaves non-keyof type operators (e.g. `readonly`) untouched', () => {
+    expect(
+      isOpaqueConstDerivedType(new TypeOperatorType(new IntrinsicType('string'), 'readonly')),
+    ).toBe(false)
+  })
+
+  it('leaves already-resolved unions and literals untouched', () => {
+    expect(
+      isOpaqueConstDerivedType(new UnionType([new LiteralType('a'), new LiteralType('b')])),
+    ).toBe(false)
+    expect(isOpaqueConstDerivedType(new LiteralType('a'))).toBe(false)
+    expect(isOpaqueConstDerivedType(new IntrinsicType('string'))).toBe(false)
+    expect(isOpaqueConstDerivedType(undefined)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// documentedUnderlyingConst (keeps large documented-const unions as links)
+// ---------------------------------------------------------------------------
+
+describe('documentedUnderlyingConst', () => {
+  const project = makeProject()
+  const constReflection = makeChild(project, 'componentEvents', ReflectionKind.Variable)
+  const resolved = new QueryType(
+    ReferenceType.createResolvedReference('componentEvents', constReflection, project),
+  )
+  const broken = new QueryType(
+    ReferenceType.createBrokenReference('fieldValidators', project, undefined),
+  )
+
+  it('resolves the const behind `keyof typeof <documented const>`', () => {
+    expect(documentedUnderlyingConst(new TypeOperatorType(resolved, 'keyof'))).toBe(constReflection)
+  })
+
+  it('resolves the const behind an indexed access', () => {
+    const indexed = new IndexedAccessType(resolved, new TypeOperatorType(resolved, 'keyof'))
+    expect(documentedUnderlyingConst(indexed)).toBe(constReflection)
+  })
+
+  it('returns null when the underlying const has no reflection (unexported)', () => {
+    expect(documentedUnderlyingConst(new TypeOperatorType(broken, 'keyof'))).toBeNull()
+    expect(documentedUnderlyingConst(broken)).toBeNull()
+  })
+
+  it('returns null for non-const-derived types', () => {
+    expect(documentedUnderlyingConst(new LiteralType('a'))).toBeNull()
+    expect(documentedUnderlyingConst(undefined)).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// defaultValueRestatesLiteralType (drops redundant `as const` default column)
+// ---------------------------------------------------------------------------
+
+describe('defaultValueRestatesLiteralType', () => {
+  function member(type: LiteralType | undefined, defaultValue: string | undefined) {
+    const r = new DeclarationReflection('API_ERROR', ReflectionKind.Property)
+    if (type) r.type = type
+    r.defaultValue = defaultValue
+    return r
+  }
+
+  it('is true when a string default restates its literal type', () => {
+    expect(
+      defaultValueRestatesLiteralType(member(new LiteralType('api_error'), "'api_error'")),
+    ).toBe(true)
+  })
+
+  it('is true for numeric and boolean literal restatements', () => {
+    expect(defaultValueRestatesLiteralType(member(new LiteralType(42), '42'))).toBe(true)
+    expect(defaultValueRestatesLiteralType(member(new LiteralType(true), 'true'))).toBe(true)
+  })
+
+  it('is false when the default differs from the literal type', () => {
+    expect(defaultValueRestatesLiteralType(member(new LiteralType('api_error'), "'other'"))).toBe(
+      false,
+    )
+  })
+
+  it('is false when there is no default or the type is not a literal', () => {
+    expect(defaultValueRestatesLiteralType(member(new LiteralType('api_error'), undefined))).toBe(
+      false,
+    )
+    expect(defaultValueRestatesLiteralType(member(undefined, "'api_error'"))).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// isTranslationsMember (drives the Translations Type-column drop + flat routing)
+// ---------------------------------------------------------------------------
+
+describe('isTranslationsMember', () => {
+  it('is true for a reflection nested anywhere under the Translations namespace', () => {
+    const project = makeProject()
+    const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
+    const iface = makeChild(translations, 'CompanyAddresses', ReflectionKind.Interface)
+    const prop = makeChild(iface, 'title', ReflectionKind.Property)
+    expect(isTranslationsMember(prop)).toBe(true)
+    expect(isTranslationsMember(iface)).toBe(true)
+  })
+
+  it('is false outside the Translations namespace', () => {
+    const project = makeProject()
+    const other = makeChild(project, 'APIModels', ReflectionKind.Namespace)
+    const iface = makeChild(other, 'Employee', ReflectionKind.Interface)
+    expect(isTranslationsMember(iface)).toBe(false)
+    expect(isTranslationsMember(undefined)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// dropTableColumn
+// ---------------------------------------------------------------------------
+
+describe('dropTableColumn', () => {
+  const table = [
+    '| Property | Type | Default value |',
+    '| --- | --- | --- |',
+    '| `title` | `string` | `"Hi"` |',
+  ].join('\n')
+
+  it('removes the named column from header, separator, and body rows', () => {
+    const result = dropTableColumn(table, 'Type')
+    expect(result).toBe(
+      ['| Property | Default value |', '| --- | --- |', '| `title` | `"Hi"` |'].join('\n'),
+    )
+  })
+
+  it('returns the input unchanged when the column is absent', () => {
+    expect(dropTableColumn(table, 'Nonexistent')).toBe(table)
+  })
+
+  it('leaves non-table lines untouched', () => {
+    const withHeading = `### Foo\n\n${table}`
+    expect(dropTableColumn(withHeading, 'Type').startsWith('### Foo\n\n')).toBe(true)
   })
 })

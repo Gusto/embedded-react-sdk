@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -5,16 +6,25 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   type Garnishment,
   type GarnishmentType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
-import { useGarnishmentsList } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
+} from '@gusto/embedded-api/models/components/garnishment'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
+import { useGarnishmentsList } from '@gusto/embedded-api/react-query/garnishmentsList'
 import {
   createDeductionFormSchema,
   type DeductionFormData,
   type DeductionFormOutputs,
   type DeductionFormOptionalFieldsToRequire,
 } from './deductionFormSchema'
+import type {
+  DescriptionFieldProps,
+  RecurringFieldProps,
+  DeductAsPercentageFieldProps,
+  AmountFieldProps,
+  TotalAmountFieldProps,
+  AnnualMaximumFieldProps,
+  GarnishmentTypeFieldProps,
+} from './fields'
 import {
   DescriptionField,
   RecurringField,
@@ -31,6 +41,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -107,20 +118,20 @@ export interface UseDeductionFormProps {
  * @public
  */
 export interface DeductionFormFields {
-  /** Description text input. Always available. */
-  Description: typeof DescriptionField
-  /** Recurring vs one-time radio group. Always available. */
-  Recurring: typeof RecurringField
-  /** Fixed-amount vs percentage radio group. Always available. */
-  DeductAsPercentage: typeof DeductAsPercentageField
-  /** Deduction amount input. Always available. */
-  Amount: typeof AmountField
-  /** Only available when `status.isRecurring` is true. */
-  TotalAmount: typeof TotalAmountField | undefined
-  /** Only available when `status.isRecurring` is true. */
-  AnnualMaximum: typeof AnnualMaximumField | undefined
-  /** Only available when `courtOrdered: true`. */
-  GarnishmentType: typeof GarnishmentTypeField | undefined
+  /** Bound to `description`. Description text input. Always available. */
+  Description: ComponentType<DescriptionFieldProps>
+  /** Bound to `recurring`. Recurring vs one-time radio group. Always available. */
+  Recurring: ComponentType<RecurringFieldProps>
+  /** Bound to `deductAsPercentage`. Fixed-amount vs percentage radio group. Always available. */
+  DeductAsPercentage: ComponentType<DeductAsPercentageFieldProps>
+  /** Bound to `amount`. Deduction amount input. Always available. */
+  Amount: ComponentType<AmountFieldProps>
+  /** Bound to `totalAmount`. Only available when `status.isRecurring` is true. */
+  TotalAmount: ComponentType<TotalAmountFieldProps> | undefined
+  /** Bound to `annualMaximum`. Only available when `status.isRecurring` is true. */
+  AnnualMaximum: ComponentType<AnnualMaximumFieldProps> | undefined
+  /** Bound to `garnishmentType`. Only available when `courtOrdered: true`. */
+  GarnishmentType: ComponentType<GarnishmentTypeFieldProps> | undefined
 }
 
 /**
@@ -135,7 +146,7 @@ export interface DeductionFormFields {
  * @public
  */
 export interface UseDeductionFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  DeductionFormFieldsMetadata,
   DeductionFormData,
   DeductionFormFields
 > {
@@ -176,6 +187,44 @@ export interface UseDeductionFormReady extends BaseFormHookReady<
  * @public
  */
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady
+
+/** @internal */
+function buildDeductionFieldsMetadata(
+  base: Record<keyof DeductionFormData, FieldMetadata>,
+  {
+    courtOrdered,
+    garnishmentTypeOptions,
+  }: {
+    courtOrdered: boolean
+    garnishmentTypeOptions: Array<{ value: GarnishmentType; label: string }>
+  },
+) {
+  return {
+    description: base.description,
+    recurring: withOptions<boolean>(
+      base.recurring,
+      [
+        { value: 'true', label: 'true' },
+        { value: 'false', label: 'false' },
+      ],
+      [true, false],
+    ),
+    deductAsPercentage: withOptions<boolean>(
+      base.deductAsPercentage,
+      [
+        { value: 'true', label: 'true' },
+        { value: 'false', label: 'false' },
+      ],
+      [true, false],
+    ),
+    amount: base.amount,
+    totalAmount: base.totalAmount,
+    annualMaximum: base.annualMaximum,
+    garnishmentType: courtOrdered
+      ? withOptions(base.garnishmentType, garnishmentTypeOptions, GARNISHMENT_TYPES)
+      : base.garnishmentType,
+  } satisfies FieldsMetadata
+}
 
 /**
  * Headless hook for creating or updating a non-child-support deduction.
@@ -318,10 +367,7 @@ export function useDeductionForm({
   // deductions after a frequency toggle. Compare against both shapes — mirrors
   // the `deductAsPercentage` handling in StandardDeductionForm.
   const watchedRecurring = useWatch({ control: formMethods.control, name: 'recurring' }) as
-    | boolean
-    | 'true'
-    | 'false'
-    | undefined
+    boolean | 'true' | 'false' | undefined
   const isRecurring = watchedRecurring === true || watchedRecurring === 'true'
 
   const createGarnishmentMutation = useGarnishmentsCreateMutation()
@@ -340,31 +386,10 @@ export function useDeductionForm({
   const garnishmentTypeOptions = GARNISHMENT_TYPES.map(value => ({ value, label: value }))
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    description: baseMetadata.description,
-    recurring: withOptions<boolean>(
-      baseMetadata.recurring,
-      [
-        { value: 'true', label: 'true' },
-        { value: 'false', label: 'false' },
-      ],
-      [true, false],
-    ),
-    deductAsPercentage: withOptions<boolean>(
-      baseMetadata.deductAsPercentage,
-      [
-        { value: 'true', label: 'true' },
-        { value: 'false', label: 'false' },
-      ],
-      [true, false],
-    ),
-    amount: baseMetadata.amount,
-    totalAmount: baseMetadata.totalAmount,
-    annualMaximum: baseMetadata.annualMaximum,
-    garnishmentType: courtOrdered
-      ? withOptions(baseMetadata.garnishmentType, garnishmentTypeOptions, GARNISHMENT_TYPES)
-      : baseMetadata.garnishmentType,
-  }
+  const fieldsMetadata = buildDeductionFieldsMetadata(baseMetadata, {
+    courtOrdered,
+    garnishmentTypeOptions,
+  })
 
   const onSubmit = async (): Promise<HookSubmitResult<Garnishment> | undefined> => {
     let submitResult: HookSubmitResult<Garnishment> | undefined
@@ -503,7 +528,7 @@ export function useDeductionForm({
  *
  * @public
  */
-export type DeductionFormFieldsMetadata = UseDeductionFormReady['form']['fieldsMetadata']
+export type DeductionFormFieldsMetadata = ReturnType<typeof buildDeductionFieldsMetadata>
 
 // ── Internal loader ─────────────────────────────────────────────────────
 //

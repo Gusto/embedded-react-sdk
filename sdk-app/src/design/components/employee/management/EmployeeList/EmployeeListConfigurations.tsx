@@ -1,4 +1,4 @@
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PrototypeConfiguration } from '../../../../prototypes/prototypeTypes'
 import { EmployeeListDemo } from './EmployeeListStates'
 

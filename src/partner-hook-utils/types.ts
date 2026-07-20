@@ -1,6 +1,5 @@
 import type React from 'react'
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
-import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 import type { SDKError } from '@/types/sdkError'
 
 /**
@@ -22,6 +21,8 @@ export interface FieldMetadata {
   isDisabled?: boolean
   /** Whether the server returned a redacted placeholder instead of the real value. */
   hasRedactedValue?: boolean
+  /** Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). */
+  placeholder?: string
   /** ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
   minDate?: string | null
   /** ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
@@ -79,6 +80,7 @@ export type ValidationMessages<
  * Common presentation props accepted by every hook field component.
  *
  * @public
+ * @group Hook field props
  */
 export interface BaseFieldProps {
   /** Visible label rendered above the field. */
@@ -93,6 +95,7 @@ export interface BaseFieldProps {
  *
  * @typeParam TProps - Original hook field props type that includes a `name` property.
  * @public
+ * @group Hook field props
  */
 export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name'>
 
@@ -109,6 +112,7 @@ export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name
  *
  * @typeParam TFormData - Shape of the form values managed by react-hook-form.
  * @public
+ * @group Form hook results
  */
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
   /** The full react-hook-form return value; use for watching fields, setting values, or triggering validation. */
@@ -122,9 +126,13 @@ export interface HookFormInternals<TFormData extends FieldValues = FieldValues> 
    * focus the visually first invalid field across multiple composed forms.
    * `SDKFormProvider` and the `withFieldElementRegistry` HookField wrapper
    * publish it via context for `useField` to populate.
+   *
+   * Typed `unknown` so the internal `FieldElementRegistry` shape never reaches
+   * the public API surface; the SDK-internal readers cast it back to the
+   * concrete type.
    * @internal
    */
-  _fieldElementRegistry?: FieldElementRegistry
+  _fieldElementRegistry?: unknown
 }
 
 /**
@@ -137,6 +145,7 @@ export interface HookFormInternals<TFormData extends FieldValues = FieldValues> 
  * ready-state shape (data, form, actions, status) becomes available.
  *
  * @public
+ * @group Common hook results
  */
 export interface HookLoadingResult {
   /** Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available. */
@@ -156,6 +165,7 @@ export interface HookLoadingResult {
  *
  * @typeParam T - Type of the saved entity returned by the underlying mutation.
  * @public
+ * @group Form hook results
  */
 export interface HookSubmitResult<T> {
   /** Whether the submission created a new entity or updated an existing one. */
@@ -176,6 +186,7 @@ export interface HookSubmitResult<T> {
  * the supported way to discriminate fetch vs submit failures today.
  *
  * @public
+ * @group Common hook results
  */
 export interface HookErrorHandling {
   /** Aggregated fetch and submit errors as normalized {@link SDKError} values. */
@@ -198,6 +209,7 @@ export interface HookErrorHandling {
  * @typeParam TData - Shape of the data the hook exposes once loaded.
  * @typeParam TStatus - Shape of the status flags the hook exposes.
  * @public
+ * @group Common hook results
  */
 export interface BaseHookReady<
   TData extends Record<string, unknown> = Record<string, unknown>,
@@ -227,14 +239,17 @@ export interface BaseHookReady<
  * parsed values (or `undefined` if invalid).
  *
  * @typeParam TFieldsMetadata - Shape of the per-field metadata exposed by the hook.
- * @typeParam TFormData - Shape of the form values managed by react-hook-form.
+ * @typeParam TFormData - Shape of the form values managed by react-hook-form (the resolver input / `TFieldValues`).
  * @typeParam TFields - Shape of the pre-bound `Fields` component map.
+ * @typeParam TFormOutputs - Shape of the values produced once the schema parses on submit (the resolver output / `TTransformedValues`). Defaults to `TFormData`, which holds whenever the form's input and parsed-output shapes coincide; pass it explicitly when a schema transform makes them diverge.
  * @public
+ * @group Form hook results
  */
 export interface BaseFormHookReady<
   TFieldsMetadata extends FieldsMetadata = FieldsMetadata,
   TFormData extends FieldValues = FieldValues,
   TFields extends object = Record<string, unknown>,
+  TFormOutputs = TFormData,
 > {
   /** Always `false` in this branch; discriminates from {@link HookLoadingResult}. */
   isLoading: false
@@ -251,7 +266,7 @@ export interface BaseFormHookReady<
     Fields: TFields
     fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals<TFormData>
-    getFormSubmissionValues: () => Record<string, unknown> | undefined
+    getFormSubmissionValues: () => TFormOutputs | undefined
   }
 }
 
@@ -266,6 +281,7 @@ export interface BaseFormHookReady<
  * under an `SDKFormProvider`.
  *
  * @public
+ * @group Form hook results
  * @privateRemarks
  * `_fieldElementRegistry` is forwarded from {@link HookFormInternals} so HookFields
  * can self-publish the registry for descendant `useField` calls when partners
@@ -278,7 +294,8 @@ export type FormHookResult = {
   form: Pick<BaseFormHookReady['form'], 'fieldsMetadata'> & {
     hookFormInternals: {
       formMethods: { control: unknown }
-      _fieldElementRegistry?: FieldElementRegistry
+      /** @internal */
+      _fieldElementRegistry?: unknown
     }
   }
 }

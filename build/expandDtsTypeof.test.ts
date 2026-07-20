@@ -58,7 +58,7 @@ export type FormFields = keyof typeof validators;
     )
     expect(processSourceFile(sf, checker)).not.toBeNull()
     expect(sf.getText()).toMatchInlineSnapshot(`
-      "export type FormFields = "title" | "age";
+      "export type FormFields = "age" | "title";
       "
     `)
   })
@@ -75,6 +75,23 @@ export type Status = (typeof STATUS)[keyof typeof STATUS];
       "export type Status = "active" | "inactive";
       "
     `)
+  })
+
+  it('expands ReturnType<typeof fn> to the object type and removes the orphaned declare function', () => {
+    const { sf, checker } = setup(
+      'returntype-fn.d.ts',
+      `export interface FieldMeta { name: string; }
+declare function buildMeta(): { title: FieldMeta; amount: FieldMeta; };
+export type Meta = ReturnType<typeof buildMeta>;
+`,
+    )
+    expect(processSourceFile(sf, checker)).not.toBeNull()
+    const text = sf.getText()
+    expect(text).toContain('export type Meta = {')
+    expect(text).toContain('title: FieldMeta')
+    expect(text).toContain('amount: FieldMeta')
+    expect(text).not.toContain('ReturnType')
+    expect(text).not.toContain('declare function buildMeta')
   })
 
   it('expands a mapped type to a concrete object type and removes the orphaned const', () => {
@@ -218,7 +235,7 @@ export type BankFormField = keyof typeof fieldValidators;
     expect(processSourceFile(sf, checker)).not.toBeNull()
     expect(sf.getText()).toMatchInlineSnapshot(`
       "import { z } from 'zod';
-      export type BankFormField = "name" | "accountType";
+      export type BankFormField = "accountType" | "name";
       "
     `)
   })
@@ -261,7 +278,7 @@ export type BankFormData = {
     expect(() => processSourceFile(sf, checker)).not.toThrow()
     expect(sf.getText()).toMatchInlineSnapshot(`
       "import { z } from 'zod';
-      export type BankFormField = "name" | "accountType";
+      export type BankFormField = "accountType" | "name";
       export type BankFormData = { name: string; accountType: "Checking" | "Savings"; };
       "
     `)
@@ -413,7 +430,7 @@ describe('processSourceFile — jobSchema before/after', () => {
             stateWcClassCode: string
           };
       export type JobFormOutputs = JobFormData;
-      export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "stateWcCovered")[] | undefined; update?: ("title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered")[] | undefined; };
+      export type JobOptionalFieldsToRequire = { create?: ("stateWcCovered" | "twoPercentShareholder")[] | undefined; update?: ("hireDate" | "stateWcCovered" | "title" | "twoPercentShareholder")[] | undefined; };
       export {};
       "
     `)
@@ -461,5 +478,96 @@ export type FormInputs = { a: string };
     )
     expect(processSourceFile(sf, checker)).toBeNull()
     expect(sf.getText()).toContain('export type FormInputs = { a: string }')
+  })
+})
+
+// ── References to @internal consts (exported / imported) ─────────────────────
+// A @public alias referencing an @internal const via `typeof` leaks it as
+// ae-incompatible-release-tags. Expand the alias to a concrete type; leave the
+// @internal declaration (a real export) in place, and drop an orphaned import.
+
+describe('processSourceFile — references to @internal consts', () => {
+  it('expands keyof typeof over an exported @internal const, leaving the declaration', () => {
+    const { sf, checker } = setup(
+      'internal-exported-const.d.ts',
+      `/** @internal */
+export declare const INITIAL_COMPONENT_MAP: {
+    readonly employeeProfile: () => number;
+};
+/** @public */
+export type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
+`,
+    )
+    expect(processSourceFile(sf, checker)).not.toBeNull()
+    const out = sf.getText()
+    expect(out).toContain('export type OnboardingExecutionInitialState = "employeeProfile";')
+    // The @internal declaration is a real export — it stays put.
+    expect(out).toContain('export declare const INITIAL_COMPONENT_MAP:')
+  })
+
+  it('expands an indexed access over an imported @internal const and prunes the dead import', () => {
+    const project = new Project({
+      tsConfigFilePath: join(ROOT, 'tsconfig.json'),
+      skipAddingFilesFromTsConfig: true,
+    })
+    project.createSourceFile(
+      join(FIXTURE_DIR, 'shared/constants.d.ts'),
+      `/** @internal */
+export declare const PAYMENT_METHODS: {
+    readonly check: "Check";
+    readonly directDeposit: "Direct Deposit";
+};
+`,
+      { overwrite: true },
+    )
+    const sf = project.createSourceFile(
+      join(FIXTURE_DIR, 'schema.d.ts'),
+      `import { PAYMENT_METHODS } from './shared/constants';
+/** @public */
+export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS];
+`,
+      { overwrite: true },
+    )
+    const checker = project.getTypeChecker().compilerObject
+    expect(processSourceFile(sf, checker)).not.toBeNull()
+    const out = sf.getText()
+    expect(out).toContain(
+      'export type ContractorPaymentMethodFormType = "Check" | "Direct Deposit";',
+    )
+    // The now-unused import of the @internal const is removed.
+    expect(out).not.toContain('PAYMENT_METHODS')
+  })
+
+  it('keeps an imported @internal const when another export still references it', () => {
+    const project = new Project({
+      tsConfigFilePath: join(ROOT, 'tsconfig.json'),
+      skipAddingFilesFromTsConfig: true,
+    })
+    project.createSourceFile(
+      join(FIXTURE_DIR, 'shared/constants2.d.ts'),
+      `/** @internal */
+export declare const PAYMENT_METHODS: {
+    readonly check: "Check";
+    readonly directDeposit: "Direct Deposit";
+};
+`,
+      { overwrite: true },
+    )
+    const sf = project.createSourceFile(
+      join(FIXTURE_DIR, 'schema2.d.ts'),
+      `import { PAYMENT_METHODS } from './shared/constants2';
+/** @public */
+export type Kind = (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS];
+/** @internal */
+export declare function getDefault(): typeof PAYMENT_METHODS;
+`,
+      { overwrite: true },
+    )
+    const checker = project.getTypeChecker().compilerObject
+    expect(processSourceFile(sf, checker)).not.toBeNull()
+    const out = sf.getText()
+    expect(out).toContain('export type Kind = "Check" | "Direct Deposit";')
+    // Still referenced by getDefault — the import must remain.
+    expect(out).toContain("import { PAYMENT_METHODS } from './shared/constants2'")
   })
 })

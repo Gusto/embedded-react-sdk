@@ -6,13 +6,13 @@
  * The Speakeasy SDK transforms these into camelCase for the React Query layer.
  *
  * Each builder validates its output against the SDK's public `*FromJSON`
- * parser so any drift between our fixtures and the `@gusto/embedded-api-v-2025-11-15` wire
+ * parser so any drift between our fixtures and the `@gusto/embedded-api-v-2026-06-15` wire
  * schema fails loudly at the call site instead of producing silently-wrong
  * camelCase data inside hooks under test.
  */
 
-import { compensationFromJSON } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
-import { jobFromJSON } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import { compensationFromJSON } from '@gusto/embedded-api/models/components/compensation'
+import { jobFromJSON } from '@gusto/embedded-api/models/components/job'
 
 export type CompensationFixture = {
   uuid: string
@@ -47,7 +47,7 @@ function assertValidCompensation(fixture: CompensationFixture): CompensationFixt
   const result = compensationFromJSON(JSON.stringify(fixture))
   if (!result.ok) {
     throw new Error(
-      `buildCompensation produced a fixture that does not match @gusto/embedded-api-v-2025-11-15 Compensation schema: ${result.error.message}`,
+      `buildCompensation produced a fixture that does not match @gusto/embedded-api-v-2026-06-15 Compensation schema: ${result.error.message}`,
     )
   }
   return fixture
@@ -57,7 +57,7 @@ function assertValidJob(fixture: JobFixture): JobFixture {
   const result = jobFromJSON(JSON.stringify(fixture))
   if (!result.ok) {
     throw new Error(
-      `buildJob produced a fixture that does not match @gusto/embedded-api-v-2025-11-15 Job schema: ${result.error.message}`,
+      `buildJob produced a fixture that does not match @gusto/embedded-api-v-2026-06-15 Job schema: ${result.error.message}`,
     )
   }
   return fixture

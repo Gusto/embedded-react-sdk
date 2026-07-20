@@ -4,7 +4,7 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: ContractorManagement
-description: ContractorManagement reference.
+description: Flows and blocks for managing contractors after onboarding — payments, payment methods, and profile details.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -12,11 +12,17 @@ custom_edit_url: null
 
 # ContractorManagement
 
+Flows and blocks for managing contractors after onboarding — payments, payment methods, and profile details.
+
+```ts
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |
 | --------- | ----------- |
-| [PaymentFlow](payment-flow.md) | Guided workflow for creating, managing, and viewing contractor payment groups for a company. |
+| [PaymentFlow](payment-flow.md) | Hub for creating and managing contractor payments for a company. |
 
 ## 🧩 Blocks
 

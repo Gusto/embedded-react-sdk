@@ -1,4 +1,4 @@
-import type { ContractorBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccount'
+import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'

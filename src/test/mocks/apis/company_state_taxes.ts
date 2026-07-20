@@ -6,9 +6,12 @@ export const getStateTaxRequirements = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
   async ({ params }) => {
     const state = params.state as string
-    const GAFixture = await getFixture('get-v1-companies-company_id-tax_requirements-GA')
-    const WAFixture = await getFixture('get-v1-companies-company_id-tax_requirements-WA')
-    return HttpResponse.json(state === 'WA' ? WAFixture : GAFixture)
+    const fixtureName = `get-v1-companies-company_id-tax_requirements-${state}`
+    try {
+      return HttpResponse.json(await getFixture(fixtureName))
+    } catch {
+      return HttpResponse.json(await getFixture('get-v1-companies-company_id-tax_requirements-GA'))
+    }
   },
 )
 
@@ -38,28 +41,24 @@ export const getAllStateTaxRequirementsWithStatus = http.get(
     HttpResponse.json([
       {
         state: 'WY',
-        setup_complete: false,
         setup_status: 'not_started',
         default_rates_applied: false,
         ready_to_run_payroll: false,
       },
       {
         state: 'FL',
-        setup_complete: false,
         setup_status: 'in_progress',
         default_rates_applied: false,
         ready_to_run_payroll: false,
       },
       {
         state: 'GA',
-        setup_complete: true,
         setup_status: 'complete',
         default_rates_applied: true,
         ready_to_run_payroll: false,
       },
       {
         state: 'CA',
-        setup_complete: true,
         setup_status: 'complete',
         default_rates_applied: false,
         ready_to_run_payroll: true,

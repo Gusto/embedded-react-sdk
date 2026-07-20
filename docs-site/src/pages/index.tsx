@@ -182,21 +182,21 @@ const bigFeatures: BigFeature[] = [
     title: 'Pre-built Workflows',
     description:
       'Complete multi-step flows for employee onboarding, payroll, contractor management, and more — ready to drop into your app.',
-    to: '/docs/workflows-overview',
+    to: '/docs/guides/workflows-overview',
     Icon: WorkflowIcon,
   },
   {
     title: 'Event Handling',
     description:
       'Every component emits typed events for user actions and API responses. Drive navigation, analytics, and side effects.',
-    to: '/docs/integration-guide/event-handling',
+    to: '/docs/guides/integration-guide/event-handling',
     Icon: SignalIcon,
   },
   {
     title: 'Hooks',
     description:
       'Headless React hooks that manage API calls, validation, and state — wire them into your own UI when you need full control.',
-    to: '/docs/hooks',
+    to: '/docs/reference/hooks',
     Icon: GearIcon,
   },
 ]
@@ -206,25 +206,25 @@ const smallFeatures: SmallFeature[] = [
     title: 'Component Adapter',
     description:
       "Swap the SDK's default components for your own so every rendered control matches your design system.",
-    to: '/docs/component-adapter',
+    to: '/docs/guides/component-adapter',
   },
   {
     title: 'Theming',
     description:
       'Re-skin every SDK component at once via theme tokens — colors, border radii, focus rings, fonts.',
-    to: '/docs/theming',
+    to: '/docs/guides/theming',
   },
   {
     title: 'Translations',
     description:
       'Override any SDK string — field labels, descriptions, validation messages — by passing a partial dictionary.',
-    to: '/docs/integration-guide/translation',
+    to: '/docs/guides/integration-guide/translation',
   },
   {
     title: 'Bring your own data',
     description:
       "Pre-fill SDK forms with values you already have so users don't re-type information you collected elsewhere.",
-    to: '/docs/integration-guide/providing-your-own-data',
+    to: '/docs/guides/integration-guide/providing-your-own-data',
   },
 ]
 

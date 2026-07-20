@@ -24,7 +24,7 @@ npm run sdk-app # Dev build with HMR
 
 Or for a production SDK build:
 
-```
+```bash
 npm run sdk-app-prod # Production build (uses built dist/)
 ```
 
@@ -64,7 +64,7 @@ Use Field components from `src/components/Common/Fields/` inside `FormProvider`.
 
 ### Component Organization
 
-```
+```text
 src/components/
 ├── Common/ # Shared UI primitives and Field components
 │ ├── Fields/ # Form-connected Field components (use for forms)
@@ -76,33 +76,33 @@ src/components/
 └── Flow/ # Multi-step flow orchestration
 ```
 
-### API Layer (`@gusto/embedded-api-v-2025-11-15`)
+### API Layer (`@gusto/embedded-api`)
 
-All API calls go through `@gusto/embedded-api-v-2025-11-15` with React Query hooks and Zod schema validation.
+All API calls go through the Gusto Embedded API — imported via the version-agnostic `@gusto/embedded-api` alias, declared in `package.json` as `npm:@gusto/embedded-api-v-<date>` and currently pinned to `@gusto/embedded-api-v-2026-06-15`. Import specifiers must use the alias (enforced by the `sdk-conventions/use-embedded-api-alias` lint rule), so a version bump only updates the alias target plus `API_VERSION` rather than editing import paths.
 
 Import paths:
 
-- `@gusto/embedded-api-v-2025-11-15/react-query/<operation>` — React Query hooks
-- `@gusto/embedded-api-v-2025-11-15/models/components/<name>` — Entity types
-- `@gusto/embedded-api-v-2025-11-15/models/operations/<name>` — Request/response types
-- `@gusto/embedded-api-v-2025-11-15/models/errors/<name>` — Error types
+- `@gusto/embedded-api/react-query/<operation>` — React Query hooks
+- `@gusto/embedded-api/models/components/<name>` — Entity types
+- `@gusto/embedded-api/models/operations/<name>` — Request/response types
+- `@gusto/embedded-api/models/errors/<name>` — Error types
 
 Hook naming: `use<Resource><Action>Suspense` (queries), `use<Resource><Action>Mutation` (mutations)
 
 #### Auto-invalidation on mutation success
 
-The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `['@gusto/embedded-api-v-2025-11-15']` key, it invalidates **every** SDK query. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
+The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `[API_QUERY_NAMESPACE]` key — the _resolved_ package name `@gusto/embedded-api-v-2026-06-15`, not the `@gusto/embedded-api` alias, since TanStack keys off the real package — it invalidates **every** SDK query. Hand-written keys must read `API_QUERY_NAMESPACE` (enforced by the `sdk-conventions/no-literal-api-query-namespace` lint rule), never the dated string directly. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
 
 Implications when writing SDK code:
 
-- **Do not call `queryClient.invalidateQueries(...)` after a successful `@gusto/embedded-api-v-2025-11-15` mutation.** It's redundant — the global `onSuccess` already invalidated the entire SDK namespace. Just `await mutateAsync(...)` and the next render's queries refetch automatically.
+- **Do not call `queryClient.invalidateQueries(...)` after a successful `@gusto/embedded-api` mutation.** It's redundant — the global `onSuccess` already invalidated the entire SDK namespace. Just `await mutateAsync(...)` and the next render's queries refetch automatically.
 - This is why `usePaymentMethodList`, `useEmployeeCompensation`, etc. don't manually invalidate after their delete/update mutations.
 - If a partner brings their own `QueryClient` to `ApiProvider`, the defaults are **not** applied to it — they're responsible for matching the contract if they want this behavior. Don't paper over that with manual invalidation in hooks; treat it as their responsibility.
 - If you need to invalidate _more narrowly_ (e.g. you only want one query to refetch, not the whole namespace), that's a code smell — most likely the global invalidate is already doing what you want.
 
 ### Provider Stack
 
-```
+```text
 GustoProvider → ComponentsProvider → ThemeProvider → LocaleProvider / I18nextProvider → ApiProvider → {children}
 ```
 
@@ -112,7 +112,7 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 ### Partner hooks (`composeErrorHandler` / `composeSubmitHandler`)
 
-Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
+Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api` queries or screen-level submit state in the same error surface.
 
 ### Component & Feature Conventions
 
@@ -136,7 +136,7 @@ Durable conventions that apply SDK-wide to any component or feature:
 
 Three-repo architecture with sibling directories:
 
-```
+```text
 ~/workspace/
 ├── zenpayroll/ # Core Rails app
 ├── gws-flows/ # Rails API proxy for local SDK testing
@@ -198,9 +198,7 @@ Path assertions when the path itself encodes IDs (e.g., `PUT /v1/jobs/:id`) — 
 let updateJobPath: string | null = null
 const updateJobResolver = vi.fn<HttpResponseResolver>(({ request }) => {
   updateJobPath = new URL(request.url).pathname
-  return HttpResponse.json({
-    /* ... */
-  })
+  return HttpResponse.json({/* ... */})
 })
 
 // ...

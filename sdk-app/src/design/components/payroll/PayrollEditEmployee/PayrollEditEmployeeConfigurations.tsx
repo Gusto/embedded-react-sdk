@@ -1,14 +1,14 @@
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   PayrollEmployeeCompensationsType,
   PayrollEmployeeCompensationsTypePaidTimeOff,
-  PayrollEmployeeCompensationsTypeFixedCompensations,
-  PayrollEmployeeCompensationsTypeHourlyCompensations,
-  PayrollEmployeeCompensationsTypeReimbursements,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
+  FixedCompensations as PayrollEmployeeCompensationsTypeFixedCompensations,
+  HourlyCompensations as PayrollEmployeeCompensationsTypeHourlyCompensations,
+  Reimbursements as PayrollEmployeeCompensationsTypeReimbursements,
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { PrototypeConfiguration } from '../../../prototypes/prototypeTypes'
 import type { WorkweekRange } from './PayrollEditEmployeePresentation'
 import { PayrollEditEmployeeDemo } from './PayrollEditEmployeeStates'

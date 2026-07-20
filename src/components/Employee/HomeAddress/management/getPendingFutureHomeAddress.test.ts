@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   formatPendingHomeAddressLine,
   getPendingFutureHomeAddress,

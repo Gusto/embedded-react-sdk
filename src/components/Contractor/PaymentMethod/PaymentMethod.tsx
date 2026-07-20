@@ -1,57 +1,37 @@
 import { useTranslation } from 'react-i18next'
-import type { SubmitHandler } from 'react-hook-form'
-import { FormProvider, useForm, useWatch } from 'react-hook-form'
-import { useContractorPaymentMethodGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodGet'
-import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodGetBankAccounts'
-import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodsCreateBankAccount'
-import { useMemo, useState } from 'react'
-import z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodUpdate'
-import { useQueryClient } from '@tanstack/react-query'
-import { buildContractorPaymentMethodGetQuery } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodGet'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
+import classNames from 'classnames'
 import type { PaymentMethodProps } from './types'
-import { BankAccountForm } from './BankAccountForm'
-import { PaymentTypeForm } from './PaymentTypeForm'
+import {
+  useContractorPaymentMethodForm,
+  type ContractorPaymentMethodFormType,
+} from './shared/useContractorPaymentMethodForm'
+import { useContractorBankAccountForm } from './shared/useContractorBankAccountForm'
+import styles from './PaymentMethod.module.scss'
 import { useI18n } from '@/i18n'
-import { BaseComponent, useBase } from '@/components/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { componentEvents, PAYMENT_METHODS } from '@/shared/constants'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { ActionsLayout } from '@/components/Common/ActionsLayout'
 import { Flex } from '@/components/Common'
-import { accountNumberValidation, routingNumberValidation } from '@/helpers/validations'
-
-const PaymentMethodSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('Direct Deposit'),
-    name: z.string().min(1),
-    routingNumber: routingNumberValidation,
-    accountNumber: z.any(), //Explicitely setting account number as most permissive
-    accountType: z.enum(['Checking', 'Savings']),
-  }),
-  z.object({
-    type: z.literal('Check'),
-  }),
-])
-
-type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
+import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
 /**
  * Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method.
  *
  * Displays the current payment type, lets the user switch between direct deposit and check, and
  * collects bank account details (account holder name, routing number, account number, and account
- * type) when direct deposit is selected. Submitting creates the bank account if needed and then
- * updates the contractor's payment method.
+ * type) when direct deposit is selected. Direct deposit creates the bank account (which updates the
+ * payment method server-side); check updates the contractor's payment method type directly.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The API response object; access the created bank account at `.contractorBankAccount` |
- * | `contractor/paymentMethod/updated` | Fired after the payment method is updated | The API response object; access the updated payment method at `.contractorPaymentMethod` |
+ * | `contractor/bankAccount/created` | Fired on the direct deposit path after the bank account is created | The created bank account at `.contractorBankAccount` |
+ * | `contractor/paymentMethod/updated` | Fired on the check path after the payment method type is updated | The updated payment method at `.contractorPaymentMethod` |
  * | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
  *
  * @param props - Component configuration; see {@link PaymentMethodProps}.
@@ -72,142 +52,142 @@ type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
  * }
  * ```
  */
-export function PaymentMethod(props: PaymentMethodProps) {
+export function PaymentMethod({ dictionary, ...props }: PaymentMethodProps) {
+  useComponentDictionary('Contractor.PaymentMethod', dictionary)
   return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
-    </BaseComponent>
+    <BaseBoundaries componentName="Contractor.PaymentMethod">
+      <Root {...props} />
+    </BaseBoundaries>
   )
 }
 
-function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
-  useComponentDictionary('Contractor.PaymentMethod', dictionary)
+function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'dictionary'>) {
   useI18n('Contractor.PaymentMethod')
   const { t } = useTranslation('Contractor.PaymentMethod')
-  const { onEvent, baseSubmitHandler } = useBase()
   const Components = useComponentContext()
-  const queryClient = useQueryClient()
-  const gustoClient = useGustoEmbeddedContext()
-  const [isPaymentMethodPending, setIsPaymentMethodPending] = useState(false)
 
-  const contractorPaymentMethod = useContractorPaymentMethodGetSuspense({
-    contractorUuid: contractorId,
+  const paymentMethodForm = useContractorPaymentMethodForm({
+    contractorId,
+    shouldFocusError: false,
+  })
+  const bankAccountForm = useContractorBankAccountForm({
+    contractorId,
+    shouldFocusError: false,
   })
 
-  const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
-    contractorUuid: contractorId,
-  })
-
-  const paymentMethod = contractorPaymentMethod.data.contractorPaymentMethod!
-
-  const {
-    data: { contractorBankAccountList },
-  } = useContractorPaymentMethodGetBankAccountsSuspense({
-    contractorUuid: contractorId,
-  })
-  const bankAccount = contractorBankAccountList?.[0] || undefined
-
-  const { mutateAsync: updatePaymentMethod, isPending: paymentMethodPending } =
-    useContractorPaymentMethodUpdateMutation()
-  const { mutateAsync: createBankAccount, isPending: bankAccountPending } =
-    useContractorPaymentMethodsCreateBankAccountMutation()
-
-  const defaultValues = useMemo(
-    () => ({
-      type: paymentMethod.type || PAYMENT_METHODS.check,
-      name: bankAccount?.name || '',
-      routingNumber: bankAccount?.routingNumber || '',
-      accountNumber: bankAccount?.hiddenAccountNumber || '',
-      accountType: bankAccount?.accountType || 'Checking',
-    }),
-    [paymentMethod, bankAccount],
-  )
-
-  const formMethods = useForm({
-    resolver: zodResolver(PaymentMethodSchema),
-    defaultValues: defaultValues,
-  })
-
-  const watchedType = useWatch({ control: formMethods.control, name: 'type' })
-  const onSubmit: SubmitHandler<PaymentMethodSchemaInputs> = async data => {
-    await baseSubmitHandler(data, async payload => {
-      let updatedPaymentMethodVersion: string | undefined
-      if (payload.type === PAYMENT_METHODS.directDeposit) {
-        /** Custom validation logic for accountNumber - because masked account value is used as default value, it is only validated when any of the bank-related fields are modified*/
-        const { name, accountNumber, routingNumber, accountType } = payload
-        if (
-          name !== bankAccount?.name ||
-          routingNumber !== bankAccount.routingNumber ||
-          accountType !== bankAccount.accountType ||
-          accountNumber !== bankAccount.hiddenAccountNumber
-        ) {
-          const res = accountNumberValidation.safeParse(payload.accountNumber)
-          if (!res.success) {
-            formMethods.setError('accountNumber', { type: 'validate' })
-            return
-          }
-        }
-
-        const bankAccountResponse = await createBankAccount({
-          request: {
-            contractorUuid: contractorId,
-            contractorBankAccountCreateRequestBody: {
-              name,
-              routingNumber,
-              accountNumber,
-              accountType,
-            },
-          },
-        })
-
-        onEvent(componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED, bankAccountResponse)
-
-        // We have to fetch the updated payment method imperatively here because updating the bank
-        // account will cause the payment method version to update. This ensures we have the latest version.
-        setIsPaymentMethodPending(true)
-        const updatedPaymentMethodResponse = await queryClient.fetchQuery(getPaymentMethodQuery)
-        const updatedPaymentMethod = updatedPaymentMethodResponse.contractorPaymentMethod!
-        setIsPaymentMethodPending(false)
-
-        updatedPaymentMethodVersion = updatedPaymentMethod.version as string
-      }
-      // For check payment method, no bank account creation needed
-      const paymentMethodResponse = await updatePaymentMethod({
-        request: {
-          contractorUuid: contractorId,
-          requestBody: {
-            type: payload.type,
-            version: updatedPaymentMethodVersion || (paymentMethod.version as string),
-          },
-        },
-      })
-      onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
-      onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
-    })
+  if (paymentMethodForm.isLoading || bankAccountForm.isLoading) {
+    const loadingErrorHandling = composeErrorHandler([paymentMethodForm, bankAccountForm])
+    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
-  const showBankAccountForm = watchedType === PAYMENT_METHODS.directDeposit
+  const isDirectDeposit = paymentMethodForm.status.isDirectDeposit
+  const { Type } = paymentMethodForm.form.Fields
+  const { Name, RoutingNumber, AccountNumber, AccountType } = bankAccountForm.form.Fields
+
+  // Direct Deposit always submits the bank account (which sets the payment
+  // method server-side); Check updates the payment method type directly. The
+  // account number is pre-filled with the masked token, which the API treats as
+  // "keep the existing account," so an unchanged submit preserves it while a
+  // newly typed number replaces it.
+  const submitDirectDeposit = async () => {
+    const result = await bankAccountForm.actions.onSubmit()
+    if (!result) return
+    onEvent(componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED, {
+      contractorBankAccount: result.data,
+    })
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
+  }
+
+  const submitCheck = async () => {
+    const result = await paymentMethodForm.actions.onSubmit()
+    if (!result) return
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED, {
+      contractorPaymentMethod: result.data,
+    })
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
+  }
+
+  const { handleSubmit, errorHandling } = isDirectDeposit
+    ? composeSubmitHandler([paymentMethodForm, bankAccountForm], submitDirectDeposit)
+    : composeSubmitHandler([paymentMethodForm], submitCheck)
+
+  const isPending = paymentMethodForm.status.isPending || bankAccountForm.status.isPending
+
+  const TypeFieldComponent = (radioProps: RadioGroupProps) => (
+    <Components.RadioGroup
+      {...radioProps}
+      shouldVisuallyHideLabel
+      options={radioProps.options.map(option => ({
+        ...option,
+        description:
+          option.value === PAYMENT_METHODS.directDeposit
+            ? t('directDepositDescription')
+            : t('checkDescription'),
+      }))}
+    />
+  )
 
   return (
-    <section className={className}>
-      <FormProvider {...formMethods}>
-        <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
-          <Flex gap={32} flexDirection={'column'}>
+    <section className={classNames(styles.root, className)}>
+      <BaseLayout error={errorHandling.errors}>
+        <Form onSubmit={handleSubmit}>
+          <Flex gap={32} flexDirection="column">
             <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <PaymentTypeForm />
-            {showBankAccountForm && <BankAccountForm bankAccount={bankAccount} />}
+            <Flex flexDirection="column" gap={20}>
+              <Type
+                label={t('paymentFieldsetLegend')}
+                getOptionLabel={(value: ContractorPaymentMethodFormType) =>
+                  value === PAYMENT_METHODS.directDeposit
+                    ? t('directDepositLabel')
+                    : t('checkLabel')
+                }
+                FieldComponent={TypeFieldComponent}
+                formHookResult={paymentMethodForm}
+              />
+              {isDirectDeposit && (
+                <>
+                  <Name
+                    label={t('bankAccountForm.nameLabel')}
+                    validationMessages={{ REQUIRED: t('bankAccountForm.validations.accountName') }}
+                    formHookResult={bankAccountForm}
+                  />
+                  <RoutingNumber
+                    label={t('bankAccountForm.routingNumberLabel')}
+                    description={t('bankAccountForm.routingNumberDescription')}
+                    validationMessages={{
+                      REQUIRED: t('bankAccountForm.validations.routingNumber'),
+                      INVALID_ROUTING_NUMBER: t('bankAccountForm.validations.routingNumber'),
+                    }}
+                    formHookResult={bankAccountForm}
+                  />
+                  <AccountNumber
+                    label={t('bankAccountForm.accountNumberLabel')}
+                    validationMessages={{
+                      REQUIRED: t('bankAccountForm.validations.accountNumber'),
+                      INVALID_ACCOUNT_NUMBER: t('bankAccountForm.validations.accountNumber'),
+                    }}
+                    formHookResult={bankAccountForm}
+                  />
+                  <AccountType
+                    label={t('bankAccountForm.accountTypeLabel')}
+                    getOptionLabel={(value: string) =>
+                      value === 'Checking'
+                        ? t('bankAccountForm.accountTypeChecking')
+                        : t('bankAccountForm.accountTypeSavings')
+                    }
+                    formHookResult={bankAccountForm}
+                  />
+                </>
+              )}
+            </Flex>
             <ActionsLayout>
-              <Components.Button
-                type="submit"
-                variant="primary"
-                isDisabled={paymentMethodPending || bankAccountPending || isPaymentMethodPending}
-              >
-                {t('continueCta')}
+              <Components.Button type="submit" variant="primary" isDisabled={isPending}>
+                {isPending ? t('submittingCta') : t('continueCta')}
               </Components.Button>
             </ActionsLayout>
           </Flex>
         </Form>
-      </FormProvider>
+      </BaseLayout>
     </section>
   )
 }

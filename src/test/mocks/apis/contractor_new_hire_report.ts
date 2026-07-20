@@ -1,6 +1,6 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { PutV1ContractorsContractorUuidRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1contractorscontractoruuid'
+import type { PutV1ContractorsContractorUuidRequest } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuid'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

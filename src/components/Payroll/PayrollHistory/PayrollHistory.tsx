@@ -1,14 +1,14 @@
 import { useState, useCallback } from 'react'
-import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
-import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCancel'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsList'
+import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import {
   DateFilterBy,
   ProcessingStatuses,
   QueryParamPayrollTypes,
-  SortOrder,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+  QueryParamSortOrder as SortOrder,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -37,6 +37,7 @@ export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.Pay
  * cancelling processed payrolls when they remain within the cancellation window. Each row shows
  * the pay period, payroll type, pay date, status, and total pay amount.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/summary/viewed` | User views a payroll summary | `{ payrollId: string; startDate?: string; endDate?: string }` |

@@ -1,4 +1,4 @@
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useWorkAddressForm } from './useWorkAddressForm'
 import type { UseWorkAddressFormProps, UseWorkAddressFormResult } from './useWorkAddressForm'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -11,6 +11,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
  * the hook resolves the current work address itself.
  *
  * @public
+ * @interface
  */
 export type UseCurrentWorkAddressFormProps = Omit<UseWorkAddressFormProps, 'workAddressUuid'>
 

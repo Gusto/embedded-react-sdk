@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetPayPeriods'
-import { PayrollTypes } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayperiods'
-import type { PayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/payperiod'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
+import { PayrollTypes } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayperiods'
+import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 
 const LOOK_AHEAD_DAYS = 90
 

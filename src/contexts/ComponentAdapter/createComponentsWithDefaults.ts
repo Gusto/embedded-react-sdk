@@ -37,6 +37,8 @@ import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputT
 import { FileInputDefaults } from '@/components/Common/UI/FileInput/FileInputTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 import { BoxHeaderDefaults } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
+import { FormBoxHeaderDefaults } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { DescriptionListDefaults } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 
@@ -75,6 +77,7 @@ export const componentCreators = {
   ),
   FileInput: composeWithDefaults<FileInputProps>(FileInputDefaults, 'FileInput'),
   BoxHeader: composeWithDefaults<BoxHeaderProps>(BoxHeaderDefaults, 'BoxHeader'),
+  FormBoxHeader: composeWithDefaults<FormBoxHeaderProps>(FormBoxHeaderDefaults, 'FormBoxHeader'),
   DescriptionList: composeWithDefaults<DescriptionListProps>(
     DescriptionListDefaults,
     'DescriptionList',

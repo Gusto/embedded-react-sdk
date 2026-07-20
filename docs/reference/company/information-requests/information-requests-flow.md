@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # InformationRequestsFlow
 
-Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
+Hub for viewing and responding to outstanding information requests from Gusto.
 
 ## Remarks
 
@@ -22,11 +22,20 @@ On successful submit, a dismissible success alert appears at the top of the list
 Information requests can also block payroll processing; in that case they are surfaced inline within
 `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
-| `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
-| `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
+## Example
+
+```tsx title="App.tsx"
+import { InformationRequests } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <InformationRequests.InformationRequestsFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
 
 ## InformationRequestsFlowProps
 
@@ -37,8 +46,53 @@ Props for InformationRequestsFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequests`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `onEvent?` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow or its subcomponents emit an event. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`InformationRequests`](../../Translations/index.md#informationrequests)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent?` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow or its blocks emit an event. |
 | `withAlert?` | `boolean` | When `true` (default), the submission success alert is rendered at the top of this component. Set to `false` when embedding in a parent that renders the alert elsewhere. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
+| `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
+| `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
+
+Each piece is also exported as a standalone block (see the Blocks
+table) for composing a custom workflow when this orchestration is the wrong
+fit. See the
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
+for how to recompose these blocks into your own flow.
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [InformationRequestList](blocks.md#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |
+| [InformationRequestForm](blocks.md#informationrequestform) | Dynamic response form for a single information request. |
+
+<!-- guide-source: src/components/InformationRequests/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow opens on the list of open and submitted information requests for the company, each open request carrying a "Respond" action. Selecting "Respond" opens the response form in a modal over the list. Submitting the form returns to the list (and, when `withAlert` is `true`, shows a dismissible success alert at the top); cancelling closes the modal and returns to the list without submitting.
+
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> List["InformationRequestList"]
+  List -->|"informationRequest/respond"| Form["InformationRequestForm"]
+  Form -->|"informationRequest/form/done<br/>informationRequest/form/cancel"| List
+```
+
+The response form is rendered dynamically from the request's required questions. Supported response types and their input behavior are documented on the `InformationRequestForm` block.
+
+Each piece is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition) for how to recompose these blocks into your own flow.
+<!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
+| PUT | `/v1/information_requests/:informationRequestUuid/submit` |

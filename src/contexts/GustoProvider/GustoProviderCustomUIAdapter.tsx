@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { ErrorInfo } from 'react'
+import type { ErrorInfo, JSX, ReactNode } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import type { QueryClient } from '@tanstack/react-query'
@@ -8,7 +8,6 @@ import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
-import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
 import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
 import { SDKI18next } from './SDKI18next'
@@ -17,7 +16,7 @@ import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { NonceContext } from '@/contexts/NonceProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
-import type { ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
+import type { GlobalResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
 import type { ObservabilityHook } from '@/types/observability'
 import { normalizeToSDKError } from '@/types/sdkError'
@@ -43,11 +42,11 @@ export interface APIConfig {
  *
  * @public
  */
-export interface GustoProviderProps {
+export interface GustoBaseProviderProps {
   /** API client configuration, including the proxy `baseUrl`, request hooks, and observability. See {@link APIConfig}. */
   config: APIConfig
   /** Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. */
-  dictionary?: ResourceDictionary
+  dictionary?: GlobalResourceDictionary
   /** Active i18next language. Defaults to `'en'`. */
   lng?: string
   /** BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. */
@@ -69,7 +68,7 @@ export interface GustoProviderProps {
   /** Complete map of UI components the SDK renders. Required because this adapter ships no defaults. */
   components: ComponentsContextType
   /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
-  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
+  LoaderComponent?: ({ children }: { children?: ReactNode }) => JSX.Element
 }
 
 /**
@@ -77,7 +76,7 @@ export interface GustoProviderProps {
  *
  * @public
  */
-export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
+export interface GustoProviderCustomUIAdapterProps extends GustoBaseProviderProps {
   /** The application tree that should have access to the SDK. */
   children?: React.ReactNode
 }
@@ -94,8 +93,9 @@ export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
  * @param props - See {@link GustoProviderCustomUIAdapterProps}.
  * @returns The configured provider tree wrapping `children`.
  * @public
+ * @group Providers
  */
-const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> = props => {
+export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapterProps) {
   const {
     children,
     config,
@@ -178,5 +178,3 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     </NonceContext.Provider>
   )
 }
-
-export { GustoProviderCustomUIAdapter }

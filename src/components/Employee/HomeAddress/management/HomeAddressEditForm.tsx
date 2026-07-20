@@ -1,4 +1,4 @@
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
+import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { HomeAddressView } from './HomeAddressView'
 import {
   isUseHomeAddressManagementSuccess,
@@ -64,12 +64,12 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
 /**
  * Standalone employee home address edit form for creating, updating, and deleting addresses.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/management/homeAddress/created` | A new home address was created | {@link EmployeeAddress} |
- * | `employee/management/homeAddress/updated` | An existing home address was updated | {@link EmployeeAddress} |
- * | `employee/management/homeAddress/deleted` | A home address was deleted | {@link EmployeeAddress} |
+ * | `employee/management/homeAddress/created` | A new home address was created | {@link APIModels.EmployeeAddress} |
+ * | `employee/management/homeAddress/updated` | An existing home address was updated | {@link APIModels.EmployeeAddress} |
+ * | `employee/management/homeAddress/deleted` | A home address was deleted | {@link APIModels.EmployeeAddress} |
  * | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
  *
  * @public

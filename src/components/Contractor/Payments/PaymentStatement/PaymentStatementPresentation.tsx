@@ -1,8 +1,8 @@
 import { Trans, useTranslation } from 'react-i18next'
-import type { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgroup'
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useMemo } from 'react'
-import type { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt'
+import type { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/contractorpaymentreceipt'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import styles from './PaymentStatementPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
@@ -151,16 +151,14 @@ export const PaymentStatementPresentation = ({
             <Components.DescriptionList
               layout="horizontal"
               showSeparators={false}
-              items={receiptDetailsConfig.map(
-                ({ label, value }): DescriptionListItem => ({
-                  term: (
-                    <Text size="sm" variant="supporting">
-                      {label}
-                    </Text>
-                  ),
-                  description: <Text size="sm">{value}</Text>,
-                }),
-              )}
+              items={receiptDetailsConfig.map(({ label, value }): DescriptionListItem => ({
+                term: (
+                  <Text size="sm" variant="supporting">
+                    {label}
+                  </Text>
+                ),
+                description: <Text size="sm">{value}</Text>,
+              }))}
             />
             <hr />
             <Flex flexDirection="column" alignItems="center" gap={12}>

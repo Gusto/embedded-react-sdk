@@ -1,5 +1,5 @@
-import { usePaymentConfigsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/paymentConfigsGet'
-import type { PaymentSpeed } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentconfigs'
+import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 
 const DEFAULT_PAYMENT_SPEED_DAYS = 2
 

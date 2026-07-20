@@ -28,6 +28,12 @@ the request through your own integration with the underlying provider.
 Text inputs accept up to 5,000 characters. Document uploads are restricted to JPEG,
 PNG, or PDF.
 
+### Remarks
+
+Events emitted via `onEvent`:
+
+<br />
+
 ### InformationRequestFormProps
 
 <a id="informationrequestformprops"></a>
@@ -37,26 +43,43 @@ Props for [InformationRequestForm](#informationrequestform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler invoked when the form is submitted or cancelled. See the events table in [InformationRequestForm](#informationrequestform). |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler invoked when the form is submitted or cancelled. See the events table in [InformationRequestForm](#informationrequestform). |
 | `requestId` | `string` | The identifier of the information request to respond to. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequestsInformationRequestForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`InformationRequestsInformationRequestForm`](../../Translations/index.md#informationrequestsinformationrequestform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Events emitted via `onEvent`:
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
 | `informationRequest/form/cancel` | Fired when the user cancels the form | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
+| PUT | `/v1/information_requests/:informationRequestUuid/submit` |
+
+***
+
 <a id="informationrequestlist"></a>
 
 ## InformationRequestList
 
 Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request.
+
+### Remarks
+
+Renders status badges for each request and an extra "Payroll blocking" badge when the request is currently blocking payroll. Approved requests are filtered out of the list. Used as the top-level surface of `InformationRequests.InformationRequestsFlow`, but can be rendered directly when you want to host the response form yourself (e.g. in a custom modal or page).
+
+<br />
 
 ### InformationRequestListProps
 
@@ -67,15 +90,23 @@ Props for [InformationRequestList](#informationrequestlist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequestsInformationRequestList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`InformationRequestsInformationRequestList`](../../Translations/index.md#informationrequestsinformationrequestlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders status badges for each request and an extra "Payroll blocking" badge when the request is currently blocking payroll. Approved requests are filtered out of the list. Used as the top-level surface of `InformationRequests.InformationRequestsFlow`, but can be rendered directly when you want to host the response form yourself (e.g. in a custom modal or page).
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `informationRequest/respond` | Fired when the user clicks "Respond" on an open request | `{ requestId: string }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |

@@ -29,7 +29,7 @@ test.describe('ContractorOnboardingFlow - edit re-entry from list lifecycle', ()
       .first()
     await expect(businessRow).toBeVisible({ timeout: 15000 })
 
-    const menuTrigger = businessRow.getByRole('button', { name: /^edit$/i }).first()
+    const menuTrigger = businessRow.getByRole('button', { name: /open menu/i }).first()
     await expect(menuTrigger).toBeVisible()
     await menuTrigger.click()
 
@@ -45,6 +45,6 @@ test.describe('ContractorOnboardingFlow - edit re-entry from list lifecycle', ()
 
     await expect(page.getByRole('radio', { name: /^business$/i })).toBeChecked()
     await expect(page.getByLabel(/business name/i)).toHaveValue(/Acme Consulting/i)
-    await expect(page.getByRole('button', { name: /update contractor/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /^continue$/i })).toBeVisible()
   })
 })

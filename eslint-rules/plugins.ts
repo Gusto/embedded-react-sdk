@@ -1,8 +1,14 @@
 import { FlatConfig } from 'typescript-eslint'
+import noInternalReexportFromIndex from './no-internal-reexport-from-index'
 import requireComment from './tsdoc-require-comment'
+import requireFormDataInterface from './tsdoc-require-form-data-interface'
+import requireFormFieldsComponentType from './tsdoc-require-form-fields-component-type'
+import requireHookReadyInterface from './tsdoc-require-hook-ready-interface'
 import requireMemberComment from './tsdoc-require-member-comment'
 import requireReleaseTag from './tsdoc-require-release-tag'
+import noLiteralApiQueryNamespace from './no-literal-api-query-namespace'
 import sortTags from './tsdoc-sort-tags'
+import useEmbeddedApiAlias from './use-embedded-api-alias'
 import validGroup from './tsdoc-valid-group'
 
 /**
@@ -18,7 +24,25 @@ export const tsdocCoverage: FlatConfig.Plugin = {
     'require-release-tag': requireReleaseTag,
     'require-comment': requireComment,
     'require-member-comment': requireMemberComment,
+    'require-form-data-interface': requireFormDataInterface,
+    'require-form-fields-component-type': requireFormFieldsComponentType,
+    'require-hook-ready-interface': requireHookReadyInterface,
+    'no-internal-reexport-from-index': noInternalReexportFromIndex,
     'sort-tags': sortTags,
     'valid-group': validGroup,
+  },
+}
+
+/**
+ * SDK-wide conventions that aren't about documentation coverage.
+ */
+export const sdkConventions: FlatConfig.Plugin = {
+  meta: {
+    name: 'sdk-conventions',
+  },
+
+  rules: {
+    'use-embedded-api-alias': useEmbeddedApiAlias,
+    'no-literal-api-query-namespace': noLiteralApiQueryNamespace,
   },
 }

@@ -1,5 +1,218 @@
 # Changelog
 
+## [0.52.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.1...v0.52.2) (2026-07-17)
+
+### Features & Enhancements
+
+- The contractor W-9 signature form now shows an on-file SSN/EIN as a masked, disabled field with a "Change SSN"/"Change EIN" button, rather than exposing it as an editable value. ([#2406](https://github.com/Gusto/embedded-react-sdk/issues/2406))
+- While a contractor is mid self-onboarding, the admin's contractor list menu no longer offers "Edit" — only "Cancel self-onboarding" and "Delete" — so the admin must cancel self-onboarding to regain edit access. ([#2407](https://github.com/Gusto/embedded-react-sdk/issues/2407))
+- Admins editing a contractor's profile or address now see a warning when the contractor already has a signed W-9 on file, since the edit will require collecting an updated, signed W-9. ([#2394](https://github.com/Gusto/embedded-react-sdk/issues/2394))
+
+### Fixes
+
+- Fix `StateTaxes` getting stuck on the list view after clicking "Continue" — state rows are now still editable afterward instead of becoming permanently inert. ([#2416](https://github.com/Gusto/embedded-react-sdk/issues/2416))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@typescript-eslint/parser`, `typescript-eslint`, `eslint-plugin-storybook`, `fuse.js`, `tsx`)
+
+## [0.52.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.0...v0.52.1) (2026-07-14)
+
+### Features & Enhancements
+
+- Contractor self-onboarding now mirrors the employee self-onboarding experience, giving contractors a guided flow to complete their own profile, address, and signature steps. ([#2385](https://github.com/Gusto/embedded-react-sdk/issues/2385))
+- The Contractor `Submit` step now lets contractors download their signed W-9. ([#2392](https://github.com/Gusto/embedded-react-sdk/issues/2392))
+
+### Fixes
+
+- The contractor new hire report is now only triggered during the initial onboarding pass, so re-editing an already-onboarded contractor no longer re-files the report. ([#2386](https://github.com/Gusto/embedded-react-sdk/issues/2386))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`storybook` and its addons to 10.5.0, `eslint`, `@eslint/js`, `@typescript-eslint/rule-tester`, `@typescript-eslint/utils`)
+- Bump dependencies (`dompurify`)
+
+## [0.52.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.2...v0.52.0) (2026-07-10)
+
+### ⚠ Breaking Changes
+
+- **`@gusto/embedded-api` is now pinned to the dated `v2026-06-15` package** ([#2371](https://github.com/Gusto/embedded-react-sdk/issues/2371)). Update your dependency and imports from `@gusto/embedded-api-v-2026-02-01` to `@gusto/embedded-api-v-2026-06-15`.
+  - `EmployeeCompensations` money fields (`grossPay`, `netPay`, `checkAmount`) are now `string` instead of `number`.
+  - `@gusto/embedded-api/models/components/payroll` was renamed to `@gusto/embedded-api/models/components/payrollshow`.
+  - Company tax requirement records now report `setupStatus` instead of `setupComplete`.
+  - A few exports were renamed: `WageType` → `ContractorWageType`, `SortOrder` → `QueryParamSortOrder`, `Include` → `GetV1CompaniesCompanyIdEmployeesQueryParamInclude`, `ContractorOnboardingStatus1` → `OnboardingStatus`.
+- **`ApiProvider` and `ApiProviderProps` are no longer exported** ([#2376](https://github.com/Gusto/embedded-react-sdk/issues/2376)). If you composed the provider stack manually, use `GustoProvider` or `GustoProviderCustomUIAdapter` instead — both wrap `ApiProvider` internally.
+- **`ObservabilityProvider`, `useObservability`, `ObservabilityProviderProps`, and `ObservabilityContextValue` are no longer exported** ([#2376](https://github.com/Gusto/embedded-react-sdk/issues/2376)). Configure observability via the `observability` field on the `config` prop passed to `GustoProvider` / `GustoProviderCustomUIAdapter` instead.
+- **`GustoApiProps` (the props type for `GustoProvider`) was renamed to `GustoProviderProps`** ([#2376](https://github.com/Gusto/embedded-react-sdk/issues/2376)). The previous `GustoProviderProps` (props for `GustoProviderCustomUIAdapter`) was renamed to `GustoBaseProviderProps`. Update any direct references to these type names.
+
+### Features & Enhancements
+
+- Added `FormBox`, a UI primitive for grouping form sections, alongside the existing `Box` component. Override it via the component adapter like any other UI primitive. ([#2359](https://github.com/Gusto/embedded-react-sdk/issues/2359))
+- `StateTaxes` and `StateTaxesList` accept a new `showContinueButton` prop (defaults to `true`) to hide the Continue button when either is embedded as a step inside a larger flow with its own navigation. ([#2381](https://github.com/Gusto/embedded-react-sdk/issues/2381))
+
+### Fixes
+
+- `OnboardingSummary` now shows confirmation copy instead of a "Missing requirements" checklist when an employee has been invited to self-onboard, since those steps are owned by the employee rather than the admin. ([#2369](https://github.com/Gusto/embedded-react-sdk/issues/2369))
+- `Contractor.SignatureForm` now includes the "U.S. person" definition below the W-9 certification checklist. ([#2382](https://github.com/Gusto/embedded-react-sdk/issues/2382))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@commitlint/cli`, `msw`, `prettier`, `ws`)
+- Bump dependencies (`i18next`, `react-i18next`)
+
+## [0.51.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.1...v0.51.2) (2026-07-07)
+
+### Fixes
+
+- **Company:** prevent Enter key from cancelling State Taxes and Location edit forms ([#2361](https://github.com/Gusto/embedded-react-sdk/issues/2361)) ([343c78f](https://github.com/Gusto/embedded-react-sdk/commit/343c78f96ce8972cfe40eec992990bd7703411cb))
+- **Contractor/DocumentsList:** key signature status off signedAt and guard unpreparable W-9s ([#2362](https://github.com/Gusto/embedded-react-sdk/issues/2362)) ([8191e91](https://github.com/Gusto/embedded-react-sdk/commit/8191e910885613cbb7e754f7227603986f4c8640))
+
+## [0.51.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.0...v0.51.1) (2026-07-07)
+
+### Features & Enhancements
+
+- The SDK now emits page-view analytics events through `gusto-analytics` ([#2347](https://github.com/Gusto/embedded-react-sdk/issues/2347))
+- `Contractor.SignatureForm` groups the W-9 sections into distinct boxes and merges the consent into the signing step for a clearer layout ([#2357](https://github.com/Gusto/embedded-react-sdk/issues/2357))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`typescript-eslint`, `vitest`) ([#2352](https://github.com/Gusto/embedded-react-sdk/issues/2352), [#2353](https://github.com/Gusto/embedded-react-sdk/issues/2353), [#2354](https://github.com/Gusto/embedded-react-sdk/issues/2354), [#2355](https://github.com/Gusto/embedded-react-sdk/issues/2355), [#2356](https://github.com/Gusto/embedded-react-sdk/issues/2356))
+
+## [0.51.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.50.0...v0.51.0) (2026-07-06)
+
+### ⚠ Breaking Changes
+
+- **`@gusto/embedded-api` is now pinned to the dated `v2026-02-01` package** ([#2255](https://github.com/Gusto/embedded-react-sdk/issues/2255)). Update your dependency and imports from `@gusto/embedded-api` to `@gusto/embedded-api-v-2026-02-01`. The `react-query`, `models`, and `errors` subpaths are otherwise unchanged.
+
+- **Form-hook APIs are now accessed through `form.Fields` and `form.getFormSubmissionValues()`.** The building blocks that used to be exported alongside each hook are no longer part of the public API — reach for them via the hook instead:
+  - **Field components** (e.g. `NameField`, `RoutingNumberField`, `SignatureField`) and the raw `*HookField` primitives (`TextInputHookField`, `SelectHookField`, `CheckboxHookField`, `NumberInputHookField`, `DatePickerHookField`, `RadioGroupHookField`, `SwitchHookField`) → render them from `form.Fields`.
+  - **`create*Schema` factories** (e.g. `createBankFormSchema`, `createJobSchema`, `createEmployeeDetailsSchema`) → removed; the hook builds and applies its schema internally.
+  - **`*FormOutputs` types** (e.g. `BankFormOutputs`, `JobFormOutputs`) → removed; type `defaultValues` against the hook's `*FormData` type and read parsed values from `form.getFormSubmissionValues()`.
+
+  ```tsx
+  const { form } = useBankForm({ employeeId })
+  const { Name, RoutingNumber, AccountNumber, AccountType } = form.Fields
+  // render <Name />, <RoutingNumber />, etc.
+  const values = form.getFormSubmissionValues() // typed as the hook's FormData
+  ```
+
+- **Some field-interface types were renamed to the `*FormFields` convention.** If you reference them directly, update the names:
+  - `ContractorAddressFields` → `ContractorAddressFormFields`
+  - `ContractorDetailsFields` → `ContractorDetailsFormFields`
+  - `PayScheduleFields` → `PayScheduleFormFields`
+  - `FederalTaxesFields` → `FederalTaxesFormFields`
+  - `SignEmployeeFormFieldComponents` → `SignEmployeeFormFields`
+  - `EmployeeDetailsFields` → `EmployeeDetailsFormFields`
+  - `HomeAddressFields` → `HomeAddressFormFields`
+  - `WorkAddressFields` → `WorkAddressFormFields`
+
+- **`form.getFormSubmissionValues()` now returns the hook's typed `FormData`** instead of `Record<string, unknown>` ([#2341](https://github.com/Gusto/embedded-react-sdk/issues/2341)). Code that indexed arbitrary keys off the result may need updating to the concrete field names.
+
+- **`EMAIL_REQUIRED_FOR_SELF_ONBOARDING` was removed from `EmployeeDetailsErrorCodes`** ([#2341](https://github.com/Gusto/embedded-react-sdk/issues/2341)). The `Fields.Email` `validationMessages` type is narrowed to `REQUIRED | INVALID_EMAIL`, and an empty email during self-onboarding now emits `REQUIRED`. Update any custom copy keyed on the old code.
+
+### Features & Enhancements
+
+- bump @gusto/embedded-api to v2026-02-01 ([#2255](https://github.com/Gusto/embedded-react-sdk/issues/2255)) ([75f7b0a](https://github.com/Gusto/embedded-react-sdk/commit/75f7b0ab7f42dfe660371a7d11c66fbf69254573))
+- **Contractor.SignatureForm:** add contractor W-9 signature form component ([#2319](https://github.com/Gusto/embedded-react-sdk/issues/2319)) ([e998f5f](https://github.com/Gusto/embedded-react-sdk/commit/e998f5fe21a38a78a539d7ba1c2512ec49585220)), closes [#2321](https://github.com/Gusto/embedded-react-sdk/issues/2321)
+- **ContractorOnboarding.SelfOnboardingFlow:** add contractor self-onboarding flow ([#2337](https://github.com/Gusto/embedded-react-sdk/issues/2337)) ([53c2b9b](https://github.com/Gusto/embedded-react-sdk/commit/53c2b9b155bcd97b0f65c7772dc7b5212208218f))
+- **hooks:** extract precise fieldMetadata types ([#2341](https://github.com/Gusto/embedded-react-sdk/issues/2341)) ([6834988](https://github.com/Gusto/embedded-react-sdk/commit/6834988f8d3e8062d280bae3bffa3d1ad62a0ff3))
+- **i18n:** browsable `Resources` reference with per-key English defaults ([#2327](https://github.com/Gusto/embedded-react-sdk/issues/2327)) ([c4edbc3](https://github.com/Gusto/embedded-react-sdk/commit/c4edbc39b763e4992ac9af4cd3728f0991173250))
+- promotable conditional requiredness for form schemas ([#2336](https://github.com/Gusto/embedded-react-sdk/issues/2336)) ([37a65b1](https://github.com/Gusto/embedded-react-sdk/commit/37a65b1e3f40a3ddf850feda08376c7521a04c62))
+- **sdk-app:** design comments tooling for internal review ([#2329](https://github.com/Gusto/embedded-react-sdk/issues/2329)) ([7ff40e5](https://github.com/Gusto/embedded-react-sdk/commit/7ff40e542fb661e1bfa62a84c1d5ed73b3d0bf89))
+- **useContractorSignatureForm:** add contractor W-9 signature form hook ([#2318](https://github.com/Gusto/embedded-react-sdk/issues/2318)) ([f51a0e5](https://github.com/Gusto/embedded-react-sdk/commit/f51a0e5c70f8d6a0985a192807e3fc1d88d90d52))
+
+### Fixes
+
+- **Badge:** increase padding and use pill radius ([#2333](https://github.com/Gusto/embedded-react-sdk/issues/2333)) ([f7b1b5f](https://github.com/Gusto/embedded-react-sdk/commit/f7b1b5f6e8f8eab96d3781c3a5381789639a7d61))
+- **Contractor/PaymentMethod:** tighten form field spacing ([#2343](https://github.com/Gusto/embedded-react-sdk/issues/2343)) ([55bdb7e](https://github.com/Gusto/embedded-react-sdk/commit/55bdb7e1c20d36376e7f8c917d953812a8425cdb))
+- **Contractor:** align submit-button loading UX across onboarding ([#2344](https://github.com/Gusto/embedded-react-sdk/issues/2344)) ([da045db](https://github.com/Gusto/embedded-react-sdk/commit/da045db61f5eff90d7688da43f6ed9270324945f))
+- **SDK-1075:** align admin missing-requirements UI with company onboarding overview ([#2334](https://github.com/Gusto/embedded-react-sdk/issues/2334)) ([9d9c09a](https://github.com/Gusto/embedded-react-sdk/commit/9d9c09a0bfe418d0df58312ab3a5f93f703cd5b7))
+- **sdk-app:** register ContractorOnboarding.SelfOnboardingFlow entity requirements ([#2339](https://github.com/Gusto/embedded-react-sdk/issues/2339)) ([8931422](https://github.com/Gusto/embedded-react-sdk/commit/8931422424f03b38acceeb448d4d4169a02ee255))
+
+### Chores & Maintenance
+
+- add docs skills and update doc guides ([#2284](https://github.com/Gusto/embedded-react-sdk/issues/2284)) ([ed2f543](https://github.com/Gusto/embedded-react-sdk/commit/ed2f54395683c033e7460ec10313845b763900a9))
+- allow search engine indexing ([#2330](https://github.com/Gusto/embedded-react-sdk/issues/2330)) ([84b5ba0](https://github.com/Gusto/embedded-react-sdk/commit/84b5ba06776aab27062c87160b3ccb02ad75e6fb))
+- **ContractorOnboarding.SelfOnboardingFlow:** note isAdmin=false for standalone Profile ([#2340](https://github.com/Gusto/embedded-react-sdk/issues/2340)) ([e3659de](https://github.com/Gusto/embedded-react-sdk/commit/e3659deb561d94b0223c6cd6c20cf8f621b82734))
+- **deps-dev:** bump markdownlint-cli2 from 0.22.1 to 0.23.0 ([#2331](https://github.com/Gusto/embedded-react-sdk/issues/2331)) ([7bec35a](https://github.com/Gusto/embedded-react-sdk/commit/7bec35aaab73e6097e1ee9141590dd1b63d0d7b9))
+- **deps-dev:** bump tsx from 4.22.4 to 4.23.0 ([#2346](https://github.com/Gusto/embedded-react-sdk/issues/2346)) ([66629e9](https://github.com/Gusto/embedded-react-sdk/commit/66629e928693241b8ba7cd1028e3aaff1132036a))
+- **deps:** bump react-hook-form from 7.80.0 to 7.81.0 ([#2345](https://github.com/Gusto/embedded-react-sdk/issues/2345)) ([423c769](https://github.com/Gusto/embedded-react-sdk/commit/423c7695720883aafec5b592ba2d5220d7e4a2d8))
+- **OnboardingOverview:** use Box header for MissingRequirements title ([#2335](https://github.com/Gusto/embedded-react-sdk/issues/2335)) ([796b851](https://github.com/Gusto/embedded-react-sdk/commit/796b85178990bdd081fa42c6c75bab3c8c651dce))
+- remove erroneously restored docs/hooks directory ([#2338](https://github.com/Gusto/embedded-react-sdk/issues/2338)) ([802c7c1](https://github.com/Gusto/embedded-react-sdk/commit/802c7c10000a8451850ce4246978d3bb70e05cbb))
+- **SDK-1071:** reference-docs consistency & accuracy pass ([#2332](https://github.com/Gusto/embedded-react-sdk/issues/2332)) ([1ed7119](https://github.com/Gusto/embedded-react-sdk/commit/1ed71196cee29970dc5c07e2137b8d6cd67811b5))
+- standardize form hooks on the exemplar shape and lock it with lint ([#2326](https://github.com/Gusto/embedded-react-sdk/issues/2326)) ([bf9cfb8](https://github.com/Gusto/embedded-react-sdk/commit/bf9cfb8fbfa5b7ea68e7df17ae6ab2211d208389))
+
+## [0.50.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.49.0...v0.50.0) (2026-07-01)
+
+### ⚠ Breaking Changes
+
+- **The field exports `NameField`, `RoutingNumberField`, `AccountNumberField`, `AccountTypeField`, and `ContractorPaymentMethodTypeField` have been removed** ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303)). These fields depend on their form's context and were never functional when imported and rendered on their own, so this only affects direct imports of the symbols. Access them from the relevant hook's `form.Fields`, which wires up the required context:
+
+  ```tsx
+  const { form } = useContractorBankAccountForm({ contractorId })
+  const { Name, RoutingNumber, AccountNumber, AccountType } = form.Fields
+  // ...render <Name />, <RoutingNumber />, etc.
+
+  const paymentMethodForm = useContractorPaymentMethodForm({ contractorId })
+  const { Type } = paymentMethodForm.form.Fields // was ContractorPaymentMethodTypeField
+  ```
+
+### Features & Enhancements
+
+- Add `useContractorBankAccountForm` and `useContractorPaymentMethodForm` hooks for building contractor payment-method and bank-account forms, each exposing its field components on `form.Fields` ([#2301](https://github.com/Gusto/embedded-react-sdk/issues/2301), [#2302](https://github.com/Gusto/embedded-react-sdk/issues/2302))
+- `Contractor.PaymentMethod` now composes the new payment-method and bank-account hooks ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303))
+- Expand const-derived reference types and export `SDKErrorCategories` ([#2320](https://github.com/Gusto/embedded-react-sdk/issues/2320))
+
+### Chores & Maintenance
+
+- Bump `i18next` from 26.3.3 to 26.3.4 ([#2324](https://github.com/Gusto/embedded-react-sdk/issues/2324))
+- Bump dev dependencies (`@commitlint/cli`, `@commitlint/config-conventional`, `typescript-eslint`)
+
+## [0.49.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.3...v0.49.0) (2026-06-30)
+
+### ⚠ Breaking Changes
+
+- **`ContractorProfile` / contractor `OnboardingFlow` `defaultValues` shape changed** (`ContractorProfileFormData`): `contractorType` is renamed to `type` (same `'Individual' | 'Business'` values), and `startDate` is now an ISO date string (`'YYYY-MM-DD'`) instead of a `Date`. All other keys are unchanged.
+
+  ```tsx
+  // Before
+  <ContractorProfile
+    defaultValues={{ contractorType: 'Individual', startDate: new Date('2024-02-15') }}
+  />
+  // After
+  <ContractorProfile defaultValues={{ type: 'Individual', startDate: '2024-02-15' }} />
+  ```
+
+- **`placeholder` is now required on `Components.Select` and the `Fields.*` select wrappers** ([#2197](https://github.com/Gusto/embedded-react-sdk/issues/2197)). Partners overriding `Components.Select` or rendering hook-generated `Fields.X` selects must pass `placeholder`. Partner UI adapters that already accept `placeholder` only need to make the prop required in their own types.
+
+### Features & Enhancements
+
+- Add `showContinueButton` prop to `EmployeeList` ([#2216](https://github.com/Gusto/embedded-react-sdk/issues/2216))
+- Add `Contractor.DocumentsList` component for listing contractor documents ([#2298](https://github.com/Gusto/embedded-react-sdk/issues/2298))
+- Add contractor self-onboarding components: profile ([#2286](https://github.com/Gusto/embedded-react-sdk/issues/2286)), `Landing` ([#2283](https://github.com/Gusto/embedded-react-sdk/issues/2283)), and `OnboardingSummary` ([#2300](https://github.com/Gusto/embedded-react-sdk/issues/2300))
+- Add `useContractorDetailsForm` hook ([#2275](https://github.com/Gusto/embedded-react-sdk/issues/2275)) and `useContractorAddressForm` hook ([#2280](https://github.com/Gusto/embedded-react-sdk/issues/2280))
+- Support a value-aware function for `buildFormSchema` `excludeFields` ([#2272](https://github.com/Gusto/embedded-react-sdk/issues/2272))
+- `StateTaxes`: respect `applicable_if` for conditional field visibility ([#2256](https://github.com/Gusto/embedded-react-sdk/issues/2256))
+- Clarify contractor payment wage type and N/A columns ([#2240](https://github.com/Gusto/embedded-react-sdk/issues/2240))
+
+### Fixes
+
+- `ContractorPayments`: fix hours input not updating correctly ([#2267](https://github.com/Gusto/embedded-react-sdk/issues/2267))
+- `ContractorPayments`: use the SDK `DatePicker` for the payment date input ([#2271](https://github.com/Gusto/embedded-react-sdk/issues/2271))
+- `ContractorPayments`: align numeric columns and table footer ([#2225](https://github.com/Gusto/embedded-react-sdk/issues/2225))
+- `ContractorPayments`: show the create CTA in the header when payments exist, and in the empty state otherwise ([#2215](https://github.com/Gusto/embedded-react-sdk/issues/2215), [#2222](https://github.com/Gusto/embedded-react-sdk/issues/2222))
+- `PayrollOverview`: correct loading copy and gating in the run-payroll flow ([#2254](https://github.com/Gusto/embedded-react-sdk/issues/2254))
+- `Modal`: inherit theme color and font-family inside the dialog ([#2259](https://github.com/Gusto/embedded-react-sdk/issues/2259))
+- `Locations`: render address lines as stacked flex items ([#2227](https://github.com/Gusto/embedded-react-sdk/issues/2227))
+- `PaymentStatement`: use the supporting-text variant and unwrap table cell text ([#2242](https://github.com/Gusto/embedded-react-sdk/issues/2242))
+- `AdminProfile`: replace `switchFieldContainer` with the `Box` component ([#2253](https://github.com/Gusto/embedded-react-sdk/issues/2253))
+- `Employee.EmploymentEligibility`: remove stray apostrophe in the noncitizen description ([#2314](https://github.com/Gusto/embedded-react-sdk/issues/2314))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`typescript-eslint` family, `@playwright/test`, `prettier`, `@commitlint/*`, `release-it`, `react-router-dom`, `vite-plugin-stylelint`, `lint-staged`, `globals`)
+- Bump runtime dependencies (`i18next`, `react-hook-form`)
+
 ## [0.48.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.2...v0.48.3) (2026-06-17)
 
 ### Features & Enhancements

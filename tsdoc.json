@@ -42,6 +42,18 @@
       "allowMultiple": true
     },
     {
+      "tagName": "@siblingOf",
+      "syntaxKind": "block"
+    },
+    {
+      "tagName": "@childOf",
+      "syntaxKind": "block"
+    },
+    {
+      "tagName": "@page",
+      "syntaxKind": "block"
+    },
+    {
       "tagName": "@category",
       "syntaxKind": "block",
       "allowMultiple": true
@@ -194,6 +206,10 @@
     },
     {
       "tagName": "@components",
+      "syntaxKind": "block"
+    },
+    {
+      "tagName": "@events",
       "syntaxKind": "block"
     }
   ]

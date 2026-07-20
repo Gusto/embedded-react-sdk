@@ -1,9 +1,9 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1ContractorsContractorUuidPaymentMethodRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1contractorscontractoruuidpaymentmethod'
-import type { GetV1ContractorsContractorUuidBankAccountsRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1contractorscontractoruuidbankaccounts'
-import type { PutV1ContractorsContractorIdPaymentMethodType } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1contractorscontractoridpaymentmethod'
-import type { ContractorBankAccountCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccountcreaterequestbody'
+import type { GetV1ContractorsContractorUuidPaymentMethodRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidpaymentmethod'
+import type { GetV1ContractorsContractorUuidBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidbankaccounts'
+import type { Type as PutV1ContractorsContractorIdPaymentMethodType } from '@gusto/embedded-api/models/operations/putv1contractorscontractoridpaymentmethod'
+import type { ContractorBankAccountCreateRequestBody } from '@gusto/embedded-api/models/components/contractorbankaccountcreaterequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -28,6 +28,12 @@ export const updateContractorPaymentMethod = http.put<
   return HttpResponse.json(responseFixture)
 })
 
+export function handleUpdateContractorPaymentMethod(
+  resolver: HttpResponseResolver<PathParams, PutV1ContractorsContractorIdPaymentMethodType>,
+) {
+  return http.put(`${API_BASE_URL}/v1/contractors/:contractor_id/payment_method`, resolver)
+}
+
 export function handleGetContractorBankAccounts(
   resolver: HttpResponseResolver<PathParams, GetV1ContractorsContractorUuidBankAccountsRequest>,
 ) {
@@ -48,6 +54,12 @@ export const createContractorBankAccount = http.post<
   const responseFixture = await getFixture('get-v1-contractors-contractor_id-bank_accounts')
   return HttpResponse.json(responseFixture[0], { status: 201 })
 })
+
+export function handleCreateContractorBankAccount(
+  resolver: HttpResponseResolver<PathParams, ContractorBankAccountCreateRequestBody>,
+) {
+  return http.post(`${API_BASE_URL}/v1/contractors/:contractor_id/bank_accounts`, resolver)
+}
 
 export default [
   getContractorPaymentMethod,

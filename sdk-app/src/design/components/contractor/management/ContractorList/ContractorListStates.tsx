@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { ContractorList, type ContractorListTab } from './ContractorList'
 
 export interface ContractorTabFixtures {

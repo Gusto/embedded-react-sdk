@@ -5,12 +5,14 @@ import { OnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingF
 import { SelfOnboardingFlow } from '@/components/Employee/SelfOnboardingFlow/SelfOnboardingFlow'
 import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/OnboardingFlow/OnboardingFlow'
 import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
+import { SelfOnboardingFlow as ContractorSelfOnboardingFlow } from '@/components/Contractor/SelfOnboardingFlow/SelfOnboardingFlow'
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
 import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import { TimeOffFlow } from '@/components/TimeOff/TimeOffFlow/TimeOffFlow'
+import { StateTaxesForm } from '@/components/Company/StateTaxes/StateTaxesForm/StateTaxesForm'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
@@ -20,22 +22,26 @@ type FlowType =
   | 'employee-self-onboarding'
   | 'company-onboarding'
   | 'contractor-onboarding'
+  | 'contractor-self-onboarding'
   | 'payroll'
   | 'transition'
   | 'contractor-payment'
   | 'termination'
   | 'dismissal'
   | 'time-off'
+  | 'state-taxes-form'
 
 interface E2EConfig {
   flow: FlowType
   companyId: string
   employeeId: string
+  contractorId: string
   baseUrl: string
   isLocal: boolean
   startDate: string
   endDate: string
   payScheduleUuid: string
+  state: string
 }
 
 function getConfigFromUrl(): E2EConfig {
@@ -52,16 +58,19 @@ function getConfigFromUrl(): E2EConfig {
     flow: (params.get('flow') as FlowType) || 'employee-onboarding',
     companyId: params.get('companyId') || '123',
     employeeId: params.get('employeeId') || '456',
+    contractorId: params.get('contractorId') || '789',
     baseUrl,
     isLocal,
     startDate: params.get('startDate') || '2025-08-14',
     endDate: params.get('endDate') || '2025-08-27',
     payScheduleUuid: params.get('payScheduleUuid') || '1478a82e-b45c-4980-843a-6ddc3b78268e',
+    state: params.get('state') || 'WA',
   }
 }
 
 function FlowRenderer({ config }: { config: E2EConfig }) {
-  const { flow, companyId, employeeId, startDate, endDate, payScheduleUuid } = config
+  const { flow, companyId, employeeId, contractorId, startDate, endDate, payScheduleUuid, state } =
+    config
   const handleEvent = () => {}
 
   switch (flow) {
@@ -75,6 +84,14 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <CompanyOnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'contractor-onboarding':
       return <ContractorOnboardingFlow companyId={companyId} onEvent={handleEvent} />
+    case 'contractor-self-onboarding':
+      return (
+        <ContractorSelfOnboardingFlow
+          companyId={companyId}
+          contractorId={contractorId}
+          onEvent={handleEvent}
+        />
+      )
     case 'payroll':
       return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
     case 'transition':
@@ -95,6 +112,8 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     case 'time-off':
       return <TimeOffFlow companyId={companyId} onEvent={handleEvent} />
+    case 'state-taxes-form':
+      return <StateTaxesForm companyId={companyId} state={state} onEvent={handleEvent} />
     default:
       return <div>Unknown flow: {flow}</div>
   }
@@ -105,12 +124,14 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
   { value: 'employee-self-onboarding', label: 'Employee Self-Onboarding' },
   { value: 'company-onboarding', label: 'Company Onboarding' },
   { value: 'contractor-onboarding', label: 'Contractor Onboarding' },
+  { value: 'contractor-self-onboarding', label: 'Contractor Self-Onboarding' },
   { value: 'payroll', label: 'Payroll' },
   { value: 'transition', label: 'Transition' },
   { value: 'contractor-payment', label: 'Contractor Payment' },
   { value: 'termination', label: 'Termination' },
   { value: 'dismissal', label: 'Dismissal' },
   { value: 'time-off', label: 'Time Off Management' },
+  { value: 'state-taxes-form', label: 'State Taxes Form' },
 ]
 
 function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {

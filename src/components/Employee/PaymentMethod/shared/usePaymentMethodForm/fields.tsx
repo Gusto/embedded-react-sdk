@@ -19,18 +19,7 @@ export type TypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<RequiredValidation, PaymentMethodType>
 >
 
-/**
- * Radio group bound to the `type` field of {@link usePaymentMethodForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Type`. Options are
- * `Direct Deposit` and `Check`; defaults to the employee's existing payment
- * method type. Supply `getOptionLabel` to translate the option labels.
- *
- * @param props - See {@link TypeFieldProps}.
- * @returns The rendered radio group bound to `type`.
- * @public
- */
+/** @internal */
 export function TypeField(props: TypeFieldProps) {
   return <RadioGroupHookField {...props} name="type" />
 }

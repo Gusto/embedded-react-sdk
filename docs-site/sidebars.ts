@@ -4,7 +4,7 @@ const sidebars: SidebarsConfig = {
   docs: [
     {
       type: 'category',
-      label: 'Getting Started',
+      label: 'Getting started',
       link: { type: 'doc', id: 'getting-started/getting-started' },
       collapsed: false,
       items: [
@@ -17,147 +17,61 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Workflows',
-      link: { type: 'doc', id: 'workflows-overview/workflows-overview' },
+      label: 'Guides',
       collapsed: false,
       items: [
         {
           type: 'category',
-          label: 'Companies',
+          label: 'Integration guide',
+          link: { type: 'doc', id: 'guides/integration-guide/integration-guide' },
           items: [
-            {
-              type: 'doc',
-              id: 'workflows-overview/company-onboarding',
-              label: 'Company onboarding',
-            },
-            {
-              type: 'doc',
-              id: 'workflows-overview/information-requests',
-              label: 'Information requests',
-            },
+            'guides/integration-guide/versioning',
+            'guides/integration-guide/event-handling',
+            'guides/integration-guide/request-interceptors',
+            'guides/integration-guide/customizing-sdk-ui',
+            'guides/integration-guide/composition',
+            'guides/integration-guide/providing-your-own-data',
+            'guides/integration-guide/translation',
+            'guides/integration-guide/routing',
+            'guides/integration-guide/error-handling',
+            'guides/integration-guide/observability',
+            'guides/integration-guide/observability-examples',
+            'guides/integration-guide/proxy-examples',
+          ],
+        },
+        'guides/theming',
+        {
+          type: 'category',
+          label: 'Component Adapter',
+          link: { type: 'doc', id: 'guides/component-adapter/component-adapter' },
+          items: [
+            'guides/component-adapter/how-the-component-adapter-works',
+            'guides/component-adapter/setting-up-your-component-adapter',
+            'guides/component-adapter/component-adapter-types',
+            'guides/component-adapter/component-adapter-faq',
           ],
         },
         {
           type: 'category',
-          label: 'Employees',
+          label: 'Hooks',
+          link: { type: 'doc', id: 'guides/hooks/overview' },
           items: [
-            {
-              type: 'doc',
-              id: 'workflows-overview/employee-onboarding/employee-onboarding',
-              label: 'Employee onboarding',
-            },
-            {
-              type: 'doc',
-              id: 'workflows-overview/employee-onboarding/employee-self-onboarding',
-              label: 'Employee self-onboarding',
-            },
+            'guides/hooks/configuring-form-fields',
+            'guides/hooks/handling-hook-errors',
+            'guides/hooks/composing-multiple-hooks',
+            'guides/hooks/jobs-and-compensations',
           ],
         },
-        {
-          type: 'category',
-          label: 'Contractors',
-          items: [
-            {
-              type: 'doc',
-              id: 'workflows-overview/contractor-onboarding',
-              label: 'Contractor onboarding',
-            },
-            {
-              type: 'doc',
-              id: 'workflows-overview/contractor-payments',
-              label: 'Contractor payments',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Payroll',
-          items: [
-            {
-              type: 'doc',
-              id: 'workflows-overview/run-payroll',
-              label: 'Payroll processing',
-            },
-            {
-              type: 'doc',
-              id: 'workflows-overview/off-cycle-payroll',
-              label: 'Off-cycle payroll',
-            },
-            {
-              type: 'doc',
-              id: 'workflows-overview/dismissal-payroll',
-              label: 'Dismissal payroll',
-            },
-            {
-              type: 'doc',
-              id: 'workflows-overview/transition-payroll',
-              label: 'Transition payroll',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Component Adapter',
-      link: { type: 'doc', id: 'component-adapter/component-adapter' },
-      items: [
-        'component-adapter/how-the-component-adapter-works',
-        'component-adapter/setting-up-your-component-adapter',
-        'component-adapter/component-adapter-types',
-        'component-adapter/component-adapter-faq',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Theming',
-      link: { type: 'doc', id: 'theming/theming' },
-      items: ['theming/theming-guide'],
-    },
-    {
-      type: 'category',
-      label: 'Integration Guide',
-      link: { type: 'doc', id: 'integration-guide/integration-guide' },
-      items: [
-        'integration-guide/versioning',
-        'integration-guide/event-handling',
-        'integration-guide/request-interceptors',
-        'integration-guide/customizing-sdk-ui',
-        'integration-guide/composition',
-        'integration-guide/providing-your-own-data',
-        'integration-guide/translation',
-        'integration-guide/routing',
-        'integration-guide/error-handling',
-        'integration-guide/observability',
-        'integration-guide/observability-examples',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Hooks',
-      link: { type: 'doc', id: 'hooks/hooks' },
-      items: [
-        'hooks/useEmployeeDetailsForm',
-        'hooks/useCompensationForm',
-        'hooks/useWorkAddressForm',
+        'guides/workflows-overview',
+        'guides/endpoint-reference',
       ],
     },
     {
       type: 'category',
       label: 'Reference',
-      collapsible: false,
+      collapsed: false,
       link: { type: 'doc', id: 'reference/index' },
       items: [{ type: 'autogenerated', dirName: 'reference' }],
-    },
-    {
-      type: 'category',
-      label: 'Appendix',
-      collapsed: true,
-      items: [
-        'appendix/endpoint-reference',
-        'appendix/jobs-and-compensations',
-        'appendix/proxy-examples',
-      ],
     },
   ],
 }

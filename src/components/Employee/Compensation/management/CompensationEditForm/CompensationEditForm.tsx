@@ -1,4 +1,4 @@
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { getPendingCompensationChanges } from '../../shared/getPendingCompensationChanges'
 import { CompensationEditJobForm } from '../CompensationEditJobForm/CompensationEditJobForm'
 import { CompensationEditPendingJobForm } from '../CompensationEditPendingJobForm/CompensationEditPendingJobForm'
@@ -32,6 +32,7 @@ export interface CompensationEditFormProps extends CommonComponentInterface<'Emp
  * @remarks
  * Pair with {@link CompensationCard} to route its `employee/management/compensation/card/editRequested` event to this form. {@link Compensation} bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/compensation/editForm/submitted` | Fired after the compensation change is saved; use it to return to the card | The updated `Compensation` entity |
@@ -40,7 +41,7 @@ export interface CompensationEditFormProps extends CommonComponentInterface<'Emp
  * @param props - See {@link CompensationEditFormProps}.
  * @returns The rendered compensation edit form.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function CompensationEditForm({
   employeeId,

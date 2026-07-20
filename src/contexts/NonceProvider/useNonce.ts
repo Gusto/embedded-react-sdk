@@ -18,6 +18,7 @@ export const NonceContext = createContext<string | undefined>(undefined)
  *
  * @returns The active nonce, or `undefined` when {@link GustoProvider} was not given a `nonce`.
  * @public
+ * @page providers
  *
  * @example
  * ```tsx

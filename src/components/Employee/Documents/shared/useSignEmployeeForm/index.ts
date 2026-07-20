@@ -3,25 +3,23 @@ export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
-  SignEmployeeFormFieldComponents,
-  SignEmployeeFormFieldsMetadata,
   SignEmployeeFormFields,
+  SignEmployeeFormFieldsMetadata,
+  SignEmployeeBaseFieldsMetadata,
+  SignEmployeeI9FieldsMetadata,
   PreparerFieldGroup,
 } from './useSignEmployeeForm'
 export {
-  createSignEmployeeFormSchema,
   SignEmployeeFormErrorCodes,
   MAX_PREPARERS,
   PREPARER_FIELDS_BY_INDEX,
   preparerFieldName,
   type SignEmployeeFormErrorCode,
   type SignEmployeeFormData,
-  type SignEmployeeFormOutputs,
   type SignEmployeeFormField,
   type PreparerIndex,
   type PreparerFieldSuffix,
 } from './signEmployeeFormSchema'
-export { SignatureField, ConfirmSignatureField, UsedPreparerField } from './fields'
 export type {
   RequiredValidation as SignEmployeeFormRequiredValidation,
   SignatureFieldProps,

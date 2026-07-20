@@ -21,11 +21,7 @@ type FormMode = 'create' | 'update'
  * @internal
  */
 type RequiredFieldRule<TData = Record<string, unknown>> =
-  | 'create'
-  | 'update'
-  | 'always'
-  | 'never'
-  | ((data: TData, mode: FormMode) => boolean)
+  'create' | 'update' | 'always' | 'never' | ((data: TData, mode: FormMode) => boolean)
 
 /**
  * Mapping from each field name in a schema to its {@link RequiredFieldRule}.
@@ -40,9 +36,18 @@ export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Par
 }>
 
 /**
- * Union of field names in `TConfig` whose base rule is `'update'` or `'never'`
- * — i.e. fields that are optional on create and therefore eligible to be
- * promoted to required in create mode.
+ * A predicate (value-conditional) requiredness rule. Matches any function
+ * signature so predicate rules are recognized regardless of their parameter or
+ * return types. Such fields are never statically required in a given mode, so
+ * they're eligible for promotion — see {@link OptionalOnCreate}.
+ */
+type PredicateRule = (...args: never[]) => unknown
+
+/**
+ * Union of field names in `TConfig` that are not statically required in create
+ * mode and are therefore eligible to be promoted to required in create mode:
+ * fields whose base rule is `'update'`, `'never'`, or a predicate. Promoting a
+ * predicate field upgrades it from conditionally required to always required.
  *
  * The template-literal wrapper \`\` `${...}` \`\` is intentional: wrapping a
  * conditional-mapped-type index access in a template literal forces TypeScript
@@ -53,18 +58,18 @@ export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Par
  * resolved concrete union (e.g. `"stateWcCovered" | "twoPercentShareholder"`).
  */
 type OptionalOnCreate<TConfig> = `${{
-  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' ? K : never
+  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' | PredicateRule ? K : never
 }[keyof TConfig & string]}`
 
 /**
- * Union of field names in `TConfig` whose base rule is `'create'` or `'never'`
- * — i.e. fields that are optional on update and therefore eligible to be
- * promoted to required in update mode.
+ * Union of field names in `TConfig` that are not statically required in update
+ * mode and are therefore eligible to be promoted to required in update mode:
+ * fields whose base rule is `'create'`, `'never'`, or a predicate.
  *
  * See {@link OptionalOnCreate} for why the template-literal wrapper is here.
  */
 type OptionalOnUpdate<TConfig> = `${{
-  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' ? K : never
+  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' | PredicateRule ? K : never
 }[keyof TConfig & string]}`
 
 /**
@@ -72,7 +77,9 @@ type OptionalOnUpdate<TConfig> = `${{
  *
  * Only fields whose base rule allows the override appear in the `create` /
  * `update` arrays — fields that are already required in a given mode are
- * excluded from that mode's list at the type level.
+ * excluded from that mode's list at the type level. Value-conditional
+ * (predicate) fields are eligible in both modes; listing one promotes it from
+ * conditionally required to always required for that mode.
  *
  * @typeParam TConfig - The {@link RequiredFieldConfig} that constrains which fields are eligible.
  * @internal
@@ -95,7 +102,20 @@ interface BuildFormSchemaOptions<
   requiredErrorCode?: string
   mode: FormMode
   optionalFieldsToRequire?: OptionalFieldsToRequire<TConfig>
-  excludeFields?: Array<keyof T & string>
+  /**
+   * Fields that don't apply and should be dropped from required validation.
+   *
+   * An **array** removes the fields at build time — they're absent from the
+   * schema shape entirely (use when applicability is fixed by a config flag).
+   *
+   * A **function** is evaluated against the values under validation, so a field
+   * can flip in/out of applicability as other values change. The field stays in
+   * the schema (validated as optional) but its required check is skipped while
+   * the function reports it as excluded.
+   */
+  excludeFields?:
+    | Array<keyof T & string>
+    | ((data: { [K in keyof T]: z.infer<T[K]> }, mode: FormMode) => Array<keyof T & string>)
   /** Fields with existing server-side values that are redacted in the API response
    *  (e.g. SSN, EIN). These fields remain in the schema for format validation and
    *  appear in metadata (with `hasRedactedValue: true`) but are exempt from required
@@ -166,7 +186,10 @@ export function buildFormSchema<
     requiredErrorCode = 'REQUIRED',
     excludeFields = [],
   } = options
-  const excluded = new Set(excludeFields.map(String))
+  // The array form removes fields at build time; the function form is resolved
+  // per-validation in the superRefine pass below.
+  const excludeFieldsFn = typeof excludeFields === 'function' ? excludeFields : undefined
+  const staticExcluded = new Set((Array.isArray(excludeFields) ? excludeFields : []).map(String))
   const redacted = new Set((options.fieldsWithRedactedValues ?? []).map(String))
   const partnerRequired = new Set(
     resolveOptionalFieldsToRequire(options.optionalFieldsToRequire, mode),
@@ -181,7 +204,7 @@ export function buildFormSchema<
   const config = requiredFieldsConfig as Record<string, RequiredFieldRule>
 
   for (const [name, validator] of Object.entries(fieldValidators)) {
-    if (excluded.has(name)) continue
+    if (staticExcluded.has(name)) continue
     includedFieldNames.push(name)
 
     const effectiveRule = config[name] ?? 'always'
@@ -211,7 +234,13 @@ export function buildFormSchema<
   if (hasSuperRefine) {
     schema = (schema as z.ZodObject).superRefine(
       (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
+        const typedData = data as FormDataFromValidators<T>
+        const excludedNow = excludeFieldsFn
+          ? new Set(excludeFieldsFn(typedData, mode).map(String))
+          : undefined
+
         for (const { name, predicate } of dynamicRequired) {
+          if (excludedNow?.has(name)) continue
           if (predicate(data, mode) && isEmpty(data[name])) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
@@ -221,7 +250,7 @@ export function buildFormSchema<
           }
         }
 
-        options.superRefine?.(data as { [K in keyof T]: z.infer<T[K]> }, ctx)
+        options.superRefine?.(typedData, ctx)
       },
     )
   }

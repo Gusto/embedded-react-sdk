@@ -62,7 +62,7 @@ Analyze the diff for the following, in addition to the learned rules:
 > - `.claude/commands/create-hook.md` — canonical scaffolding for new hooks: directory layout, schema/fields/hook/index/test file structure, barrel wiring, and verification steps.
 > - `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` — migration playbook: pre-migration tests, hook-owns-business-logic rule, multi-form composition with `composeSubmitHandler`, `BaseBoundaries`/`BaseLayout` wiring, and the four canonical reference components.
 >
-> If a partner-facing hook in the diff materially diverges from these specs — different file layout, ad-hoc schema structure, business logic in the component instead of the hook, missing barrel exports, missing partner-facing doc in `docs/hooks/` — flag it as `[LEARNED-006]` and cite the relevant section of the canonical doc in the fix. Do not let "different but works" slide; partners depend on the consistency of these patterns.
+> If a partner-facing hook in the diff materially diverges from these specs — different file layout, ad-hoc schema structure, business logic in the component instead of the hook, missing barrel exports, missing TSDoc on the exported symbols (the partner-facing reference under `docs/reference/**` is generated from it) — flag it as `[LEARNED-006]` and cite the relevant section of the canonical doc in the fix. Do not let "different but works" slide; partners depend on the consistency of these patterns.
 
 #### Hook Architecture (component layer)
 
@@ -154,7 +154,7 @@ Analyze the diff for the following, in addition to the learned rules:
 
 ### Step 4: Output
 
-````
+````markdown
 # PR Review: <title>
 
 **PR:** #<number> · **Author:** <author> · **Branch:** `<head>` → `<base>`
@@ -162,13 +162,14 @@ Analyze the diff for the following, in addition to the learned rules:
 ---
 
 ## Critical
+
 <!-- Must fix before merge: bugs, security issues, broken a11y on interactive elements -->
 
 - **[rule or category]** `path/to/file.tsx:42` — <what's wrong and why it matters>
   ```ts
   // Fix:
   <corrected snippet>
-````
+  ```
 
 ## Important
 
@@ -195,8 +196,7 @@ Analyze the diff for the following, in addition to the learned rules:
 ## Assessment
 
 <One paragraph: what the PR accomplishes, main quality signal, merge recommendation.>
-
-```
+````
 
 ## Rules
 
@@ -205,4 +205,3 @@ Analyze the diff for the following, in addition to the learned rules:
 - If the diff is large (600+ lines), focus on Critical and Important only
 - Never omit the Strengths section
 - Tag each finding with the LEARNED-NNN rule ID when one applies (e.g., `[LEARNED-002]`)
-```

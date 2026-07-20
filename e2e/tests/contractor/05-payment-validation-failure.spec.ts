@@ -1,5 +1,5 @@
 import { test, expect } from '../../utils/localTestFixture'
-import { waitForLoadingComplete } from '../../utils/helpers'
+import { fillDate, waitForLoadingComplete } from '../../utils/helpers'
 
 test.describe('ContractorPaymentFlow - submit payment lifecycle', () => {
   test.beforeEach(({}, testInfo) => {
@@ -34,11 +34,15 @@ test.describe('ContractorPaymentFlow - submit payment lifecycle', () => {
       return
     }
 
-    const dateInput = page.getByLabel(/payment date/i)
-    await expect(dateInput).toBeVisible()
+    const dateGroup = page.getByRole('group', { name: /payment date/i })
+    await expect(dateGroup).toBeVisible()
     const futureDate = new Date()
     futureDate.setDate(futureDate.getDate() + 7)
-    await dateInput.fill(futureDate.toISOString().slice(0, 10))
+    await fillDate(page, 'Payment date', {
+      month: futureDate.getMonth() + 1,
+      day: futureDate.getDate(),
+      year: futureDate.getFullYear(),
+    })
 
     await page.getByRole('button', { name: /^continue$/i }).click()
     await waitForLoadingComplete(page, 30000)

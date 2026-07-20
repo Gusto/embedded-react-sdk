@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
+import type { Form } from '@gusto/embedded-api/models/components/form'
 import { useDocumentsList } from '../../shared/useDocumentsList'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'

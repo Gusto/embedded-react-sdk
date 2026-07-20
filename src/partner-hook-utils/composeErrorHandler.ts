@@ -3,7 +3,14 @@ import { collectErrors } from './collectErrors'
 import type { HookErrorHandling } from './types'
 import type { SDKError } from '@/types/sdkError'
 
-type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
+/**
+ * The subset of a TanStack Query result — its `error` and `refetch` — that
+ * {@link composeErrorHandler} reads from an additional query passed as a source.
+ *
+ * @public
+ * @childOf {@link composeErrorHandler}
+ */
+export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
 
 /**
  * Submit-side error state to merge into a composed {@link HookErrorHandling}.
@@ -14,6 +21,7 @@ type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
  * and can be cleared together with `clearSubmitError`.
  *
  * @public
+ * @childOf {@link composeErrorHandler}
  */
 export type SubmitStateForErrorHandling = {
   /** The current submit error, or `null` when cleared. */
@@ -28,6 +36,7 @@ export type SubmitStateForErrorHandling = {
  * an `errorHandling` object.
  *
  * @public
+ * @childOf {@link composeErrorHandler}
  */
 export type MixedErrorSource = QueryWithRefetch | { errorHandling: HookErrorHandling }
 
@@ -41,7 +50,7 @@ function isHookResultWithErrorHandling(
  * Merges multiple error sources into a single {@link HookErrorHandling}.
  *
  * @remarks
- * Accepts any mix of `@gusto/embedded-api-v-2025-11-15` React Query results and SDK hook
+ * Accepts any mix of `@gusto/embedded-api-v-2026-06-15` React Query results and SDK hook
  * results that already expose an `errorHandling` object (including the value returned by
  * {@link composeSubmitHandler}). Query errors are normalized to `SDKError`, nested hook
  * errors are flattened in, and an optional submit-state argument adds a submit error to
@@ -59,11 +68,12 @@ function isHookResultWithErrorHandling(
  * @param submitState - Optional screen-level submit state to fold into the result.
  * @returns A single `HookErrorHandling` covering every source.
  * @public
+ * @group Form composition
  *
  * @example
  * ```tsx
  * import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
- * import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+ * import { useEmployeeFormsList } from '@gusto/embedded-api-v-2026-06-15/react-query/employeeFormsList'
  *
  * function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
  *   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })

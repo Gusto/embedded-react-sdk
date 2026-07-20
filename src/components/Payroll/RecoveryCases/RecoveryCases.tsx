@@ -9,13 +9,17 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { FlowContext } from '@/components/Flow/useFlow'
 import { recoveryCasesEvents, type EventType } from '@/shared/constants'
 
-interface RecoveryCasesProps {
+/**
+ * Props for {@link RecoveryCases}.
+ *
+ * @public
+ */
+export interface RecoveryCasesProps extends Omit<BaseComponentInterface<never>, 'onEvent'> {
+  /** UUID of the company whose recovery cases should be listed. */
   companyId: string
+  /** Callback invoked each time the component emits an event. */
   onEvent?: BaseComponentInterface['onEvent']
 }
-
-interface RecoveryCasesInternalProps
-  extends Omit<BaseComponentInterface<never>, 'onEvent'>, RecoveryCasesProps {}
 
 /**
  * Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them.
@@ -27,6 +31,7 @@ interface RecoveryCasesInternalProps
  * {@link PayrollBlockerList}, but can be used standalone when you want a
  * dedicated recovery cases surface.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
@@ -37,7 +42,7 @@ interface RecoveryCasesInternalProps
  * @returns The recovery cases list with an embedded resubmit modal.
  * @public
  */
-export function RecoveryCases({ onEvent = () => {}, ...props }: RecoveryCasesInternalProps) {
+export function RecoveryCases({ onEvent = () => {}, ...props }: RecoveryCasesProps) {
   return (
     <BaseComponent {...props} onEvent={onEvent}>
       <Root {...props} onEvent={onEvent} />
@@ -45,21 +50,17 @@ export function RecoveryCases({ onEvent = () => {}, ...props }: RecoveryCasesInt
   )
 }
 
-function Root({ companyId, onEvent = () => {} }: RecoveryCasesInternalProps) {
+function Root({ companyId, onEvent = () => {} }: RecoveryCasesProps) {
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const recoveryCasesMachineInstance = useMemo(
     () =>
-      createMachine(
-        'list',
-        recoveryCasesMachine,
-        (): RecoveryCasesContextInterface => ({
-          component: null,
-          companyId,
-          onEvent: handleEvent,
-        }),
-      ),
+      createMachine('list', recoveryCasesMachine, (): RecoveryCasesContextInterface => ({
+        component: null,
+        companyId,
+        onEvent: handleEvent,
+      })),
     [companyId],
   )
   const [current, send] = useMachine(recoveryCasesMachineInstance)

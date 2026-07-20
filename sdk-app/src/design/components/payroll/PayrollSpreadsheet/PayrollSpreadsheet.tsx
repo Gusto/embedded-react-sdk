@@ -1,27 +1,47 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type FocusEvent } from 'react'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   EmployeeCompensations,
   PayrollShowReimbursements,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+} from '@gusto/embedded-api/models/components/payrollshow'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
 import { Skeleton } from '../../common/Skeleton'
+import { BreakdownModal } from './BreakdownModal'
 import styles from './PayrollSpreadsheet.module.scss'
+import {
+  type ColumnDef,
+  type ColumnKind,
+  type Workweek,
+  formatCellValue,
+  sumBreakdown,
+} from './shared'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { formatHoursDisplay } from '@/components/Payroll/helpers'
+import { calculateGrossPay } from '@/components/Payroll/helpers'
+import type { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, EmptyData, Flex, Grid, useDataView } from '@/components/Common'
-import { useDateFormatter } from '@/hooks/useDateFormatter'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-type ColumnKind = 'hours' | 'currency' | 'reimbursements'
-
-interface ColumnDef {
-  id: string
-  label: string
-  kind: ColumnKind
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <path d="M7 11 V7 a5 5 0 0 1 10 0 V11" />
+    </svg>
+  )
 }
 
 const COLUMNS: ColumnDef[] = [
@@ -56,17 +76,6 @@ type CellKey = `${string}|${string}`
 
 function cellKey(employeeUuid: string, columnId: string): CellKey {
   return `${employeeUuid}|${columnId}`
-}
-
-/** Formats a stored cell value for the given column kind. Two decimals max, empty if zero/blank.
- *  Mirrors `formatHoursDisplay` (hours: integer → `40.0`, decimal → `40.25`) and
- *  `toFixed(2)` for currency (matches PayrollEditEmployee's amount submission). */
-function formatCellValue(raw: string, kind: ColumnKind): string {
-  if (raw === '') return ''
-  const num = Number(raw)
-  if (!Number.isFinite(num) || num === 0) return ''
-  if (kind === 'hours') return formatHoursDisplay(num)
-  return num.toFixed(2)
 }
 
 function getPrimaryJobFlsa(employee: Employee): string | undefined {
@@ -225,6 +234,10 @@ interface PayrollSpreadsheetProps {
   rrop?: boolean
   /** Used in RRoP mode to derive workweek date ranges shown in the breakdown modal. */
   payPeriod?: PayrollPayPeriodType
+  /** Required to compute Total pay for salaried employees (hours-in-pay-period derivation). */
+  paySchedule?: PayScheduleObject
+  /** Payroll category — switches PTO handling for off-cycle in the Total pay calculation. */
+  payrollCategory?: PayrollCategory
 }
 
 /** Columns that participate in the Regular Rate of Pay workweek breakdown.
@@ -244,11 +257,6 @@ const RROP_BREAKDOWN_COLUMNS = new Set<string>([
  *  Entering OT or 2×OT forces the other RRoP-included columns into breakdown mode for
  *  that employee. */
 const RROP_TRIGGER_COLUMNS = new Set<string>(['overtime', 'doubleOvertime'])
-
-interface Workweek {
-  startDate: string
-  endDate: string
-}
 
 /** Splits the pay period into consecutive 7-day workweeks anchored at startDate.
  *  Last week clamps to endDate. Returns [] if the pay period is missing or invalid. */
@@ -274,13 +282,6 @@ function toIsoDate(d: Date): string {
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const dd = String(d.getDate()).padStart(2, '0')
   return `${yyyy}-${mm}-${dd}`
-}
-
-function sumBreakdown(breakdown: string[]): number {
-  return breakdown.reduce((acc, v) => {
-    const n = Number(v)
-    return acc + (Number.isFinite(n) ? n : 0)
-  }, 0)
 }
 
 const SAVE_DEBOUNCE_MS = 600
@@ -369,9 +370,10 @@ export function PayrollSpreadsheet({
   isLoading = false,
   rrop = false,
   payPeriod,
+  paySchedule,
+  payrollCategory,
 }: PayrollSpreadsheetProps) {
   const Components = useComponentContext()
-  const dateFormatter = useDateFormatter()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const stickyHeaderRef = useRef<HTMLDivElement>(null)
   const [isHorizontallyScrolled, setIsHorizontallyScrolled] = useState(false)
@@ -391,11 +393,10 @@ export function PayrollSpreadsheet({
 
   const [openModal, setOpenModal] = useState<{
     employeeUuid: string
-    columnId: string
-    kind: ColumnKind
-    columnLabel: string
+    focusColumnId?: string
+    columns: ColumnDef[]
+    initialBreakdowns: Record<string, string[]>
   } | null>(null)
-  const [draftBreakdown, setDraftBreakdown] = useState<string[]>([])
 
   const [openReimbursementsModal, setOpenReimbursementsModal] = useState<{
     employeeUuid: string
@@ -496,6 +497,45 @@ export function PayrollSpreadsheet({
     }
   }
 
+  // Total pay derives from the live-edited compensation so the cell updates as the user types.
+  // Uses the main SDK's calculateGrossPay so the prototype matches PayrollConfiguration's column
+  // exactly (regular + overtime + fixed earnings + PTO + minimum-wage adjustment).
+  const totalPayByEmployee = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const employee of employees) {
+      const original = compensationByEmployee.get(employee.uuid)
+      if (!original) {
+        map.set(employee.uuid, 0)
+        continue
+      }
+      const updated = buildUpdatedCompensation(
+        original,
+        values,
+        reimbursementsByEmployee[employee.uuid] ?? [],
+        employee,
+      )
+      map.set(
+        employee.uuid,
+        calculateGrossPay(
+          updated as PayrollEmployeeCompensationsType,
+          employee,
+          payPeriod?.startDate,
+          paySchedule,
+          payrollCategory,
+        ),
+      )
+    }
+    return map
+  }, [
+    employees,
+    compensationByEmployee,
+    values,
+    reimbursementsByEmployee,
+    payPeriod?.startDate,
+    paySchedule,
+    payrollCategory,
+  ])
+
   const applicabilityByEmployee = useMemo(() => {
     const compByEmployee = new Map(
       employeeCompensations.map(comp => [comp.employeeUuid ?? '', comp]),
@@ -527,40 +567,60 @@ export function PayrollSpreadsheet({
     flushSave(employeeUuid)
   }
 
-  const openBreakdownModal = (employeeUuid: string, column: ColumnDef) => {
+  // RRoP-included columns that apply to a given employee, in COLUMNS order.
+  const getModalColumns = (employeeUuid: string): ColumnDef[] => {
+    const applicability = applicabilityByEmployee.get(employeeUuid) ?? {}
+    return COLUMNS.filter(c => RROP_BREAKDOWN_COLUMNS.has(c.id) && applicability[c.id])
+  }
+
+  const seedDraftForColumn = (employeeUuid: string, column: ColumnDef): string[] => {
     const key = cellKey(employeeUuid, column.id)
     const existing = breakdowns[key]
-    const zero = column.kind === 'hours' ? '0.0' : '0.00'
     if (existing && existing.length === workweeks.length) {
-      setDraftBreakdown(existing)
-    } else {
-      // First open: seed Week 1 with the current total so the existing value isn't lost,
-      // and zero out the rest. Real API will eventually supply the per-workweek split.
-      const total = values[key] ?? ''
-      const seed = workweeks.map((_, idx) => (idx === 0 ? total || zero : zero))
-      setDraftBreakdown(seed)
+      // Existing entries may have been normalized to '0' on save; blank those so the
+      // modal matches the parent grid's "empty when zero" rule.
+      return existing.map(v => formatCellValue(v, column.kind))
+    }
+    // First open: seed Week 1 with the current total so the existing value isn't lost.
+    // Remaining weeks stay blank. Real API will eventually supply the per-workweek split.
+    const total = values[key] ?? ''
+    return workweeks.map((_, idx) => (idx === 0 ? total : ''))
+  }
+
+  const openBreakdownModal = (employeeUuid: string, focusColumn?: ColumnDef) => {
+    const modalColumns = getModalColumns(employeeUuid)
+    const initialBreakdowns: Record<string, string[]> = {}
+    for (const column of modalColumns) {
+      initialBreakdowns[column.id] = seedDraftForColumn(employeeUuid, column)
     }
     setOpenModal({
       employeeUuid,
-      columnId: column.id,
-      kind: column.kind,
-      columnLabel: column.label,
+      focusColumnId: focusColumn?.id,
+      columns: modalColumns,
+      initialBreakdowns,
     })
   }
 
   const closeBreakdownModal = () => {
     setOpenModal(null)
-    setDraftBreakdown([])
   }
 
-  const saveBreakdownModal = () => {
-    if (!openModal) return
-    const { employeeUuid, columnId, kind } = openModal
-    const key = cellKey(employeeUuid, columnId)
-    const normalized = draftBreakdown.map(v => (v === '' ? '0' : v))
-    const total = sumBreakdown(normalized)
-    setBreakdowns(prev => ({ ...prev, [key]: normalized }))
-    setValues(prev => ({ ...prev, [key]: formatCellValue(String(total), kind) }))
+  const commitBreakdowns = (
+    employeeUuid: string,
+    modalColumns: ColumnDef[],
+    drafts: Record<string, string[]>,
+  ) => {
+    const nextBreakdowns: Record<CellKey, string[]> = {}
+    const nextValues: Record<CellKey, string> = {}
+    for (const column of modalColumns) {
+      const draft = drafts[column.id] ?? []
+      const normalized = draft.map(v => (v === '' ? '0' : v))
+      const key = cellKey(employeeUuid, column.id)
+      nextBreakdowns[key] = normalized
+      nextValues[key] = formatCellValue(String(sumBreakdown(normalized)), column.kind)
+    }
+    setBreakdowns(prev => ({ ...prev, ...nextBreakdowns }))
+    setValues(prev => ({ ...prev, ...nextValues }))
     closeBreakdownModal()
     flushSave(employeeUuid)
   }
@@ -625,7 +685,6 @@ export function PayrollSpreadsheet({
           : ''
       })()
     : ''
-  const modalColumnLabel = openModal?.columnLabel ?? ''
 
   // Per-employee: does this row have a non-empty Overtime or Double overtime value?
   // When true, the other RRoP-included columns (regular hours, bonus, commission,
@@ -658,6 +717,9 @@ export function PayrollSpreadsheet({
           >
             Employee
           </div>
+          <div role="columnheader" className={styles.headerCell}>
+            Total pay
+          </div>
           {COLUMNS.map(column => (
             <div role="columnheader" key={column.id} className={styles.headerCell}>
               {column.label}
@@ -680,6 +742,19 @@ export function PayrollSpreadsheet({
                   <Skeleton width="8.75rem" height="0.875rem" />
                 ) : (
                   <span className={styles.employeeName}>{name}</span>
+                )}
+              </div>
+
+              <div role="gridcell" className={`${styles.cell} ${styles.cellReadOnly}`}>
+                {isLoading ? (
+                  <Skeleton width="4rem" height="0.875rem" />
+                ) : (
+                  <>
+                    <span className={styles.cellReadOnlyContent}>
+                      {formatNumberAsCurrency(totalPayByEmployee.get(uuid) ?? 0)}
+                    </span>
+                    <LockIcon className={styles.lockIcon} />
+                  </>
                 )}
               </div>
 
@@ -796,66 +871,18 @@ export function PayrollSpreadsheet({
       </div>
 
       {openModal && (
-        <Components.Modal
-          isOpen
+        <BreakdownModal
+          employeeName={modalEmployeeName}
+          payPeriod={payPeriod}
+          workweeks={workweeks}
+          columns={openModal.columns}
+          focusColumnId={openModal.focusColumnId}
+          initialBreakdowns={openModal.initialBreakdowns}
           onClose={closeBreakdownModal}
-          shouldCloseOnBackdropClick
-          footer={
-            <Flex justifyContent="flex-end" gap={8}>
-              <Components.Button variant="secondary" onClick={closeBreakdownModal}>
-                Cancel
-              </Components.Button>
-              <Components.Button onClick={saveBreakdownModal}>Save</Components.Button>
-            </Flex>
-          }
-        >
-          <Flex flexDirection="column" gap={24}>
-            <Flex flexDirection="column" gap={4}>
-              <Components.Heading as="h3" styledAs="h4">
-                {modalColumnLabel} breakdown for {modalEmployeeName}
-              </Components.Heading>
-              {payPeriod?.startDate && payPeriod.endDate && (
-                <Components.Text variant="supporting">
-                  Pay period:{' '}
-                  {(() => {
-                    const { startDate, endDate } = dateFormatter.formatPayPeriod(
-                      payPeriod.startDate,
-                      payPeriod.endDate,
-                    )
-                    return `${startDate} – ${endDate}`
-                  })()}
-                </Components.Text>
-              )}
-            </Flex>
-            <Flex flexDirection="column" gap={16}>
-              {workweeks.map((week, idx) => {
-                const { startDate, endDate } = dateFormatter.formatPayPeriod(
-                  week.startDate,
-                  week.endDate,
-                )
-                const isHours = openModal.kind === 'hours'
-                return (
-                  <Components.NumberInput
-                    key={`${week.startDate}-${week.endDate}`}
-                    label={`Week ${idx + 1}: ${startDate} – ${endDate}`}
-                    format={isHours ? 'decimal' : 'currency'}
-                    min={0}
-                    isRequired
-                    value={Number(draftBreakdown[idx] ?? '0') || 0}
-                    onChange={value => {
-                      setDraftBreakdown(prev => {
-                        const next = [...prev]
-                        next[idx] = Number.isFinite(value) ? String(value) : '0'
-                        return next
-                      })
-                    }}
-                    adornmentEnd={isHours ? <span>hrs</span> : undefined}
-                  />
-                )
-              })}
-            </Flex>
-          </Flex>
-        </Components.Modal>
+          onSave={drafts => {
+            commitBreakdowns(openModal.employeeUuid, openModal.columns, drafts)
+          }}
+        />
       )}
 
       {openReimbursementsModal && (

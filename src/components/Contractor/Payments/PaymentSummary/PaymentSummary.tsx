@@ -1,7 +1,7 @@
-import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsGet'
-import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
-import { useBankAccountsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
-import type { PayrollCreditBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollcreditblockertype'
+import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGet'
+import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import type { PayrollCreditBlockerType } from '@gusto/embedded-api/models/components/payrollcreditblockertype'
 import type { InternalAlert } from '../types'
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
@@ -19,10 +19,16 @@ export interface PaymentSummaryProps {
   companyId: string
   /** Callback invoked when a flow event occurs, e.g. when the user exits. */
   onEvent: (type: EventType, data?: unknown) => void
-  /**
-   * @internal
-   * Flow-injected alerts (e.g. wire-transfer confirmation).
-   */
+}
+
+/**
+ * Props for the flow-internal {@link PaymentSummaryInternal}, which layers
+ * flow-injected alerts on top of the public {@link PaymentSummaryProps}.
+ *
+ * @internal
+ */
+export interface PaymentSummaryInternalProps extends PaymentSummaryProps {
+  /** Flow-injected alerts (e.g. wire-transfer confirmation). */
   alerts?: InternalAlert[]
 }
 
@@ -50,6 +56,14 @@ const findWireInRequestUuid = (
  * Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required.
  *
  * @remarks
+ * Features:
+ *
+ * - **Success confirmation** — confirms the number of payments scheduled.
+ * - **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
+ * - **Debit account** — shows the company bank account used for the debit.
+ * - **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
+ *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/exit` | User completes the payment flow. | — |
@@ -58,12 +72,20 @@ const findWireInRequestUuid = (
  * @returns The rendered payment summary, or `null` when the payment group cannot be loaded.
  * @public
  */
-export const PaymentSummary = ({
+export const PaymentSummary = (props: PaymentSummaryProps) => <PaymentSummaryInternal {...props} />
+
+/**
+ * Flow-internal entry point for {@link PaymentSummary} that accepts flow-injected
+ * alerts. Partners use {@link PaymentSummary}; flows render this directly.
+ *
+ * @internal
+ */
+export const PaymentSummaryInternal = ({
   paymentGroupId,
   companyId,
   onEvent,
   alerts,
-}: PaymentSummaryProps) => {
+}: PaymentSummaryInternalProps) => {
   useI18n('Contractor.Payments.PaymentSummary')
 
   const { data: paymentGroupData } = useContractorPaymentGroupsGetSuspense({

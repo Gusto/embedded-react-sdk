@@ -1,8 +1,9 @@
 /// <reference types="vite/client" />
 import { useTranslation } from 'react-i18next'
 import type { CustomTypeOptions } from 'i18next'
+import type { Resources } from './types'
 import { LRUCache } from '@/helpers/LRUCache'
-import type { ResourceDictionary, Resources } from '@/types/Helpers'
+import type { ResourceDictionary } from '@/types/Helpers'
 
 /** @internal */
 export const defaultNS = 'common'
@@ -70,9 +71,7 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
  */
 export const useI18n = (
   namespaces:
-    | keyof CustomTypeOptions['resources']
-    | Array<keyof CustomTypeOptions['resources']>
-    | null,
+    keyof CustomTypeOptions['resources'] | Array<keyof CustomTypeOptions['resources']> | null,
 ) => {
   //Getting our instance of i18n -> supplied by the provider set in GustoProvider
   const { i18n: i18nInstance } = useTranslation()
@@ -107,7 +106,7 @@ export const useI18n = (
  * @internal
  */
 export const useComponentDictionary = <K extends keyof Resources>(
-  ns: keyof CustomTypeOptions['resources'],
+  ns: K,
   resource?: ResourceDictionary<K> | null,
 ) => {
   const { i18n: i18nInstance } = useTranslation()

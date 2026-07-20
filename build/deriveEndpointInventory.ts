@@ -11,23 +11,40 @@ import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { spawnSync } from 'child_process'
 import { Project, SourceFile, SyntaxKind } from 'ts-morph'
+import { DOMAINS } from '../docs-site/plugins/typedoc-custom/router.config'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
 const SRC_DIR = join(ROOT, 'src')
-const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/funcs')
-const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/models/operations')
+const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/funcs')
+const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
-const JSON_OUTPUT_PATH = join(ROOT, 'docs/appendix/endpoint-inventory.json')
-const MD_OUTPUT_PATH = join(ROOT, 'docs/appendix/endpoint-reference.md')
+const INDEX_PATH = join(SRC_DIR, 'index.ts')
+const JSON_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-inventory.json')
+const MD_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-reference.md')
+
+// The dated API version the SDK targets. Kept in step with the
+// @gusto/embedded-api-v-<version> package the rest of this file references.
+const API_VERSION = '2026-06-15'
+// Public API reference for the targeted version. Each endpoint links to its
+// page here, e.g. PUT /v1/garnishments/:garnishmentId ->
+// .../reference/put-v1-garnishments-garnishment_id
+const DOCS_REFERENCE_BASE = `https://docs.gusto.com/embedded-payroll/v${API_VERSION}/reference`
+
+const KNOWN_UNDOCUMENTED_OPERATIONS = new Set(['submit-information-request'])
 
 const isVerifyMode = process.argv.includes('--verify')
 
 interface Endpoint {
   method: string
   path: string
+  /**
+   * URL of the endpoint's page in the public API reference. Omitted for
+   * endpoints in {@link KNOWN_UNDOCUMENTED_OPERATIONS}, which have no such page.
+   */
+  docsUrl?: string
 }
 
 interface BlockEntry {
@@ -56,11 +73,21 @@ interface FlowMapping {
 interface Inventory {
   blocks: Record<string, BlockEntry>
   flows: Record<string, FlowEntry>
+  hooks: Record<string, BlockEntry>
+}
+
+interface HookMapping {
+  hookName: string
+  /** Component-tree domain the hook lives under, e.g. "Employee". */
+  domain: string
+  sourceFile: string
 }
 
 interface DerivationResult {
   inventory: Inventory
   funcLookup: Map<string, Endpoint>
+  /** Maps each documented hook name to its component-tree domain, for markdown grouping. */
+  hookDomains: Record<string, string>
 }
 
 function createApiProject(): Project {
@@ -72,6 +99,18 @@ function createApiProject(): Project {
 
 function snakeToCamel(snake: string): string {
   return snake.replace(/_([a-z])/g, (_match, letter: string) => letter.toUpperCase())
+}
+
+/**
+ * Builds the public API reference URL for an endpoint from its `operationID`,
+ * which is the exact slug the reference uses for that endpoint's page (e.g.
+ * `get-v1-company-forms`). The reference slug is not always derivable from the
+ * method and path, so the `operationID` carried by the SDK is the source of truth.
+ * Returns `undefined` for operations known to have no public reference page.
+ */
+function endpointDocsUrl(operationId: string): string | undefined {
+  if (KNOWN_UNDOCUMENTED_OPERATIONS.has(operationId)) return undefined
+  return `${DOCS_REFERENCE_BASE}/${operationId}`
 }
 
 function buildSnakeToCamelLookup(project: Project): Map<string, string> {
@@ -124,14 +163,15 @@ function buildParamNameMap(project: Project, funcPaths: string[]): Record<string
 
 function collectRawFuncPaths(
   project: Project,
-): { funcName: string; path: string; method: string }[] {
+): { funcName: string; path: string; method: string; operationId: string }[] {
   const funcFiles = project.addSourceFilesAtPaths(join(FUNCS_DIR, '*.ts'))
-  const results: { funcName: string; path: string; method: string }[] = []
+  const results: { funcName: string; path: string; method: string; operationId: string }[] = []
 
   for (const file of funcFiles) {
     const funcName = file.getBaseNameWithoutExtension()
     let path = ''
     let method = ''
+    let operationId = ''
 
     file.forEachDescendant(node => {
       if (node.getKind() === SyntaxKind.CallExpression) {
@@ -145,21 +185,34 @@ function collectRawFuncPaths(
       }
       if (node.getKind() === SyntaxKind.PropertyAssignment) {
         const pa = node.asKindOrThrow(SyntaxKind.PropertyAssignment)
-        if (pa.getName() === 'method') {
-          const init = pa.getInitializer()
-          if (init?.getKind() === SyntaxKind.StringLiteral) {
-            method = init.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
-          }
-        }
+        const init = pa.getInitializer()
+        if (init?.getKind() !== SyntaxKind.StringLiteral) return
+        const value = init.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
+        if (pa.getName() === 'method') method = value
+        // The operationID mirrors the endpoint's slug in the public API reference.
+        if (pa.getName() === 'operationID') operationId = value
       }
     })
 
     if (path && method) {
-      results.push({ funcName, path, method })
+      results.push({ funcName, path, method, operationId })
     }
   }
 
   return results
+}
+
+function warnIfStaleUndocumentedOperations(knownOperationIds: Set<string>): void {
+  const stale = [...KNOWN_UNDOCUMENTED_OPERATIONS].filter(op => !knownOperationIds.has(op))
+  if (stale.length === 0) return
+
+  console.warn(
+    'WARNING: KNOWN_UNDOCUMENTED_OPERATIONS lists operationIDs that no longer exist in ' +
+      '@gusto/embedded-api-v-2026-06-15 (renamed or removed?):',
+  )
+  for (const op of stale) console.warn(`  ${op}`)
+  console.warn('  Remove each stale entry, or update it to the current operationID.')
+  console.warn('')
 }
 
 function buildFuncLookup(project: Project): Map<string, Endpoint> {
@@ -169,11 +222,14 @@ function buildFuncLookup(project: Project): Map<string, Endpoint> {
     rawFuncs.map(f => f.path),
   )
 
+  warnIfStaleUndocumentedOperations(new Set(rawFuncs.map(f => f.operationId)))
+
   const lookup = new Map<string, Endpoint>()
-  for (const { funcName, path, method } of rawFuncs) {
+  for (const { funcName, path, method, operationId } of rawFuncs) {
     lookup.set(funcName, {
       method,
       path: normalizeEndpointPath(path, paramNameMap),
+      docsUrl: endpointDocsUrl(operationId),
     })
   }
 
@@ -208,11 +264,11 @@ function collectTransitiveApiImports(
   const funcNames = new Set<string>()
 
   function followSpec(spec: string, getResolved: () => SourceFile | undefined) {
-    if (spec.startsWith('@gusto/embedded-api-v-2025-11-15/react-query/')) {
-      const name = spec.slice('@gusto/embedded-api-v-2025-11-15/react-query/'.length)
+    if (spec.startsWith('@gusto/embedded-api/react-query/')) {
+      const name = spec.slice('@gusto/embedded-api/react-query/'.length)
       if (!name.startsWith('_')) funcNames.add(name)
-    } else if (spec.startsWith('@gusto/embedded-api-v-2025-11-15/funcs/')) {
-      funcNames.add(spec.slice('@gusto/embedded-api-v-2025-11-15/funcs/'.length))
+    } else if (spec.startsWith('@gusto/embedded-api/funcs/')) {
+      funcNames.add(spec.slice('@gusto/embedded-api/funcs/'.length))
     } else if (spec.startsWith('.') || spec.startsWith('@/hooks/')) {
       // Follow relative imports (catches ../shared/ hooks) and cross-cutting utility hooks.
       // Deliberately skip @/components/, @/contexts/, @/helpers/ etc. to avoid
@@ -410,6 +466,109 @@ function discoverFlows(): FlowMapping[] {
   return flows
 }
 
+function resolveAliasPath(moduleSpecifier: string): string | undefined {
+  // '@/components/Employee/.../useX'  →  '<src>/components/Employee/.../useX'
+  if (!moduleSpecifier.startsWith('@/')) return undefined
+  const base = join(SRC_DIR, moduleSpecifier.slice(2))
+  const candidates = [base + '.ts', base + '.tsx', join(base, 'index.ts'), join(base, 'index.tsx')]
+  return candidates.find(candidate => existsSync(candidate))
+}
+
+/**
+ * Given a barrel file and a hook name exported from it, returns the path of the file
+ * that actually defines the hook (following both named and wildcard re-exports), so the
+ * transitive scan starts from the hook's own file rather than the shared barrel. Falls
+ * back to `barrelFilePath` when the hook is defined directly in the barrel or not found.
+ */
+function resolveHookSourceFile(
+  project: Project,
+  barrelFilePath: string,
+  hookName: string,
+  depth = 0,
+): string | undefined {
+  if (depth > 5) return undefined
+
+  const barrelSource = project.addSourceFileAtPathIfExists(barrelFilePath)
+  if (!barrelSource) return undefined
+
+  for (const exportDecl of barrelSource.getExportDeclarations()) {
+    if (exportDecl.isTypeOnly()) continue
+    const namedExports = exportDecl.getNamedExports()
+
+    if (namedExports.length > 0) {
+      // Named re-export: export { useStateFields } from './fields'
+      for (const exportSpec of namedExports) {
+        if (exportSpec.isTypeOnly()) continue
+        const name = exportSpec.getAliasNode()?.getText() ?? exportSpec.getName()
+        if (name === hookName) {
+          return exportDecl.getModuleSpecifierSourceFile()?.getFilePath()
+        }
+      }
+    } else if (exportDecl.getModuleSpecifierValue()) {
+      // Wildcard re-export: export * from './useEmployeeStateTaxesForm' — recurse in
+      const wildcardTarget = exportDecl.getModuleSpecifierSourceFile()?.getFilePath()
+      if (wildcardTarget) {
+        const found = resolveHookSourceFile(project, wildcardTarget, hookName, depth + 1)
+        if (found !== undefined) return found
+      }
+    }
+  }
+
+  return undefined
+}
+
+// Domain grouping mirrors the reference-docs sidebar (DOMAINS in router.config.ts),
+// so this file's sections line up with the Reference nav. Sidebar order is preserved.
+const DOMAIN_ORDER: string[] = DOMAINS.map(domain => domain.label)
+
+const NAMESPACE_TO_DOMAIN = new Map<string, string>()
+const COMPONENT_DIR_TO_DOMAIN = new Map<string, string>()
+for (const domain of DOMAINS) {
+  // `path` doubles as the src/components subdir slug (e.g. 'employee', 'time-off').
+  COMPONENT_DIR_TO_DOMAIN.set(domain.path.replace(/-/g, ''), domain.label)
+  for (const namespace of domain.namespaces) {
+    NAMESPACE_TO_DOMAIN.set(namespace.id, domain.label)
+  }
+}
+
+/** Maps a `Namespace.Component` / `Namespace.Flow` key to its sidebar domain label. */
+function namespaceToDomainLabel(name: string): string {
+  const namespace = name.includes('.') ? name.split('.')[0]! : name
+  return NAMESPACE_TO_DOMAIN.get(namespace) ?? namespace
+}
+
+function deriveHookDomain(moduleSpecifier: string): string {
+  // '@/components/Employee/.../useCompensationForm'  →  component dir "Employee"  →  "Employees"
+  const match = /@\/components\/([^/]+)\//.exec(moduleSpecifier)
+  const componentDir = match ? match[1] : ''
+  return COMPONENT_DIR_TO_DOMAIN.get(componentDir.toLowerCase()) ?? componentDir ?? 'Other'
+}
+
+function discoverHooks(project: Project): HookMapping[] {
+  const indexFile = project.addSourceFileAtPath(INDEX_PATH)
+  const hooks: HookMapping[] = []
+  const seen = new Set<string>()
+
+  for (const decl of indexFile.getExportDeclarations()) {
+    if (decl.isTypeOnly()) continue
+    const spec = decl.getModuleSpecifierValue()
+    if (!spec) continue
+    const sourceFile = resolveAliasPath(spec)
+    if (!sourceFile) continue
+
+    for (const named of decl.getNamedExports()) {
+      if (named.isTypeOnly()) continue
+      const hookName = named.getAliasNode()?.getText() ?? named.getName()
+      if (!/^use[A-Z]/.test(hookName) || seen.has(hookName)) continue
+      seen.add(hookName)
+      const resolvedSourceFile = resolveHookSourceFile(project, sourceFile, hookName) ?? sourceFile
+      hooks.push({ hookName, domain: deriveHookDomain(spec), sourceFile: resolvedSourceFile })
+    }
+  }
+
+  return hooks
+}
+
 function deriveBlocksFromImport(
   resolvedImportPath: string,
   rawImportedNames: string,
@@ -593,7 +752,7 @@ function deriveInventory(): DerivationResult {
     for (const funcName of funcNames) {
       const info = funcLookup.get(funcName)
       if (info) {
-        endpoints.push({ method: info.method, path: info.path })
+        endpoints.push({ method: info.method, path: info.path, docsUrl: info.docsUrl })
       }
     }
 
@@ -621,23 +780,61 @@ function deriveInventory(): DerivationResult {
     Object.entries(flows).sort(([a], [b]) => a.localeCompare(b)),
   )
 
-  return { inventory: { blocks, flows: sortedFlows }, funcLookup }
+  const hookMappings = discoverHooks(project)
+  const hooks: Record<string, BlockEntry> = {}
+  const hookDomains: Record<string, string> = {}
+
+  for (const { hookName, domain, sourceFile } of hookMappings) {
+    // Empty otherBlockDirs: a hook is a leaf, so follow every transitive API import
+    // it touches rather than stopping at block boundaries the way flows do.
+    const funcNames = collectTransitiveApiImports(
+      project,
+      [sourceFile],
+      dirname(sourceFile),
+      new Set(),
+    )
+
+    const endpoints: Endpoint[] = []
+    for (const funcName of funcNames) {
+      const info = funcLookup.get(funcName)
+      if (info) {
+        endpoints.push({ method: info.method, path: info.path, docsUrl: info.docsUrl })
+      }
+    }
+
+    if (endpoints.length > 0) {
+      const deduped = deduplicateEndpoints(endpoints)
+      hooks[hookName] = {
+        endpoints: deduped,
+        variables: extractVariables(deduped),
+      }
+      hookDomains[hookName] = domain
+    }
+  }
+
+  const sortedHooks = Object.fromEntries(
+    Object.entries(hooks).sort(([a], [b]) => a.localeCompare(b)),
+  )
+
+  return { inventory: { blocks, flows: sortedFlows, hooks: sortedHooks }, funcLookup, hookDomains }
 }
 
-function generateMarkdown(inventory: Inventory): string {
+function generateMarkdown(inventory: Inventory, hookDomains: Record<string, string>): string {
   const lines: string[] = [
     '---',
-    "title: 'Endpoint Reference'",
-    'description: Auto-generated list of every Gusto Embedded API endpoint each SDK block calls, with HTTP methods, paths, and URL parameters for proxy allowlisting.',
+    "title: 'Endpoint reference'",
+    'description: Auto-generated list of every Gusto Embedded API endpoint each SDK block and hook calls, with HTTP methods, paths, and URL parameters for proxy allowlisting.',
     '---',
     '',
     '<!-- AUTO-GENERATED FILE. Do not edit manually. Run "npm run endpoints:derive" to regenerate. -->',
     '',
-    '# Endpoint Reference',
+    '# Endpoint reference',
     '',
-    'Every SDK component ("block") makes a specific set of API calls. This reference lists them all. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
+    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.mdx) navigation. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
     '',
-    'Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond to real IDs at runtime. This data is also available as a machine-readable JSON file at [`endpoint-inventory.json`](./endpoint-inventory.json), which includes the list of variables each block expects. For programmatic access, import it directly from the package:',
+    "Within each domain, **Components** and **Hooks** list the endpoints they call, and **Flows** list the blocks they compose (a flow's endpoints are the union of its blocks' endpoints).",
+    '',
+    'Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond to real IDs at runtime, and each links to its page in the API reference. This data is also available as a machine-readable JSON file at [`endpoint-inventory.json`](./endpoint-inventory.json), which includes the reference URL and the list of variables each block expects. For programmatic access, import it directly from the package:',
     '',
     '```typescript',
     "import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'",
@@ -645,50 +842,94 @@ function generateMarkdown(inventory: Inventory): string {
     '',
   ]
 
-  const blocksByDomain = new Map<string, [string, BlockEntry][]>()
+  const blocksByDomain = groupByDomainLabel(Object.entries(inventory.blocks), name =>
+    namespaceToDomainLabel(name),
+  )
+  const flowsByDomain = groupByDomainLabel(Object.entries(inventory.flows), name =>
+    namespaceToDomainLabel(name),
+  )
+  const hooksByDomain = groupByDomainLabel(
+    Object.entries(inventory.hooks),
+    name => hookDomains[name] ?? 'Other',
+  )
 
-  for (const [name, entry] of Object.entries(inventory.blocks)) {
-    const domain = name.includes('.') ? name.split('.')[0] : name
-    if (!blocksByDomain.has(domain)) blocksByDomain.set(domain, [])
-    blocksByDomain.get(domain)!.push([name, entry])
-  }
+  const present = new Set<string>([
+    ...blocksByDomain.keys(),
+    ...flowsByDomain.keys(),
+    ...hooksByDomain.keys(),
+  ])
 
-  for (const [domain, domainBlocks] of blocksByDomain) {
-    lines.push(`## ${domain} components`, '')
-    lines.push('| Component | Method | Path |')
-    lines.push('| --- | --- | --- |')
+  for (const domainLabel of orderDomainLabels(present)) {
+    lines.push(`## ${domainLabel}`, '')
 
-    for (const [blockName, entry] of domainBlocks) {
-      let isFirst = true
-      for (const ep of entry.endpoints) {
-        const label = isFirst ? `**${blockName}**` : ''
-        lines.push(`| ${label} | ${ep.method} | \`${ep.path}\` |`)
-        isFirst = false
-      }
+    const domainBlocks = blocksByDomain.get(domainLabel)
+    if (domainBlocks?.length) {
+      appendEndpointTable(lines, '### Components', 'Component', domainBlocks)
     }
 
-    lines.push('')
+    const domainFlows = flowsByDomain.get(domainLabel)
+    if (domainFlows?.length) {
+      lines.push('### Flows', '')
+      lines.push('| Flow | Blocks included |')
+      lines.push('| --- | --- |')
+      for (const [flowName, entry] of domainFlows) {
+        lines.push(`| **${flowName}** | ${entry.blocks.join(', ')} |`)
+      }
+      lines.push('')
+    }
+
+    const domainHooks = hooksByDomain.get(domainLabel)
+    if (domainHooks?.length) {
+      appendEndpointTable(lines, '### Hooks', 'Hook', domainHooks)
+    }
   }
-
-  lines.push('## Flows', '')
-  lines.push(
-    'Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.',
-    '',
-  )
-  lines.push('| Flow | Blocks included |')
-  lines.push('| --- | --- |')
-
-  for (const [flowName, entry] of Object.entries(inventory.flows)) {
-    lines.push(`| **${flowName}** | ${entry.blocks.join(', ')} |`)
-  }
-
-  lines.push('')
 
   return lines.join('\n')
 }
 
+function groupByDomainLabel<T>(
+  entries: [string, T][],
+  labelFor: (name: string) => string,
+): Map<string, [string, T][]> {
+  const grouped = new Map<string, [string, T][]>()
+  for (const [name, value] of entries) {
+    const label = labelFor(name)
+    if (!grouped.has(label)) grouped.set(label, [])
+    grouped.get(label)!.push([name, value])
+  }
+  return grouped
+}
+
+/** Sidebar domains first (in DOMAINS order), then any unmapped labels alphabetically. */
+function orderDomainLabels(present: Set<string>): string[] {
+  const known = DOMAIN_ORDER.filter(label => present.has(label))
+  const extras = [...present].filter(label => !DOMAIN_ORDER.includes(label)).sort()
+  return [...known, ...extras]
+}
+
+function appendEndpointTable(
+  lines: string[],
+  heading: string,
+  columnLabel: string,
+  entries: [string, BlockEntry][],
+): void {
+  lines.push(heading, '')
+  lines.push(`| ${columnLabel} | Method | Path |`)
+  lines.push('| --- | --- | --- |')
+  for (const [name, entry] of entries) {
+    let isFirst = true
+    for (const ep of entry.endpoints) {
+      const label = isFirst ? `**${name}**` : ''
+      const pathCell = ep.docsUrl ? `[\`${ep.path}\`](${ep.docsUrl})` : `\`${ep.path}\``
+      lines.push(`| ${label} | ${ep.method} | ${pathCell} |`)
+      isFirst = false
+    }
+  }
+  lines.push('')
+}
+
 function validateEndpoints(
-  inventory: { blocks: Record<string, BlockEntry> },
+  inventory: { blocks: Record<string, BlockEntry>; hooks: Record<string, BlockEntry> },
   funcLookup: Map<string, Endpoint>,
 ) {
   const apiEndpoints = new Set<string>()
@@ -697,18 +938,19 @@ function validateEndpoints(
   }
 
   const invalid: string[] = []
-  for (const [blockName, block] of Object.entries(inventory.blocks)) {
-    for (const ep of block.endpoints) {
+  const allEntries = [...Object.entries(inventory.blocks), ...Object.entries(inventory.hooks)]
+  for (const [name, entry] of allEntries) {
+    for (const ep of entry.endpoints) {
       const key = `${ep.method} ${ep.path}`
       if (!apiEndpoints.has(key)) {
-        invalid.push(`${blockName}: ${key}`)
+        invalid.push(`${name}: ${key}`)
       }
     }
   }
 
   if (invalid.length > 0) {
     console.error(
-      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2025-11-15:',
+      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2026-06-15:',
     )
     for (const ep of invalid) console.error(`  ${ep}`)
     console.error('')
@@ -718,17 +960,20 @@ function validateEndpoints(
 }
 
 function generate() {
-  const { inventory, funcLookup } = deriveInventory()
+  const { inventory, funcLookup, hookDomains } = deriveInventory()
 
   const invalidCount = validateEndpoints(inventory, funcLookup)
 
   mkdirSync(dirname(JSON_OUTPUT_PATH), { recursive: true })
   writeFileSync(JSON_OUTPUT_PATH, JSON.stringify(inventory, null, 2) + '\n', 'utf-8')
-  writeFileSync(MD_OUTPUT_PATH, generateMarkdown(inventory), 'utf-8')
+  writeFileSync(MD_OUTPUT_PATH, generateMarkdown(inventory, hookDomains), 'utf-8')
 
   const blockCount = Object.keys(inventory.blocks).length
   const flowCount = Object.keys(inventory.flows).length
-  console.log(`Endpoint inventory written: ${blockCount} blocks, ${flowCount} flows`)
+  const hookCount = Object.keys(inventory.hooks).length
+  console.log(
+    `Endpoint inventory written: ${blockCount} blocks, ${flowCount} flows, ${hookCount} hooks`,
+  )
   console.log(`  JSON -> ${relative(ROOT, JSON_OUTPUT_PATH)}`)
   console.log(`  Markdown -> ${relative(ROOT, MD_OUTPUT_PATH)}`)
 
@@ -763,10 +1008,10 @@ function verify() {
     }
   }
 
-  const { inventory: freshInventory, funcLookup } = deriveInventory()
+  const { inventory: freshInventory, funcLookup, hookDomains } = deriveInventory()
   const invalidCount = validateEndpoints(freshInventory, funcLookup)
   const freshJson = JSON.stringify(freshInventory, null, 2) + '\n'
-  const freshMd = generateMarkdown(freshInventory)
+  const freshMd = generateMarkdown(freshInventory, hookDomains)
 
   const committedJson = readFileSync(JSON_OUTPUT_PATH, 'utf-8')
   const committedMd = readFileSync(MD_OUTPUT_PATH, 'utf-8')
@@ -781,7 +1026,8 @@ function verify() {
   console.error('This can happen when:')
   console.error('  - A component added or removed an API hook/function import')
   console.error('  - A flow added or removed a block component')
-  console.error('  - The @gusto/embedded-api-v-2025-11-15 package was updated')
+  console.error('  - A hook added or removed an API function import, or a hook export changed')
+  console.error('  - The @gusto/embedded-api-v-2026-06-15 package was updated')
   console.error('')
   if (committedJson !== freshJson) printDiff(JSON_OUTPUT_PATH, freshJson)
   if (committedMd !== freshMd) printDiff(MD_OUTPUT_PATH, freshMd)

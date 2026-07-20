@@ -1,4 +1,4 @@
-import { useEmployeeAddressesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGet'
+import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useHomeAddressForm } from './useHomeAddressForm'
 import type { UseHomeAddressFormProps, UseHomeAddressFormResult } from './useHomeAddressForm'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -11,6 +11,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
  * the hook resolves the current home address itself.
  *
  * @public
+ * @interface
  */
 export type UseCurrentHomeAddressFormProps = Omit<UseHomeAddressFormProps, 'homeAddressUuid'>
 

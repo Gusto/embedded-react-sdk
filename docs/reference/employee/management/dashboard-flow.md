@@ -12,22 +12,18 @@ custom_edit_url: null
 
 # DashboardFlow
 
-The main entry point for the employee dashboard.
+Hub for viewing and managing a single employee's profile, pay, and documents.
 
-## Example
+<!-- guide-source: src/components/Employee/Dashboard/GUIDE.md (slot: overview) -->
+## Tabs
 
-```tsx
-import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+The dashboard organizes an employee's payroll information into four tabs. Switching tabs emits `employee/dashboard/tabChange`.
 
-function MyApp() {
-  return (
-    <EmployeeManagement.DashboardFlow
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      onEvent={() => {}}
-    />
-  )
-}
-```
+- **Basic details** — legal name, start date, SSN, date of birth, and personal email, plus home address and work address cards. Fields are read-only with "Edit"/"Manage" CTAs.
+- **Job and pay** — compensation (one job, or a table of jobs when the primary job is nonexempt), payment method (direct-deposit bank accounts), deductions (garnishments), and paystub history. Lists paginate.
+- **Taxes** — federal tax withholding (supports both pre-2020 and Rev 2020 W-4 versions, so the visible fields vary with the W-4 on file) and per-state tax withholding records.
+- **Documents** — a read-only table of employee forms (W-2s, W-4s, direct-deposit authorizations, and other documents) with a "View" CTA per row.
+<!-- /guide-source (slot: overview) -->
 
 ## Remarks
 
@@ -39,17 +35,7 @@ error and suspense boundaries.
 
 Every tab section of the dashboard is also exported as a self-contained
 block that can be dropped into a custom layout without the surrounding
-dashboard chrome:
-
-- [Compensation](blocks.md#compensation) — Job &amp; Pay tab (jobs, pay type, wage, effective date)
-- [Profile](blocks.md#profile) — Basic details tab (name, start date, SSN, DOB, email)
-- [FederalTaxes](blocks.md#federaltaxes) — Taxes tab, federal withholding settings
-- [StateTaxes](blocks.md#statetaxes) — Taxes tab, state withholding settings
-- [PaymentMethod](blocks.md#paymentmethod) — direct-deposit bank accounts and split-paycheck configuration
-- [Deductions](blocks.md#deductions) — post-tax deductions (garnishments)
-- [HomeAddress](blocks.md#homeaddress) — home address management
-- [WorkAddress](blocks.md#workaddress) — work address management
-- [Documents](blocks.md#documents) — documents and forms (read-only viewer)
+dashboard chrome (see the blocks below).
 
 Each block wraps its read-only card, its edit form, and the card↔form
 transitions as a single drop-in. For cases where that built-in orchestration
@@ -65,6 +51,36 @@ machine also reacts to a subset of these events to swap between the cards
 and edit screens and to surface success alerts. The table below is the
 complete, current set of events observable from `DashboardFlow`, grouped by
 the tab that emits them.
+
+## Example
+
+```tsx title="App.tsx"
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeManagement.DashboardFlow
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+## DashboardFlowProps
+
+<a id="dashboardflowprops"></a>
+
+Props for DashboardFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -118,15 +134,79 @@ the tab that emits them.
 | `employee/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' }` |
 | `employee/dismiss` | Fired when the user dismisses a top-of-dashboard success alert | — |
 
-## DashboardFlowProps
+## Sub-components
 
-<a id="dashboardflowprops"></a>
+| Component | Description |
+| ------ | ------ |
+| [Dashboard](blocks.md#dashboard) | Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents. |
+| [ProfileEditForm](blocks.md#profileeditform) | Standalone edit form for an employee's basic profile details. |
+| [HomeAddressEditForm](blocks.md#homeaddresseditform) | Standalone employee home address edit form for creating, updating, and deleting addresses. |
+| [WorkAddressEditForm](blocks.md#workaddresseditform) | Standalone employee work address edit form for creating, updating, and deleting addresses. |
+| [FederalTaxesEditForm](blocks.md#federaltaxeseditform) | Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [StateTaxesEditForm](blocks.md#statetaxeseditform) | Standalone edit screen for the state-tax management flow. Renders the shared state-tax form against the `Employee.Management.StateTaxes` namespace and emits scoped management events on submit and cancel, so partner copy overrides on the management namespace do not leak into the onboarding flow. |
+| [PaymentMethodBankForm](blocks.md#paymentmethodbankform) | Standalone bank-account form for the management flow. |
+| [PaymentMethodSplitForm](blocks.md#paymentmethodsplitform) | Standalone split-paycheck form for the management flow. |
+| [CompensationAddJobForm](blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
+| [CompensationEditForm](blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
+| [CompensationAddAnotherJobForm](blocks.md#compensationaddanotherjobform) | Standalone form for adding a secondary job and compensation to an employee from the management surface. |
+| [DeductionsEditForm](blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
+| [DocumentManager](blocks.md#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
 
-Props for DashboardFlow.
+<!-- guide-source: src/components/Employee/Dashboard/GUIDE.md (slot: appendix) -->
+## Step flow
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+The dashboard is a hub: the `Dashboard` cards view is the resting state. A card's edit/manage CTA opens that section's edit form; submitting or cancelling returns to the cards, and a successful save shows a dismissible success alert. The documents card is the exception — its View CTA opens `DocumentManager`, a read-only viewer that returns on Back; signing happens during employee onboarding, not here.
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> Dashboard
+  Dashboard <--> ProfileEditForm
+  Dashboard <--> HomeAddressEditForm
+  Dashboard <--> WorkAddressEditForm
+  Dashboard <--> FederalTaxesEditForm
+  Dashboard <--> StateTaxesEditForm
+  Dashboard <--> PaymentMethodBankForm
+  Dashboard <--> PaymentMethodSplitForm
+  Dashboard <--> CompensationAddJobForm
+  Dashboard <--> CompensationEditForm
+  Dashboard <--> CompensationAddAnotherJobForm
+  Dashboard <--> DeductionsEditForm
+  Dashboard <--> DocumentManager
+  linkStyle 1,2,3,4,5,6,7,8,9,10,11,12 stroke-width:2.5px
+```
+
+Some actions stay on the cards view without a screen swap: switching tabs (`employee/dashboard/tabChange`), dismissing a success alert (`employee/dismiss`), and deleting a bank account or deduction.
+
+## Empty states
+
+Each section handles missing data on its own: compensation shows an empty state whose header CTA switches from "Edit" to "Add job"; payment methods, deductions, and state taxes each show a "none on file" message with the relevant add CTA; paystubs indicate that records appear after payroll is run; documents show a "No forms" message.
+<!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| PUT | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees) |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts) |
+| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts) |
+| DELETE | [`/v1/employees/:employeeId/bank_accounts/:bankAccountUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id) |
+| GET | [`/v1/employees/:employeeId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-forms) |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf) |
+| GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses) |
+| GET | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |
+| GET | [`/v1/employees/:employeeId/pay_stubs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_uuid-pay_stubs) |
+| GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method) |
+| PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method) |
+| GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses) |
+| GET | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes) |
+| GET | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes) |
+| DELETE | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-home_addresses-home_address_uuid) |
+| DELETE | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-jobs-job_id) |
+| GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| DELETE | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-work_addresses-work_address_uuid) |

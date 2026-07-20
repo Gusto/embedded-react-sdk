@@ -42,6 +42,7 @@ function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
  *
  * The card and form surfaces ({@link DeductionsCard}, {@link DeductionsEditForm}) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/deductions/card/addRequested` | Fired when the "Add deduction" CTA is clicked from the card; the block opens the edit form in add mode | `{ employeeId: string }` |
@@ -55,7 +56,7 @@ function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
  * @param props - See {@link DeductionsProps}.
  * @returns The rendered deductions block.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function Deductions({ dictionary, FallbackComponent, ...props }: DeductionsProps) {
   useComponentDictionary('Employee.Management.Deductions', dictionary)

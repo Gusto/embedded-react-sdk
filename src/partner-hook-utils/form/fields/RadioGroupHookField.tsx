@@ -15,6 +15,7 @@ import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGro
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
  * @public
+ * @group Hook field props
  */
 export interface RadioGroupHookFieldProps<
   TErrorCode extends string = never,

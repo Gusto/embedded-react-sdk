@@ -1,6 +1,9 @@
 /**
+ * Allowed page-size values a {@link PaginationControlProps | PaginationControl} offers for
+ * how many items to show per page.
+ *
  * @public
- * @group Utility Types
+ * @childOf {@link PaginationControlProps}
  */
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
@@ -9,7 +12,7 @@ export type PaginationItemsPerPage = 5 | 10 | 25 | 50
  * Renders pagination controls for navigating between pages of results.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface PaginationControlProps {
   /** Navigate to the first page. */

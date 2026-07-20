@@ -3,12 +3,12 @@ import { screen, waitFor } from '@testing-library/react'
 import {
   type Employee,
   EmployeePaymentMethod1,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
+} from '@gusto/embedded-api/models/components/employee'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import userEvent from '@testing-library/user-event'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -133,9 +133,9 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       hours: '0.0',
     },
   ],
-  grossPay: 1787.5,
-  netPay: 1500.0,
-  checkAmount: 1500.0,
+  grossPay: '1787.50',
+  netPay: '1500.00',
+  checkAmount: '1500.00',
   paymentMethod: 'Direct Deposit',
   memo: null,
   version: 'v1',
@@ -455,9 +455,9 @@ describe('PayrollEditEmployeePresentation', () => {
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
         employeeUuid: 'emp-1',
-        grossPay: 1787.5,
-        netPay: 1500.0,
-        checkAmount: 1500.0,
+        grossPay: '1787.50',
+        netPay: '1500.00',
+        checkAmount: '1500.00',
         paymentMethod: 'Direct Deposit',
         version: 'v1',
         hourlyCompensations: expect.arrayContaining([

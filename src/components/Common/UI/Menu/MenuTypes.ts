@@ -2,11 +2,11 @@ import type { ReactNode, RefObject } from 'react'
 import type { DataAttributes } from '@/types/Helpers'
 
 /**
- * Action entry your `Menu` implementation must accept for each entry in its `items` array
- * from the component adapter.
+ * Action entry your {@link MenuProps | Menu} implementation must accept for each entry in its
+ * `items` array from the component adapter.
  *
  * @public
- * @group Utility Types
+ * @childOf {@link MenuProps}
  */
 export interface MenuItem extends DataAttributes {
   /**
@@ -36,7 +36,7 @@ export interface MenuItem extends DataAttributes {
  * Renders a popover menu of actions anchored to a trigger element.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface MenuProps extends DataAttributes {
   /**
@@ -72,14 +72,7 @@ export interface MenuProps extends DataAttributes {
    * @defaultValue `'bottom start'`
    */
   placement?:
-    | 'top'
-    | 'top start'
-    | 'top end'
-    | 'bottom'
-    | 'bottom start'
-    | 'bottom end'
-    | 'left'
-    | 'right'
+    'top' | 'top start' | 'top end' | 'bottom' | 'bottom start' | 'bottom end' | 'left' | 'right'
 }
 
 /**

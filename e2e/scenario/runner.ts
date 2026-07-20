@@ -9,6 +9,7 @@ import type {
   ContractorDecoration,
   PayScheduleDecoration,
   PayrollDecoration,
+  StateTaxDecoration,
 } from '../scenarios/schema/scenario.types'
 
 const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
@@ -89,6 +90,162 @@ async function decorateLocations(
   }
 
   return locationIds
+}
+
+interface CurrentTaxRequirement {
+  key: string
+  value: string | number | boolean | null
+  editable?: boolean
+  applicable_if?: Array<{ key: string; value: string | number | boolean | null }>
+}
+
+interface CurrentTaxRequirementSet {
+  key: string
+  effective_from?: string | null
+  requirements?: CurrentTaxRequirement[]
+}
+
+interface CurrentTaxRequirementsResponse {
+  requirement_sets?: CurrentTaxRequirementSet[]
+}
+
+async function decorateStateTaxes(
+  api: ApiClient,
+  companyId: string,
+  stateTaxes: StateTaxDecoration[],
+  log: ReturnType<typeof makeLog>,
+): Promise<void> {
+  for (const entry of stateTaxes) {
+    log(`Pre-seeding tax requirements for ${entry.state}`)
+    // Whether a given requirement is currently applicable depends on
+    // other requirement values that may not be set yet on a freshly-
+    // decorated demo. Naïvely PUTting answers for keys that the API
+    // considers non-applicable returns 422; instead, GET the current
+    // shape first and only PUT the subset of declared answers that:
+    //   (a) appear in the current requirement_sets, AND
+    //   (b) have their applicable_if satisfied by current values.
+    // Anything else is logged and skipped so the scenario provisions
+    // and the test surfaces whatever real shape the demo backend gave
+    // us. The decorator is best-effort — it nudges the demo toward the
+    // declared state without trying to forge invariants the backend
+    // doesn't expose.
+    let current: CurrentTaxRequirementsResponse
+    try {
+      current = await api.get<CurrentTaxRequirementsResponse>(
+        `/companies/${companyId}/tax_requirements/${entry.state}`,
+      )
+    } catch (error) {
+      log(
+        `  Could not GET tax_requirements for ${entry.state} (${String(error)}); skipping state-tax pre-seed for this state`,
+      )
+      continue
+    }
+
+    const currentSets = current.requirement_sets ?? []
+    const currentBySetKey = new Map<string, CurrentTaxRequirementSet>(
+      currentSets.map(set => [set.key, set]),
+    )
+
+    log(
+      `  Discovered ${currentSets.length} requirement set(s) for ${entry.state}: ${
+        currentSets.map(s => `${s.key} (${s.requirements?.length ?? 0} req)`).join(', ') || '(none)'
+      }`,
+    )
+    for (const set of currentSets) {
+      for (const req of set.requirements ?? []) {
+        const gates =
+          req.applicable_if && req.applicable_if.length > 0
+            ? ` ⟵ ${req.applicable_if.map(c => `${c.key}=${String(c.value)}`).join(' && ')}`
+            : ''
+        log(
+          `    ${set.key}.${req.key} = ${JSON.stringify(req.value)}${gates}${req.editable === false ? ' [non-editable]' : ''}`,
+        )
+      }
+    }
+
+    const requirementSetsToPut: Array<{
+      state: string
+      key: string
+      effective_from?: string | null
+      requirements: Array<{ key: string; value: string | number | boolean }>
+    }> = []
+
+    for (const declaredSet of entry.requirementSets) {
+      const currentSet = currentBySetKey.get(declaredSet.key)
+      if (!currentSet) {
+        log(
+          `  Skipping pre-seed for ${entry.state}.${declaredSet.key}: set not present on demo backend`,
+        )
+        continue
+      }
+
+      const currentByKey = new Map<string, CurrentTaxRequirement>(
+        (currentSet.requirements ?? []).map(r => [r.key, r]),
+      )
+
+      const acceptedRequirements: Array<{ key: string; value: string | number | boolean }> = []
+
+      for (const declaredReq of declaredSet.requirements) {
+        const currentReq = currentByKey.get(declaredReq.key)
+        if (!currentReq) {
+          log(
+            `  Skipping ${entry.state}.${declaredSet.key}.${declaredReq.key}: key not present on demo backend`,
+          )
+          continue
+        }
+        if (currentReq.editable === false) {
+          log(
+            `  Skipping ${entry.state}.${declaredSet.key}.${declaredReq.key}: not editable on demo backend`,
+          )
+          continue
+        }
+        // applicable_if mirrors the SDK's helper: AND-logic, strict equality
+        // against other requirement values in the same set.
+        const constraints = currentReq.applicable_if ?? []
+        const allConstraintsMet = constraints.every(c => currentByKey.get(c.key)?.value === c.value)
+        if (!allConstraintsMet) {
+          log(
+            `  Skipping ${entry.state}.${declaredSet.key}.${declaredReq.key}: applicable_if not satisfied by current values`,
+          )
+          continue
+        }
+        if (currentReq.value === declaredReq.value) {
+          log(
+            `  ${entry.state}.${declaredSet.key}.${declaredReq.key} already at desired value (${String(declaredReq.value)}); no-op`,
+          )
+          continue
+        }
+        acceptedRequirements.push({ key: declaredReq.key, value: declaredReq.value })
+      }
+
+      if (acceptedRequirements.length === 0) continue
+
+      requirementSetsToPut.push({
+        state: entry.state,
+        key: declaredSet.key,
+        ...(declaredSet.effective_from !== undefined
+          ? { effective_from: declaredSet.effective_from }
+          : currentSet.effective_from !== undefined
+            ? { effective_from: currentSet.effective_from }
+            : {}),
+        requirements: acceptedRequirements,
+      })
+    }
+
+    if (requirementSetsToPut.length === 0) {
+      log(`  Nothing to PUT for ${entry.state} — declared state already matches or unsupported`)
+      continue
+    }
+
+    log(
+      `  PUTting ${requirementSetsToPut.length} requirement set(s) for ${entry.state}: ${requirementSetsToPut
+        .map(s => `${s.key}(${s.requirements.length})`)
+        .join(', ')}`,
+    )
+    await api.put(`/companies/${companyId}/tax_requirements/${entry.state}`, {
+      requirement_sets: requirementSetsToPut,
+    })
+  }
 }
 
 async function decorateEmployees(
@@ -722,6 +879,14 @@ export async function provisionScenario(
   const employeeIds = decorations.employees
     ? await decorateEmployees(api, companyId, decorations.employees, locationIds, log)
     : {}
+
+  // stateTaxes runs AFTER employees because Gusto only surfaces state-tax
+  // requirement_sets once the company has nexus in the state — typically
+  // an employee with a home address there. Decorating before employees
+  // means GET returns empty for every new state and there's nothing to seed.
+  if (decorations.stateTaxes) {
+    await decorateStateTaxes(api, companyId, decorations.stateTaxes, log)
+  }
 
   const contractorIds = decorations.contractors
     ? await decorateContractors(api, companyId, decorations.contractors, log)

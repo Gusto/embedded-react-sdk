@@ -8,20 +8,11 @@ export type {
   JobFormFields,
 } from './useJobForm'
 export {
-  createJobSchema,
   JobErrorCodes,
   type JobErrorCode,
   type JobOptionalFieldsToRequire,
   type JobFormData,
-  type JobFormOutputs,
 } from './jobSchema'
-export {
-  JobTitleField,
-  HireDateField,
-  TwoPercentShareholderField,
-  StateWcCoveredField,
-  StateWcClassCodeField,
-} from './fields'
 export type {
   JobRequiredValidation,
   JobTitleFieldProps,

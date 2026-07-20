@@ -1,21 +1,19 @@
 import { useEffect, useMemo, useRef } from 'react'
+import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type {
-  Compensation,
-  PaymentUnit,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
-import type { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidjobs'
-import { useJobsAndCompensationsCreateCompensationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsCreateCompensation'
-import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsUpdateCompensation'
-import { useLocationsGetMinimumWages } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsGetMinimumWages'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
+import { useJobsAndCompensationsCreateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateCompensation'
+import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
+import { useLocationsGetMinimumWages } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import {
   createCompensationSchema,
   type CompensationOptionalFieldsToRequire,
@@ -31,13 +29,24 @@ import {
   MinimumWageIdField,
   EffectiveDateField,
 } from './fields'
+import type {
+  TitleFieldProps,
+  FlsaStatusFieldProps,
+  RateFieldProps,
+  PaymentUnitFieldProps,
+  AdjustForMinimumWageFieldProps,
+  MinimumWageIdFieldProps,
+  EffectiveDateFieldProps,
+} from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
+import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -136,20 +145,20 @@ export interface UseCompensationFormProps {
  * @public
  */
 export interface CompensationFormFields {
-  /** Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. */
-  Title: typeof TitleField
-  /** FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). */
-  FlsaStatus: typeof FlsaStatusField | undefined
-  /** Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. */
-  Rate: typeof RateField | undefined
-  /** Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). */
-  PaymentUnit: typeof PaymentUnitField | undefined
-  /** Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. */
-  AdjustForMinimumWage: typeof AdjustForMinimumWageField | undefined
-  /** Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. */
-  MinimumWageId: typeof MinimumWageIdField | undefined
-  /** Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. */
-  EffectiveDate: typeof EffectiveDateField | undefined
+  /** Bound to `title`. Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. */
+  Title: ComponentType<TitleFieldProps>
+  /** Bound to `flsaStatus`. FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). */
+  FlsaStatus: ComponentType<FlsaStatusFieldProps> | undefined
+  /** Bound to `rate`. Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. */
+  Rate: ComponentType<RateFieldProps> | undefined
+  /** Bound to `paymentUnit`. Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). */
+  PaymentUnit: ComponentType<PaymentUnitFieldProps> | undefined
+  /** Bound to `adjustForMinimumWage`. Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. */
+  AdjustForMinimumWage: ComponentType<AdjustForMinimumWageFieldProps> | undefined
+  /** Bound to `minimumWageId`. Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. */
+  MinimumWageId: ComponentType<MinimumWageIdFieldProps> | undefined
+  /** Bound to `effectiveDate`. Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. */
+  EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined
 }
 
 /**
@@ -164,7 +173,7 @@ export interface CompensationFormFields {
  * @public
  */
 export interface UseCompensationFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  CompensationFieldsMetadata,
   CompensationFormData,
   CompensationFormFields
 > {
@@ -311,6 +320,52 @@ const paymentUnitOptions = paymentUnitEntries.map(unit => ({ value: unit, label:
 
 function todayISO(): string {
   return new Date().toISOString().split('T')[0]!
+}
+
+/** @internal */
+function buildCompensationFieldsMetadata(
+  base: Record<keyof CompensationFormData, FieldMetadata>,
+  {
+    willDeleteSecondaryJobs,
+    isCreateMode,
+    isCommissionOnly,
+    isOwner,
+    isAdjustMinimumWageEnabled,
+    effectiveDateMinDate,
+    maximumEffectiveDate,
+    minimumWageOptions,
+    minimumWages,
+  }: {
+    willDeleteSecondaryJobs: boolean
+    isCreateMode: boolean
+    isCommissionOnly: boolean
+    isOwner: boolean
+    isAdjustMinimumWageEnabled: boolean
+    effectiveDateMinDate: string | null
+    maximumEffectiveDate: string | null
+    minimumWageOptions: { value: string; label: string }[]
+    minimumWages: MinimumWage[]
+  },
+) {
+  return {
+    title: base.title,
+    effectiveDate: withFlags(base.effectiveDate, {
+      isDisabled: willDeleteSecondaryJobs && !isCreateMode,
+      minDate: effectiveDateMinDate,
+      maxDate: maximumEffectiveDate,
+    }),
+    flsaStatus: withOptions<FlsaStatusType>(base.flsaStatus, flsaOptions, flsaStatusEntries),
+    rate: withFlags(base.rate, { isDisabled: isCommissionOnly }),
+    paymentUnit: withOptions<PaymentUnit>(
+      withFlags(base.paymentUnit, { isDisabled: isOwner || isCommissionOnly }),
+      paymentUnitOptions,
+      paymentUnitEntries,
+    ),
+    adjustForMinimumWage: withFlags(base.adjustForMinimumWage, {
+      isDisabled: !isAdjustMinimumWageEnabled,
+    }),
+    minimumWageId: withOptions<MinimumWage>(base.minimumWageId, minimumWageOptions, minimumWages),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -701,35 +756,17 @@ export function useCompensationForm({
         .reduce<string | null>((max, d) => (!max || d > max ? d : max), null),
     [internalMinEffectiveDate, hireDate],
   )
-  const fieldsMetadata = {
-    title: baseMetadata.title,
-    effectiveDate: {
-      ...baseMetadata.effectiveDate,
-      isDisabled: willDeleteSecondaryJobs && !isCreateMode,
-      minDate: effectiveDateMinDate,
-      maxDate: maximumEffectiveDate,
-    },
-    flsaStatus: withOptions<FlsaStatusType>(
-      baseMetadata.flsaStatus,
-      flsaOptions,
-      flsaStatusEntries,
-    ),
-    rate: { ...baseMetadata.rate, isDisabled: isCommissionOnly },
-    paymentUnit: withOptions<PaymentUnit>(
-      { ...baseMetadata.paymentUnit, isDisabled: isOwner || isCommissionOnly },
-      paymentUnitOptions,
-      paymentUnitEntries,
-    ),
-    adjustForMinimumWage: {
-      ...baseMetadata.adjustForMinimumWage,
-      isDisabled: !isAdjustMinimumWageEnabled,
-    },
-    minimumWageId: withOptions<MinimumWage>(
-      baseMetadata.minimumWageId,
-      minimumWageOptions,
-      minimumWages,
-    ),
-  }
+  const fieldsMetadata = buildCompensationFieldsMetadata(baseMetadata, {
+    willDeleteSecondaryJobs,
+    isCreateMode,
+    isCommissionOnly,
+    isOwner,
+    isAdjustMinimumWageEnabled,
+    effectiveDateMinDate,
+    maximumEffectiveDate,
+    minimumWageOptions,
+    minimumWages,
+  })
 
   const onSubmit = async (
     options?: CompensationSubmitOptions,
@@ -905,4 +942,4 @@ export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormR
  *
  * @public
  */
-export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata']
+export type CompensationFieldsMetadata = ReturnType<typeof buildCompensationFieldsMetadata>

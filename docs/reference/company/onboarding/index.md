@@ -4,7 +4,7 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: CompanyOnboarding
-description: CompanyOnboarding reference.
+description: Flows and blocks for onboarding a company.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -12,11 +12,17 @@ custom_edit_url: null
 
 # CompanyOnboarding
 
+Flows and blocks for onboarding a company.
+
+```ts
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingFlow](onboarding-flow.md) | Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll. |
+| [OnboardingFlow](onboarding-flow.md) | Guided flow to onboard a company to Gusto. |
 
 ## 🧩 Blocks
 

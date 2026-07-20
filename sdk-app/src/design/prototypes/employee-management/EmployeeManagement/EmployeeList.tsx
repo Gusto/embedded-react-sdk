@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
-import { useEmployeesList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
-import { useEmployeeEmploymentsDeleteRehireMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsDeleteRehire'
+import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
+import { useEmployeeEmploymentsDeleteRehireMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsDeleteRehire'
 import type { EntityIds } from '../../../../useEntities'
 import {
   EmployeeList as EmployeeListView,

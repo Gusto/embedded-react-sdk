@@ -25,6 +25,7 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
  * @remarks
  * Renders the employee's current deductions as a list, with an empty state when none exist. Users add or edit deductions inline — post-tax custom deductions or court-ordered garnishments — and can complete the step with or without any active deductions.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/deductions/add` | Fired when the user opens the form to add a new deduction | — |
@@ -40,7 +41,7 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
  * @param props - See {@link DeductionsProps}.
  * @returns The deductions onboarding step.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx

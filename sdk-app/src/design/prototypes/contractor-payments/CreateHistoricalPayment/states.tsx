@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { HistoricalPaymentSummary } from '../../../components/contractor/payments/HistoricalPaymentSummary/HistoricalPaymentSummary'
 import {
   emptyPaymentFor,

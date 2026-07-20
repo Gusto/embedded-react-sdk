@@ -1,11 +1,11 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
-import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesList'
-import { useSignatoriesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesCreate'
-import { useSignatoriesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesUpdate'
-import { useSignatoriesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesDelete'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
+import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
+import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
+import { useSignatoriesDeleteMutation } from '@gusto/embedded-api/react-query/signatoriesDelete'
 import { type CreateSignatoryInputs } from './CreateSignatoryForm'
 import { CreateSignatoryForm } from './CreateSignatoryForm'
 import { Actions } from './Actions'
@@ -38,7 +38,7 @@ export interface CreateSignatoryProps extends BaseComponentInterface<'Company.As
 /**
  * Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/signatory/created` | A new signatory was created successfully | The created signatory record |

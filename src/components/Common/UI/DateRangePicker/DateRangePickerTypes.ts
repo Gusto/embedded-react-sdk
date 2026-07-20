@@ -1,8 +1,9 @@
 /**
- * Inclusive start/end pair representing a selected date range.
+ * Inclusive start/end pair representing a date range selected in a
+ * {@link DateRangePickerProps | DateRangePicker}.
  *
  * @public
- * @group Utility Types
+ * @childOf {@link DateRangePickerProps}
  */
 export interface DateRange {
   /**
@@ -20,7 +21,7 @@ export interface DateRange {
  * Renders a form field wrapping paired `<input type="date" />` elements for selecting an inclusive date range.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface DateRangePickerProps {
   /**

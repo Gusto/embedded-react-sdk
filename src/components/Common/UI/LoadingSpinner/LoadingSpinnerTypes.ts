@@ -5,7 +5,7 @@ import type { HTMLAttributes } from 'react'
  * Renders a spinner indicating that content is loading.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface LoadingSpinnerProps extends Pick<
   HTMLAttributes<HTMLDivElement>,

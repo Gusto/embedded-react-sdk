@@ -5,7 +5,7 @@ import type { Ref, ButtonHTMLAttributes, ReactNode, FocusEvent } from 'react'
  * Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error variants, a loading state, and an optional leading icon.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface ButtonProps extends Pick<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -68,7 +68,7 @@ export interface ButtonProps extends Pick<
  * Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface ButtonIconProps extends ButtonProps {
   /**

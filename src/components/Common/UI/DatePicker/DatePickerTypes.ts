@@ -6,7 +6,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Renders a form field wrapping an `<input type="date" />` with a calendar picker popover, optional min/max bounds, and per-date disabling.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface DatePickerProps
   extends

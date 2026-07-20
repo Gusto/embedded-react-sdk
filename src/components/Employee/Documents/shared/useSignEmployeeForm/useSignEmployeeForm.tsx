@@ -1,11 +1,11 @@
-import type { JSX } from 'react'
+import type { ComponentType, JSX } from 'react'
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
-import { useEmployeeFormsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsGet'
-import { useEmployeeFormsGetPdf } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsGetPdf'
-import { useEmployeeFormsSignMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsSign'
+import type { Form } from '@gusto/embedded-api/models/components/form'
+import { useEmployeeFormsGet } from '@gusto/embedded-api/react-query/employeeFormsGet'
+import { useEmployeeFormsGetPdf } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
+import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
 import {
   createSignEmployeeFormSchema,
   MAX_PREPARERS,
@@ -18,6 +18,9 @@ import {
   SignatureField,
   ConfirmSignatureField,
   UsedPreparerField,
+  type SignatureFieldProps,
+  type ConfirmSignatureFieldProps,
+  type UsedPreparerFieldProps,
   type PreparerTextFieldProps,
   type PreparerSelectFieldProps,
   type PreparerCheckboxFieldProps,
@@ -65,12 +68,13 @@ import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getForm
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
-  FieldsMetadata,
+  FieldMetadata,
+  FieldMetadataWithOptions,
   HookLoadingResult,
   HookSubmitResult,
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { I9_FORM_NAME, STATES_ABBR } from '@/shared/constants'
+import { I9_FORM_NAME, STATES_ABBR, type StateAbbreviation } from '@/shared/constants'
 
 const stateOptions = STATES_ABBR.map(abbr => ({ label: abbr, value: abbr }))
 
@@ -180,13 +184,13 @@ export interface UseSignEmployeeFormProps {
  *
  * @public
  */
-export interface SignEmployeeFormFieldComponents {
-  /** Text input for the employee's typed signature; always present. */
-  Signature: typeof SignatureField
-  /** Checkbox for the employee's electronic-signature consent; always present. */
-  ConfirmSignature: typeof ConfirmSignatureField
-  /** Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. */
-  UsedPreparer: typeof UsedPreparerField | undefined
+export interface SignEmployeeFormFields {
+  /** Bound to `signature`. Text input for the employee's typed signature; always present. */
+  Signature: ComponentType<SignatureFieldProps>
+  /** Bound to `confirmSignature`. Checkbox for the employee's electronic-signature consent; always present. */
+  ConfirmSignature: ComponentType<ConfirmSignatureFieldProps>
+  /** Bound to `usedPreparer`. Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. */
+  UsedPreparer: ComponentType<UsedPreparerFieldProps> | undefined
   /** First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. */
   Preparer1: PreparerFieldGroup | undefined
   /** Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. */
@@ -203,9 +207,9 @@ export interface SignEmployeeFormFieldComponents {
  * @public
  */
 export interface UseSignEmployeeFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  SignEmployeeFormFieldsMetadata,
   SignEmployeeFormData,
-  SignEmployeeFormFieldComponents
+  SignEmployeeFormFields
 > {
   /** Loaded data — the form entity and a preview PDF URL. */
   data: {
@@ -232,9 +236,9 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<
   }
   /** Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. */
   form: BaseFormHookReady<
-    FieldsMetadata,
+    SignEmployeeFormFieldsMetadata,
     SignEmployeeFormData,
-    SignEmployeeFormFieldComponents
+    SignEmployeeFormFields
   >['form'] & {
     /** Preparer-section state. Defined only for I-9 forms. */
     preparers?: {
@@ -248,6 +252,94 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<
   }
 }
 
+/**
+ * Field metadata for a standard (non-I-9) employee form — only the signature and
+ * its confirmation are collected.
+ *
+ * @remarks
+ * This is the {@link SignEmployeeFormFieldsMetadata} variant returned when the
+ * form being signed is not an I-9. Every entry is a plain {@link FieldMetadata}.
+ *
+ * @public
+ * @interface
+ */
+export type SignEmployeeBaseFieldsMetadata = {
+  /** The typed-signature field. */
+  signature: FieldMetadata
+  /** The signature-confirmation field. */
+  confirmSignature: FieldMetadata
+}
+
+/**
+ * Field metadata for an I-9 employee form, which additionally collects
+ * preparer/translator certification for up to four preparers.
+ *
+ * @remarks
+ * A superset of {@link SignEmployeeBaseFieldsMetadata}. `usedPreparer` is a
+ * yes/no radio and each `preparer{N}State` is a US-state select
+ * ({@link StateAbbreviation}); every other preparer field is a plain text
+ * {@link FieldMetadata}. Preparer entries beyond the active preparer count are
+ * still typed here but only populated once that preparer section is added.
+ *
+ * @public
+ * @interface
+ */
+export type SignEmployeeI9FieldsMetadata = Omit<
+  Record<keyof SignEmployeeFormData, FieldMetadata>,
+  'usedPreparer' | 'preparerState' | 'preparer2State' | 'preparer3State' | 'preparer4State'
+> & {
+  /** Yes/no radio: whether a preparer or translator assisted with the form. */
+  usedPreparer: FieldMetadataWithOptions<boolean>
+  /** US-state select for the first preparer's address. */
+  preparerState: FieldMetadataWithOptions<StateAbbreviation>
+  /** US-state select for the second preparer's address. */
+  preparer2State: FieldMetadataWithOptions<StateAbbreviation>
+  /** US-state select for the third preparer's address. */
+  preparer3State: FieldMetadataWithOptions<StateAbbreviation>
+  /** US-state select for the fourth preparer's address. */
+  preparer4State: FieldMetadataWithOptions<StateAbbreviation>
+}
+
+/**
+ * Shape of the `form.fieldsMetadata` object returned by {@link useSignEmployeeForm}.
+ *
+ * @remarks
+ * A discriminated union keyed on whether the form is an I-9. Narrow with an `in`
+ * check on a preparer field before reading the I-9 entries:
+ *
+ * ```ts
+ * const { fieldsMetadata } = form
+ * if ('usedPreparer' in fieldsMetadata) {
+ *   // fieldsMetadata is SignEmployeeI9FieldsMetadata
+ *   fieldsMetadata.preparerState.options
+ * }
+ * ```
+ *
+ * @public
+ */
+export type SignEmployeeFormFieldsMetadata =
+  SignEmployeeBaseFieldsMetadata | SignEmployeeI9FieldsMetadata
+
+function buildSignEmployeeFieldsMetadata(
+  baseMetadata: Record<keyof SignEmployeeFormData, FieldMetadata>,
+  isI9: boolean,
+): SignEmployeeFormFieldsMetadata {
+  if (!isI9) {
+    return baseMetadata
+  }
+
+  return {
+    ...baseMetadata,
+    usedPreparer: withOptions(baseMetadata.usedPreparer, [
+      { label: 'No, I completed this myself', value: 'no' },
+      { label: 'Yes, I used a preparer/translator', value: 'yes' },
+    ]),
+    preparerState: withOptions(baseMetadata.preparerState, stateOptions, STATES_ABBR),
+    preparer2State: withOptions(baseMetadata.preparer2State, stateOptions, STATES_ABBR),
+    preparer3State: withOptions(baseMetadata.preparer3State, stateOptions, STATES_ABBR),
+    preparer4State: withOptions(baseMetadata.preparer4State, stateOptions, STATES_ABBR),
+  }
+}
 // ── Hook ───────────────────────────────────────────────────────────────
 
 /**
@@ -359,21 +451,7 @@ export function useSignEmployeeForm({
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 
   const fieldsMetadata = useMemo(
-    () => ({
-      ...baseMetadata,
-      ...(isI9
-        ? {
-            usedPreparer: withOptions(baseMetadata.usedPreparer, [
-              { label: 'No, I completed this myself', value: 'no' },
-              { label: 'Yes, I used a preparer/translator', value: 'yes' },
-            ]),
-            preparerState: withOptions(baseMetadata.preparerState, stateOptions, STATES_ABBR),
-            preparer2State: withOptions(baseMetadata.preparer2State, stateOptions, STATES_ABBR),
-            preparer3State: withOptions(baseMetadata.preparer3State, stateOptions, STATES_ABBR),
-            preparer4State: withOptions(baseMetadata.preparer4State, stateOptions, STATES_ABBR),
-          }
-        : {}),
-    }),
+    () => buildSignEmployeeFieldsMetadata(baseMetadata, isI9),
     [baseMetadata, isI9],
   )
 
@@ -532,15 +610,3 @@ function buildPreparerPayload(payload: SignEmployeeFormOutputs, count: number) {
  * @public
  */
 export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady
-/**
- * Shape of the `form.fieldsMetadata` object returned by {@link useSignEmployeeForm}.
- *
- * @public
- */
-export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata']
-/**
- * Shape of the `form.Fields` object returned by {@link useSignEmployeeForm}.
- *
- * @public
- */
-export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields']

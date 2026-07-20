@@ -1,5 +1,5 @@
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 

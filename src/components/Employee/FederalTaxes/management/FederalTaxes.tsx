@@ -45,6 +45,7 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
  *
  * The card and form surfaces ({@link FederalTaxesCard}, {@link FederalTaxesEditForm}) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/federalTaxes/card/editRequested` | Fired when the card's Edit CTA is clicked; the block opens the edit form | `{ employeeId: string }` |
@@ -55,7 +56,7 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
  * @param props - See {@link FederalTaxesProps}.
  * @returns The rendered federal taxes block.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function FederalTaxes({ dictionary, FallbackComponent, ...props }: FederalTaxesProps) {
   useComponentDictionary('Employee.Management.FederalTaxes', dictionary)

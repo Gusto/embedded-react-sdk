@@ -12,19 +12,37 @@ custom_edit_url: null
 
 # DismissalFlow
 
-Guided workflow for running a terminated employee's final payroll.
+Guided flow to run a dismissed employee's final payroll.
 
 ## Remarks
+
+This flow only runs the final payroll for an employee who is being let go; it does not terminate
+the employee. To end employment — set a termination date, choose how to handle the final paycheck,
+and optionally launch this payroll — use [EmployeeManagement.TerminationFlow](../employee/management/termination-flow.md).
 
 Presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period with the `"Dismissed employee"` off-cycle reason, and then transitions into the standard payroll execution flow for configuration, review, submission, and receipts.
 
 When `payrollId` is provided, pay period selection is skipped and the flow starts directly at execution for that payroll. When omitted, the flow starts at pay period selection.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `dismissal/payPeriod/selected` | A pay period is selected and the dismissal payroll is created | `{ payrollUuid: string }` |
+## Example
 
-Once the payroll is created, all standard run-payroll events (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`) are emitted during execution.
+```tsx title="App.tsx"
+import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <Payroll.DismissalFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      employeeId="8e5c8492-3bb3-4b6b-8003-bb8c6aefca0d"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'runPayroll/submitted') {
+          // Payroll submitted — navigate to your next screen
+        }
+      }}
+    />
+  )
+}
+```
 
 ## DismissalFlowProps
 
@@ -35,6 +53,57 @@ Props for DismissalFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Handler for events emitted by the flow. See DismissalFlow for the event table. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Handler for events emitted by the flow. See DismissalFlow for the event table. |
 | `employeeId?` | `string` | The terminated employee whose final payroll is being run. |
 | `payrollId?` | `string` | Optional dismissal payroll identifier. When provided, the flow skips pay period selection and starts directly at payroll execution. |
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `dismissal/payPeriod/selected` | A pay period is selected and the dismissal payroll is created | `{ payrollUuid: string }` |
+
+Once the payroll is created, all standard run-payroll events (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`) are emitted during execution.
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [DismissalPayPeriodSelection](blocks.md#dismissalpayperiodselection) | Pay period selection step for the dismissal payroll workflow. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+
+<!-- guide-source: src/components/Payroll/Dismissal/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow's entry point depends on whether `payrollId` is supplied: without it, the flow opens on pay period selection and advances into execution; with it, pay period selection is skipped and the flow starts directly in `PayrollExecutionFlow` for that payroll.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> hasPayroll{{"payrollId provided?"}}
+  hasPayroll -.->|"no"| PayPeriodSelection["DismissalPayPeriodSelection"]
+  hasPayroll -.->|"yes"| Execution["PayrollExecutionFlow"]
+  PayPeriodSelection -->|"dismissal/payPeriod/selected"| Execution
+  Execution -->|"breadcrumb/navigate"| PayPeriodSelection
+  Execution -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  class hasPayroll branch
+  class Execution flow
+```
+
+Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
+
+## Pay period selection
+
+The pay period selection step fetches the employee's unprocessed termination pay periods and presents each as an option showing its date range. When only one pay period is available, it is pre-selected automatically.
+
+On submission, the step creates an off-cycle payroll for the selected period using the `"Dismissed employee"` off-cycle reason and the period's start and end dates, then advances to execution with `dismissal/payPeriod/selected`. During execution `PayrollExecutionFlow` runs with dismissal-specific copy and breadcrumbs.
+
+Final-paycheck timing is regulated by state. Some states require terminated employees to receive their final wages within a short window (as little as 24 hours unless the employee consents otherwise), in which case a dismissal payroll may be the only way to pay on time.
+<!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods) |
+| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |

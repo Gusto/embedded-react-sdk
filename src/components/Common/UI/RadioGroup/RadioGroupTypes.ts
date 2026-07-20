@@ -2,10 +2,10 @@ import type { FieldsetHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 /**
- * Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
+ * Option entry your {@link RadioGroupProps | RadioGroup} implementation receives in the `options` array when rendering each radio button.
  *
  * @public
- * @group Utility Types
+ * @childOf {@link RadioGroupProps}
  */
 export interface RadioGroupOption {
   /**
@@ -31,7 +31,7 @@ export interface RadioGroupOption {
  * Renders a form field wrapping multiple `<input type="radio" />` elements with a label, optional description, and error message.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface RadioGroupProps
   extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {

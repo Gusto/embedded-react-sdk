@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
-import type { PayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/payperiod'
+import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import { TransitionPayrollAlertPresentation } from './TransitionPayrollAlertPresentation'
 import { useI18n } from '@/i18n'
 

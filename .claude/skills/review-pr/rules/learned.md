@@ -9,12 +9,12 @@ Patterns from actual review feedback. Add new entries with `/learn-review <note>
 
 ---
 
-### LEARNED-001: Avoid Unnecessary Memoization
+## LEARNED-001: Avoid Unnecessary Memoization
 
 - **Severity:** warning
 - **Rule:** Do not add `useMemo`, `useCallback`, or `React.memo` unless there is a demonstrated or obvious performance problem. Memoization on deep objects with referential equality checks is especially risky — the equality check will almost always fail on re-render, making the memoization useless at best and a maintenance trap at worst.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 // Object recreated every render anyway — memo check always fails
@@ -24,7 +24,7 @@ const config = useMemo(() => ({ filters: { status, page }, sort }), [status, pag
 export const EmployeeList = React.memo(({ filters }: { filters: FilterConfig }) => { ... })
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 // No memoization needed for simple derived values
@@ -35,19 +35,19 @@ const config = { filters: { status, page }, sort }
 
 ---
 
-### LEARNED-002: Avoid Type Casts (`as`)
+## LEARNED-002: Avoid Type Casts (`as`)
 
 - **Severity:** warning
 - **Rule:** Avoid `as SomeType` unless there is clearly no alternative. Every `as` cast bypasses TypeScript's safety checks. Instead, use type guards, discriminated union narrowing, or generics. If you spot an `as` cast, suggest the specific alternative that applies to that code.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 const employee = data as Employee
 const id = event.target.value as string
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 // Use a type guard
@@ -62,12 +62,12 @@ function useFormField<T>(name: string): T { ... }
 
 ---
 
-### LEARNED-003: Avoid Redundant Test Cases
+## LEARNED-003: Avoid Redundant Test Cases
 
 - **Severity:** info
 - **Rule:** Tests should verify meaningful, distinct behavior — not repeat the same assertion with minor variations. Prefer a small set of representative test cases that cover the real value (happy path, key error path, important edge case) over a large number of shallow tests that add noise. Flag test suites where multiple cases are asserting the same thing in slightly different ways.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 it('renders with name "Alice"', () => { ... })
@@ -76,7 +76,7 @@ it('renders with name "Charlie"', () => { ... })
 // These all verify the same behavior — one parameterized test or a single representative case is enough
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 it('renders the employee name', () => { ... })       // happy path
@@ -85,12 +85,12 @@ it('shows a placeholder when name is empty', () => { ... })  // meaningful edge 
 
 ---
 
-### LEARNED-004: SDK Partner-Facing Component APIs Should Be Minimal
+## LEARNED-004: SDK Partner-Facing Component APIs Should Be Minimal
 
 - **Severity:** warning
 - **Rule:** Components in the SDK that are provided to partners should expose a minimal, stable API. The primary prop is typically an entity ID (e.g., `employeeId`, `companyId`). Feature flags and opt-in behaviors (e.g., `withI9`, `isSelfOnboardingEnabled`) are acceptable as named booleans. Internal implementation details — sub-component props, internal state shapes, handler signatures — should not be exposed. If a new prop doesn't clearly belong in a partner integration contract, question it.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 // Exposing internal plumbing to partners
@@ -102,7 +102,7 @@ it('shows a placeholder when name is empty', () => { ... })  // meaningful edge 
 />
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 // Minimal partner API: entity ID + opt-in feature flags
@@ -113,12 +113,12 @@ it('shows a placeholder when name is empty', () => { ... })  // meaningful edge 
 
 ---
 
-### LEARNED-005: Pass API Response Data in Component Events
+## LEARNED-005: Pass API Response Data in Component Events
 
 - **Severity:** warning
 - **Rule:** Any event emitted after an API call should include the API response data as the payload. This applies to all event types (DONE, BACK, ERROR, etc.) — not just DONE. The top-level mutation result includes transport-level fields like `httpMeta` that partners don't need — extract the inner data value (e.g. `result.data` or whichever property contains the updated resource) and pass that instead. Discarding the result leaves partners without the updated state they need to react to the operation.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 await updateTimeOffPolicy({
@@ -127,7 +127,7 @@ await updateTimeOffPolicy({
 onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 const result = await updateTimeOffPolicy({
@@ -139,12 +139,12 @@ onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, result.data)
 
 ---
 
-### LEARNED-006: Partner-Facing Hooks Must Conform to the Canonical Spec
+## LEARNED-006: Partner-Facing Hooks Must Conform to the Canonical Spec
 
 - **Severity:** warning
-- **Rule:** Any new `use*Form` hook intended for the public partner surface — or any SDK component being migrated to consume one — must conform to the canonical specs in `.claude/commands/create-hook.md` (scaffolding/structure) and `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` (migration playbook). This means the hook lives at `src/components/<Domain>/<Feature>/shared/use<Name>Form/` with the five-file layout (`use*Form.tsx`, `<camelDomain>Schema.ts`, `fields.tsx`, `index.ts`, `use*Form.test.tsx`); the schema follows `ErrorCodes → fieldValidators → requiredFieldsConfig → buildFormSchema` (no inline `.optional()` except the documented enum-placeholder escape hatch); the hook returns the discriminated union with `errorHandling` in both branches and `HookSubmitResult<TEntity>` from `onSubmit`; field components are thin `*HookField` wrappers; partner-facing exports are wired through the feature barrel and `src/index.ts`; and a corresponding `docs/hooks/use<Name>Form.md` is added or updated. "Different but works" is not acceptable — partners rely on the consistency of these patterns. When flagging, cite the specific section of the canonical doc in the suggested fix.
+- **Rule:** Any new `use*Form` hook intended for the public partner surface — or any SDK component being migrated to consume one — must conform to the canonical specs in `.claude/commands/create-hook.md` (scaffolding/structure) and `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` (migration playbook). This means the hook lives at `src/components/<Domain>/<Feature>/shared/use<Name>Form/` with the five-file layout (`use*Form.tsx`, `<camelDomain>Schema.ts`, `fields.tsx`, `index.ts`, `use*Form.test.tsx`); the schema follows `ErrorCodes → fieldValidators → requiredFieldsConfig → buildFormSchema` (no inline `.optional()` except the documented enum-placeholder escape hatch); the hook returns the discriminated union with `errorHandling` in both branches and `HookSubmitResult<TEntity>` from `onSubmit`; field components are thin `*HookField` wrappers; partner-facing exports are wired through the feature barrel and `src/index.ts`; and the exported symbols carry TSDoc so the partner-facing reference under `docs/reference/**` regenerates (no hand-written `docs/hooks/` page). "Different but works" is not acceptable — partners rely on the consistency of these patterns. When flagging, cite the specific section of the canonical doc in the suggested fix.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 // New "partner-facing" hook authored ad hoc:
@@ -152,7 +152,7 @@ onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, result.data)
 // - inlines z.object(...) instead of using buildFormSchema
 // - returns { isLoading, isReady, errors, submit } (custom shape, not the discriminated union)
 // - exports buildFormSchema-style internals from the public barrel
-// - no docs/hooks/useNewThingForm.md added
+// - no TSDoc on the exported symbols (partner-facing reference can't regenerate)
 export function useNewThingForm(props: Props) {
   const schema = z.object({ name: z.string().min(1), startDate: z.string().optional() })
   const { handleSubmit, formState } = useForm({ resolver: zodResolver(schema) })
@@ -165,7 +165,7 @@ export function useNewThingForm(props: Props) {
 }
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 // src/components/Employee/NewThing/shared/useNewThingForm/useNewThingForm.tsx
@@ -204,12 +204,12 @@ export function useNewThingForm(
 
 ---
 
-### LEARNED-007: No react-hook-form Internals in SDK Components (Non-Negotiable)
+## LEARNED-007: No react-hook-form Internals in SDK Components (Non-Negotiable)
 
 - **Severity:** error
 - **Rule:** SDK components must consume form hooks only through their documented partner-facing surface (`data`, `status`, `actions`, `errorHandling`, `form.Fields`, `form.fieldsMetadata`, `form.getFormSubmissionValues`). Reaching for raw `useForm`, `useWatch`, `setValue`, `watch`, `getValues`, `trigger`, `register`, or `hookResult.form.hookFormInternals.formMethods.*` from the component is non-negotiable — partners should never need to know about `react-hook-form` to consume the SDK. Each such use is a signal the hook is missing functionality; the only acceptable resolutions are (a) move the logic into the hook (existing or newly-scaffolded — see `.claude/commands/create-hook.md`), or (b) a written, reviewer-approved justification that no hook can own the case without side effects. Flag every occurrence as Critical and surface it explicitly to the user; never let it slide silently. `AdminProfile.tsx`'s screen-local `useForm` for `startDate` is a documented historical exception, not a template — do not cite it as precedent for new code.
 
-#### Bad Example
+### Bad Example
 
 ```tsx
 // Component pulls react-hook-form internals to drive cross-field behavior
@@ -247,7 +247,7 @@ function CompensationStep() {
 }
 ```
 
-#### Good Example
+### Good Example
 
 ```tsx
 // Component consumes only the documented hook surface; cross-field logic

@@ -15,7 +15,6 @@ export {
   type SplitPaymentsFormData,
   type SplitPaymentsFormField,
   type SplitPaymentsFormOptionalFieldsToRequire,
-  type SplitPaymentsFormOutputs,
   type SplitByValue,
 } from './useSplitPaymentsFormSchema'
 export {

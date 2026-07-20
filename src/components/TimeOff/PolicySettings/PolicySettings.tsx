@@ -1,12 +1,13 @@
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
-import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate'
-import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
-import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
+import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
+import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
+import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { PolicySettingsPresentation } from './PolicySettingsPresentation'
 import type { PolicySettingsFormData, PolicySettingsAccrualMethod } from './PolicySettingsTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { SDKInternalError } from '@/types/sdkError'
@@ -31,6 +32,7 @@ export interface PolicySettingsProps extends BaseComponentInterface<'Company.Tim
  * @remarks
  * Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/policySettings/done` | Fired when policy settings are saved | The updated `TimeOffPolicy` |
@@ -151,7 +153,7 @@ function Root({ policyId, mode }: PolicySettingsProps) {
         })
 
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
+          queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
         })
         onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
       } catch (err) {

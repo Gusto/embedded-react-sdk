@@ -39,8 +39,7 @@ function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
  * partner-emitted events from {@link StateTaxesCard} and {@link StateTaxesEditForm}
  * drive the internal state machine.
  *
- * @remarks
- *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/stateTaxes/editRequested` | Edit button on the summary card was clicked | `{ employeeId: string }` |

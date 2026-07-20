@@ -1,5 +1,5 @@
-import { OnboardingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidonboardingstatus'
-import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import { OnboardingStatus as ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
 
 /**
  * Event keys emitted by employee-related components.
@@ -218,6 +218,9 @@ export const companyEvents = {
  * @public
  */
 export const contractorEvents = {
+  CONTRACTOR_SELF_ONBOARDING_START: 'contractor/selfOnboarding/start',
+  CONTRACTOR_SELF_ONBOARDING_DONE: 'contractor/selfOnboarding/done',
+  CONTRACTOR_SELF_ONBOARDING_CANCELLED: 'contractor/selfOnboarding/cancelled',
   CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
   CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
   CONTRACTOR_PAYMENT_METHOD_UPDATED: 'contractor/paymentMethod/updated',
@@ -235,6 +238,9 @@ export const contractorEvents = {
   CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
   CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
   CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
+  CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: 'contractor/documents/view',
+  CONTRACTOR_SIGN_DOCUMENT: 'contractor/documents/sign',
+  CONTRACTOR_DOCUMENTS_DONE: 'contractor/documents/done',
 } as const
 
 /**
@@ -475,7 +481,7 @@ export const timeOffEvents = {
  * a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
  *
  * @public
- * @group Events
+ * @group Event names
  *
  * @example
  * ```tsx
@@ -519,7 +525,7 @@ export const componentEvents = {
  * the specific event keys you care about.
  *
  * @public
- * @group Events
+ * @group Utility types
  *
  * @example
  * ```tsx
@@ -542,6 +548,7 @@ export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
  * record. The values mirror the strings returned by the API.
  *
  * @public
+ * @page employee/types
  */
 export const EmployeeOnboardingStatus = {
   ADMIN_ONBOARDING_INCOMPLETE: OnboardingStatus.AdminOnboardingIncomplete,
@@ -563,8 +570,9 @@ export const EmployeeOnboardingStatus = {
  * flow (invited, started, or overdue) versus an admin-driven onboarding flow.
  *
  * @public
+ * @page employee/types
  */
-export const EmployeeSelfOnboardingStatuses = new Set([
+export const EmployeeSelfOnboardingStatuses = new Set<string>([
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE,
@@ -578,6 +586,7 @@ export const EmployeeSelfOnboardingStatuses = new Set([
  * record. The values mirror the strings returned by the API.
  *
  * @public
+ * @page contractor/types
  */
 export const ContractorOnboardingStatus = {
   ADMIN_ONBOARDING_INCOMPLETE: ContractorOnboardingStatus1.AdminOnboardingIncomplete,
@@ -599,8 +608,9 @@ export const ContractorOnboardingStatus = {
  * onboarding flow.
  *
  * @public
+ * @page contractor/types
  */
-export const ContractorSelfOnboardingStatuses = new Set([
+export const ContractorSelfOnboardingStatuses = new Set<ContractorOnboardingStatus1>([
   ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,
@@ -655,10 +665,17 @@ export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
  * `SignatureForm`.
  *
  * @public
+ * @page employee/types
  */
 export const I9_FORM_NAME = 'US_I-9'
 
-/** @internal */
+/**
+ * Two-letter US state abbreviations (including `'DC'`), in the order presented
+ * in state selection controls.
+ *
+ * @public
+ * @page employee/types
+ */
 export const STATES_ABBR = [
   'AL',
   'AK',
@@ -713,6 +730,15 @@ export const STATES_ABBR = [
   'WY',
 ] as const
 
+/**
+ * A two-letter US state abbreviation (including `'DC'`). Derived from
+ * {@link STATES_ABBR}.
+ *
+ * @public
+ * @page employee/types
+ */
+export type StateAbbreviation = (typeof STATES_ABBR)[number]
+
 /** @internal */
 export const SIGNATORY_TITLES = {
   OWNER: 'owner',
@@ -728,6 +754,7 @@ export const SIGNATORY_TITLES = {
  * Pay period unit values for the `paymentUnit` field on a compensation, describing the unit a pay rate is expressed against.
  *
  * @public
+ * @page employee/types
  */
 export const PAY_PERIODS = {
   HOUR: 'Hour',

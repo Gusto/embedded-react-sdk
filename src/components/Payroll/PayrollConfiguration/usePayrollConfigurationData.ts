@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useEmployeesList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
-import { usePaySchedulesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGet'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
-import { payrollsPrepare } from '@gusto/embedded-api-v-2025-11-15/funcs/payrollsPrepare'
-import { employeesGet } from '@gusto/embedded-api-v-2025-11-15/funcs/employeesGet'
-import type { EmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
-import type { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
+import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
+import { employeesGet } from '@gusto/embedded-api/funcs/employeesGet'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { PayrollCategory } from '../payrollTypes'
 import { derivePayrollCategory } from '../payrollTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -22,7 +22,7 @@ interface UsePayrollConfigurationDataParams {
 }
 
 interface UsePayrollConfigurationDataReturn {
-  employeeCompensations: EmployeeCompensations[]
+  employeeCompensations: PayrollEmployeeCompensationsType[]
   employeeDetails: Employee[]
   payPeriod: PayrollPayPeriodType | undefined
   paySchedule: PayScheduleShow | undefined
@@ -214,7 +214,7 @@ export function usePayrollConfigurationData({
   const pagination: PaginationControlProps = getPaginationProps(headers, isPaginationFetching)
 
   return {
-    employeeCompensations: prepareData?.employeeCompensations || [],
+    employeeCompensations: prepareData?.employeeCompensations ?? [],
     employeeDetails: displayedEmployees,
     payPeriod: prepareData?.payPeriod,
     paySchedule: payScheduleData?.payScheduleShow,

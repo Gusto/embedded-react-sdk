@@ -1,5 +1,5 @@
-import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
-import type { Signatory } from '@gusto/embedded-api-v-2025-11-15/models/components/signatory'
+import type { Form } from '@gusto/embedded-api/models/components/form'
+import type { Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { AssignSignatory as BlockAssignSignatory } from '../AssignSignatory'
 import { DocumentList as BlockDocumentList } from './DocumentList'
 import { SignatureForm as BlockSignatureForm } from './SignatureForm'

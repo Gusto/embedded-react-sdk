@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
 import { createMachine } from 'robot3'
 import { useTranslation } from 'react-i18next'
-import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { type Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
+import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { type Job } from '@gusto/embedded-api/models/components/job'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import {
   InitialEditCompensationContextual,
@@ -11,8 +11,6 @@ import {
   type CompensationFlowContextInterface,
 } from './CompensationFlowComponents'
 import { compensationStateMachine } from './compensationStateMachine'
-import { JobsList } from './JobsList'
-import { EditCompensation } from './EditCompensation'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
 import { FlsaStatus } from '@/shared/constants'
@@ -100,6 +98,7 @@ export interface CompensationProps extends BaseComponentInterface<'Employee.Comp
  * roles need to be managed) on first mount; on subsequent refetches the user
  * stays on their current step.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/job/created` | Fired after a job is successfully created | {@link Job} |
@@ -111,7 +110,7 @@ export interface CompensationProps extends BaseComponentInterface<'Employee.Comp
  * @param props - See {@link CompensationProps}.
  * @returns The compensation onboarding step.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx
@@ -210,6 +209,3 @@ export const CompensationContextual = () => {
     />
   )
 }
-
-Compensation.JobsList = JobsList
-Compensation.EditCompensation = EditCompensation

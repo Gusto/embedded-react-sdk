@@ -14,13 +14,17 @@ custom_edit_url: null
 
 Flows and blocks for onboarding employees.
 
+```ts
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingExecutionFlow](onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
-| [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
-| [SelfOnboardingFlow](self-onboarding-flow.md) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
+| [OnboardingExecutionFlow](onboarding-execution-flow.md) | Guided flow to onboard an employee. |
+| [OnboardingFlow](onboarding-flow.md) | Guided flow to onboard multiple employees, one at a time. |
+| [SelfOnboardingFlow](self-onboarding-flow.md) | Guided flow for employees to complete their own onboarding. |
 
 ## 🧩 Blocks
 
@@ -36,7 +40,7 @@ Flows and blocks for onboarding employees.
 | [EmploymentEligibility](blocks.md#employmenteligibility) | Captures the employee's I-9 employment eligibility (Section 1) before signing. |
 | [FederalTaxes](blocks.md#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
 | [I9SignatureForm](blocks.md#i9signatureform) | Presents the employee's I-9 form for review and signature. |
-| [JobsList](blocks.md#jobslist) |  |
+| [JobsList](blocks.md#jobslist) | Lists an employee's jobs alongside their compensation details, with controls to add, edit, or remove a job. |
 | [Landing](blocks.md#landing) | Landing page for the employee self-onboarding flow. Displays a welcome message and the list of onboarding steps the employee needs to complete. |
 | [OnboardingSummary](blocks.md#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
 | [PaymentMethod](blocks.md#paymentmethod) | Onboarding step for setting up an employee's payment method. |

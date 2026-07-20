@@ -1,7 +1,8 @@
 import { QueryClient } from '@tanstack/react-query'
+import { API_QUERY_NAMESPACE } from './apiVersion'
 
 /**
- * Creates a `QueryClient` pre-configured with the SDK's defaults for queries and mutations under the `['@gusto/embedded-api-v-2025-11-15']` key.
+ * Creates a `QueryClient` pre-configured with the SDK's defaults for queries and mutations under the {@link API_QUERY_NAMESPACE} key.
  *
  * @remarks
  * Defaults applied:
@@ -17,11 +18,11 @@ import { QueryClient } from '@tanstack/react-query'
  */
 export function createSdkQueryClient(): QueryClient {
   const client = new QueryClient()
-  client.setQueryDefaults(['@gusto/embedded-api-v-2025-11-15'], { retry: false })
-  client.setMutationDefaults(['@gusto/embedded-api-v-2025-11-15'], {
+  client.setQueryDefaults([API_QUERY_NAMESPACE], { retry: false })
+  client.setMutationDefaults([API_QUERY_NAMESPACE], {
     retry: false,
     onSuccess: async () => {
-      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15'] })
+      await client.invalidateQueries({ queryKey: [API_QUERY_NAMESPACE] })
     },
   })
   return client

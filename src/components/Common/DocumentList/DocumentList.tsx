@@ -17,7 +17,14 @@ export interface FormData {
 
 interface DocumentListProps {
   forms: FormData[]
-  canSign?: boolean
+  /**
+   * Whether a form can be signed. Pass a boolean to apply the same value to
+   * every row, or a predicate to decide per form (e.g. to block signing a
+   * document that isn't ready). When a signable form resolves to `false`, the
+   * row shows the "not signed" status instead of a sign action. Defaults to
+   * `true`.
+   */
+  canSign?: boolean | ((form: FormData) => boolean)
   onRequestSign?: (form: FormData) => void
   withError?: boolean
   label: string
@@ -65,21 +72,24 @@ function DocumentList({
       },
       {
         title: columnLabels.action,
-        render: (form: FormData) => (
-          <div className={styles.statusCell}>
-            {form.requires_signing ? (
-              canSign ? (
-                <Components.Button variant="secondary" onClick={() => onRequestSign?.(form)}>
-                  {statusLabels.signCta}
-                </Components.Button>
+        render: (form: FormData) => {
+          const formCanSign = typeof canSign === 'function' ? canSign(form) : canSign
+          return (
+            <div className={styles.statusCell}>
+              {form.requires_signing ? (
+                formCanSign ? (
+                  <Components.Button variant="secondary" onClick={() => onRequestSign?.(form)}>
+                    {statusLabels.signCta}
+                  </Components.Button>
+                ) : (
+                  <Components.Badge status="warning">{statusLabels.notSigned}</Components.Badge>
+                )
               ) : (
-                <Components.Badge status="warning">{statusLabels.notSigned}</Components.Badge>
-              )
-            ) : (
-              <Components.Badge status="success">{statusLabels.complete}</Components.Badge>
-            )}
-          </div>
-        ),
+                <Components.Badge status="success">{statusLabels.complete}</Components.Badge>
+              )}
+            </div>
+          )
+        },
       },
     ],
     emptyState: () => <EmptyData title={withError ? errorLabel : emptyStateLabel} />,

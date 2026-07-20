@@ -4,7 +4,7 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: ContractorOnboarding
-description: ContractorOnboarding reference.
+description: Flows and blocks for onboarding contractors.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -12,19 +12,31 @@ custom_edit_url: null
 
 # ContractorOnboarding
 
+Flows and blocks for onboarding contractors.
+
+```ts
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+```
+
 ## 🚂 Workflows
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission. |
+| [OnboardingFlow](onboarding-flow.md) | Guided flow for admins to onboard a contractor to the company. |
+| [SelfOnboardingFlow](self-onboarding-flow.md) | Guided flow for contractors to complete their own onboarding. |
 
 ## 🧩 Blocks
 
 | Component | Description |
 | --------- | ----------- |
 | [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
-| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
+| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
 | [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
+| [DocumentSigner](blocks.md#documentsigner) | Contractor onboarding step for reading and signing required contractor documents. |
+| [DocumentsList](blocks.md#documentslist) | Lists a contractor's documents and lets the contractor open each one for signing. |
+| [Landing](blocks.md#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
 | [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
+| [OnboardingSummary](blocks.md#onboardingsummary) | Confirmation screen shown at the end of the contractor self-onboarding flow. Lets the contractor know their information has been submitted and emits `contractor/selfOnboarding/done` when they acknowledge it. |
 | [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [SignatureForm](blocks.md#signatureform) | Standalone form for signing an individual contractor document (W-9). |

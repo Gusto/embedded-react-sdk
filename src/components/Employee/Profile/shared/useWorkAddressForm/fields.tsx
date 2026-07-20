@@ -1,4 +1,4 @@
-import type { Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
+import type { Location } from '@gusto/embedded-api/models/components/location'
 import type { WorkAddressErrorCodes } from './workAddressSchema'
 import type { SelectHookFieldProps } from '@/partner-hook-utils/form/fields/SelectHookField'
 import type { DatePickerHookFieldProps } from '@/partner-hook-utils/form/fields/DatePickerHookField'
@@ -23,18 +23,7 @@ export type RequiredValidation = typeof WorkAddressErrorCodes.REQUIRED
  */
 export type LocationFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation, Location>>
 
-/**
- * Select bound to the `locationUuid` field of {@link useWorkAddressForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Location`. Options are the
- * company's active locations; the hook populates them from the locations
- * query. Required.
- *
- * @param props - {@link LocationFieldProps} — accepts the standard hook field props plus `getOptionLabel` to format location display names.
- * @returns The rendered select bound to `locationUuid`.
- * @public
- */
+/** @internal */
 export function LocationField(props: LocationFieldProps) {
   return <SelectHookField {...props} name="locationUuid" />
 }
@@ -46,18 +35,7 @@ export function LocationField(props: LocationFieldProps) {
  */
 export type EffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<RequiredValidation>>
 
-/**
- * Date picker bound to the `effectiveDate` field of {@link useWorkAddressForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.EffectiveDate` when
- * `withEffectiveDateField` is `true`; `undefined` otherwise. Always
- * null-check before rendering.
- *
- * @param props - {@link EffectiveDateFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered date picker bound to `effectiveDate`.
- * @public
- */
+/** @internal */
 export function EffectiveDateField(props: EffectiveDateFieldProps) {
   return <DatePickerHookField {...props} name="effectiveDate" />
 }

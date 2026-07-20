@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype'
-import type { PaymentSpeed } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentconfigs'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'

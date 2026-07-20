@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
 import { CompensationHistory } from './CompensationHistory'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -60,33 +59,22 @@ const multiJob: Job[] = [
 ]
 
 describe('components/employee/management/CompensationHistory', () => {
-  it('renders the job title as heading and omits the job filter for a single job', () => {
+  it('renders the job title as heading and as a column for a single job', () => {
     renderWithProviders(<CompensationHistory jobs={singleJob} />)
 
     expect(screen.getByRole('heading', { name: 'My Job' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /All jobs/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('columnheader', { name: 'Job title' })).not.toBeInTheDocument()
-  })
-
-  it('renders the combined view with both jobs by default when there are multiple jobs', () => {
-    renderWithProviders(<CompensationHistory jobs={multiJob} />)
-
-    expect(screen.getByRole('heading', { name: 'Compensation history' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /All jobs/i })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Job title' })).toBeInTheDocument()
     expect(screen.getByRole('gridcell', { name: 'My Job' })).toBeInTheDocument()
-    expect(screen.getByRole('gridcell', { name: 'An additional job' })).toBeInTheDocument()
   })
 
-  it('filters rows to the selected job when a job is chosen from the filter', async () => {
-    const user = userEvent.setup()
+  it('renders each job as its own stacked section with no shared filter', () => {
     renderWithProviders(<CompensationHistory jobs={multiJob} />)
 
-    await user.click(screen.getByRole('button', { name: /All jobs/i }))
-    await user.click(screen.getByRole('option', { name: 'An additional job' }))
-
-    expect(screen.getByRole('gridcell', { name: 'An additional job' })).toBeInTheDocument()
-    expect(screen.queryByRole('gridcell', { name: 'My Job' })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'My Job' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'An additional job' })).toBeInTheDocument()
+    expect(screen.getAllByRole('grid')).toHaveLength(2)
+    expect(screen.getAllByRole('columnheader', { name: 'Job title' })).toHaveLength(2)
+    expect(screen.queryByRole('button', { name: /All jobs/i })).not.toBeInTheDocument()
   })
 
   it('renders an empty DataView with an emptyState message when there are no jobs', () => {
@@ -95,7 +83,5 @@ describe('components/employee/management/CompensationHistory', () => {
     expect(screen.getByRole('heading', { name: 'Compensation history' })).toBeInTheDocument()
     expect(screen.getByRole('grid')).toBeInTheDocument()
     expect(screen.getByText('There is no compensation history.')).toBeInTheDocument()
-    // No job filter is shown when there are no jobs to filter to.
-    expect(screen.queryByRole('button', { name: /All jobs/i })).not.toBeInTheDocument()
   })
 })

@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
-import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion'
-import { type TaxRequirement } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirement'
+import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
+import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
 import { useTranslation } from 'react-i18next'
 import { SelectField } from '../Fields/SelectField/SelectField'
 import { TextInputField } from '../Fields/TextInputField/TextInputField'

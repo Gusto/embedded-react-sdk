@@ -1,9 +1,6 @@
 import { z } from 'zod'
-import type { FederalTaxDetails } from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails'
-import {
-  FilingForm,
-  TaxPayerType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails'
+import type { FederalTaxDetails } from '@gusto/embedded-api/models/components/federaltaxdetails'
+import { FilingForm, TaxPayerType } from '@gusto/embedded-api/models/components/federaltaxdetails'
 import { createCompoundContext } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 

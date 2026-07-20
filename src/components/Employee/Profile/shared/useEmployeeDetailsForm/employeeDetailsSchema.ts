@@ -20,7 +20,6 @@ export const EmployeeDetailsErrorCodes = {
   INVALID_NAME: 'INVALID_NAME',
   INVALID_EMAIL: 'INVALID_EMAIL',
   INVALID_SSN: 'INVALID_SSN',
-  EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
 } as const
 
 /**
@@ -44,12 +43,7 @@ const fieldValidators = {
     .string()
     .min(1, { message: EmployeeDetailsErrorCodes.REQUIRED })
     .regex(NAME_REGEX, { message: EmployeeDetailsErrorCodes.INVALID_NAME }),
-  email: z.email({
-    error: issue =>
-      typeof issue.input === 'string' && issue.input.length === 0
-        ? EmployeeDetailsErrorCodes.REQUIRED
-        : EmployeeDetailsErrorCodes.INVALID_EMAIL,
-  }),
+  email: z.email({ error: () => EmployeeDetailsErrorCodes.INVALID_EMAIL }),
   dateOfBirth: z.iso.date({ error: () => EmployeeDetailsErrorCodes.REQUIRED }),
   ssn: z
     .string({ error: () => EmployeeDetailsErrorCodes.REQUIRED })
@@ -70,27 +64,35 @@ export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOn
  * Shape of the values managed by the employee details form.
  *
  * @public
+ * @interface
  */
 export type EmployeeDetailsFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the employee details form on
- * submit.
- *
- * @public
- */
+/** @internal */
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 
+// Requiredness mirrors the employee create/update API contract: fields the API
+// requires on create are `'create'` (optional on update), and fields the API
+// treats as optional are `'never'`.
+//
+// `email` is value-conditional: it always applies but is only required when
+// self-onboarding is on (create and update), matching the API's "if
+// self_onboarding is true, then email is required" — the employee needs an
+// email to receive the invitation. A single-operand predicate keeps
+// `buildFormSchema`'s dependency-detecting Proxy accurate, and the predicate
+// drives both validation and `fieldsMetadata.isRequired` so the rendered label
+// and validation always agree. Consumers that need email required regardless of
+// self-onboarding promote it via `optionalFieldsToRequire`.
 const requiredFieldsConfig = {
   firstName: 'create',
   lastName: 'create',
   middleInitial: 'never',
-  email: 'never',
   dateOfBirth: 'never',
   ssn: 'never',
+  email: data => data.selfOnboarding,
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
 // ── Schema factory ─────────────────────────────────────────────────────
@@ -122,17 +124,5 @@ export function createEmployeeDetailsSchema(options: EmployeeDetailsSchemaOption
     mode,
     optionalFieldsToRequire,
     fieldsWithRedactedValues: hasSsn ? ['ssn'] : [],
-    superRefine:
-      mode === 'create'
-        ? (data, ctx) => {
-            if (data.selfOnboarding && (!data.email || data.email.trim() === '')) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                path: ['email'],
-                message: EmployeeDetailsErrorCodes.EMAIL_REQUIRED_FOR_SELF_ONBOARDING,
-              })
-            }
-          }
-        : undefined,
   })
 }

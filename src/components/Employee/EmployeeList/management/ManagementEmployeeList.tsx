@@ -98,8 +98,7 @@ function ManagementEmployeeListRoot({
  * Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
  * tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
  *
- * @remarks
- *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/create` | Fired when the user clicks "Add employee". | — |

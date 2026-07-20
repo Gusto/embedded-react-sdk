@@ -12,6 +12,7 @@ import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @public
+ * @group Hook field props
  */
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   /** The field name; must match the corresponding key in the form schema. */

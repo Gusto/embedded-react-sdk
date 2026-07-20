@@ -1,11 +1,10 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
-import type { EmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
 import { Trans, useTranslation } from 'react-i18next'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
 import {
   useFormatEmployeePayRate,
   getRegularHours,
@@ -34,7 +33,7 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollConfigurationPresentationProps {
-  employeeCompensations: EmployeeCompensations[]
+  employeeCompensations: PayrollEmployeeCompensationsType[]
   employeeDetails: Employee[]
   payPeriod?: PayrollPayPeriodType
   paySchedule?: PayScheduleObject
@@ -196,7 +195,7 @@ export const PayrollConfigurationPresentation = ({
                 columns={[
                   {
                     title: t('tableColumns.employees'),
-                    render: (item: EmployeeCompensations) => {
+                    render: (item: PayrollEmployeeCompensationsType) => {
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const payRateDisplay = formatEmployeePayRate(employee)
                       return (
@@ -214,7 +213,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.hours'),
-                    render: (item: EmployeeCompensations) => {
+                    render: (item: PayrollEmployeeCompensationsType) => {
                       const hours = getRegularHours(item)
                       const overtimeHours = getOvertimeHours(item)
                       return formatHoursDisplay(hours + overtimeHours)
@@ -222,14 +221,14 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.timeOff'),
-                    render: (item: EmployeeCompensations) => {
+                    render: (item: PayrollEmployeeCompensationsType) => {
                       const ptoHours = getTotalPtoHours(item)
                       return formatHoursDisplay(ptoHours)
                     },
                   },
                   {
                     title: t('tableColumns.additionalEarnings'),
-                    render: (item: EmployeeCompensations) => {
+                    render: (item: PayrollEmployeeCompensationsType) => {
                       const earnings = getAdditionalEarnings(item)
                       return formatNumberAsCurrency(earnings)
                     },
@@ -238,7 +237,7 @@ export const PayrollConfigurationPresentation = ({
                     ? [
                         {
                           title: t('tableColumns.reimbursements'),
-                          render: (item: EmployeeCompensations) => {
+                          render: (item: PayrollEmployeeCompensationsType) => {
                             const reimbursements = getReimbursements(item)
                             return formatNumberAsCurrency(reimbursements)
                           },
@@ -263,7 +262,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                 ]}
                 data={employeeCompensations}
-                itemMenu={(item: EmployeeCompensations) => (
+                itemMenu={(item: PayrollEmployeeCompensationsType) => (
                   <HamburgerMenu
                     items={[
                       {

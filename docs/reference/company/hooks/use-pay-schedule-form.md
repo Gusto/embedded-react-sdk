@@ -11,168 +11,13 @@ custom_edit_url: null
 
 # usePayScheduleForm
 
-## Components
-
-<a id="anchorendofpayperiodfield"></a>
-
-### AnchorEndOfPayPeriodField
-
-Date picker bound to the `anchorEndOfPayPeriod` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`AnchorEndOfPayPeriodFieldProps`](#anchorendofpayperiodfieldprops) | [AnchorEndOfPayPeriodFieldProps](#anchorendofpayperiodfieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AnchorEndOfPayPeriod`. Always
-required. Represents the end date of the first pay period and is used to
-calculate future pay periods. May be the same date as the first pay date.
-
-***
-
-<a id="anchorpaydatefield"></a>
-
-### AnchorPayDateField
-
-Date picker bound to the `anchorPayDate` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`AnchorPayDateFieldProps`](#anchorpaydatefieldprops) | [AnchorPayDateFieldProps](#anchorpaydatefieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AnchorPayDate`. Always required.
-Represents the date of the first paycheck under this schedule.
-
-***
-
-<a id="customnamefield"></a>
-
-### CustomNameField
-
-Text input bound to the `customName` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`CustomNameFieldProps`](#customnamefieldprops) | [CustomNameFieldProps](#customnamefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.CustomName`. Always required.
-
-***
-
-<a id="customtwicepermonthfield"></a>
-
-### CustomTwicePerMonthField
-
-Radio group bound to the `customTwicePerMonth` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops) | [CustomTwicePerMonthFieldProps](#customtwicepermonthfieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.CustomTwicePerMonth`. Only present
-when the selected frequency is `'Twice per month'`; otherwise the entry on
-`Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the
-month) and `'custom'` (manual day entry via `Day1` and `Day2`).
-
-***
-
-<a id="day1field"></a>
-
-### Day1Field
-
-Number input bound to the `day1` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`Day1FieldProps`](#day1fieldprops) | [Day1FieldProps](#day1fieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Day1`. Only present when the
-frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and
-`customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is
-`undefined`. Accepts integers in the range 1–31.
-
-***
-
-<a id="day2field"></a>
-
-### Day2Field
-
-Number input bound to the `day2` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`Day2FieldProps`](#day2fieldprops) | [Day2FieldProps](#day2fieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Day2`. Only present when the
-frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`;
-otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31.
-
-***
-
-<a id="frequencyfield"></a>
-
-### FrequencyField
-
-Select dropdown bound to the `frequency` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`FrequencyFieldProps`](#frequencyfieldprops) | [FrequencyFieldProps](#frequencyfieldprops) — accepts the standard hook field props plus `getOptionLabel`. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Frequency`. Always required.
-Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and
-`'Monthly'`. Pass `getOptionLabel` to customize how options are displayed.
-
-## Form Hooks
-
 <a id="usepayscheduleform"></a>
 
-### usePayScheduleForm()
-
-> **usePayScheduleForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+> **usePayScheduleForm**(`props`: [`UsePayScheduleFormProps`](#usepayscheduleformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 Form hook for creating or updating a company pay schedule.
 
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsePayScheduleFormProps`](#usepayscheduleformprops) | See [UsePayScheduleFormProps](#usepayscheduleformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UsePayScheduleFormReady](#usepayscheduleformready) once ready.
-
-#### Remarks
+## Remarks
 
 When `payScheduleId` is supplied the hook loads that schedule and issues an
 update on submit; when omitted it operates in create mode. While both anchor
@@ -181,9 +26,9 @@ preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
 the company's payment configuration and is useful for surfacing UI hints
 about how far ahead the first pay date must be.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   usePayScheduleForm,
   SDKFormProvider,
@@ -233,66 +78,17 @@ function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleForm
 }
 ```
 
-## Variables
-
-<a id="payscheduleerrorcodes"></a>
-
-### PayScheduleErrorCodes
-
-> `const` **PayScheduleErrorCodes**: `object`
-
-Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `DAY_RANGE` | `"DAY_RANGE"` | `'DAY_RANGE'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-#### Remarks
-
-Use these as `validationMessages` keys on the corresponding `Fields.*` components.
-
-## Interfaces
-
-<a id="payschedulefields"></a>
-
-### PayScheduleFields
-
-Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
-
-#### Remarks
-
-`CustomTwicePerMonth`, `Day1`, and `Day2` are conditionally `undefined` based
-on the selected frequency and twice-per-month strategy — always null-check them
-before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `AnchorEndOfPayPeriod` | (`props`) => `Element` | First pay period end date picker. Always available. |
-| `AnchorPayDate` | (`props`) => `Element` | First pay date picker. Always available. |
-| `CustomName` | (`props`) => `Element` | Display name text input. Always available. |
-| `CustomTwicePerMonth` | ((`props`) => `Element`) \| `undefined` | Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
-| `Day1` | ((`props`) => `Element`) \| `undefined` | First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
-| `Day2` | ((`props`) => `Element`) \| `undefined` | Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
-| `Frequency` | (`props`) => `Element` | Frequency selector. Always available. |
-
-***
-
-<a id="usepayscheduleformprops"></a>
+## Props
 
 ### UsePayScheduleFormProps
 
+<a id="usepayscheduleformprops"></a>
+
 Configuration options for [usePayScheduleForm](#usepayscheduleform).
 
-#### Remarks
+**Remarks**
 
 Presence or absence of `payScheduleId` selects between update and create mode.
-
-#### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -303,6 +99,20 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
+## Returns
+
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UsePayScheduleFormReady](#usepayscheduleformready) once ready.
+
+<a id="usepayscheduleformresult"></a>
+
+### UsePayScheduleFormResult
+
+> **UsePayScheduleFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+
+Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
+
 ***
 
 <a id="usepayscheduleformready"></a>
@@ -311,104 +121,270 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 
 Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once data has loaded.
 
-#### Remarks
+**Remarks**
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with the
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../hooks.md#baseformhookready) with the
 pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`PayScheduleFormData`](#payscheduleformdata), [`PayScheduleFields`](#payschedulefields)\>
-
-#### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`PayScheduleShow`\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`PayScheduleShow`](../../APIModels/index.md#payscheduleshow)\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.paymentSpeedDays` | `number` \| `null` | Business days the company needs to process payroll, derived from payment configs; `null` if unavailable. |
-| `data.payPeriodPreview` | `PaySchedulePreviewPayPeriod`[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
+| `data.payPeriodPreview` | [`PaySchedulePreviewPayPeriod`](../../APIModels/index.md#payschedulepreviewpayperiod)[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
 | `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
-| `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `data.paySchedule` | [`PayScheduleShow`](../../APIModels/index.md#payscheduleshow) \| `null` | The pay schedule loaded for update; `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `form.Fields` | [`PayScheduleFormFields`](#payscheduleformfields) | - |
+| `form.fieldsMetadata` | [`PayScheduleFieldsMetadata`](#payschedulefieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => [`PayScheduleFormData`](#payscheduleformdata) \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
 
-## Type Aliases
+## Fields
+
+### PayScheduleFormFields
+
+<a id="payscheduleformfields"></a>
+
+Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
+
+**Remarks**
+
+`CustomTwicePerMonth`, `Day1`, and `Day2` are conditionally `undefined` based
+on the selected frequency and twice-per-month strategy — always null-check them
+before rendering.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `AnchorEndOfPayPeriod` | `ComponentType`\<[`AnchorEndOfPayPeriodFieldProps`](#anchorendofpayperiodfieldprops)\> | Bound to `anchorEndOfPayPeriod`. First pay period end date picker. Always available. |
+| `AnchorPayDate` | `ComponentType`\<[`AnchorPayDateFieldProps`](#anchorpaydatefieldprops)\> | Bound to `anchorPayDate`. First pay date picker. Always available. |
+| `CustomName` | `ComponentType`\<[`CustomNameFieldProps`](#customnamefieldprops)\> | Bound to `customName`. Display name text input. Always available. |
+| `Frequency` | `ComponentType`\<[`FrequencyFieldProps`](#frequencyfieldprops)\> | Bound to `frequency`. Frequency selector. Always available. |
+| `CustomTwicePerMonth` | `ComponentType`\<[`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops)\> \| `undefined` | Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
+| `Day1` | `ComponentType`\<[`Day1FieldProps`](#day1fieldprops)\> \| `undefined` | Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
+| `Day2` | `ComponentType`\<[`Day2FieldProps`](#day2fieldprops)\> \| `undefined` | Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
+
+***
+
+### AnchorEndOfPayPeriod
+
+Bound to `anchorEndOfPayPeriod`. First pay period end date picker. Always available.
+
+```tsx
+<form.Fields.AnchorEndOfPayPeriod
+  label="Anchor end of pay period"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
 <a id="anchorendofpayperiodfieldprops"></a>
 
-### AnchorEndOfPayPeriodFieldProps
+#### AnchorEndOfPayPeriodFieldProps
 
-> **AnchorEndOfPayPeriodFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorEndOfPayPeriod` component.
 
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
+
 ***
+
+### AnchorPayDate
+
+Bound to `anchorPayDate`. First pay date picker. Always available.
+
+```tsx
+<form.Fields.AnchorPayDate
+  label="Anchor pay date"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
 <a id="anchorpaydatefieldprops"></a>
 
-### AnchorPayDateFieldProps
+#### AnchorPayDateFieldProps
 
-> **AnchorPayDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorPayDate` component.
 
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
+
 ***
+
+### CustomName
+
+Bound to `customName`. Display name text input. Always available.
+
+```tsx
+<form.Fields.CustomName
+  label="Custom name"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
 <a id="customnamefieldprops"></a>
 
-### CustomNameFieldProps
+#### CustomNameFieldProps
 
-> **CustomNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomName` component.
 
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
+
 ***
+
+### CustomTwicePerMonth
+
+Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`.
+
+```tsx
+{form.Fields.CustomTwicePerMonth && (
+  <form.Fields.CustomTwicePerMonth label="Custom twice per month" />
+)}
+```
 
 <a id="customtwicepermonthfieldprops"></a>
 
-### CustomTwicePerMonthFieldProps
+#### CustomTwicePerMonthFieldProps
 
-> **CustomTwicePerMonthFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<`never`, `string`\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwicePerMonth` component.
 
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
+
 ***
+
+### Day1
+
+Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy.
+
+```tsx
+{form.Fields.Day1 && (
+  <form.Fields.Day1
+    label="Day1"
+    validationMessages={{ REQUIRED: '…', DAY_RANGE: '…' }}
+  />
+)}
+```
 
 <a id="day1fieldprops"></a>
 
-### Day1FieldProps
+#### Day1FieldProps
 
-> **Day1FieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DayValidation`](#dayvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`DayValidation`](#dayvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.Day1` component.
 
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DayValidation`](#dayvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
+
 ***
+
+### Day2
+
+Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy.
+
+```tsx
+{form.Fields.Day2 && (
+  <form.Fields.Day2
+    label="Day2"
+    validationMessages={{ REQUIRED: '…', DAY_RANGE: '…' }}
+  />
+)}
+```
 
 <a id="day2fieldprops"></a>
 
-### Day2FieldProps
+#### Day2FieldProps
 
-> **Day2FieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DayValidation`](#dayvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`DayValidation`](#dayvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.Day2` component.
 
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`DayValidation`](#dayvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
+
 ***
+
+### Frequency
+
+Bound to `frequency`. Frequency selector. Always available.
+
+```tsx
+<form.Fields.Frequency
+  label="Frequency"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="frequencyfieldprops"></a>
+
+#### FrequencyFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation), [`PayScheduleFrequency`](#payschedulefrequency)\>\>
+
+Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.Frequency` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `getOptionLabel?` | (`entry`: [`PayScheduleFrequency`](#payschedulefrequency)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
+
+## Validations
 
 <a id="dayvalidation"></a>
 
 ### DayValidation
 
-> **DayValidation** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[`"REQUIRED"` \| `"DAY_RANGE"`\]
+> **DayValidation** = `"REQUIRED"` \| `"DAY_RANGE"`
 
 Validation error codes emitted by the `day1` and `day2` fields of [usePayScheduleForm](#usepayscheduleform).
 
@@ -419,23 +395,48 @@ See [PayScheduleErrorCodes](#payscheduleerrorcodes).
 
 ***
 
-<a id="frequencyfieldprops"></a>
+<a id="payschedulerequiredvalidation"></a>
 
-### FrequencyFieldProps
+### PayScheduleRequiredValidation
 
-> **FrequencyFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation), [`PayScheduleFrequency`](#payschedulefrequency)\>\>
+> **PayScheduleRequiredValidation** = `"REQUIRED"`
 
-Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.Frequency` component.
+The required-field error code produced by [usePayScheduleForm](#usepayscheduleform) fields that only emit `REQUIRED`.
 
-***
+#### Remarks
 
+Used as the `validationMessages` key for the custom name, frequency, anchor
+pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).
+
+## Utility types
 <a id="payscheduleerrorcode"></a>
 
 ### PayScheduleErrorCode
 
-> **PayScheduleErrorCode** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[keyof *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\]
+> **PayScheduleErrorCode** = `"REQUIRED"` \| `"DAY_RANGE"`
 
 Union of validation error code strings emitted by the pay schedule form.
+
+***
+
+<a id="payscheduleerrorcodes"></a>
+
+### PayScheduleErrorCodes
+
+> `const` **PayScheduleErrorCodes**: `object`
+
+Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
+
+#### Remarks
+
+Use these as `validationMessages` keys on the corresponding `Fields.*` components.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `DAY_RANGE` | `"DAY_RANGE"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
@@ -443,7 +444,7 @@ Union of validation error code strings emitted by the pay schedule form.
 
 ### PayScheduleField
 
-> **PayScheduleField** = keyof *typeof* `fieldValidators`
+> **PayScheduleField** = `"frequency"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customName"` \| `"customTwicePerMonth"`
 
 Union of field names managed by the pay schedule form.
 
@@ -453,7 +454,15 @@ Union of field names managed by the pay schedule form.
 
 ### PayScheduleFieldsMetadata
 
-> **PayScheduleFieldsMetadata** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `anchorEndOfPayPeriod` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `anchorPayDate` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `customName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `customTwicePerMonth` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`string`\> |
+| `day1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `day2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `frequency` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`\> |
 
 Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
 
@@ -463,29 +472,19 @@ Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayschedulefo
 
 ### PayScheduleFormData
 
-> **PayScheduleFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the pay schedule form.
 
-***
+#### Properties
 
-<a id="payscheduleformfields"></a>
-
-### PayScheduleFormFields
-
-> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleformoutputs"></a>
-
-### PayScheduleFormOutputs
-
-> **PayScheduleFormOutputs** = [`PayScheduleFormData`](#payscheduleformdata)
-
-Shape of the validated values produced by the pay schedule form on submit.
+| Property | Type |
+| ------ | ------ |
+| `anchorEndOfPayPeriod` | `string` \| `null` |
+| `anchorPayDate` | `string` \| `null` |
+| `customName` | `string` |
+| `customTwicePerMonth` | `string` |
+| `day1` | `number` |
+| `day2` | `number` |
+| `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
 
 ***
 
@@ -493,7 +492,7 @@ Shape of the validated values produced by the pay schedule form on submit.
 
 ### PayScheduleFrequency
 
-> **PayScheduleFrequency** = *typeof* `FREQUENCY_VALUES`\[`number`\]
+> **PayScheduleFrequency** = `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`
 
 Pay schedule frequency values accepted by [usePayScheduleForm](#usepayscheduleform).
 
@@ -512,27 +511,12 @@ Configuration for promoting optional pay schedule fields to required in a given 
 Only fields that are optional by default can be promoted. Currently
 `customTwicePerMonth` is the only configurable field.
 
-***
+## Endpoints
 
-<a id="payschedulerequiredvalidation"></a>
-
-### PayScheduleRequiredValidation
-
-> **PayScheduleRequiredValidation** = *typeof* `PayScheduleErrorCodes.REQUIRED`
-
-The required-field error code produced by [usePayScheduleForm](#usepayscheduleform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the custom name, frequency, anchor
-pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).
-
-***
-
-<a id="usepayscheduleformresult"></a>
-
-### UsePayScheduleFormResult
-
-> **UsePayScheduleFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
-
-Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |

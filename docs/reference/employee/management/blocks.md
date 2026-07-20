@@ -16,6 +16,14 @@ custom_edit_url: null
 
 Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
 
+### Remarks
+
+Renders a read-only card showing the employee's job(s), pay type, wage, and effective date, along with affordances to edit a job's compensation, add a first job from the empty state, add another job (when the primary job is Nonexempt), delete a non-primary job, and cancel a scheduled future-dated change. Choosing to edit or add a job swaps the card for the corresponding form; a successful add returns to the card with a dismissible "Job successfully added." alert, an edit returns to the card without an alert, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
+
+The card and form surfaces ([CompensationCard](#compensationcard), [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), [CompensationAddAnotherJobForm](#compensationaddanotherjobform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+
+<br />
+
 ### CompensationProps
 
 <a id="compensationprops"></a>
@@ -25,16 +33,14 @@ Props for [Compensation](#compensation).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders a read-only card showing the employee's job(s), pay type, wage, and effective date, along with affordances to edit a job's compensation, add a first job from the empty state, add another job (when the primary job is Nonexempt), delete a non-primary job, and cancel a scheduled future-dated change. Choosing to edit or add a job swaps the card for the corresponding form; a successful add returns to the card with a dismissible "Job successfully added." alert, an edit returns to the card without an alert, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
-
-The card and form surfaces ([CompensationCard](#compensationcard), [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), [CompensationAddAnotherJobForm](#compensationaddanotherjobform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -51,11 +57,28 @@ The card and form surfaces ([CompensationCard](#compensationcard), [Compensation
 | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user cancels the add-another-job form; the block returns to the card view | — |
 | `employee/management/compensation/alertDismissed` | Fired when the user dismisses the "Job added" success alert above the card | `null` |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-jobs) |
+| DELETE | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-jobs-job_id) |
+
+***
+
 <a id="compensationaddanotherjobform"></a>
 
 ## CompensationAddAnotherJobForm
 
 Standalone form for adding a secondary job and compensation to an employee from the management surface.
+
+### Remarks
+
+Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addAnotherRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+
+<br />
 
 ### CompensationAddAnotherJobFormProps
 
@@ -66,25 +89,33 @@ Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../index.md#commoncomponentinterface)._
+_Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../blocks.md#commoncomponentinterface)._
 
-### Remarks
+<br />
 
-Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addAnotherRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after the secondary job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
 | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
+***
+
 <a id="compensationaddjobform"></a>
 
 ## CompensationAddJobForm
 
 Standalone form for adding an employee's first job and compensation from the management surface.
+
+### Remarks
+
+Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+
+<br />
 
 ### CompensationAddJobFormProps
 
@@ -95,25 +126,33 @@ Props for [CompensationAddJobForm](#compensationaddjobform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../index.md#commoncomponentinterface)._
+_Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../blocks.md#commoncomponentinterface)._
 
-### Remarks
+<br />
 
-Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/compensation/addJobForm/submitted` | Fired after the job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
 | `employee/management/compensation/addJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
+***
+
 <a id="compensationcard"></a>
 
 ## CompensationCard
 
 Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances.
+
+### Remarks
+
+The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), or [CompensationAddAnotherJobForm](#compensationaddanotherjobform) and renders any post-save success alerts. [Compensation](#compensation) bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
+
+<br />
 
 ### CompensationCardProps
 
@@ -124,11 +163,11 @@ Props for [CompensationCard](#compensationcard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
 
-### Remarks
+<br />
 
-The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), or [CompensationAddAnotherJobForm](#compensationaddanotherjobform) and renders any post-save success alerts. [Compensation](#compensation) bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -138,11 +177,19 @@ The card owns its own data fetch, the pending-change alerts and review modal, an
 | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
 | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
 
+***
+
 <a id="compensationeditform"></a>
 
 ## CompensationEditForm
 
 Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change.
+
+### Remarks
+
+Pair with [CompensationCard](#compensationcard) to route its `employee/management/compensation/card/editRequested` event to this form. [Compensation](#compensation) bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+
+<br />
 
 ### CompensationEditFormProps
 
@@ -154,25 +201,35 @@ Props for [CompensationEditForm](#compensationeditform).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `jobId` | `string` | The id of the job whose compensation is being edited (for example, the `jobId` from the [CompensationCard](#compensationcard) `employee/management/compensation/card/editRequested` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled future-dated change. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../index.md#commoncomponentinterface)._
+_Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../blocks.md#commoncomponentinterface)._
 
-### Remarks
+<br />
 
-Pair with [CompensationCard](#compensationcard) to route its `employee/management/compensation/card/editRequested` event to this form. [Compensation](#compensation) bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/compensation/editForm/submitted` | Fired after the compensation change is saved; use it to return to the card | The updated `Compensation` entity |
 | `employee/management/compensation/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
+***
+
 <a id="dashboard"></a>
 
 ## Dashboard
 
 Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents.
+
+### Remarks
+
+Renders a tabbed overview of the employee, wrapped in the SDK's standard error and suspense
+boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
+case it defaults to basic details. Each tab composes the read-only section cards listed below.
+
+<br />
 
 ### DashboardProps
 
@@ -181,23 +238,42 @@ Employee self-service dashboard summarizing a single employee's basic details, j
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDashboard`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `selectedTab?` | `DashboardTab` | The currently active tab. Defaults to `'basicDetails'` when uncontrolled. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeDashboard`](../../Translations/index.md#employeedashboard)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `selectedTab?` | [`DashboardTab`](#dashboardtab) | The currently active tab. Defaults to `'basicDetails'` when uncontrolled. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders a tabbed overview of the employee, wrapped in the SDK's standard error and suspense
-boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
-case it defaults to basic details.
+### Components
+
+- [ProfileCard](#profilecard)
+- [HomeAddressCard](#homeaddresscard)
+- [WorkAddressCard](#workaddresscard)
+- [CompensationCard](#compensationcard)
+- [PaymentMethodCard](#paymentmethodcard)
+- [DeductionsCard](#deductionscard)
+- [PaystubsCard](#paystubscard)
+- [FederalTaxesCard](#federaltaxescard)
+- [StateTaxesCard](#statetaxescard)
+- [DocumentsCard](#documentscard)
+
+***
 
 <a id="deductions"></a>
 
 ## Deductions
 
 Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
+
+### Remarks
+
+Renders a card listing the employee's active deductions with affordances to add a new deduction, edit an existing one, or delete one via a confirm dialog. Choosing to add or edit swaps the card for the deduction form; a successful save returns to the card and emits the corresponding event, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
+
+The card and form surfaces ([DeductionsCard](#deductionscard), [DeductionsEditForm](#deductionseditform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+
+<br />
 
 ### DeductionsProps
 
@@ -208,16 +284,14 @@ Props for [Deductions](#deductions).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementDeductions`](../../Translations/index.md#employeemanagementdeductions)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders a card listing the employee's active deductions with affordances to add a new deduction, edit an existing one, or delete one via a confirm dialog. Choosing to add or edit swaps the card for the deduction form; a successful save returns to the card and emits the corresponding event, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
-
-The card and form surfaces ([DeductionsCard](#deductionscard), [DeductionsEditForm](#deductionseditform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -229,11 +303,19 @@ The card and form surfaces ([DeductionsCard](#deductionscard), [DeductionsEditFo
 | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
 | `employee/management/deductions/alertDismissed` | Fired when the user dismisses a success alert above the card | `null` |
 
+***
+
 <a id="deductionscard"></a>
 
 ## DeductionsCard
 
 Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction.
+
+### Remarks
+
+Fetches its own data and owns the delete confirm dialog. Has no alert API — alert rendering is the consumer's responsibility. Add and edit affordances do not open a form themselves; emit-then-route is the contract, so the consumer listens for the `addRequested` / `editRequested` events and renders [DeductionsEditForm](#deductionseditform) (or its own equivalent) accordingly. For an orchestrated card-plus-form flow, use [Deductions](#deductions) instead.
+
+<br />
 
 ### DeductionsCardProps
 
@@ -244,11 +326,11 @@ Props for [DeductionsCard](#deductionscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
 
-### Remarks
+<br />
 
-Fetches its own data and owns the delete confirm dialog. Has no alert API — alert rendering is the consumer's responsibility. Add and edit affordances do not open a form themselves; emit-then-route is the contract, so the consumer listens for the `addRequested` / `editRequested` events and renders [DeductionsEditForm](#deductionseditform) (or its own equivalent) accordingly. For an orchestrated card-plus-form flow, use [Deductions](#deductions) instead.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -256,11 +338,19 @@ Fetches its own data and owns the delete confirm dialog. Has no alert API — al
 | `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction | The matching `Garnishment` |
 | `employee/management/deductions/card/deleted` | Fired after a deduction is deleted via the confirm dialog | The deleted `Garnishment` |
 
+***
+
 <a id="deductionseditform"></a>
 
 ## DeductionsEditForm
 
 Standalone add/edit surface for a single employee deduction.
+
+### Remarks
+
+Renders the inline form for a post-tax custom deduction or court-ordered garnishment. Looks up the row to edit by `editingDeductionId`; omit it to open in add mode. Resolves its text against the `Employee.Management.Deductions` translation namespace so partner overrides on that namespace flow into the form. For an orchestrated card-plus-form flow, use [Deductions](#deductions).
+
+<br />
 
 ### DeductionsEditFormProps
 
@@ -271,21 +361,23 @@ Props for [DeductionsEditForm](#deductionseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementDeductions`](../../Translations/index.md#employeemanagementdeductions)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `editingDeductionId?` | `string` | When provided, the form opens in edit mode pre-populated with the matching active deduction. Omit to open in add mode. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders the inline form for a post-tax custom deduction or court-ordered garnishment. Looks up the row to edit by `editingDeductionId`; omit it to open in add mode. Resolves its text against the `Employee.Management.Deductions` translation namespace so partner overrides on that namespace flow into the form. For an orchestrated card-plus-form flow, use [Deductions](#deductions).
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/deductions/editForm/created` | Fired after a new deduction is saved | The created `Garnishment` |
 | `employee/management/deductions/editForm/updated` | Fired after an existing deduction is updated | The updated `Garnishment` |
 | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the form | — |
+
+***
 
 <a id="documentmanager"></a>
 
@@ -295,6 +387,12 @@ Read-only document viewer for the admin-facing employee dashboard. Renders the
 selected form's PDF — including unsigned forms, which are shown as-is.
 Signing is intentionally not offered here; forms are signed by the employee
 during onboarding, not by an admin viewing the dashboard.
+
+### Remarks
+
+Emits the following events:
+
+<br />
 
 ### DocumentManagerProps
 
@@ -306,24 +404,35 @@ Props for [DocumentManager](#documentmanager).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `formId` | `string` | The identifier of the form to display. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDocumentManager`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeDocumentManager`](../../Translations/index.md#employeedocumentmanager)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Emits the following events:
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `CANCEL` | The back button is selected | — |
+
+***
 
 <a id="documents"></a>
 
 ## Documents
 
 Standalone employee documents management flow.
+
+### Remarks
+
+Orchestrates the documents card and the per-form document manager. The flow
+starts on the documents card and routes to the document manager when a row's
+View CTA is selected; cancelling from the document manager returns to the
+card.
+
+<br />
 
 ### DocumentsProps
 
@@ -334,21 +443,30 @@ Props for [Documents](#documents).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDocuments`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementDocuments`](../../Translations/index.md#employeemanagementdocuments)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Orchestrates the documents card and the per-form document manager. The flow
-starts on the documents card and routes to the document manager when a row's
-View CTA is selected; cancelling from the document manager returns to the
-card.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/documents/card/viewRequested` | Fired when a row's View CTA is clicked on the documents card | `{ employeeId: string; formId: string }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-forms) |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf) |
+
+***
 
 <a id="documentscard"></a>
 
@@ -363,6 +481,8 @@ read-only — viewing or signing a form happens in the screen the parent
 routes to — and renders no alerts: alert rendering is the parent's
 responsibility.
 
+<br />
+
 ### DocumentsCardProps
 
 <a id="documentscardprops"></a>
@@ -372,7 +492,9 @@ Props for [DocumentsCard](#documentscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+
+***
 
 <a id="employeelist"></a>
 
@@ -380,6 +502,8 @@ Props for [DocumentsCard](#documentscard).
 
 Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
 tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
+
+<br />
 
 ### ManagementEmployeeListProps
 
@@ -390,13 +514,15 @@ Props for [ManagementEmployeeList](#employeelist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementEmployeeList`](../../Translations/index.md#employeemanagementemployeelist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `initialTab?` | [`EmployeeTab`](#employeetab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -405,11 +531,31 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
 | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| DELETE | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |
+
+***
+
 <a id="federaltaxes"></a>
 
 ## FederalTaxes
 
 Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
+
+### Remarks
+
+Renders a read-only card showing filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding, with an Edit CTA that swaps to the edit form. Submitting the form returns to the card; cancelling returns without saving. Wraps everything in error and suspense boundaries.
+
+The card and form surfaces ([FederalTaxesCard](#federaltaxescard), [FederalTaxesEditForm](#federaltaxeseditform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+
+<br />
 
 ### FederalTaxesProps
 
@@ -420,16 +566,14 @@ Props for [FederalTaxes](#federaltaxes).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementFederalTaxes`](../../Translations/index.md#employeemanagementfederaltaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders a read-only card showing filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding, with an Edit CTA that swaps to the edit form. Submitting the form returns to the card; cancelling returns without saving. Wraps everything in error and suspense boundaries.
-
-The card and form surfaces ([FederalTaxesCard](#federaltaxescard), [FederalTaxesEditForm](#federaltaxeseditform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -437,6 +581,17 @@ The card and form surfaces ([FederalTaxesCard](#federaltaxescard), [FederalTaxes
 | `employee/management/federalTaxes/editForm/submitted` | Fired after the edit form is saved; the block returns to the card view | The updated `EmployeeFederalTax` entity |
 | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
 | `employee/management/federalTaxes/alertDismissed` | Fired when the user dismisses an alert above the card | `null` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-federal_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-federal_taxes) |
+
+***
 
 <a id="federaltaxescard"></a>
 
@@ -448,6 +603,8 @@ Standalone "Federal taxes" card. Owns its own data fetch via
 button is clicked. The card has no alert API — alert rendering (when
 introduced) is the orchestrator's responsibility.
 
+<br />
+
 ### FederalTaxesCardProps
 
 <a id="federaltaxescardprops"></a>
@@ -457,13 +614,21 @@ Props for [FederalTaxesCard](#federaltaxescard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+
+***
 
 <a id="federaltaxeseditform"></a>
 
 ## FederalTaxesEditForm
 
 Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
+
+### Remarks
+
+Pair with [FederalTaxesCard](#federaltaxescard) to route its `employee/management/federalTaxes/card/editRequested` event to this form. [FederalTaxes](#federaltaxes) bundles the card, this form, and the swap wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+
+<br />
 
 ### FederalTaxesEditFormProps
 
@@ -474,26 +639,30 @@ Props for [FederalTaxesEditForm](#federaltaxeseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks/use-federal-taxes-form.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementFederalTaxes`](../../Translations/index.md#employeemanagementfederaltaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Pair with [FederalTaxesCard](#federaltaxescard) to route its `employee/management/federalTaxes/card/editRequested` event to this form. [FederalTaxes](#federaltaxes) bundles the card, this form, and the swap wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card | The updated `EmployeeFederalTax` entity |
 | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
+***
+
 <a id="homeaddress"></a>
 
 ## HomeAddress
 
 Standalone employee home address management flow.
+
+<br />
 
 ### HomeAddressProps
 
@@ -504,26 +673,46 @@ Props for [HomeAddress](#homeaddress).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementHomeAddress`](../../Translations/index.md#employeemanagementhomeaddress)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button on the home address card clicked | `{ employeeId: string }` |
 | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
-| `employee/management/homeAddress/created` | A new home address was created | EmployeeAddress |
-| `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
-| `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
+| `employee/management/homeAddress/created` | A new home address was created | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/updated` | An existing home address was updated | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/deleted` | A home address was deleted | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-home_addresses) |
+| DELETE | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-home_addresses-home_address_uuid) |
+
+***
 
 <a id="homeaddresscard"></a>
 
 ## HomeAddressCard
 
 Standalone employee home address summary card.
+
+### Remarks
+
+Fetches the employee's active home address and renders it alongside a Manage button.
+
+<br />
 
 ### HomeAddressCardProps
 
@@ -534,21 +723,25 @@ Props for [HomeAddressCard](#homeaddresscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
-### Remarks
+<br />
 
-Fetches the employee's active home address and renders it alongside a Manage button.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
+
+***
 
 <a id="homeaddresseditform"></a>
 
 ## HomeAddressEditForm
 
 Standalone employee home address edit form for creating, updating, and deleting addresses.
+
+<br />
 
 ### HomeAddressEditFormProps
 
@@ -559,42 +752,29 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementHomeAddress`](../../Translations/index.md#employeemanagementhomeaddress)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/management/homeAddress/created` | A new home address was created | EmployeeAddress |
-| `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
-| `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
+| `employee/management/homeAddress/created` | A new home address was created | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/updated` | An existing home address was updated | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/deleted` | A home address was deleted | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
 | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
+
+***
 
 <a id="paymentmethod"></a>
 
 ## PaymentMethod
 
 Management flow for editing an employee's payment method.
-
-### PaymentMethodProps
-
-<a id="paymentmethodprops"></a>
-
-Props for [PaymentMethod](#paymentmethod).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | `undefined` | Not used — payment method management edits live data. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementPaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `initialState?` | `"split"` \| `"list"` \| `"add"` | Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`. |
-| `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `true`. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ### Remarks
 
@@ -604,6 +784,8 @@ starting from `initialState`. Composed of the smaller standalone components
 ([PaymentMethodCard](#paymentmethodcard), [PaymentMethodBankForm](#paymentmethodbankform),
 [PaymentMethodSplitForm](#paymentmethodsplitform)) which can also be used directly when an
 orchestrator other than this flow is needed.
+
+<br />
 
 ### Example
 
@@ -620,11 +802,53 @@ function MyComponent() {
 }
 ```
 
+<br />
+
+### PaymentMethodProps
+
+<a id="paymentmethodprops"></a>
+
+Props for [PaymentMethod](#paymentmethod).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `undefined` | Not used — payment method management edits live data. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementPaymentMethod`](../../Translations/index.md#employeemanagementpaymentmethod)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `initialState?` | `"split"` \| `"list"` \| `"add"` | Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`. |
+| `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `true`. |
+
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts) |
+| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-bank_accounts) |
+| DELETE | [`/v1/employees/:employeeId/bank_accounts/:bankAccountUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id) |
+| GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-payment_method) |
+| PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-payment_method) |
+
+***
+
 <a id="paymentmethodbankform"></a>
 
 ## PaymentMethodBankForm
 
 Standalone bank-account form for the management flow.
+
+### Remarks
+
+Renders the shared bank-account form and emits per-component scoped events
+when the form is submitted or cancelled. Reads its copy from the dedicated
+`Employee.Management.PaymentMethodBankForm` namespace so partner overrides on
+the management bank form don't leak into the onboarding form.
+
+<br />
 
 ### PaymentMethodBankFormProps
 
@@ -635,28 +859,36 @@ Props for [PaymentMethodBankForm](#paymentmethodbankform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
 | `defaultValues?` | `Partial`\<[`BankFormData`](../hooks/use-bank-form.md#bankformdata)\> | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied. |
 
 _Inherits `optionalFieldsToRequire`, `shouldFocusError`, `validationMode` from Omit._
 
-### Remarks
+<br />
 
-Renders the shared bank-account form and emits per-component scoped events
-when the form is submitted or cancelled. Reads its copy from the dedicated
-`Employee.Management.PaymentMethodBankForm` namespace so partner overrides on
-the management bank form don't leak into the onboarding form.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/paymentMethod/bankForm/submitted` | Fired after the bank account is successfully created | The created bank account |
 | `employee/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the form | — |
 
+***
+
 <a id="paymentmethodcard"></a>
 
 ## PaymentMethodCard
 
 Standalone "Payment" card.
+
+### Remarks
+
+Owns its own data fetch and emits the management block's scoped events
+when the user clicks the card's CTAs or confirms a bank-account deletion.
+The card has no alert API — alert rendering is the orchestrator's
+responsibility.
+
+<br />
 
 ### PaymentMethodCardProps
 
@@ -667,14 +899,11 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
 
-### Remarks
+<br />
 
-Owns its own data fetch and emits the management block's scoped events
-when the user clicks the card's CTAs or confirms a bank-account deletion.
-The card has no alert API — alert rendering is the orchestrator's
-responsibility.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -682,11 +911,22 @@ responsibility.
 | `employee/management/paymentMethod/card/splitRequested` | Fired when the user clicks the split-paycheck CTA | — |
 | `employee/management/paymentMethod/card/bankAccountDeleted` | Fired after a bank account is successfully deleted | The delete response payload |
 
+***
+
 <a id="paymentmethodsplitform"></a>
 
 ## PaymentMethodSplitForm
 
 Standalone split-paycheck form for the management flow.
+
+### Remarks
+
+Renders the shared split-payments form and emits per-component scoped events
+when the form is submitted or cancelled. Reads its copy from the dedicated
+`Employee.Management.PaymentMethodSplitForm` namespace so partner overrides
+on the management split form don't leak into the onboarding form.
+
+<br />
 
 ### PaymentMethodSplitFormProps
 
@@ -697,21 +937,20 @@ Props for [PaymentMethodSplitForm](#paymentmethodsplitform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
 
 _Inherits `optionalFieldsToRequire`, `shouldFocusError`, `validationMode` from Omit._
 
-### Remarks
+<br />
 
-Renders the shared split-payments form and emits per-component scoped events
-when the form is submitted or cancelled. Reads its copy from the dedicated
-`Employee.Management.PaymentMethodSplitForm` namespace so partner overrides
-on the management split form don't leak into the onboarding form.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/paymentMethod/splitForm/submitted` | Fired after the splits are successfully saved | The updated payment method |
 | `employee/management/paymentMethod/splitForm/cancelled` | Fired when the user cancels the form | — |
+
+***
 
 <a id="paystubscard"></a>
 
@@ -725,6 +964,8 @@ download success. The card has no edit transitions and no alert API —
 paystubs is a read-only surface whose only action is a download side
 effect that opens the PDF in a new tab.
 
+<br />
+
 ### PaystubsCardProps
 
 <a id="paystubscardprops"></a>
@@ -734,13 +975,32 @@ Props for [PaystubsCard](#paystubscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/pay_stubs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_uuid-pay_stubs) |
+| GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+
+***
 
 <a id="profile"></a>
 
 ## Profile
 
 Management surface for viewing and editing an employee's basic profile details after onboarding.
+
+### Remarks
+
+Drives the read-view card and edit form via an internal state machine.
+Emits events on the supplied `onEvent` handler when the user requests an
+edit, saves changes, or cancels.
+
+<br />
 
 ### ProfileProps
 
@@ -751,28 +1011,48 @@ Props for [Profile](#profile).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementProfile`](../../Translations/index.md#employeemanagementprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Drives the read-view card and edit form via an internal state machine.
-Emits events on the supplied `onEvent` handler when the user requests an
-edit, saves changes, or cancels.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks Edit on the read-view card | `{ employeeId: string }` |
-| `employee/management/profile/updated` | Fired after the profile is successfully saved | Employee |
+| `employee/management/profile/updated` | Fired after the profile is successfully saved | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/management/profile/editCancelled` | Fired when the user cancels editing | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| PUT | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |
+
+***
 
 <a id="profilecard"></a>
 
 ## ProfileCard
 
 Read-only card showing an employee's basic profile details with an Edit action.
+
+### Remarks
+
+Standalone card that fetches its own data. Emits an event when the user
+clicks Edit so the parent can switch to the edit form. The card does not
+render success or error alerts itself — alert presentation is the
+surrounding surface's responsibility.
+
+<br />
 
 ### ProfileCardProps
 
@@ -783,24 +1063,32 @@ Props for [ProfileCard](#profilecard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
 
-### Remarks
+<br />
 
-Standalone card that fetches its own data. Emits an event when the user
-clicks Edit so the parent can switch to the edit form. The card does not
-render success or error alerts itself — alert presentation is the
-surrounding surface's responsibility.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ employeeId: string }` |
+
+***
 
 <a id="profileeditform"></a>
 
 ## ProfileEditForm
 
 Standalone edit form for an employee's basic profile details.
+
+### Remarks
+
+Renders fields for first name, middle initial, last name, email, SSN, and
+date of birth — all required on update — and shows a success alert when
+the save completes. Save and Cancel both emit events so the parent can
+return to the read view.
+
+<br />
 
 ### ProfileEditFormProps
 
@@ -811,22 +1099,21 @@ Props for [ProfileEditForm](#profileeditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementProfile`](../../Translations/index.md#employeemanagementprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders fields for first name, middle initial, last name, email, SSN, and
-date of birth — all required on update — and shows a success alert when
-the save completes. Save and Cancel both emit events so the parent can
-return to the read view.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/management/profile/updated` | Fired after the employee profile is successfully saved | Employee |
+| `employee/management/profile/updated` | Fired after the employee profile is successfully saved | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
 
 <a id="statetaxes"></a>
 
@@ -837,6 +1124,8 @@ read-only summary card and the edit form, switching between them as the
 partner-emitted events from [StateTaxesCard](#statetaxescard) and [StateTaxesEditForm](#statetaxeseditform)
 drive the internal state machine.
 
+<br />
+
 ### StateTaxesProps
 
 <a id="statetaxesprops"></a>
@@ -846,18 +1135,31 @@ Props for [StateTaxes](#statetaxes).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementStateTaxes`](../../Translations/index.md#employeemanagementstatetaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/editRequested` | Edit button on the summary card was clicked | `{ employeeId: string }` |
 | `employee/management/stateTaxes/editCancelled` | Cancel button on the edit form was clicked | — |
 | `employee/management/stateTaxes/updated` | Edit form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-state_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-state_taxes) |
+
+***
 
 <a id="statetaxescard"></a>
 
@@ -866,6 +1168,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Standalone read-only summary card showing an employee's per-state tax
 withholding answers. Fetches its own data and surfaces an Edit button
 that emits an event for the orchestrator to swap in the edit form.
+
+### Remarks
+
+The Edit button is hidden when no state on record has any tax-withholding
+questions (e.g. states with no income tax), since there is nothing to edit.
+
+<br />
 
 ### StateTaxesCardProps
 
@@ -876,16 +1185,17 @@ Props for [StateTaxesCard](#statetaxescard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
 
-### Remarks
+<br />
 
-The Edit button is hidden when no state on record has any tax-withholding
-questions (e.g. states with no income tax), since there is nothing to edit.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |
+
+***
 
 <a id="statetaxeseditform"></a>
 
@@ -896,6 +1206,8 @@ state-tax form against the `Employee.Management.StateTaxes` namespace and
 emits scoped management events on submit and cancel, so partner copy
 overrides on the management namespace do not leak into the onboarding flow.
 
+<br />
+
 ### StateTaxesEditFormProps
 
 <a id="statetaxeseditformprops"></a>
@@ -905,38 +1217,27 @@ Props for [StateTaxesEditForm](#statetaxeseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementStateTaxes`](../../Translations/index.md#employeemanagementstatetaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 | `employee/management/stateTaxes/editCancelled` | Cancel button was clicked | — |
 
+***
+
 <a id="terminateemployee"></a>
 
 ## TerminateEmployee
 
 Standalone form for capturing an employee's termination details — last day of work and how to process final payroll.
-
-### TerminateEmployeeProps
-
-<a id="terminateemployeeprops"></a>
-
-Props for [TerminateEmployee](#terminateemployee).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `employeeId` | `string` | The employee identifier to terminate. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminateEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ### Remarks
 
@@ -945,15 +1246,7 @@ terminations and pre-populates for editing when one is active, or routes to
 the summary view (via the `employee/termination/viewSummary` event) when the
 employee is already terminated.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
-| `employee/termination/updated` | Fired when an existing termination is updated | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
-| `employee/termination/done` | Fired when the termination form is completed | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
-| `employee/termination/viewSummary` | Fired when redirecting to view an existing termination | `{ employeeId: string, effectiveDate: string }` |
-| `employee/termination/payrollCreated` | Fired after a dismissal-payroll period was successfully created | `{ payrolls: PayrollUnprocessed[] }` |
-| `employee/termination/payrollFailed` | Fired if creating a dismissal payroll fails | `{ employeeId: string, error: unknown }` |
-| `CANCEL` | Fired when the user clicks Cancel | — |
+<br />
 
 ### Example
 
@@ -971,28 +1264,58 @@ function MyComponent() {
 }
 ```
 
+<br />
+
+### TerminateEmployeeProps
+
+<a id="terminateemployeeprops"></a>
+
+Props for [TerminateEmployee](#terminateemployee).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeId` | `string` | The employee identifier to terminate. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeTerminationsTerminateEmployee`](../../Translations/index.md#employeeterminationsterminateemployee)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/updated` | Fired when an existing termination is updated | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/done` | Fired when the termination form is completed | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
+| `employee/termination/viewSummary` | Fired when redirecting to view an existing termination | `{ employeeId: string, effectiveDate: string }` |
+| `employee/termination/payrollCreated` | Fired after a dismissal-payroll period was successfully created | `{ payrolls: PayrollUnprocessed[] }` |
+| `employee/termination/payrollFailed` | Fired if creating a dismissal payroll fails | `{ employeeId: string, error: unknown }` |
+| `CANCEL` | Fired when the user clicks Cancel | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-unprocessed_termination_pay_periods) |
+| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls) |
+| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-terminations) |
+| POST | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-terminations) |
+| PUT | [`/v1/terminations/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-terminations-employee_id) |
+
+***
+
 <a id="terminationsummary"></a>
 
 ## TerminationSummary
 
 Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist.
-
-### TerminationSummaryProps
-
-<a id="terminationsummaryprops"></a>
-
-Props for [TerminationSummary](#terminationsummary).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminationSummary`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `payrollOption?` | [`PayrollOption`](#payrolloption) | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. |
-| `payrollUuid?` | `string` | UUID of the created off-cycle payroll (when applicable). |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ### Remarks
 
@@ -1003,12 +1326,7 @@ Displays termination details and provides actions for managing the termination. 
 - **Run termination payroll** is shown for the `dismissalPayroll` option and navigates to the dismissal payroll flow.
 - **Run off-cycle payroll** is shown for the `anotherWay` option and navigates to the off-cycle payroll creation flow.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |
-| `employee/termination/cancelled` | Fired when a termination is successfully cancelled | `{ employeeId: string, alert?: `TerminationFlowAlert` }` |
-| `employee/termination/runPayroll` | Fired when user clicks to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
-| `employee/termination/runOffCyclePayroll` | Fired when user clicks to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
+<br />
 
 ### Example
 
@@ -1027,11 +1345,56 @@ function MyComponent() {
 }
 ```
 
+<br />
+
+### TerminationSummaryProps
+
+<a id="terminationsummaryprops"></a>
+
+Props for [TerminationSummary](#terminationsummary).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeTerminationsTerminationSummary`](../../Translations/index.md#employeeterminationsterminationsummary)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `payrollOption?` | [`PayrollOption`](#payrolloption) | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. |
+| `payrollUuid?` | `string` | UUID of the created off-cycle payroll (when applicable). |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |
+| `employee/termination/cancelled` | Fired when a termination is successfully cancelled | `{ employeeId: string, alert?: `TerminationFlowAlert` }` |
+| `employee/termination/runPayroll` | Fired when user clicks to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
+| `employee/termination/runOffCyclePayroll` | Fired when user clicks to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-terminations) |
+| DELETE | [`/v1/employees/:employeeId/terminations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employees-employee_id-terminations) |
+
+***
+
 <a id="workaddress"></a>
 
 ## WorkAddress
 
 Standalone employee work address management flow.
+
+<br />
 
 ### WorkAddressProps
 
@@ -1042,26 +1405,46 @@ Props for [WorkAddress](#workaddress).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementWorkAddress`](../../Translations/index.md#employeemanagementworkaddress)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button on the work address card clicked | `{ employeeId: string }` |
 | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
-| `employee/management/workAddress/created` | A new work address was created | EmployeeWorkAddress |
-| `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
-| `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
+| `employee/management/workAddress/created` | A new work address was created | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/updated` | An existing work address was updated | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/deleted` | A work address was deleted | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-work_addresses) |
+| DELETE | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-work_addresses-work_address_uuid) |
+
+***
 
 <a id="workaddresscard"></a>
 
 ## WorkAddressCard
 
 Standalone employee work address summary card.
+
+### Remarks
+
+Fetches the employee's active work address and renders it alongside a Manage button.
+
+<br />
 
 ### WorkAddressCardProps
 
@@ -1072,21 +1455,25 @@ Props for [WorkAddressCard](#workaddresscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
-### Remarks
+<br />
 
-Fetches the employee's active work address and renders it alongside a Manage button.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
+
+***
 
 <a id="workaddresseditform"></a>
 
 ## WorkAddressEditForm
 
 Standalone employee work address edit form for creating, updating, and deleting addresses.
+
+<br />
 
 ### WorkAddressEditFormProps
 
@@ -1097,21 +1484,33 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementWorkAddress`](../../Translations/index.md#employeemanagementworkaddress)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/management/workAddress/created` | A new work address was created | EmployeeWorkAddress |
-| `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
-| `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
+| `employee/management/workAddress/created` | A new work address was created | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/updated` | An existing work address was updated | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/deleted` | A work address was deleted | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
 | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
 
+***
+
 ## Utility types
+
+<a id="dashboardtab"></a>
+
+### DashboardTab
+
+> **DashboardTab** = `"basicDetails"` \| `"jobAndPay"` \| `"taxes"` \| `"documents"`
+
+***
 
 <a id="employeetab"></a>
 
@@ -1120,6 +1519,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 > **EmployeeTab** = `"active"` \| `"onboarding"` \| `"dismissed"`
 
 The tab currently selected on [EmployeeList](#employeelist).
+
+***
 
 <a id="payrolloption"></a>
 

@@ -1,15 +1,16 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useLocationsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsUpdate'
-import { useLocationsRetrieveSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsRetrieve'
-import { useLocationsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsCreate'
-import { type Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
+import { useLocationsUpdateMutation } from '@gusto/embedded-api/react-query/locationsUpdate'
+import { useLocationsRetrieveSuspense } from '@gusto/embedded-api/react-query/locationsRetrieve'
+import { useLocationsCreateMutation } from '@gusto/embedded-api/react-query/locationsCreate'
+import { type Location } from '@gusto/embedded-api/models/components/location'
 import { useQueryClient } from '@tanstack/react-query'
 import { Head } from './Head'
 import type { LocationFormInputs } from './Form'
 import { Form, LocationFormSchema } from './Form'
 import { Actions } from './Actions'
 import { LocationsFormProvider } from './useLocationForm'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { Flex } from '@/components/Common'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -98,7 +99,7 @@ function Root({
       // and the form seeds with a stale addressType on first open.
       const refreshLocationsCache = () =>
         queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Locations'],
+          queryKey: [API_QUERY_NAMESPACE, 'Locations'],
           refetchType: 'all',
         })
 
@@ -155,6 +156,7 @@ function Root({
  * @remarks
  * Pass a `locationId` to edit an existing location; omit it to create a new one.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/location/add/done` | Fired when a new location is created | The created location |

@@ -35,21 +35,18 @@ const defaultPayPeriods = [
 ]
 
 let mockPayPeriods:
-  | typeof defaultPayPeriods
-  | Array<Omit<(typeof defaultPayPeriods)[0], 'checkDate'>> = defaultPayPeriods
+  typeof defaultPayPeriods | Array<Omit<(typeof defaultPayPeriods)[0], 'checkDate'>> =
+  defaultPayPeriods
 
-vi.mock(
-  '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetUnprocessedTerminationPeriods',
-  () => ({
-    usePaySchedulesGetUnprocessedTerminationPeriodsSuspense: () => ({
-      data: {
-        unprocessedTerminationPayPeriods: mockPayPeriods,
-      },
-    }),
+vi.mock('@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods', () => ({
+  usePaySchedulesGetUnprocessedTerminationPeriodsSuspense: () => ({
+    data: {
+      unprocessedTerminationPayPeriods: mockPayPeriods,
+    },
   }),
-)
+}))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle', () => ({
+vi.mock('@gusto/embedded-api/react-query/payrollsCreateOffCycle', () => ({
   usePayrollsCreateOffCycleMutation: () => ({
     mutateAsync: mockCreateOffCyclePayroll,
     isPending: false,

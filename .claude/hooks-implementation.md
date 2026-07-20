@@ -9,7 +9,7 @@ Reference implementations:
 
 Each hook lives in its own folder following the feature module pattern: `src/components/{Domain}/{Feature}/shared/use{Name}Form/`
 
-```
+```text
 src/components/{Domain}/{Feature}/shared/use{Name}Form/
 ├── use{Name}Form.tsx        # Main hook: data fetching, form setup, return shape
 ├── {domain}Schema.ts        # Zod schema, error codes, form data/output types
@@ -51,6 +51,7 @@ const fieldValidators = {
 export type {Domain}FormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+/** @internal — useForm's third generic; not part of the public surface (see Exports Checklist). */
 export type {Domain}FormOutputs = {Domain}FormData
 ```
 
@@ -146,14 +147,24 @@ useCompensationForm({
 
 ### When to Use `superRefine` vs. `requiredFieldsConfig` vs. `optionalFieldsToRequire`
 
-| Technique                           | When to use                                                           | Example                             | Metadata-aware?                                    |
-| ----------------------------------- | --------------------------------------------------------------------- | ----------------------------------- | -------------------------------------------------- |
-| `requiredFieldsConfig` rule         | Declarative field-level requiredness                                  | `jobTitle: 'create'`                | Yes                                                |
-| `optionalFieldsToRequire` (partner) | Partner promotes optional field to required                           | `{ create: ['jobTitle'] }`          | Yes                                                |
-| `excludeFields`                     | Field conditionally absent from schema                                | `excludeFields: ['startDate']`      | Yes (field absent)                                 |
-| `fieldsWithRedactedValues`          | Field has a stored server-side value redacted in the API response     | `fieldsWithRedactedValues: ['ssn']` | Yes (`hasRedactedValue: true`, keeps `isRequired`) |
-| Predicate rule                      | Requiredness depends on runtime form values                           | `data => data.adjustForMinimumWage` | Yes (via Proxy auto-detection)                     |
-| `superRefine`                       | Cross-field validation logic (rate thresholds, cascading constraints) | FLSA + rate + paymentUnit rules     | No — validation only                               |
+| Technique                           | When to use                                                           | Example                                                                         | Metadata-aware?                                    |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `requiredFieldsConfig` rule         | Declarative field-level requiredness                                  | `jobTitle: 'create'`                                                            | Yes                                                |
+| `optionalFieldsToRequire` (partner) | Partner promotes optional field to required                           | `{ create: ['jobTitle'] }`                                                      | Yes                                                |
+| `excludeFields` (array)             | Field statically absent from schema for a hook configuration          | `excludeFields: ['startDate']`                                                  | Yes (field absent)                                 |
+| `excludeFields` (function)          | Field applicability depends on runtime form values (conditional UI)   | `excludeFields: (data, mode) => (data.type === 'Business' ? ['ssn'] : ['ein'])` | Yes (skipped while excluded)                       |
+| `fieldsWithRedactedValues`          | Field has a stored server-side value redacted in the API response     | `fieldsWithRedactedValues: ['ssn']`                                             | Yes (`hasRedactedValue: true`, keeps `isRequired`) |
+| Predicate rule                      | Requiredness depends on runtime form values                           | `data => data.adjustForMinimumWage`                                             | Yes (via Proxy auto-detection)                     |
+| `superRefine`                       | Cross-field validation logic (rate thresholds, cascading constraints) | FLSA + rate + paymentUnit rules                                                 | No — validation only                               |
+
+### Value-aware `excludeFields`
+
+`excludeFields` accepts either form:
+
+- **Array** — `excludeFields: ['startDate']` removes the field from the schema shape at build time. Use it when a field is statically absent for a given hook configuration (e.g. a `withStartDateField` flag).
+- **Function** — `excludeFields: (data, mode) => string[]` is evaluated during the required-check pass with the current form values. The named fields stay in the schema shape, but their requiredness checks are skipped whenever the function excludes them. Use it for fields rendered conditionally on a discriminator (individual vs. business contractor, hourly vs. fixed wage, a self-onboarding toggle) so a hidden field never raises a phantom "required" error.
+
+The function form keeps requiredness **static and promotable**: `requiredFieldsConfig` and the partner's `optionalFieldsToRequire` still decide whether an _applicable_ field is required, while `excludeFields` only gates _applicability_. Build the schema once (no need to rebuild it per keystroke), and drive the component's render-gating from the same discriminators the function reads — the hook watches them with `useWatch` — so the UI and validation always agree on which fields are live. See `createContractorDetailsSchema` / `useContractorDetailsForm` for the canonical example.
 
 ### `z.preprocess` and Type Inference
 
@@ -175,6 +186,7 @@ The `superRefine` callback in `buildFormSchema` options is already typed with th
 - Each field is a thin wrapper around a generic `*HookField` component that binds `name`
 - Export a `*FieldProps` type using `HookFieldProps<*HookFieldProps<TErrorCode, TEntry>>` which strips `name`
 - Derive validation type aliases from the schema's error codes constant so they stay in sync — never hardcode string unions
+- The `*Field` components are `@internal` — partners reach them only via `form.Fields`, and they are **not** exported from `src/index.ts` (only their `*FieldProps` types are public). Tag each with a bare `/** @internal */` — no summary, no `@remarks`. Each field's partner-facing behavior is documented on the public `{Domain}FormFields` member instead (see "Return Shape" below and `.claude/tsdoc-guides/hooks.md`).
 
 ```typescript
 // Derive validation types from the error codes constant — not hardcoded strings
@@ -185,6 +197,7 @@ export type RateValidation = (typeof ErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | '
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValidation>>
 
+/** @internal */
 export function JobTitleField(props: JobTitleFieldProps) {
   return <TextInputHookField {...props} name="jobTitle" />
 }
@@ -246,6 +259,18 @@ await createJobMutation.mutateAsync({ request: { employeeId: resolvedEmployeeId,
 - Use `values` + `resetOptions: { keepDirtyValues: true }` on `useForm` — NOT manual `useEffect` + `reset()`
 - This lets react-hook-form deep-compare and sync when server data changes while preserving user edits
 
+**Type the `defaultValues` prop as the form-data shape, never as a `Pick` of the API entity.** Partner pre-fill is form input, so it should be `Partial<{Domain}FormData>` (every field a plain `string`/`number`/etc.), the same type the schema produces. API entity types (`@gusto/embedded-api/models/components/*`) declare nullable fields as `string | null | undefined`; if the prop is a `Pick` of one of those, `null` leaks into the partner-facing type and forces a `?? undefined` mapping at every call site. The form-data type carries no `null`, so the component passes `defaultValues` straight through.
+
+`null`-normalization belongs in **one place only — `resolvedDefaults` inside the hook** — where you read the server entity. `?? partnerDefaults?.field ?? ''` already coalesces `null` from both sources, so no caller ever needs to normalize. `useContractorProfile` (`defaultValues?: Partial<ContractorProfileFormData>`, with `existingContractor.firstName || undefined` internally) is the reference.
+
+```typescript
+// Good — form-shaped, no null
+defaultValues?: Partial<{Domain}FormData>
+
+// Bad — drags `string | null` into the partner type and forces call-site mapping
+defaultValues?: Pick<{Entity}, 'street1' | 'city' | 'state' | 'zip'>
+```
+
 ```typescript
 const [schema, metadataConfig] = useMemo(
   () => create{Domain}Schema({ mode, optionalFieldsToRequire }),
@@ -267,7 +292,166 @@ const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control
 - Destructure the tuple from the schema factory: `const [schema, metadataConfig] = create{Domain}Schema({ mode, optionalFieldsToRequire })`
 - Pass `metadataConfig` and the form's `control` to `useDeriveFieldsMetadata` — this reactively resolves `isRequired` for predicate-based rules by watching only the specific form fields that predicates read
 - Enhance select/radio fields with `withOptions<TEntry>(baseMetadata.field, options, entries)`
-- Override `isRequired`/`isDisabled` based on business logic
+- Override `isRequired`/`isDisabled` with `withFlags(baseMetadata.field, { isDisabled })` — see the typing pattern below
+
+`form.fieldsMetadata` carries one entry per form field: a `FieldMetadata`, or a
+`FieldMetadataWithOptions<TEntry>` for select/radio fields. Type it **precisely,
+per field**, by inferring the type from the object the hook builds — not as the
+generic `FieldsMetadata` index signature.
+
+**Pattern — use for every hook whose field-key set is static (known at build time):**
+
+1. Extract the metadata construction into a module-level **pure** builder
+   `build{Domain}FieldsMetadata`. It takes `baseMetadata`
+   (`Record<keyof {Domain}FormData, FieldMetadata>`) plus any presentation flags
+   it closes over, and returns the assembled object closed with
+   `} satisfies FieldsMetadata`:
+
+   ```ts
+   function build{Domain}FieldsMetadata(
+     base: Record<keyof {Domain}FormData, FieldMetadata>,
+     { showFoo }: { showFoo: boolean },
+   ) {
+     return {
+       name: base.name,
+       // withFlags preserves the FieldMetadata type through a flag override. A
+       // bare `{ ...base.foo, isDisabled }` spread widens to an anonymous object
+       // and loses the FieldMetadata name — which sprawls into an 8-row inline
+       // object in the generated reference instead of a single `FieldMetadata`.
+       foo: withFlags(base.foo, { isDisabled: !showFoo }),
+       // withOptions marks a select/radio field → FieldMetadataWithOptions<TEntry>.
+       kind: withOptions<Kind>(base.kind, kindOptions, KINDS),
+     } satisfies FieldsMetadata
+   }
+   ```
+
+2. Infer the public alias from the builder — never hand-write the shape, never
+   index back through the ready interface:
+
+   ```ts
+   export type {Domain}FieldsMetadata = ReturnType<typeof build{Domain}FieldsMetadata>
+   ```
+
+3. Pass that alias as the **first** `BaseFormHookReady` type argument:
+
+   ```ts
+   export interface Use{Domain}FormReady extends BaseFormHookReady<
+     {Domain}FieldsMetadata,
+     {Domain}FormData,
+     {Domain}FormFields
+   > { ... }
+   ```
+
+4. In the hook body, call the builder (import `FieldMetadata` for the param type
+   and `withFlags` from `@/partner-hook-utils/form/withFlags`):
+
+   ```ts
+   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+   const fieldsMetadata = build{Domain}FieldsMetadata(baseMetadata, { showFoo })
+   ```
+
+   If the hook already wraps metadata in `useMemo` (e.g. redaction-dependent),
+   keep the `useMemo` and call the builder inside its callback. React hooks stay
+   in the hook body; only the pure object construction moves out — nothing breaks
+   because the builder closes over already-computed values passed as arguments.
+
+   Keep every key **unconditionally present** — push any condition onto the
+   field's _value_, not its presence. A conditional-spread key
+   (`...(cond ? { ssn: X } : {})`) makes the inferred type lopsided; instead write
+   `ssn: withFlags(base.ssn, cond ? { placeholder } : {})` so `ssn` is always a
+   `FieldMetadata`. (`useContractorSignatureForm` needs this normalization.) A hook
+   whose _key set_ genuinely varies by branch or is minted at runtime uses a
+   different shape — see "Choosing the metadata type by key structure" below.
+
+**Why this shape.** Inferring the type from a constant is the same move as
+`type {Domain}FormData = z.infer<typeof fieldValidators>`: the type tracks the
+value with zero drift, and the compiler rejects a builder that adds/removes a
+field or flips a field's options-ness. It is the **only** way to get per-field
+precision — whether a field carries `options` is a rendering decision the hook
+makes (two `boolean` fields can differ: a radio has options, a checkbox does
+not), so it can't be derived from `{Domain}FormData`. The precise type drives the
+generated reference: `form.fieldsMetadata` renders as a single link to a
+per-field `{Domain}FieldsMetadata` table showing each field's variant, instead of
+an opaque index signature. (SDK-1073.)
+
+**Choosing the metadata type by key structure.** The builder-inferred object
+above is the default, but the right shape depends on whether the key universe is
+finite and known at build time. The deciding question is **"is the universe of
+keys finite and known at build time?"** — _not_ "do the keys vary." All four
+tiers are now in use; **no hook remains on the bare generic `FieldsMetadata`** —
+every hook names its metadata type.
+
+| Key structure                                                                                                       | Type shape                                                                                                                                                                  | Example                             |
+| ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| **Static, finite** — every key known at build time                                                                  | Builder-inferred object: `ReturnType<typeof build{Domain}FieldsMetadata>` (the pattern above)                                                                               | most hooks (`useJobForm`, …)        |
+| **Branch-varying, finite** — fixed universe of keys, but which subset is present depends on a runtime discriminator | **Discriminated union** of fixed object variants; partners narrow with an `in` check                                                                                        | `useSignEmployeeForm` (I-9 vs. not) |
+| **Static core + runtime-minted tail** — some named keys always present, plus dynamic dotted paths                   | Named core object **intersected** with a template-literal `Record`: ``{ splitBy: … } & Record<`splitAmount.${string}`, FieldMetadata>``                                     | `useSplitPaymentsForm`              |
+| **Fully runtime-minted keys** — no key knowable at build time (UUIDs, API-driven names)                             | Template-literal index signature: ``Record<`states.${string}.${string}`, FieldMetadata \| FieldMetadataWithOptions>``; cast the derived metadata to it at the hook boundary | `useEmployeeStateTaxesForm`         |
+
+`useSignEmployeeForm`'s keys _vary_ (I-9 adds preparer fields) but the universe is
+fixed and enumerable → union. `useEmployeeStateTaxesForm`'s keys are _minted from
+runtime data_ (API question keys) → irreducible index signature. Same "varies at
+runtime" symptom, opposite answer — the universe-finiteness is what decides.
+
+**Rules that fell out of the rollout (violate these and it silently breaks):**
+
+- **A base/variant metadata alias must be a `type`, not an `interface`.**
+  `FieldsMetadata` is an index-signature type (`{ [k: string]: … }`), and
+  TypeScript won't give an `interface` an implicit index signature (interfaces are
+  open to merging), so an `interface` fails the `BaseFormHookReady<…>` constraint.
+  Type-literal aliases satisfy it.
+- **Reference exported named types inside template-literal / union metadata types
+  — never inline `(typeof CONST)[number]` for an unexported const.** API Extractor
+  flags the const as `ae-forgotten-export`. `useEmployeeStateTaxesForm` uses the
+  public `StateAbbreviation` (from `@/shared/constants`), `useSplitPaymentsForm`
+  uses `SplitByValue`; export a named type if you need one.
+- **Give each key exactly one type.** When overriding select/radio entries on a
+  `Record<keyof {Domain}FormData, FieldMetadata>` base, `Omit` the option keys and
+  redeclare them explicitly — `Omit<Record<keyof {Domain}FormData, FieldMetadata>, 'kind'> & { kind: FieldMetadataWithOptions<Kind> }` — so a key renders as one
+  clean type, not `FieldMetadata & FieldMetadataWithOptions`.
+- **`@interface` tag:** put it on object-shaped aliases (union variants,
+  static-core intersections) so TypeDoc renders a Properties table. **Omit** it on
+  a pure index-signature `Record` alias — that renders cleanly as `= Record<…>`
+  with linked value types, whereas `@interface` gives a near-empty "Indexable"
+  block.
+
+**Supporting infrastructure — already built, do not rebuild:**
+
+- `withFlags(base, flags)` — `src/partner-hook-utils/form/withFlags.ts`. Merges
+  flags while preserving the `FieldMetadata` type. `@internal`, not on the public
+  barrel.
+- `build/expandDtsTypeof.ts` resolves `ReturnType<typeof build{Domain}FieldsMetadata>`
+  in the emitted `.d.ts` to the concrete object type and removes the orphaned
+  unexported `declare function`, so API Extractor emits no `ae-forgotten-export`
+  for the builder.
+- `renderFieldsMetadataAlias` in `docs-site/plugins/typedoc-custom/theme.ts`
+  collapses the expanded ready-state rows into a single link and renders the
+  `### {Domain}FieldsMetadata` section as the per-field table. For a pure
+  index-signature alias (no per-field rows to collapse) it just links the
+  `form.fieldsMetadata` row to the alias section — otherwise TypeDoc leaves it as
+  the unresolved `TFieldsMetadata` type parameter. `expandDtsTypeof` applies only
+  to the `ReturnType<typeof build…>` (static-object) tier.
+
+**Adding a new hook (the rollout is complete).** All 20 form hooks name their
+metadata type; none remain on the bare generic `FieldsMetadata`. List them with
+`grep -rln "export type [A-Za-z]*FieldsMetadata" src/components`. For a new hook,
+pick the tier from the table above by key structure, then verify:
+
+```bash
+npx tsc --noEmit
+npm run test -- --run <path>/use{Name}Form.test.tsx     # then the full suite
+npm run docs:api:generate                                # form.fieldsMetadata is a
+                                                         # single link to the named
+                                                         # {Domain}FieldsMetadata alias
+                                                         # (never the raw
+                                                         # `TFieldsMetadata` — if you
+                                                         # see that, the theme fix or
+                                                         # alias section is missing)
+npm run build && npm run api-report:derive               # ae-forgotten-export count
+                                                         # unchanged (currently 19);
+                                                         # no build{Domain}FieldsMetadata
+                                                         # symbol leaks (static tier)
+```
 
 #### Redacted Fields (`fieldsWithRedactedValues`)
 
@@ -329,21 +513,19 @@ if (isDataLoading || !requiredData) {
 // Ready state
 return {
   isLoading: false as const,
-  data: {
-    /* domain entities */
-  },
+  data: {/* domain entities */},
   status: { isPending, mode: isCreateMode ? 'create' : 'update' },
   actions: { onSubmit },
   errorHandling,
   form: {
-    Fields: {
-      /* field components, some possibly undefined */
-    },
+    Fields: {/* field components, some possibly undefined */},
     fieldsMetadata,
     hookFormInternals: { formMethods },
   },
 }
 ```
+
+Declare `form.Fields` against a dedicated `@public` `{Domain}FormFields` interface and type each member as `ComponentType<{Field}FieldProps>` (use `ComponentType<{Field}FieldProps> | undefined` for conditionally rendered fields). Do **not** type members as `typeof {Field}Field` — that would make the public interface reference the `@internal` field component. This interface is the documentation home for each field's partner-facing behavior (validation pattern, available options/defaults, value masking, whether `getOptionLabel` translates labels), since the `*Field` components themselves carry only `/** @internal */`. `useContractorBankAccountForm` / `useContractorPaymentMethodForm` are the reference examples.
 
 ### Submit Handler
 
@@ -407,6 +589,12 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
+The domain `*Field` components (`JobTitleField`, `NameField`, etc.) are also `@internal` and stay off `src/index.ts` — partners reach them via `form.Fields`, never by importing the function. Export only their `*FieldProps` types (partners need those to type `getOptionLabel` / `validationMessages`). Each `*Field` carries a bare `/** @internal */`; its partner-facing behavior is documented on the public `{Domain}FormFields` member instead.
+
+The schema factory `create{Domain}Schema` and its `{Domain}SchemaOptions` are also `@internal`. The inner hook barrel may re-export them for SDK use, but **do not** add them to `src/index.ts`: they are tagged `@internal`, so api-extractor emits an `ae-internal-missing-underscore` warning when they appear on the public entry point. Partners build forms through the hook, not the raw factory — `{Domain}FormData` covers the type they actually need.
+
+`{Domain}FormOutputs` is `@internal` too. It's the resolver-output type (useForm's third generic), an internal seam between the form's input and parsed-output shapes that coincide today (`{Domain}FormOutputs = {Domain}FormData`). Keep it defined for the hook's `useForm` generic, but don't export it from `src/index.ts`: partners type `defaultValues` against `{Domain}FormData` and read parsed values from `form.getFormSubmissionValues` (typed as the form-data shape), so the seam stays ours.
+
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 
 ## 7. Validation Parity with Stable Components
@@ -454,6 +642,7 @@ The `gws-flows` repo has side-by-side comparison pages that render the stable co
 Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies from each form column, then diff them:
 
 1. Install route interception via `browser_run_code`:
+
    ```javascript
    page.__capturedBodies = []
    await page.route('**/fe_sdk/**', async route => {
@@ -468,6 +657,7 @@ Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies
      await route.continue()
    })
    ```
+
 2. Submit each form column, reading captured bodies between submissions
 3. Compare request URLs, methods, and JSON bodies across columns
 

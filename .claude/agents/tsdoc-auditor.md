@@ -43,7 +43,7 @@ For each exported symbol, read the current declaration and its TSDoc block:
 
 - Check `@param` / `@typeParam` names against the actual signature
 - For hooks: check `form.Fields` and error codes still match `fields.tsx`
-- For React components: grep `onEvent` calls and compare to the events table in `@remarks`
+- For React components: grep `onEvent` calls and compare to the events table in `@events`
 - Spot-check `@example` — do the imports and API surface still exist?
 
 **Step 3 — Fix or flag**
@@ -76,11 +76,11 @@ Confirm clean before reporting.
 
 Before auditing a specific symbol type, read the relevant guide:
 
-| Symbol type | Guide                                |
-| ----------- | ------------------------------------ |
-| Hooks       | `.claude/tsdoc-guides/hooks.md`      |
-| Components  | `.claude/tsdoc-guides/components.md` |
-| Flows       | `.claude/tsdoc-guides/flows.md`      |
+| Symbol type | Guide                              |
+| ----------- | ---------------------------------- |
+| Hooks       | `.claude/doc-guides/hooks.md`      |
+| Components  | `.claude/doc-guides/components.md` |
+| Flows       | `.claude/doc-guides/flows.md`      |
 
 ## ESLint compliance
 

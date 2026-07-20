@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 
 export default {
@@ -87,13 +87,13 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       hours: '8.0',
     },
   ],
-  grossPay: 880.0,
+  grossPay: '880.00',
   fixedCompensations: [],
   paymentMethod: 'Direct Deposit',
   memo: null,
   version: 'v1',
-  netPay: 767.99,
-  checkAmount: 767.99,
+  netPay: '767.99',
+  checkAmount: '767.99',
 }
 
 export const Default = () => {

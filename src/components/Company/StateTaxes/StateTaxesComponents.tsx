@@ -11,12 +11,20 @@ export interface StateTaxesContextInterface extends FlowContextInterface {
   state?: string
   /** Current step component rendered by the flow machine. */
   component: React.ComponentType | null
+  /** Controls visibility of the Continue button in the state tax list. */
+  showContinueButton: boolean
 }
 
 /** @internal */
 export function StateTaxesListContextual() {
-  const { companyId, onEvent } = useFlow<StateTaxesContextInterface>()
-  return <StateTaxesList onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  const { companyId, onEvent, showContinueButton } = useFlow<StateTaxesContextInterface>()
+  return (
+    <StateTaxesList
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      showContinueButton={showContinueButton}
+    />
+  )
 }
 
 /** @internal */

@@ -11,91 +11,16 @@ custom_edit_url: null
 
 # useSignEmployeeForm
 
-## Components
-
-<a id="confirmsignaturefield"></a>
-
-### ConfirmSignatureField
-
-Checkbox bound to the `confirmSignature` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`SignEmployeeFormConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops) | [ConfirmSignatureFieldProps](#signemployeeformconfirmsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.ConfirmSignature`. Captures the
-employee's electronic-signature consent; must be checked to submit.
-
-***
-
-<a id="signaturefield"></a>
-
-### SignatureField
-
-Text input bound to the `signature` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops) | [SignatureFieldProps](#signemployeeformsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Signature`. The employee types
-their full legal name; required.
-
-***
-
-<a id="usedpreparerfield"></a>
-
-### UsedPreparerField
-
-Radio group bound to the `usedPreparer` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsedPreparerFieldProps`](#usedpreparerfieldprops) | [UsedPreparerFieldProps](#usedpreparerfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.UsedPreparer` only when the
-form being signed is an I-9; `undefined` otherwise. Selecting `'yes'`
-automatically reveals the first preparer field group; switching back to
-`'no'` removes all preparer sections.
-
-## Form Hooks
-
 <a id="usesignemployeeform"></a>
 
-### useSignEmployeeForm()
-
-> **useSignEmployeeForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+> **useSignEmployeeForm**(`props`: [`UseSignEmployeeFormProps`](#usesignemployeeformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
 
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignEmployeeFormProps`](#usesignemployeeformprops) | See [UseSignEmployeeFormProps](#usesignemployeeformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignEmployeeFormReady](#usesignemployeeformready) once the form is loaded.
-
-#### Remarks
+## Remarks
 
 The hook fetches the form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+[BaseFormHookReady](../../hooks.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
 `onSubmit`, and error handling. The hook inspects the form's `name` to
 detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
 `Fields.Preparer1`–`Preparer4` field groups become defined, along with
@@ -109,9 +34,9 @@ Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
 `defaultValues`, `requiredFields`, or `validationMode` — the form shape is
 fixed and all fields except preparer street-2 are required.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
@@ -147,13 +72,368 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
 }
 ```
 
-## Variables
+## Props
 
+### UseSignEmployeeFormProps
+
+<a id="usesignemployeeformprops"></a>
+
+Props for [useSignEmployeeForm](#usesignemployeeform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `formId` | `string` | The UUID of the employee form to sign. |
+
+## Returns
+
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseSignEmployeeFormReady](#usesignemployeeformready) once the form is loaded.
+
+<a id="usesignemployeeformresult"></a>
+
+### UseSignEmployeeFormResult
+
+> **UseSignEmployeeFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+
+Result of [useSignEmployeeForm](#usesignemployeeform) — a discriminated union on `isLoading`.
+
+***
+
+<a id="usesignemployeeformready"></a>
+
+### UseSignEmployeeFormReady
+
+Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once the form metadata and PDF have loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Imperative actions exposed by the hook. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`Form`](../../APIModels/index.md#form)\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
+| `actions.addPreparer?` | () => `void` | Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. |
+| `actions.removePreparer?` | () => `void` | Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. |
+| `data` | `object` | Loaded data — the form entity and a preview PDF URL. |
+| `data.form` | [`Form`](../../APIModels/index.md#form) | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
+| `data.pdfUrl` | `string` \| `null` \| `undefined` | URL to the form's signed PDF for preview, or `undefined` while it is still being generated. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` & `object` | Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
+| `status` | `object` | Submit-state flags. |
+| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
+| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
+
+## Fields
+
+### SignEmployeeFormFields
+
+<a id="signemployeeformfields"></a>
+
+Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
+
+**Remarks**
+
+`Signature` and `ConfirmSignature` are always present. `UsedPreparer` and
+the `Preparer1`–`Preparer4` field groups are only defined when the form
+being signed is an I-9 and the preparer count has reached that index —
+always null-check before rendering.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops)\> | Bound to `confirmSignature`. Checkbox for the employee's electronic-signature consent; always present. |
+| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signemployeeformsignaturefieldprops)\> | Bound to `signature`. Text input for the employee's typed signature; always present. |
+| `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
+| `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
+| `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
+| `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
+| `UsedPreparer` | `ComponentType`\<[`UsedPreparerFieldProps`](#usedpreparerfieldprops)\> \| `undefined` | Bound to `usedPreparer`. Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
+
+***
+
+### ConfirmSignature
+
+Bound to `confirmSignature`. Checkbox for the employee's electronic-signature consent; always present.
+
+```tsx
+<form.Fields.ConfirmSignature
+  label="Confirm signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="signemployeeformconfirmsignaturefieldprops"></a>
+
+#### SignEmployeeFormConfirmSignatureFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmSignature` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
+
+***
+
+### Preparer1
+
+First preparer field group; defined only for I-9 forms when `preparers.count >= 1`.
+
+```tsx
+{form.Fields.Preparer1 && (
+  <>
+    <form.Fields.Preparer1.City
+      label="City"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.ConfirmSignature
+      label="Confirm signature"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.FirstName
+      label="First name"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.LastName
+      label="Last name"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Signature
+      label="Signature"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.State
+      label="State"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Street1
+      label="Street1"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Street2
+      label="Street2"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Zip
+      label="Zip"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+  </>
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Preparer2
+
+Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`.
+
+```tsx
+{form.Fields.Preparer2 && (
+  <>
+    {/* same sub-fields as Preparer1 */}
+  </>
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Preparer3
+
+Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`.
+
+```tsx
+{form.Fields.Preparer3 && (
+  <>
+    {/* same sub-fields as Preparer1 */}
+  </>
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Preparer4
+
+Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`.
+
+```tsx
+{form.Fields.Preparer4 && (
+  <>
+    {/* same sub-fields as Preparer1 */}
+  </>
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Signature
+
+Bound to `signature`. Text input for the employee's typed signature; always present.
+
+```tsx
+<form.Fields.Signature
+  label="Signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="signemployeeformsignaturefieldprops"></a>
+
+#### SignEmployeeFormSignatureFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
+
+***
+
+### UsedPreparer
+
+Bound to `usedPreparer`. Radio group asking whether a preparer/translator assisted; defined only for I-9 forms.
+
+```tsx
+{form.Fields.UsedPreparer && (
+  <form.Fields.UsedPreparer
+    label="Used preparer"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="usedpreparerfieldprops"></a>
+
+#### UsedPreparerFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: `unknown`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
+
+***
+
+### PreparerFieldGroup
+
+<a id="preparerfieldgroup"></a>
+
+Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
+
+**Remarks**
+
+Each preparer (1–4) exposes the same nine sub-fields covering name,
+address, signature, and consent. Render the sub-fields directly on the
+group, e.g. `<Fields.Preparer1.FirstName />`.
+
+| Field | Component |
+| ------ | ------ |
+| `City` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `ConfirmSignature` | `ComponentType`\<[`PreparerCheckboxFieldProps`](#preparercheckboxfieldprops)\> |
+| `FirstName` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `LastName` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `Signature` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `State` | `ComponentType`\<[`PreparerSelectFieldProps`](#preparerselectfieldprops)\> |
+| `Street1` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `Street2` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `Zip` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+
+<a id="preparertextfieldprops"></a>
+
+#### PreparerTextFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesignemployeeform) (name, address, signature).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
+
+<a id="preparercheckboxfieldprops"></a>
+
+#### PreparerCheckboxFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by the confirmation checkbox preparer field of [useSignEmployeeForm](#usesignemployeeform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
+
+<a id="preparerselectfieldprops"></a>
+
+#### PreparerSelectFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation), `string`\>\>
+
+Props accepted by the state-select preparer field of [useSignEmployeeForm](#usesignemployeeform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
+
+## Validations
+
+<a id="signemployeeformrequiredvalidation"></a>
+
+### SignEmployeeFormRequiredValidation
+
+> **SignEmployeeFormRequiredValidation** = `"REQUIRED"`
+
+The required-field error code emitted by every field of [useSignEmployeeForm](#usesignemployeeform).
+
+#### Remarks
+
+Use this as the `validationMessages` key for any sign-employee-form field.
+See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
+
+## Utility types
 <a id="max_preparers"></a>
 
 ### MAX\_PREPARERS
 
-> `const` **MAX\_PREPARERS**: `4` = `4`
+> `const` **MAX\_PREPARERS**: `4`
 
 Maximum number of I-9 preparers and translators the form supports.
 
@@ -167,136 +447,6 @@ Maximum number of I-9 preparers and translators the form supports.
 
 Flat list of preparer field names per preparer slot (0-based), useful for
 iterating every field that belongs to a single preparer.
-
-***
-
-<a id="signemployeeformerrorcodes"></a>
-
-### SignEmployeeFormErrorCodes
-
-> `const` **SignEmployeeFormErrorCodes**: `object`
-
-Validation error codes emitted by the I-9 sign-employee form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="signemployeeformfieldcomponents"></a>
-
-### SignEmployeeFormFieldComponents
-
-Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
-
-#### Remarks
-
-`Signature` and `ConfirmSignature` are always present. `UsedPreparer` and
-the `Preparer1`–`Preparer4` field groups are only defined when the form
-being signed is an I-9 and the preparer count has reached that index —
-always null-check before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`) => `Element` | Checkbox for the employee's electronic-signature consent; always present. |
-| `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
-| `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
-| `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
-| `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
-| `Signature` | (`props`) => `Element` | Text input for the employee's typed signature; always present. |
-| `UsedPreparer` | ((`props`) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
-
-***
-
-<a id="usesignemployeeformprops"></a>
-
-### UseSignEmployeeFormProps
-
-Props for [useSignEmployeeForm](#usesignemployeeform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `formId` | `string` | The UUID of the employee form to sign. |
-
-***
-
-<a id="usesignemployeeformready"></a>
-
-### UseSignEmployeeFormReady
-
-Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once the form metadata and PDF have loaded.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`SignEmployeeFormData`](#signemployeeformdata), [`SignEmployeeFormFieldComponents`](#signemployeeformfieldcomponents)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
-| `actions.addPreparer?` | () => `void` | Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. |
-| `actions.removePreparer?` | () => `void` | Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. |
-| `data` | `object` | Loaded data — the form entity and a preview PDF URL. |
-| `data.form` | `Form` | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
-| `data.pdfUrl` | `string` \| `null` \| `undefined` | URL to the form's signed PDF for preview, or `undefined` while it is still being generated. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` & `object` | Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit-state flags. |
-| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
-| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
-
-## Type Aliases
-
-<a id="preparercheckboxfieldprops"></a>
-
-### PreparerCheckboxFieldProps
-
-> **PreparerCheckboxFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by the confirmation checkbox preparer field of [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="preparerfieldgroup"></a>
-
-### PreparerFieldGroup
-
-> **PreparerFieldGroup** = `object`
-
-Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
-
-#### Remarks
-
-Each preparer (1–4) exposes the same nine sub-fields covering name,
-address, signature, and consent. Render the sub-fields directly on the
-group, e.g. `<Fields.Preparer1.FirstName />`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `City` | (`props`) => `JSX.Element` | Preparer's city. |
-| `ConfirmSignature` | (`props`) => `JSX.Element` | Preparer's electronic-signature consent checkbox. |
-| `FirstName` | (`props`) => `JSX.Element` | Preparer's first name. |
-| `LastName` | (`props`) => `JSX.Element` | Preparer's last name. |
-| `Signature` | (`props`) => `JSX.Element` | Preparer's typed signature. |
-| `State` | (`props`) => `JSX.Element` | Preparer's state. |
-| `Street1` | (`props`) => `JSX.Element` | Preparer's street address line 1. |
-| `Street2` | (`props`) => `JSX.Element` | Preparer's street address line 2. |
-| `Zip` | (`props`) => `JSX.Element` | Preparer's ZIP code. |
 
 ***
 
@@ -321,33 +471,24 @@ One-based preparer index used to reference preparer field groups (1–4).
 
 ***
 
-<a id="preparerselectfieldprops"></a>
+<a id="signemployeebasefieldsmetadata"></a>
 
-### PreparerSelectFieldProps
+### SignEmployeeBaseFieldsMetadata
 
-> **PreparerSelectFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation), `string`\>\>
+Field metadata for a standard (non-I-9) employee form — only the signature and
+its confirmation are collected.
 
-Props accepted by the state-select preparer field of [useSignEmployeeForm](#usesignemployeeform).
+#### Remarks
 
-***
+This is the [SignEmployeeFormFieldsMetadata](#signemployeeformfieldsmetadata) variant returned when the
+form being signed is not an I-9. Every entry is a plain [FieldMetadata](../../hooks.md#fieldmetadata).
 
-<a id="preparertextfieldprops"></a>
+#### Properties
 
-### PreparerTextFieldProps
-
-> **PreparerTextFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesignemployeeform) (name, address, signature).
-
-***
-
-<a id="signemployeeformconfirmsignaturefieldprops"></a>
-
-### SignEmployeeFormConfirmSignatureFieldProps
-
-> **SignEmployeeFormConfirmSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmSignature` component.
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `confirmSignature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | The signature-confirmation field. |
+| `signature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | The typed-signature field. |
 
 ***
 
@@ -355,9 +496,51 @@ Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmS
 
 ### SignEmployeeFormData
 
-> **SignEmployeeFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the I-9 sign-employee form.
+
+#### Properties
+
+| Property | Type | Default value |
+| ------ | ------ | ------ |
+| `confirmSignature` | `boolean` | `agreeValidator` |
+| `preparer2Agree` | `boolean` | `agreeValidator` |
+| `preparer2City` | `string` | |
+| `preparer2FirstName` | `string` | |
+| `preparer2LastName` | `string` | |
+| `preparer2Signature` | `string` | |
+| `preparer2State` | `string` | |
+| `preparer2Street1` | `string` | |
+| `preparer2Street2` | `string` | |
+| `preparer2Zip` | `string` | |
+| `preparer3Agree` | `boolean` | `agreeValidator` |
+| `preparer3City` | `string` | |
+| `preparer3FirstName` | `string` | |
+| `preparer3LastName` | `string` | |
+| `preparer3Signature` | `string` | |
+| `preparer3State` | `string` | |
+| `preparer3Street1` | `string` | |
+| `preparer3Street2` | `string` | |
+| `preparer3Zip` | `string` | |
+| `preparer4Agree` | `boolean` | `agreeValidator` |
+| `preparer4City` | `string` | |
+| `preparer4FirstName` | `string` | |
+| `preparer4LastName` | `string` | |
+| `preparer4Signature` | `string` | |
+| `preparer4State` | `string` | |
+| `preparer4Street1` | `string` | |
+| `preparer4Street2` | `string` | |
+| `preparer4Zip` | `string` | |
+| `preparerAgree` | `boolean` | `agreeValidator` |
+| `preparerCity` | `string` | |
+| `preparerFirstName` | `string` | |
+| `preparerLastName` | `string` | |
+| `preparerSignature` | `string` | |
+| `preparerState` | `string` | |
+| `preparerStreet1` | `string` | |
+| `preparerStreet2` | `string` | |
+| `preparerZip` | `string` | |
+| `signature` | `string` | |
+| `usedPreparer` | `"yes"` \| `"no"` | `undefined` |
 
 ***
 
@@ -365,10 +548,28 @@ Shape of the values managed by the I-9 sign-employee form.
 
 ### SignEmployeeFormErrorCode
 
-> **SignEmployeeFormErrorCode** = *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\[keyof *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\]
+> **SignEmployeeFormErrorCode** = `"REQUIRED"`
 
 Union of validation error code strings emitted by the I-9 sign-employee
 form schema.
+
+***
+
+<a id="signemployeeformerrorcodes"></a>
+
+### SignEmployeeFormErrorCodes
+
+> `const` **SignEmployeeFormErrorCodes**: `object`
+
+Validation error codes emitted by the I-9 sign-employee form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
@@ -376,19 +577,9 @@ form schema.
 
 ### SignEmployeeFormField
 
-> **SignEmployeeFormField** = keyof *typeof* `fieldValidators`
+> **SignEmployeeFormField** = `"signature"` \| `"preparerFirstName"` \| `"preparerLastName"` \| `"preparerStreet1"` \| `"preparerStreet2"` \| `"preparerCity"` \| `"preparerState"` \| `"preparerZip"` \| `"preparerSignature"` \| `"preparerAgree"` \| `"preparer2FirstName"` \| `"preparer2LastName"` \| `"preparer2Street1"` \| `"preparer2Street2"` \| `"preparer2City"` \| `"preparer2State"` \| `"preparer2Zip"` \| `"preparer2Signature"` \| `"preparer2Agree"` \| `"preparer3FirstName"` \| `"preparer3LastName"` \| `"preparer3Street1"` \| `"preparer3Street2"` \| `"preparer3City"` \| `"preparer3State"` \| `"preparer3Zip"` \| `"preparer3Signature"` \| `"preparer3Agree"` \| `"preparer4FirstName"` \| `"preparer4LastName"` \| `"preparer4Street1"` \| `"preparer4Street2"` \| `"preparer4City"` \| `"preparer4State"` \| `"preparer4Zip"` \| `"preparer4Signature"` \| `"preparer4Agree"` \| `"confirmSignature"` \| `"usedPreparer"`
 
 Field names accepted by the I-9 sign-employee form.
-
-***
-
-<a id="signemployeeformfields"></a>
-
-### SignEmployeeFormFields
-
-> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
 
 ***
 
@@ -396,62 +587,90 @@ Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignempl
 
 ### SignEmployeeFormFieldsMetadata
 
-> **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+> **SignEmployeeFormFieldsMetadata** = [`SignEmployeeBaseFieldsMetadata`](#signemployeebasefieldsmetadata) \| [`SignEmployeeI9FieldsMetadata`](#signemployeei9fieldsmetadata)
 
 Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
 
+#### Remarks
+
+A discriminated union keyed on whether the form is an I-9. Narrow with an `in`
+check on a preparer field before reading the I-9 entries:
+
+```ts
+const { fieldsMetadata } = form
+if ('usedPreparer' in fieldsMetadata) {
+  // fieldsMetadata is SignEmployeeI9FieldsMetadata
+  fieldsMetadata.preparerState.options
+}
+```
+
 ***
 
-<a id="signemployeeformoutputs"></a>
+<a id="signemployeei9fieldsmetadata"></a>
 
-### SignEmployeeFormOutputs
+### SignEmployeeI9FieldsMetadata
 
-> **SignEmployeeFormOutputs** = [`SignEmployeeFormData`](#signemployeeformdata)
-
-Shape of the validated values produced by the I-9 sign-employee form on
-submit.
-
-***
-
-<a id="signemployeeformrequiredvalidation"></a>
-
-### SignEmployeeFormRequiredValidation
-
-> **SignEmployeeFormRequiredValidation** = *typeof* `SignEmployeeFormErrorCodes.REQUIRED`
-
-The required-field error code emitted by every field of [useSignEmployeeForm](#usesignemployeeform).
+Field metadata for an I-9 employee form, which additionally collects
+preparer/translator certification for up to four preparers.
 
 #### Remarks
 
-Use this as the `validationMessages` key for any sign-employee-form field.
-See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
+A superset of [SignEmployeeBaseFieldsMetadata](#signemployeebasefieldsmetadata). `usedPreparer` is a
+yes/no radio and each `preparer{N}State` is a US-state select
+([StateAbbreviation](../types.md#stateabbreviation)); every other preparer field is a plain text
+[FieldMetadata](../../hooks.md#fieldmetadata). Preparer entries beyond the active preparer count are
+still typed here but only populated once that preparer section is added.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `confirmSignature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2Agree` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2City` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2FirstName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2LastName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2Signature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2State` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the second preparer's address. |
+| `preparer2Street1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2Street2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer2Zip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3Agree` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3City` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3FirstName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3LastName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3Signature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3State` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the third preparer's address. |
+| `preparer3Street1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3Street2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer3Zip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4Agree` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4City` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4FirstName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4LastName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4Signature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4State` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the fourth preparer's address. |
+| `preparer4Street1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4Street2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparer4Zip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerAgree` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerCity` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerFirstName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerLastName` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerSignature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerState` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the first preparer's address. |
+| `preparerStreet1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerStreet2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `preparerZip` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `signature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) | - |
+| `usedPreparer` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`boolean`\> | Yes/no radio: whether a preparer or translator assisted with the form. |
 
 ***
 
-<a id="signemployeeformsignaturefieldprops"></a>
+## Endpoints
 
-### SignEmployeeFormSignatureFieldProps
-
-> **SignEmployeeFormSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
-
-***
-
-<a id="usedpreparerfieldprops"></a>
-
-### UsedPreparerFieldProps
-
-> **UsedPreparerFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.
-
-***
-
-<a id="usesignemployeeformresult"></a>
-
-### UseSignEmployeeFormResult
-
-> **UseSignEmployeeFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
-
-Result of [useSignEmployeeForm](#usesignemployeeform) — a discriminated union on `isLoading`.
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employee-form-pdf) |
+| PUT | [`/v1/employees/:employeeId/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employee-form-sign) |

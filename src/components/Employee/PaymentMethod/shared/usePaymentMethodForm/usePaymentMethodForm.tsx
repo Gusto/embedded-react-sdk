@@ -1,10 +1,11 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod'
-import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodGet'
-import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodUpdate'
+import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
+import { useEmployeePaymentMethodGet } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import {
   PAYMENT_METHOD_TYPES,
   type PaymentMethodFormData,
@@ -13,6 +14,7 @@ import {
   type PaymentMethodType,
   createPaymentMethodFormSchema,
 } from './usePaymentMethodFormSchema'
+import type { TypeFieldProps } from './fields'
 import { TypeField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -21,6 +23,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -53,8 +56,8 @@ export interface UsePaymentMethodFormProps {
  * @public
  */
 export interface PaymentMethodFormFields {
-  /** Bound to `type` — see {@link TypeField}. */
-  Type: typeof TypeField
+  /** Bound to `type`. */
+  Type: ComponentType<TypeFieldProps>
 }
 
 /**
@@ -63,7 +66,7 @@ export interface PaymentMethodFormFields {
  * @public
  */
 export interface UsePaymentMethodFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  PaymentMethodFormFieldsMetadata,
   PaymentMethodFormData,
   PaymentMethodFormFields
 > {
@@ -77,6 +80,19 @@ export interface UsePaymentMethodFormReady extends BaseFormHookReady<
   actions: {
     onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>
   }
+}
+
+/** @internal */
+function buildPaymentMethodFieldsMetadata(
+  base: Record<keyof PaymentMethodFormData, FieldMetadata>,
+) {
+  return {
+    type: withOptions<PaymentMethodType>(
+      base.type,
+      PAYMENT_METHOD_TYPES.map(value => ({ value, label: value })),
+      [...PAYMENT_METHOD_TYPES],
+    ),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -176,12 +192,8 @@ export function usePaymentMethodForm({
     setSubmitError,
   })
 
-  const typeOptions = PAYMENT_METHOD_TYPES.map(value => ({ value, label: value }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    type: withOptions<PaymentMethodType>(baseMetadata.type, typeOptions, [...PAYMENT_METHOD_TYPES]),
-  }
+  const fieldsMetadata = buildPaymentMethodFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<EmployeePaymentMethod> | undefined> => {
     if (!paymentMethod) {
@@ -261,4 +273,4 @@ export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFor
  *
  * @public
  */
-export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata']
+export type PaymentMethodFormFieldsMetadata = ReturnType<typeof buildPaymentMethodFieldsMetadata>

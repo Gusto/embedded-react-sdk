@@ -1,11 +1,10 @@
+import { API_VERSION } from './apiVersion'
 import type { BeforeRequestHook } from '@/types/hooks'
-
-const CURRENT_API_VERSION = '2025-11-15'
 
 /** @internal */
 export const apiVersionHook: BeforeRequestHook = {
   beforeRequest: (_context, request) => {
-    request.headers.set('X-Gusto-API-Version', CURRENT_API_VERSION)
+    request.headers.set('X-Gusto-API-Version', API_VERSION)
     return request
   },
 }

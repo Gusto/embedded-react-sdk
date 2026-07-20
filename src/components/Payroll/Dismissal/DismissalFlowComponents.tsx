@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import {
-  PayrollExecutionFlow,
-  type PayrollExecutionFlowProps,
+  PayrollExecutionInternalFlow,
+  type PayrollExecutionInternalFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
 import { DismissalPayPeriodSelection } from './DismissalPayPeriodSelection/DismissalPayPeriodSelection'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -75,7 +75,7 @@ export function DismissalExecutionContextual() {
 }
 
 type DismissalExecutionWithDataProps = Pick<
-  PayrollExecutionFlowProps,
+  PayrollExecutionInternalFlowProps,
   'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs'
 >
 
@@ -88,7 +88,7 @@ function DismissalExecutionWithData({
   const initialPayPeriod = data.payrollShow?.payPeriod
 
   return (
-    <PayrollExecutionFlow
+    <PayrollExecutionInternalFlow
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}

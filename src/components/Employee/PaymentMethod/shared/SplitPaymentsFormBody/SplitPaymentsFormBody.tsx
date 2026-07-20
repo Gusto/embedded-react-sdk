@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import DOMPurify from 'dompurify'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod'
+import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import {
   useSplitPaymentsForm,
   type SplitByValue,

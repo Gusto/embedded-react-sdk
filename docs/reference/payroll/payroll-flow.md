@@ -12,21 +12,38 @@ custom_edit_url: null
 
 # PayrollFlow
 
-Guided workflow for selecting and running a company's payroll end to end.
-
-## Example
-
-```tsx
-import { Payroll } from '@gusto/embedded-react-sdk'
-
-function RunPayrollPage() {
-  return <Payroll.PayrollFlow companyId="company-uuid" onEvent={() => {}} />
-}
-```
+Hub for running and managing all payrolls across a company's pay schedules.
 
 ## Remarks
 
 Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
+
+## Example
+
+```tsx title="App.tsx"
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function RunPayrollPage() {
+  return <Payroll.PayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+}
+```
+
+## PayrollFlowProps
+
+<a id="payrollflowprops"></a>
+
+Props accepted by PayrollFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company whose payroll is being run. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
+| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -47,17 +64,69 @@ Renders the payroll landing page and orchestrates the full run-payroll experienc
 | `transition/runPayroll` | The user starts a pending transition payroll | — |
 | `payroll/saveAndExit` | The user clicks Save and Exit | — |
 
-## PayrollFlowProps
+## Sub-components
 
-<a id="payrollflowprops"></a>
+| Component | Description |
+| ------ | ------ |
+| [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+| [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
+| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
 
-Props accepted by PayrollFlow.
+<!-- guide-source: src/components/Payroll/PayrollFlow/GUIDE.md (slot: appendix) -->
+## Step flow
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | Identifier of the company whose payroll is being run. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
-| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
+`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) or a pending transition payroll (`transition/runPayroll`) hands off to `OffCycleFlow` or `TransitionFlow`; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> Landing["PayrollLanding"]
+  Landing <--> Execution["PayrollExecutionFlow"]
+  Landing <--> OffCycle["OffCycleFlow"]
+  Landing <--> Transition["TransitionFlow"]
+  Landing <--> Blockers["PayrollBlockerList"]
+  Execution --> SubmittedOverview["PayrollOverview"]
+  OffCycle --> SubmittedOverview
+  Transition --> SubmittedOverview
+  SubmittedOverview --> SubmittedReceipts["PayrollReceipts"]
+  SubmittedOverview --> Landing
+  SubmittedReceipts --> Landing
+  class Execution flow
+  class OffCycle flow
+  class Transition flow
+  linkStyle 1,2,3,4 stroke-width:2.5px
+```
+
+When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown.
+<!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyId/pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_periods) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/calculate`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
+| GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| POST | [`/v1/companies/:companyUuid/payrolls/skip`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-companies-payroll-skip-company_uuid) |
+| GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases) |
+| GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts) |
+| GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| POST | [`/v1/payrolls/:payrollUuid/gross_up`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-payrolls-gross-up-payroll_uuid) |
+| GET | [`/v1/payrolls/:payrollUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payment-receipts-payrolls-payroll_uuid) |
+| GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-wire_in_requests-wire_in_request_uuid) |

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { OffCycleCreation } from '../OffCycleCreation'
 import {
-  PayrollExecutionFlow,
-  type PayrollExecutionFlowProps,
+  PayrollExecutionInternalFlow,
+  type PayrollExecutionInternalFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
 import type { OffCycleReason } from '../OffCycleReasonSelection'
 import { isDismissalPayroll } from '../helpers'
@@ -16,7 +16,7 @@ import { BaseComponent } from '@/components/Base/Base'
 /**
  * Flow context shared across the off-cycle payroll flow steps.
  *
- * @public
+ * @internal
  */
 export interface OffCycleFlowContextInterface extends FlowContextInterface {
   /** The associated company identifier. */
@@ -86,7 +86,7 @@ export function OffCycleExecutionContextual() {
 }
 
 type OffCycleExecutionWithDataProps = Pick<
-  PayrollExecutionFlowProps,
+  PayrollExecutionInternalFlowProps,
   'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs' | 'withReimbursements'
 >
 
@@ -99,7 +99,7 @@ function OffCycleExecutionWithData({
   const initialPayPeriod = data.payrollShow?.payPeriod
 
   return (
-    <PayrollExecutionFlow
+    <PayrollExecutionInternalFlow
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}

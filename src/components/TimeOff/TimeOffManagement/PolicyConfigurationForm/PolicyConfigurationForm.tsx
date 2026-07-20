@@ -1,13 +1,14 @@
 import { useCallback } from 'react'
-import { useTimeOffPoliciesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesCreate'
-import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate'
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
-import type { TimeOffPolicyRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicyrequest'
-import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
-import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
+import { useTimeOffPoliciesCreateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesCreate'
+import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
+import type { TimeOffPolicyRequest } from '@gusto/embedded-api/models/components/timeoffpolicyrequest'
+import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
 import { useQueryClient } from '@tanstack/react-query'
 import { PolicyConfigurationFormPresentation } from './PolicyConfigurationFormPresentation'
 import type { PolicyConfigurationFormData } from './PolicyConfigurationFormTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
@@ -40,6 +41,7 @@ export interface PolicyConfigurationFormProps extends BaseComponentInterface<'Co
  * method selector is restricted to the matching category (unlimited vs.
  * accrual-based).
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
@@ -329,7 +331,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
         })
 
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
+          queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
         })
 
         onEvent(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {

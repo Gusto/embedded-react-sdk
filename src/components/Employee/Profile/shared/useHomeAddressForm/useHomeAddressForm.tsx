@@ -1,18 +1,28 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
-import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesRetrieveHomeAddress'
-import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesCreate'
-import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesUpdate'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveHomeAddress'
+import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
+import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createHomeAddressSchema,
   type HomeAddressOptionalFieldsToRequire,
   type HomeAddressFormData,
   type HomeAddressFormOutputs,
 } from './homeAddressSchema'
+import type {
+  Street1FieldProps,
+  Street2FieldProps,
+  CityFieldProps,
+  StateFieldProps,
+  ZipFieldProps,
+  CourtesyWithholdingFieldProps,
+  EffectiveDateFieldProps,
+} from './fields'
 import {
   Street1Field,
   Street2Field,
@@ -29,6 +39,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -38,6 +49,22 @@ import { SDKInternalError } from '@/types/sdkError'
 import { STATES_ABBR } from '@/shared/constants'
 
 export type { HomeAddressOptionalFieldsToRequire } from './homeAddressSchema'
+
+/** @internal */
+function buildHomeAddressFieldsMetadata(
+  base: Record<keyof HomeAddressFormData, FieldMetadata>,
+  { stateOptions }: { stateOptions: Array<{ label: string; value: string }> },
+) {
+  return {
+    street1: base.street1,
+    street2: base.street2,
+    city: base.city,
+    state: withOptions(base.state, stateOptions, STATES_ABBR),
+    zip: base.zip,
+    courtesyWithholding: base.courtesyWithholding,
+    effectiveDate: base.effectiveDate,
+  } satisfies FieldsMetadata
+}
 
 /**
  * Optional overrides passed to {@link UseHomeAddressFormReady.actions.onSubmit | onSubmit}.
@@ -94,21 +121,21 @@ export interface UseHomeAddressFormProps {
  *
  * @public
  */
-export interface HomeAddressFields {
-  /** Street address line 1 text input. Always available. */
-  Street1: typeof Street1Field
-  /** Street address line 2 text input. Always available. */
-  Street2: typeof Street2Field
-  /** City text input. Always available. */
-  City: typeof CityField
-  /** State selector. Always available. */
-  State: typeof StateField
-  /** ZIP code text input. Always available. */
-  Zip: typeof ZipField
-  /** Courtesy withholding checkbox. Always available. */
-  CourtesyWithholding: typeof CourtesyWithholdingField
-  /** Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
-  EffectiveDate: typeof EffectiveDateField | undefined
+export interface HomeAddressFormFields {
+  /** Bound to `street1`. Street address line 1 text input. Always available. */
+  Street1: ComponentType<Street1FieldProps>
+  /** Bound to `street2`. Street address line 2 text input. Always available. */
+  Street2: ComponentType<Street2FieldProps>
+  /** Bound to `city`. City text input. Always available. */
+  City: ComponentType<CityFieldProps>
+  /** Bound to `state`. State selector. Always available. */
+  State: ComponentType<StateFieldProps>
+  /** Bound to `zip`. ZIP code text input. Always available. */
+  Zip: ComponentType<ZipFieldProps>
+  /** Bound to `courtesyWithholding`. Courtesy withholding checkbox. Always available. */
+  CourtesyWithholding: ComponentType<CourtesyWithholdingFieldProps>
+  /** Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
+  EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined
 }
 
 /**
@@ -121,9 +148,9 @@ export interface HomeAddressFields {
  * @public
  */
 export interface UseHomeAddressFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  HomeAddressFieldsMetadata,
   HomeAddressFormData,
-  HomeAddressFields
+  HomeAddressFormFields
 > {
   /** Static entity data resolved from the API. */
   data: {
@@ -151,6 +178,42 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
  * @param props - See {@link UseHomeAddressFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseHomeAddressFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useHomeAddressForm,
+ *   SDKFormProvider,
+ *   type UseHomeAddressFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function HomeAddressPage({ employeeId }: { employeeId: string }) {
+ *   const homeAddress = useHomeAddressForm({ employeeId })
+ *
+ *   if (homeAddress.isLoading) return <div>Loading...</div>
+ *
+ *   return <HomeAddressReady homeAddress={homeAddress} />
+ * }
+ *
+ * function HomeAddressReady({ homeAddress }: { homeAddress: UseHomeAddressFormReady }) {
+ *   const { Fields } = homeAddress.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={homeAddress}>
+ *       <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
+ *         <Fields.Street1 label="Street address" />
+ *         <Fields.Street2 label="Apt, suite, etc. (optional)" />
+ *         <Fields.City label="City" />
+ *         <Fields.State label="State" />
+ *         <Fields.Zip label="ZIP code" />
+ *         <Fields.CourtesyWithholding label="Courtesy withholding" />
+ *         {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+ *         <button type="submit" disabled={homeAddress.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
  */
 export function useHomeAddressForm({
   employeeId,
@@ -233,15 +296,7 @@ export function useHomeAddressForm({
   }))
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    street1: baseMetadata.street1,
-    street2: baseMetadata.street2,
-    city: baseMetadata.city,
-    state: withOptions(baseMetadata.state, stateOptions, STATES_ABBR),
-    zip: baseMetadata.zip,
-    courtesyWithholding: baseMetadata.courtesyWithholding,
-    effectiveDate: baseMetadata.effectiveDate,
-  }
+  const fieldsMetadata = buildHomeAddressFieldsMetadata(baseMetadata, { stateOptions })
 
   const onSubmit = async (
     options?: HomeAddressSubmitOptions,
@@ -380,10 +435,4 @@ export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormRea
  *
  * @public
  */
-export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
-/**
- * Type of `form.Fields` returned by {@link useHomeAddressForm}.
- *
- * @public
- */
-export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields']
+export type HomeAddressFieldsMetadata = ReturnType<typeof buildHomeAddressFieldsMetadata>

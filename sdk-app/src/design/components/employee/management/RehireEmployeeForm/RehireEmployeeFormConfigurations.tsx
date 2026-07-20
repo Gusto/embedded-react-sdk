@@ -1,4 +1,4 @@
-import type { Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
+import type { Location } from '@gusto/embedded-api/models/components/location'
 import type { PrototypeConfiguration } from '../../../../prototypes/prototypeTypes'
 import { RehireEmployeeFormDemo } from './RehireEmployeeFormStates'
 

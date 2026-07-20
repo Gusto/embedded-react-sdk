@@ -21,6 +21,7 @@ import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
  *
  * @typeParam TResourceKey - The i18n resource namespace key whose dictionary entries can be overridden.
  * @public
+ * @page blocks
  */
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   /** Optional child content rendered inside the component's layout. */
@@ -50,6 +51,7 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
  *
  * @typeParam TResourceKey - The i18n resource namespace key whose dictionary entries can be overridden.
  * @public
+ * @page blocks
  */
 export interface BaseComponentInterface<
   TResourceKey extends keyof Resources = keyof Resources,
@@ -97,6 +99,7 @@ interface InternalBaseComponentProps {
  * Errors caught by the React error boundary are normalized, emitted to observability, and re-emitted
  * via `onEvent`.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `componentEvents.ERROR` | Emitted when an unhandled rendering error is caught by the component's error boundary | The raw error value caught by the boundary |

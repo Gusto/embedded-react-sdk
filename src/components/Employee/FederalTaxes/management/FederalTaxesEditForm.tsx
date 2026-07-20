@@ -30,6 +30,7 @@ export interface FederalTaxesEditFormProps extends BaseComponentInterface<'Emplo
  * @remarks
  * Pair with {@link FederalTaxesCard} to route its `employee/management/federalTaxes/card/editRequested` event to this form. {@link FederalTaxes} bundles the card, this form, and the swap wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card | The updated `EmployeeFederalTax` entity |
@@ -38,7 +39,7 @@ export interface FederalTaxesEditFormProps extends BaseComponentInterface<'Emplo
  * @param props - See {@link FederalTaxesEditFormProps}.
  * @returns The rendered federal taxes edit form.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function FederalTaxesEditForm({ FallbackComponent, ...props }: FederalTaxesEditFormProps) {
   return (

@@ -1,15 +1,11 @@
 export { GustoProvider, GustoProviderCustomUIAdapter } from './GustoProvider'
 export type {
-  GustoProviderProps,
+  GustoBaseProviderProps,
   GustoProviderCustomUIAdapterProps,
   APIConfig,
 } from './GustoProvider/GustoProviderCustomUIAdapter'
-export type { GustoApiProps } from './GustoProvider'
-export { ApiProvider } from './ApiProvider/ApiProvider'
-export type { ApiProviderProps } from './ApiProvider/ApiProvider'
+export type { GustoProviderProps } from './GustoProvider'
 export type { ComponentsContextType } from './ComponentAdapter/useComponentContext'
 export * from './ComponentAdapter/componentAdapterTypes'
-export { ObservabilityProvider, useObservability } from './ObservabilityProvider'
-export type { ObservabilityProviderProps, ObservabilityContextValue } from './ObservabilityProvider'
 export type { GustoSDKTheme, GustoSDKThemeColors } from '@/contexts/ThemeProvider/theme'
 export { useNonce } from './NonceProvider'

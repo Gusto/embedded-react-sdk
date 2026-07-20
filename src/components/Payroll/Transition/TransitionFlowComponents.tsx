@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import {
-  PayrollExecutionFlow,
-  type PayrollExecutionFlowProps,
+  PayrollExecutionInternalFlow,
+  type PayrollExecutionInternalFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
 import { TransitionCreation } from '../TransitionCreation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -14,7 +14,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 /**
  * Flow context shape carried through the transition payroll state machine.
  *
- * @public
+ * @internal
  */
 export interface TransitionFlowContextInterface extends FlowContextInterface {
   /** Company the transition payroll belongs to. */
@@ -92,7 +92,7 @@ export function TransitionExecutionContextual() {
 }
 
 type TransitionExecutionWithDataProps = Pick<
-  PayrollExecutionFlowProps,
+  PayrollExecutionInternalFlowProps,
   'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs'
 >
 
@@ -105,7 +105,7 @@ function TransitionExecutionWithData({
   const initialPayPeriod = data.payrollShow?.payPeriod
 
   return (
-    <PayrollExecutionFlow
+    <PayrollExecutionInternalFlow
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}

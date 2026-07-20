@@ -7,7 +7,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockCreateOffCyclePayroll = vi.fn()
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: [
@@ -21,7 +21,7 @@ vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle', () => ({
+vi.mock('@gusto/embedded-api/react-query/payrollsCreateOffCycle', () => ({
   usePayrollsCreateOffCycleMutation: () => ({
     mutateAsync: mockCreateOffCyclePayroll,
     isPending: false,

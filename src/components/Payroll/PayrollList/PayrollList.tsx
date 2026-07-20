@@ -3,18 +3,18 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   usePayrollsListSuspense,
   invalidateAllPayrollsList,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
-import { usePayrollsSkipMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsSkip'
-import { usePayrollsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsDelete'
-import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGetBlockers'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsList'
-import { PayrollType } from '@gusto/embedded-api-v-2025-11-15/models/operations/postcompaniespayrollskipcompanyuuid'
+} from '@gusto/embedded-api/react-query/payrollsList'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
+import { usePayrollsDeleteMutation } from '@gusto/embedded-api/react-query/payrollsDelete'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
+import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
 import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'
@@ -52,6 +52,7 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * using `PayrollList` directly, render an equivalent resolution surface
  * alongside it.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |

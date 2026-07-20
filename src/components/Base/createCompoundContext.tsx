@@ -5,7 +5,7 @@ import { createContext, useContext } from 'react'
  *
  * @remarks
  * Used to build compound components that share state between a top-level container and its
- * subcomponents. The returned hook reads the context value and throws an error referencing
+ * blocks. The returned hook reads the context value and throws an error referencing
  * `contextName` when no provider is mounted, eliminating the need for a null-check at each call site.
  *
  * @typeParam T - The shape of the context value.

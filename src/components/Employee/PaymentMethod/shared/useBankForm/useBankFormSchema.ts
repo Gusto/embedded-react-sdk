@@ -4,6 +4,7 @@ import {
   type OptionalFieldsToRequire,
   type RequiredFieldConfig,
 } from '@/partner-hook-utils/form/buildFormSchema'
+import { ACCOUNT_NUMBER_REGEX, ROUTING_NUMBER_REGEX } from '@/helpers/validations'
 
 /**
  * Validation error codes emitted by the bank account form schema. Map these
@@ -24,9 +25,6 @@ export const BankFormErrorCodes = {
  * @public
  */
 export type BankFormErrorCode = (typeof BankFormErrorCodes)[keyof typeof BankFormErrorCodes]
-
-const ROUTING_NUMBER_REGEX = /^[0-9]{9}$/
-const ACCOUNT_NUMBER_REGEX = /^[0-9]{1,17}$/
 
 /**
  * Supported bank account type values: checking and savings.
@@ -63,15 +61,12 @@ export type BankFormField = keyof typeof fieldValidators
  * Shape of the values managed by the bank account form.
  *
  * @public
+ * @interface
  */
 export type BankFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the bank account form on submit.
- *
- * @public
- */
+/** @internal */
 export type BankFormOutputs = BankFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>

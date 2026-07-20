@@ -2,6 +2,7 @@ import type { SyntheticEvent } from 'react'
 import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { composeErrorHandler } from '../composeErrorHandler'
 import type { HookErrorHandling, HookFormInternals } from '../types'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 
 /**
  * Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
@@ -12,8 +13,12 @@ import type { HookErrorHandling, HookFormInternals } from '../types'
  * allowing hooks with specific form data generics to be passed without casts.
  * `_fieldElementRegistry` is reused directly since its type doesn't depend on
  * the form's generic.
+ *
+ * @public
+ * @childOf {@link composeSubmitHandler}
  */
-interface ComposableFormHookResult {
+export interface ComposableFormHookResult {
+  /** The form surface: the react-hook-form internals used to validate and focus fields. */
   form: {
     hookFormInternals: Pick<HookFormInternals, '_fieldElementRegistry'> & {
       formMethods: {
@@ -26,6 +31,7 @@ interface ComposableFormHookResult {
       }
     }
   }
+  /** The error-handling surface aggregated across the composed forms. */
   errorHandling: HookErrorHandling
 }
 
@@ -39,11 +45,11 @@ interface ComposableFormHookResult {
  *   but no `errorHandling` (fields surface their own inline errors via react-hook-form).
  *
  * @typeParam T - The shape of the form values when a raw `UseFormReturn` is passed.
- * @internal
+ * @public
+ * @childOf {@link composeSubmitHandler}
  */
 export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
-  | ComposableFormHookResult
-  | UseFormReturn<T>
+  ComposableFormHookResult | UseFormReturn<T>
 
 interface FormValidationResult {
   input: ComposeSubmitInput
@@ -57,6 +63,7 @@ interface FormValidationResult {
  * coordinates validation across the composed forms, and aggregated error state.
  *
  * @public
+ * @childOf {@link composeSubmitHandler}
  */
 export interface ComposeSubmitHandlerResult {
   /** Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. */
@@ -99,7 +106,8 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
   const candidates: Candidate[] = []
   for (const { input, formMethods, errors } of results) {
     if (isRawUseForm(input)) continue
-    const registry = input.form.hookFormInternals._fieldElementRegistry
+    const registry = input.form.hookFormInternals._fieldElementRegistry as
+      FieldElementRegistry | undefined
     if (!registry) continue
     for (const name of Object.keys(errors)) {
       const element = registry.get(name)
@@ -150,13 +158,14 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  *
  * The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
  * can be passed back into {@link composeErrorHandler} when you need to add extra
- * `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
+ * `@gusto/embedded-api-v-2026-06-15` queries or screen-level submit state.
  *
  * @typeParam TForms - Tuple of form value shapes, one per slot of `forms`.
  * @param forms - Form hook results and/or raw `UseFormReturn` instances to coordinate.
  * @param onAllValid - Async callback invoked once every form has passed validation.
  * @returns A {@link ComposeSubmitHandlerResult} with a unified `handleSubmit` and aggregated `errorHandling`.
  * @public
+ * @group Form composition
  *
  * @example
  * ```tsx

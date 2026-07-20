@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { APIError } from '@gusto/embedded-api-v-2025-11-15/models/errors/apierror'
-import { HTTPClientError } from '@gusto/embedded-api-v-2025-11-15/models/errors/httpclienterrors'
-import { SDKValidationError } from '@gusto/embedded-api-v-2025-11-15/models/errors/sdkvalidationerror'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { HTTPClientError } from '@gusto/embedded-api/models/errors/httpclienterrors'
+import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { normalizeToSDKError, SDKInternalError } from './sdkError'
 
 function createHttpMeta(status: number, body: string) {

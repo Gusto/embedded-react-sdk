@@ -1,5 +1,5 @@
 import { transition, reduce, state, guard } from 'robot3'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   PayrollConfigurationContextual,
@@ -203,67 +203,59 @@ const editPayrollTransition = transition(
 const payrollSubmittingTransition = transition(
   componentEvents.RUN_PAYROLL_SUBMITTING,
   'overview',
-  reduce(
-    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...hideBreadcrumb('configuration', ctx),
-      hasPayrollSubmissionStarted: true,
-    }),
-  ),
+  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+    ...hideBreadcrumb('configuration', ctx),
+    hasPayrollSubmissionStarted: true,
+  })),
 )
 
 const receiptGetTransition = transition(
   componentEvents.RUN_PAYROLL_RECEIPT_GET,
   'receipts',
-  reduce(
-    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...updateBreadcrumbs('receipts', ctx, {
-        startDate: ctx.payPeriod?.startDate ?? '',
-        endDate: ctx.payPeriod?.endDate ?? '',
-      }),
-      component: PayrollReceiptsContextual,
-      alerts: undefined,
-      ctaConfig: {
-        labelKey: 'exitFlowCta',
-        namespace: 'Payroll.PayrollReceipts',
-      },
+  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+    ...updateBreadcrumbs('receipts', ctx, {
+      startDate: ctx.payPeriod?.startDate ?? '',
+      endDate: ctx.payPeriod?.endDate ?? '',
     }),
-  ),
+    component: PayrollReceiptsContextual,
+    alerts: undefined,
+    ctaConfig: {
+      labelKey: 'exitFlowCta',
+      namespace: 'Payroll.PayrollReceipts',
+    },
+  })),
 )
 
 const employeeSavedTransition = transition(
   componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
   'configuration',
-  reduce(
-    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
-      component: PayrollConfigurationContextual,
-      employeeId: undefined,
-      firstName: undefined,
-      lastName: undefined,
-      ctaConfig: {
-        labelKey: 'exitFlowCta',
-        namespace: 'Payroll.PayrollConfiguration',
-      },
-    }),
-  ),
+  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
+    component: PayrollConfigurationContextual,
+    employeeId: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    ctaConfig: {
+      labelKey: 'exitFlowCta',
+      namespace: 'Payroll.PayrollConfiguration',
+    },
+  })),
 )
 
 const employeeCancelledTransition = transition(
   componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED,
   'configuration',
-  reduce(
-    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
-      component: PayrollConfigurationContextual,
-      employeeId: undefined,
-      firstName: undefined,
-      lastName: undefined,
-      ctaConfig: {
-        labelKey: 'exitFlowCta',
-        namespace: 'Payroll.PayrollConfiguration',
-      },
-    }),
-  ),
+  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
+    component: PayrollConfigurationContextual,
+    employeeId: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    ctaConfig: {
+      labelKey: 'exitFlowCta',
+      namespace: 'Payroll.PayrollConfiguration',
+    },
+  })),
 )
 
 /** @internal */

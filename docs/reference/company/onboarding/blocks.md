@@ -16,6 +16,12 @@ custom_edit_url: null
 
 Lets a user either create a new signatory with full details or invite someone else to become the signatory.
 
+### Remarks
+
+For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
+
+<br />
+
 ### AssignSignatoryProps
 
 <a id="assignsignatoryprops"></a>
@@ -25,16 +31,16 @@ Props for [AssignSignatory](#assignsignatory).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company the signatory is being assigned to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | [`AssignSignatoryDefaultValues`](#assignsignatorydefaultvalues) | Default values for the underlying create and invite forms. Provide a `create` object, an `invite` object, or both — see [AssignSignatoryDefaultValues](#assignsignatorydefaultvalues). |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyAssignSignatory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../../Translations/index.md#companyassignsignatory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `signatoryId?` | `string` | Identifier of an existing signatory. When set and matching the current signatory, the create form pre-populates with their information for editing. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -44,17 +50,25 @@ For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOn
 | `company/signatory/updated` | An existing signatory was updated (create mode) | Response from the update signatory API request |
 | `company/signatory/invited` | A signatory invitation was sent (invite mode) | Response from the invite signatory API request |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+| POST | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-company-signatories) |
+| PUT | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
+| POST | [`/v1/companies/:companyUuid/signatories/invite`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-signatories-invite) |
+
+***
+
 <a id="bankaccount"></a>
 
 ## BankAccount
 
 Manages a company's bank account — adding, viewing, and verifying it.
-
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `BankAccountProps` | Component props including the target `companyId`. |
 
 ### Remarks
 
@@ -62,19 +76,53 @@ Currently supports a single default bank account per company. When no bank accou
 the component renders the add-account form; once one is on file it renders the list view
 with controls to change or verify the account via micro-deposits.
 
+<br />
+
+### BankAccountProps
+
+<a id="bankaccountprops"></a>
+
+Props for the [BankAccount](#bankaccount) component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company whose bank account is being managed. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyBankAccount`](../../Translations/index.md#companybankaccount)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when the user chooses to change an existing bank account | — |
-| `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created CompanyBankAccount |
-| `COMPANY_BANK_ACCOUNT_VERIFY` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
-| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified CompanyBankAccount |
-| `COMPANY_BANK_ACCOUNT_DONE` | Fired when the user chooses to proceed to the next step | — |
+| `company/bankAccount/change` | Fired when the user chooses to change an existing bank account | — |
+| `company/bankAccount/created` | Fired when a new bank account is created | The created [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
+| `company/bankAccount/verify` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
+| `company/bankAccount/verified` | Fired when the bank account has been successfully verified | The verified [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
+| `company/bankAccount/done` | Fired when the user chooses to proceed to the next step | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+| POST | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-bank-accounts) |
+| PUT | [`/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-bank-accounts-verify) |
+
+***
 
 <a id="createsignatory"></a>
 
 ## CreateSignatory
 
 Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address.
+
+<br />
 
 ### CreateSignatoryProps
 
@@ -85,14 +133,16 @@ Props for [CreateSignatory](#createsignatory).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company the signatory belongs to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues) | Initial values for the form fields. Ignored for fields where a value is already available from the signatory record. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyAssignSignatory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../../Translations/index.md#companyassignsignatory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `signatoryId?` | `string` | Identifier of an existing signatory. When provided and matching an existing signatory on the company, the form pre-populates with their information for editing. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -100,17 +150,24 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/signatory/updated` | An existing signatory was updated successfully | The updated signatory record |
 | `company/signatory/createSignatory/done` | The create-signatory flow completed | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+| POST | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-company-signatories) |
+| PUT | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
+
+***
+
 <a id="documentlist"></a>
 
 ## DocumentList
 
 Displays the list of company documents to be signed and lets the user manage signatories.
-
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `DocumentListProps` | Component props including the company id and optional signatory id |
 
 ### Remarks
 
@@ -121,11 +178,43 @@ document list and the signature form.
 When `signatoryId` matches the currently saved signatory's id, the user is treated as the
 signatory and is allowed to sign documents.
 
+<br />
+
+### DocumentListProps
+
+<a id="documentlistprops"></a>
+
+Props for [DocumentList](#documentlist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyDocumentList`](../../Translations/index.md#companydocumentlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `signatoryId?` | `string` | Identifier of the signatory viewing the documents. When it matches the company's saved signatory, the user is treated as that signatory and is allowed to sign documents. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
 | `company/forms/editSignatory` | Fired when user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when user completes the document signing process | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms) |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+
+***
 
 <a id="documentsigner"></a>
 
@@ -133,37 +222,68 @@ signatory and is allowed to sign documents.
 
 Company onboarding step for reading and signing required company documents.
 
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `DocumentSignerProps` | See DocumentSignerProps. |
-
 ### Remarks
 
 Handles document listing, signatory management, and the signing workflow. If no signatory has
 been assigned for the company yet, the flow starts on the assign-signatory step before
 presenting the document list.
 
+<br />
+
+### DocumentSignerProps
+
+<a id="documentsignerprops"></a>
+
+Props for [DocumentSigner](#documentsigner).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyDocumentList`](../../Translations/index.md#companydocumentlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `signatoryId?` | `string` | ID of the signatory. When set and matching the current signatory, the user is treated as the signatory and is allowed to sign documents — the signature form is pre-populated with their information. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/forms/view` | Fired when a user selects a form to sign from the document list | Form |
+| `company/forms/view` | Fired when a user selects a form to sign from the document list | [APIModels.Form](../../APIModels/index.md#form) |
 | `company/forms/editSignatory` | Fired when the user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when the user completes the document signing process | — |
-| `company/forms/sign/signForm` | Fired when a form is successfully signed | Form |
+| `company/forms/sign/signForm` | Fired when a form is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
 | `company/signatory/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'createSignatory'` or `'inviteSignatory'` |
 | `company/signatory/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
-| `company/signatory/created` | Fired when a new signatory is created successfully | Signatory |
-| `company/signatory/updated` | Fired when an existing signatory is updated successfully | Signatory |
-| `company/signatory/invited` | Fired when a signatory is successfully invited to the company | Signatory |
+| `company/signatory/created` | Fired when a new signatory is created successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+| `company/signatory/updated` | Fired when an existing signatory is updated successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+| `company/signatory/invited` | Fired when a signatory is successfully invited to the company | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-forms) |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
+| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign) |
+
+***
 
 <a id="federaltaxes"></a>
 
 ## FederalTaxes
 
 Collects company federal tax information including EIN, tax payer type, filing form, and legal name.
+
+<br />
 
 ### FederalTaxesProps
 
@@ -174,18 +294,31 @@ Props for the [FederalTaxes](#federaltaxes) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company whose federal tax details are being collected. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues) | Pre-populated values for the federal tax form. At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided — see [FederalTaxesDefaultValues](#federaltaxesdefaultvalues). |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyFederalTaxes`](../../Translations/index.md#companyfederaltaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/federalTaxes/updated` | Federal tax details were successfully updated | FederalTaxDetails |
+| `company/federalTaxes/updated` | Federal tax details were successfully updated | [APIModels.FederalTaxDetails](../../APIModels/index.md#federaltaxdetails) |
 | `company/federalTaxes/done` | The federal tax update step is complete | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details) |
+| PUT | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-federal_tax_details) |
+
+***
 
 <a id="industry"></a>
 
@@ -194,6 +327,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 Selects and saves the company's industry classification (NAICS code).
 
 Presents a searchable list of industry options and persists the selection for the given company.
+
+<br />
 
 ### IndustryProps
 
@@ -204,22 +339,42 @@ Props for the [Industry](#industry) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The UUID of the company whose industry classification is being set. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyIndustry`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyIndustry`](../../Translations/index.md#companyindustry)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-industry) |
+| PUT | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-industry) |
+
+***
 
 <a id="invitesignatory"></a>
 
 ## InviteSignatory
 
 Standalone form for inviting someone else to become the company signatory.
+
+### Remarks
+
+The invited person receives an email to complete their signatory information. Use this when
+you want to provide only the invite flow without the create option.
+
+<br />
 
 ### InviteSignatoryProps
 
@@ -230,27 +385,44 @@ Props for the [InviteSignatory](#invitesignatory) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues) | Default values to pre-populate the invite form fields. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyAssignSignatory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../../Translations/index.md#companyassignsignatory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-The invited person receives an email to complete their signatory information. Use this when
-you want to provide only the invite flow without the create option.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
 | `company/signatory/inviteSignatory/done` | The invite signatory process is complete. | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
+| DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
+| POST | [`/v1/companies/:companyUuid/signatories/invite`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-signatories-invite) |
+
+***
+
 <a id="locationform"></a>
 
 ## LocationForm
 
 Standalone form for creating a new company location or editing an existing one.
+
+### Remarks
+
+Pass a `locationId` to edit an existing location; omit it to create a new one.
+
+<br />
 
 ### LocationFormProps
 
@@ -261,15 +433,15 @@ Props for the [LocationForm](#locationform) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company the location belongs to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyLocations`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyLocations`](../../Translations/index.md#companylocations)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `locationId?` | `string` | Identifier of an existing location. When provided, the form loads and edits that location; when omitted, the form creates a new location. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Pass a `locationId` to edit an existing location; omit it to create a new one.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -277,22 +449,48 @@ Pass a `locationId` to edit an existing location; omit it to create a new one.
 | `company/location/edit/done` | Fired when a location has been successfully edited | The updated location |
 | `CANCEL` | Fired when the user cancels editing | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-locations) |
+| GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id) |
+| PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id) |
+
+***
+
 <a id="locations"></a>
 
 ## Locations
 
 Orchestrated component for managing a company's mailing and filing addresses.
 
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `LocationsProps` | See LocationsProps. |
-
 ### Remarks
 
 Internally switches between a list view and a create/edit form. For more granular control,
 use the standalone `LocationForm` component directly.
+
+<br />
+
+### LocationsProps
+
+<a id="locationsprops"></a>
+
+Props for the [Locations](#locations) component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company whose locations are being managed. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyLocations`](../../Translations/index.md#companylocations)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -303,11 +501,30 @@ use the standalone `LocationForm` component directly.
 | `company/location/done` | A user chooses to proceed to the next step | — |
 | `cancel` | A user cancels the create or edit form | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations) |
+| POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-locations) |
+| GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-locations-location_id) |
+| PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-locations-location_id) |
+
+***
+
 <a id="locationslist"></a>
 
 ## LocationsList
 
 Displays the list of work locations for a company.
+
+### Remarks
+
+Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+
+<br />
 
 ### LocationsListProps
 
@@ -318,14 +535,14 @@ Props for the [LocationsList](#locationslist) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyLocations`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyLocations`](../../Translations/index.md#companylocations)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -333,17 +550,21 @@ Standalone building block used internally by the orchestrated `Locations` compon
 | `company/location/edit` | A user chose to edit a specific location | `{ uuid: string }` |
 | `company/location/done` | The user chose to proceed to the next step | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations) |
+
+***
+
 <a id="onboardingoverview"></a>
 
 ## OnboardingOverview
 
 Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements.
-
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `OnboardingOverviewProps` | Component props including the target `companyId` and standard base/common component options. |
 
 ### Remarks
 
@@ -352,16 +573,53 @@ is true, a completion message and "done" action are shown; otherwise a checklist
 steps is rendered with a continue action. Provide `children` to override the default layout while
 still consuming the onboarding status via context.
 
+<br />
+
+### OnboardingOverviewProps
+
+<a id="onboardingoverviewprops"></a>
+
+Props for the [OnboardingOverview](#onboardingoverview) component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyOnboardingOverview`](../../Translations/index.md#companyonboardingoverview)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
 | `company/overview/done` | Fired when the user signals they are done with the overview screen, typically after onboarding ends | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-onboarding-status) |
+
+***
 
 <a id="payschedule"></a>
 
 ## PaySchedule
 
 Manages a company's pay schedules, including listing existing schedules and creating or editing one.
+
+### Remarks
+
+Renders the schedule list when at least one pay schedule exists and the create form otherwise.
+Emits the following events through `onEvent`:
+
+<br />
 
 ### PayScheduleProps
 
@@ -372,27 +630,49 @@ Props for the [PaySchedule](#payschedule) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company whose pay schedules are managed. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | [`PayScheduleDefaultValues`](#payscheduledefaultvalues) | Default values used to pre-fill the create form. Ignored fields not listed in [PayScheduleDefaultValues](#payscheduledefaultvalues). |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyPaySchedule`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyPaySchedule`](../../Translations/index.md#companypayschedule)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Renders the schedule list when at least one pay schedule exists and the create form otherwise.
-Emits the following events through `onEvent`:
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |
 | `paySchedule/updated` | An existing pay schedule was updated | The updated pay schedule entity |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
+| POST | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
+
+***
+
 <a id="signatureform"></a>
 
 ## SignatureForm
 
 Standalone form for signing an individual company document.
+
+### Remarks
+
+Lower-level building block used internally by the document signer for its signing view.
+Use this component directly when you need full control over navigation between the document
+list and the signature form (e.g. routing the user yourself after they select a form).
+
+<br />
 
 ### SignatureFormProps
 
@@ -404,17 +684,15 @@ Props for [SignatureForm](#signatureform).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `formId` | `string` | The identifier of the form the user is signing. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | `undefined` | Not applicable to this component — form fields are populated from the API using `formId`. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanySignatureForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanySignatureForm`](../../Translations/index.md#companysignatureform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Lower-level building block used internally by the document signer for its signing view.
-Use this component directly when you need full control over navigation between the document
-list and the signature form (e.g. routing the user yourself after they select a form).
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -422,23 +700,40 @@ list and the signature form (e.g. routing the user yourself after they select a 
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
 
+***
+
 <a id="statetaxes"></a>
 
 ## StateTaxes
 
 Orchestrated flow for managing a company's state tax setup.
 
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `StateTaxesProps` | StateTaxesProps |
-
 ### Remarks
 
 Switches internally between a list of states with tax requirements and a per-state edit form.
 For finer-grained control over navigation, use the standalone [StateTaxesList](#statetaxeslist) and
 [StateTaxesForm](#statetaxesform) building blocks directly.
+
+<br />
+
+### StateTaxesProps
+
+<a id="statetaxesprops"></a>
+
+Props for the [StateTaxes](#statetaxes) flow.
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `companyId` | `string` | | UUID of the company whose state taxes are being managed. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `showContinueButton?` | `boolean` | `true` | Controls visibility of the Continue button below the state tax list. When `false`, hides the Continue button. Use this when the flow is embedded as one step inside a larger flow that provides its own navigation. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -447,27 +742,30 @@ For finer-grained control over navigation, use the standalone [StateTaxesList](#
 | `company/stateTaxes/done` | The list view was completed | — |
 | `CANCEL` | Editing was cancelled and the form was closed | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+
+***
+
 <a id="statetaxesform"></a>
 
 ## StateTaxesForm
 
 Standalone form for editing a company's state tax requirements for a single state.
 
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `StateTaxesFormProps` | StateTaxesFormProps |
-
 ### Remarks
 
 Lower-level building block used by [StateTaxes](#statetaxes) for its edit view. Use directly when
 you need full control over navigation between the list and edit views.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
-| `CANCEL` | The user cancelled editing | — |
+<br />
 
 ### Example
 
@@ -485,26 +783,88 @@ function MyComponent() {
 }
 ```
 
+<br />
+
+### StateTaxesFormProps
+
+<a id="statetaxesformprops"></a>
+
+Props for [StateTaxesForm](#statetaxesform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `state` | `string` | Two-letter code of the state whose tax requirements are edited. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
+| `CANCEL` | The user cancelled editing | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+
+***
+
 <a id="statetaxeslist"></a>
 
 ## StateTaxesList
 
 Displays the list of state tax requirements for a company with their setup status.
 
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `StateTaxesListProps` | Component props including the `companyId` whose state tax requirements should be listed. |
-
 ### Remarks
 
 Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+
+<br />
+
+### StateTaxesListProps
+
+<a id="statetaxeslistprops"></a>
+
+Props for the [StateTaxesList](#statetaxeslist) component.
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `companyId` | `string` | | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `showContinueButton?` | `boolean` | `true` | Controls visibility of the Continue button below the state tax list. When `false`, hides the Continue button. Use this when the list is embedded as one step inside a larger flow that provides its own navigation. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
 | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
+
+***
 
 ## Utility types
 
@@ -512,7 +872,7 @@ Standalone building block used internally by the orchestrated `StateTaxes` compo
 
 ### AssignSignatoryDefaultValues
 
-> **AssignSignatoryDefaultValues** = `RequireAtLeastOne`\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
+> **AssignSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
 
 Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
 
@@ -520,31 +880,55 @@ Default values for the create and invite forms rendered by [AssignSignatory](#as
 
 At least one of `create` or `invite` must be provided.
 
+***
+
 <a id="createsignatorydefaultvalues"></a>
 
 ### CreateSignatoryDefaultValues
 
-> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+> **CreateSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
+
+***
 
 <a id="federaltaxesdefaultvalues"></a>
 
 ### FederalTaxesDefaultValues
 
-> **FederalTaxesDefaultValues** = `RequireAtLeastOne`\<\{ `filingForm?`: `FederalTaxFormInputs`\[`"filingForm"`\]; `legalName?`: `FederalTaxFormInputs`\[`"legalName"`\]; `taxPayerType?`: `FederalTaxFormInputs`\[`"taxPayerType"`\]; \}\>
+> **FederalTaxesDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `filingForm?`: `FederalTaxFormInputs`\[`"filingForm"`\]; `legalName?`: `FederalTaxFormInputs`\[`"legalName"`\]; `taxPayerType?`: `FederalTaxFormInputs`\[`"taxPayerType"`\]; \}\>
 
 Pre-populated values for the company federal tax form, supplied via [FederalTaxesProps](#federaltaxesprops).
 At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
+
+***
 
 <a id="invitesignatorydefaultvalues"></a>
 
 ### InviteSignatoryDefaultValues
 
-> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+> **InviteSignatoryDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.
+
+***
+
+<a id="onboardingflowdefaultvalues"></a>
+
+### OnboardingFlowDefaultValues
+
+> **OnboardingFlowDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<\{ `federalTaxes?`: [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues); `paySchedule?`: [`PayScheduleDefaultValues`](#payscheduledefaultvalues); \}\>
+
+Default values for the company onboarding flow's per-step form components.
+
+#### Remarks
+
+At least one of the step-level keys must be provided. Per-step values are
+forwarded to the matching step component. If company data is already
+available via the API, the corresponding values are overwritten.
+
+***
 
 <a id="payscheduledefaultfields"></a>
 
@@ -554,11 +938,13 @@ Default values for the invite signatory form fields: `firstName`, `lastName`, `e
 
 The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
 
+***
+
 <a id="payscheduledefaultvalues"></a>
 
 ### PayScheduleDefaultValues
 
-> **PayScheduleDefaultValues** = `RequireAtLeastOne`\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
+> **PayScheduleDefaultValues** = [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
 
 Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
 takes precedence over these defaults when editing.

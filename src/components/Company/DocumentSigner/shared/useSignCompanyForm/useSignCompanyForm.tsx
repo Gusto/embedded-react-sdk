@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
+import type { ComponentType } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
-import { useCompanyFormsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/companyFormsGet'
-import { useCompanyFormsGetPdf } from '@gusto/embedded-api-v-2025-11-15/react-query/companyFormsGetPdf'
-import { useCompanyFormsSignMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/companyFormsSign'
+import type { Form } from '@gusto/embedded-api/models/components/form'
+import { useCompanyFormsGet } from '@gusto/embedded-api/react-query/companyFormsGet'
+import { useCompanyFormsGetPdf } from '@gusto/embedded-api/react-query/companyFormsGetPdf'
+import { useCompanyFormsSignMutation } from '@gusto/embedded-api/react-query/companyFormsSign'
 import {
   createSignCompanyFormSchema,
   type SignCompanyFormOptionalFieldsToRequire,
@@ -13,12 +14,14 @@ import {
   type SignCompanyFormOutputs,
 } from './signCompanyFormSchema'
 import { SignatureField, ConfirmSignatureField } from './fields'
+import type { SignatureFieldProps, ConfirmSignatureFieldProps } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -52,10 +55,10 @@ export interface UseSignCompanyFormProps {
  * @public
  */
 export interface SignCompanyFormFields {
-  /** Text input for the signer's typed name; always required. */
-  Signature: typeof SignatureField
-  /** Checkbox for confirming the signature and agreeing to the form's terms; always required. */
-  ConfirmSignature: typeof ConfirmSignatureField
+  /** Bound to `signature`. Text input for the signer's typed name; always required. */
+  Signature: ComponentType<SignatureFieldProps>
+  /** Bound to `confirmSignature`. Checkbox confirming the signature and agreeing to the form's terms; always required. */
+  ConfirmSignature: ComponentType<ConfirmSignatureFieldProps>
 }
 
 /**
@@ -64,7 +67,7 @@ export interface SignCompanyFormFields {
  * @public
  */
 export interface UseSignCompanyFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  SignCompanyFormFieldsMetadata,
   SignCompanyFormData,
   SignCompanyFormFields
 > {
@@ -92,6 +95,16 @@ export interface UseSignCompanyFormReady extends BaseFormHookReady<
 const HARDCODED_DEFAULTS: SignCompanyFormData = {
   signature: '',
   confirmSignature: false,
+}
+
+/** @internal */
+function buildSignCompanyFormFieldsMetadata(
+  base: Record<keyof SignCompanyFormData, FieldMetadata>,
+) {
+  return {
+    signature: base.signature,
+    confirmSignature: base.confirmSignature,
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -210,10 +223,7 @@ export function useSignCompanyForm({
   const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    signature: baseMetadata.signature,
-    confirmSignature: baseMetadata.confirmSignature,
-  }
+  const fieldsMetadata = buildSignCompanyFormFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<Form> | undefined> => {
     let submitResult: HookSubmitResult<Form> | undefined
@@ -304,4 +314,4 @@ export type UseSignCompanyFormResult = HookLoadingResult | UseSignCompanyFormRea
  *
  * @public
  */
-export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata']
+export type SignCompanyFormFieldsMetadata = ReturnType<typeof buildSignCompanyFormFieldsMetadata>

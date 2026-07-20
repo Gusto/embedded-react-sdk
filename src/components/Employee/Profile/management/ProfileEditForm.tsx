@@ -31,9 +31,10 @@ export interface ProfileEditFormProps extends BaseComponentInterface<'Employee.M
  * the save completes. Save and Cancel both emit events so the parent can
  * return to the read view.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | {@link Employee} |
+ * | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | {@link APIModels.Employee} |
  * | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
  *
  * @param input - See {@link ProfileEditFormProps}.
@@ -131,7 +132,6 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
               validationMessages={{
                 REQUIRED: t('form.validations.email'),
                 INVALID_EMAIL: t('form.validations.email'),
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('form.validations.email'),
               }}
             />
             <Fields.Ssn

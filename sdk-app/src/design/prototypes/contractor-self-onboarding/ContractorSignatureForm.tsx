@@ -1,6 +1,6 @@
-import { useContractorDocumentsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsGet'
-import { useContractorDocumentsGetPdfSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsGetPdf'
-import { useContractorDocumentsSignMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsSign'
+import { useContractorDocumentsGetSuspense } from '@gusto/embedded-api/react-query/contractorDocumentsGet'
+import { useContractorDocumentsGetPdfSuspense } from '@gusto/embedded-api/react-query/contractorDocumentsGetPdf'
+import { useContractorDocumentsSignMutation } from '@gusto/embedded-api/react-query/contractorDocumentsSign'
 import {
   ContractorDocumentSignature,
   type ContractorDocumentSignatureValues,

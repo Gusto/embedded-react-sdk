@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -5,13 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   type Garnishment,
   type GarnishmentType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
-import type { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata'
-import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
-import { useGarnishmentsList } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
-import { useGarnishmentsGetChildSupportData } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsGetChildSupportData'
+} from '@gusto/embedded-api/models/components/garnishment'
+import type { Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
+import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
+import { useGarnishmentsList } from '@gusto/embedded-api/react-query/garnishmentsList'
+import { useGarnishmentsGetChildSupportData } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
 import {
   createChildSupportGarnishmentFormSchema,
   getRequiredAttrKeys,
@@ -30,6 +31,14 @@ import {
   PaymentPeriodField,
   type CountyEntry,
   type StateFieldEntry,
+  type StateFieldProps,
+  type FipsCodeFieldProps,
+  type CaseNumberFieldProps,
+  type OrderNumberFieldProps,
+  type RemittanceNumberFieldProps,
+  type PayPeriodMaximumFieldProps,
+  type AmountFieldProps,
+  type PaymentPeriodFieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -38,6 +47,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -96,23 +106,24 @@ export interface UseChildSupportGarnishmentFormProps {
  * @public
  */
 export interface ChildSupportGarnishmentFormFields {
-  /** Agency (state) select. Always available. */
-  State: typeof StateField
-  /** Only available when the selected agency has more than one fips code, or the
-   *  sole code is county-scoped (not an "all counties" auto-pick). */
-  FipsCode: typeof FipsCodeField | undefined
-  /** Only available when the selected agency requires `case_number`. */
-  CaseNumber: typeof CaseNumberField | undefined
-  /** Only available when the selected agency requires `order_number`. */
-  OrderNumber: typeof OrderNumberField | undefined
-  /** Only available when the selected agency requires `remittance_number`. */
-  RemittanceNumber: typeof RemittanceNumberField | undefined
-  /** Per-pay-period currency cap input. Always available. */
-  PayPeriodMaximum: typeof PayPeriodMaximumField
-  /** Percent-of-paycheck input (0–100). Always available. */
-  Amount: typeof AmountField
-  /** Payment period select. Always available. */
-  PaymentPeriod: typeof PaymentPeriodField
+  /** Bound to `state`. Agency (state) select. Always available. */
+  State: ComponentType<StateFieldProps>
+  /** Bound to `fipsCode`. Only available when the selected agency has more than
+   *  one fips code, or the sole code is county-scoped (not an "all counties"
+   *  auto-pick). */
+  FipsCode: ComponentType<FipsCodeFieldProps> | undefined
+  /** Bound to `caseNumber`. Only available when the selected agency requires `case_number`. */
+  CaseNumber: ComponentType<CaseNumberFieldProps> | undefined
+  /** Bound to `orderNumber`. Only available when the selected agency requires `order_number`. */
+  OrderNumber: ComponentType<OrderNumberFieldProps> | undefined
+  /** Bound to `remittanceNumber`. Only available when the selected agency requires `remittance_number`. */
+  RemittanceNumber: ComponentType<RemittanceNumberFieldProps> | undefined
+  /** Bound to `payPeriodMaximum`. Per-pay-period currency cap input. Always available. */
+  PayPeriodMaximum: ComponentType<PayPeriodMaximumFieldProps>
+  /** Bound to `amount`. Percent-of-paycheck input (0–100). Always available. */
+  Amount: ComponentType<AmountFieldProps>
+  /** Bound to `paymentPeriod`. Payment period select. Always available. */
+  PaymentPeriod: ComponentType<PaymentPeriodFieldProps>
 }
 
 /**
@@ -127,7 +138,7 @@ export interface ChildSupportGarnishmentFormFields {
  * @public
  */
 export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ChildSupportGarnishmentFormFieldsMetadata,
   ChildSupportGarnishmentFormData,
   ChildSupportGarnishmentFormFields
 > {
@@ -174,8 +185,38 @@ export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
  * @public
  */
 export type UseChildSupportGarnishmentFormResult =
-  | HookLoadingResult
-  | UseChildSupportGarnishmentFormReady
+  HookLoadingResult | UseChildSupportGarnishmentFormReady
+
+/** @internal */
+function buildChildSupportGarnishmentFieldsMetadata(
+  base: Record<keyof ChildSupportGarnishmentFormData, FieldMetadata>,
+  {
+    stateOptions,
+    agencies,
+    countyOptions,
+    counties,
+  }: {
+    stateOptions: Array<{ value: string; label: string }>
+    agencies: StateFieldEntry[]
+    countyOptions: Array<{ value: string; label: string }>
+    counties: CountyEntry[]
+  },
+) {
+  return {
+    state: withOptions(base.state, stateOptions, agencies),
+    fipsCode: withOptions(base.fipsCode, countyOptions, counties),
+    caseNumber: base.caseNumber,
+    orderNumber: base.orderNumber,
+    remittanceNumber: base.remittanceNumber,
+    payPeriodMaximum: base.payPeriodMaximum,
+    amount: base.amount,
+    paymentPeriod: withOptions(
+      base.paymentPeriod,
+      [...PAYMENT_PERIOD_OPTIONS],
+      [...PAYMENT_PERIOD_ENTRIES],
+    ),
+  } satisfies FieldsMetadata
+}
 
 /**
  * Headless hook for creating or updating a child-support garnishment.
@@ -402,20 +443,12 @@ export function useChildSupportGarnishmentForm({
     label: c.county ?? c.fipsCode,
   }))
 
-  const fieldsMetadata = {
-    state: withOptions(baseMetadata.state, stateOptions, agencies),
-    fipsCode: withOptions(baseMetadata.fipsCode, countyOptions, counties),
-    caseNumber: baseMetadata.caseNumber,
-    orderNumber: baseMetadata.orderNumber,
-    remittanceNumber: baseMetadata.remittanceNumber,
-    payPeriodMaximum: baseMetadata.payPeriodMaximum,
-    amount: baseMetadata.amount,
-    paymentPeriod: withOptions(
-      baseMetadata.paymentPeriod,
-      [...PAYMENT_PERIOD_OPTIONS],
-      [...PAYMENT_PERIOD_ENTRIES],
-    ),
-  }
+  const fieldsMetadata = buildChildSupportGarnishmentFieldsMetadata(baseMetadata, {
+    stateOptions,
+    agencies,
+    countyOptions,
+    counties,
+  })
 
   // ── Submit ───────────────────────────────────────────────────────────
 
@@ -560,5 +593,6 @@ export function useChildSupportGarnishmentForm({
  *
  * @public
  */
-export type ChildSupportGarnishmentFormFieldsMetadata =
-  UseChildSupportGarnishmentFormReady['form']['fieldsMetadata']
+export type ChildSupportGarnishmentFormFieldsMetadata = ReturnType<
+  typeof buildChildSupportGarnishmentFieldsMetadata
+>

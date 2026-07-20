@@ -13,6 +13,15 @@ import {
 } from 'typedoc'
 import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
+import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
+
+/** The `@group` names whose members render as component pages. */
+const COMPONENT_GROUP_NAMES = new Set<string>([
+  CUSTOM_GROUPS.flowComponents,
+  CUSTOM_GROUPS.blockComponents,
+  CUSTOM_GROUPS.components,
+  CUSTOM_GROUPS.providers,
+])
 
 /** Derived from DOMAINS — do not edit directly.
  *  Maps each namespace id to its output directory prefix. */
@@ -52,6 +61,13 @@ export function hookDirFromSources(reflection: Reflection): string | null {
   return seg ? seg.replace(/\.[^.]+$/, '') : null
 }
 
+/** The source file path (fullFileName or fileName) for a reflection, or null. */
+export function sourceFilePath(reflection: Reflection): string | null {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return null
+  return source.fullFileName ?? source.fileName ?? null
+}
+
 /**
  * Return true if the reflection's source file is, or lives inside, a hook
  * directory/file — i.e. any path segment (after stripping its extension)
@@ -64,11 +80,70 @@ export function isHookSourceFile(reflection: Reflection): boolean {
 }
 
 /**
+ * Whether a reflection carries an `@group <name>` block tag with the given
+ * name. Used to route companion types into a section by their authored group
+ * (e.g. the per-variant field types tagged `@group Fields`).
+ */
+export function hasGroup(reflection: Reflection, group: string): boolean {
+  return (
+    (reflection as DeclarationReflection).comment?.blockTags.some(
+      t => t.tag === '@group' && Comment.combineDisplayParts(t.content).trim() === group,
+    ) ?? false
+  )
+}
+
+/**
+ * The type name pointed at by a relationship tag whose content is a single
+ * `{@link X}` (`@siblingOf`, `@childOf`). Prefers the resolved `{@link}`
+ * target's name; falls back to the raw link text (stripping any `#member` or
+ * `| display` suffix). Returns `null` when the tag is absent.
+ */
+function linkTagTarget(reflection: Reflection, tagName: string): string | null {
+  const tag = (reflection as DeclarationReflection).comment?.blockTags.find(t => t.tag === tagName)
+  if (!tag) return null
+  for (const part of tag.content) {
+    if (part.kind === 'inline-tag' && part.tag === '@link') {
+      if (part.target instanceof DeclarationReflection) return part.target.name
+      return part.text.trim().split(/[|#]/)[0]!.trim() || null
+    }
+  }
+  const text = Comment.combineDisplayParts(tag.content).trim()
+  return text || null
+}
+
+/**
+ * The type name a reflection's `@siblingOf {@link X}` tag points at — the peer
+ * it should render immediately after, at the same heading level, within its
+ * group — or `null` when the tag is absent.
+ */
+export function siblingOfTarget(reflection: Reflection): string | null {
+  return linkTagTarget(reflection, '@siblingOf')
+}
+
+/**
+ * The type name a reflection's `@childOf {@link X}` tag points at — the parent
+ * it should render nested beneath, at one deeper heading level, instead of as
+ * its own top-level entry — or `null` when the tag is absent.
+ */
+export function childOfTarget(reflection: Reflection): string | null {
+  return linkTagTarget(reflection, '@childOf')
+}
+
+/**
  * Return the standalone page key for a project-level reflection, based on its
  * source file path matching a key in STANDALONE_PAGES. Returns null when no
  * key matches.
  */
 export function standalonePageFromSources(reflection: Reflection): string | null {
+  // `@page <id>` overrides source-path routing — check it first.
+  const pageTag = (reflection as DeclarationReflection).comment?.blockTags.find(
+    t => t.tag === '@page',
+  )
+  if (pageTag) {
+    const pageId = Comment.combineDisplayParts(pageTag.content).trim()
+    if (STANDALONE_PAGES.some(p => p.id === pageId)) return pageId
+  }
+
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return null
   const fp = source.fullFileName ?? source.fileName ?? ''
@@ -76,7 +151,9 @@ export function standalonePageFromSources(reflection: Reflection): string | null
     if (!sources.some(pattern => fp.includes(pattern))) continue
     if (groups) {
       const inGroup = (reflection as DeclarationReflection).comment?.blockTags.some(
-        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+        t =>
+          t.tag === '@group' &&
+          groups.some(g => g === Comment.combineDisplayParts(t.content).trim()),
       )
       if (!inGroup) continue
     }
@@ -100,7 +177,7 @@ export function pathToSourceDir(domainPath: string): string {
  * naming its purpose; the theme decides where each slot lands in the generated
  * page. These are the recognized slots — extend deliberately.
  */
-export const GUIDE_SLOTS = ['overview', 'appendix'] as const
+export const GUIDE_SLOTS = ['overview', 'appendix', 'advanced'] as const
 export type GuideSlot = (typeof GUIDE_SLOTS)[number]
 export type GuideSlots = Partial<Record<GuideSlot, string>>
 
@@ -139,7 +216,9 @@ export function readFlowGuide(sourceFilePath: string): Guide | null {
 export function readHookGuide(sourceFilePath: string, hookDir: string): Guide | null {
   let dir = dirname(sourceFilePath)
   while (dir !== dirname(dir)) {
-    if (basename(dir) === hookDir) return readGuideFile(join(dir, 'GUIDE.md'))
+    // Hook guides use a single `advanced` slot: all prose nests under one
+    // section, so the whole file is collected regardless of any slot tags.
+    if (basename(dir) === hookDir) return readGuideFile(join(dir, 'GUIDE.md'), 'advanced')
     dir = dirname(dir)
   }
   return null
@@ -152,12 +231,25 @@ export function readHookGuide(sourceFilePath: string, hookDir: string): Guide | 
  * `<!-- slot: name -->` tag, with the tag stripped from the rendered heading.
  * Untagged or unknown-slot sections are routed to `appendix` with a warning so
  * content is never silently lost. Returns null if the file is missing or empty.
+ *
+ * When `forcedSlot` is given, slot tags are ignored: the entire body (minus the
+ * h1) is collected into that one slot, with any `<!-- slot: … -->` tags stripped
+ * from headings. Used by hook guides, which carry a single `advanced` slot.
  */
-function readGuideFile(guidePath: string): Guide | null {
+function readGuideFile(guidePath: string, forcedSlot?: GuideSlot): Guide | null {
   if (!existsSync(guidePath)) return null
   const lines = readFileSync(guidePath, 'utf-8').split('\n')
   const h1Index = lines.findIndex(l => /^#\s/.test(l))
   const body = h1Index === -1 ? lines : lines.slice(h1Index + 1)
+
+  if (forcedSlot) {
+    const text = body
+      .map(l => l.replace(SLOT_TAG, '').trimEnd())
+      .join('\n')
+      .trim()
+    if (!text) return null
+    return { source: relative(join(process.cwd(), '..'), guidePath), slots: { [forcedSlot]: text } }
+  }
 
   const slots: GuideSlots = {}
   let current: GuideSlot | null = null
@@ -218,7 +310,9 @@ export function getSidebarPosition(url: string): number | undefined {
   if (url === 'index.md') return 1
   const key = url.replace(/\.md$/, '')
   const standaloneIdx = STANDALONE_PAGES.findIndex(p => p.id === key)
-  if (standaloneIdx !== -1) return DOMAINS.length + standaloneIdx + 1
+  if (standaloneIdx !== -1) {
+    return STANDALONE_PAGES[standaloneIdx]!.sidebarPosition ?? DOMAINS.length + standaloneIdx + 1
+  }
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
   if (filename === 'index' || filename === 'namespace') return 1
@@ -323,9 +417,20 @@ export function isComponent(reflection: DeclarationReflection): boolean {
   return (
     reflection.comment?.blockTags.some(
       tag =>
-        tag.tag === '@group' && /Components$/.test(Comment.combineDisplayParts(tag.content).trim()),
+        tag.tag === '@group' &&
+        COMPONENT_GROUP_NAMES.has(Comment.combineDisplayParts(tag.content).trim()),
     ) ?? false
   )
+}
+
+/**
+ * Return true when the model is an individual hook page — a synthetic namespace
+ * whose name is a hook function name (e.g. `useEmployeeDetailsForm`). Distinct
+ * from the hooks index page which is detected by `isHooksIndex`.
+ */
+export function isHookPage(model: DeclarationReflection): boolean {
+  if (isHooksIndex(model)) return false
+  return model.kind === ReflectionKind.Namespace && /^use[A-Z]/.test(model.name)
 }
 
 export function isDomainHub(model: DeclarationReflection | RouterTarget): boolean {
@@ -340,7 +445,7 @@ export function isDomainHub(model: DeclarationReflection | RouterTarget): boolea
  * Derive a human-readable page title for frontmatter from the page model and URL.
  *
  * Synthetic pages (domain hubs, hooks pages, flow/block splits) carry generic
- * model names like "Hooks" or "Flow Components", so we enrich them with the
+ * model names like "Hooks" or "Flow components", so we enrich them with the
  * domain or namespace extracted from the page URL.
  */
 export function pageTitle(page: MarkdownPageEvent): string {
@@ -351,8 +456,6 @@ export function pageTitle(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
 
   if (isDomainHub(decl)) return decl.name
-  if (decl.name === 'Hooks') return 'Hooks'
-  if (decl.name === 'Block Components') return 'Sub-components'
 
   return decl.name
 }
@@ -375,6 +478,15 @@ export function serializeFrontmatter(frontmatter: Record<string, unknown>): stri
 }
 
 /**
+ * Flatten Markdown link syntax (`[text](url)`) to its link text. The frontmatter
+ * `description` becomes a `<meta>` tag, which is plain text — leading-prose intros
+ * may carry cross-links, but those must not surface as literal `[…](…)` markup.
+ */
+function stripMarkdownLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+}
+
+/**
  * Derive a description for frontmatter from the model's comment summary, or
  * fall back to a generated sentence based on the page title.
  */
@@ -385,7 +497,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
     const fromComment =
       model.comment?.summary && Comment.combineDisplayParts(model.comment.summary).trim()
     return (
-      fromComment ||
+      (fromComment && stripMarkdownLinks(fromComment)) ||
       'Reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.'
     )
   }
@@ -393,7 +505,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
   const fromComment =
     decl.comment?.summary && Comment.combineDisplayParts(decl.comment.summary).trim()
-  if (fromComment) return fromComment
+  if (fromComment) return stripMarkdownLinks(fromComment)
 
   const title = pageTitle(page)
   return `${title} reference.`

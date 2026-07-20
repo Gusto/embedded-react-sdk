@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
-import type { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata'
+import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
+import type { Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
 import {
   buildFormSchema,
   type RequiredFieldConfig,
@@ -102,17 +102,13 @@ const fieldValidators = {
  * Shape of the values managed by the child support garnishment form.
  *
  * @public
+ * @interface
  */
 export type ChildSupportGarnishmentFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-/**
- * Shape of the validated values produced by the child support garnishment
- * form on submit.
- *
- * @public
- */
+/** @internal */
 export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
 
 // ── Required fields config ─────────────────────────────────────────────

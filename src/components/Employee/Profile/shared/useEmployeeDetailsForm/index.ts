@@ -10,22 +10,11 @@ export type {
   EmployeeDetailsFormFields,
 } from './useEmployeeDetailsForm'
 export {
-  createEmployeeDetailsSchema,
   EmployeeDetailsErrorCodes,
   type EmployeeDetailsErrorCode,
   type EmployeeDetailsFormData,
-  type EmployeeDetailsFormOutputs,
   type EmployeeDetailsField,
 } from './employeeDetailsSchema'
-export {
-  FirstNameField,
-  MiddleInitialField,
-  LastNameField,
-  EmailField,
-  DateOfBirthField,
-  SsnField,
-  SelfOnboardingField,
-} from './fields'
 export type {
   RequiredValidation as EmployeeDetailsRequiredValidation,
   NameValidation,
@@ -40,4 +29,3 @@ export type {
   SsnFieldProps,
   SelfOnboardingFieldProps,
 } from './fields'
-export type { EmployeeDetailsFields } from './useEmployeeDetailsForm'

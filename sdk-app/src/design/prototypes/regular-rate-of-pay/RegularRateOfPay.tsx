@@ -1,20 +1,20 @@
 import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsUpdate'
-import { usePayrollsCalculateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCalculate'
+import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type {
   EmployeeCompensations,
   PayrollPrepared,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import { APIError } from '@gusto/embedded-api-v-2025-11-15/models/errors/apierror'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
-import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprocessingrequest'
+} from '@gusto/embedded-api/models/components/payrollshow'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import { PayrollConfigurationRropPresentation } from '../../components/payroll/PayrollConfigurationRrop/PayrollConfigurationRropPresentation'
 import { BaseComponent } from '@/components/Base'
 import { Flex } from '@/components/Common'

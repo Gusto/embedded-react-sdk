@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import {
   SetupStatus,
   type TaxRequirementStatesList,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirementstateslist'
+} from '@gusto/embedded-api/models/components/taxrequirementstateslist'
 import { useStateTaxesList } from './context'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
@@ -29,8 +29,7 @@ const ctaLabelMap = {
 } as const satisfies Record<SetupStatus, string>
 
 function getSetupStatus(req: TaxRequirementStatesList): SetupStatus {
-  if (req.setupStatus) return req.setupStatus
-  return req.setupComplete ? SetupStatus.Complete : SetupStatus.InProgress
+  return req.setupStatus ?? SetupStatus.InProgress
 }
 
 /** @internal */

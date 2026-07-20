@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useEmployeesList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { EmployeeOnboardingStatus as EmployeeOnboardingStatusEntity } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeonboardingstatus'
-import { useEmployeesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesDelete'
-import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdateOnboardingStatus'
+import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { EmployeeOnboardingStatus as EmployeeOnboardingStatusEntity } from '@gusto/embedded-api/models/components/employeeonboardingstatus'
+import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
+import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { keepPreviousData } from '@tanstack/react-query'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -20,12 +20,7 @@ import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/type
  * @public
  */
 export type EmployeeAction =
-  | 'edit'
-  | 'delete'
-  | 'cancel_self_onboarding'
-  | 'review'
-  | 'dismiss'
-  | 'rehire'
+  'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire'
 
 /**
  * An employee entity extended with the actions permitted on it and a reference to its primary job.
@@ -105,11 +100,7 @@ function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): 
   }
 
   // Cancel self onboarding - available for employees in self-onboarding flow
-  if (
-    employee.onboardingStatus &&
-    // @ts-expect-error: onboardingStatus during runtime can be one of self onboarding statuses
-    EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus)
-  ) {
+  if (employee.onboardingStatus && EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus)) {
     actions.push('cancel_self_onboarding')
   }
 

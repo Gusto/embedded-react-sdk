@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import { WithholdingPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { OffCycleTaxWithholdingTable } from './OffCycleTaxWithholdingTable'
 import type {
   OffCycleTaxWithholdingConfig,

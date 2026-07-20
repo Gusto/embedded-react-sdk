@@ -52,6 +52,11 @@ Output format: `SYMBOL: NAME\n<skeleton>` per symbol, or `SKIP` if already align
  * @remarks
  * Extended prose.
  *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `domain/action` | What triggers it | — |
+ *
  * @components
  * {@link ChildBlock} - what it contributes.
  *
@@ -67,7 +72,7 @@ Output format: `SYMBOL: NAME\n<skeleton>` per symbol, or `SKIP` if already align
  */
 ````
 
-One blank line between summary and tag group. `@remarks` is its own group (blank lines before and after). `@components` is its own group (after `@remarks`, before `@param`). Each `@example` is its own group.
+One blank line between summary and tag group. `@remarks`, `@events`, and `@components` are each their own group (blank lines before and after), in that order. `@events` lists the component's onEvent surface; `@components` lists sub-components/hooks a flow composes. Each `@example` is its own group.
 
 **`@components` tag:** A registered block tag listing the sub-components/hooks a composing symbol pulls together — one `{@link Name} - description` per line. The doc engine renders these as a "Sub-components" table on the generated page. Used mainly on flows (see the flows guide); skip it on leaf components that compose nothing.
 
@@ -101,11 +106,11 @@ Always `@internal`, no prose needed: `createXxxSchema`, `XxxSchemaOptions`, `Xxx
 
 For more depth, Read the relevant guide before writing:
 
-| Symbol type                          | When to load                                           |
-| ------------------------------------ | ------------------------------------------------------ |
-| `.claude/tsdoc-guides/hooks.md`      | Any hook, hook props, hook return types, form fields   |
-| `.claude/tsdoc-guides/components.md` | React components — events table format, @example rules |
-| `.claude/tsdoc-guides/flows.md`      | Flow components and FlowComponents props               |
+| Symbol type                        | When to load                                           |
+| ---------------------------------- | ------------------------------------------------------ |
+| `.claude/doc-guides/hooks.md`      | Any hook, hook props, hook return types, form fields   |
+| `.claude/doc-guides/components.md` | React components — events table format, @example rules |
+| `.claude/doc-guides/flows.md`      | Flow components and FlowComponents props               |
 
 Load the guide when you'd otherwise be guessing: hook field patterns, events table format, what belongs in `@remarks` vs. what to skip.
 

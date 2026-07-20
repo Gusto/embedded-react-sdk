@@ -1,6 +1,6 @@
-import type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
-import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { normalizeToDate } from '@/helpers/dateFormatting'
 
 /** @internal */

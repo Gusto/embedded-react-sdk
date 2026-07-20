@@ -1,8 +1,8 @@
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodsGetBankAccounts'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsUpdate'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollupdate'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
@@ -38,7 +38,7 @@ export interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payrol
  * Allows modification of pay rates, hours, time off, additional earnings,
  * reimbursements, and payment method for a single employee on the specified payroll.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |
@@ -108,6 +108,7 @@ const Root = ({
   const transformEmployeeCompensation = ({
     paymentMethod,
     reimbursements,
+    customWithholdings,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     return {

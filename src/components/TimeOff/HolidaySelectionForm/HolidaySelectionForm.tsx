@@ -1,15 +1,15 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { useHolidayPayPoliciesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesCreate'
+import { useHolidayPayPoliciesCreateMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesCreate'
 import {
   useHolidayPayPoliciesGetSuspense,
   queryKeyHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
   type HolidayPayPoliciesGetQueryData,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
-import { useHolidayPayPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesUpdate'
-import type { HolidayPayPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/holidaypaypolicy'
+} from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesUpdate'
+import type { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy'
 import {
   getDefaultHolidayItems,
   buildFederalHolidaysPayload,
@@ -43,7 +43,7 @@ export interface HolidaySelectionFormProps extends BaseComponentInterface<'Compa
  * federal holidays are shown with their observed and next-observation dates; in create mode they
  * are all selected by default.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/holidaySelection/done` | Holidays were saved in create mode | — |

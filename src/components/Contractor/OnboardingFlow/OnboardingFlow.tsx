@@ -9,7 +9,7 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 
 /**
- * Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
+ * Guided flow for admins to onboard a contractor to the company.
  *
  * @remarks
  * Renders a multi-step experience that collects every piece of information
@@ -19,15 +19,15 @@ import { Flow } from '@/components/Flow/Flow'
  * The flow is driven by an internal state machine and wraps each step in
  * error and suspense boundaries.
  *
- * Each step of the flow is also exported as a standalone component — see
- * {@link ContractorList}, {@link ContractorProfile}, {@link Address},
- * {@link PaymentMethod}, {@link NewHireReport}, and {@link ContractorSubmit} —
- * for composing a custom workflow when this orchestration is the wrong fit.
+ * Each step of the flow is also exported as a standalone block (see the
+ * Blocks table) for composing a custom workflow when this orchestration
+ * is the wrong fit.
  *
- * The flow forwards every event emitted by its sub-components to `onEvent`;
- * see the events table on each sub-component for the full set of events and
+ * The flow forwards every event emitted by its blocks to `onEvent`;
+ * see the events table on each block for the full set of events and
  * payloads observable from this flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/create` | Fired when the user chooses to add a new contractor | — |
@@ -36,7 +36,7 @@ import { Flow } from '@/components/Flow/Flow'
  * | `contractor/onboarding/continue` | Fired when the user chooses to continue onboarding a contractor | — |
  * | `contractor/created` | Fired when a new contractor is created successfully | Create contractor API response |
  * | `contractor/updated` | Fired when an existing contractor is updated | Update contractor API response |
- * | `contractor/profile/done` | Fired when the contractor profile step is complete | `{ contractorId: string, selfOnboarding: boolean }` |
+ * | `contractor/profile/done` | Fired when the contractor profile step is complete | `{ contractorId: string, onboardingStatus?: string, selfOnboarding: boolean }` |
  * | `contractor/address/updated` | Fired when the contractor address is updated | Create or update contractor address API response |
  * | `contractor/address/done` | Fired when the address step is complete | — |
  * | `contractor/bankAccount/created` | Fired when a bank account is created for the contractor | Create contractor bank account API response |
@@ -48,19 +48,31 @@ import { Flow } from '@/components/Flow/Flow'
  * | `contractor/submit/done` | Fired when the contractor submission is complete | `{ message: string }` or `{ onboardingStatus, message: string }` |
  * | `contractor/invite/selfOnboarding` | Fired when the contractor is invited for self-onboarding | `{ contractorId: string }` |
  *
+ * @components
+ * - {@link ContractorList}
+ * - {@link ContractorProfile}
+ * - {@link Address}
+ * - {@link PaymentMethod}
+ * - {@link NewHireReport}
+ * - {@link ContractorSubmit}
+ *
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step onboarding flow with internal navigation between the contractor list and the per-step screens.
  * @public
  *
  * @example
- * ```tsx
- * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+ * ```tsx title="App.tsx"
+ * import { ContractorOnboarding, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <ContractorOnboarding.OnboardingFlow
  *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'contractor/submit/done') {
+ *           // Contractor onboarding complete — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }

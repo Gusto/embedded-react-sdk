@@ -3,6 +3,10 @@
   "businessAddressDescription": "Contractor's business address, within the United States.",
   "homeAddressTitle": "Home address",
   "homeAddressDescription": "Contractor's home mailing address, within the United States.",
+  "w9EditWarning": {
+    "label": "Changes will require an updated Form W-9",
+    "body": "This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."
+  },
   "street1": "Street 1",
   "street2": "Street 2",
   "city": "City",
@@ -10,10 +14,12 @@
   "statePlaceholder": "Select state...",
   "zip": "Zip",
   "submit": "Continue",
+  "submitting": "Saving…",
   "validations": {
     "street1": "Street address is required",
     "city": "Please provide valid city name",
     "state": "Please select a state",
-    "zip": "Please provide valid zip code"
+    "zip": "Please provide valid zip code",
+    "zipInvalid": "Please enter a valid ZIP code"
   }
 }

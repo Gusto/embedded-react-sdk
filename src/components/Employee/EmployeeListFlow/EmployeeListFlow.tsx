@@ -9,7 +9,7 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 
 /**
- * Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows.
+ * Hub for viewing and managing all employees, including onboarding new ones.
  *
  * @remarks
  * Drop-in entry point for managing all employees in a company. Begins on the
@@ -19,17 +19,23 @@ import { Flow } from '@/components/Flow/Flow'
  * employees" header is added to each sub-flow so the admin can return to the
  * list at any time.
  *
- * The flow forwards every event emitted by its sub-components to `onEvent`;
- * see the events table on each sub-component for the full set of events and
+ * The flow forwards every event emitted by its blocks to `onEvent`;
+ * see the events table on each block for the full set of events and
  * payloads observable from this flow.
+ *
+ * @components
+ * - {@link EmployeeList}
+ * - {@link DashboardFlow}
+ * - {@link TerminationFlow}
+ * - {@link EmployeeOnboarding.OnboardingExecutionFlow | OnboardingExecutionFlow}
  *
  * @param props - See {@link EmployeeListFlowProps}.
  * @returns The employee list workflow with internal navigation to the dashboard, termination, and onboarding flows.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

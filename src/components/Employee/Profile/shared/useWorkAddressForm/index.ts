@@ -10,17 +10,13 @@ export type {
   UseWorkAddressFormReady,
   WorkAddressFieldsMetadata,
   WorkAddressFormFields,
-  WorkAddressFields,
 } from './useWorkAddressForm'
 export {
-  createWorkAddressSchema,
   WorkAddressErrorCodes,
   type WorkAddressErrorCode,
   type WorkAddressFormData,
-  type WorkAddressFormOutputs,
   type WorkAddressField,
 } from './workAddressSchema'
-export { LocationField, EffectiveDateField } from './fields'
 export type {
   RequiredValidation as WorkAddressRequiredValidation,
   LocationFieldProps,

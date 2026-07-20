@@ -11,40 +11,24 @@ custom_edit_url: null
 
 # useSignCompanyForm
 
-## Form Hooks
-
 <a id="usesigncompanyform"></a>
 
-### useSignCompanyForm()
-
-> **useSignCompanyForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
+> **useSignCompanyForm**(`props`: [`UseSignCompanyFormProps`](#usesigncompanyformprops)): [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
 
 Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox.
 
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignCompanyFormProps`](#usesigncompanyformprops) | See [UseSignCompanyFormProps](#usesigncompanyformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignCompanyFormReady](#usesigncompanyformready) once the form is loaded.
-
-#### Remarks
+## Remarks
 
 The hook fetches the company form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+[BaseFormHookReady](../../hooks.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
 `onSubmit`, and error handling. Use `data.companyForm` to display the
 form's title and description, and `data.pdfUrl` to render the document for
 review before signing. Both `signature` and `confirmSignature` are always
 required.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   useSignCompanyForm,
   SDKFormProvider,
@@ -99,7 +83,174 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
 }
 ```
 
-## Variables
+## Props
+
+### UseSignCompanyFormProps
+
+<a id="usesigncompanyformprops"></a>
+
+Props for [useSignCompanyForm](#usesigncompanyform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `formId` | `string` | UUID of the company form to sign. |
+| `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
+| `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
+
+## Returns
+
+[`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
+
+A [HookLoadingResult](../../hooks.md#hookloadingresult) while loading, or a [UseSignCompanyFormReady](#usesigncompanyformready) once the form is loaded.
+
+<a id="usesigncompanyformresult"></a>
+
+### UseSignCompanyFormResult
+
+> **UseSignCompanyFormResult** = [`HookLoadingResult`](../../hooks.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
+
+Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
+
+***
+
+<a id="usesigncompanyformready"></a>
+
+### UseSignCompanyFormReady
+
+Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Imperative actions exposed by the hook. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`Form`](../../APIModels/index.md#form)\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
+| `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
+| `data.companyForm` | [`Form`](../../APIModels/index.md#form) | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
+| `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
+| `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
+| `form.fieldsMetadata` | [`SignCompanyFormFieldsMetadata`](#signcompanyformfieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => [`SignCompanyFormData`](#signcompanyformdata) \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../hooks.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
+| `status` | `object` | Submit-state flags. |
+| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
+| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
+
+## Fields
+
+### SignCompanyFormFields
+
+<a id="signcompanyformfields"></a>
+
+Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#confirmsignaturefieldprops)\> | Bound to `confirmSignature`. Checkbox confirming the signature and agreeing to the form's terms; always required. |
+| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signaturefieldprops)\> | Bound to `signature`. Text input for the signer's typed name; always required. |
+
+***
+
+### ConfirmSignature
+
+Bound to `confirmSignature`. Checkbox confirming the signature and agreeing to the form's terms; always required.
+
+```tsx
+<form.Fields.ConfirmSignature
+  label="Confirm signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="confirmsignaturefieldprops"></a>
+
+#### ConfirmSignatureFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../hooks.md#checkboxhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
+
+Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.ConfirmSignature` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../hooks.md#checkboxhookfieldprops)._
+
+***
+
+### Signature
+
+Bound to `signature`. Text input for the signer's typed name; always required.
+
+```tsx
+<form.Fields.Signature
+  label="Signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="signaturefieldprops"></a>
+
+#### SignatureFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../hooks.md#textinputhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
+
+Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.Signature` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../hooks.md#textinputhookfieldprops)._
+
+## Validations
+
+<a id="signcompanyformrequiredvalidation"></a>
+
+### SignCompanyFormRequiredValidation
+
+> **SignCompanyFormRequiredValidation** = `"REQUIRED"`
+
+The required-field error code emitted by every field of [useSignCompanyForm](#usesigncompanyform).
+
+#### Remarks
+
+Use this as the `validationMessages` key for any sign-company-form field.
+See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
+
+## Utility types
+<a id="signcompanyformdata"></a>
+
+### SignCompanyFormData
+
+Shape of the values managed by the sign-company form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `confirmSignature` | `boolean` |
+| `signature` | `string` |
+
+***
+
+<a id="signcompanyformerrorcode"></a>
+
+### SignCompanyFormErrorCode
+
+> **SignCompanyFormErrorCode** = `"REQUIRED"`
+
+Union of validation error code strings emitted by the sign-company-form
+schema.
+
+***
 
 <a id="signcompanyformerrorcodes"></a>
 
@@ -112,115 +263,9 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="signcompanyformfields"></a>
-
-### SignCompanyFormFields
-
-Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`) => `Element` | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
-| `Signature` | (`props`) => `Element` | Text input for the signer's typed name; always required. |
-
-***
-
-<a id="usesigncompanyformprops"></a>
-
-### UseSignCompanyFormProps
-
-Props for [useSignCompanyForm](#usesigncompanyform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `formId` | `string` | UUID of the company form to sign. |
-| `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
-| `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
-
-***
-
-<a id="usesigncompanyformready"></a>
-
-### UseSignCompanyFormReady
-
-Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`SignCompanyFormData`](#signcompanyformdata), [`SignCompanyFormFields`](#signcompanyformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
-| `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
-| `data.companyForm` | `Form` | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
-| `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit-state flags. |
-| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
-| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
-
-## Type Aliases
-
-<a id="confirmsignaturefieldprops"></a>
-
-### ConfirmSignatureFieldProps
-
-> **ConfirmSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
-
-Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.ConfirmSignature` component.
-
-***
-
-<a id="signaturefieldprops"></a>
-
-### SignatureFieldProps
-
-> **SignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
-
-Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.Signature` component.
-
-***
-
-<a id="signcompanyformdata"></a>
-
-### SignCompanyFormData
-
-> **SignCompanyFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the sign-company form.
-
-***
-
-<a id="signcompanyformerrorcode"></a>
-
-### SignCompanyFormErrorCode
-
-> **SignCompanyFormErrorCode** = *typeof* [`SignCompanyFormErrorCodes`](#signcompanyformerrorcodes)\[keyof *typeof* [`SignCompanyFormErrorCodes`](#signcompanyformerrorcodes)\]
-
-Union of validation error code strings emitted by the sign-company-form
-schema.
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
@@ -228,7 +273,7 @@ schema.
 
 ### SignCompanyFormField
 
-> **SignCompanyFormField** = keyof *typeof* `fieldValidators`
+> **SignCompanyFormField** = `"signature"` \| `"confirmSignature"`
 
 Field names accepted by the sign-company form.
 
@@ -238,7 +283,10 @@ Field names accepted by the sign-company form.
 
 ### SignCompanyFormFieldsMetadata
 
-> **SignCompanyFormFieldsMetadata** = [`UseSignCompanyFormReady`](#usesigncompanyformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `confirmSignature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
+| `signature` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 
 Shape of the `form.fieldsMetadata` object returned by [useSignCompanyForm](#usesigncompanyform).
 
@@ -257,37 +305,10 @@ Optional fields that may be promoted to required for the sign-company form.
 Both fields of this form are already required by default, so passing this
 is typically unnecessary.
 
-***
+## Endpoints
 
-<a id="signcompanyformoutputs"></a>
-
-### SignCompanyFormOutputs
-
-> **SignCompanyFormOutputs** = [`SignCompanyFormData`](#signcompanyformdata)
-
-Shape of the validated values produced by the sign-company form on submit.
-
-***
-
-<a id="signcompanyformrequiredvalidation"></a>
-
-### SignCompanyFormRequiredValidation
-
-> **SignCompanyFormRequiredValidation** = *typeof* `SignCompanyFormErrorCodes.REQUIRED`
-
-The required-field error code emitted by every field of [useSignCompanyForm](#usesigncompanyform).
-
-#### Remarks
-
-Use this as the `validationMessages` key for any sign-company-form field.
-See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
-
-***
-
-<a id="usesigncompanyformresult"></a>
-
-### UseSignCompanyFormResult
-
-> **UseSignCompanyFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
-
-Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf) |
+| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-company-form-sign) |

@@ -37,6 +37,7 @@ export type { ConfirmWireDetailsProps, ConfirmWireDetailsComponentType } from '.
 export { PayrollBlockerList, type ApiPayrollBlocker } from './PayrollBlocker'
 export type { PayrollBlockerListProps } from './PayrollBlocker/components/PayrollBlockerList'
 export { RecoveryCases } from './RecoveryCases/RecoveryCases'
+export type { RecoveryCasesProps } from './RecoveryCases/RecoveryCases'
 export type {
   OffCyclePayPeriodDateFormData,
   OffCyclePayrollDateType,
@@ -44,12 +45,12 @@ export type {
 export { OffCycleCreation } from './OffCycleCreation'
 export type { OffCycleCreationProps, OffCycleCreationFormData } from './OffCycleCreation'
 export { OffCycleFlow } from './OffCycle'
-export type { OffCycleFlowContextInterface, OffCycleFlowProps } from './OffCycle'
+export type { OffCycleFlowProps } from './OffCycle'
 export { DismissalFlow } from './Dismissal'
 export type { DismissalFlowProps } from './Dismissal'
 export { DismissalPayPeriodSelection } from './Dismissal'
 export type { DismissalPayPeriodSelectionProps } from './Dismissal'
 export { TransitionFlow } from './Transition'
-export type { TransitionFlowContextInterface, TransitionFlowProps } from './Transition'
+export type { TransitionFlowProps } from './Transition'
 export { TransitionCreation } from './TransitionCreation'
 export type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreation'

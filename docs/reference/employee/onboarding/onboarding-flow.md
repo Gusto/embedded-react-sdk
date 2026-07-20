@@ -12,23 +12,7 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
-
-## Example
-
-```tsx
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
-
-function MyApp() {
-  return (
-    <EmployeeOnboarding.OnboardingFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      withEmployeeI9
-      onEvent={() => {}}
-    />
-  )
-}
-```
+Guided flow to onboard multiple employees, one at a time.
 
 ## Remarks
 
@@ -39,16 +23,35 @@ row's "Edit"/"Review" action is invoked; returning from the execution flow
 surfaces the list again. The flow is driven by an internal state machine
 and wraps each step in error and suspense boundaries.
 
-Each step of the flow is also exported as a standalone block — see
-[EmployeeList](blocks.md#employeelist), [Profile](blocks.md#profile), [Compensation](blocks.md#compensation),
-[FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod),
-[Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and
-[OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this
-orchestration is the wrong fit.
+The per-employee steps live in [OnboardingExecutionFlow](onboarding-execution-flow.md), which is also
+exported as a standalone block — along with each individual step — for
+composing a custom workflow when this orchestration is the wrong fit. See the
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
+for how to recompose these blocks into your own flow.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
+
+## Example
+
+```tsx title="App.tsx"
+import { EmployeeOnboarding, type EventType } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      withEmployeeI9
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'employee/onboarding/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
+    />
+  )
+}
+```
 
 ## OnboardingFlowProps
 
@@ -59,10 +62,40 @@ Props for OnboardingFlow.
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `companyId` | `string` | | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues)\> | | Default values for individual flow step components. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<[`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues)\> | | Default values for individual flow step components. |
 | `isSelfOnboardingEnabled?` | `boolean` | | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. Defaults to `true`. |
 | `showContinueButton?` | `boolean` | `false` | Controls visibility of the Continue button in the employee list. When `true`, shows a Continue button allowing navigation to the next step. Use this when the employee onboarding flow is embedded as a step within a larger flow (e.g., company onboarding). When `false` (default), hides the Continue button. Use this for standalone employee onboarding where the list is the terminal screen. |
 | `withEmployeeI9?` | `boolean` | | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
 
-_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [EmployeeList](blocks.md#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
+| [OnboardingExecutionFlow](onboarding-execution-flow.md) | Guided flow to onboard an employee. |
+
+<!-- guide-source: src/components/Employee/OnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+`OnboardingFlow` pairs the employee list with `OnboardingExecutionFlow`. Adding or editing a list row runs the per-employee onboarding steps; finishing an employee returns to the list, and completing onboarding exits the flow. The step sequence — which varies with self-onboarding and `withEmployeeI9` — is covered on `OnboardingExecutionFlow`.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> EmployeeList
+  EmployeeList -->|"employee/create<br/>employee/update"| OnboardingExecutionFlow
+  OnboardingExecutionFlow -->|"company/employees"| EmployeeList
+  EmployeeList -->|"employee/onboarding/done"| done@{ shape: fr-circ, label: " " }
+  class OnboardingExecutionFlow flow
+```
+<!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| DELETE | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |

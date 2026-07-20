@@ -180,7 +180,6 @@ docs-site/.docusaurus/
 # --- React SDK
 #   Generated artifacts
 src/types/schema.*
-src/types/i18next.*
 dist
 
 .secrets
@@ -196,6 +195,7 @@ test-results/
 
 # E2E local testing
 e2e/.e2e-state.json
+e2e/.e2e-scenarios.json
 e2e/local.config.env
 e2e/recordings/
 e2e-recordings/

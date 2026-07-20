@@ -1,4 +1,4 @@
-import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/taxRequirementsGetAll'
+import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api/react-query/taxRequirementsGetAll'
 import { Head } from './Head'
 import { StateTaxesListProvider } from './context'
 import { Actions } from './Actions'
@@ -10,9 +10,23 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
+/**
+ * Props for the {@link StateTaxesList} component.
+ *
+ * @public
+ */
+export interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
   /** The associated company identifier. */
   companyId: string
+  /**
+   * Controls visibility of the Continue button below the state tax list.
+   *
+   * When `false`, hides the Continue button. Use this when the list is embedded
+   * as one step inside a larger flow that provides its own navigation.
+   *
+   * @defaultValue `true`
+   */
+  showContinueButton?: boolean
 }
 
 /**
@@ -21,6 +35,7 @@ interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes
  * @remarks
  * Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
@@ -38,7 +53,7 @@ export function StateTaxesList(props: StateTaxesListProps) {
   )
 }
 
-function Root({ className, children, companyId }: StateTaxesListProps) {
+function Root({ className, children, companyId, showContinueButton = true }: StateTaxesListProps) {
   useI18n('Company.StateTaxes')
   const { onEvent } = useBase()
   const { data } = useTaxRequirementsGetAllSuspense({ companyUuid: companyId })
@@ -69,7 +84,7 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
             <>
               <Head />
               <List />
-              <Actions />
+              {showContinueButton && <Actions />}
             </>
           )}
         </Flex>

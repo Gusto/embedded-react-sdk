@@ -16,6 +16,8 @@ custom_edit_url: null
 
 Employee selection screen for assigning employees to a company's holiday pay policy.
 
+<br />
+
 ### AddEmployeesHolidayProps
 
 <a id="addemployeesholidayprops"></a>
@@ -25,37 +27,36 @@ Props for [AddEmployeesHoliday](#addemployeesholiday).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/holidayAddEmployees/done` | Employee selection is saved | The updated `HolidayPayPolicy` response, or `undefined` when no changes were submitted |
 | `CANCEL` | The user cancels | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/add`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-add) |
+
+***
+
 <a id="addemployeestopolicy"></a>
 
 ## AddEmployeesToPolicy
 
 Employee selection screen for assigning employees to a sick or vacation time off policy.
-
-### AddEmployeesToPolicyProps
-
-<a id="addemployeestopolicyprops"></a>
-
-Props for [AddEmployeesToPolicy](#addemployeestopolicy).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `policyId` | `string` | The time off policy identifier. |
-| `policyType` | [`CreatableTimeOffPolicyType`](#creatabletimeoffpolicytype) | The type of policy being edited — `'sick'` or `'vacation'`. |
-
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
 ### Remarks
 
@@ -66,10 +67,7 @@ set or overridden per employee. When employees are being moved from another poli
 reassignment warning is shown, and removing a previously enrolled employee requires
 confirmation.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |
-| `timeOff/addEmployees/back` | Fired when the user navigates back without saving | — |
+<br />
 
 ### Example
 
@@ -88,6 +86,45 @@ function MyComponent() {
 }
 ```
 
+<br />
+
+### AddEmployeesToPolicyProps
+
+<a id="addemployeestopolicyprops"></a>
+
+Props for [AddEmployeesToPolicy](#addemployeestopolicy).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `policyId` | `string` | The time off policy identifier. |
+| `policyType` | [`CreatableTimeOffPolicyType`](#creatabletimeoffpolicytype) | The type of policy being edited — `'sick'` or `'vacation'`. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |
+| `timeOff/addEmployees/back` | Fired when the user navigates back without saving | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/add_employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-add_employees) |
+
+***
+
 <a id="holidayselectionform"></a>
 
 ## HolidaySelectionForm
@@ -99,6 +136,8 @@ is pre-populated with the existing policy's selections and submitting updates it
 federal holidays are shown with their observed and next-observation dates; in create mode they
 are all selected by default.
 
+<br />
+
 ### HolidaySelectionFormProps
 
 <a id="holidayselectionformprops"></a>
@@ -108,13 +147,15 @@ Props for [HolidaySelectionForm](#holidayselectionform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffHolidayPolicy`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `mode?` | `"edit"` \| `"create"` | Whether to create a new holiday policy or edit the existing one. Defaults to `'create'`. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -122,28 +163,23 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/holidaySelection/editDone` | Holidays were saved in edit mode | — |
 | `CANCEL` | The user backed out of the form | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| POST | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy) |
+
+***
+
 <a id="policyconfigurationform"></a>
 
 ## PolicyConfigurationForm
 
 Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration.
-
-### PolicyConfigurationFormProps
-
-<a id="policyconfigurationformprops"></a>
-
-Props for [PolicyConfigurationForm](#policyconfigurationform).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | Company that owns the policy being created or edited. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `policyType` | `"vacation"` \| `"sick"` | Type of policy being configured. |
-| `defaultValues?` | `Partial`\<[`PolicyConfigurationFormData`](#policyconfigurationformdata)\> | Pre-populated values to merge into the form's defaults. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffCreateTimeOffPolicy`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `policyId?` | `string` | When set, the form loads the existing policy and submits an update. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
 ### Remarks
 
@@ -154,10 +190,45 @@ When editing a policy whose configuration is already complete, the accrual
 method selector is restricted to the matching category (unlimited vs.
 accrual-based).
 
+<br />
+
+### PolicyConfigurationFormProps
+
+<a id="policyconfigurationformprops"></a>
+
+Props for [PolicyConfigurationForm](#policyconfigurationform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Company that owns the policy being created or edited. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `policyType` | `"vacation"` \| `"sick"` | Type of policy being configured. |
+| `defaultValues?` | `Partial`\<[`PolicyConfigurationFormData`](#policyconfigurationformdata)\> | Pre-populated values to merge into the form's defaults. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffCreateTimeOffPolicy`](../Translations/index.md#companytimeoffcreatetimeoffpolicy)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `policyId?` | `string` | When set, the form loads the existing policy and submits an update. |
+
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
 | `CANCEL` | Fired when the user clicks the cancel button | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-time_off_policies) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+
+***
 
 <a id="policylist"></a>
 
@@ -170,6 +241,8 @@ finish-setup action. Sick and vacation policies are deactivated via the time-off
 the holiday pay policy (if one exists) is merged into the same list and is deleted via the
 holiday pay policy API. Both flows go through a confirmation dialog and show a success alert.
 
+<br />
+
 ### PolicyListProps
 
 <a id="policylistprops"></a>
@@ -179,12 +252,14 @@ Props for the [PolicyList](#policylist) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffTimeOffPolicies`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicies`](../Translations/index.md#companytimeofftimeoffpolicies)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -192,11 +267,31 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/viewPolicy` | The user opened an existing policy or clicked finish-setup on an incomplete one. | `{ policyId: string, policyType: string }` |
 | `timeOff/deletePolicy/done` | A policy was successfully deleted. | `{ policyId: string }` |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| DELETE | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-companies-company_uuid-holiday_pay_policy) |
+| GET | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-time_off_policies) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/deactivate`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-deactivate) |
+
+***
+
 <a id="policysettings"></a>
 
 ## PolicySettings
 
 Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual.
+
+### Remarks
+
+Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
+
+<br />
 
 ### PolicySettingsProps
 
@@ -206,27 +301,48 @@ Props for [PolicySettings](#policysettings).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `policyId` | `string` | UUID of the time off policy being configured. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffCreateTimeOffPolicy`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffCreateTimeOffPolicy`](../Translations/index.md#companytimeoffcreatetimeoffpolicy)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/policySettings/done` | Fired when policy settings are saved | The updated `TimeOffPolicy` |
 | `timeOff/policySettings/back` | Fired when the user navigates back | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+
+***
+
 <a id="policysettingspresentation"></a>
 
 ## PolicySettingsPresentation
 
 Presentation-only form for configuring time off policy limits and rules.
+
+### Remarks
+
+Use this component when you need to render the policy settings form without the data-fetching container — provide the `accrualMethod` and handle submission yourself. For the data-connected version, use [PolicySettings](#policysettings).
+
+The fields shown depend on `accrualMethod`:
+- Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
+- Balance maximum, carry-over limit, and paid-out-on-termination are always shown
+
+<br />
 
 ### PolicySettingsPresentationProps
 
@@ -238,25 +354,35 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | ------ | ------ | ------ |
 | `accrualMethod` | [`PolicySettingsAccrualMethod`](#policysettingsaccrualmethod) | Accrual method category of the policy. Controls which fields are shown. |
 | `onBack` | () => `void` | Called when the user navigates back. |
-| `onContinue` | (`data`) => `void` | Called with the form values when the user submits. |
+| `onContinue` | (`data`: [`PolicySettingsFormData`](#policysettingsformdata)) => `void` | Called with the form values when the user submits. |
 | `defaultValues?` | `Partial`\<[`PolicySettingsFormData`](#policysettingsformdata)\> | Optional default values to prefill the form. |
 | `editingPolicyName?` | `string` | Name of the policy being edited. Shown in the heading when `mode` is `'edit'`. |
 | `isPending?` | `boolean` | Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
 
-### Remarks
+<br />
 
-Use this component when you need to render the policy settings form without the data-fetching container — provide the `accrualMethod` and handle submission yourself. For the data-connected version, use [PolicySettings](#policysettings).
+### Endpoints
 
-The fields shown depend on `accrualMethod`:
-- Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
-- Balance maximum, carry-over limit, and paid-out-on-termination are always shown
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+
+***
 
 <a id="policytypeselector"></a>
 
 ## PolicyTypeSelector
 
 Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday.
+
+### Remarks
+
+The holiday option is omitted when the company already has a holiday pay policy, since a company
+can only have one.
+
+<br />
 
 ### PolicyTypeSelectorProps
 
@@ -267,27 +393,44 @@ Props for [PolicyTypeSelector](#policytypeselector).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultPolicyType?` | [`PolicyType`](#policytype) | Pre-selected policy type rendered when the form mounts. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffSelectPolicyType`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffSelectPolicyType`](../Translations/index.md#companytimeoffselectpolicytype)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-The holiday option is omitted when the company already has a holiday pay policy, since a company
-can only have one.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |
 | `CANCEL` | The user cancels | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+
+***
+
 <a id="timeoffpolicydetail"></a>
 
 ## TimeOffPolicyDetail
 
 Detail view for a sick or vacation time-off policy.
+
+### Remarks
+
+Loads the policy and its enrolled employees, then renders the tabbed detail view with
+actions for editing the policy, adding or removing employees, and adjusting individual
+balances. Editable actions are only shown for sick and vacation policies.
+
+<br />
 
 ### TimeOffPolicyDetailProps
 
@@ -297,17 +440,15 @@ Props for [TimeOffPolicyDetail](#timeoffpolicydetail).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `policyId` | `string` | UUID of the time-off policy to display. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffTimeOffPolicyDetails`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicyDetails`](../Translations/index.md#companytimeofftimeoffpolicydetails)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Loads the policy and its enrolled employees, then renders the tabbed detail view with
-actions for editing the policy, adding or removing employees, and adjusting individual
-balances. Editable actions are only shown for sick and vacation policies.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -316,17 +457,24 @@ balances. Editable actions are only shown for sick and vacation policies.
 | `timeOff/changeSettings` | The change-settings action was clicked. | `{ policyId: string }` |
 | `timeOff/editPolicy` | The edit-policy action was clicked. | `{ policyId: string }` |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |
+
+***
+
 <a id="timeoffpolicydetailpresentation"></a>
 
 ## TimeOffPolicyDetailPresentation
 
 Presentational detail view for sick and vacation time-off policies.
-
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`TimeOffPolicyDetailPresentationProps`](#timeoffpolicydetailpresentationprops) | See [TimeOffPolicyDetailPresentationProps](#timeoffpolicydetailpresentationprops). |
 
 ### Remarks
 
@@ -336,11 +484,39 @@ adding employees, removing employees, and editing individual employee balances. 
 component is fully controlled — pass in the data, selected tab, and dialog state and wire
 up the callbacks. The corresponding container component is [TimeOffPolicyDetail](#timeoffpolicydetail).
 
+<br />
+
+### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`TimeOffPolicyDetailPresentationProps`](#timeoffpolicydetailpresentationprops) | See [TimeOffPolicyDetailPresentationProps](#timeoffpolicydetailpresentationprops). |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |
+
+***
+
 <a id="viewholidayemployees"></a>
 
 ## ViewHolidayEmployees
 
 Displays the holiday policy detail view with the employees tab selected.
+
+### Remarks
+
+Shows enrolled employees with search filtering, and provides actions to add employees,
+edit the holiday selection, or remove employees.
+
+<br />
 
 ### ViewHolidayEmployeesProps
 
@@ -351,15 +527,14 @@ Props for [ViewHolidayEmployees](#viewholidayemployees).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company whose holiday policy enrollment is displayed. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffPolicyDetail`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
 
-Shows enrolled employees with search filtering, and provides actions to add employees,
-edit the holiday selection, or remove employees.
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -367,12 +542,26 @@ edit the holiday selection, or remove employees.
 | `timeOff/editHolidayPolicy` | User clicks to edit holidays | — |
 | `timeOff/backToList` | User navigates back to the policy list | — |
 
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+
+***
+
 <a id="viewholidaypolicydetails"></a>
 
 ## ViewHolidayPolicyDetails
 
 Displays the holiday pay policy for a company with tabbed views of the included holidays and
 the enrolled employees.
+
+<br />
 
 ### ViewHolidayPolicyDetailsProps
 
@@ -383,19 +572,33 @@ Props for the [ViewHolidayPolicyDetails](#viewholidaypolicydetails) component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultTab?` | `"holidays"` \| `"employees"` | Which tab to display initially. Defaults to `'holidays'`. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffPolicyDetail`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/backToList` | The user clicked the back navigation. | — |
 | `timeOff/holidayAddEmployees` | The user clicked the add-employees action. | — |
 | `timeOff/editHolidayPolicy` | The user clicked the edit-policy action. | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+
+***
 
 <a id="viewholidayschedule"></a>
 
@@ -404,6 +607,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Displays the holiday policy detail view with the holidays tab selected.
 
 Shows the list of selected holidays with their next observation dates.
+
+<br />
 
 ### ViewHolidayScheduleProps
 
@@ -414,18 +619,32 @@ Props for [ViewHolidaySchedule](#viewholidayschedule).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`CompanyTimeOffPolicyDetail`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
-### Remarks
+<br />
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/holidayAddEmployees` | Fired when user clicks to add employees | — |
 | `timeOff/editHolidayPolicy` | Fired when user clicks to edit holidays | — |
 | `timeOff/backToList` | Fired when user navigates back to policy list | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+
+***
 
 ## Utility types
 
@@ -443,6 +662,8 @@ Top-level accrual method selected on the policy configuration form.
 `includeOvertime` toggles on [PolicyConfigurationFormData](#policyconfigurationformdata) narrow it to
 a specific API accrual method on submit.
 
+***
+
 <a id="accrualmethodfixed"></a>
 
 ### AccrualMethodFixed
@@ -452,17 +673,21 @@ a specific API accrual method on submit.
 Sub-method for fixed (per-calendar-year) accrual — whether hours are granted
 at the start of the year or spread evenly across pay periods.
 
+***
+
 <a id="creatabletimeoffpolicytype"></a>
 
 ### CreatableTimeOffPolicyType
 
-> **CreatableTimeOffPolicyType** = `Extract`\<`PolicyType`, `"sick"` \| `"vacation"`\>
+> **CreatableTimeOffPolicyType** = `Extract`\<[`PolicyType`](../APIModels/index.md#policytype-1), `"sick"` \| `"vacation"`\>
 
 Time off policy types that can be created through the time off policy management workflow.
 
 #### Remarks
 
 Only `sick` and `vacation` are creatable through the time off policy endpoint. Holiday policies are a separate concept managed through the holiday pay policy endpoint family.
+
+***
 
 <a id="employeetableitem"></a>
 
@@ -486,6 +711,8 @@ Extend this interface to add fields specific to a given policy detail view.
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
 
+***
+
 <a id="holidayitem"></a>
 
 ### HolidayItem
@@ -500,6 +727,8 @@ A single federal holiday row shown in the holiday selection table.
 | `nextObservation` | `string` | Localized date string for the next time this holiday will be observed. |
 | `observedDate` | `string` | Localized text describing when the holiday is observed. |
 | `uuid` | `string` | Stable identifier for the holiday (the federal holiday key). |
+
+***
 
 <a id="holidaypolicydetailemployee"></a>
 
@@ -520,6 +749,8 @@ An employee row rendered in the holiday policy detail employees tab.
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
 
+***
+
 <a id="holidaypolicydetailpresentationprops"></a>
 
 ### HolidayPolicyDetailPresentationProps
@@ -536,7 +767,7 @@ and an optional success alert.
 | `employees` | [`PolicyDetailEmployeeTableData`](#policydetailemployeetabledata)\<[`HolidayPolicyDetailEmployee`](#holidaypolicydetailemployee)\> | Employee table data and handlers for the employees tab. |
 | `holidays` | [`HolidayItem`](#holidayitem)[] | Selected holidays shown in the holidays tab. |
 | `onBack` | () => `void` | Called when the user clicks the back navigation. |
-| `onTabChange` | (`id`) => `void` | Called with the tab id when the user switches tabs. |
+| `onTabChange` | (`id`: `string`) => `void` | Called with the tab id when the user switches tabs. |
 | `removeDialog` | [`RemoveDialogState`](#removedialogstate) | State for the employee removal confirmation dialog. |
 | `selectedTabId` | `string` | The currently active tab (`'holidays'` or `'employees'`). |
 | `title` | `string` | The policy name displayed as the page heading. |
@@ -545,6 +776,8 @@ and an optional success alert.
 | `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |
 | `subtitle?` | `string` | Secondary label shown beneath the title. |
 | `successAlert?` | `string` | Success message displayed as a dismissible alert above the content. |
+
+***
 
 <a id="policyconfigurationformdata"></a>
 
@@ -580,6 +813,8 @@ the selected `accrualMethod`:
 | `resetDay?` | `number` | Reset day of month when `resetDateType` is `per_calendar_year`. |
 | `resetMonth?` | `number` | Reset month (1–12) when `resetDateType` is `per_calendar_year`. |
 
+***
+
 <a id="policydetailemployeetabledata"></a>
 
 ### PolicyDetailEmployeeTableData
@@ -600,14 +835,16 @@ or `HolidayPolicyDetailPresentationProps`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `data` | `T`[] | Employee rows to render. |
-| `onSearchChange` | (`value`) => `void` | Called when the search input value changes. |
+| `onSearchChange` | (`value`: `string`) => `void` | Called when the search input value changes. |
 | `onSearchClear` | () => `void` | Called when the search input is cleared. |
 | `searchValue` | `string` | Current value of the search input. |
 | `emptyState?` | () => `ReactNode` | Renders a custom empty state when `data` is empty and there is no active search. |
 | `isFetching?` | `boolean` | When true, renders the loading state instead of the rows. |
-| `itemMenu?` | (`item`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
+| `itemMenu?` | (`item`: `T`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
 | `pagination?` | [`PaginationControlProps`](../component-inventory.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
 | `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
+
+***
 
 <a id="policydetails"></a>
 
@@ -623,6 +860,8 @@ A discriminated union on `accrualMethod`. When `accrualMethod` is `'unlimited'`,
 no rate or reset date is present. For rate-based methods, `accrualRate` is set
 and `resetDate` / `accrualRateUnit` may also be provided.
 
+***
+
 <a id="policysettingsaccrualmethod"></a>
 
 ### PolicySettingsAccrualMethod
@@ -630,6 +869,8 @@ and `resetDate` / `accrualRateUnit` may also be provided.
 > **PolicySettingsAccrualMethod** = `"hours_worked"` \| `"fixed_per_pay_period"` \| `"fixed_all_at_once"`
 
 Accrual method category for a time off policy. Determines which settings fields are shown.
+
+***
 
 <a id="policysettingsdisplay"></a>
 
@@ -646,6 +887,8 @@ Accrual caps, carryover, and termination settings displayed alongside a rate-bas
 | `maxAccrualHoursPerYear` | `number` \| `null` | Maximum hours that can accrue per year, or `null` for no limit. |
 | `maxHours` | `number` \| `null` | Maximum balance an employee can hold, or `null` for no limit. |
 | `paidOutOnTermination` | `boolean` | Whether the remaining balance is paid out when an employee is terminated. |
+
+***
 
 <a id="policysettingsformdata"></a>
 
@@ -667,6 +910,8 @@ Form values captured by the policy settings form.
 | `carryOverLimit?` | `number` | Maximum hours that carry over when the policy resets when [PolicySettingsFormData.carryOverLimitEnabled](#policysettingsformdata) is true. |
 | `waitingPeriod?` | `number` | Number of days a new employee must wait before accrual begins when [PolicySettingsFormData.waitingPeriodEnabled](#policysettingsformdata) is true. |
 
+***
+
 <a id="policytype"></a>
 
 ### PolicyType
@@ -675,17 +920,23 @@ Form values captured by the policy settings form.
 
 Identifier for the kind of time-off policy a company can configure.
 
+***
+
 <a id="policytypekey"></a>
 
 ### PolicyTypeKey
 
 > **PolicyTypeKey** = `"vacation"` \| `"sick"`
 
+***
+
 <a id="ratebasedaccrualmethod"></a>
 
 ### RateBasedAccrualMethod
 
 > **RateBasedAccrualMethod** = `"perPayPeriod"` \| `"perCalendarYear"` \| `"perAnniversaryYear"` \| `"perHourWorked"` \| `"perHourWorkedNoOvertime"` \| `"perHourPaid"` \| `"perHourPaidNoOvertime"`
+
+***
 
 <a id="ratebasedpolicydetails"></a>
 
@@ -702,6 +953,8 @@ Policy details for a rate-based accruing time-off policy.
 | `policyType` | [`PolicyTypeKey`](#policytypekey) | Whether the policy covers vacation or sick time. |
 | `accrualRateUnit?` | `number` | Divisor used to compute the per-unit accrual rate, if applicable. |
 | `resetDate?` | `string` | ISO date string for the annual balance reset, if applicable. |
+
+***
 
 <a id="removedialogstate"></a>
 
@@ -720,6 +973,8 @@ off or holiday policy.
 | `onClose` | () => `void` | Called when the user cancels or dismisses the dialog without confirming. |
 | `onConfirm` | () => `void` | Called when the user confirms the removal. |
 
+***
+
 <a id="resetdatetype"></a>
 
 ### ResetDateType
@@ -728,6 +983,8 @@ off or holiday policy.
 
 When a policy's balance resets — on each employee's hire anniversary or on
 a fixed calendar month/day shared across all employees.
+
+***
 
 <a id="timeoffpolicydetailemployee"></a>
 
@@ -749,6 +1006,8 @@ Row shape for an employee enrolled in a time-off policy.
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
 
+***
+
 <a id="timeoffpolicydetailpresentationbaseprops"></a>
 
 ### TimeOffPolicyDetailPresentationBaseProps
@@ -762,7 +1021,7 @@ Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpres
 | `backLabel` | `string` | Label for the back navigation link. |
 | `employees` | [`PolicyDetailEmployeeTableData`](#policydetailemployeetabledata)\<[`TimeOffPolicyDetailEmployee`](#timeoffpolicydetailemployee)\> | Employee table data and callbacks. |
 | `onBack` | () => `void` | Called when the back navigation is clicked. |
-| `onTabChange` | (`id`) => `void` | Called with the new tab id when the user switches tabs. |
+| `onTabChange` | (`id`: `string`) => `void` | Called with the new tab id when the user switches tabs. |
 | `removeDialog` | [`RemoveDialogState`](#removedialogstate) | State for the employee removal confirmation dialog. |
 | `selectedTabId` | `string` | The currently active tab id. |
 | `title` | `string` | Policy name displayed as the page heading. |
@@ -771,6 +1030,8 @@ Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpres
 | `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |
 | `subtitle?` | `string` | Secondary label, typically the policy type. |
 | `successAlert?` | `string` | Optional success message rendered as a dismissible alert. |
+
+***
 
 <a id="timeoffpolicydetailpresentationprops"></a>
 
@@ -803,6 +1064,8 @@ and may provide `onChangeSettings` to enable the change-settings action.
 | `removeDialog` | State for the employee removal confirmation dialog. |
 | `successAlert` | Optional success message rendered as a dismissible alert. |
 | `onDismissAlert` | Called when the success alert is dismissed. |
+
+***
 
 <a id="unlimitedpolicydetails"></a>
 

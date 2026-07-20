@@ -1,9 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
-import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesList'
-import { useSignatoriesInviteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesInvite'
-import { useSignatoriesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesDelete'
+import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
+import { useSignatoriesInviteMutation } from '@gusto/embedded-api/react-query/signatoriesInvite'
+import { useSignatoriesDeleteMutation } from '@gusto/embedded-api/react-query/signatoriesDelete'
 import { type InviteSignatoryInputs, InviteSignatorySchema } from './InviteSignatoryForm'
 import { InviteSignatoryForm } from './InviteSignatoryForm'
 import { Actions } from './Actions'
@@ -35,6 +35,7 @@ export interface InviteSignatoryProps extends BaseComponentInterface<'Company.As
  * The invited person receives an email to complete their signatory information. Use this when
  * you want to provide only the invite flow without the create option.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |

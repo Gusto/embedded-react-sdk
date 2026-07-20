@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
-import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesRemoveEmployees'
-import { useTimeOffPoliciesUpdateBalanceMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdateBalance'
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
-import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
+import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
+import { useTimeOffPoliciesUpdateBalanceMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdateBalance'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
 import { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetailPresentation'
 import { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
@@ -16,6 +16,7 @@ import type {
   PolicySettingsDisplay,
   PolicyTypeKey,
 } from './TimeOffPolicyDetailTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -47,6 +48,7 @@ export interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Compan
  * actions for editing the policy, adding or removing employees, and adjusting individual
  * balances. Editable actions are only shown for sick and vacation policies.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/addEmployeesToPolicy` | The add-employees action was clicked. | `{ policyId: string }` |
@@ -211,7 +213,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
 
   const invalidatePolicy = useCallback(() => {
     void queryClient.invalidateQueries({
-      queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
+      queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
     })
   }, [queryClient])
 

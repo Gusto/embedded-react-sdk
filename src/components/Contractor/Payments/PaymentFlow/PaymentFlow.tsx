@@ -10,13 +10,14 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Guided workflow for creating, managing, and viewing contractor payment groups for a company.
+ * Hub for creating and managing contractor payments for a company.
  *
  * @remarks
- * Composes the contractor payment subcomponents into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
+ * Composes the contractor payment blocks into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
  *
- * Events emitted by the subcomponents bubble up through the single `onEvent` handler.
+ * Events emitted by the blocks bubble up through the single `onEvent` handler.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/create` | Fired when the user chooses to create a new payment | — |
@@ -31,12 +32,20 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `informationRequest/form/cancel` | Fired when the information-requests flow is cancelled | — |
  * | `breadcrumb/navigate` | Fired when the user clicks a breadcrumb to navigate back | `{ key: string, onNavigate: (ctx) => ctx }` |
  *
+ * @components
+ * - {@link PaymentsList}
+ * - {@link CreatePayment}
+ * - {@link PaymentSummary}
+ * - {@link PaymentHistory}
+ * - {@link PaymentStatement}
+ * - {@link InformationRequests.InformationRequestsFlow | InformationRequestsFlow}
+ *
  * @param props - See {@link PaymentFlowProps}.
  * @returns The multi-step contractor payments workflow.
  * @public
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { ContractorManagement } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

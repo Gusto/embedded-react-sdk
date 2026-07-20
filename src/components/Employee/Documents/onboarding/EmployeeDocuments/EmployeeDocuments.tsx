@@ -1,9 +1,9 @@
 import { useIsMutating } from '@tanstack/react-query'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import {
   useEmployeesUpdateOnboardingDocumentsConfigMutation,
   mutationKeyEmployeesUpdateOnboardingDocumentsConfig,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdateOnboardingDocumentsConfig'
+} from '@gusto/embedded-api/react-query/employeesUpdateOnboardingDocumentsConfig'
 import {
   EmployeeDocumentsPresentation,
   type EmployeeDocumentsFormValues,
@@ -38,6 +38,7 @@ export interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee
  * summary otherwise. Persists the selection to the employee's onboarding
  * documents configuration and advances the parent flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/onboardingDocumentsConfig/updated` | Fired after the employee's documents configuration is saved | The updated documents configuration response |
@@ -64,8 +65,7 @@ const Root = ({ employeeId, dictionary }: EmployeeDocumentsProps) => {
   const currentI9Status = employee?.onboardingDocumentsConfig?.i9Document ?? false
 
   const isEmployeeSelfOnboarding = employee?.onboardingStatus
-    ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-      EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus) ||
+    ? EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus) ||
       employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
     : false
 
