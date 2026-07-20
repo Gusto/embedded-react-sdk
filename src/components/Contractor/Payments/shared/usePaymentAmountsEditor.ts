@@ -1,25 +1,19 @@
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslation } from 'react-i18next'
-import DOMPurify from 'dompurify'
 import type { PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import {
   createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
 } from '../CreatePayment/EditContractorPaymentFormSchema'
-import type { InternalAlert } from '../types'
-import { componentEvents } from '@/shared/constants'
-import { firstLastName } from '@/helpers/formattedStrings'
-import type { OnEventType } from '@/components/Base'
-import type { EventType } from '@/shared/constants'
 
 /** @internal */
 export interface UsePaymentAmountsEditorParams {
   contractors: Contractor[]
-  onEvent: OnEventType<EventType, unknown>
-  allowedPaymentMethods: Array<'Check' | 'Direct Deposit'>
+  allowedPaymentMethods: Array<'Check' | 'Direct Deposit' | 'Historical Payment'>
+  onEditOpen?: () => void
+  onEditSave?: (data: EditContractorPaymentFormValues) => void
 }
 
 /** @internal */
@@ -31,20 +25,16 @@ export interface UsePaymentAmountsEditorReturn {
   onCloseModal: () => void
   onEditContractor: (contractorUuid: string) => void
   onEditContractorSubmit: (data: EditContractorPaymentFormValues) => void
-  alerts: Record<string, InternalAlert>
-  setAlert: (key: string, alert: InternalAlert) => void
-  clearAlerts: () => void
 }
 
 /** @internal */
 export function usePaymentAmountsEditor({
   contractors,
-  onEvent,
   allowedPaymentMethods,
+  onEditOpen,
+  onEditSave,
 }: UsePaymentAmountsEditorParams): UsePaymentAmountsEditorReturn {
-  const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [alerts, setAlertsState] = useState<Record<string, InternalAlert>>({})
 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
@@ -103,14 +93,6 @@ export function usePaymentAmountsEditor({
     },
   })
 
-  const setAlert = (key: string, alert: InternalAlert) => {
-    setAlertsState(prev => ({ ...prev, [key]: alert }))
-  }
-
-  const clearAlerts = () => {
-    setAlertsState({})
-  }
-
   const onCloseModal = () => {
     setIsModalOpen(false)
   }
@@ -123,9 +105,9 @@ export function usePaymentAmountsEditor({
 
     const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
     const sanitizedPaymentMethod = allowedPaymentMethods.includes(
-      rawPaymentMethod as 'Check' | 'Direct Deposit',
+      rawPaymentMethod as 'Check' | 'Direct Deposit' | 'Historical Payment',
     )
-      ? (rawPaymentMethod as 'Check' | 'Direct Deposit')
+      ? (rawPaymentMethod as 'Check' | 'Direct Deposit' | 'Historical Payment')
       : (allowedPaymentMethods[0] ?? 'Check')
 
     formMethods.reset(
@@ -142,31 +124,11 @@ export function usePaymentAmountsEditor({
       },
       { keepDirty: false, keepValues: false },
     )
-    clearAlerts()
     setIsModalOpen(true)
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_EDIT)
+    onEditOpen?.()
   }
 
   const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
-    const currentContractor = contractors.find(c => c.uuid === data.contractorUuid)
-    const currentContractorPaymentMethod = currentContractor?.paymentMethod
-
-    if (!allowedPaymentMethods.includes(data.paymentMethod)) {
-      formMethods.setError('paymentMethod', {
-        type: 'manual',
-        message: t('editContractorPayment.errors.unsupportedPaymentMethod'),
-      })
-      return
-    }
-
-    if (currentContractorPaymentMethod === 'Check' && data.paymentMethod === 'Direct Deposit') {
-      formMethods.setError('paymentMethod', {
-        type: 'manual',
-        message: t('editContractorPayment.errors.directDepositNotAvailable'),
-      })
-      return
-    }
-
     const hasAnyPayment =
       (data.wage ?? 0) > 0 ||
       (data.hours ?? 0) > 0 ||
@@ -189,32 +151,8 @@ export function usePaymentAmountsEditor({
       ),
     )
 
-    const displayContractor = contractors.find(c => c.uuid === data.contractorUuid)
-    const displayName = DOMPurify.sanitize(
-      displayContractor?.type === 'Individual'
-        ? firstLastName({
-            first_name: displayContractor.firstName,
-            last_name: displayContractor.lastName,
-          })
-        : (displayContractor?.businessName ?? ''),
-    )
-
-    setAlert(data.contractorUuid, {
-      type: 'success',
-      title: t('alerts.contractorPaymentUpdated', {
-        contractorName: displayName,
-        interpolation: { escapeValue: false },
-      }),
-      onDismiss: () => {
-        setAlertsState(prev => {
-          const { [data.contractorUuid]: _, ...rest } = prev
-          return rest
-        })
-      },
-    })
-
     setIsModalOpen(false)
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE, data)
+    onEditSave?.(data)
   }
 
   return {
@@ -225,8 +163,5 @@ export function usePaymentAmountsEditor({
     onCloseModal,
     onEditContractor,
     onEditContractorSubmit,
-    alerts,
-    setAlert,
-    clearAlerts,
   }
 }

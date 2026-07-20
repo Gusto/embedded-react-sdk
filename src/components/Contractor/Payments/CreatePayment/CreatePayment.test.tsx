@@ -334,6 +334,31 @@ describe('CreatePayment', () => {
     })
   })
 
+  describe('modal round-trip', () => {
+    it('pre-populates saved amounts when the same contractor is re-opened', async () => {
+      const user = userEvent.setup()
+      renderCreatePayment([hourlyContractor])
+
+      // First open: enter 8 hours and a $25 bonus, save
+      await openEditModal(user)
+      await user.type(screen.getByLabelText('Hours'), '8')
+      await user.type(getMoneyInput('Bonus'), '25')
+      await saveEditModal(user)
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', { name: 'Edit contractor pay' }),
+        ).not.toBeInTheDocument()
+      })
+
+      // Re-open the same contractor
+      await openEditModal(user)
+
+      expect(screen.getByLabelText('Hours')).toHaveValue('8')
+      expect(getMoneyInput('Bonus')).toHaveValue('25.00')
+    })
+  })
+
   describe('continue to preview', () => {
     it('shows an error alert when no contractors are touched', async () => {
       const user = userEvent.setup()

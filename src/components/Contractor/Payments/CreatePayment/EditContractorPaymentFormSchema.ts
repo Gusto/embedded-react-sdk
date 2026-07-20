@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const SUPPORTED_PAYMENT_METHODS = ['Check', 'Direct Deposit'] as const
+const SUPPORTED_PAYMENT_METHODS = ['Check', 'Direct Deposit', 'Historical Payment'] as const
 
 const EditContractorPaymentFormSchema = z.object({
   wageType: z.enum(['Hourly', 'Fixed']),
@@ -24,7 +24,7 @@ export const createEditContractorPaymentFormSchema = () => {
       return true
     },
     {
-      message: 'VALIDATION_ERROR',
+      message: 'directDepositNotAvailable',
       path: ['paymentMethod'],
     },
   )

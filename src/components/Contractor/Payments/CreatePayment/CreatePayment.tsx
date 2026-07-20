@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { usePaymentAmountsEditor } from '../shared/usePaymentAmountsEditor'
+import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
 import { PreviewPresentation } from './PreviewPresentation'
@@ -23,6 +24,7 @@ import {
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { firstLastName } from '@/helpers/formattedStrings'
 
 function formatLocalDate(date: Date): string {
   return [
@@ -134,6 +136,14 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
     }
   }, [paymentSpeed, paymentSpeedDays])
 
+  const [alerts, setAlertsState] = useState<Record<string, InternalAlert>>({})
+  const setAlert = (key: string, alert: InternalAlert) => {
+    setAlertsState(prev => ({ ...prev, [key]: alert }))
+  }
+  const clearAlerts = () => {
+    setAlertsState({})
+  }
+
   const {
     virtualContractorPayments,
     totals,
@@ -142,13 +152,35 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
     onCloseModal,
     onEditContractor,
     onEditContractorSubmit,
-    alerts,
-    setAlert,
-    clearAlerts,
   } = usePaymentAmountsEditor({
     contractors,
-    onEvent,
     allowedPaymentMethods: ['Check', 'Direct Deposit'],
+    onEditOpen: () => {
+      clearAlerts()
+      onEvent(componentEvents.CONTRACTOR_PAYMENT_EDIT)
+    },
+    onEditSave: data => {
+      const displayContractor = contractors.find(c => c.uuid === data.contractorUuid)
+      const displayName =
+        displayContractor?.type === 'Individual'
+          ? firstLastName({
+              first_name: displayContractor.firstName,
+              last_name: displayContractor.lastName,
+            })
+          : (displayContractor?.businessName ?? '')
+
+      setAlert(data.contractorUuid, {
+        type: 'success',
+        title: t('alerts.contractorPaymentUpdated', { contractorName: displayName }),
+        onDismiss: () => {
+          setAlertsState(prev => {
+            const { [data.contractorUuid]: _, ...rest } = prev
+            return rest
+          })
+        },
+      })
+      onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE, data)
+    },
   })
 
   const onCreatePaymentGroup = async () => {
