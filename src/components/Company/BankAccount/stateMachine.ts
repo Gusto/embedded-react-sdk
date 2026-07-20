@@ -1,4 +1,4 @@
-import { state, transition, reduce, state as final } from 'robot3'
+import { state, transition, reduce } from 'robot3'
 import type { BankAccountContextInterface, EventPayloads } from './BankAccountComponents'
 import {
   BankAccountFormContextual,
@@ -29,7 +29,6 @@ export const bankAccountStateMachine = {
         showVerifiedMessage: false,
       })),
     ),
-    transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'done'),
   ),
   addBankAccount: state<MachineTransition>(
     transition(
@@ -80,5 +79,4 @@ export const bankAccountStateMachine = {
       })),
     ),
   ),
-  done: final(),
 }
