@@ -107,9 +107,13 @@ export function usePaymentAmountsEditor({
     setAlertsState(prev => ({ ...prev, [key]: alert }))
   }
 
-  const clearAlerts = () => { setAlertsState({}); }
+  const clearAlerts = () => {
+    setAlertsState({})
+  }
 
-  const onCloseModal = () => { setIsModalOpen(false); }
+  const onCloseModal = () => {
+    setIsModalOpen(false)
+  }
 
   const onEditContractor = (contractorUuid: string) => {
     const contractor = contractors.find(c => c.uuid === contractorUuid)
