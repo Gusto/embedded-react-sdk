@@ -19,9 +19,9 @@ name: Sync Docs Source
 #      Syncs the latest docs source down so /docs/ refreshes. Does not touch
 #      versioned snapshots.
 #   3. workflow_dispatch — manual run. Always allowed; useful for recovery,
-#      end-to-end testing, or bootstrapping the first snapshot on a clean
-#      downstream (it will create the snapshot if missing for the current
-#      package.json minor).
+#      end-to-end testing, or forcing a snapshot refresh (e.g. after a doc
+#      rename that changed the snapshot structure). Creates the snapshot if
+#      missing, refreshes it if it already exists.
 #
 # Snapshot mechanics:
 #   New minor / bootstrap: `npx docusaurus docs:version <X.Y>` runs inside the
@@ -207,7 +207,7 @@ jobs:
           if [ "$TRIGGER" = "workflow_run" ] || [ "$TRIGGER" = "workflow_dispatch" ]; then
             if [ "$MINOR_IN_VERSIONS" = "false" ]; then
               SNAPSHOT_ACTION=create
-            elif [ "$TRIGGER" = "workflow_run" ]; then
+            else
               SNAPSHOT_ACTION=refresh
             fi
           fi
