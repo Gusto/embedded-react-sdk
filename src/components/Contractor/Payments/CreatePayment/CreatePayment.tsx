@@ -1,26 +1,18 @@
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type {
-  PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments,
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
   SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import DOMPurify from 'dompurify'
+import { useEffect, useRef, useState } from 'react'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
-import type { InternalAlert } from '../types'
+import { usePaymentAmountsEditor } from '../shared/usePaymentAmountsEditor'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
-import {
-  createEditContractorPaymentFormSchema,
-  type EditContractorPaymentFormValues,
-} from './EditContractorPaymentFormSchema'
 import { PreviewPresentation } from './PreviewPresentation'
 import { addBusinessDays } from '@/helpers/dateFormatting'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
@@ -31,7 +23,6 @@ import {
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
-import { firstLastName } from '@/helpers/formattedStrings'
 
 function formatLocalDate(date: Date): string {
   return [
@@ -111,9 +102,7 @@ export function CreatePayment(props: CreatePaymentProps) {
 const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const { baseSubmitHandler } = useBase()
-  const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
@@ -145,63 +134,21 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
     }
   }, [paymentSpeed, paymentSpeedDays])
 
-  const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
-    () =>
-      contractors.map(contractor => {
-        const paymentMethod = contractor.paymentMethod ? contractor.paymentMethod : 'Direct Deposit'
-
-        return {
-          contractorUuid: contractor.uuid,
-          paymentMethod,
-          wage: '0',
-          hours: '0',
-          bonus: '0',
-          reimbursement: '0',
-          isTouched: false,
-        }
-      }),
-    [contractors],
-  )
-  const [virtualContractorPayments, setVirtualContractorPayments] =
-    useState(initialContractorPayments)
-  const totals = useMemo(
-    () =>
-      virtualContractorPayments.reduce(
-        (acc, payment) => {
-          const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
-          const isHourly = contractor?.wageType === 'Hourly'
-          const hours = Number(payment.hours || '0')
-          const wage = Number(payment.wage || '0')
-          const bonus = Number(payment.bonus || '0')
-          const reimbursement = Number(payment.reimbursement || '0')
-          const hourlyAmount = isHourly ? hours * Number(contractor.hourlyRate || '0') : 0
-          const fixedWage = isHourly ? 0 : wage
-
-          return {
-            wage: acc.wage + fixedWage,
-            bonus: acc.bonus + bonus,
-            reimbursement: acc.reimbursement + reimbursement,
-            total: acc.total + hourlyAmount + fixedWage + bonus + reimbursement,
-          }
-        },
-        { wage: 0, bonus: 0, reimbursement: 0, total: 0 },
-      ),
-    [virtualContractorPayments, contractors],
-  )
-
-  const formMethods = useForm<EditContractorPaymentFormValues>({
-    resolver: zodResolver(createEditContractorPaymentFormSchema()),
-    defaultValues: {
-      wageType: 'Hourly',
-      hours: 0,
-      wage: 0,
-      bonus: 0,
-      reimbursement: 0,
-      paymentMethod: 'Direct Deposit',
-      hourlyRate: 0,
-      contractorUuid: '',
-      contractorPaymentMethod: undefined,
-    },
+  const {
+    virtualContractorPayments,
+    totals,
+    formMethods,
+    isModalOpen,
+    onCloseModal,
+    onEditContractor,
+    onEditContractorSubmit,
+    alerts,
+    setAlert,
+    clearAlerts,
+  } = usePaymentAmountsEditor({
+    contractors,
+    onEvent,
+    allowedPaymentMethods: ['Check', 'Direct Deposit'],
   })
 
   const onCreatePaymentGroup = async () => {
@@ -243,122 +190,18 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
       [blockerType]: value,
     }))
   }
-  const onEditContractor = (contractorUuid: string) => {
-    const contractor = contractors.find(contractor => contractor.uuid === contractorUuid)
-    const contractorPayment = virtualContractorPayments.find(
-      payment => payment.contractorUuid === contractorUuid,
-    )
-
-    const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
-    const sanitizedPaymentMethod = ['Check', 'Direct Deposit'].includes(rawPaymentMethod)
-      ? (rawPaymentMethod as 'Check' | 'Direct Deposit')
-      : 'Check'
-
-    formMethods.reset(
-      {
-        wageType: contractor?.wageType || 'Hourly',
-        hours: Number(contractorPayment?.hours || '0'),
-        wage: Number(contractorPayment?.wage || '0'),
-        bonus: Number(contractorPayment?.bonus || '0'),
-        reimbursement: Number(contractorPayment?.reimbursement || '0'),
-        paymentMethod: sanitizedPaymentMethod,
-        hourlyRate: Number(contractor?.hourlyRate || '0'),
-        contractorUuid: contractorUuid,
-        contractorPaymentMethod: contractor?.paymentMethod || undefined,
-      },
-      { keepDirty: false, keepValues: false },
-    )
-    setAlerts({})
-    setIsModalOpen(true)
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_EDIT)
-  }
-
-  const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
-    const currentContractor = contractors.find(c => c.uuid === data.contractorUuid)
-    const currentContractorPaymentMethod = currentContractor?.paymentMethod
-
-    if (!['Check', 'Direct Deposit'].includes(data.paymentMethod)) {
-      formMethods.setError('paymentMethod', {
-        type: 'manual',
-        message: t('editContractorPayment.errors.unsupportedPaymentMethod'),
-      })
-      return
-    }
-
-    if (currentContractorPaymentMethod === 'Check' && data.paymentMethod === 'Direct Deposit') {
-      formMethods.setError('paymentMethod', {
-        type: 'manual',
-        message: t('editContractorPayment.errors.directDepositNotAvailable'),
-      })
-      return
-    }
-
-    const hasAnyPayment =
-      (data.wage ?? 0) > 0 ||
-      (data.hours ?? 0) > 0 ||
-      (data.bonus ?? 0) > 0 ||
-      (data.reimbursement ?? 0) > 0
-
-    setVirtualContractorPayments(prevPayments =>
-      prevPayments.map(payment =>
-        payment.contractorUuid === data.contractorUuid
-          ? {
-              contractorUuid: payment.contractorUuid,
-              wage: String(data.wage ?? 0),
-              hours: String(data.hours ?? 0),
-              bonus: String(data.bonus ?? 0),
-              reimbursement: String(data.reimbursement ?? 0),
-              paymentMethod: data.paymentMethod,
-              isTouched: hasAnyPayment,
-            }
-          : payment,
-      ),
-    )
-    const displayContractor = contractors.find(
-      contractor => contractor.uuid === data.contractorUuid,
-    )
-    const displayName = DOMPurify.sanitize(
-      displayContractor?.type === 'Individual'
-        ? firstLastName({
-            first_name: displayContractor.firstName,
-            last_name: displayContractor.lastName,
-          })
-        : displayContractor?.businessName || '',
-    )
-    setAlerts(prevAlerts => ({
-      ...prevAlerts,
-      [data.contractorUuid]: {
-        type: 'success',
-        title: t('alerts.contractorPaymentUpdated', {
-          contractorName: displayName,
-          interpolation: { escapeValue: false },
-        }),
-        onDismiss: () => {
-          setAlerts(prevAlerts => {
-            const { [data.contractorUuid]: _, ...rest } = prevAlerts
-            return rest
-          })
-        },
-      },
-    }))
-    setIsModalOpen(false)
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE, data)
-  }
 
   const onContinueToPreview = async () => {
     await baseSubmitHandler(null, async () => {
       const contractorPayments = virtualContractorPayments.filter(payment => payment.isTouched)
       if (contractorPayments.length === 0) {
-        setAlerts({
-          ...alerts,
-          error: {
-            type: 'error',
-            title: t('alerts.noContractorPayments'),
-          },
+        setAlert('error', {
+          type: 'error',
+          title: t('alerts.noContractorPayments'),
         })
         return
       }
-      setAlerts({})
+      clearAlerts()
       setPayrollBlockers([])
 
       const result = await payrollSubmitHandler(async () => {
@@ -423,9 +266,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
       )}
       <EditContractorPaymentPresentation
         isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false)
-        }}
+        onClose={onCloseModal}
         formMethods={formMethods}
         onSubmit={onEditContractorSubmit}
         contractorPaymentMethod={
