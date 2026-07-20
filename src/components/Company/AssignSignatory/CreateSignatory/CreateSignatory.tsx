@@ -18,7 +18,7 @@ import { useI18n } from '@/i18n'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
 /**
@@ -81,7 +81,7 @@ function Root({
   const updateSignatoryMutation = useSignatoriesUpdateMutation()
   const deleteSignatoryMutation = useSignatoriesDeleteMutation()
 
-  const defaultBirthday = currentSignatory?.birthday ?? defaultValues?.birthday
+  const defaultBirthday = normalizeToDate(currentSignatory?.birthday ?? defaultValues?.birthday)
 
   const createSignatoryDefaultValues = {
     firstName: currentSignatory?.firstName ?? defaultValues?.firstName ?? '',
@@ -95,7 +95,7 @@ function Root({
     city: currentSignatory?.homeAddress?.city ?? defaultValues?.city,
     state: currentSignatory?.homeAddress?.state ?? defaultValues?.state,
     zip: currentSignatory?.homeAddress?.zip ?? defaultValues?.zip,
-    ...(defaultBirthday ? { birthday: new Date(defaultBirthday) } : {}),
+    ...(defaultBirthday ? { birthday: defaultBirthday } : {}),
   }
 
   const formMethods = useForm<CreateSignatoryInputs>({

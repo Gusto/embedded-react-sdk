@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { TerminateEmployee } from './TerminateEmployee'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -291,6 +291,27 @@ describe('TerminateEmployee', () => {
       })
     })
 
+    it('sends the exact date selected by the user without a timezone shift', async () => {
+      const createTerminationResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const body = (await request.json()) as { effective_date: string }
+        expect(body.effective_date).toBe('2026-06-15')
+        return HttpResponse.json(mockTerminationCancelable, { status: 201 })
+      })
+      server.use(
+        http.post(
+          `${API_BASE_URL}/v1/employees/:employee_id/terminations`,
+          createTerminationResolver,
+        ),
+      )
+
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+      await fillDateAndSubmit()
+
+      await waitFor(() => {
+        expect(createTerminationResolver).toHaveBeenCalledTimes(1)
+      })
+    })
+
     it('emits EMPLOYEE_TERMINATION_DONE without payrollUuid when regular payroll is selected', async () => {
       renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
@@ -317,6 +338,25 @@ describe('TerminateEmployee', () => {
           }),
         )
       })
+    })
+  })
+
+  describe('editing an existing termination', () => {
+    it('pre-populates the last day of work without an off-by-one shift', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([{ ...mockTerminationCancelable, effective_date: '2026-01-01' }])
+        }),
+      )
+
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      const dateGroup = await screen.findByRole('group', { name: /last day of work/i })
+      expect(within(dateGroup).getByRole('spinbutton', { name: /^month/i })).toHaveTextContent('1')
+      expect(within(dateGroup).getByRole('spinbutton', { name: /^day/i })).toHaveTextContent('1')
+      expect(within(dateGroup).getByRole('spinbutton', { name: /^year/i })).toHaveTextContent(
+        '2026',
+      )
     })
   })
 

@@ -3,6 +3,7 @@ import {
   AuthorizationStatus,
   DocumentType as I9AuthorizationDocumentType,
 } from '@gusto/embedded-api/models/components/i9authorization'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 const isValidUscisNumber = (value: string) => /^[Aa]?\d{7,9}$/.test(value)
 const isValidI94Number = (value: string) => /^\d{9} ?[A-Za-z\d]\d$/.test(value)
@@ -16,7 +17,7 @@ export const generateEmploymentEligibilitySchema = (hasDocumentNumber?: boolean 
       documentNumber: z.string().optional(),
       expirationDate: z
         .date()
-        .transform(date => date.toISOString().split('T')[0])
+        .transform(date => formatDateToStringDate(date) ?? undefined)
         .optional(),
       country: z.string().optional(),
     })

@@ -804,6 +804,33 @@ describe('PaySchedule', () => {
       expect(screen.getByRole('grid')).toBeInTheDocument()
     })
 
+    it('shows the pay period start date without an off-by-one shift', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('application')).toBeInTheDocument()
+      })
+
+      // Fixture's first pay period starts 2024-01-01. Parsing that as UTC and
+      // formatting in a timezone behind UTC would render "December 2023" instead.
+      expect(screen.getAllByText('January 2024').length).toBeGreaterThan(0)
+      expect(screen.queryByText('December 2023')).not.toBeInTheDocument()
+    })
+
     it('shows highlighted dates for payday and payroll deadline', async () => {
       const user = userEvent.setup()
 
