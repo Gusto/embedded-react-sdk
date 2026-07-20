@@ -815,7 +815,7 @@ export interface BoxHeaderProps {
 
 // @public
 export interface BoxProps {
-    children: ReactNode;
+    children?: ReactNode;
     className?: string;
     footer?: ReactNode;
     header?: ReactNode;

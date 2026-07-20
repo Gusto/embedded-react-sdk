@@ -13,7 +13,9 @@ export function Box({ children, header, footer, withPadding = true, className }:
   return (
     <div className={cn(styles.root, className)} data-testid="data-box">
       {header && <div className={styles.header}>{header}</div>}
-      <div className={withPadding ? styles.content : styles.contentFlush}>{children}</div>
+      {children && (
+        <div className={withPadding ? styles.content : styles.contentFlush}>{children}</div>
+      )}
       {footer && <div className={styles.footer}>{footer}</div>}
     </div>
   )

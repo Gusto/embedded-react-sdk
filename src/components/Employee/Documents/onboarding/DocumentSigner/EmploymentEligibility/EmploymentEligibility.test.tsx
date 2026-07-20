@@ -1,12 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
 import { EmploymentEligibility } from './EmploymentEligibility'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { getI9Authorization } from '@/test/mocks/apis/i9_authorization'
 import { componentEvents } from '@/shared/constants'
+import { API_BASE_URL } from '@/test/constants'
 
 describe('EmploymentEligibility', () => {
   beforeEach(() => {
@@ -280,6 +282,29 @@ describe('EmploymentEligibility', () => {
 
       const alert = await screen.findByRole('alert')
       expect(alert).toHaveTextContent(/citizen is someone who was born or naturalized/i)
+    })
+
+    it('pre-populates the expiration date without an off-by-one shift', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/i9_authorization`, () => {
+          return HttpResponse.json({
+            uuid: 'i9-auth-uuid-123',
+            version: 'abc123version',
+            authorization_status: 'alien',
+            expiration_date: '2026-01-01',
+            employer_signed: false,
+            employee_signed: false,
+          })
+        }),
+      )
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      const dateGroup = await screen.findByRole('group', { name: /authorized to work until/i })
+      expect(within(dateGroup).getByRole('spinbutton', { name: /^month/i })).toHaveTextContent('1')
+      expect(within(dateGroup).getByRole('spinbutton', { name: /^day/i })).toHaveTextContent('1')
+      expect(within(dateGroup).getByRole('spinbutton', { name: /^year/i })).toHaveTextContent(
+        '2026',
+      )
     })
   })
 

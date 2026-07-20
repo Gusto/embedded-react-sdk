@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
@@ -55,6 +55,32 @@ describe('StateTaxesForm', () => {
       await user.click(cancelButton)
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+    })
+  })
+
+  // Regression: effectiveFrom ("2022-01-01") must render as "January 1, 2022",
+  // not "December 31, 2021". Forcing a US timezone reproduces the bug
+  // regardless of the timezone the test happens to run in.
+  describe('Effective date display in a timezone behind UTC', () => {
+    const originalTz = process.env.TZ
+
+    beforeEach(() => {
+      process.env.TZ = 'America/Los_Angeles'
+      setupApiTestMocks()
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="GA" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+    })
+
+    afterEach(() => {
+      process.env.TZ = originalTz
+    })
+
+    it('renders the effectiveFrom date without an off-by-one shift', async () => {
+      const matches = await screen.findAllByText('Effective: January 1, 2022')
+      expect(matches.length).toBeGreaterThan(0)
     })
   })
 

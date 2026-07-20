@@ -22,6 +22,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { firstLastName } from '@/helpers/formattedStrings'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 /**
  * Props for {@link TerminateEmployee}.
@@ -142,7 +143,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
 
   const handleSubmit = async (formData: TerminateEmployeeFormData) => {
     const { lastDayOfWork, payrollOption } = formData
-    const effectiveDate = lastDayOfWork.toISOString().split('T')[0]!
+    const effectiveDate = formatDateToStringDate(lastDayOfWork)!
 
     await baseSubmitHandler({ effectiveDate, payrollOption }, async () => {
       const runTerminationPayroll = payrollOption === 'dismissalPayroll'

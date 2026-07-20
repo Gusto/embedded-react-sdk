@@ -18,6 +18,7 @@ import type { StateTaxFields } from './fields'
 import { createStateFields } from './fields'
 import { getQuestionVariant } from './fieldMapping'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
+import { normalizeToDate, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -309,8 +310,7 @@ function resolveDefaultForQuestion(
       if (typeof wireValue === 'string') {
         const trimmed = wireValue.trim()
         if (trimmed === '') return undefined
-        const parsed = new Date(trimmed)
-        return Number.isNaN(parsed.getTime()) ? undefined : parsed
+        return normalizeToDate(trimmed) ?? undefined
       }
       return wireValue
     }
@@ -364,11 +364,7 @@ function serializeStatesPayload(
       } else if (typeof formValue === 'number' && Number.isNaN(formValue)) {
         serializedValue = ''
       } else if (formValue instanceof Date) {
-        if (Number.isNaN(formValue.getTime())) {
-          serializedValue = ''
-        } else {
-          serializedValue = formValue.toISOString().split('T')[0] ?? ''
-        }
+        serializedValue = formatDateToStringDate(formValue) ?? ''
       } else {
         serializedValue = formValue as string | number | boolean
       }

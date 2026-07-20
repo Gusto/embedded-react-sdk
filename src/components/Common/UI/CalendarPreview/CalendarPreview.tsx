@@ -13,7 +13,7 @@ import { useMemo } from 'react'
 import { CalendarLegend } from './CalendarLegend'
 import type { CalendarPreviewProps } from './CalendarPreviewTypes'
 import styles from './CalendarPreview.module.scss'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 import { Flex } from '@/components/Common/Flex'
 
 /**
@@ -36,7 +36,8 @@ export const CalendarPreview = ({ dateRange, highlightDates }: CalendarPreviewPr
   }, [highlightDates])
 
   const isInRange = (date: DateValue) => {
-    const comparisonDate = new Date(date.toString())
+    const comparisonDate = normalizeToDate(date.toString())
+    if (!comparisonDate) return false
     const { start, end } = dateRange
     return comparisonDate >= start && comparisonDate <= end
   }

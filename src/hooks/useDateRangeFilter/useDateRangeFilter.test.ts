@@ -85,7 +85,7 @@ describe('useDateRangeFilter', () => {
       const { result } = renderHook(() => useDateRangeFilter())
 
       act(() => {
-        result.current.handleStartDateChange(new Date('2025-03-15'))
+        result.current.handleStartDateChange(new Date(2025, 2, 15))
       })
 
       const params = result.current.getApiDateParams()
@@ -97,8 +97,8 @@ describe('useDateRangeFilter', () => {
       const { result } = renderHook(() => useDateRangeFilter())
 
       act(() => {
-        result.current.handleStartDateChange(new Date('2025-01-01'))
-        result.current.handleEndDateChange(new Date('2025-06-30'))
+        result.current.handleStartDateChange(new Date(2025, 0, 1))
+        result.current.handleEndDateChange(new Date(2025, 5, 30))
       })
 
       const params = result.current.getApiDateParams()
