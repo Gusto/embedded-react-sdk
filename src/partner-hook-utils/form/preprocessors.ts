@@ -1,3 +1,5 @@
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
+
 /**
  * Builds a `z.preprocess` transform that replaces `null`, `undefined`, and `NaN`
  * numeric input with the provided fallback before validation.
@@ -20,12 +22,12 @@ export function coerceNaN(fallback: number) {
  * (`YYYY-MM-DD`) or `null`.
  *
  * @param val - Raw value from a date picker — a `Date`, ISO string, or empty.
- * @returns The date portion of a `Date`'s ISO string, `null` for empty input,
- *   or the value cast to `string` otherwise.
+ * @returns The `YYYY-MM-DD` string for a `Date`'s local calendar day, `null`
+ *   for empty or unparseable input, or the value cast to `string` otherwise.
  * @internal
  */
 export function coerceToISODate(val: unknown): string | null {
-  if (val instanceof Date) return val.toISOString().split('T')[0]!
+  if (val instanceof Date) return formatDateToStringDate(val)
   if (val === null || val === '' || val === undefined) return null
   return val as string
 }

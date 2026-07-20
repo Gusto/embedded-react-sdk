@@ -21,6 +21,7 @@ import { DatePickerField, NumberInputField, TextInputField } from '@/components/
 import { TextAreaField } from '@/components/Common/Fields/TextAreaField'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 interface ConfirmWireDetailsFormProps extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
   wireInId: string
@@ -44,7 +45,7 @@ const transformFormDataToPayload = (
 ): PutWireInRequestsWireInRequestUuidRequest['wireInRequestUpdateRequestBody'] => {
   return {
     amountSent: String(data.amountSent),
-    dateSent: data.dateSent.toISOString().split('T')[0] || '',
+    dateSent: formatDateToStringDate(data.dateSent) ?? '',
     bankName: data.bankName,
     additionalNotes: data.additionalNotes || undefined,
   }

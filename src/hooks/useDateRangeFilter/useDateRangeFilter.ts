@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 const MAX_RANGE_MONTHS = 12
 
@@ -29,7 +30,7 @@ export interface UseDateRangeFilterResult {
   getMinStartDate: () => Date | undefined
 }
 
-const toISODateString = (date: Date): string => date.toISOString().split('T')[0]!
+const toISODateString = (date: Date): string => formatDateToStringDate(date) ?? ''
 
 const addMonths = (date: Date, months: number): Date => {
   const result = new Date(date)

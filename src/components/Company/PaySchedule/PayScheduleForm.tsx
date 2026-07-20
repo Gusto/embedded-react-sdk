@@ -11,10 +11,16 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 interface PayScheduleFormProps extends UsePayScheduleFormProps {
   onEvent: OnEventType<EventType, unknown>
 }
+
+// Pay period preview dates are RFCDate (`YYYY-MM-DD`) instances; normalizeToDate parses
+// them as local midnight instead of new Date's UTC midnight, which CalendarPreview would
+// otherwise roll back a day for timezones behind UTC. The format is always valid here.
+const toLocalDate = (rfcDate: { toString(): string }): Date => normalizeToDate(rfcDate.toString())!
 
 /** @internal */
 export function PayScheduleForm({ onEvent, ...hookProps }: PayScheduleFormProps) {
@@ -159,25 +165,19 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                       <Components.CalendarPreview
                         key={selectedPayPeriodIndex}
                         dateRange={{
-                          start: new Date(
-                            payPeriodPreview[selectedPayPeriodIndex].startDate.toString(),
-                          ),
-                          end: new Date(
-                            payPeriodPreview[selectedPayPeriodIndex].endDate.toString(),
-                          ),
+                          start: toLocalDate(payPeriodPreview[selectedPayPeriodIndex].startDate),
+                          end: toLocalDate(payPeriodPreview[selectedPayPeriodIndex].endDate),
                           label: t('payPreview.payPeriod') || 'Pay Period',
                         }}
                         highlightDates={[
                           {
-                            date: new Date(
-                              payPeriodPreview[selectedPayPeriodIndex].checkDate.toString(),
-                            ),
+                            date: toLocalDate(payPeriodPreview[selectedPayPeriodIndex].checkDate),
                             highlightColor: 'primary',
                             label: t('payPreview.payday') || 'Payday',
                           },
                           {
-                            date: new Date(
-                              payPeriodPreview[selectedPayPeriodIndex].runPayrollBy.toString(),
+                            date: toLocalDate(
+                              payPeriodPreview[selectedPayPeriodIndex].runPayrollBy,
                             ),
                             highlightColor: 'secondary',
                             label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
