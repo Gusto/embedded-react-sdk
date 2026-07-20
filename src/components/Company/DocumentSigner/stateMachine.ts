@@ -32,7 +32,6 @@ export const documentSignerMachine = {
         component: AssignSignatory,
       })),
     ),
-    transition(companyEvents.COMPANY_FORMS_DONE, 'final'),
   ),
   assignSignatory: assignSignatoryState,
   signatureForm: state<MachineTransition>(
@@ -53,5 +52,4 @@ export const documentSignerMachine = {
       })),
     ),
   ),
-  final: state<MachineTransition>(),
 }
