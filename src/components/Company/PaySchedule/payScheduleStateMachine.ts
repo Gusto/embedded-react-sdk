@@ -1,4 +1,4 @@
-import { reduce, state, state as final, transition } from 'robot3'
+import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { PayScheduleContextInterface } from './PayScheduleComponents'
 import { PayScheduleFormContextual, PayScheduleListContextual } from './PayScheduleComponents'
@@ -43,7 +43,6 @@ export const payScheduleStateMachine = {
         }),
       ),
     ),
-    transition(componentEvents.PAY_SCHEDULE_DONE, 'done'),
   ),
   addSchedule: state<MachineTransition>(
     transition(componentEvents.PAY_SCHEDULE_CREATED, 'listSchedules', toList),
@@ -53,5 +52,4 @@ export const payScheduleStateMachine = {
     transition(componentEvents.PAY_SCHEDULE_UPDATED, 'listSchedules', toList),
     transition(componentEvents.CANCEL, 'listSchedules', toList),
   ),
-  done: final(),
 }
