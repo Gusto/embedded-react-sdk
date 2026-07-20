@@ -5,13 +5,13 @@ import { useStateTaxesForm } from './context'
 import { toRhfKey } from './rhfKey'
 import { isRequirementApplicable, type StateTaxesFormValues } from './applicableIf'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
-import { useLocaleDateFormatter } from '@/contexts/LocaleProvider/useLocale'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 /** @internal */
 export function Form() {
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })
-  const dateFormatter = useLocaleDateFormatter()
+  const dateFormatter = useDateFormatter()
   const { stateTaxRequirements } = useStateTaxesForm()
   const Components = useComponentContext()
   const { control } = useFormContext()
@@ -24,7 +24,7 @@ export function Form() {
           <Components.Heading as="h3">{label}</Components.Heading>
           {effectiveFrom && (
             <Components.Text size="sm">
-              {t('effectiveFromLabel', { date: dateFormatter.format(new Date(effectiveFrom)) })}
+              {t('effectiveFromLabel', { date: dateFormatter.formatLongWithYear(effectiveFrom) })}
             </Components.Text>
           )}
         </div>
