@@ -23,7 +23,6 @@ interface DateRangeFilterProps {
   resetLabel: string
   selectDatesLabel: string
   triggerLabel: string
-  isFilterActive: boolean
   maxEndDate?: Date
   minStartDate?: Date
 }
@@ -42,7 +41,6 @@ export const DateRangeFilter = ({
   resetLabel,
   selectDatesLabel,
   triggerLabel,
-  isFilterActive,
   maxEndDate,
   minStartDate,
 }: DateRangeFilterProps) => {

@@ -75,8 +75,8 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
 
   const dateRangeFilter = useDateRangeFilter({
-    defaultStartDate: getDefaultStartDate(),
-    defaultEndDate: getDefaultEndDate(),
+    initialStartDate: getDefaultStartDate(),
+    initialEndDate: getDefaultEndDate(),
     onFilterChange: useCallback(() => {
       resetPage()
     }, [resetPage]),

@@ -125,8 +125,8 @@ export const PayrollHistoryPresentation = ({
       <Flex justifyContent="space-between" alignItems="center">
         <Heading as="h2">{t('title')}</Heading>
         <DateRangeFilter
-          startDate={dateRangeFilter.displayStartDate}
-          endDate={dateRangeFilter.displayEndDate}
+          startDate={dateRangeFilter.startDate}
+          endDate={dateRangeFilter.endDate}
           onStartDateChange={dateRangeFilter.handleStartDateChange}
           onEndDateChange={dateRangeFilter.handleEndDateChange}
           onClear={dateRangeFilter.handleClearFilter}
@@ -137,7 +137,6 @@ export const PayrollHistoryPresentation = ({
           resetLabel={t('dateFilter.reset')}
           selectDatesLabel={t('dateFilter.selectDates')}
           triggerLabel={t('dateFilter.trigger')}
-          isFilterActive={dateRangeFilter.isFilterActive}
           maxEndDate={dateRangeFilter.getMaxEndDate()}
           minStartDate={dateRangeFilter.getMinStartDate()}
         />
@@ -147,7 +146,7 @@ export const PayrollHistoryPresentation = ({
         label={t('dataView.label')}
         pagination={pagination}
         emptyState={() =>
-          dateRangeFilter.isFilterActive ? (
+          dateRangeFilter.isModified ? (
             <EmptyData
               title={t('emptyState.filtered.title')}
               description={t('emptyState.filtered.description')}

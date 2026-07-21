@@ -3,15 +3,28 @@ import { renderHook, act } from '@testing-library/react'
 import { useDateRangeFilter } from './useDateRangeFilter'
 
 describe('useDateRangeFilter', () => {
-  it('initializes with no active filter', () => {
+  it('initializes with null dates and is not modified', () => {
     const { result } = renderHook(() => useDateRangeFilter())
 
-    expect(result.current.filterStartDate).toBeNull()
-    expect(result.current.filterEndDate).toBeNull()
-    expect(result.current.isFilterActive).toBe(false)
+    expect(result.current.startDate).toBeNull()
+    expect(result.current.endDate).toBeNull()
+    expect(result.current.isModified).toBe(false)
   })
 
-  it('becomes active when start date is set', () => {
+  it('seeds start and end from initialStartDate and initialEndDate', () => {
+    const initialStart = new Date('2025-01-01')
+    const initialEnd = new Date('2025-06-30')
+
+    const { result } = renderHook(() =>
+      useDateRangeFilter({ initialStartDate: initialStart, initialEndDate: initialEnd }),
+    )
+
+    expect(result.current.startDate).toBe(initialStart)
+    expect(result.current.endDate).toBe(initialEnd)
+    expect(result.current.isModified).toBe(false)
+  })
+
+  it('becomes modified when start date is changed', () => {
     const { result } = renderHook(() => useDateRangeFilter())
     const date = new Date('2025-01-15')
 
@@ -19,11 +32,11 @@ describe('useDateRangeFilter', () => {
       result.current.handleStartDateChange(date)
     })
 
-    expect(result.current.filterStartDate).toEqual(date)
-    expect(result.current.isFilterActive).toBe(true)
+    expect(result.current.startDate).toEqual(date)
+    expect(result.current.isModified).toBe(true)
   })
 
-  it('becomes active when end date is set', () => {
+  it('becomes modified when end date is changed', () => {
     const { result } = renderHook(() => useDateRangeFilter())
     const date = new Date('2025-06-15')
 
@@ -31,11 +44,35 @@ describe('useDateRangeFilter', () => {
       result.current.handleEndDateChange(date)
     })
 
-    expect(result.current.filterEndDate).toEqual(date)
-    expect(result.current.isFilterActive).toBe(true)
+    expect(result.current.endDate).toEqual(date)
+    expect(result.current.isModified).toBe(true)
   })
 
-  it('clears both dates when handleClearFilter is called', () => {
+  it('restores initial dates when handleClearFilter is called', () => {
+    const initialStart = new Date('2025-01-01')
+    const initialEnd = new Date('2025-06-30')
+
+    const { result } = renderHook(() =>
+      useDateRangeFilter({ initialStartDate: initialStart, initialEndDate: initialEnd }),
+    )
+
+    act(() => {
+      result.current.handleStartDateChange(new Date('2025-02-01'))
+      result.current.handleEndDateChange(new Date('2025-07-01'))
+    })
+
+    expect(result.current.isModified).toBe(true)
+
+    act(() => {
+      result.current.handleClearFilter()
+    })
+
+    expect(result.current.startDate).toBe(initialStart)
+    expect(result.current.endDate).toBe(initialEnd)
+    expect(result.current.isModified).toBe(false)
+  })
+
+  it('clears to null when no initials are supplied', () => {
     const { result } = renderHook(() => useDateRangeFilter())
 
     act(() => {
@@ -43,15 +80,13 @@ describe('useDateRangeFilter', () => {
       result.current.handleEndDateChange(new Date('2025-06-01'))
     })
 
-    expect(result.current.isFilterActive).toBe(true)
-
     act(() => {
       result.current.handleClearFilter()
     })
 
-    expect(result.current.filterStartDate).toBeNull()
-    expect(result.current.filterEndDate).toBeNull()
-    expect(result.current.isFilterActive).toBe(false)
+    expect(result.current.startDate).toBeNull()
+    expect(result.current.endDate).toBeNull()
+    expect(result.current.isModified).toBe(false)
   })
 
   it('calls onFilterChange when dates change', () => {
@@ -79,6 +114,19 @@ describe('useDateRangeFilter', () => {
       const { result } = renderHook(() => useDateRangeFilter())
 
       expect(result.current.getApiDateParams()).toEqual({})
+    })
+
+    it('returns initial dates as ISO strings on first render', () => {
+      const { result } = renderHook(() =>
+        useDateRangeFilter({
+          initialStartDate: new Date(2025, 0, 1),
+          initialEndDate: new Date(2025, 5, 30),
+        }),
+      )
+
+      const params = result.current.getApiDateParams()
+      expect(params.startDate).toBe('2025-01-01')
+      expect(params.endDate).toBe('2025-06-30')
     })
 
     it('returns startDate as ISO string when set', () => {

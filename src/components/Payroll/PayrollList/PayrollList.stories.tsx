@@ -15,11 +15,9 @@ const runOffCyclePayrollAction = fn().mockName('run_off_cycle_payroll')
 const dismissAlertAction = fn().mockName('dismiss_alert')
 
 const mockDateRangeFilter: UseDateRangeFilterResult = {
-  filterStartDate: null,
-  filterEndDate: null,
-  displayStartDate: null,
-  displayEndDate: null,
-  isFilterActive: false,
+  startDate: null,
+  endDate: null,
+  isModified: false,
   handleStartDateChange: fn().mockName('handleStartDateChange'),
   handleEndDateChange: fn().mockName('handleEndDateChange'),
   handleClearFilter: fn().mockName('handleClearFilter'),
@@ -375,11 +373,9 @@ export const WithDateFilter = () => {
   }, [])
 
   const activeDateRangeFilter: UseDateRangeFilterResult = {
-    filterStartDate: startDate,
-    filterEndDate: endDate,
-    displayStartDate: startDate,
-    displayEndDate: endDate,
-    isFilterActive: startDate !== null || endDate !== null,
+    startDate,
+    endDate,
+    isModified: startDate !== null || endDate !== null,
     handleStartDateChange: setStartDate,
     handleEndDateChange: setEndDate,
     handleClearFilter: handleClear,

@@ -93,8 +93,8 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const [deletingPayrollId, setDeletingPayrollId] = useState<string | null>(null)
 
   const dateRangeFilter = useDateRangeFilter({
-    defaultStartDate: getDefaultStartDate(),
-    defaultEndDate: getDefaultEndDate(),
+    initialStartDate: getDefaultStartDate(),
+    initialEndDate: getDefaultEndDate(),
     onFilterChange: useCallback(() => {
       resetPage()
     }, [resetPage]),
