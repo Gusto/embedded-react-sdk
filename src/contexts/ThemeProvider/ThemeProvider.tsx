@@ -2,6 +2,7 @@ import type React from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { ThemeContext } from './useTheme'
 import { mergePartnerTheme, type GustoSDKTheme } from './theme'
+import { useNonce } from '@/contexts/NonceProvider'
 import '@/styles/sdk.scss'
 
 /** @internal */
@@ -26,6 +27,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   portalContainer,
   children,
 }) => {
+  const nonce = useNonce()
   const GThemeVariables = useRef<HTMLStyleElement | null>(null)
   const portalContainerRef = useRef<HTMLElement | null>(null)
 
@@ -50,11 +52,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     if (!GThemeVariables.current) {
       GThemeVariables.current = document.createElement('style')
       GThemeVariables.current.setAttribute('data-testid', 'GSDK')
+      if (nonce) GThemeVariables.current.nonce = nonce
       document.head.appendChild(GThemeVariables.current)
     }
 
     GThemeVariables.current.textContent = cssContent
-  }, [cssContent])
+  }, [cssContent, nonce])
 
   return (
     <ThemeContext.Provider value={{ container: portalContainerRef }}>

@@ -13,6 +13,7 @@ import { sanitizeError } from '../ObservabilityProvider/sanitization'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
+import { NonceContext } from '@/contexts/NonceProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
 import type { GlobalResourceDictionary, SupportedLanguages } from '@/types/Helpers'
@@ -54,6 +55,12 @@ export interface GustoBaseProviderProps {
   currency?: string
   /** Theme overrides applied to SDK components. See {@link GustoSDKTheme}. */
   theme?: Partial<GustoSDKTheme>
+  /**
+   * CSP nonce to apply to runtime-injected `<style>` elements (theming, PDF download window).
+   * Pass the same per-request nonce your app uses in its `style-src 'nonce-…'` directive.
+   * Also exposed to custom UI components via `useNonce`.
+   */
+  nonce?: string
   /** Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. */
   portalContainer?: HTMLElement
   /** Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. */
@@ -97,6 +104,7 @@ export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapter
     locale = 'en-US',
     currency = 'USD',
     theme,
+    nonce,
     portalContainer,
     components,
     LoaderComponent,
@@ -144,27 +152,29 @@ export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapter
     }
   }, [config.observability])
   return (
-    <ComponentsProvider value={components}>
-      <LoadingIndicatorProvider value={LoaderComponent}>
-        <ObservabilityProvider observability={config.observability}>
-          <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
-            <ThemeProvider theme={theme} portalContainer={portalContainer}>
-              <LocaleProvider locale={locale} currency={currency}>
-                <I18nextProvider i18n={SDKI18next} key={lng}>
-                  <ApiProvider
-                    url={config.baseUrl}
-                    headers={config.headers}
-                    hooks={config.hooks}
-                    queryClient={queryClient}
-                  >
-                    {children}
-                  </ApiProvider>
-                </I18nextProvider>
-              </LocaleProvider>
-            </ThemeProvider>
-          </ErrorBoundary>
-        </ObservabilityProvider>
-      </LoadingIndicatorProvider>
-    </ComponentsProvider>
+    <NonceContext.Provider value={nonce}>
+      <ComponentsProvider value={components}>
+        <LoadingIndicatorProvider value={LoaderComponent}>
+          <ObservabilityProvider observability={config.observability}>
+            <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
+              <ThemeProvider theme={theme} portalContainer={portalContainer}>
+                <LocaleProvider locale={locale} currency={currency}>
+                  <I18nextProvider i18n={SDKI18next} key={lng}>
+                    <ApiProvider
+                      url={config.baseUrl}
+                      headers={config.headers}
+                      hooks={config.hooks}
+                      queryClient={queryClient}
+                    >
+                      {children}
+                    </ApiProvider>
+                  </I18nextProvider>
+                </LocaleProvider>
+              </ThemeProvider>
+            </ErrorBoundary>
+          </ObservabilityProvider>
+        </LoadingIndicatorProvider>
+      </ComponentsProvider>
+    </NonceContext.Provider>
   )
 }

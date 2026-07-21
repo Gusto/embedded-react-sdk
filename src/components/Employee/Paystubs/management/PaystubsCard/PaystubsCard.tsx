@@ -9,6 +9,7 @@ import {
 import { DataView, EmptyData, useDataView, Loading } from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useNonce } from '@/contexts/NonceProvider'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import {
   usePaymentMethodList,
@@ -99,6 +100,7 @@ function PaystubsCardReady({
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
   const { showBoundary } = useErrorBoundary()
+  const nonce = useNonce()
 
   const [downloadingPayrollUuids, setDownloadingPayrollUuids] = useState<ReadonlySet<string>>(
     () => new Set(),
@@ -127,6 +129,7 @@ function PaystubsCardReady({
         const doc = newWindow.document
         doc.title = loadingMessage
         const style = doc.createElement('style')
+        if (nonce) style.nonce = nonce
         style.textContent =
           'body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;' +
           'justify-content:center;height:100vh;margin:0;color:#444;gap:12px}' +
@@ -179,7 +182,7 @@ function PaystubsCardReady({
         })
       }
     },
-    [paystubsList.actions, onEvent, employeeId, t, showBoundary],
+    [paystubsList.actions, onEvent, employeeId, t, showBoundary, nonce],
   )
 
   const payStubsColumns = [

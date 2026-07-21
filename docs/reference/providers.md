@@ -47,7 +47,7 @@ you do not supply fall back to the SDK's built-in React Aria implementations.
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 | `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
 
-_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `portalContainer`, `theme` from Omit._
+_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `theme` from Omit._
 
 ***
 
@@ -77,7 +77,7 @@ Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
 | `children?` | `ReactNode` | The application tree that should have access to the SDK. |
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 
-_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
+_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
 
 ## Utility types
 
@@ -119,6 +119,52 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
+| `nonce?` | `string` | CSP nonce to apply to runtime-injected `<style>` elements (theming, PDF download window). Pass the same per-request nonce your app uses in its `style-src 'nonce-…'` directive. Also exposed to custom UI components via `useNonce`. |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
 | `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
+
+***
+
+<a id="usenonce"></a>
+
+### useNonce()
+
+> **useNonce**(): `string` \| `undefined`
+
+Returns the CSP nonce supplied to [GustoProvider](#gustoprovider), or `undefined` when none was provided.
+
+#### Remarks
+
+Use this when a custom UI component or partner-provided code injects a runtime `<style>` or
+`<script>` element and the integrating app serves a nonce-based Content Security Policy.
+Apply the returned value as the `nonce` property on the created element (e.g.
+`el.nonce = useNonce()`) before appending it to the document.
+
+#### Example
+
+```tsx
+import { useNonce } from '@gusto/embedded-react-sdk'
+
+function InjectThemeStyles({ css }: { css: string }) {
+  const nonce = useNonce()
+  useEffect(() => {
+    const el = document.createElement('style')
+    if (nonce) el.nonce = nonce
+    el.textContent = css
+    document.head.appendChild(el)
+    return () => el.remove()
+  }, [css, nonce])
+  return null
+}
+```
+
+#### Returns
+
+`string` \| `undefined`
+
+The active nonce, or `undefined` when [GustoProvider](#gustoprovider) was not given a `nonce`.
+
+#### Page
+
+providers

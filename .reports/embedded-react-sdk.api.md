@@ -2900,6 +2900,7 @@ export interface GustoBaseProviderProps {
         children?: ReactNode;
     }) => JSX.Element;
     locale?: string;
+    nonce?: string;
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
@@ -5968,6 +5969,9 @@ export interface UseJobFormReady extends BaseFormHookReady<JobFieldsMetadata, Jo
 
 // @public
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
+
+// @public
+export const useNonce: () => string | undefined;
 
 // @public
 export function usePaymentMethodForm(input: UsePaymentMethodFormProps): HookLoadingResult | UsePaymentMethodFormReady;
