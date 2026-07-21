@@ -90,6 +90,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_CREATE` | `"contractor/create"` |
 | `CONTRACTOR_CREATED` | `"contractor/created"` |
 | `CONTRACTOR_DELETED` | `"contractor/deleted"` |
+| `CONTRACTOR_DISMISS` | `"contractor/dismiss"` |
+| `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
 | `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` |
 | `CONTRACTOR_INVITE_CONTRACTOR` | `"contractor/invite/selfOnboarding"` |
 | `CONTRACTOR_NEW_HIRE_REPORT_DONE` | `"contractor/newHireReport/done"` |
@@ -111,6 +113,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_PAYMENT_VIEW` | `"contractor/payments/view"` |
 | `CONTRACTOR_PAYMENT_VIEW_DETAILS` | `"contractor/payments/view/details"` |
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` |
+| `CONTRACTOR_REHIRE` | `"contractor/rehire"` |
+| `CONTRACTOR_REHIRE_CANCELLED` | `"contractor/rehire/cancelled"` |
 | `CONTRACTOR_SELF_ONBOARDING_CANCELLED` | `"contractor/selfOnboarding/cancelled"` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` |
@@ -118,6 +122,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_SUBMIT_DONE` | `"contractor/submit/done"` |
 | `CONTRACTOR_UPDATE` | `"contractor/update"` |
 | `CONTRACTOR_UPDATED` | `"contractor/updated"` |
+| `CONTRACTOR_VIEW` | `"contractor/view"` |
 | `CONTRACTOR_VIEW_DOCUMENT_TO_SIGN` | `"contractor/documents/view"` |
 | `DISMISSAL_PAY_PERIOD_SELECTED` | `"dismissal/payPeriod/selected"` |
 | `EMPLOYEE_BANK_ACCOUNT_CREATE` | `"employee/bankAccount/create"` |

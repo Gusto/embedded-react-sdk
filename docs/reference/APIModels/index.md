@@ -642,6 +642,84 @@ The contractor’s wage type.
 
 ***
 
+<a id="contractoronboardingstatus"></a>
+
+## ContractorOnboardingStatus
+
+> **ContractorOnboardingStatus** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/contractoronboardingstatus.ts:57](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/contractoronboardingstatus.ts#L57)
+
+The representation of an contractor's onboarding status.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractoronboardingstatusuuid"></a> `uuid` | `string` | Unique identifier for this contractor. |
+| <a id="property-contractoronboardingstatusonboardingstatus"></a> `onboardingStatus?` | [`ContractorOnboardingStatusOnboardingStatus`](#contractoronboardingstatusonboardingstatus-1) | One of the "onboarding_status" enum values. |
+| <a id="property-contractoronboardingstatusonboardingsteps"></a> `onboardingSteps?` | [`ContractorOnboardingStatusOnboardingStep`](#contractoronboardingstatusonboardingstep)[] | List of steps required to onboard a contractor. |
+
+***
+
+<a id="contractoronboardingstatusonboardingstatus"></a>
+
+## ContractorOnboardingStatusOnboardingStatus
+
+> `const` **ContractorOnboardingStatusOnboardingStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/contractoronboardingstatus.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/contractoronboardingstatus.ts#L15)
+
+One of the "onboarding_status" enum values.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractoronboardingstatusonboardingstatusadminonboardingincomplete"></a> `AdminOnboardingIncomplete` | `"admin_onboarding_incomplete"` |
+| <a id="property-contractoronboardingstatusonboardingstatusadminonboardingreview"></a> `AdminOnboardingReview` | `"admin_onboarding_review"` |
+| <a id="property-contractoronboardingstatusonboardingstatusonboardingcompleted"></a> `OnboardingCompleted` | `"onboarding_completed"` |
+| <a id="property-contractoronboardingstatusonboardingstatusselfonboardinginvited"></a> `SelfOnboardingInvited` | `"self_onboarding_invited"` |
+| <a id="property-contractoronboardingstatusonboardingstatusselfonboardingnotinvited"></a> `SelfOnboardingNotInvited` | `"self_onboarding_not_invited"` |
+| <a id="property-contractoronboardingstatusonboardingstatusselfonboardingreview"></a> `SelfOnboardingReview` | `"self_onboarding_review"` |
+| <a id="property-contractoronboardingstatusonboardingstatusselfonboardingstarted"></a> `SelfOnboardingStarted` | `"self_onboarding_started"` |
+
+***
+
+<a id="contractoronboardingstatusonboardingstatus-1"></a>
+
+## ContractorOnboardingStatusOnboardingStatus
+
+> **ContractorOnboardingStatusOnboardingStatus** = `ClosedEnum`\<*typeof* [`ContractorOnboardingStatusOnboardingStatus`](#contractoronboardingstatusonboardingstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/contractoronboardingstatus.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/contractoronboardingstatus.ts#L15)
+
+One of the "onboarding_status" enum values.
+
+***
+
+<a id="contractoronboardingstatusonboardingstep"></a>
+
+## ContractorOnboardingStatusOnboardingStep
+
+> **ContractorOnboardingStatusOnboardingStep** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/contractoronboardingstatus.ts:31](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/contractoronboardingstatus.ts#L31)
+
+`ContractorOnboardingStatusOnboardingStep` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractoronboardingstatusonboardingstepcompleted"></a> `completed?` | `boolean` | When true, this step has been completed. |
+| <a id="property-contractoronboardingstatusonboardingstepid"></a> `id?` | `string` | String identifier for the onboarding step. |
+| <a id="property-contractoronboardingstatusonboardingsteprequired"></a> `required?` | `boolean` | When true, this step is required. |
+| <a id="property-contractoronboardingstatusonboardingsteprequirements"></a> `requirements?` | `string`[] | A list of onboarding steps required to begin this step. |
+| <a id="property-contractoronboardingstatusonboardingsteptitle"></a> `title?` | `string` | User-friendly description of the onboarding step. |
+
+***
+
 <a id="contractorpaymentforgroup"></a>
 
 ## ContractorPaymentForGroup

@@ -28,6 +28,7 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 | Component | Description |
 | --------- | ----------- |
+| [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
