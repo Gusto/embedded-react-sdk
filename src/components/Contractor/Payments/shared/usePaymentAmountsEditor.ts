@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import type {
+  PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments,
+  PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as ContractorPaymentMethod,
+} from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import {
   createEditContractorPaymentFormSchema,
@@ -11,7 +14,7 @@ import {
 /** @internal */
 export interface UsePaymentAmountsEditorParams {
   contractors: Contractor[]
-  allowedPaymentMethods: Array<'Check' | 'Direct Deposit' | 'Historical Payment'>
+  allowedPaymentMethods: ContractorPaymentMethod[]
   onEditOpen?: () => void
   onEditSave?: (data: EditContractorPaymentFormValues) => void
 }
@@ -104,10 +107,8 @@ export function usePaymentAmountsEditor({
     )
 
     const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
-    const sanitizedPaymentMethod = allowedPaymentMethods.includes(
-      rawPaymentMethod as 'Check' | 'Direct Deposit' | 'Historical Payment',
-    )
-      ? (rawPaymentMethod as 'Check' | 'Direct Deposit' | 'Historical Payment')
+    const sanitizedPaymentMethod = allowedPaymentMethods.includes(rawPaymentMethod)
+      ? rawPaymentMethod
       : (allowedPaymentMethods[0] ?? 'Check')
 
     formMethods.reset(
@@ -129,6 +130,14 @@ export function usePaymentAmountsEditor({
   }
 
   const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
+    if (!allowedPaymentMethods.includes(data.paymentMethod)) {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: 'unsupportedPaymentMethod',
+      })
+      return
+    }
+
     const hasAnyPayment =
       (data.wage ?? 0) > 0 ||
       (data.hours ?? 0) > 0 ||
