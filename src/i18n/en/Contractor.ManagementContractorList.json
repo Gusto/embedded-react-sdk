@@ -1,0 +1,61 @@
+{
+  "title": "Contractors",
+  "addContractorCta": "Add contractor",
+  "tabsLabel": "Contractor status tabs",
+  "tabs": {
+    "active": "Active",
+    "onboarding": "Onboarding",
+    "dismissed": "Dismissed"
+  },
+  "nameLabel": "Contractor name",
+  "rateLabel": "Rate",
+  "onboardingStatusLabel": "Onboarding status",
+  "dismissalDateLabel": "Dismissal date",
+  "rateHourly": "Hourly — {{rate}}/hr",
+  "startsBadge": "Starts {{date}}",
+  "lastDayBadge": "Last day {{date}}",
+  "editCta": "Edit",
+  "reviewCta": "Review",
+  "continueCta": "Continue",
+  "viewDetailsCta": "View details",
+  "removeCta": "Remove",
+  "dismissCta": "Dismiss contractor",
+  "rehireCta": "Rehire contractor",
+  "cancelSelfOnboardingCta": "Cancel self-onboarding",
+  "cancelDismissalCta": "Cancel dismissal",
+  "cancelRehireCta": "Cancel rehire",
+  "hamburgerTitle": "Contractor actions menu",
+  "contractorListLabel": "List of contractors",
+  "emptyState": {
+    "active": {
+      "title": "There are no active contractors",
+      "description": "Contractors who have completed onboarding will appear here"
+    },
+    "onboarding": {
+      "title": "There are no contractors onboarding",
+      "description": "Contractors currently being onboarded will appear here"
+    },
+    "dismissed": {
+      "title": "There are no dismissed contractors",
+      "description": "Dismissed contractors will appear here"
+    }
+  },
+  "removeDialog": {
+    "title": "Remove contractor?",
+    "description": "This will permanently delete this contractor from your account. This action cannot be undone.",
+    "confirmCta": "Remove contractor",
+    "cancelCta": "Cancel"
+  },
+  "cancelDismissalDialog": {
+    "title": "Cancel dismissal?",
+    "description": "This contractor's scheduled dismissal will be removed and they will remain active.",
+    "confirmCta": "Yes, cancel dismissal",
+    "cancelCta": "No, go back"
+  },
+  "cancelRehireDialog": {
+    "title": "Cancel rehire?",
+    "description": "This contractor's scheduled rehire will be removed.",
+    "confirmCta": "Yes, cancel rehire",
+    "cancelCta": "No, go back"
+  }
+}
