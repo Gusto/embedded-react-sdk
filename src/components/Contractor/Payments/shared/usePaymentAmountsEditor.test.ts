@@ -26,7 +26,7 @@ describe('usePaymentAmountsEditor', () => {
     )
 
     act(() => {
-      result.current.onEditContractorSubmit({
+      result.current.editModal.submit({
         wageType: 'Fixed',
         wage: 100,
         paymentMethod: 'Historical Payment',
@@ -34,7 +34,7 @@ describe('usePaymentAmountsEditor', () => {
       } as EditContractorPaymentFormValues)
     })
 
-    expect(result.current.formMethods.getFieldState('paymentMethod').error?.message).toBe(
+    expect(result.current.editModal.formMethods.getFieldState('paymentMethod').error?.message).toBe(
       'unsupportedPaymentMethod',
     )
     expect(onEditSave).not.toHaveBeenCalled()
@@ -54,7 +54,7 @@ describe('usePaymentAmountsEditor', () => {
     )
 
     act(() => {
-      result.current.onEditContractorSubmit({
+      result.current.editModal.submit({
         wageType: 'Fixed',
         wage: 100,
         paymentMethod: 'Direct Deposit',
@@ -62,7 +62,9 @@ describe('usePaymentAmountsEditor', () => {
       } as EditContractorPaymentFormValues)
     })
 
-    expect(result.current.formMethods.getFieldState('paymentMethod').error).toBeUndefined()
+    expect(
+      result.current.editModal.formMethods.getFieldState('paymentMethod').error,
+    ).toBeUndefined()
     expect(onEditSave).toHaveBeenCalledTimes(1)
     expect(
       result.current.virtualContractorPayments.find(p => p.contractorUuid === 'contractor-1'),

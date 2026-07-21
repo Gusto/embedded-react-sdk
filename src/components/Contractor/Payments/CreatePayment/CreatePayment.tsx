@@ -145,15 +145,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
     setAlertsState({})
   }
 
-  const {
-    virtualContractorPayments,
-    totals,
-    formMethods,
-    isModalOpen,
-    onCloseModal,
-    onEditContractor,
-    onEditContractorSubmit,
-  } = usePaymentAmountsEditor({
+  const { virtualContractorPayments, totals, editModal } = usePaymentAmountsEditor({
     contractors,
     allowedPaymentMethods: ['Check', 'Direct Deposit'],
     onEditOpen: () => {
@@ -292,7 +284,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
           paymentDate={paymentDate}
           onPaymentDateChange={setPaymentDate}
           onSaveAndContinue={onContinueToPreview}
-          onEditContractor={onEditContractor}
+          onEditContractor={editModal.open}
           totals={totals}
           alerts={alerts}
           payrollBlockers={payrollBlockers}
@@ -302,12 +294,12 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
         />
       )}
       <EditContractorPaymentPresentation
-        isOpen={isModalOpen}
-        onClose={onCloseModal}
-        formMethods={formMethods}
-        onSubmit={onEditContractorSubmit}
+        isOpen={editModal.isOpen}
+        onClose={editModal.close}
+        formMethods={editModal.formMethods}
+        onSubmit={editModal.submit}
         contractorPaymentMethod={
-          contractors.find(c => c.uuid === formMethods.getValues('contractorUuid'))
+          contractors.find(c => c.uuid === editModal.formMethods.getValues('contractorUuid'))
             ?.paymentMethod ?? undefined
         }
       />

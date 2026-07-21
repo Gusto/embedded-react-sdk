@@ -23,11 +23,13 @@ export interface UsePaymentAmountsEditorParams {
 export interface UsePaymentAmountsEditorReturn {
   virtualContractorPayments: (ContractorPayments & { isTouched: boolean })[]
   totals: { wage: number; bonus: number; reimbursement: number; total: number }
-  formMethods: ReturnType<typeof useForm<EditContractorPaymentFormValues>>
-  isModalOpen: boolean
-  onCloseModal: () => void
-  onEditContractor: (contractorUuid: string) => void
-  onEditContractorSubmit: (data: EditContractorPaymentFormValues) => void
+  editModal: {
+    isOpen: boolean
+    formMethods: ReturnType<typeof useForm<EditContractorPaymentFormValues>>
+    open: (contractorUuid: string) => void
+    close: () => void
+    submit: (data: EditContractorPaymentFormValues) => void
+  }
 }
 
 /** @internal */
@@ -96,11 +98,11 @@ export function usePaymentAmountsEditor({
     },
   })
 
-  const onCloseModal = () => {
+  const close = () => {
     setIsModalOpen(false)
   }
 
-  const onEditContractor = (contractorUuid: string) => {
+  const open = (contractorUuid: string) => {
     const contractor = contractors.find(c => c.uuid === contractorUuid)
     const contractorPayment = virtualContractorPayments.find(
       p => p.contractorUuid === contractorUuid,
@@ -129,7 +131,7 @@ export function usePaymentAmountsEditor({
     onEditOpen?.()
   }
 
-  const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
+  const submit = (data: EditContractorPaymentFormValues) => {
     if (!allowedPaymentMethods.includes(data.paymentMethod)) {
       formMethods.setError('paymentMethod', {
         type: 'manual',
@@ -167,10 +169,12 @@ export function usePaymentAmountsEditor({
   return {
     virtualContractorPayments,
     totals,
-    formMethods,
-    isModalOpen,
-    onCloseModal,
-    onEditContractor,
-    onEditContractorSubmit,
+    editModal: {
+      isOpen: isModalOpen,
+      formMethods,
+      open,
+      close,
+      submit,
+    },
   }
 }
