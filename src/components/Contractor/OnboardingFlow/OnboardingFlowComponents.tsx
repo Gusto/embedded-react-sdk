@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ContractorList } from '../ContractorList'
+import { ContractorList } from '../ContractorList/onboarding/ContractorList'
 import { ContractorProfile } from '../Profile'
 import { Address } from '../Address'
 import { PaymentMethod } from '../PaymentMethod/PaymentMethod'
