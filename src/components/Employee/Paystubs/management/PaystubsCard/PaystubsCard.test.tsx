@@ -8,6 +8,7 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { componentEvents } from '@/shared/constants'
+import { NonceContext } from '@/contexts/NonceProvider'
 
 const stubPayStubs = (
   payStubs: Array<Record<string, unknown>>,
@@ -124,6 +125,53 @@ describe('PaystubsCard', () => {
       await waitFor(() => {
         const [firstAfter] = screen.getAllByRole('button', { name: 'Download paystub' })
         expect(firstAfter).not.toHaveAttribute('data-loading')
+      })
+    } finally {
+      openSpy.mockRestore()
+      createObjectURLSpy.mockRestore()
+      revokeObjectURLSpy.mockRestore()
+    }
+  })
+
+  it('applies the CSP nonce from NonceContext to the popup style element', async () => {
+    stubPayStubs(TWO_STUBS, { 'x-total-count': '2', 'x-total-pages': '1', 'x-page': '1' })
+    server.use(
+      http.get(`${API_BASE_URL}/v1/payrolls/:payroll_id/employees/:employee_id/pay_stub`, () =>
+        HttpResponse.json({ document_url: 'http://example.com/paystub.pdf' }),
+      ),
+    )
+
+    const popupDoc = document.implementation.createHTMLDocument('popup')
+    const popupWindow = {
+      document: popupDoc,
+      addEventListener: vi.fn(),
+      close: vi.fn(),
+      location: { href: '' },
+    } as unknown as Window
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(popupWindow)
+    const createObjectURLSpy = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:mock-blob-url')
+    const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+
+    try {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <NonceContext.Provider value="csp-test-nonce">
+          <PaystubsCard employeeId="employee-123" onEvent={vi.fn()} />
+        </NonceContext.Provider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('button', { name: 'Download paystub' })).toHaveLength(2)
+      })
+
+      const [firstDownload] = screen.getAllByRole('button', { name: 'Download paystub' })
+      await user.click(firstDownload!)
+
+      await waitFor(() => {
+        const popupStyle = popupDoc.head.querySelector<HTMLStyleElement>('style')
+        expect(popupStyle?.nonce).toBe('csp-test-nonce')
       })
     } finally {
       openSpy.mockRestore()

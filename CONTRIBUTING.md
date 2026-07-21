@@ -20,7 +20,7 @@ npm run dev
 
 If you just need to develop a component outside of its context within a workflow, you can use Storybook:
 
-```
+```bash
 npm run storybook
 ```
 
@@ -30,10 +30,12 @@ If you need to test your component within the larger context of a workflow, you'
 
 - Follow setup instructions for [Zenpayroll](https://github.com/Gusto/zenpayroll) and start local dev server
   - In another tab run the following commands in Zenpayroll directory(these generate necessary partner account for `gws-flows`) :
-  ```
+
+  ```bash
   bundle exec rails runner "DevAccountCreator.new.create_dev_accounts"
   rake partners_api:dev_setup_for_gws_onboarding
   ```
+
 - Follow setup instructions in the readme for [GWS Flows](https://github.com/Gusto/gws-flows)
 - in SDK, Run `npm run dev:setup`; if that fails, follow the instructions below to setup manually:
   - Run `npm link ../gws-flows/node_modules/react` in sdk folder - this is needed to avoid duplicate react instances in local development due to using [npm/yarn link](https://legacy.reactjs.org/warnings/invalid-hook-call-warning.html)
@@ -135,7 +137,7 @@ Common grouping patterns:
 }
 ```
 
-2. **i18next Pluralization** - Required by i18next for plural forms:
+1. **i18next Pluralization** - Required by i18next for plural forms:
 
 ```json
 {
@@ -146,7 +148,7 @@ Common grouping patterns:
 }
 ```
 
-3. **Programmatic Identifiers** - When used as flow/step identifiers that match API:
+1. **Programmatic Identifiers** - When used as flow/step identifiers that match API:
 
 ```json
 {
@@ -288,7 +290,7 @@ For work tied to a Jira ticket, include the ticket in the scope so the title sti
 All commits must follow `commitlint` enforced format: `type(scope?): subject  #scope is optional; multiple scopes are supported (current delimiter options: "/", "\" and ",")`
 Following types are currently defined:
 
-```
+```text
 'build',
 'chore',
 'ci',
