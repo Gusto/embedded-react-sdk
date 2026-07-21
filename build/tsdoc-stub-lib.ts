@@ -183,13 +183,31 @@ export function buildSkeleton(
 
 // ─── Event key discovery ──────────────────────────────────────────────────────
 
-export function collectOnEventKeys(info: SymbolInfo, sf: SourceFile): string[] | null {
+export function collectOnEventKeys(info: SymbolInfo, sf: SourceFile, node?: Node): string[] | null {
   // Types, interfaces, and enums don't emit events — only callables do
   if (info.params.length === 0 && !info.hasReturn) return null
 
   const fileText = sf.getFullText()
 
-  const hasOnEventParam = info.params.some(p => p.includes('onEvent'))
+  let hasOnEventParam = info.params.some(p => p.includes('onEvent'))
+
+  // Also check resolved param types — handles `props: SomeProps` where SomeProps has onEvent
+  // (e.g. a component declared as `function Foo(props: FooProps)` instead of destructuring)
+  if (!hasOnEventParam && node) {
+    let funcLike: FunctionLike | null = null
+    if (Node.isFunctionDeclaration(node) || Node.isMethodDeclaration(node)) {
+      funcLike = node
+    } else if (Node.isVariableDeclaration(node)) {
+      const init = node.getInitializer()
+      if (init && (Node.isArrowFunction(init) || Node.isFunctionExpression(init))) {
+        funcLike = init
+      }
+    }
+    if (funcLike) {
+      hasOnEventParam = funcLike.getParameters().some(p => !!p.getType().getProperty('onEvent'))
+    }
+  }
+
   const hasDirectCalls = /onEvent\(\w+Events\./.test(fileText)
   if (!hasOnEventParam && !hasDirectCalls) return null
 
@@ -273,7 +291,7 @@ export function processSymbol(symbolName: string, sourceFile: SourceFile): strin
 
   output += `DECLARATION:\n${declarationText}\n---\n`
 
-  const eventKeys = collectOnEventKeys(info, sourceFile)
+  const eventKeys = collectOnEventKeys(info, sourceFile, decl)
   if (eventKeys) {
     const eventValues = resolveEventValues(eventKeys)
     const eventLines = eventKeys.map(k => {
