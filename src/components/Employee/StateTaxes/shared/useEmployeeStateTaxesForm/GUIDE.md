@@ -3,6 +3,7 @@
 # useEmployeeStateTaxesForm
 
 ## Field variants and promotion
+
 The hook resolves each question's UI variant from the API's `inputQuestionFormat.type`:
 
 | API type    | Variant    | Notes                                               |
@@ -20,6 +21,7 @@ Two per-key rules override the variant mapping:
 - Once an answer to `file_new_hire_report` has been recorded server-side it is marked `isDisabled: true` in metadata — after filing, the choice is locked.
 
 ## Exported types
+
 The non-primitive types in the ready state are all re-exported from `@gusto/embedded-react-sdk`:
 
 | Type                               | What it is |
@@ -44,6 +46,7 @@ import type {
 ```
 
 ## Choosing a field component
+
 Each variant's `FieldComponent` must match the prop contract of the SDK UI primitive that variant renders. Discriminate on `question.type` first, then supply a component whose props satisfy the matching SDK prop type:
 
 | Variant    | Required `FieldComponent` shape   | SDK primitive it replaces |
@@ -68,6 +71,7 @@ if (question.type === 'select') {
 ```
 
 ## Per-question overrides
+
 Each `Field` accepts:
 
 - `label` and `description` to override the API-supplied defaults (the API description is otherwise rendered verbatim, sanitized via DOMPurify).
@@ -166,6 +170,7 @@ A few things worth noting:
 - `question.questionId` is the **camelCase** form of the API key (`filingStatus`, not `filing_status`); keep string comparisons in camelCase to stay aligned with the hook's contract.
 
 ## Rendering without a provider
+
 The example above wires the form through `SDKFormProvider`. To render without it, pass the hook result to each field via `formHookResult`:
 
 ```tsx

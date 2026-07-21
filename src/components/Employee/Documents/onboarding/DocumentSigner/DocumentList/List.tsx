@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
+import styles from './List.module.scss'
 import { Flex, DocumentList as SharedDocumentList } from '@/components/Common'
 
 /** @internal */
@@ -8,7 +9,7 @@ export function List() {
   const { t } = useTranslation('Employee.DocumentSigner')
 
   return (
-    <section style={{ width: '100%' }}>
+    <section className={styles.root}>
       <Flex flexDirection="column" gap={32}>
         <SharedDocumentList
           forms={employeeForms.map(form => ({

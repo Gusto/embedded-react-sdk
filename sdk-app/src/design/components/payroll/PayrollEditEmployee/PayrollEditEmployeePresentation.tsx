@@ -838,6 +838,18 @@ export const PayrollEditEmployeePresentation = ({
               })}
             </div>
           )}
+          {primaryEarningRows.length > 0 && (
+            <div className={styles.fieldGroup}>
+              <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
+                <FixedAmountsDataView
+                  rows={primaryEarningRows}
+                  label={t('additionalEarningsTitle')}
+                  isWorkweekSplit={isWorkweekSplit}
+                  workweeks={workweeks}
+                />
+              </Box>
+            </div>
+          )}
           {timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
               <Box
@@ -881,18 +893,7 @@ export const PayrollEditEmployeePresentation = ({
               </Box>
             </div>
           )}
-          {primaryEarningRows.length > 0 && (
-            <div className={styles.fieldGroup}>
-              <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
-                <FixedAmountsDataView
-                  rows={primaryEarningRows}
-                  label={t('additionalEarningsTitle')}
-                  isWorkweekSplit={isWorkweekSplit}
-                  workweeks={workweeks}
-                />
-              </Box>
-            </div>
-          )}
+
           {otherEarningRows.length > 0 && (
             <div className={styles.fieldGroup}>
               <Box header={<BoxHeader title="Other" />} withPadding={false}>

@@ -643,13 +643,28 @@ export class SDKRouter extends MemberRouter {
   //   Hooks ending with Form      → Form hooks  (Data hooks / Utility hooks come from JSDoc)
   //   Other hooks                 → Hooks (fallback)
   // Skips reflections that already carry an explicit @group tag from their JSDoc.
-  // NOTE: TypeDoc places @group block tags on SignatureReflections, not the parent
-  // DeclarationReflection. We copy any signature-level @group to the declaration so
-  // the skip check fires and groupSyntheticMembers can read the group from member.comment.
+  // NOTE: TypeDoc places @group (and @page) block tags on SignatureReflections, not the
+  // parent DeclarationReflection. We copy any signature-level tag to the declaration so
+  // the skip check fires and groupSyntheticMembers/standalonePageFromSources can read it
+  // from member.comment — the latter is why a plain function-typed hook (e.g. useNonce)
+  // needs the @page copy too: without it, standalonePageFromSources never sees the tag
+  // and the hook silently falls through the domain-hooks heuristic since it has no
+  // domain source directory.
   static stampGroupTags(context: Context): void {
     for (const reflection of Object.values(context.project.reflections)) {
       if (!(reflection instanceof DeclarationReflection)) continue
       if (reflection.kind !== ReflectionKind.Function) continue
+
+      if (!reflection.comment?.blockTags.some(t => t.tag === '@page')) {
+        const sigPageTag = reflection.signatures
+          ?.flatMap(sig => sig.comment?.blockTags ?? [])
+          .find(t => t.tag === '@page')
+        if (sigPageTag) {
+          if (!reflection.comment) reflection.comment = new Comment()
+          reflection.comment.blockTags.push(sigPageTag)
+        }
+      }
+
       if (reflection.comment?.blockTags.some(t => t.tag === '@group')) continue
 
       // TypeDoc places @group block tags on the SignatureReflection, not the
