@@ -146,9 +146,19 @@ export const PayrollHistoryPresentation = ({
       <DataView
         label={t('dataView.label')}
         pagination={pagination}
-        emptyState={() => (
-          <EmptyData title={t('emptyState.title')} description={t('emptyState.description')} />
-        )}
+        emptyState={() =>
+          dateRangeFilter.isFilterActive ? (
+            <EmptyData
+              title={t('emptyState.filtered.title')}
+              description={t('emptyState.filtered.description')}
+            />
+          ) : (
+            <EmptyData
+              title={t('emptyState.default.title')}
+              description={t('emptyState.default.description')}
+            />
+          )
+        }
         columns={[
           {
             title: t('columns.payPeriod'),

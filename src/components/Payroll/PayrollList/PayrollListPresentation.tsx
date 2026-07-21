@@ -272,7 +272,16 @@ export const PayrollListPresentation = ({
         <DataView
           breakAt="large"
           pagination={pagination}
-          emptyState={() => <EmptyData title={t('emptyState')} />}
+          emptyState={() =>
+            dateRangeFilter.isFilterActive ? (
+              <EmptyData
+                title={t('emptyState.filtered.title')}
+                description={t('emptyState.filtered.description')}
+              />
+            ) : (
+              <EmptyData title={t('emptyState.default.title')} />
+            )
+          }
           data={payrolls}
           columns={[
             {
