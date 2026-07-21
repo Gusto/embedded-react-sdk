@@ -11,6 +11,8 @@ export default {
 const mockDateRangeFilter: UseDateRangeFilterResult = {
   filterStartDate: null,
   filterEndDate: null,
+  displayStartDate: null,
+  displayEndDate: null,
   isFilterActive: false,
   handleStartDateChange: fn().mockName('handleStartDateChange'),
   handleEndDateChange: fn().mockName('handleEndDateChange'),

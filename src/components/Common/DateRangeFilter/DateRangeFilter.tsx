@@ -82,9 +82,9 @@ export const DateRangeFilter = ({
   }, [])
 
   const filterDateLabel = useMemo(() => {
-    if (!isFilterActive || !startDate || !endDate) return null
+    if (!startDate || !endDate) return null
     return `${formatFilterDate(startDate)} – ${formatFilterDate(endDate)}`
-  }, [isFilterActive, startDate, endDate])
+  }, [startDate, endDate])
 
   const triggerButton = (
     <Button

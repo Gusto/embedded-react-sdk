@@ -5,6 +5,8 @@ const MAX_RANGE_MONTHS = 12
 
 interface UseDateRangeFilterOptions {
   onFilterChange?: () => void
+  defaultStartDate?: Date
+  defaultEndDate?: Date
 }
 
 interface DateRangeApiParams {
@@ -21,6 +23,10 @@ interface DateRangeApiParams {
 export interface UseDateRangeFilterResult {
   filterStartDate: Date | null
   filterEndDate: Date | null
+  /** The effective start date for display: user-set value, falling back to `defaultStartDate`. */
+  displayStartDate: Date | null
+  /** The effective end date for display: user-set value, falling back to `defaultEndDate`. */
+  displayEndDate: Date | null
   isFilterActive: boolean
   handleStartDateChange: (date: Date | null) => void
   handleEndDateChange: (date: Date | null) => void
@@ -51,7 +57,7 @@ const addMonths = (date: Date, months: number): Date => {
  * @internal
  */
 export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDateRangeFilterResult {
-  const { onFilterChange } = options ?? {}
+  const { onFilterChange, defaultStartDate, defaultEndDate } = options ?? {}
 
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null)
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null)
@@ -76,11 +82,13 @@ export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDate
 
   const getApiDateParams = (): DateRangeApiParams => {
     const params: DateRangeApiParams = {}
-    if (filterStartDate) {
-      params.startDate = toISODateString(filterStartDate)
+    const effectiveStart = filterStartDate ?? defaultStartDate
+    const effectiveEnd = filterEndDate ?? defaultEndDate
+    if (effectiveStart) {
+      params.startDate = toISODateString(effectiveStart)
     }
-    if (filterEndDate) {
-      params.endDate = toISODateString(filterEndDate)
+    if (effectiveEnd) {
+      params.endDate = toISODateString(effectiveEnd)
     }
     return params
   }
@@ -98,6 +106,8 @@ export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDate
   return {
     filterStartDate,
     filterEndDate,
+    displayStartDate: filterStartDate ?? defaultStartDate ?? null,
+    displayEndDate: filterEndDate ?? defaultEndDate ?? null,
     isFilterActive,
     handleStartDateChange,
     handleEndDateChange,

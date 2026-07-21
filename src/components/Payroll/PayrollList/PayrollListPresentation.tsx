@@ -251,8 +251,8 @@ export const PayrollListPresentation = ({
         <Flex justifyContent="space-between" alignItems="center">
           <Heading as="h2">{t('title')}</Heading>
           <DateRangeFilter
-            startDate={dateRangeFilter.filterStartDate}
-            endDate={dateRangeFilter.filterEndDate}
+            startDate={dateRangeFilter.displayStartDate}
+            endDate={dateRangeFilter.displayEndDate}
             onStartDateChange={dateRangeFilter.handleStartDateChange}
             onEndDateChange={dateRangeFilter.handleEndDateChange}
             onClear={dateRangeFilter.handleClearFilter}

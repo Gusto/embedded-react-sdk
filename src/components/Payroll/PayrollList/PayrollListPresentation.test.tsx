@@ -75,6 +75,8 @@ const mockBlockers: ApiPayrollBlocker[] = [
 const mockDateRangeFilter: UseDateRangeFilterResult = {
   filterStartDate: null,
   filterEndDate: null,
+  displayStartDate: null,
+  displayEndDate: null,
   isFilterActive: false,
   handleStartDateChange: vi.fn(),
   handleEndDateChange: vi.fn(),

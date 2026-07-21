@@ -17,6 +17,8 @@ const dismissAlertAction = fn().mockName('dismiss_alert')
 const mockDateRangeFilter: UseDateRangeFilterResult = {
   filterStartDate: null,
   filterEndDate: null,
+  displayStartDate: null,
+  displayEndDate: null,
   isFilterActive: false,
   handleStartDateChange: fn().mockName('handleStartDateChange'),
   handleEndDateChange: fn().mockName('handleEndDateChange'),
@@ -375,6 +377,8 @@ export const WithDateFilter = () => {
   const activeDateRangeFilter: UseDateRangeFilterResult = {
     filterStartDate: startDate,
     filterEndDate: endDate,
+    displayStartDate: startDate,
+    displayEndDate: endDate,
     isFilterActive: startDate !== null || endDate !== null,
     handleStartDateChange: setStartDate,
     handleEndDateChange: setEndDate,

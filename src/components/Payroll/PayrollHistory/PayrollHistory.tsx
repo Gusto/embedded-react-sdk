@@ -56,6 +56,16 @@ export function PayrollHistory(props: PayrollHistoryProps) {
   )
 }
 
+const DEFAULT_LOOKBACK_MONTHS = 3
+
+const getDefaultStartDate = (): Date => {
+  const date = new Date()
+  date.setMonth(date.getMonth() - DEFAULT_LOOKBACK_MONTHS)
+  return date
+}
+
+const getDefaultEndDate = (): Date => new Date()
+
 const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
@@ -65,6 +75,8 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
 
   const dateRangeFilter = useDateRangeFilter({
+    defaultStartDate: getDefaultStartDate(),
+    defaultEndDate: getDefaultEndDate(),
     onFilterChange: useCallback(() => {
       resetPage()
     }, [resetPage]),
@@ -84,7 +96,7 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
     sortOrder: SortOrder.Desc,
     startDate: dateFilterParams.startDate,
     endDate: dateFilterParams.endDate,
-    dateFilterBy: dateRangeFilter.isFilterActive ? DateFilterBy.CheckDate : undefined,
+    dateFilterBy: DateFilterBy.CheckDate,
     page: currentPage,
     per: itemsPerPage,
   })
