@@ -241,6 +241,11 @@ export const contractorEvents = {
   CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: 'contractor/documents/view',
   CONTRACTOR_SIGN_DOCUMENT: 'contractor/documents/sign',
   CONTRACTOR_DOCUMENTS_DONE: 'contractor/documents/done',
+  CONTRACTOR_VIEW: 'contractor/view',
+  CONTRACTOR_DISMISS: 'contractor/dismiss',
+  CONTRACTOR_REHIRE: 'contractor/rehire',
+  CONTRACTOR_DISMISSAL_CANCELLED: 'contractor/dismissal/cancelled',
+  CONTRACTOR_REHIRE_CANCELLED: 'contractor/rehire/cancelled',
 } as const
 
 /**
