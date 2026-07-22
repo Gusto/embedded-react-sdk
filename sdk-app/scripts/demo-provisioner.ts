@@ -58,6 +58,51 @@ export interface DemoResult {
   demoType: string
 }
 
+/**
+ * Records a past-dated "Historical Payment" for the given contractor so freshly
+ * provisioned demos have at least one contractor payment group to inspect
+ * (e.g. via ContractorManagement.ViewHistoryFlow). Historical payments are
+ * record-only -- no funding or ACH lead time -- so they post synchronously.
+ */
+async function seedHistoricalContractorPayment(
+  proxyBase: string,
+  companyId: string,
+  contractorId: string,
+): Promise<string> {
+  const contractorRes = await fetch(`${proxyBase}/v1/contractors/${contractorId}`, {
+    signal: AbortSignal.timeout(10000),
+  })
+  if (!contractorRes.ok) return ''
+  const contractor = (await contractorRes.json()) as { wage_type?: string }
+
+  const checkDate = new Date()
+  checkDate.setDate(checkDate.getDate() - 14)
+
+  const paymentRes = await fetch(
+    `${proxyBase}/v1/companies/${companyId}/contractor_payment_groups`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(10000),
+      body: JSON.stringify({
+        check_date: checkDate.toISOString().slice(0, 10),
+        creation_token: `sdk-app-seed-${companyId}-${contractorId}`,
+        contractor_payments: [
+          {
+            contractor_uuid: contractorId,
+            payment_method: 'Historical Payment',
+            ...(contractor.wage_type === 'Hourly' ? { hours: '10' } : { wage: '500.00' }),
+          },
+        ],
+      }),
+    },
+  )
+  if (!paymentRes.ok) return ''
+
+  const created = (await paymentRes.json()) as { contractor_payment_group?: { uuid?: string } }
+  return created.contractor_payment_group?.uuid || ''
+}
+
 export async function createDemoAndProvision(
   gwsFlowsHost: string,
   demoType: string,
@@ -150,6 +195,20 @@ export async function createDemoAndProvision(
   if (companyId) {
     onProgress?.('Fetching entity IDs...')
     entities = await fetchEntityIds(proxyBase, companyId)
+
+    if (entities.contractorId && !entities.paymentId) {
+      onProgress?.('Seeding a historical contractor payment...')
+      try {
+        const paymentId = await seedHistoricalContractorPayment(
+          proxyBase,
+          companyId,
+          entities.contractorId,
+        )
+        if (paymentId) entities.paymentId = paymentId
+      } catch {
+        // Best-effort seed; demo creation should not fail if this errors.
+      }
+    }
   }
 
   return { flowToken, companyId, entities, demoType }
