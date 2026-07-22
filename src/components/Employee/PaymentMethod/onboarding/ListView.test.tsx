@@ -119,7 +119,7 @@ describe('PaymentMethod onboarding ListView', () => {
     expect(screen.queryByRole('button', { name: /split paycheck/i })).not.toBeInTheDocument()
   })
 
-  it('shows inline bank form below DataView when Add another bank account is clicked', async () => {
+  it('navigates to standalone BankForm when Add another bank account is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -137,7 +137,7 @@ describe('PaymentMethod onboarding ListView', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
     })
-    expect(screen.getByText('Chase')).toBeInTheDocument()
+    expect(screen.queryByText('Chase')).not.toBeInTheDocument()
   })
 
   it('fires EMPLOYEE_PAYMENT_METHOD_UPDATED and EMPLOYEE_PAYMENT_METHOD_DONE when Continue is clicked', async () => {
@@ -267,8 +267,8 @@ describe('PaymentMethod onboarding ListView', () => {
     })
   })
 
-  describe('BankForm validation (inline form via Add another)', () => {
-    it('shows required-field errors when submitting an empty inline Add another form', async () => {
+  describe('BankForm validation (standalone form via Add another)', () => {
+    it('shows required-field errors when submitting an empty bank form', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -326,7 +326,7 @@ describe('PaymentMethod onboarding ListView', () => {
       ).toBeInTheDocument()
     })
 
-    it('hides inline form and restores footer when Cancel is clicked', async () => {
+    it('returns to list view when Cancel is clicked from standalone BankForm', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -343,14 +343,11 @@ describe('PaymentMethod onboarding ListView', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
       })
-      expect(screen.getByText('Chase')).toBeInTheDocument()
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /add another bank account/i }),
-        ).toBeInTheDocument()
+        expect(screen.getByText('Chase')).toBeInTheDocument()
       })
       expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
     })

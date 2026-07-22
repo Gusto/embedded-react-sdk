@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
 import {
@@ -155,8 +153,6 @@ function ListViewReady({
     />
   )
 
-  const [isAddingAccount, setIsAddingAccount] = useState(false)
-
   const handleContinue = async () => {
     const result = await paymentMethodForm.actions.onSubmit()
     if (result) {
@@ -170,7 +166,7 @@ function ListViewReady({
   const showContinue = watchedType === PAYMENT_METHODS.check || bankAccounts.length > 0
 
   const footer =
-    watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 && !isAddingAccount ? (
+    watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 ? (
       <ActionsLayout>
         {bankAccounts.length > 1 && (
           <Components.Button
@@ -187,7 +183,7 @@ function ListViewReady({
           variant="secondary"
           type="button"
           onClick={() => {
-            setIsAddingAccount(true)
+            onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE)
           }}
         >
           {t('addAnotherCta')}
@@ -228,21 +224,6 @@ function ListViewReady({
               </div>
               {watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 && (
                 <DataView isWithinBox label={t('bankAccountsListLabel')} {...dataViewProps} />
-              )}
-              {isAddingAccount && (
-                <div className={cn(styles.section, styles.sectionTopBorder)}>
-                  <BankFormBody
-                    employeeId={employeeId}
-                    dictionary={dictionary}
-                    onSaved={data => {
-                      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, data)
-                      setIsAddingAccount(false)
-                    }}
-                    onCancel={() => {
-                      setIsAddingAccount(false)
-                    }}
-                  />
-                </div>
               )}
               {showInlineBankForm && (
                 <div className={styles.section}>
