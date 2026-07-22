@@ -41,6 +41,7 @@ export interface Resources {
   'Contractor.ContractorList': Translations.ContractorContractorList
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
+  'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
@@ -1840,6 +1841,81 @@ export namespace Translations {
     getStartedCta: string
     /** @defaultValue `"there"` */
     fallbackName: string
+  }
+  /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */
+  export interface ContractorManagementProfile {
+    /** @defaultValue `"Basic details"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Legal name"` */
+    legalName: string
+    /** @defaultValue `"Start date"` */
+    startDate: string
+    /** @defaultValue `"Social security number"` */
+    socialSecurityNumber: string
+    /** @defaultValue `"Employer Identification Number (EIN)"` */
+    employerIdentificationNumber: string
+    /** @defaultValue `"Email"` */
+    email: string
+    /** @defaultValue `"No value on file"` */
+    listEmptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Profile updated"` */
+      profileUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Basic details"` */
+      title: string
+      /** @defaultValue `"First name"` */
+      firstName: string
+      /** @defaultValue `"Middle initial"` */
+      middleInitial: string
+      /** @defaultValue `"Last name"` */
+      lastName: string
+      /** @defaultValue `"Business name"` */
+      businessName: string
+      /** @defaultValue `"Start date"` */
+      startDate: string
+      /** @defaultValue `"Social security number"` */
+      ssnLabel: string
+      /** @defaultValue `"•••-••-••••"` */
+      ssnMask: string
+      /** @defaultValue `"Employer Identification Number (EIN)"` */
+      einLabel: string
+      /** @defaultValue `"••-•••••••"` */
+      einMask: string
+      /** @defaultValue `"Already on file."` */
+      onFileHint: string
+      /** @defaultValue `"Change"` */
+      changeCta: string
+      /** @defaultValue `"Email address"` */
+      email: string
+      /** @defaultValue `"Used to send onboarding and payment notifications."` */
+      emailDescription: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Profile updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"First name is required"` */
+        firstName: string
+        /** @defaultValue `"Last name is required"` */
+        lastName: string
+        /** @defaultValue `"Business name is required"` */
+        businessName: string
+        /** @defaultValue `"Start date is required"` */
+        startDate: string
+        /** @defaultValue `"Enter a valid email address"` */
+        email: string
+        /** @defaultValue `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` */
+        ssn: string
+        /** @defaultValue `"The EIN must be exactly 9 digits long."` */
+        ein: string
+      }
+    }
   }
   /** Translation keys for the `Contractor.ManagementContractorList` i18n namespace. */
   export interface ContractorManagementContractorList {
