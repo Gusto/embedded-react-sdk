@@ -252,8 +252,6 @@ shape mixed into every public SDK feature component.
 - [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
-- [`CreatePaymentFlowProps`](contractor/management/create-payment-flow.md#createpaymentflowprops)
-- [`ViewHistoryFlowProps`](contractor/management/view-history-flow.md#viewhistoryflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)
 - [`PaymentHistoryProps`](contractor/management/blocks.md#paymenthistoryprops)

@@ -2076,10 +2076,10 @@ type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
 
-// @public
+// @alpha
 function CreatePaymentFlow(props: CreatePaymentFlowProps): JSX;
 
-// @public
+// @alpha
 interface CreatePaymentFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
@@ -6216,10 +6216,10 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
 // @public
 export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode extends string = never> = Record<TErrorCode, string> & Partial<Record<TOptionalErrorCode, string>>;
 
-// @public
+// @alpha
 function ViewHistoryFlow(props: ViewHistoryFlowProps): JSX;
 
-// @public
+// @alpha
 interface ViewHistoryFlowProps extends BaseComponentInterface<never> {
     paymentId: string;
 }

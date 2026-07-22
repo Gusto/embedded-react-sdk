@@ -17,9 +17,7 @@ Full multi-step user experiences as a single component — the fastest path to a
 | Component | Description |
 | --- | --- |
 | [CompanyOnboarding.OnboardingFlow](company/onboarding/onboarding-flow) | Guided flow to onboard a company to Gusto. |
-| [ContractorManagement.CreatePaymentFlow](contractor/management/create-payment-flow) | Guided flow to create a contractor payment and review the resulting summary. |
 | [ContractorManagement.PaymentFlow](contractor/management/payment-flow) | Hub for creating and managing contractor payments for a company. |
-| [ContractorManagement.ViewHistoryFlow](contractor/management/view-history-flow) | Guided flow to inspect a contractor payment group's history and drill into an individual contractor's payment statement. |
 | [ContractorOnboarding.OnboardingFlow](contractor/onboarding/onboarding-flow) | Guided flow for admins to onboard a contractor to the company. |
 | [ContractorOnboarding.SelfOnboardingFlow](contractor/onboarding/self-onboarding-flow) | Guided flow for contractors to complete their own onboarding. |
 | [EmployeeManagement.DashboardFlow](employee/management/dashboard-flow) | Hub for viewing and managing a single employee's profile, pay, and documents. |
