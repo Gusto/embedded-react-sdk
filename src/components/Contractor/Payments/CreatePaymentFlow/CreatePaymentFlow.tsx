@@ -49,7 +49,7 @@ export interface CreatePaymentInternalFlowProps extends CreatePaymentFlowProps {
  *
  * @param props - See {@link CreatePaymentFlowProps}.
  * @returns The composed create-payment flow.
- * @public
+ * @alpha
  *
  * @example
  * ```tsx title="App.tsx"

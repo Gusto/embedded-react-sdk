@@ -7,7 +7,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 /**
  * Props for {@link ViewHistoryFlow}.
  *
- * @public
+ * @alpha
  */
 export interface ViewHistoryFlowProps extends BaseComponentInterface<never> {
   /** Identifier of the payment group to inspect. */

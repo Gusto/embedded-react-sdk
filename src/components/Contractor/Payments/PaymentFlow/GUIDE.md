@@ -16,22 +16,23 @@ The typical step sequence when composing the blocks manually:
 
 The flow is a hub-and-spoke loop with no terminal state — the payments list is the landing screen, and every path returns to it:
 
-- **Create a payment** — `PaymentsList` hands off to `CreatePaymentFlow`, which returns to the list once the flow completes.
-- **View history** — `PaymentsList` hands off to `ViewHistoryFlow`, which returns to the list once the flow completes.
+- **Create a payment** — `PaymentsList` → `CreatePayment` → `PaymentSummary`, then back to the list.
+- **View history** — `PaymentsList` → `PaymentHistory` → `PaymentStatement`; the history view can also cancel a payment and return to the list.
 - **Respond to a request** — `PaymentsList` opens the embedded `InformationRequestsFlow`, returning to the list once the request is submitted or cancelled.
 
-Breadcrumbs navigate back to the list from anywhere inside `CreatePaymentFlow` or `ViewHistoryFlow`, and submitting wire-transfer details surfaces a success alert on the list screen. The diagram below shows the topology; the event behind each transition is listed in the events table above.
+Breadcrumbs navigate back to any prior step, and submitting wire-transfer details surfaces a success alert on the list and summary screens. The diagram below shows the topology; the event behind each transition is listed in the events table above.
 
 ```mermaid
 flowchart LR
   start@{ shape: sm-circ } --> PaymentsList
 
-  PaymentsList <--> CreatePaymentFlow
-  PaymentsList <--> ViewHistoryFlow
-  PaymentsList <--> InformationRequests["InformationRequests.<br/>InformationRequestsFlow"]
+  PaymentsList --> CreatePayment --> PaymentSummary --> PaymentsList
 
-  class CreatePaymentFlow flow
-  class ViewHistoryFlow flow
+  PaymentsList --> PaymentHistory --> PaymentStatement
+  PaymentHistory --> PaymentsList
+
+  PaymentsList --> InformationRequests["InformationRequests.<br/>InformationRequestsFlow"] --> PaymentsList
+
   class InformationRequests flow
 ```
 

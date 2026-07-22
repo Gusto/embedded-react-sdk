@@ -8,7 +8,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 /**
  * Props for {@link CreatePaymentFlow}.
  *
- * @public
+ * @alpha
  */
 export interface CreatePaymentFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */

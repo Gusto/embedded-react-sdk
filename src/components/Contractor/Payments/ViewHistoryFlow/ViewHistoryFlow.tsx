@@ -49,7 +49,7 @@ export interface ViewHistoryInternalFlowProps extends ViewHistoryFlowProps {
  *
  * @param props - See {@link ViewHistoryFlowProps}.
  * @returns The composed view-history flow.
- * @public
+ * @alpha
  *
  * @example
  * ```tsx title="App.tsx"
