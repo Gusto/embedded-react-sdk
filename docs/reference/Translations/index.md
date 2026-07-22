@@ -4532,8 +4532,12 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | `dateFilter.startDate` | `"From"` |
 | `dateFilter.trigger` | `"Filter by date"` |
 | <a id="property-payrollpayrollhistoryemptystate"></a> `emptyState` | |
-| `emptyState.description` | `"When you run payrolls, they'll appear here for easy reference."` |
-| `emptyState.title` | `"No payroll history"` |
+| `emptyState.default` | |
+| `emptyState.default.description` | `"When you run payrolls, they'll appear here for easy reference."` |
+| `emptyState.default.title` | `"No payroll history"` |
+| `emptyState.filtered` | |
+| `emptyState.filtered.description` | `"Try adjusting the date filter to see more payrolls."` |
+| `emptyState.filtered.title` | `"No payrolls in this date range"` |
 | <a id="property-payrollpayrollhistorylabels"></a> `labels` | |
 | `labels.noAmount` | `"—"` |
 | <a id="property-payrollpayrollhistorymenu"></a> `menu` | |
@@ -4595,7 +4599,12 @@ Translation keys for the `Payroll.PayrollList` i18n namespace.
 | `deletePayrollDialog.confirmCta` | `"Yes, cancel payroll"` |
 | `deletePayrollDialog.title` | `"Cancel {{payPeriod}} payroll?"` |
 | <a id="property-payrollpayrolllistdeletesuccessalert"></a> `deleteSuccessAlert` | `"Payroll cancelled"` |
-| <a id="property-payrollpayrolllistemptystate"></a> `emptyState` | `"All payrolls have been processed"` |
+| <a id="property-payrollpayrolllistemptystate"></a> `emptyState` | |
+| `emptyState.default` | |
+| `emptyState.default.title` | `"All payrolls have been processed"` |
+| `emptyState.filtered` | |
+| `emptyState.filtered.description` | `"Try adjusting the date filter to see more payrolls."` |
+| `emptyState.filtered.title` | `"No payrolls in this date range"` |
 | <a id="property-payrollpayrolllistoffcyclecta"></a> `offCycleCta` | |
 | `offCycleCta.button` | `"Run off-cycle payroll"` |
 | `offCycleCta.description` | `"You can pay an employee outside of your normal payroll schedule by running an off-cycle payroll."` |

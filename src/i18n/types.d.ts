@@ -6575,10 +6575,18 @@ export namespace Translations {
       cancelPayroll: string
     }
     emptyState: {
-      /** @defaultValue `"No payroll history"` */
-      title: string
-      /** @defaultValue `"When you run payrolls, they'll appear here for easy reference."` */
-      description: string
+      default: {
+        /** @defaultValue `"No payroll history"` */
+        title: string
+        /** @defaultValue `"When you run payrolls, they'll appear here for easy reference."` */
+        description: string
+      }
+      filtered: {
+        /** @defaultValue `"No payrolls in this date range"` */
+        title: string
+        /** @defaultValue `"Try adjusting the date filter to see more payrolls."` */
+        description: string
+      }
     }
     labels: {
       /** @defaultValue `"—"` */
@@ -6628,8 +6636,18 @@ export namespace Translations {
   }
   /** Translation keys for the `Payroll.PayrollList` i18n namespace. */
   export interface PayrollPayrollList {
-    /** @defaultValue `"All payrolls have been processed"` */
-    emptyState: string
+    emptyState: {
+      default: {
+        /** @defaultValue `"All payrolls have been processed"` */
+        title: string
+      }
+      filtered: {
+        /** @defaultValue `"No payrolls in this date range"` */
+        title: string
+        /** @defaultValue `"Try adjusting the date filter to see more payrolls."` */
+        description: string
+      }
+    }
     /** @defaultValue `"Upcoming payroll"` */
     title: string
     dateFilter: {

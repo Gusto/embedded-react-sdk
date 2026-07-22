@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 const MAX_RANGE_MONTHS = 12
 
 interface UseDateRangeFilterOptions {
   onFilterChange?: () => void
+  initialStartDate?: Date | null
+  initialEndDate?: Date | null
 }
 
 interface DateRangeApiParams {
@@ -19,9 +21,10 @@ interface DateRangeApiParams {
  * @internal
  */
 export interface UseDateRangeFilterResult {
-  filterStartDate: Date | null
-  filterEndDate: Date | null
-  isFilterActive: boolean
+  startDate: Date | null
+  endDate: Date | null
+  /** True when the current dates differ from the initial dates the hook was seeded with. */
+  isModified: boolean
   handleStartDateChange: (date: Date | null) => void
   handleEndDateChange: (date: Date | null) => void
   handleClearFilter: () => void
@@ -39,66 +42,73 @@ const addMonths = (date: Date, months: number): Date => {
 }
 
 /**
- * Manages an optional start/end date range filter, capping the span at 12 months.
+ * Manages a start/end date range filter as a single source of truth, capping the span at 12 months.
  *
  * @remarks
- * `getMaxEndDate` and `getMinStartDate` return bounds for date pickers that keep the
- * selected range within 12 months of the opposite endpoint. `getApiDateParams` returns
- * only the dates that are set, formatted as `YYYY-MM-DD` strings for API requests.
+ * Seed the hook with `initialStartDate` / `initialEndDate` to render a default range on load;
+ * `handleClearFilter` returns to those initial values (not `null`). `getMaxEndDate` and
+ * `getMinStartDate` return bounds for date pickers that keep the selected range within
+ * 12 months of the opposite endpoint. `getApiDateParams` returns only the dates that are set,
+ * formatted as `YYYY-MM-DD` strings for API requests.
  *
  * @param options - Optional configuration; `onFilterChange` fires after any filter mutation.
  * @returns The current filter state and handlers — see {@link UseDateRangeFilterResult}.
  * @internal
  */
 export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDateRangeFilterResult {
-  const { onFilterChange } = options ?? {}
+  const { onFilterChange, initialStartDate = null, initialEndDate = null } = options ?? {}
 
-  const [filterStartDate, setFilterStartDate] = useState<Date | null>(null)
-  const [filterEndDate, setFilterEndDate] = useState<Date | null>(null)
+  const initialRef = useRef<{ start: Date | null; end: Date | null }>({
+    start: initialStartDate,
+    end: initialEndDate,
+  })
 
-  const isFilterActive = filterStartDate !== null || filterEndDate !== null
+  const [startDate, setStartDate] = useState<Date | null>(initialRef.current.start)
+  const [endDate, setEndDate] = useState<Date | null>(initialRef.current.end)
+
+  const isModified = startDate !== initialRef.current.start || endDate !== initialRef.current.end
 
   const handleStartDateChange = (date: Date | null) => {
-    setFilterStartDate(date)
+    setStartDate(date)
     onFilterChange?.()
   }
 
   const handleEndDateChange = (date: Date | null) => {
-    setFilterEndDate(date)
+    setEndDate(date)
     onFilterChange?.()
   }
 
   const handleClearFilter = () => {
-    setFilterStartDate(null)
-    setFilterEndDate(null)
+    setStartDate(initialRef.current.start)
+    setEndDate(initialRef.current.end)
     onFilterChange?.()
   }
 
   const getApiDateParams = (): DateRangeApiParams => {
     const params: DateRangeApiParams = {}
-    if (filterStartDate) {
-      params.startDate = toISODateString(filterStartDate)
+    if (startDate) {
+      params.startDate = toISODateString(startDate)
     }
-    if (filterEndDate) {
-      params.endDate = toISODateString(filterEndDate)
+    if (endDate) {
+      params.endDate = toISODateString(endDate)
     }
     return params
   }
 
   const getMaxEndDate = (): Date | undefined => {
-    if (!filterStartDate) return undefined
-    return addMonths(filterStartDate, MAX_RANGE_MONTHS)
+    if (!startDate) return undefined
+    return addMonths(startDate, MAX_RANGE_MONTHS)
   }
 
   const getMinStartDate = (): Date | undefined => {
-    if (!filterEndDate) return undefined
-    return addMonths(filterEndDate, -MAX_RANGE_MONTHS)
+    if (!endDate) return undefined
+    return addMonths(endDate, -MAX_RANGE_MONTHS)
   }
 
   return {
-    filterStartDate,
-    filterEndDate,
-    isFilterActive,
+    startDate,
+    endDate,
+    isModified,
     handleStartDateChange,
     handleEndDateChange,
     handleClearFilter,

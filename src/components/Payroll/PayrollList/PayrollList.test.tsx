@@ -70,14 +70,23 @@ describe('PayrollList', () => {
     })
   })
 
-  it('does not pass start_date to API by default', async () => {
+  it('passes a default start_date of today to the API', async () => {
     renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(capturedPayrollListUrl).not.toBeNull()
     })
 
-    expect(capturedPayrollListUrl!.searchParams.get('start_date')).toBeNull()
+    const startDateParam = capturedPayrollListUrl!.searchParams.get('start_date')
+    expect(startDateParam).toBeTruthy()
+
+    const startDate = new Date(startDateParam!)
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    expect(startDate.getTime()).toBeGreaterThan(yesterday.getTime())
+    expect(startDate.getTime()).toBeLessThan(tomorrow.getTime())
   })
 
   it('includes page and per params in the API request', async () => {
