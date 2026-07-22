@@ -3,7 +3,6 @@ import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/
 import { useBankForm, type AccountType, type UseBankFormProps } from '../useBankForm'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { Flex } from '@/components/Common/Flex'
 import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -25,11 +24,6 @@ export interface BankFormBodyProps extends Omit<UseBankFormProps, 'employeeId'> 
   /** Called with the created bank account after a successful submit. */
   onSaved: (bankAccount: EmployeeBankAccount) => void
   onCancel?: () => void
-  /**
-   * Whether to render the form heading. Defaults to `true` for standalone
-   * screens; pass `false` when embedding inline under an existing heading.
-   */
-  showHeading?: boolean
 }
 
 /**
@@ -46,7 +40,6 @@ export function BankFormBody({
   dictionary,
   onSaved,
   onCancel,
-  showHeading = true,
   ...hookProps
 }: BankFormBodyProps) {
   useI18n('Employee.BankFormBody')
@@ -71,50 +64,43 @@ export function BankFormBody({
   return (
     <BaseLayout error={bankForm.errorHandling.errors}>
       <SDKFormProvider formHookResult={bankForm}>
-        <Flex flexDirection="column" gap={32}>
-          {showHeading && (
-            <Components.Heading as="h1" styledAs="h2">
-              Add bank account
-            </Components.Heading>
-          )}
-          <Form onSubmit={handleSubmit}>
-            <Fields.Name
-              label={t('nameLabel')}
-              validationMessages={{ REQUIRED: t('validations.accountName') }}
-            />
-            <Fields.RoutingNumber
-              label={t('routingNumberLabel')}
-              description={t('routingNumberDescription')}
-              validationMessages={{
-                REQUIRED: t('validations.routingNumber'),
-                INVALID_ROUTING_NUMBER: t('validations.routingNumber'),
-              }}
-            />
-            <Fields.AccountNumber
-              label={t('accountNumberLabel')}
-              validationMessages={{
-                REQUIRED: t('validations.accountNumber'),
-                INVALID_ACCOUNT_NUMBER: t('validations.accountNumberFormat'),
-              }}
-            />
-            <Fields.AccountType
-              label={t('accountTypeLabel')}
-              getOptionLabel={(type: AccountType) =>
-                type === 'Checking' ? t('accountTypeChecking') : t('accountTypeSavings')
-              }
-            />
-            <ActionsLayout>
-              {onCancel && (
-                <Components.Button variant="secondary" type="button" onClick={onCancel}>
-                  {t('cancelCta')}
-                </Components.Button>
-              )}
-              <Components.Button type="submit" isLoading={bankForm.status.isPending}>
-                {t('saveCta')}
+        <Form onSubmit={handleSubmit}>
+          <Fields.Name
+            label={t('nameLabel')}
+            validationMessages={{ REQUIRED: t('validations.accountName') }}
+          />
+          <Fields.RoutingNumber
+            label={t('routingNumberLabel')}
+            description={t('routingNumberDescription')}
+            validationMessages={{
+              REQUIRED: t('validations.routingNumber'),
+              INVALID_ROUTING_NUMBER: t('validations.routingNumber'),
+            }}
+          />
+          <Fields.AccountNumber
+            label={t('accountNumberLabel')}
+            validationMessages={{
+              REQUIRED: t('validations.accountNumber'),
+              INVALID_ACCOUNT_NUMBER: t('validations.accountNumberFormat'),
+            }}
+          />
+          <Fields.AccountType
+            label={t('accountTypeLabel')}
+            getOptionLabel={(type: AccountType) =>
+              type === 'Checking' ? t('accountTypeChecking') : t('accountTypeSavings')
+            }
+          />
+          <ActionsLayout>
+            {onCancel && (
+              <Components.Button variant="secondary" type="button" onClick={onCancel}>
+                {t('cancelCta')}
               </Components.Button>
-            </ActionsLayout>
-          </Form>
-        </Flex>
+            )}
+            <Components.Button type="submit" isLoading={bankForm.status.isPending}>
+              {t('saveCta')}
+            </Components.Button>
+          </ActionsLayout>
+        </Form>
       </SDKFormProvider>
     </BaseLayout>
   )

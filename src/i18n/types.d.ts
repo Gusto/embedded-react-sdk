@@ -4715,6 +4715,8 @@ export namespace Translations {
   }
   /** Translation keys for the `Employee.Management.PaymentMethodBankForm` i18n namespace. */
   export interface EmployeeManagementPaymentMethodBankForm {
+    /** @defaultValue `"Add bank account"` */
+    title: string
     /** @defaultValue `"Account nickname"` */
     nameLabel: string
     /** @defaultValue `"Routing number"` */
@@ -5170,6 +5172,8 @@ export namespace Translations {
     addAnotherCta: string
     /** @defaultValue `"Add bank account"` */
     addBankAccountCta: string
+    /** @defaultValue `"Add bank account"` */
+    addBankAccountFormTitle: string
     /** @defaultValue `"List of employee bank accounts"` */
     bankAccountsListLabel: string
     /** @defaultValue `"Back"` */

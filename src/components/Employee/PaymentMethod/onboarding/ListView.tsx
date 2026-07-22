@@ -230,7 +230,6 @@ function ListViewReady({
                   <BankFormBody
                     employeeId={employeeId}
                     dictionary={dictionary}
-                    showHeading={false}
                     onSaved={data => {
                       onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, data)
                     }}

@@ -1,4 +1,5 @@
 {
+  "title": "Add bank account",
   "nameLabel": "Account nickname",
   "routingNumberLabel": "Routing number",
   "routingNumberDescription": "(9 digits)",
