@@ -714,7 +714,7 @@ Renders the header section of a FormBox, combining a title, optional description
 ### FormBoxProps
 
 Props your `FormBox` implementation must accept from the component adapter.
-Renders a sectioned container used to group related form fields, with an optional header slot.
+Renders a sectioned container used to group related form fields, with optional header and footer slots.
 
 #### Properties
 
@@ -722,6 +722,7 @@ Renders a sectioned container used to group related form fields, with an optiona
 | ------ | ------ | ------ |
 | `children` | `ReactNode` | Content rendered inside the form box body. |
 | `className?` | `string` | CSS className to be applied to the root element. |
+| `footer?` | `ReactNode` | Optional content rendered below the body in the form box footer section. |
 | `header?` | `ReactNode` | Optional content rendered above the body in the form box header section. |
 | `withPadding?` | `boolean` | Whether the body should apply the default inner padding. Defaults to true; set to false for content that needs to be flush with the form box edges. |
 

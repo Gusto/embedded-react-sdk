@@ -11,8 +11,10 @@ import {
 } from '../shared/usePaymentMethodForm'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
+import { BankFormBody } from '../shared/BankFormBody'
+import { useOnboardingBankFormDictionary } from './useFormDictionary'
+import styles from './ListView.module.scss'
 import { ActionsLayout, DataView, useDataView } from '@/components/Common'
-import { Form } from '@/components/Common/Form'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
@@ -24,6 +26,7 @@ import { componentEvents, PAYMENT_METHODS, SPLIT_BY, type EventType } from '@/sh
 import type { OnEventType } from '@/components/Base/useBase'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import { Flex } from '@/components/Common/Flex/Flex'
 
 interface ListViewProps {
   employeeId: string
@@ -61,6 +64,7 @@ interface ListViewReadyProps extends ListViewProps {
 }
 
 function ListViewReady({
+  employeeId,
   isAdmin,
   onEvent,
   paymentMethodList,
@@ -72,6 +76,7 @@ function ListViewReady({
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
+  const dictionary = useOnboardingBankFormDictionary()
 
   const { Fields } = paymentMethodForm.form
   const watchedType = useWatch({
@@ -148,7 +153,7 @@ function ListViewReady({
     />
   )
 
-  const handleSubmit = async () => {
+  const handleContinue = async () => {
     const result = await paymentMethodForm.actions.onSubmit()
     if (result) {
       onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, result.data)
@@ -156,66 +161,96 @@ function ListViewReady({
     }
   }
 
+  const showInlineBankForm =
+    watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length === 0
+  const showContinue = watchedType === PAYMENT_METHODS.check || bankAccounts.length > 0
+
+  const footer =
+    watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 ? (
+      <ActionsLayout>
+        {bankAccounts.length > 1 && (
+          <Components.Button
+            variant="secondary"
+            type="button"
+            onClick={() => {
+              onEvent(componentEvents.EMPLOYEE_SPLIT_PAYMENT)
+            }}
+          >
+            {t('splitCta')}
+          </Components.Button>
+        )}
+        <Components.Button
+          variant="secondary"
+          type="button"
+          onClick={() => {
+            onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE)
+          }}
+        >
+          {t('addAnotherCta')}
+        </Components.Button>
+      </ActionsLayout>
+    ) : undefined
+
   return (
     <>
       <BaseLayout error={errorHandling.errors}>
         <SDKFormProvider formHookResult={paymentMethodForm}>
-          <Form onSubmit={handleSubmit}>
-            {deletedAccountNumber !== null && (
-              <Components.Alert
-                status="success"
-                label={t('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
-                onDismiss={() => {
-                  setDeletedAccountNumber(null)
-                }}
-                disableScrollIntoView
-              />
-            )}
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Fields.Type
-              label={t('paymentFieldsetLegend')}
-              getOptionLabel={(value: PaymentMethodType) =>
-                value === PAYMENT_METHODS.directDeposit ? t('directDepositLabel') : t('checkLabel')
-              }
-              FieldComponent={TypeFieldComponent}
+          {deletedAccountNumber !== null && (
+            <Components.Alert
+              status="success"
+              label={t('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
+              onDismiss={() => {
+                setDeletedAccountNumber(null)
+              }}
+              disableScrollIntoView
             />
-            {bankAccounts.length > 0 && (
-              <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
+          )}
+          <Flex flexDirection="column" gap={20}>
+            <Components.FormBox
+              header={<Components.FormBoxHeader title={t('title')} />}
+              withPadding={false}
+              footer={footer}
+            >
+              <div className={styles.section}>
+                <Fields.Type
+                  label={t('paymentFieldsetLegend')}
+                  getOptionLabel={(value: PaymentMethodType) =>
+                    value === PAYMENT_METHODS.directDeposit
+                      ? t('directDepositLabel')
+                      : t('checkLabel')
+                  }
+                  FieldComponent={TypeFieldComponent}
+                />
+              </div>
+              {watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 && (
+                <DataView isWithinBox label={t('bankAccountsListLabel')} {...dataViewProps} />
+              )}
+              {showInlineBankForm && (
+                <div className={styles.section}>
+                  <BankFormBody
+                    employeeId={employeeId}
+                    dictionary={dictionary}
+                    onSaved={data => {
+                      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, data)
+                    }}
+                  />
+                </div>
+              )}
+            </Components.FormBox>
+            {showContinue && (
+              <ActionsLayout>
+                <Components.Button
+                  type="button"
+                  isLoading={paymentMethodForm.status.isPending}
+                  onClick={() => {
+                    void handleContinue()
+                  }}
+                >
+                  {t('submitCta')}
+                </Components.Button>
+              </ActionsLayout>
             )}
-            <ActionsLayout>
-              {bankAccounts.length > 1 && (
-                <Components.Button
-                  variant="secondary"
-                  type="button"
-                  onClick={() => {
-                    onEvent(componentEvents.EMPLOYEE_SPLIT_PAYMENT)
-                  }}
-                >
-                  {t('splitCta')}
-                </Components.Button>
-              )}
-              {watchedType === PAYMENT_METHODS.directDeposit && (
-                <Components.Button
-                  variant="secondary"
-                  type="button"
-                  onClick={() => {
-                    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE)
-                  }}
-                >
-                  {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
-                </Components.Button>
-              )}
-              <Components.Button
-                type="submit"
-                isLoading={paymentMethodForm.status.isPending}
-                isDisabled={
-                  watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length === 0
-                }
-              >
-                {t('submitCta')}
-              </Components.Button>
-            </ActionsLayout>
-          </Form>
+          </Flex>
         </SDKFormProvider>
       </BaseLayout>
       <DeleteBankAccountDialog

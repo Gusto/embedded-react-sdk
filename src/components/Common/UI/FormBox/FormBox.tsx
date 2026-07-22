@@ -9,11 +9,12 @@ import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
  * @returns The rendered form box.
  * @internal
  */
-export function FormBox({ children, header, withPadding = true, className }: FormBoxProps) {
+export function FormBox({ children, header, footer, withPadding = true, className }: FormBoxProps) {
   return (
     <div className={cn(styles.root, className)} data-testid="data-form-box">
       {header && <div className={styles.header}>{header}</div>}
       <div className={withPadding ? styles.content : styles.contentFlush}>{children}</div>
+      {footer && <div className={styles.footer}>{footer}</div>}
     </div>
   )
 }

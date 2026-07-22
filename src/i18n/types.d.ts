@@ -4715,6 +4715,8 @@ export namespace Translations {
   }
   /** Translation keys for the `Employee.Management.PaymentMethodBankForm` i18n namespace. */
   export interface EmployeeManagementPaymentMethodBankForm {
+    /** @defaultValue `"Add bank account"` */
+    title: string
     /** @defaultValue `"Account nickname"` */
     nameLabel: string
     /** @defaultValue `"Routing number"` */
@@ -4748,7 +4750,7 @@ export namespace Translations {
   export interface EmployeeManagementPaymentMethodSplitForm {
     /** @defaultValue `"Split employee paycheck"` */
     title: string
-    /** @defaultValue `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` */
+    /** @defaultValue `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` */
     splitDescription: string
     /** @defaultValue `"Split by"` */
     splitByLabel: string
@@ -5170,6 +5172,8 @@ export namespace Translations {
     addAnotherCta: string
     /** @defaultValue `"Add bank account"` */
     addBankAccountCta: string
+    /** @defaultValue `"Add bank account"` */
+    addBankAccountFormTitle: string
     /** @defaultValue `"List of employee bank accounts"` */
     bankAccountsListLabel: string
     /** @defaultValue `"Back"` */
@@ -5222,11 +5226,11 @@ export namespace Translations {
     splitCta: string
     /** @defaultValue `"Continue"` */
     submitCta: string
-    /** @defaultValue `"Employee payment details"` */
+    /** @defaultValue `"Payment method"` */
     title: string
     /** @defaultValue `"Fixed amount"` */
     amountLabel: string
-    /** @defaultValue `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` */
+    /** @defaultValue `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` */
     splitDescription: string
     /** @defaultValue `"Reorderable list of bank accounts"` */
     draggableListLabel: string
@@ -5387,7 +5391,7 @@ export namespace Translations {
   export interface EmployeeSplitPaymentsFormBody {
     /** @defaultValue `"Split employee paycheck"` */
     title: string
-    /** @defaultValue `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` */
+    /** @defaultValue `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` */
     splitDescription: string
     /** @defaultValue `"Split by"` */
     splitByLabel: string

@@ -23,7 +23,7 @@ export interface BankFormBodyProps extends Omit<UseBankFormProps, 'employeeId'> 
   dictionary?: BankFormBodyDictionary
   /** Called with the created bank account after a successful submit. */
   onSaved: (bankAccount: EmployeeBankAccount) => void
-  onCancel: () => void
+  onCancel?: () => void
 }
 
 /**
@@ -91,9 +91,11 @@ export function BankFormBody({
             }
           />
           <ActionsLayout>
-            <Components.Button variant="secondary" type="button" onClick={onCancel}>
-              {t('cancelCta')}
-            </Components.Button>
+            {onCancel && (
+              <Components.Button variant="secondary" type="button" onClick={onCancel}>
+                {t('cancelCta')}
+              </Components.Button>
+            )}
             <Components.Button type="submit" isLoading={bankForm.status.isPending}>
               {t('saveCta')}
             </Components.Button>
