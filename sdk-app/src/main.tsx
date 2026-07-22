@@ -36,6 +36,10 @@ import {
   CreateHistoricalPaymentPrototype,
   CreateHistoricalPaymentStates,
 } from './design/prototypes/contractor-payments/CreateHistoricalPayment'
+import {
+  StateTaxesWithFutureRatesPrototype,
+  StateTaxesWithFutureRatesStates,
+} from './design/prototypes/company-onboarding/StateTaxesWithFutureRates'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -135,6 +139,22 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <CreateHistoricalPaymentStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'state-taxes-with-future-rates',
+            children: [
+              { index: true, element: <StateTaxesWithFutureRatesPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <StateTaxesWithFutureRatesStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <StateTaxesWithFutureRatesStates />,
                   },
                 ],
               },
