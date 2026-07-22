@@ -3,6 +3,7 @@ import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/
 import { useBankForm, type AccountType, type UseBankFormProps } from '../useBankForm'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
+import { Flex } from '@/components/Common/Flex'
 import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -64,43 +65,50 @@ export function BankFormBody({
   return (
     <BaseLayout error={bankForm.errorHandling.errors}>
       <SDKFormProvider formHookResult={bankForm}>
-        <Form onSubmit={handleSubmit}>
-          <Fields.Name
-            label={t('nameLabel')}
-            validationMessages={{ REQUIRED: t('validations.accountName') }}
-          />
-          <Fields.RoutingNumber
-            label={t('routingNumberLabel')}
-            description={t('routingNumberDescription')}
-            validationMessages={{
-              REQUIRED: t('validations.routingNumber'),
-              INVALID_ROUTING_NUMBER: t('validations.routingNumber'),
-            }}
-          />
-          <Fields.AccountNumber
-            label={t('accountNumberLabel')}
-            validationMessages={{
-              REQUIRED: t('validations.accountNumber'),
-              INVALID_ACCOUNT_NUMBER: t('validations.accountNumberFormat'),
-            }}
-          />
-          <Fields.AccountType
-            label={t('accountTypeLabel')}
-            getOptionLabel={(type: AccountType) =>
-              type === 'Checking' ? t('accountTypeChecking') : t('accountTypeSavings')
-            }
-          />
-          <ActionsLayout>
-            {onCancel && (
-              <Components.Button variant="secondary" type="button" onClick={onCancel}>
-                {t('cancelCta')}
+        <Flex flexDirection="column" gap={32}>
+          <Flex flexDirection="column">
+            <Components.Heading as="h1" styledAs="h2">
+              Add bank account
+            </Components.Heading>
+          </Flex>
+          <Form onSubmit={handleSubmit}>
+            <Fields.Name
+              label={t('nameLabel')}
+              validationMessages={{ REQUIRED: t('validations.accountName') }}
+            />
+            <Fields.RoutingNumber
+              label={t('routingNumberLabel')}
+              description={t('routingNumberDescription')}
+              validationMessages={{
+                REQUIRED: t('validations.routingNumber'),
+                INVALID_ROUTING_NUMBER: t('validations.routingNumber'),
+              }}
+            />
+            <Fields.AccountNumber
+              label={t('accountNumberLabel')}
+              validationMessages={{
+                REQUIRED: t('validations.accountNumber'),
+                INVALID_ACCOUNT_NUMBER: t('validations.accountNumberFormat'),
+              }}
+            />
+            <Fields.AccountType
+              label={t('accountTypeLabel')}
+              getOptionLabel={(type: AccountType) =>
+                type === 'Checking' ? t('accountTypeChecking') : t('accountTypeSavings')
+              }
+            />
+            <ActionsLayout>
+              {onCancel && (
+                <Components.Button variant="secondary" type="button" onClick={onCancel}>
+                  {t('cancelCta')}
+                </Components.Button>
+              )}
+              <Components.Button type="submit" isLoading={bankForm.status.isPending}>
+                {t('saveCta')}
               </Components.Button>
-            )}
-            <Components.Button type="submit" isLoading={bankForm.status.isPending}>
-              {t('saveCta')}
-            </Components.Button>
-          </ActionsLayout>
-        </Form>
+            </ActionsLayout>
+          </Form>
+        </Flex>
       </SDKFormProvider>
     </BaseLayout>
   )
