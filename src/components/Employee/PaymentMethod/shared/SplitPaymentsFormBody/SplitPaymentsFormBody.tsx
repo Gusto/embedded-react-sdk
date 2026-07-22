@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import DOMPurify from 'dompurify'
 import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import {
@@ -10,6 +10,7 @@ import {
 } from '../useSplitPaymentsForm'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
+import { Flex } from '@/components/Common/Flex'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
@@ -111,8 +112,12 @@ function SplitPaymentsFormBodyReady({
               disableScrollIntoView
             />
           )}
-          <Components.Heading as="h2">{t('title')}</Components.Heading>
-          <Trans t={t} i18nKey="splitDescription" components={{ p: <Components.Text /> }} />
+          <Flex flexDirection="column" gap={4}>
+            <Components.Heading as="h1" styledAs="h2">
+              {t('title')}
+            </Components.Heading>
+            <Components.Text variant="supporting">{t('splitDescription')}</Components.Text>
+          </Flex>
           <Fields.SplitBy
             label={t('splitByLabel')}
             getOptionLabel={(value: SplitByValue) =>
