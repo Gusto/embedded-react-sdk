@@ -73,6 +73,8 @@ export type {
 } from '../Compensation/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export type { TerminateEmployeeProps } from '../Terminations/TerminateEmployee/TerminateEmployee'
+export { RehireEmployee } from '../Rehire/RehireEmployee/RehireEmployee'
+export type { RehireEmployeeProps } from '../Rehire/RehireEmployee/RehireEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
 export type { TerminationSummaryProps } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'

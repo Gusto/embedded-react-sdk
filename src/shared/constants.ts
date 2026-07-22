@@ -83,6 +83,8 @@ export const employeeEvents = {
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
   EMPLOYEE_REHIRE: 'employee/rehire',
+  EMPLOYEE_REHIRE_SCHEDULED: 'employee/rehire/scheduled',
+  EMPLOYEE_REHIRE_CANCELLED: 'employee/rehire/cancelled',
   EMPLOYEE_DASHBOARD_TAB_CHANGE: 'employee/dashboard/tabChange',
   EMPLOYEE_RETURN_TO_LIST: 'employee/returnToList',
   EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED: 'employee/management/profile/editRequested',

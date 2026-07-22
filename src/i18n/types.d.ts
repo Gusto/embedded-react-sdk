@@ -79,6 +79,7 @@ export interface Resources {
   'Employee.Management.PaymentMethodSplitForm': Translations.EmployeeManagementPaymentMethodSplitForm
   'Employee.Management.Paystubs': Translations.EmployeeManagementPaystubs
   'Employee.Management.Profile': Translations.EmployeeManagementProfile
+  'Employee.Management.Rehire': Translations.EmployeeManagementRehire
   'Employee.Management.StateTaxes': Translations.EmployeeManagementStateTaxes
   'Employee.Management.WorkAddress': Translations.EmployeeManagementWorkAddress
   'Employee.ManagementEmployeeList': Translations.EmployeeManagementEmployeeList
@@ -4861,6 +4862,57 @@ export namespace Translations {
       }
     }
   }
+  /** Translation keys for the `Employee.Management.Rehire` i18n namespace. */
+  export interface EmployeeManagementRehire {
+    /** @defaultValue `"Rehire {{employeeName}}"` */
+    title: string
+    /** @defaultValue `"Schedule a return to work date and confirm where this employee will work."` */
+    subtitle: string
+    form: {
+      startDate: {
+        /** @defaultValue `"Start date"` */
+        label: string
+        /** @defaultValue `"The day the employee returns to work."` */
+        description: string
+      }
+      workAddress: {
+        /** @defaultValue `"Work address"` */
+        label: string
+        /** @defaultValue `"The address where this employee will report to work."` */
+        description: string
+        /** @defaultValue `"Choose a work address"` */
+        placeholder: string
+      }
+      fileNewHireReport: {
+        /** @defaultValue `"File a new hire report"` */
+        label: string
+        /** @defaultValue `"Required in most states when rehiring after a separation of 60 days or more."` */
+        description: string
+        options: {
+          /** @defaultValue `"Yes, file a new hire report"` */
+          yes: string
+          /** @defaultValue `"No, do not file"` */
+          no: string
+        }
+      }
+    }
+    actions: {
+      /** @defaultValue `"Schedule rehire"` */
+      submit: string
+      /** @defaultValue `"Scheduling rehire..."` */
+      submitting: string
+      /** @defaultValue `"Cancel"` */
+      cancel: string
+    }
+    validation: {
+      /** @defaultValue `"Start date is required"` */
+      startDateRequired: string
+      /** @defaultValue `"Select a work address"` */
+      workAddressRequired: string
+      /** @defaultValue `"Please select whether to file a new hire report"` */
+      fileNewHireReportRequired: string
+    }
+  }
   /** Translation keys for the `Employee.Management.StateTaxes` i18n namespace. */
   export interface EmployeeManagementStateTaxes {
     card: {
@@ -5019,6 +5071,14 @@ export namespace Translations {
     statusLabel: string
     /** @defaultValue `"Last day"` */
     lastDayLabel: string
+    /** @defaultValue `"Rehire status"` */
+    rehireStatusLabel: string
+    /** @defaultValue `"Rehire {{date}}"` */
+    rehireBadge: string
+    /** @defaultValue `"Last day status"` */
+    lastDayStatusLabel: string
+    /** @defaultValue `"Last day {{date}}"` */
+    lastDayBadge: string
     /** @defaultValue `"Edit employee"` */
     editCta: string
     /** @defaultValue `"Dismiss employee"` */

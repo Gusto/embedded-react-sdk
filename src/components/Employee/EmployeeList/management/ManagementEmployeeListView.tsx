@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
+import { RehireStatusBadge } from './RehireStatusBadge'
+import { LastDayStatusBadge } from './LastDayStatusBadge'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
+import { VisuallyHidden } from '@/components/Common/VisuallyHidden'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
@@ -25,6 +28,7 @@ export interface ManagementEmployeeListViewProps extends Pick<
   onTabChange: (tab: EmployeeTab) => void
   onEdit: (employeeId: string) => void
   onDismiss: (employeeId: string) => void
+  onRehire: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
   onAddEmployee: () => void
 }
@@ -38,6 +42,7 @@ export function ManagementEmployeeListView({
   status,
   onEdit,
   onDismiss,
+  onRehire,
   onDelete,
   onAddEmployee,
   pagination,
@@ -97,7 +102,19 @@ export function ManagementEmployeeListView({
     }
 
     if (selectedTab === 'active') {
-      return [nameColumn, jobTitleColumn]
+      return [
+        nameColumn,
+        jobTitleColumn,
+        {
+          key: 'lastDayStatus',
+          title: <VisuallyHidden>{t('lastDayStatusLabel')}</VisuallyHidden>,
+          render: (employee: EmployeeWithActions) => (
+            <LastDayStatusBadge terminations={employee.terminations}>
+              {lastDay => t('lastDayBadge', { date: lastDay })}
+            </LastDayStatusBadge>
+          ),
+        },
+      ]
     }
 
     if (selectedTab === 'onboarding') {
@@ -137,6 +154,15 @@ export function ManagementEmployeeListView({
           return formattedDate || '-'
         },
       },
+      {
+        key: 'rehireStatus',
+        title: <VisuallyHidden>{t('rehireStatusLabel')}</VisuallyHidden>,
+        render: (employee: EmployeeWithActions) => (
+          <RehireStatusBadge employeeId={employee.uuid}>
+            {rehireDate => t('rehireBadge', { date: rehireDate })}
+          </RehireStatusBadge>
+        ),
+      },
     ]
   }
 
@@ -163,6 +189,24 @@ export function ManagementEmployeeListView({
             onDismiss(employee.uuid)
           },
           icon: <TrashCanSvg aria-hidden />,
+        })
+      }
+
+      if (selectedTab === 'dismissed') {
+        menuItems.push({
+          label: t('editCta'),
+          onClick: () => {
+            onEdit(employee.uuid)
+          },
+        })
+      }
+
+      if (employee.allowedActions.includes('rehire')) {
+        menuItems.push({
+          label: t('rehireCta'),
+          onClick: () => {
+            onRehire(employee.uuid)
+          },
         })
       }
 

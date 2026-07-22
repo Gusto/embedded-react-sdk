@@ -3,6 +3,7 @@ import {
   DashboardFlowContextual,
   EmployeeListContextual,
   OnboardingExecutionFlowContextual,
+  RehireEmployeeContextual,
   TerminationFlowContextual,
   type EmployeeListFlowContextInterface,
 } from './EmployeeListFlowComponents'
@@ -13,6 +14,7 @@ import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: { employeeId: string }
   [componentEvents.EMPLOYEE_DISMISS]: { employeeId: string }
+  [componentEvents.EMPLOYEE_REHIRE]: { employeeId: string }
 }
 
 const backToListHeader: FlowHeaderConfig = {
@@ -67,6 +69,21 @@ export const employeeListStateMachine = {
       ),
     ),
     transition(
+      componentEvents.EMPLOYEE_REHIRE,
+      'rehire',
+      reduce(
+        (
+          ctx: EmployeeListFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_REHIRE>,
+        ): EmployeeListFlowContextInterface => ({
+          ...ctx,
+          component: RehireEmployeeContextual,
+          header: backToListHeader,
+          employeeId: ev.payload.employeeId,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.EMPLOYEE_CREATE,
       'onboard',
       reduce((ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
@@ -81,6 +98,11 @@ export const employeeListStateMachine = {
   ),
   terminate: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+  ),
+  rehire: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+    transition(componentEvents.EMPLOYEE_REHIRE_SCHEDULED, 'list', returnToList),
+    transition(componentEvents.EMPLOYEE_REHIRE_CANCELLED, 'list', returnToList),
   ),
   onboard: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),

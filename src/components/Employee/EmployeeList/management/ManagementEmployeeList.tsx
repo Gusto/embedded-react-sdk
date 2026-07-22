@@ -69,6 +69,10 @@ function ManagementEmployeeListRoot({
     onEvent(componentEvents.EMPLOYEE_DISMISS, { employeeId })
   }
 
+  const handleRehire = (employeeId: string) => {
+    onEvent(componentEvents.EMPLOYEE_REHIRE, { employeeId })
+  }
+
   const handleTabChange = (tab: EmployeeTab) => {
     setSelectedTab(tab)
   }
@@ -84,6 +88,7 @@ function ManagementEmployeeListRoot({
         status={employeeList.status}
         onEdit={handleEdit}
         onDismiss={handleDismiss}
+        onRehire={handleRehire}
         onDelete={async (employeeId: string) => {
           await employeeList.actions.onDelete(employeeId)
           onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
@@ -104,6 +109,7 @@ function ManagementEmployeeListRoot({
  * | `employee/create` | Fired when the user clicks "Add employee". | — |
  * | `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
  * | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
+ * | `employee/rehire` | Fired when the user selects "Rehire" on a row in the Dismissed tab. | `{ employeeId: string }` |
  * | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
  *
  * @public
