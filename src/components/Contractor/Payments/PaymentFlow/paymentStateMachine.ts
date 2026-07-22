@@ -1,32 +1,22 @@
 import { reduce, state, transition } from 'robot3'
-import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
-import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { getContractorDisplayName } from '../CreatePayment/helpers'
 import {
-  CreatePaymentContextual,
-  type PaymentFlowContextInterface,
-  PaymentHistoryContextual,
-  PaymentListContextual,
-  PaymentStatementContextual,
-  PaymentSummaryContextual,
+  CreatePaymentFlowContextual,
   InformationRequestsContextual,
+  PaymentListContextual,
+  type PaymentFlowContextInterface,
+  ViewHistoryFlowContextual,
 } from './PaymentFlowComponents'
 import { componentEvents, informationRequestEvents, payrollWireEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { patchBreadcrumbsHeader, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATE]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_CREATED]: ContractorPaymentGroup
   [componentEvents.CONTRACTOR_PAYMENT_EXIT]: { uuid?: string | null }
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
-  [componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS]: {
-    contractor: Contractor
-    paymentGroupId: string
-  }
   [componentEvents.CONTRACTOR_PAYMENT_CANCEL]: { paymentId: string }
   [componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND]: undefined
   [componentEvents.BREADCRUMB_NAVIGATE]: {
@@ -44,7 +34,16 @@ type EventPayloads = {
   }
 }
 
-/** @internal */
+/**
+ * Hub-level breadcrumb nodes for {@link PaymentFlow}.
+ *
+ * @remarks
+ * Only `landing` is defined here — the `createPayment` and `history` spokes own and render their
+ * own breadcrumb trails (via `CreatePaymentFlow`/`ViewHistoryFlow`), prefixed with this `landing`
+ * item so the trail reads continuously across the hub/spoke boundary.
+ *
+ * @internal
+ */
 export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
   landing: {
     parent: null,
@@ -58,54 +57,23 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
       })) as (context: unknown) => unknown,
     },
   },
-  createPayment: {
-    parent: 'landing',
-    item: {
-      id: 'createPayment',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.CreatePayment',
-      onNavigate: ((ctx: PaymentFlowContextInterface) => ({
-        ...updateBreadcrumbs('createPayment', ctx),
-      })) as (context: unknown) => unknown,
-    },
-  },
-  paymentSummary: {
-    parent: 'landing',
-    item: {
-      id: 'paymentSummary',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.PaymentSummary',
-      onNavigate: ((ctx: PaymentFlowContextInterface) => ({
-        ...updateBreadcrumbs('paymentSummary', ctx),
-      })) as (context: unknown) => unknown,
-    },
-  },
-  history: {
-    parent: 'landing',
-    item: {
-      id: 'history',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.PaymentHistory',
-      onNavigate: ((ctx: PaymentFlowContextInterface) => ({
-        ...updateBreadcrumbs('history', ctx),
-        component: PaymentHistoryContextual,
-      })) as (context: unknown) => unknown,
-    },
-  },
-  statement: {
-    parent: 'history',
-    item: {
-      id: 'statement',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.PaymentStatement',
-    },
-  },
-} as const
+}
 
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PaymentFlowContextInterface>()
 
-/** @internal */
+/**
+ * Hub machine for {@link PaymentFlow}.
+ *
+ * @remarks
+ * `createPayment` and `history` each stay active for the full lifetime of their respective spoke
+ * (`CreatePaymentFlow`, `ViewHistoryFlow`) rather than tracking the spoke's internal screen. The
+ * spoke's own machine drives its internal steps and breadcrumb trail; events it can't handle
+ * locally (e.g. the `landing` breadcrumb, or a terminal exit/cancel event) bubble up here to
+ * transition the hub back to `landing`.
+ *
+ * @internal
+ */
 export const paymentMachine = {
   landing: state<MachineTransition>(
     transition(
@@ -113,8 +81,8 @@ export const paymentMachine = {
       'createPayment',
       reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
         return {
-          ...updateBreadcrumbs('createPayment', ctx),
-          component: CreatePaymentContextual,
+          ...ctx,
+          component: CreatePaymentFlowContextual,
           alerts: undefined,
         }
       }),
@@ -128,8 +96,8 @@ export const paymentMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_VIEW>,
         ): PaymentFlowContextInterface => {
           return {
-            ...updateBreadcrumbs('history', ctx),
-            component: PaymentHistoryContextual,
+            ...ctx,
+            component: ViewHistoryFlowContextual,
             currentPaymentId: ev.payload.paymentId,
             alerts: undefined,
           }
@@ -170,84 +138,19 @@ export const paymentMachine = {
   ),
   createPayment: state<MachineTransition>(
     transition(
-      componentEvents.CONTRACTOR_PAYMENT_CREATED,
-      'paymentSummary',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATED>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('paymentSummary', ctx),
-            component: PaymentSummaryContextual,
-            createdPaymentGroupId: ev.payload.uuid,
-            alerts: undefined,
-          }
-        },
-      ),
-    ),
-    breadcrumbNavigateTransition('landing'),
-  ),
-  paymentSummary: state<MachineTransition>(
-    transition(
       componentEvents.CONTRACTOR_PAYMENT_EXIT,
       'landing',
       reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
         return {
           ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: PaymentListContextual,
-          createdPaymentGroupId: undefined,
           alerts: undefined,
         }
       }),
     ),
-    transition(
-      payrollWireEvents.PAYROLL_WIRE_FORM_DONE,
-      'paymentSummary',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof payrollWireEvents.PAYROLL_WIRE_FORM_DONE>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...ctx,
-            alerts: [
-              {
-                type: 'success',
-                title: 'wireDetailsSubmitted',
-                content: ev.payload.confirmationAlert.content,
-              },
-            ],
-          }
-        },
-      ),
-    ),
     breadcrumbNavigateTransition('landing'),
   ),
   history: state<MachineTransition>(
-    transition(
-      componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS,
-      'statement',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS
-          >,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('statement', ctx, {
-              contractorName: getContractorDisplayName(ev.payload.contractor),
-            }),
-            component: PaymentStatementContextual,
-            currentContractorUuid: ev.payload.contractor.uuid,
-            currentPaymentId: ev.payload.paymentGroupId,
-            alerts: undefined,
-          }
-        },
-      ),
-    ),
     transition(
       componentEvents.CONTRACTOR_PAYMENT_CANCEL,
       'landing',
@@ -265,10 +168,6 @@ export const paymentMachine = {
       }),
     ),
     breadcrumbNavigateTransition('landing'),
-  ),
-  statement: state<MachineTransition>(
-    breadcrumbNavigateTransition('landing'),
-    breadcrumbNavigateTransition('history'),
   ),
   informationRequests: state<MachineTransition>(
     transition(

@@ -34,10 +34,8 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * @components
  * - {@link PaymentsList}
- * - {@link CreatePayment}
- * - {@link PaymentSummary}
- * - {@link PaymentHistory}
- * - {@link PaymentStatement}
+ * - {@link CreatePaymentFlow}
+ * - {@link ViewHistoryFlow}
  * - {@link InformationRequests.InformationRequestsFlow | InformationRequestsFlow}
  *
  * @param props - See {@link PaymentFlowProps}.

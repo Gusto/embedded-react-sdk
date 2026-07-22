@@ -22,7 +22,9 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 | Component | Description |
 | --------- | ----------- |
+| [CreatePaymentFlow](create-payment-flow.md) | Guided flow to create a contractor payment and review the resulting summary. |
 | [PaymentFlow](payment-flow.md) | Hub for creating and managing contractor payments for a company. |
+| [ViewHistoryFlow](view-history-flow.md) | Guided flow to inspect a contractor payment group's history and drill into an individual contractor's payment statement. |
 
 ## 🧩 Blocks
 
