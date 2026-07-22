@@ -3043,9 +3043,13 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | `emptyState.onboarding.title` | `"There are no employees onboarding"` |
 | <a id="property-employeemanagementemployeelisthamburgertitle"></a> `hamburgerTitle` | `"Employee actions menu"` |
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
+| <a id="property-employeemanagementemployeelistlastdaybadge"></a> `lastDayBadge` | `"Last day {{date}}"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
+| <a id="property-employeemanagementemployeelistlastdaystatuslabel"></a> `lastDayStatusLabel` | `"Last day status"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
+| <a id="property-employeemanagementemployeelistrehirebadge"></a> `rehireBadge` | `"Rehire {{date}}"` |
 | <a id="property-employeemanagementemployeelistrehirecta"></a> `rehireCta` | `"Rehire employee"` |
+| <a id="property-employeemanagementemployeelistrehirestatuslabel"></a> `rehireStatusLabel` | `"Rehire status"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |
@@ -3329,6 +3333,43 @@ Translation keys for the `Employee.Management.Profile` i18n namespace.
 | <a id="property-employeemanagementprofilesocialsecuritynumber"></a> `socialSecurityNumber` | `"Social security number"` |
 | <a id="property-employeemanagementprofilestartdate"></a> `startDate` | `"Start date"` |
 | <a id="property-employeemanagementprofiletitle"></a> `title` | `"Basic details"` |
+
+***
+
+<a id="employeemanagementrehire"></a>
+
+### EmployeeManagementRehire
+
+Translation keys for the `Employee.Management.Rehire` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-employeemanagementrehireactions"></a> `actions` | |
+| `actions.cancel` | `"Cancel"` |
+| `actions.submit` | `"Schedule rehire"` |
+| `actions.submitting` | `"Scheduling rehire..."` |
+| <a id="property-employeemanagementrehireform"></a> `form` | |
+| `form.fileNewHireReport` | |
+| `form.fileNewHireReport.description` | `"Required in most states when rehiring after a separation of 60 days or more."` |
+| `form.fileNewHireReport.label` | `"File a new hire report"` |
+| `form.fileNewHireReport.options` | |
+| `form.fileNewHireReport.options.no` | `"No, do not file"` |
+| `form.fileNewHireReport.options.yes` | `"Yes, file a new hire report"` |
+| `form.startDate` | |
+| `form.startDate.description` | `"The day the employee returns to work."` |
+| `form.startDate.label` | `"Start date"` |
+| `form.workAddress` | |
+| `form.workAddress.description` | `"The address where this employee will report to work."` |
+| `form.workAddress.label` | `"Work address"` |
+| `form.workAddress.placeholder` | `"Choose a work address"` |
+| <a id="property-employeemanagementrehiresubtitle"></a> `subtitle` | `"Schedule a return to work date and confirm where this employee will work."` |
+| <a id="property-employeemanagementrehiretitle"></a> `title` | `"Rehire {{employeeName}}"` |
+| <a id="property-employeemanagementrehirevalidation"></a> `validation` | |
+| `validation.fileNewHireReportRequired` | `"Please select whether to file a new hire report"` |
+| `validation.startDateRequired` | `"Start date is required"` |
+| `validation.workAddressRequired` | `"Select a work address"` |
 
 ***
 
@@ -5125,6 +5166,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcesemployeemanagementpaymentmethodsplitform"></a> `Employee.Management.PaymentMethodSplitForm` | [`EmployeeManagementPaymentMethodSplitForm`](#employeemanagementpaymentmethodsplitform) |
 | <a id="property-resourcesemployeemanagementpaystubs"></a> `Employee.Management.Paystubs` | [`EmployeeManagementPaystubs`](#employeemanagementpaystubs) |
 | <a id="property-resourcesemployeemanagementprofile"></a> `Employee.Management.Profile` | [`EmployeeManagementProfile`](#employeemanagementprofile) |
+| <a id="property-resourcesemployeemanagementrehire"></a> `Employee.Management.Rehire` | [`EmployeeManagementRehire`](#employeemanagementrehire) |
 | <a id="property-resourcesemployeemanagementstatetaxes"></a> `Employee.Management.StateTaxes` | [`EmployeeManagementStateTaxes`](#employeemanagementstatetaxes) |
 | <a id="property-resourcesemployeemanagementworkaddress"></a> `Employee.Management.WorkAddress` | [`EmployeeManagementWorkAddress`](#employeemanagementworkaddress) |
 | <a id="property-resourcesemployeemanagementemployeelist"></a> `Employee.ManagementEmployeeList` | [`EmployeeManagementEmployeeList`](#employeemanagementemployeelist) |

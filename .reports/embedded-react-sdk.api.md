@@ -1414,6 +1414,8 @@ export const componentEvents: {
     readonly EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: "employee/onboardingDocumentsConfig/updated";
     readonly EMPLOYEE_DOCUMENTS_DONE: "employee/documents/done";
     readonly EMPLOYEE_REHIRE: "employee/rehire";
+    readonly EMPLOYEE_REHIRE_SCHEDULED: "employee/rehire/scheduled";
+    readonly EMPLOYEE_REHIRE_CANCELLED: "employee/rehire/cancelled";
     readonly EMPLOYEE_DASHBOARD_TAB_CHANGE: "employee/dashboard/tabChange";
     readonly EMPLOYEE_RETURN_TO_LIST: "employee/returnToList";
     readonly EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED: "employee/management/profile/editRequested";
@@ -2599,6 +2601,8 @@ declare namespace EmployeeManagement {
         CompensationAddAnotherJobFormProps,
         TerminateEmployee,
         TerminateEmployeeProps,
+        RehireEmployee,
+        RehireEmployeeProps,
         TerminationSummary,
         TerminationSummaryProps,
         TerminationFlow,
@@ -4452,6 +4456,15 @@ interface RecoveryCasesProps extends Omit<BaseComponentInterface<never>, 'onEven
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
 // @public
+function RehireEmployee(props: RehireEmployeeProps): JSX;
+
+// @public
+interface RehireEmployeeProps extends BaseComponentInterface<'Employee.Management.Rehire'> {
+    companyId: string;
+    employeeId: string;
+}
+
+// @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -4603,6 +4616,8 @@ export interface Resources {
     'Employee.Management.Paystubs': Translations.EmployeeManagementPaystubs
     // (undocumented)
     'Employee.Management.Profile': Translations.EmployeeManagementProfile
+    // (undocumented)
+    'Employee.Management.Rehire': Translations.EmployeeManagementRehire
     // (undocumented)
     'Employee.Management.StateTaxes': Translations.EmployeeManagementStateTaxes
     // (undocumented)

@@ -529,6 +529,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/create` | Fired when the user clicks "Add employee". | — |
 | `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
 | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
+| `employee/rehire` | Fired when the user selects "Rehire" on a row in the Dismissed tab. | `{ employeeId: string }` |
 | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
 
 <br />
@@ -540,6 +541,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | DELETE | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-employee) |
 | PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-employees-employee_id-onboarding_status) |
+| GET | [`/v1/employees/:employeeId/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-rehire) |
 
 ***
 
@@ -1112,6 +1114,74 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
+
+<a id="rehireemployee"></a>
+
+## RehireEmployee
+
+Standalone form for scheduling the rehire of a terminated employee — sets the return-to-work date,
+confirms the work address, and chooses whether to file a new hire report.
+
+### Remarks
+
+Rendered inside [EmployeeListFlow](employee-list-flow.md) when the user selects "Rehire" on a dismissed employee
+row. Submitting schedules the rehire and returns the user to the employee list.
+
+<br />
+
+### Example
+
+```tsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.RehireEmployee
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+<br />
+
+### RehireEmployeeProps
+
+<a id="rehireemployeeprops"></a>
+
+Props for [RehireEmployee](#rehireemployee).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeId` | `string` | The identifier of the terminated employee to rehire. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementRehire`](../../Translations/index.md#employeemanagementrehire)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/rehire/scheduled` | Fired after a rehire is successfully scheduled. | `{ employeeId: string, effectiveDate: string }` |
+| `employee/rehire/cancelled` | Fired when the user clicks Cancel. | `{ employeeId: string }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-locations) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
+| POST | [`/v1/employees/:employeeId/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-employees-employee_id-rehire) |
 
 ***
 

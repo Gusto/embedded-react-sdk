@@ -77,6 +77,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [EmployeeManagement.Profile](employee/management/blocks#profile) | Management surface for viewing and editing an employee's basic profile details after onboarding. |
 | [EmployeeManagement.ProfileCard](employee/management/blocks#profilecard) | Read-only card showing an employee's basic profile details with an Edit action. |
 | [EmployeeManagement.ProfileEditForm](employee/management/blocks#profileeditform) | Standalone edit form for an employee's basic profile details. |
+| [EmployeeManagement.RehireEmployee](employee/management/blocks#rehireemployee) | Standalone form for scheduling the rehire of a terminated employee — sets the return-to-work date, confirms the work address, and chooses whether to file a new hire report. |
 | [EmployeeManagement.StateTaxes](employee/management/blocks#statetaxes) | Standalone state-tax management flow for a given employee. Renders the read-only summary card and the edit form, switching between them as the partner-emitted events from [StateTaxesCard](employee/management/blocks.md#statetaxescard) and [StateTaxesEditForm](employee/management/blocks.md#statetaxeseditform) drive the internal state machine. |
 | [EmployeeManagement.StateTaxesCard](employee/management/blocks#statetaxescard) | Standalone read-only summary card showing an employee's per-state tax withholding answers. Fetches its own data and surfaces an Edit button that emits an event for the orchestrator to swap in the edit form. |
 | [EmployeeManagement.StateTaxesEditForm](employee/management/blocks#statetaxeseditform) | Standalone edit screen for the state-tax management flow. Renders the shared state-tax form against the `Employee.Management.StateTaxes` namespace and emits scoped management events on submit and cancel, so partner copy overrides on the management namespace do not leak into the onboarding flow. |
@@ -218,6 +219,7 @@ shape mixed into every public SDK feature component.
 - [`DeductionsEditFormProps`](employee/management/blocks.md#deductionseditformprops)
 - [`CompensationProps`](employee/management/blocks.md#compensationprops)
 - [`TerminateEmployeeProps`](employee/management/blocks.md#terminateemployeeprops)
+- [`RehireEmployeeProps`](employee/management/blocks.md#rehireemployeeprops)
 - [`TerminationSummaryProps`](employee/management/blocks.md#terminationsummaryprops)
 - [`TerminationFlowProps`](employee/management/termination-flow.md#terminationflowprops)
 - [`OnboardingFlowProps`](company/onboarding/onboarding-flow.md#onboardingflowprops)

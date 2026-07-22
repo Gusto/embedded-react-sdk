@@ -224,6 +224,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `EMPLOYEE_PAYMENT_METHOD_UPDATED` | `"employee/paymentMethod/updated"` |
 | `EMPLOYEE_PROFILE_DONE` | `"employee/profile/done"` |
 | `EMPLOYEE_REHIRE` | `"employee/rehire"` |
+| `EMPLOYEE_REHIRE_CANCELLED` | `"employee/rehire/cancelled"` |
+| `EMPLOYEE_REHIRE_SCHEDULED` | `"employee/rehire/scheduled"` |
 | `EMPLOYEE_RETURN_TO_LIST` | `"employee/returnToList"` |
 | `EMPLOYEE_SELF_ONBOARDING_START` | `"employee/selfOnboarding/start"` |
 | `EMPLOYEE_SIGN_FORM` | `"employee/forms/sign"` |
