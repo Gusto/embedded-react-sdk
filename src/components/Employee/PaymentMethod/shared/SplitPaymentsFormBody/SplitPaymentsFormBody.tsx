@@ -112,54 +112,58 @@ function SplitPaymentsFormBodyReady({
               disableScrollIntoView
             />
           )}
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h1" styledAs="h2">
-              {t('title')}
-            </Components.Heading>
-            <Components.Text variant="supporting">{t('splitDescription')}</Components.Text>
-          </Flex>
-          <Fields.SplitBy
-            label={t('splitByLabel')}
-            getOptionLabel={(value: SplitByValue) =>
-              value === SPLIT_BY.percentage ? t('percentageLabel') : t('amountLabel')
-            }
-          />
-          {splitBy === SPLIT_BY.amount ? (
-            <ReorderableList
-              key={`reorderable-amount-list-${splitBy}`}
-              label={t('draggableListLabel')}
-              items={Fields.splits.map(split => ({
-                label: split.name ?? '',
-                content: (
+          <Flex flexDirection="column" gap={32}>
+            <Flex flexDirection="column" gap={4}>
+              <Components.Heading as="h1" styledAs="h2">
+                {t('title')}
+              </Components.Heading>
+              <Components.Text variant="supporting">{t('splitDescription')}</Components.Text>
+            </Flex>
+            <Flex flexDirection="column" gap={20}>
+              <Fields.SplitBy
+                label={t('splitByLabel')}
+                getOptionLabel={(value: SplitByValue) =>
+                  value === SPLIT_BY.percentage ? t('percentageLabel') : t('amountLabel')
+                }
+              />
+              {splitBy === SPLIT_BY.amount ? (
+                <ReorderableList
+                  key={`reorderable-amount-list-${splitBy}`}
+                  label={t('draggableListLabel')}
+                  items={Fields.splits.map(split => ({
+                    label: split.name ?? '',
+                    content: (
+                      <split.Field
+                        key={`amount-${split.uuid}`}
+                        label={labelForSplit(split)}
+                        min={0}
+                        validationMessages={{
+                          REQUIRED: t('validations.amountError'),
+                          INVALID_AMOUNT: t('validations.amountError'),
+                          INVALID_PERCENTAGE: t('validations.amountError'),
+                        }}
+                        placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
+                      />
+                    ),
+                  }))}
+                  onReorder={handleReorder}
+                />
+              ) : (
+                Fields.splits.map(split => (
                   <split.Field
-                    key={`amount-${split.uuid}`}
+                    key={`percentage-${split.uuid}`}
                     label={labelForSplit(split)}
                     min={0}
                     validationMessages={{
-                      REQUIRED: t('validations.amountError'),
-                      INVALID_AMOUNT: t('validations.amountError'),
-                      INVALID_PERCENTAGE: t('validations.amountError'),
+                      REQUIRED: t('validations.percentageAmountError'),
+                      INVALID_AMOUNT: t('validations.percentageAmountError'),
+                      INVALID_PERCENTAGE: t('validations.percentageAmountError'),
                     }}
-                    placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
                   />
-                ),
-              }))}
-              onReorder={handleReorder}
-            />
-          ) : (
-            Fields.splits.map(split => (
-              <split.Field
-                key={`percentage-${split.uuid}`}
-                label={labelForSplit(split)}
-                min={0}
-                validationMessages={{
-                  REQUIRED: t('validations.percentageAmountError'),
-                  INVALID_AMOUNT: t('validations.percentageAmountError'),
-                  INVALID_PERCENTAGE: t('validations.percentageAmountError'),
-                }}
-              />
-            ))
-          )}
+                ))
+              )}
+            </Flex>
+          </Flex>
           <ActionsLayout>
             <Components.Button variant="secondary" type="button" onClick={onCancel}>
               {t('cancelCta')}
