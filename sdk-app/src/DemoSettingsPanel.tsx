@@ -48,6 +48,7 @@ const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolea
   { key: 'payrollId', label: 'Payroll ID' },
   { key: 'formId', label: 'Form ID' },
   { key: 'requestId', label: 'Request ID' },
+  { key: 'paymentId', label: 'Payment ID' },
 ]
 
 interface EntityComboboxProps {
@@ -391,7 +392,8 @@ export function DemoSettingsPanel({
     entities.contractorId !== confirmedSnapshot.current.contractorId ||
     entities.payrollId !== confirmedSnapshot.current.payrollId ||
     entities.requestId !== confirmedSnapshot.current.requestId ||
-    entities.formId !== confirmedSnapshot.current.formId
+    entities.formId !== confirmedSnapshot.current.formId ||
+    entities.paymentId !== confirmedSnapshot.current.paymentId
 
   const displayEnv = env === 'localzp' ? 'local' : env
 
@@ -768,6 +770,31 @@ export function DemoSettingsPanel({
                     request={buildEntityInspectRequest(
                       'payrollId',
                       entities.payrollId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
+            />
+
+            <EntityCombobox
+              label="Payment"
+              value={entities.paymentId}
+              options={entityCatalog.payments}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a payment id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('paymentId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.paymentId} ariaLabel="Copy payment ID" />
+                  <InspectIdButton
+                    label="Payment"
+                    request={buildEntityInspectRequest(
+                      'paymentId',
+                      entities.paymentId,
                       entities.companyId,
                     )}
                   />

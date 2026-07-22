@@ -10,6 +10,7 @@ export interface ManualConfig {
   payrollId: string
   formId: string
   requestId: string
+  paymentId: string
 }
 
 interface PersistedShape {
@@ -30,6 +31,7 @@ const EMPTY_CONFIG: ManualConfig = {
   payrollId: '',
   formId: '',
   requestId: '',
+  paymentId: '',
 }
 
 function readPersisted(): PersistedShape {

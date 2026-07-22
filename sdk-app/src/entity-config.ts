@@ -3,6 +3,7 @@ const ENTITY_ENDPOINTS = {
   contractorId: 'contractors',
   payrollId: 'payrolls',
   formId: 'forms',
+  paymentId: 'contractor_payment_groups',
 } as const
 
 type EntityIdKey = keyof typeof ENTITY_ENDPOINTS
@@ -86,6 +87,8 @@ export function buildEntityInspectRequest(
         : null
     case 'formId':
       return { kind: 'show', url: `/api/v1/forms/${id}` }
+    case 'paymentId':
+      return { kind: 'show', url: `/api/v1/contractor_payment_groups/${id}` }
     case 'requestId':
       return companyId
         ? {

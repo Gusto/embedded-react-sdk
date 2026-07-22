@@ -14,6 +14,7 @@ function getEnvDefaults(): EntityIds {
     payrollId: import.meta.env.VITE_PAYROLL_ID || '',
     requestId: import.meta.env.VITE_REQUEST_ID || '',
     formId: import.meta.env.VITE_FORM_ID || '',
+    paymentId: import.meta.env.VITE_PAYMENT_ID || '',
   }
 }
 
@@ -46,7 +47,7 @@ function saveToStorage(ids: EntityIds) {
 }
 
 function hasMissingEntities(ids: EntityIds): boolean {
-  return !ids.employeeId || !ids.contractorId || !ids.payrollId || !ids.formId
+  return !ids.employeeId || !ids.contractorId || !ids.payrollId || !ids.formId || !ids.paymentId
 }
 
 export function useEntities() {
@@ -60,6 +61,7 @@ export function useEntities() {
       payrollId: stored.payrollId || defaults.payrollId,
       requestId: stored.requestId || defaults.requestId,
       formId: stored.formId || defaults.formId,
+      paymentId: stored.paymentId || defaults.paymentId,
     }
   })
 
@@ -98,6 +100,9 @@ export function useEntities() {
               ? data.payrollId || prev.payrollId
               : prev.payrollId || data.payrollId || '',
             formId: overwrite ? data.formId || prev.formId : prev.formId || data.formId || '',
+            paymentId: overwrite
+              ? data.paymentId || prev.paymentId
+              : prev.paymentId || data.paymentId || '',
           }))
         }
       } catch {

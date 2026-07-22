@@ -22,7 +22,7 @@ import { Project, SyntaxKind, type Type } from 'ts-morph'
 const ROOT = resolve(import.meta.dirname, '../..')
 const OUTPUT = resolve(import.meta.dirname, '../src/generated-registry-data.ts')
 
-const ENTITY_ID_PATTERN = /^(company|employee|contractor|payroll|request)Id$/
+const ENTITY_ID_PATTERN = /^(company|employee|contractor|payroll|request|payment)Id$/
 
 const NAMESPACES: Record<string, string[]> = {
   CompanyOnboarding: ['src/components/Company/exports/companyOnboarding.ts'],

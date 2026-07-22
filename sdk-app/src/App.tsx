@@ -65,6 +65,7 @@ function entitiesFromManualConfig(config: ManualConfig): EntityIds {
     payrollId: config.payrollId,
     formId: config.formId,
     requestId: config.requestId,
+    paymentId: config.paymentId,
   }
 }
 
@@ -87,6 +88,7 @@ export function App() {
       manual.config.payrollId,
       manual.config.formId,
       manual.config.requestId,
+      manual.config.paymentId,
     ],
   )
   const entityCatalog = useEntityCatalog(isManual ? '' : entities.companyId)
@@ -212,6 +214,7 @@ export function App() {
           payrollId: result.entities.payrollId || '',
           formId: result.entities.formId || '',
           requestId: '',
+          paymentId: result.entities.paymentId || '',
         })
         window.location.reload()
       }

@@ -33,6 +33,13 @@ export interface RawInformationRequest {
   blocking_payroll?: boolean
 }
 
+export interface RawContractorPaymentGroup {
+  uuid?: string
+  check_date?: string
+  status?: string
+  totals?: { amount?: string }
+}
+
 export interface EntityOption {
   value: string
   primary: string
@@ -63,6 +70,11 @@ export function formatEmployee(employee: RawEmployee): string {
 
 export function formatForm(form: RawForm): string {
   return form.title || form.name || 'Form'
+}
+
+export function formatPaymentGroup(group: RawContractorPaymentGroup): string {
+  const date = group.check_date ? `Check date ${group.check_date}` : 'Payment'
+  return group.totals?.amount ? `${date} · $${group.totals.amount}` : date
 }
 
 export function formatInformationRequestType(type: string | null | undefined): string {
