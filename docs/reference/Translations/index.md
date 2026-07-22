@@ -3188,7 +3188,7 @@ Translation keys for the `Employee.Management.PaymentMethodSplitForm` i18n names
 | <a id="property-employeemanagementpaymentmethodsplitformsavecta"></a> `saveCta` | `"Save"` |
 | <a id="property-employeemanagementpaymentmethodsplitformsplitamountlabel"></a> `splitAmountLabel` | `"{{name}} ({{account_number}})"` |
 | <a id="property-employeemanagementpaymentmethodsplitformsplitbylabel"></a> `splitByLabel` | `"Split by"` |
-| <a id="property-employeemanagementpaymentmethodsplitformsplitdescription"></a> `splitDescription` | `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` |
+| <a id="property-employeemanagementpaymentmethodsplitformsplitdescription"></a> `splitDescription` | `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` |
 | <a id="property-employeemanagementpaymentmethodsplitformtitle"></a> `title` | `"Split employee paycheck"` |
 | <a id="property-employeemanagementpaymentmethodsplitformvalidations"></a> `validations` | |
 | `validations.amountError` | `"Please enter valid amount"` |
@@ -3456,7 +3456,7 @@ Translation keys for the `Employee.PaymentMethod` i18n namespace.
 | <a id="property-employeepaymentmethodsplitamountlabel"></a> `splitAmountLabel` | `"{{name}} ({{account_number}})"` |
 | <a id="property-employeepaymentmethodsplitbylabel"></a> `splitByLabel` | `"Split by"` |
 | <a id="property-employeepaymentmethodsplitcta"></a> `splitCta` | `"Split paycheck"` |
-| <a id="property-employeepaymentmethodsplitdescription"></a> `splitDescription` | `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` |
+| <a id="property-employeepaymentmethodsplitdescription"></a> `splitDescription` | `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` |
 | <a id="property-employeepaymentmethodsplittitle"></a> `splitTitle` | `"Split employee paycheck"` |
 | <a id="property-employeepaymentmethodsplitviewsuccessalert"></a> `splitViewSuccessAlert` | `"Payment split was successfully updated"` |
 | <a id="property-employeepaymentmethodsubmitcta"></a> `submitCta` | `"Continue"` |
@@ -3587,7 +3587,7 @@ Translation keys for the `Employee.SplitPaymentsFormBody` i18n namespace.
 | <a id="property-employeesplitpaymentsformbodysavecta"></a> `saveCta` | `"Save"` |
 | <a id="property-employeesplitpaymentsformbodysplitamountlabel"></a> `splitAmountLabel` | `"{{name}} ({{account_number}})"` |
 | <a id="property-employeesplitpaymentsformbodysplitbylabel"></a> `splitByLabel` | `"Split by"` |
-| <a id="property-employeesplitpaymentsformbodysplitdescription"></a> `splitDescription` | `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` |
+| <a id="property-employeesplitpaymentsformbodysplitdescription"></a> `splitDescription` | `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` |
 | <a id="property-employeesplitpaymentsformbodytitle"></a> `title` | `"Split employee paycheck"` |
 | <a id="property-employeesplitpaymentsformbodyvalidations"></a> `validations` | |
 | `validations.amountError` | `"Please enter valid amount"` |
