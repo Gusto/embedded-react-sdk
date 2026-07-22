@@ -99,7 +99,7 @@
     "@microsoft/api-extractor": "^7.58.11",
     "@playwright/test": "^1.61.1",
     "@release-it/conventional-changelog": "^11.0.1",
-    "@storybook/addon-a11y": "^10.5.0",
+    "@storybook/addon-a11y": "^10.5.3",
     "@storybook/addon-docs": "^10.5.3",
     "@storybook/addon-onboarding": "^10.5.3",
     "@storybook/react-vite": "^10.5.3",
