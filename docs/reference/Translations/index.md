@@ -3231,6 +3231,7 @@ Translation keys for the `Employee.Management.PaymentMethodBankForm` i18n namesp
 | <a id="property-employeemanagementpaymentmethodbankformroutingnumberdescription"></a> `routingNumberDescription` | `"(9 digits)"` |
 | <a id="property-employeemanagementpaymentmethodbankformroutingnumberlabel"></a> `routingNumberLabel` | `"Routing number"` |
 | <a id="property-employeemanagementpaymentmethodbankformsavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-employeemanagementpaymentmethodbankformtitle"></a> `title` | `"Add bank account"` |
 | <a id="property-employeemanagementpaymentmethodbankformvalidations"></a> `validations` | |
 | `validations.accountName` | `"Account name is required"` |
 | `validations.accountNumber` | `"Account number is a required field"` |
@@ -3485,6 +3486,7 @@ Translation keys for the `Employee.PaymentMethod` i18n namespace.
 | <a id="property-employeepaymentmethodactioncolumn"></a> `actionColumn` | `"Bank account actions"` |
 | <a id="property-employeepaymentmethodaddanothercta"></a> `addAnotherCta` | `"+ Add another bank account"` |
 | <a id="property-employeepaymentmethodaddbankaccountcta"></a> `addBankAccountCta` | `"Add bank account"` |
+| <a id="property-employeepaymentmethodaddbankaccountformtitle"></a> `addBankAccountFormTitle` | `"Add bank account"` |
 | <a id="property-employeepaymentmethodallocationcolumn"></a> `allocationColumn` | `"Allocation"` |
 | <a id="property-employeepaymentmethodamountlabel"></a> `amountLabel` | `"Fixed amount"` |
 | <a id="property-employeepaymentmethodbankaccountslistlabel"></a> `bankAccountsListLabel` | `"List of employee bank accounts"` |
