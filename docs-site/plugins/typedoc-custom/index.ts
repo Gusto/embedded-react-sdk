@@ -12,6 +12,7 @@ export function load(app: MarkdownApplication): void {
   app.renderer.on(RendererEvent.END, SDKRouter.emitCategoryFiles)
 
   app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKTheme.protectPropsInterfaces, 100)
+  app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKRouter.excludeUnreleasedTags, 60)
   app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKRouter.reparentDeprecated, 50)
   app.converter.on(Converter.EVENT_RESOLVE_END, SDKRouter.relocateI18nTypes, 5)
   app.converter.on(Converter.EVENT_RESOLVE_END, SDKRouter.groupTranslationInterfaces, 4)
