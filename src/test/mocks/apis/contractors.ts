@@ -40,6 +40,26 @@ export function handleGetContractorDocuments(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/contractors/:contractor_uuid/documents`, resolver)
 }
 
+export function handleDeleteContractor(resolver: HttpResponseResolver) {
+  return http.delete(`${API_BASE_URL}/v1/contractors/:contractor_uuid`, resolver)
+}
+
+export function handleScheduleContractorDismissal(resolver: HttpResponseResolver) {
+  return http.post(`${API_BASE_URL}/v1/contractors/:contractor_uuid/termination`, resolver)
+}
+
+export function handleCancelContractorDismissal(resolver: HttpResponseResolver) {
+  return http.delete(`${API_BASE_URL}/v1/contractors/:contractor_uuid/termination`, resolver)
+}
+
+export function handleScheduleContractorRehire(resolver: HttpResponseResolver) {
+  return http.post(`${API_BASE_URL}/v1/contractors/:contractor_uuid/rehire`, resolver)
+}
+
+export function handleCancelContractorRehire(resolver: HttpResponseResolver) {
+  return http.delete(`${API_BASE_URL}/v1/contractors/:contractor_uuid/rehire`, resolver)
+}
+
 const contractorFixture = {
   uuid: 'contractor-123',
   company_uuid: '123',

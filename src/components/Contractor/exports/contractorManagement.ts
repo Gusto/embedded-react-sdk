@@ -1,3 +1,8 @@
+export {
+  ManagementContractorList as ContractorList,
+  type ManagementContractorListProps,
+  type ContractorTab,
+} from '../ContractorList/management/ManagementContractorList'
 export { PaymentFlow, type PaymentFlowProps } from '../Payments/PaymentFlow'
 export { PaymentsList, type PaymentsListProps } from '../Payments/PaymentsList/PaymentsList'
 export { CreatePayment, type CreatePaymentProps } from '../Payments/CreatePayment/CreatePayment'

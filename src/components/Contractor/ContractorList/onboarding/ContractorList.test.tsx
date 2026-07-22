@@ -2,11 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { ContractorList } from './index'
+import { ContractorList } from './ContractorList'
 import { server } from '@/test/mocks/server'
 import {
   handleGetContractorsList,
   handleUpdateContractorOnboardingStatus,
+  handleDeleteContractor,
 } from '@/test/mocks/apis/contractors'
 import { contractorEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -84,6 +85,39 @@ describe('ContractorList hamburger menu edit/review CTA', () => {
     await user.click(screen.getByRole('button', { name: 'Open menu' }))
 
     expect(await screen.findByRole('menuitem', { name: 'Edit' })).toBeTruthy()
+  })
+})
+
+describe('ContractorList delete action', () => {
+  beforeEach(() => {
+    mockContractorWithStatus('onboarding_completed', true)
+  })
+
+  it('deletes the contractor only after confirming the dialog', async () => {
+    const deleteResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 204 }),
+    )
+    server.use(handleDeleteContractor(deleteResolver))
+
+    const onEvent = vi.fn()
+    const user = userEvent.setup()
+    renderWithProviders(<ContractorList companyId="company-123" onEvent={onEvent} />)
+
+    await screen.findByText('Ada Lovelace')
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Delete' }))
+
+    expect(deleteResolver).not.toHaveBeenCalled()
+    expect(await screen.findByRole('dialog')).toBeTruthy()
+
+    await user.click(screen.getByRole('button', { name: 'Delete contractor' }))
+
+    await waitFor(() => {
+      expect(deleteResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
+      contractorId: 'contractor-123',
+    })
   })
 })
 

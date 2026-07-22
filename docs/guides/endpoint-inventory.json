@@ -1955,6 +1955,16 @@
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/onboarding_status",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid/termination",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination"
         }
       ],
       "variables": [
@@ -2116,6 +2126,39 @@
       ],
       "variables": [
         "documentUuid"
+      ]
+    },
+    "ContractorManagement.ContractorList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid/termination",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
       ]
     },
     "ContractorManagement.PaymentsList": {

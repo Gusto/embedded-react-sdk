@@ -9,7 +9,10 @@ export {
 } from '../SelfOnboardingFlow/SelfOnboardingFlow'
 export { Landing, type LandingProps } from '../Landing'
 export { OnboardingSummary, type OnboardingSummaryProps } from '../OnboardingSummary'
-export { ContractorList, type ContractorListProps } from '../ContractorList'
+export {
+  ContractorList,
+  type ContractorListProps,
+} from '../ContractorList/onboarding/ContractorList'
 export {
   ContractorProfile,
   type ContractorProfileProps,
