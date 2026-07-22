@@ -1,0 +1,33 @@
+{
+  "title": "Rehire {{employeeName}}",
+  "subtitle": "Schedule a return to work date and confirm where this employee will work.",
+  "form": {
+    "startDate": {
+      "label": "Start date",
+      "description": "The day the employee returns to work."
+    },
+    "workAddress": {
+      "label": "Work address",
+      "description": "The address where this employee will report to work.",
+      "placeholder": "Choose a work address"
+    },
+    "fileNewHireReport": {
+      "label": "File a new hire report",
+      "description": "Required in most states when rehiring after a separation of 60 days or more.",
+      "options": {
+        "yes": "Yes, file a new hire report",
+        "no": "No, do not file"
+      }
+    }
+  },
+  "actions": {
+    "submit": "Schedule rehire",
+    "submitting": "Scheduling rehire...",
+    "cancel": "Cancel"
+  },
+  "validation": {
+    "startDateRequired": "Start date is required",
+    "workAddressRequired": "Select a work address",
+    "fileNewHireReportRequired": "Please select whether to file a new hire report"
+  }
+}

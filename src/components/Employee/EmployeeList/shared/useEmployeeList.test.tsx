@@ -155,7 +155,7 @@ describe('useEmployeeList', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(requestUrl).toContain('terminated=true')
+      expect(requestUrl).toContain('terminated_today=true')
     })
 
     it('should fetch active employees when employeeType is active', async () => {

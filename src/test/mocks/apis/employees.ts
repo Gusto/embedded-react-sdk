@@ -211,6 +211,38 @@ export const getEmployeeGarnishments = http.get(
   () => HttpResponse.json([]),
 )
 
+export function handleGetEmployeeRehire(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/employees/:employee_id/rehire`, resolver)
+}
+
+export const getEmployeeRehire = handleGetEmployeeRehire(
+  () => new HttpResponse(null, { status: 204 }),
+)
+
+export function handleCreateEmployeeRehire(resolver: HttpResponseResolver) {
+  return http.post(`${API_BASE_URL}/v1/employees/:employee_id/rehire`, resolver)
+}
+
+export const createEmployeeRehire = handleCreateEmployeeRehire(async ({ request }) => {
+  const requestBody = (await request.json()) as {
+    effective_date?: string
+    work_location_uuid?: string
+    file_new_hire_report?: boolean
+  }
+  return HttpResponse.json(
+    {
+      version: 'rehire-version-1',
+      effective_date: requestBody.effective_date,
+      work_location_uuid: requestBody.work_location_uuid,
+      file_new_hire_report: requestBody.file_new_hire_report,
+      employment_status: 'full_time',
+      employee_uuid: 'employee-123',
+      active: false,
+    },
+    { status: 201 },
+  )
+})
+
 export default [
   getCompanyEmployees(),
   getEmployee,
@@ -222,4 +254,5 @@ export default [
   updateEmployeeCompensation,
   updateEmployeeJob,
   deleteEmployeeJob,
+  getEmployeeRehire,
 ]
