@@ -16,7 +16,7 @@ export interface LocaleProps {
 }
 
 /**
- * React context backing {@link useLocale} and {@link useLocaleDateFormatter}.
+ * React context backing {@link useLocale}.
  *
  * @internal
  */
@@ -48,22 +48,4 @@ export const useLocale = () => {
     locale: values.locale ?? 'en-US',
     currency: values.currency ?? 'USD',
   }
-}
-/**
- * Returns an `Intl.DateTimeFormat` configured with the active locale and a long-month, numeric-year, two-digit-day style.
- *
- * @returns An `Intl.DateTimeFormat` instance bound to the provider's locale (or `en-US` if unset).
- * @throws An `Error` when called outside a {@link LocaleProvider}.
- * @internal
- */
-export const useLocaleDateFormatter = () => {
-  const values = useContext(LocaleContext)
-  if (!values) {
-    throw new Error('useLocaleDateFormatter used outside provider')
-  }
-  return new Intl.DateTimeFormat(values.locale ?? 'en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: '2-digit',
-  })
 }

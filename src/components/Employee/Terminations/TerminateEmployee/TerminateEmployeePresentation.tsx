@@ -9,6 +9,7 @@ import { Flex, ActionsLayout, DatePickerField, RadioGroupField } from '@/compone
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 interface TerminateEmployeePresentationProps {
   employeeName: string
@@ -45,9 +46,7 @@ export function TerminateEmployeePresentation({
   }
 
   const initialValues: Partial<TerminateEmployeeFormData> = {
-    lastDayOfWork: existingTermination?.effectiveDate
-      ? new Date(existingTermination.effectiveDate)
-      : undefined,
+    lastDayOfWork: normalizeToDate(existingTermination?.effectiveDate) ?? undefined,
     payrollOption: existingTermination
       ? getPayrollOptionFromTermination(existingTermination)
       : 'dismissalPayroll',

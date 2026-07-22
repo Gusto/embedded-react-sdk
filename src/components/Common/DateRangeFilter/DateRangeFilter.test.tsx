@@ -17,7 +17,6 @@ const defaultProps = {
   resetLabel: 'Reset',
   selectDatesLabel: 'Select dates',
   triggerLabel: 'Filter by date',
-  isFilterActive: false,
 }
 
 describe('DateRangeFilter', () => {
@@ -59,7 +58,6 @@ describe('DateRangeFilter', () => {
     renderWithProviders(
       <DateRangeFilter
         {...defaultProps}
-        isFilterActive={true}
         startDate={new Date(2025, 2, 10)}
         endDate={new Date(2025, 3, 16)}
         onClear={onClear}
@@ -113,11 +111,10 @@ describe('DateRangeFilter', () => {
     expect(onClear).not.toHaveBeenCalled()
   })
 
-  it('uses secondary variant and shows date range for trigger when filter is active', () => {
+  it('shows the date range on the trigger when both dates are set', () => {
     renderWithProviders(
       <DateRangeFilter
         {...defaultProps}
-        isFilterActive={true}
         startDate={new Date(2025, 2, 10)}
         endDate={new Date(2025, 3, 16)}
       />,
@@ -128,10 +125,11 @@ describe('DateRangeFilter', () => {
     expect(trigger).toHaveTextContent('Mar 10 – Apr 16')
   })
 
-  it('uses secondary variant for trigger when filter is not active', () => {
-    renderWithProviders(<DateRangeFilter {...defaultProps} isFilterActive={false} />)
+  it('shows the selectDatesLabel on the trigger when no dates are set', () => {
+    renderWithProviders(<DateRangeFilter {...defaultProps} />)
 
     const trigger = screen.getByRole('button', { name: 'Filter by date' })
     expect(trigger).toHaveAttribute('data-variant', 'secondary')
+    expect(trigger).toHaveTextContent('Select dates')
   })
 })

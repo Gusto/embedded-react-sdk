@@ -38,6 +38,9 @@ import { ContractorBankAccountAccountType } from '@gusto/embedded-api/models/com
 import { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody';
 import { ContractorCreateRequestBodyType } from '@gusto/embedded-api/models/components/contractorcreaterequestbody';
 import { ContractorCreateRequestBodyWageType } from '@gusto/embedded-api/models/components/contractorcreaterequestbody';
+import { ContractorOnboardingStatus as ContractorOnboardingStatus_2 } from '@gusto/embedded-api/models/components/contractoronboardingstatus';
+import { ContractorOnboardingStatusOnboardingStatus } from '@gusto/embedded-api/models/components/contractoronboardingstatus';
+import { ContractorOnboardingStatusOnboardingStep } from '@gusto/embedded-api/models/components/contractoronboardingstatus';
 import { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup';
 import { ContractorPaymentForGroupPaymentMethod } from '@gusto/embedded-api/models/components/contractorpaymentforgroup';
 import { ContractorPaymentForGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentforgrouppreview';
@@ -423,6 +426,9 @@ declare namespace APIModels {
         ContractorCreateRequestBody,
         ContractorCreateRequestBodyType,
         ContractorCreateRequestBodyWageType,
+        ContractorOnboardingStatusOnboardingStep,
+        ContractorOnboardingStatus_2 as ContractorOnboardingStatus,
+        ContractorOnboardingStatusOnboardingStatus,
         ContractorPaymentForGroup,
         ContractorPaymentForGroupPaymentMethod,
         ContractorPaymentForGroupStatus,
@@ -815,7 +821,7 @@ export interface BoxHeaderProps {
 
 // @public
 export interface BoxProps {
-    children: ReactNode;
+    children?: ReactNode;
     className?: string;
     footer?: ReactNode;
     header?: ReactNode;
@@ -1292,6 +1298,11 @@ export const componentEvents: {
     readonly CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: "contractor/documents/view";
     readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
+    readonly CONTRACTOR_VIEW: "contractor/view";
+    readonly CONTRACTOR_DISMISS: "contractor/dismiss";
+    readonly CONTRACTOR_REHIRE: "contractor/rehire";
+    readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
+    readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1747,7 +1758,7 @@ export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookField
 export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
-function ContractorList(props: ContractorListProps): JSX;
+function ContractorList(input: ContractorListProps): JSX;
 
 // @public
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
@@ -1757,6 +1768,9 @@ interface ContractorListProps extends BaseComponentInterface<'Contractor.Contrac
 
 declare namespace ContractorManagement {
     export {
+        ManagementContractorList as ContractorList,
+        ManagementContractorListProps,
+        ContractorTab,
         PaymentFlow,
         PaymentFlowProps,
         PaymentsList,
@@ -2024,6 +2038,9 @@ interface ContractorSubmitProps extends BaseComponentInterface<'Contractor.Submi
     contractorId: string;
     selfOnboarding?: boolean;
 }
+
+// @public
+type ContractorTab = 'active' | 'onboarding' | 'dismissed';
 
 // @public
 export const ContractorType: {
@@ -2901,6 +2918,7 @@ export interface GustoBaseProviderProps {
         children?: ReactNode;
     }) => JSX.Element;
     locale?: string;
+    nonce?: string;
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
@@ -3390,6 +3408,15 @@ interface LocationsListProps extends BaseComponentInterface<'Company.Locations'>
 // @public
 interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
+}
+
+// @public
+function ManagementContractorList(input: ManagementContractorListProps): JSX;
+
+// @public
+interface ManagementContractorListProps extends BaseComponentInterface<'Contractor.ManagementContractorList'> {
+    companyId: string;
+    initialTab?: ContractorTab;
 }
 
 // @public
@@ -4501,6 +4528,8 @@ export interface Resources {
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)
     'Contractor.Landing': Translations.ContractorLanding
+    // (undocumented)
+    'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
     // (undocumented)
     'Contractor.NewHireReport': Translations.ContractorNewHireReport
     // (undocumented)
@@ -5969,6 +5998,9 @@ export interface UseJobFormReady extends BaseFormHookReady<JobFieldsMetadata, Jo
 
 // @public
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
+
+// @public
+export const useNonce: () => string | undefined;
 
 // @public
 export function usePaymentMethodForm(input: UsePaymentMethodFormProps): HookLoadingResult | UsePaymentMethodFormReady;

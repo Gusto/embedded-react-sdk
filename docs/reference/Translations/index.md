@@ -1272,6 +1272,11 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | <a id="property-contractorcontractorlistcontinuecta"></a> `continueCta` | `"Continue"` |
 | <a id="property-contractorcontractorlistcontractorlistlabel"></a> `contractorListLabel` | `"A list of contractors"` |
 | <a id="property-contractorcontractorlistdeletecta"></a> `deleteCta` | `"Delete"` |
+| <a id="property-contractorcontractorlistdeletedialog"></a> `deleteDialog` | |
+| `deleteDialog.cancelCta` | `"Cancel"` |
+| `deleteDialog.confirmCta` | `"Delete contractor"` |
+| `deleteDialog.description` | `"This will permanently delete this contractor from your account. This action cannot be undone."` |
+| `deleteDialog.title` | `"Delete contractor?"` |
 | <a id="property-contractorcontractorlisteditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-contractorcontractorlistemptytabledescription"></a> `emptyTableDescription` | `"Add contractors to get them setup for payroll."` |
 | <a id="property-contractorcontractorlistemptytabletitle"></a> `emptyTableTitle` | `"You haven't added any contractors yet"` |
@@ -1330,6 +1335,70 @@ Translation keys for the `Contractor.Landing` i18n namespace.
 | `steps.paymentMethod` | `"Set up your payment method"` |
 | `steps.profile` | `"Complete your profile and tax information"` |
 | <a id="property-contractorlandingstepssubtitle"></a> `stepsSubtitle` | `"Here's what you'll need to do:"` |
+
+***
+
+<a id="contractormanagementcontractorlist"></a>
+
+### ContractorManagementContractorList
+
+Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementcontractorlistaddcontractorcta"></a> `addContractorCta` | `"Add contractor"` |
+| <a id="property-contractormanagementcontractorlistcanceldismissalcta"></a> `cancelDismissalCta` | `"Cancel dismissal"` |
+| <a id="property-contractormanagementcontractorlistcanceldismissaldialog"></a> `cancelDismissalDialog` | |
+| `cancelDismissalDialog.cancelCta` | `"No, go back"` |
+| `cancelDismissalDialog.confirmCta` | `"Yes, cancel dismissal"` |
+| `cancelDismissalDialog.description` | `"This contractor's scheduled dismissal will be removed and they will remain active."` |
+| `cancelDismissalDialog.title` | `"Cancel dismissal?"` |
+| <a id="property-contractormanagementcontractorlistcancelrehirecta"></a> `cancelRehireCta` | `"Cancel rehire"` |
+| <a id="property-contractormanagementcontractorlistcancelrehiredialog"></a> `cancelRehireDialog` | |
+| `cancelRehireDialog.cancelCta` | `"No, go back"` |
+| `cancelRehireDialog.confirmCta` | `"Yes, cancel rehire"` |
+| `cancelRehireDialog.description` | `"This contractor's scheduled rehire will be removed."` |
+| `cancelRehireDialog.title` | `"Cancel rehire?"` |
+| <a id="property-contractormanagementcontractorlistcancelselfonboardingcta"></a> `cancelSelfOnboardingCta` | `"Cancel self-onboarding"` |
+| <a id="property-contractormanagementcontractorlistcontinuecta"></a> `continueCta` | `"Continue"` |
+| <a id="property-contractormanagementcontractorlistcontractorlistlabel"></a> `contractorListLabel` | `"List of contractors"` |
+| <a id="property-contractormanagementcontractorlistdismissaldatelabel"></a> `dismissalDateLabel` | `"Dismissal date"` |
+| <a id="property-contractormanagementcontractorlistdismisscta"></a> `dismissCta` | `"Dismiss contractor"` |
+| <a id="property-contractormanagementcontractorlisteditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementcontractorlistemptystate"></a> `emptyState` | |
+| `emptyState.active` | |
+| `emptyState.active.description` | `"Contractors who have completed onboarding will appear here"` |
+| `emptyState.active.title` | `"There are no active contractors"` |
+| `emptyState.dismissed` | |
+| `emptyState.dismissed.description` | `"Dismissed contractors will appear here"` |
+| `emptyState.dismissed.title` | `"There are no dismissed contractors"` |
+| `emptyState.onboarding` | |
+| `emptyState.onboarding.description` | `"Contractors currently being onboarded will appear here"` |
+| `emptyState.onboarding.title` | `"There are no contractors onboarding"` |
+| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Contractor actions menu"` |
+| <a id="property-contractormanagementcontractorlistlastdaybadge"></a> `lastDayBadge` | `"Last day {{date}}"` |
+| <a id="property-contractormanagementcontractorlistnamelabel"></a> `nameLabel` | `"Contractor name"` |
+| <a id="property-contractormanagementcontractorlistonboardingstatuslabel"></a> `onboardingStatusLabel` | `"Onboarding status"` |
+| <a id="property-contractormanagementcontractorlistratehourly"></a> `rateHourly` | `"Hourly — {{rate}}/hr"` |
+| <a id="property-contractormanagementcontractorlistratelabel"></a> `rateLabel` | `"Rate"` |
+| <a id="property-contractormanagementcontractorlistrehirecta"></a> `rehireCta` | `"Rehire contractor"` |
+| <a id="property-contractormanagementcontractorlistremovecta"></a> `removeCta` | `"Remove"` |
+| <a id="property-contractormanagementcontractorlistremovedialog"></a> `removeDialog` | |
+| `removeDialog.cancelCta` | `"Cancel"` |
+| `removeDialog.confirmCta` | `"Remove contractor"` |
+| `removeDialog.description` | `"This will permanently delete this contractor from your account. This action cannot be undone."` |
+| `removeDialog.title` | `"Remove contractor?"` |
+| <a id="property-contractormanagementcontractorlistreviewcta"></a> `reviewCta` | `"Review"` |
+| <a id="property-contractormanagementcontractorliststartsbadge"></a> `startsBadge` | `"Starts {{date}}"` |
+| <a id="property-contractormanagementcontractorlisttabs"></a> `tabs` | |
+| `tabs.active` | `"Active"` |
+| `tabs.dismissed` | `"Dismissed"` |
+| `tabs.onboarding` | `"Onboarding"` |
+| <a id="property-contractormanagementcontractorlisttabslabel"></a> `tabsLabel` | `"Contractor status tabs"` |
+| <a id="property-contractormanagementcontractorlisttitle"></a> `title` | `"Contractors"` |
+| <a id="property-contractormanagementcontractorlistviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
 
 ***
 
@@ -4463,8 +4532,12 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | `dateFilter.startDate` | `"From"` |
 | `dateFilter.trigger` | `"Filter by date"` |
 | <a id="property-payrollpayrollhistoryemptystate"></a> `emptyState` | |
-| `emptyState.description` | `"When you run payrolls, they'll appear here for easy reference."` |
-| `emptyState.title` | `"No payroll history"` |
+| `emptyState.default` | |
+| `emptyState.default.description` | `"When you run payrolls, they'll appear here for easy reference."` |
+| `emptyState.default.title` | `"No payroll history"` |
+| `emptyState.filtered` | |
+| `emptyState.filtered.description` | `"Try adjusting the date filter to see more payrolls."` |
+| `emptyState.filtered.title` | `"No payrolls in this date range"` |
 | <a id="property-payrollpayrollhistorylabels"></a> `labels` | |
 | `labels.noAmount` | `"—"` |
 | <a id="property-payrollpayrollhistorymenu"></a> `menu` | |
@@ -4526,7 +4599,12 @@ Translation keys for the `Payroll.PayrollList` i18n namespace.
 | `deletePayrollDialog.confirmCta` | `"Yes, cancel payroll"` |
 | `deletePayrollDialog.title` | `"Cancel {{payPeriod}} payroll?"` |
 | <a id="property-payrollpayrolllistdeletesuccessalert"></a> `deleteSuccessAlert` | `"Payroll cancelled"` |
-| <a id="property-payrollpayrolllistemptystate"></a> `emptyState` | `"All payrolls have been processed"` |
+| <a id="property-payrollpayrolllistemptystate"></a> `emptyState` | |
+| `emptyState.default` | |
+| `emptyState.default.title` | `"All payrolls have been processed"` |
+| `emptyState.filtered` | |
+| `emptyState.filtered.description` | `"Try adjusting the date filter to see more payrolls."` |
+| `emptyState.filtered.title` | `"No payrolls in this date range"` |
 | <a id="property-payrollpayrolllistoffcyclecta"></a> `offCycleCta` | |
 | `offCycleCta.button` | `"Run off-cycle payroll"` |
 | `offCycleCta.description` | `"You can pay an employee outside of your normal payroll schedule by running an off-cycle payroll."` |
@@ -5018,6 +5096,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
 | <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |

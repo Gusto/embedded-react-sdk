@@ -14,5 +14,11 @@
   },
   "title": "Contractors",
   "continueCta": "Continue",
-  "progressBarCta": "Back to contractors"
+  "progressBarCta": "Back to contractors",
+  "deleteDialog": {
+    "title": "Delete contractor?",
+    "description": "This will permanently delete this contractor from your account. This action cannot be undone.",
+    "confirmCta": "Delete contractor",
+    "cancelCta": "Cancel"
+  }
 }

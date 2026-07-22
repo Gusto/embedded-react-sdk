@@ -154,7 +154,7 @@ Analyze the diff for the following, in addition to the learned rules:
 
 ### Step 4: Output
 
-````
+````markdown
 # PR Review: <title>
 
 **PR:** #<number> · **Author:** <author> · **Branch:** `<head>` → `<base>`
@@ -162,13 +162,14 @@ Analyze the diff for the following, in addition to the learned rules:
 ---
 
 ## Critical
+
 <!-- Must fix before merge: bugs, security issues, broken a11y on interactive elements -->
 
 - **[rule or category]** `path/to/file.tsx:42` — <what's wrong and why it matters>
   ```ts
   // Fix:
   <corrected snippet>
-````
+  ```
 
 ## Important
 
@@ -195,8 +196,7 @@ Analyze the diff for the following, in addition to the learned rules:
 ## Assessment
 
 <One paragraph: what the PR accomplishes, main quality signal, merge recommendation.>
-
-```
+````
 
 ## Rules
 
@@ -205,4 +205,3 @@ Analyze the diff for the following, in addition to the learned rules:
 - If the diff is large (600+ lines), focus on Critical and Important only
 - Never omit the Strengths section
 - Tag each finding with the LEARNED-NNN rule ID when one applies (e.g., `[LEARNED-002]`)
-```

@@ -94,7 +94,7 @@ export const PayrollListPresentation = ({
   dateRangeFilter,
   hasUnprocessedTransitions = false,
 }: PayrollListPresentationProps) => {
-  const { Box, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Box, BoxHeader, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
@@ -251,8 +251,8 @@ export const PayrollListPresentation = ({
         <Flex justifyContent="space-between" alignItems="center">
           <Heading as="h2">{t('title')}</Heading>
           <DateRangeFilter
-            startDate={dateRangeFilter.filterStartDate}
-            endDate={dateRangeFilter.filterEndDate}
+            startDate={dateRangeFilter.startDate}
+            endDate={dateRangeFilter.endDate}
             onStartDateChange={dateRangeFilter.handleStartDateChange}
             onEndDateChange={dateRangeFilter.handleEndDateChange}
             onClear={dateRangeFilter.handleClearFilter}
@@ -263,7 +263,6 @@ export const PayrollListPresentation = ({
             resetLabel={t('dateFilter.reset')}
             selectDatesLabel={t('dateFilter.selectDates')}
             triggerLabel={t('dateFilter.trigger')}
-            isFilterActive={dateRangeFilter.isFilterActive}
             maxEndDate={dateRangeFilter.getMaxEndDate()}
             minStartDate={dateRangeFilter.getMinStartDate()}
           />
@@ -272,7 +271,16 @@ export const PayrollListPresentation = ({
         <DataView
           breakAt="large"
           pagination={pagination}
-          emptyState={() => <EmptyData title={t('emptyState')} />}
+          emptyState={() =>
+            dateRangeFilter.isModified ? (
+              <EmptyData
+                title={t('emptyState.filtered.title')}
+                description={t('emptyState.filtered.description')}
+              />
+            ) : (
+              <EmptyData title={t('emptyState.default.title')} />
+            )
+          }
           data={payrolls}
           columns={[
             {
@@ -453,26 +461,21 @@ export const PayrollListPresentation = ({
         >
           {t('deletePayrollDialog.body')}
         </Dialog>
-        <Box className={styles.offCycleCta}>
-          <Flex
-            flexDirection={{ base: 'column', medium: 'row' }}
-            justifyContent="space-between"
-            alignItems={{ base: 'stretch', medium: 'center' }}
-            gap={16}
-          >
-            <Flex flexDirection="column" gap={4}>
-              <Text weight="bold">{t('offCycleCta.title')}</Text>
-              <Text variant="supporting" size="sm">
-                {t('offCycleCta.description')}
-              </Text>
-            </Flex>
-            <div className={styles.offCycleCtaButton}>
+        <div className={styles.offCycleCta}>
+          <Box
+            header={
+              <BoxHeader
+                title={t('offCycleCta.title')}
+                description={t('offCycleCta.description')}
+              />
+            }
+            footer={
               <Button variant="secondary" onClick={onRunOffCyclePayroll}>
                 {t('offCycleCta.button')}
               </Button>
-            </div>
-          </Flex>
-        </Box>
+            }
+          />
+        </div>
       </Flex>
     </div>
   )

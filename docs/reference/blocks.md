@@ -33,6 +33,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [CompanyOnboarding.StateTaxes](company/onboarding/blocks#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
 | [CompanyOnboarding.StateTaxesForm](company/onboarding/blocks#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
 | [CompanyOnboarding.StateTaxesList](company/onboarding/blocks#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
+| [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [ContractorManagement.PaymentsList](contractor/management/blocks#paymentslist) | Displays a list of contractor payment groups for a company. |
@@ -249,6 +250,7 @@ shape mixed into every public SDK feature component.
 - [`ContractorSubmitProps`](contractor/onboarding/blocks.md#contractorsubmitprops)
 - [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
 - [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
+- [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)

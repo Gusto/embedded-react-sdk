@@ -41,6 +41,7 @@ export interface Resources {
   'Contractor.ContractorList': Translations.ContractorContractorList
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
+  'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
@@ -1777,6 +1778,16 @@ export namespace Translations {
     continueCta: string
     /** @defaultValue `"Back to contractors"` */
     progressBarCta: string
+    deleteDialog: {
+      /** @defaultValue `"Delete contractor?"` */
+      title: string
+      /** @defaultValue `"This will permanently delete this contractor from your account. This action cannot be undone."` */
+      description: string
+      /** @defaultValue `"Delete contractor"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+    }
   }
   /** Translation keys for the `Contractor.DocumentsList` i18n namespace. */
   export interface ContractorDocumentsList {
@@ -1829,6 +1840,111 @@ export namespace Translations {
     getStartedCta: string
     /** @defaultValue `"there"` */
     fallbackName: string
+  }
+  /** Translation keys for the `Contractor.ManagementContractorList` i18n namespace. */
+  export interface ContractorManagementContractorList {
+    /** @defaultValue `"Contractors"` */
+    title: string
+    /** @defaultValue `"Add contractor"` */
+    addContractorCta: string
+    /** @defaultValue `"Contractor status tabs"` */
+    tabsLabel: string
+    tabs: {
+      /** @defaultValue `"Active"` */
+      active: string
+      /** @defaultValue `"Onboarding"` */
+      onboarding: string
+      /** @defaultValue `"Dismissed"` */
+      dismissed: string
+    }
+    /** @defaultValue `"Contractor name"` */
+    nameLabel: string
+    /** @defaultValue `"Rate"` */
+    rateLabel: string
+    /** @defaultValue `"Onboarding status"` */
+    onboardingStatusLabel: string
+    /** @defaultValue `"Dismissal date"` */
+    dismissalDateLabel: string
+    /** @defaultValue `"Hourly — {{rate}}/hr"` */
+    rateHourly: string
+    /** @defaultValue `"Starts {{date}}"` */
+    startsBadge: string
+    /** @defaultValue `"Last day {{date}}"` */
+    lastDayBadge: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Review"` */
+    reviewCta: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    /** @defaultValue `"View details"` */
+    viewDetailsCta: string
+    /** @defaultValue `"Remove"` */
+    removeCta: string
+    /** @defaultValue `"Dismiss contractor"` */
+    dismissCta: string
+    /** @defaultValue `"Rehire contractor"` */
+    rehireCta: string
+    /** @defaultValue `"Cancel self-onboarding"` */
+    cancelSelfOnboardingCta: string
+    /** @defaultValue `"Cancel dismissal"` */
+    cancelDismissalCta: string
+    /** @defaultValue `"Cancel rehire"` */
+    cancelRehireCta: string
+    /** @defaultValue `"Contractor actions menu"` */
+    hamburgerTitle: string
+    /** @defaultValue `"List of contractors"` */
+    contractorListLabel: string
+    emptyState: {
+      active: {
+        /** @defaultValue `"There are no active contractors"` */
+        title: string
+        /** @defaultValue `"Contractors who have completed onboarding will appear here"` */
+        description: string
+      }
+      onboarding: {
+        /** @defaultValue `"There are no contractors onboarding"` */
+        title: string
+        /** @defaultValue `"Contractors currently being onboarded will appear here"` */
+        description: string
+      }
+      dismissed: {
+        /** @defaultValue `"There are no dismissed contractors"` */
+        title: string
+        /** @defaultValue `"Dismissed contractors will appear here"` */
+        description: string
+      }
+    }
+    removeDialog: {
+      /** @defaultValue `"Remove contractor?"` */
+      title: string
+      /** @defaultValue `"This will permanently delete this contractor from your account. This action cannot be undone."` */
+      description: string
+      /** @defaultValue `"Remove contractor"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+    }
+    cancelDismissalDialog: {
+      /** @defaultValue `"Cancel dismissal?"` */
+      title: string
+      /** @defaultValue `"This contractor's scheduled dismissal will be removed and they will remain active."` */
+      description: string
+      /** @defaultValue `"Yes, cancel dismissal"` */
+      confirmCta: string
+      /** @defaultValue `"No, go back"` */
+      cancelCta: string
+    }
+    cancelRehireDialog: {
+      /** @defaultValue `"Cancel rehire?"` */
+      title: string
+      /** @defaultValue `"This contractor's scheduled rehire will be removed."` */
+      description: string
+      /** @defaultValue `"Yes, cancel rehire"` */
+      confirmCta: string
+      /** @defaultValue `"No, go back"` */
+      cancelCta: string
+    }
   }
   /** Translation keys for the `Contractor.NewHireReport` i18n namespace. */
   export interface ContractorNewHireReport {
@@ -6459,10 +6575,18 @@ export namespace Translations {
       cancelPayroll: string
     }
     emptyState: {
-      /** @defaultValue `"No payroll history"` */
-      title: string
-      /** @defaultValue `"When you run payrolls, they'll appear here for easy reference."` */
-      description: string
+      default: {
+        /** @defaultValue `"No payroll history"` */
+        title: string
+        /** @defaultValue `"When you run payrolls, they'll appear here for easy reference."` */
+        description: string
+      }
+      filtered: {
+        /** @defaultValue `"No payrolls in this date range"` */
+        title: string
+        /** @defaultValue `"Try adjusting the date filter to see more payrolls."` */
+        description: string
+      }
     }
     labels: {
       /** @defaultValue `"—"` */
@@ -6512,8 +6636,18 @@ export namespace Translations {
   }
   /** Translation keys for the `Payroll.PayrollList` i18n namespace. */
   export interface PayrollPayrollList {
-    /** @defaultValue `"All payrolls have been processed"` */
-    emptyState: string
+    emptyState: {
+      default: {
+        /** @defaultValue `"All payrolls have been processed"` */
+        title: string
+      }
+      filtered: {
+        /** @defaultValue `"No payrolls in this date range"` */
+        title: string
+        /** @defaultValue `"Try adjusting the date filter to see more payrolls."` */
+        description: string
+      }
+    }
     /** @defaultValue `"Upcoming payroll"` */
     title: string
     dateFilter: {

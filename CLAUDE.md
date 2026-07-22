@@ -116,6 +116,27 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api` queries or screen-level submit state in the same error surface.
 
+### Date handling
+
+The API models calendar dates without a time component (birthdays, effective dates, deadlines) as plain `YYYY-MM-DD` strings. Two raw JS APIs silently corrupt them by conflating UTC and local time — this caused real off-by-one bugs across the SDK (see #2429, #2430):
+
+- `new Date("YYYY-MM-DD")` parses the string as **UTC midnight**. Formatting or reading it back with local date components (`.getMonth()`, `date.toLocaleDateString()`, a default `Intl.DateTimeFormat` with no `timeZone`) rolls the displayed day back by one in any timezone behind UTC (all of the US).
+- `someLocalDate.toISOString()` converts a local-midnight `Date` (e.g. from a `DatePickerField`) to UTC, which shifts the serialized day back by one in any timezone ahead of UTC (most of Europe, Asia, Africa, Australia).
+
+**Never call `new Date(dateOnlyString)` or `date.toISOString().split('T')[0]` on a date-only value.** Always go through `src/helpers/dateFormatting.ts`: `normalizeToDate()` to parse a `YYYY-MM-DD` string into a `Date`, `formatDateToStringDate()` to serialize a `Date` back to `YYYY-MM-DD`, or the locale-aware wrappers via `useDateFormatter()` for display. This applies equally to one-off `zod` preprocessors/transforms on a `Date` field (e.g. `coerceToISODate` in `partner-hook-utils/form/preprocessors.ts`) — route through the same helpers rather than reimplementing with `toISOString()`.
+
+```tsx
+// BAD — new Date(str) parses as UTC midnight; toISOString() re-converts to UTC.
+// Both silently shift the calendar day by one in some timezone.
+const date = new Date(existingRecord.effectiveDate)
+const wireValue = pickedDate.toISOString().split('T')[0]
+
+// GOOD — routes through the timezone-safe helpers used everywhere else in the SDK.
+import { normalizeToDate, formatDateToStringDate } from '@/helpers/dateFormatting'
+const date = normalizeToDate(existingRecord.effectiveDate)
+const wireValue = formatDateToStringDate(pickedDate)
+```
+
 ### Component & Feature Conventions
 
 Durable conventions that apply SDK-wide to any component or feature:

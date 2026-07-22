@@ -51,6 +51,10 @@ export {
   ContractorCreateRequestBodyType,
   ContractorCreateRequestBodyWageType,
 } from '@gusto/embedded-api/models/components/contractorcreaterequestbody'
+/** `ContractorOnboardingStatusOnboardingStep` entity from the Gusto Embedded API. */
+export type { ContractorOnboardingStatusOnboardingStep } from '@gusto/embedded-api/models/components/contractoronboardingstatus'
+export type { ContractorOnboardingStatus } from '@gusto/embedded-api/models/components/contractoronboardingstatus'
+export { ContractorOnboardingStatusOnboardingStatus } from '@gusto/embedded-api/models/components/contractoronboardingstatus'
 export type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
 export {
   ContractorPaymentForGroupPaymentMethod,

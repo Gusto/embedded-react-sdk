@@ -62,6 +62,16 @@ import {
 const API_MODELS_NAMESPACE = 'APIModels'
 
 /**
+ * `@alpha`/`@beta` are TypeDoc modifier tags with no built-in exclusion
+ * behavior (unlike `@internal`, which `excludeInternal` strips) — left alone
+ * they render as an "Alpha"/"Beta" badge instead of disappearing. Kept as
+ * `@alpha`/`@beta` in source (rather than `@internal`) so API Extractor's
+ * release-tag report ({@link file://../../../.reports/embedded-react-sdk.api.md})
+ * still classifies these exports correctly; this list only controls the docs site.
+ */
+const UNRELEASED_MODIFIER_TAGS = ['@alpha', '@beta'] as const
+
+/**
  * The `Translations` namespace (referenced by the `Resources` map interface in
  * src/i18n/types.d.ts) holding each i18n namespace's overridable message keys,
  * browsable as `Translations.CompanyAddresses`.
@@ -556,6 +566,32 @@ export class SDKRouter extends MemberRouter {
   }
 
   /**
+   * Remove reflections (and their children) tagged {@link UNRELEASED_MODIFIER_TAGS}
+   * from the project so they never reach a rendered page. Must run before
+   * GroupPlugin builds `project.groups` (RESOLVE_END, priority -100); any
+   * RESOLVE_BEGIN priority satisfies that.
+   *
+   * For an exported function, TypeDoc attaches the JSDoc comment (and its
+   * `@alpha`/`@beta` tag) to the call signature, not the parent
+   * DeclarationReflection — so a signature-only check would strip the docs
+   * but leave an empty page behind. Check each declaration's own comment and
+   * its signatures' comments, and always remove the declaration itself.
+   */
+  static excludeUnreleasedTags(context: Context): void {
+    const { project } = context
+    const hasUnreleasedTag = (comment?: Comment): boolean =>
+      !!comment && UNRELEASED_MODIFIER_TAGS.some(tag => comment.hasModifier(tag))
+
+    const unreleased = Object.values(project.reflections).filter(
+      reflection =>
+        reflection instanceof DeclarationReflection &&
+        (hasUnreleasedTag(reflection.comment) ||
+          reflection.signatures?.some(sig => hasUnreleasedTag(sig.comment))),
+    )
+    unreleased.forEach(reflection => project.removeReflection(reflection))
+  }
+
+  /**
    * Relocate the i18n *types* ({@link I18N_RELOCATION}) from the project index
    * onto the `Translations` page, keeping each type's natural `@group` section
    * (e.g. "Utility types"). Selected by source path + `@group` rather than by
@@ -643,13 +679,28 @@ export class SDKRouter extends MemberRouter {
   //   Hooks ending with Form      → Form hooks  (Data hooks / Utility hooks come from JSDoc)
   //   Other hooks                 → Hooks (fallback)
   // Skips reflections that already carry an explicit @group tag from their JSDoc.
-  // NOTE: TypeDoc places @group block tags on SignatureReflections, not the parent
-  // DeclarationReflection. We copy any signature-level @group to the declaration so
-  // the skip check fires and groupSyntheticMembers can read the group from member.comment.
+  // NOTE: TypeDoc places @group (and @page) block tags on SignatureReflections, not the
+  // parent DeclarationReflection. We copy any signature-level tag to the declaration so
+  // the skip check fires and groupSyntheticMembers/standalonePageFromSources can read it
+  // from member.comment — the latter is why a plain function-typed hook (e.g. useNonce)
+  // needs the @page copy too: without it, standalonePageFromSources never sees the tag
+  // and the hook silently falls through the domain-hooks heuristic since it has no
+  // domain source directory.
   static stampGroupTags(context: Context): void {
     for (const reflection of Object.values(context.project.reflections)) {
       if (!(reflection instanceof DeclarationReflection)) continue
       if (reflection.kind !== ReflectionKind.Function) continue
+
+      if (!reflection.comment?.blockTags.some(t => t.tag === '@page')) {
+        const sigPageTag = reflection.signatures
+          ?.flatMap(sig => sig.comment?.blockTags ?? [])
+          .find(t => t.tag === '@page')
+        if (sigPageTag) {
+          if (!reflection.comment) reflection.comment = new Comment()
+          reflection.comment.blockTags.push(sigPageTag)
+        }
+      }
+
       if (reflection.comment?.blockTags.some(t => t.tag === '@group')) continue
 
       // TypeDoc places @group block tags on the SignatureReflection, not the

@@ -11,6 +11,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 /**
  * Props for {@link EmploymentEligibility}.
@@ -101,9 +102,7 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
     ? {
         authorizationStatus: existingAuth.authorizationStatus,
         documentType: existingAuth.documentType ?? undefined,
-        expirationDate: existingAuth.expirationDate
-          ? new Date(existingAuth.expirationDate)
-          : undefined,
+        expirationDate: normalizeToDate(existingAuth.expirationDate) ?? undefined,
         country: existingAuth.country ?? undefined,
       }
     : {}

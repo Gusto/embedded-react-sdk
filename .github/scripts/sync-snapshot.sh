@@ -26,7 +26,7 @@ set -euo pipefail
 #   workflow_run,      minor missing  -> create
 #   workflow_run,      minor present  -> refresh
 #   workflow_dispatch, minor missing  -> create
-#   workflow_dispatch, minor present  -> (no-op — manual runs don't refresh)
+#   workflow_dispatch, minor present  -> refresh (manual dispatch is the recovery path)
 #   push                              -> (no-op — push path never touches snapshots)
 #
 # For the create action the script copies docs/ into the downstream's docs/
@@ -84,7 +84,7 @@ SNAPSHOT_ACTION=none
 if [[ "$TRIGGER" == "workflow_run" ]] || [[ "$TRIGGER" == "workflow_dispatch" ]]; then
   if [[ "$MINOR_IN_VERSIONS" == "false" ]]; then
     SNAPSHOT_ACTION=create
-  elif [[ "$TRIGGER" == "workflow_run" ]]; then
+  else
     SNAPSHOT_ACTION=refresh
   fi
 fi

@@ -138,12 +138,22 @@ function endpointsForBlockOrHook(key: string | undefined): InventoryEndpoint[] {
   return entry ? sortEndpoints(entry.endpoints) : []
 }
 
-/** A flow's endpoints are the union of its composed blocks' endpoints. */
-function endpointsForFlow(key: string): InventoryEndpoint[] {
+/**
+ * A flow's endpoints are the union of its composed blocks' endpoints. A composed
+ * name may itself be a nested flow (e.g. `PayrollFlow` composing
+ * `PayrollExecutionFlow`, or `PaymentFlow` composing `CreatePaymentFlow`) rather
+ * than a leaf block, so it won't appear in `inventory.blocks` — recurse into
+ * `inventory.flows` for those. `seen` guards against a cycle between flows.
+ */
+function endpointsForFlow(key: string, seen: Set<string> = new Set()): InventoryEndpoint[] {
+  if (seen.has(key)) return []
+  seen.add(key)
   const inventory = getEndpointInventory()
   const flow = inventory.flows[key]
   if (!flow) return []
-  const endpoints = flow.blocks.flatMap(blockKey => inventory.blocks[blockKey]?.endpoints ?? [])
+  const endpoints = flow.blocks.flatMap(
+    blockKey => inventory.blocks[blockKey]?.endpoints ?? endpointsForFlow(blockKey, seen),
+  )
   return sortEndpoints(endpoints)
 }
 

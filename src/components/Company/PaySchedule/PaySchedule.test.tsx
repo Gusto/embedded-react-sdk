@@ -387,6 +387,32 @@ describe('PaySchedule', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE, undefined)
     })
 
+    it('remains editable after the "done" event instead of getting stuck on the list view', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE, undefined)
+
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
+      })
+    })
+
     it('propagates navigation events when transitioning between views', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
@@ -776,6 +802,33 @@ describe('PaySchedule', () => {
 
       expect(screen.getByRole('application')).toBeInTheDocument()
       expect(screen.getByRole('grid')).toBeInTheDocument()
+    })
+
+    it('shows the pay period start date without an off-by-one shift', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('application')).toBeInTheDocument()
+      })
+
+      // Fixture's first pay period starts 2024-01-01. Parsing that as UTC and
+      // formatting in a timezone behind UTC would render "December 2023" instead.
+      expect(screen.getAllByText('January 2024').length).toBeGreaterThan(0)
+      expect(screen.queryByText('December 2023')).not.toBeInTheDocument()
     })
 
     it('shows highlighted dates for payday and payroll deadline', async () => {

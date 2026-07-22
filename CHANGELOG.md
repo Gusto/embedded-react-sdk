@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.52.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.1...v0.52.2) (2026-07-17)
+
+### Features & Enhancements
+
+- The contractor W-9 signature form now shows an on-file SSN/EIN as a masked, disabled field with a "Change SSN"/"Change EIN" button, rather than exposing it as an editable value. ([#2406](https://github.com/Gusto/embedded-react-sdk/issues/2406))
+- While a contractor is mid self-onboarding, the admin's contractor list menu no longer offers "Edit" — only "Cancel self-onboarding" and "Delete" — so the admin must cancel self-onboarding to regain edit access. ([#2407](https://github.com/Gusto/embedded-react-sdk/issues/2407))
+- Admins editing a contractor's profile or address now see a warning when the contractor already has a signed W-9 on file, since the edit will require collecting an updated, signed W-9. ([#2394](https://github.com/Gusto/embedded-react-sdk/issues/2394))
+
+### Fixes
+
+- Fix `StateTaxes` getting stuck on the list view after clicking "Continue" — state rows are now still editable afterward instead of becoming permanently inert. ([#2416](https://github.com/Gusto/embedded-react-sdk/issues/2416))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@typescript-eslint/parser`, `typescript-eslint`, `eslint-plugin-storybook`, `fuse.js`, `tsx`)
+
 ## [0.52.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.0...v0.52.1) (2026-07-14)
 
 ### Features & Enhancements

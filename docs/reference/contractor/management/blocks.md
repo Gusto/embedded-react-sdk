@@ -10,6 +10,61 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
+<a id="contractorlist"></a>
+
+## ContractorList
+
+Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed
+tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire,
+cancel a scheduled dismissal or rehire).
+
+<br />
+
+### ManagementContractorListProps
+
+<a id="managementcontractorlistprops"></a>
+
+Props for [ManagementContractorList](#contractorlist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementContractorList`](../../Translations/index.md#contractormanagementcontractorlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `initialTab?` | [`ContractorTab`](#contractortab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/create` | Fired when the user clicks "Add contractor". | — |
+| `contractor/update` | Fired when the user selects "Edit"/"Review" on an onboarding-tab row. | `{ contractorId: string }` |
+| `contractor/view` | Fired when the user selects "View details" on an active or dismissed row. | `{ contractorId: string }` |
+| `contractor/deleted` | Fired after an onboarding-tab row's "Remove" action completes. | `{ contractorId: string }` |
+| `contractor/selfOnboarding/cancelled` | Fired after the "Cancel self-onboarding" action updates a contractor's onboarding status. | The updated `contractorOnboardingStatus` returned by the API. |
+| `contractor/dismiss` | Fired when the user selects "Dismiss" on an active row. No mutation is performed by this component. | `{ contractorId: string }` |
+| `contractor/rehire` | Fired when the user selects "Rehire" on a dismissed row. No mutation is performed by this component. | `{ contractorId: string }` |
+| `contractor/dismissal/cancelled` | Fired after a scheduled dismissal is cancelled via the confirm dialog. | `{ contractorId: string }` |
+| `contractor/rehire/cancelled` | Fired after a scheduled rehire is cancelled via the confirm dialog. | `{ contractorId: string }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors) |
+| DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
+| DELETE | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire) |
+| DELETE | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination) |
+
+***
+
 <a id="createpayment"></a>
 
 ## CreatePayment
@@ -280,3 +335,15 @@ Props for [PaymentSummary](#paymentsummary).
 | GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
 | GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors) |
 | GET | [`/v1/contractor_payment_groups/:contractorPaymentGroupUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payment_groups-contractor_payment_group_id) |
+
+***
+
+## Utility types
+
+<a id="contractortab"></a>
+
+### ContractorTab
+
+> **ContractorTab** = `"active"` \| `"onboarding"` \| `"dismissed"`
+
+The tab currently selected on [ManagementContractorList](#contractorlist).

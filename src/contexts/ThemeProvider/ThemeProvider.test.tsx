@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { describe, test, expect, afterEach } from 'vitest'
 import { ThemeProvider } from './ThemeProvider'
 import { useTheme } from './useTheme'
+import { NonceContext } from '@/contexts/NonceProvider'
 
 describe('<ThemeProvider />', () => {
   afterEach(() => {
@@ -111,6 +112,32 @@ describe('<ThemeProvider />', () => {
         </ThemeProvider>,
       )
       expect(capturedContainer).toBe(secondTarget)
+    })
+  })
+
+  describe('nonce', () => {
+    test('Applies the nonce from NonceContext to the injected style element', () => {
+      render(
+        <NonceContext.Provider value="csp-test-nonce">
+          <ThemeProvider>
+            <p>Child</p>
+          </ThemeProvider>
+        </NonceContext.Provider>,
+      )
+
+      const styleTag = document.head.querySelector<HTMLStyleElement>('style[data-testid="GSDK"]')
+      expect(styleTag?.nonce).toBe('csp-test-nonce')
+    })
+
+    test('Leaves nonce empty when no value is provided', () => {
+      render(
+        <ThemeProvider>
+          <p>Child</p>
+        </ThemeProvider>,
+      )
+
+      const styleTag = document.head.querySelector<HTMLStyleElement>('style[data-testid="GSDK"]')
+      expect(styleTag?.nonce).toBe('')
     })
   })
 
