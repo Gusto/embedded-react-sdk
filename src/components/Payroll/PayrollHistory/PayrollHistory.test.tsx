@@ -709,7 +709,7 @@ describe('PayrollHistory', () => {
       })
     })
 
-    it('passes default date params (3 months back through today, filtered by check date) to the API', async () => {
+    it('passes default date params (3 months back through today, filtered by pay period) to the API', async () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
@@ -720,7 +720,7 @@ describe('PayrollHistory', () => {
       const endDateParam = capturedPayrollListUrl!.searchParams.get('end_date')
       expect(startDateParam).toBeTruthy()
       expect(endDateParam).toBeTruthy()
-      expect(capturedPayrollListUrl!.searchParams.get('date_filter_by')).toBe('check_date')
+      expect(capturedPayrollListUrl!.searchParams.get('date_filter_by')).toBeNull()
 
       const startDate = new Date(startDateParam!)
       const endDate = new Date(endDateParam!)

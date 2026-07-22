@@ -3,7 +3,6 @@ import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payroll
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import {
-  DateFilterBy,
   ProcessingStatuses,
   QueryParamPayrollTypes,
   QueryParamSortOrder as SortOrder,
@@ -33,9 +32,9 @@ export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.Pay
  *
  * @remarks
  * Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
- * check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
- * cancelling processed payrolls when they remain within the cancellation window. Each row shows
- * the pay period, payroll type, pay date, status, and total pay amount.
+ * pay period, viewing payroll summaries and receipts, and cancelling processed payrolls when they
+ * remain within the cancellation window. Each row shows the pay period, payroll type, pay date,
+ * status, and total pay amount.
  *
  * @events
  * | Event | Description | Data |
@@ -96,7 +95,6 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
     sortOrder: SortOrder.Desc,
     startDate: dateFilterParams.startDate,
     endDate: dateFilterParams.endDate,
-    dateFilterBy: DateFilterBy.CheckDate,
     page: currentPage,
     per: itemsPerPage,
   })
