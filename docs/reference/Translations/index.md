@@ -651,8 +651,10 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.editStateTaxCta` |
 | `list.emptyTableDescription` |
 | `list.emptyTableTitle` |
+| `list.hamburgerTitle` |
 | `list.incompleteBadge` |
 | `list.inProgressBadge` |
+| `list.manageRatesCta` |
 | `list.notStartedBadge` |
 | `list.readyToRunPayrollBadge` |
 | `list.requirementsListCol1` |
@@ -661,6 +663,26 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.selfOnboardingWarningDescription` |
 | `list.selfOnboardingWarningLabel` |
 | `list.startStateTaxSetupCta` |
+| <a id="property-companystatetaxesmanagerates"></a> `manageRates` |
+| `manageRates.addRateCta` |
+| `manageRates.addRateDialogDescription` |
+| `manageRates.addRateDialogTitle` |
+| `manageRates.backCta` |
+| `manageRates.cancelCta` |
+| `manageRates.currentBadge` |
+| `manageRates.effectiveDateColumnLabel` |
+| `manageRates.effectiveDateLabel` |
+| `manageRates.effectiveDatePlaceholder` |
+| `manageRates.emptyHistoryDescription` |
+| `manageRates.emptyHistoryTitle` |
+| `manageRates.historicalBadge` |
+| `manageRates.noEditableFieldsDescription` |
+| `manageRates.noEditableFieldsTitle` |
+| `manageRates.rateScheduledSuccess` |
+| `manageRates.saveRateCta` |
+| `manageRates.scheduledBadge` |
+| `manageRates.subtitle` |
+| `manageRates.title` |
 
 ***
 

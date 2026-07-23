@@ -1,5 +1,6 @@
 import { StateTaxesList } from './StateTaxesList/StateTaxesList'
 import { StateTaxesForm } from './StateTaxesForm/StateTaxesForm'
+import { TaxRateManagement } from './TaxRateManagement/TaxRateManagement'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -32,6 +33,18 @@ export function StateTaxesFormContextual() {
   const { companyId, state, onEvent } = useFlow<StateTaxesContextInterface>()
   return (
     <StateTaxesForm
+      companyId={ensureRequired(companyId)}
+      state={ensureRequired(state)}
+      onEvent={onEvent}
+    />
+  )
+}
+
+/** @internal */
+export function TaxRateManagementContextual() {
+  const { companyId, state, onEvent } = useFlow<StateTaxesContextInterface>()
+  return (
+    <TaxRateManagement
       companyId={ensureRequired(companyId)}
       state={ensureRequired(state)}
       onEvent={onEvent}
