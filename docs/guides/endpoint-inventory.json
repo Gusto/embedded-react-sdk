@@ -2310,11 +2310,11 @@
       "blocks": [
         "ContractorManagement.CreatePaymentFlow",
         "ContractorManagement.PaymentsList",
-        "ContractorManagement.ViewHistoryFlow",
+        "ContractorManagement.ViewPaymentFlow",
         "InformationRequests.InformationRequestsFlow"
       ]
     },
-    "ContractorManagement.ViewHistoryFlow": {
+    "ContractorManagement.ViewPaymentFlow": {
       "blocks": [
         "ContractorManagement.CreatePayment",
         "ContractorManagement.PaymentHistory",
