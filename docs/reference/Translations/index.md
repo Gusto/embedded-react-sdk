@@ -4434,6 +4434,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolleditemployeeadditionalearningstitle"></a> `additionalEarningsTitle` | `"Additional earnings"` |
+| <a id="property-payrollpayrolleditemployeeaddovertimecta"></a> `addOvertimeCta` | `"Add overtime"` |
 | <a id="property-payrollpayrolleditemployeeaddreimbursementcta"></a> `addReimbursementCta` | `"Add one-time reimbursement"` |
 | <a id="property-payrollpayrolleditemployeeaddreimbursementlink"></a> `addReimbursementLink` | `"Add one-time reimbursement"` |
 | <a id="property-payrollpayrolleditemployeebreadcrumblabel"></a> `breadcrumbLabel` | `"{{firstName}} {{lastName}}"` |
@@ -4445,6 +4446,9 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | `compensationNames.regularHours` | `"Regular Hours"` |
 | <a id="property-payrollpayrolleditemployeefinalpayoutdescription"></a> `finalPayoutDescription` | `"Enter the unused hours to pay out on the final paycheck. This is separate from time off hours used during the pay period."` |
 | <a id="property-payrollpayrolleditemployeefinalpayouttitle"></a> `finalPayoutTitle` | `"Unused time off payout"` |
+| <a id="property-payrollpayrolleditemployeefixedamountcolumns"></a> `fixedAmountColumns` | |
+| `fixedAmountColumns.amount` | `"Amount"` |
+| `fixedAmountColumns.type` | `"Type"` |
 | <a id="property-payrollpayrolleditemployeefixedcompensationnames"></a> `fixedCompensationNames` | |
 | `fixedCompensationNames.bonus` | `"Bonus"` |
 | `fixedCompensationNames.cashTips` | `"Cash tips"` |
@@ -4454,7 +4458,11 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | `fixedCompensationNames.reimbursement` | `"Reimbursement"` |
 | <a id="property-payrollpayrolleditemployeegrosspaylabel"></a> `grossPayLabel` | `"Gross pay (excluding reimbursements)"` |
 | <a id="property-payrollpayrolleditemployeegrosspaylabelmobile"></a> `grossPayLabelMobile` | `"Gross pay: {{grossPay}} (excluding reimbursements)"` |
+| <a id="property-payrollpayrolleditemployeehourscolumns"></a> `hoursColumns` | |
+| `hoursColumns.hours` | `"Hours"` |
+| `hoursColumns.type` | `"Hour type"` |
 | <a id="property-payrollpayrolleditemployeehoursunit"></a> `hoursUnit` | `"Hours"` |
+| <a id="property-payrollpayrolleditemployeeotherearningstitle"></a> `otherEarningsTitle` | `"Other"` |
 | <a id="property-payrollpayrolleditemployeepagetitle"></a> `pageTitle` | `"Edit payroll for {{employeeName}}"` |
 | <a id="property-payrollpayrolleditemployeepaymentmethoddescription"></a> `paymentMethodDescription` | `"Changing the default payment method will only apply to this payroll."` |
 | <a id="property-payrollpayrolleditemployeepaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
@@ -4464,7 +4472,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeepaymentmethodtitle"></a> `paymentMethodTitle` | `"Payment"` |
 | <a id="property-payrollpayrolleditemployeerecurringreimbursementlabel"></a> `recurringReimbursementLabel` | `"{{description}} (recurring reimbursement)"` |
 | <a id="property-payrollpayrolleditemployeerecurringreimbursementtooltip"></a> `recurringReimbursementTooltip` | `"Recurring reimbursements are managed outside of payroll."` |
-| <a id="property-payrollpayrolleditemployeeregularhourstitle"></a> `regularHoursTitle` | `"Regular hours"` |
+| <a id="property-payrollpayrolleditemployeeregularhourstitle"></a> `regularHoursTitle` | `"Regular and overtime hours"` |
 | <a id="property-payrollpayrolleditemployeereimbursementamountcolumn"></a> `reimbursementAmountColumn` | `"Amount"` |
 | <a id="property-payrollpayrolleditemployeereimbursementamountlabel"></a> `reimbursementAmountLabel` | `"Amount"` |
 | <a id="property-payrollpayrolleditemployeereimbursementdescriptioncolumn"></a> `reimbursementDescriptionColumn` | `"Description"` |

@@ -3,8 +3,13 @@
   "breadcrumbLabel": "{{firstName}} {{lastName}}",
   "grossPayLabel": "Gross pay (excluding reimbursements)",
   "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
-  "regularHoursTitle": "Regular hours",
+  "regularHoursTitle": "Regular and overtime hours",
   "hoursUnit": "Hours",
+  "addOvertimeCta": "Add overtime",
+  "hoursColumns": {
+    "type": "Hour type",
+    "hours": "Hours"
+  },
   "saveCta": "Save",
   "cancelCta": "Cancel",
   "compensationNames": {
@@ -24,6 +29,11 @@
     "hours": "Hours"
   },
   "additionalEarningsTitle": "Additional earnings",
+  "otherEarningsTitle": "Other",
+  "fixedAmountColumns": {
+    "type": "Type",
+    "amount": "Amount"
+  },
   "reimbursementTitle": "Reimbursements",
   "reimbursementDescriptionLabel": "Description",
   "reimbursementDescriptionPlaceholder": "e.g., Office supplies",
