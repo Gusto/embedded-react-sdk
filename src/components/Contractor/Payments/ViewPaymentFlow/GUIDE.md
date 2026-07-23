@@ -1,10 +1,10 @@
 <!-- Partner-facing guide content, published to the SDK docs site. -->
 
-# ViewHistoryFlow
+# ViewPaymentFlow
 
 ## Step flow <!-- slot: appendix -->
 
-`ViewHistoryFlow` centers on `PaymentHistory` as its hub: it shows a payment group's details and can either drill into an individual contractor's statement (`contractor/payments/view/details` → `PaymentStatement`) or cancel the group outright (`contractor/payments/cancel`), which exits the flow.
+`ViewPaymentFlow` centers on `PaymentHistory` as its hub: it shows a payment group's details and can either drill into an individual contractor's statement (`contractor/payments/view/details` → `PaymentStatement`) or cancel the group outright (`contractor/payments/cancel`), which exits the flow.
 
 ```mermaid
 flowchart TD

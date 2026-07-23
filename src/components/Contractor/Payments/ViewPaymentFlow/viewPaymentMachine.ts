@@ -4,8 +4,8 @@ import { getContractorDisplayName } from '../CreatePayment/helpers'
 import {
   PaymentHistoryContextual,
   PaymentStatementContextual,
-  type ViewHistoryFlowContextInterface,
-} from './ViewHistoryFlowComponents'
+  type ViewPaymentFlowContextInterface,
+} from './ViewPaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
@@ -20,17 +20,17 @@ type EventPayloads = {
 }
 
 const breadcrumbNavigateTransition =
-  createBreadcrumbNavigateTransition<ViewHistoryFlowContextInterface>()
+  createBreadcrumbNavigateTransition<ViewPaymentFlowContextInterface>()
 
 /** @internal */
-export const viewHistoryBreadcrumbsNodes: BreadcrumbNodes = {
+export const viewPaymentBreadcrumbsNodes: BreadcrumbNodes = {
   history: {
     parent: null,
     item: {
       id: 'history',
       label: 'breadcrumbLabel',
       namespace: 'Contractor.Payments.PaymentHistory',
-      onNavigate: ((ctx: ViewHistoryFlowContextInterface) => ({
+      onNavigate: ((ctx: ViewPaymentFlowContextInterface) => ({
         ...updateBreadcrumbs('history', ctx),
         component: PaymentHistoryContextual,
       })) as (context: unknown) => unknown,
@@ -47,19 +47,19 @@ export const viewHistoryBreadcrumbsNodes: BreadcrumbNodes = {
 }
 
 /** @internal */
-export const viewHistoryMachine = {
+export const viewPaymentMachine = {
   history: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS,
       'statement',
       reduce(
         (
-          ctx: ViewHistoryFlowContextInterface,
+          ctx: ViewPaymentFlowContextInterface,
           ev: MachineEventType<
             EventPayloads,
             typeof componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS
           >,
-        ): ViewHistoryFlowContextInterface => {
+        ): ViewPaymentFlowContextInterface => {
           return {
             ...updateBreadcrumbs('statement', ctx, {
               contractorName: getContractorDisplayName(ev.payload.contractor),

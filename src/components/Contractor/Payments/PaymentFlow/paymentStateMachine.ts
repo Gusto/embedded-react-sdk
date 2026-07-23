@@ -5,7 +5,7 @@ import {
   InformationRequestsContextual,
   PaymentListContextual,
   type PaymentFlowContextInterface,
-  ViewHistoryFlowContextual,
+  ViewPaymentFlowContextual,
 } from './PaymentFlowComponents'
 import { componentEvents, informationRequestEvents, payrollWireEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -39,7 +39,7 @@ type EventPayloads = {
  *
  * @remarks
  * Only `landing` is defined here — the `createPayment` and `history` spokes own and render their
- * own breadcrumb trails (via `CreatePaymentFlow`/`ViewHistoryFlow`), prefixed with this `landing`
+ * own breadcrumb trails (via `CreatePaymentFlow`/`ViewPaymentFlow`), prefixed with this `landing`
  * item so the trail reads continuously across the hub/spoke boundary.
  *
  * @internal
@@ -67,7 +67,7 @@ const breadcrumbNavigateTransition =
  *
  * @remarks
  * `createPayment` and `history` each stay active for the full lifetime of their respective spoke
- * (`CreatePaymentFlow`, `ViewHistoryFlow`) rather than tracking the spoke's internal screen. The
+ * (`CreatePaymentFlow`, `ViewPaymentFlow`) rather than tracking the spoke's internal screen. The
  * spoke's own machine drives its internal steps and breadcrumb trail; events it can't handle
  * locally (e.g. the `landing` breadcrumb, or a terminal exit/cancel event) bubble up here to
  * transition the hub back to `landing`.
@@ -97,7 +97,7 @@ export const paymentMachine = {
         ): PaymentFlowContextInterface => {
           return {
             ...ctx,
-            component: ViewHistoryFlowContextual,
+            component: ViewPaymentFlowContextual,
             currentPaymentId: ev.payload.paymentId,
             alerts: undefined,
           }

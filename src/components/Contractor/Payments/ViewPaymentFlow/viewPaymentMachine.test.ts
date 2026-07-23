@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createMachine, interpret, type SendFunction } from 'robot3'
-import { viewHistoryMachine, viewHistoryBreadcrumbsNodes } from './viewHistoryMachine'
-import type { ViewHistoryFlowContextInterface } from './ViewHistoryFlowComponents'
+import { viewPaymentMachine, viewPaymentBreadcrumbsNodes } from './viewPaymentMachine'
+import type { ViewPaymentFlowContextInterface } from './ViewPaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -9,14 +9,14 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 function createTestMachine() {
   return createMachine(
     'history',
-    viewHistoryMachine,
-    (initialContext: ViewHistoryFlowContextInterface): ViewHistoryFlowContextInterface => ({
+    viewPaymentMachine,
+    (initialContext: ViewPaymentFlowContextInterface): ViewPaymentFlowContextInterface => ({
       ...initialContext,
       component: () => null,
       currentPaymentId: 'payment-123',
       header: {
         type: 'breadcrumbs',
-        breadcrumbs: buildBreadcrumbs(viewHistoryBreadcrumbsNodes),
+        breadcrumbs: buildBreadcrumbs(viewPaymentBreadcrumbsNodes),
         currentBreadcrumbId: 'history',
       },
     }),
@@ -40,7 +40,7 @@ function currentBreadcrumbId(service: ReturnType<typeof createService>) {
     : undefined
 }
 
-describe('viewHistoryMachine', () => {
+describe('viewPaymentMachine', () => {
   describe('history state', () => {
     it('transitions to statement on CONTRACTOR_PAYMENT_VIEW_DETAILS with contractor and payment ids', () => {
       const service = createService()
@@ -73,7 +73,7 @@ describe('viewHistoryMachine', () => {
 
       send(service, componentEvents.BREADCRUMB_NAVIGATE, {
         key: 'history',
-        onNavigate: ensureRequired(viewHistoryBreadcrumbsNodes.history).item.onNavigate,
+        onNavigate: ensureRequired(viewPaymentBreadcrumbsNodes.history).item.onNavigate,
       })
 
       expect(service.machine.current).toBe('history')

@@ -1,11 +1,11 @@
 import { createMachine } from 'robot3'
 import { useState } from 'react'
-import { viewHistoryBreadcrumbsNodes, viewHistoryMachine } from './viewHistoryMachine'
+import { viewPaymentBreadcrumbsNodes, viewPaymentMachine } from './viewPaymentMachine'
 import {
   PaymentHistoryContextual,
-  type ViewHistoryFlowContextInterface,
-  type ViewHistoryFlowProps,
-} from './ViewHistoryFlowComponents'
+  type ViewPaymentFlowContextInterface,
+  type ViewPaymentFlowProps,
+} from './ViewPaymentFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
@@ -13,12 +13,12 @@ import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers
 const EMPTY_BREADCRUMBS: FlowBreadcrumb[] = []
 
 /**
- * Props for the flow-internal {@link ViewHistoryInternalFlow}, which layers a parent flow's
- * prefix breadcrumbs on top of the public {@link ViewHistoryFlowProps}.
+ * Props for the flow-internal {@link ViewPaymentInternalFlow}, which layers a parent flow's
+ * prefix breadcrumbs on top of the public {@link ViewPaymentFlowProps}.
  *
  * @internal
  */
-export interface ViewHistoryInternalFlowProps extends ViewHistoryFlowProps {
+export interface ViewPaymentInternalFlowProps extends ViewPaymentFlowProps {
   /**
    * Breadcrumbs prepended to the flow's own breadcrumb trail. Set by a parent flow (e.g.
    * `PaymentFlow`) so the breadcrumb history remains coherent across the handoff.
@@ -31,9 +31,9 @@ export interface ViewHistoryInternalFlowProps extends ViewHistoryFlowProps {
  * contractor's payment statement.
  *
  * @remarks
- * This is the inner flow that powers the view-history spoke of `ContractorManagement.PaymentFlow`.
+ * This is the inner flow that powers the view-payment spoke of `ContractorManagement.PaymentFlow`.
  * Render it directly when you have built your own payments landing page and want to hand the user
- * off to the standard history-viewing experience without re-implementing it. The flow ships with
+ * off to the standard payment-viewing experience without re-implementing it. The flow ships with
  * breadcrumb navigation and lets the user cancel an individual payment from the history screen.
  *
  * @events
@@ -47,8 +47,8 @@ export interface ViewHistoryInternalFlowProps extends ViewHistoryFlowProps {
  * - {@link PaymentHistory}
  * - {@link PaymentStatement}
  *
- * @param props - See {@link ViewHistoryFlowProps}.
- * @returns The composed view-history flow.
+ * @param props - See {@link ViewPaymentFlowProps}.
+ * @returns The composed view-payment flow.
  * @alpha
  *
  * @example
@@ -57,7 +57,7 @@ export interface ViewHistoryInternalFlowProps extends ViewHistoryFlowProps {
  *
  * function MyApp() {
  *   return (
- *     <ContractorManagement.ViewHistoryFlow
+ *     <ContractorManagement.ViewPaymentFlow
  *       paymentId="0987fcea-7b59-4907-a301-f232b5aff508"
  *       onEvent={() => {}}
  *     />
@@ -65,27 +65,27 @@ export interface ViewHistoryInternalFlowProps extends ViewHistoryFlowProps {
  * }
  * ```
  */
-export function ViewHistoryFlow(props: ViewHistoryFlowProps) {
-  return <ViewHistoryInternalFlow {...props} />
+export function ViewPaymentFlow(props: ViewPaymentFlowProps) {
+  return <ViewPaymentInternalFlow {...props} />
 }
 
 /**
- * Flow-internal entry point for {@link ViewHistoryFlow} that additionally accepts
- * flow-injected `prefixBreadcrumbs`. Partners use {@link ViewHistoryFlow}; `PaymentFlow` renders
+ * Flow-internal entry point for {@link ViewPaymentFlow} that additionally accepts
+ * flow-injected `prefixBreadcrumbs`. Partners use {@link ViewPaymentFlow}; `PaymentFlow` renders
  * this directly to prepend its own breadcrumb trail.
  *
  * @internal
  */
-export function ViewHistoryInternalFlow({
+export function ViewPaymentInternalFlow({
   paymentId,
   onEvent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
-}: ViewHistoryInternalFlowProps) {
+}: ViewPaymentInternalFlowProps) {
   // Built once via a lazy useState initializer, not useMemo -- see CreatePaymentFlow.tsx for why:
   // a useMemo keyed on `prefixBreadcrumbs` doesn't guarantee the machine's identity survives a
   // re-render triggered by a bubbled `onEvent` call.
-  const [viewHistoryFlow] = useState(() => {
-    const baseBreadcrumbs = buildBreadcrumbs(viewHistoryBreadcrumbsNodes)
+  const [viewPaymentFlow] = useState(() => {
+    const baseBreadcrumbs = buildBreadcrumbs(viewPaymentBreadcrumbsNodes)
     const breadcrumbs = Object.fromEntries(
       Object.entries(baseBreadcrumbs).map(([stateKey, trail]) => [
         stateKey,
@@ -102,8 +102,8 @@ export function ViewHistoryInternalFlow({
 
     return createMachine(
       'history',
-      viewHistoryMachine,
-      (initialContext: ViewHistoryFlowContextInterface) => ({
+      viewPaymentMachine,
+      (initialContext: ViewPaymentFlowContextInterface) => ({
         ...initialContext,
         ...initialBreadcrumbContext,
         component: PaymentHistoryContextual,
@@ -112,5 +112,5 @@ export function ViewHistoryInternalFlow({
     )
   })
 
-  return <Flow machine={viewHistoryFlow} onEvent={onEvent} />
+  return <Flow machine={viewPaymentFlow} onEvent={onEvent} />
 }

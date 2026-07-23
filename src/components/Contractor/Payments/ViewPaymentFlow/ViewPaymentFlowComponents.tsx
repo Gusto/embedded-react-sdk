@@ -5,31 +5,31 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
 /**
- * Props for {@link ViewHistoryFlow}.
+ * Props for {@link ViewPaymentFlow}.
  *
  * @alpha
  */
-export interface ViewHistoryFlowProps extends BaseComponentInterface<never> {
+export interface ViewPaymentFlowProps extends BaseComponentInterface<never> {
   /** Identifier of the payment group to inspect. */
   paymentId: string
 }
 
 /** @internal */
-export interface ViewHistoryFlowContextInterface extends FlowContextInterface {
+export interface ViewPaymentFlowContextInterface extends FlowContextInterface {
   currentPaymentId?: string
   currentContractorUuid?: string
 }
 
 /** @internal */
 export function PaymentHistoryContextual() {
-  const { currentPaymentId, onEvent } = useFlow<ViewHistoryFlowContextInterface>()
+  const { currentPaymentId, onEvent } = useFlow<ViewPaymentFlowContextInterface>()
   return <PaymentHistory onEvent={onEvent} paymentId={ensureRequired(currentPaymentId)} />
 }
 
 /** @internal */
 export function PaymentStatementContextual() {
   const { currentPaymentId, currentContractorUuid, onEvent } =
-    useFlow<ViewHistoryFlowContextInterface>()
+    useFlow<ViewPaymentFlowContextInterface>()
   return (
     <PaymentStatement
       onEvent={onEvent}
