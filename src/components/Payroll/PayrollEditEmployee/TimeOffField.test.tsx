@@ -7,11 +7,35 @@ import {
   EmployeePaymentMethod1,
 } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import { TimeOffField } from './TimeOffField'
+import { TimeOffField, TimeOffTypeCell } from './TimeOffField'
 import type { PayrollEditEmployeeFormValues } from './PayrollEditEmployeePresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-const TestWrapper = ({
+const TestFieldWrapper = ({
+  timeOffEntry,
+  shouldVisuallyHideLabel,
+}: {
+  timeOffEntry: PayrollEmployeeCompensationsTypePaidTimeOff
+  shouldVisuallyHideLabel?: boolean
+}) => {
+  const methods = useForm<PayrollEditEmployeeFormValues>({
+    defaultValues: {
+      timeOffCompensations: {
+        [timeOffEntry.name || '']: timeOffEntry.hours || '0',
+      },
+    },
+  })
+
+  return (
+    <FormProvider {...methods}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <TimeOffField timeOff={timeOffEntry} shouldVisuallyHideLabel={shouldVisuallyHideLabel} />
+      </Suspense>
+    </FormProvider>
+  )
+}
+
+const TestTypeCellWrapper = ({
   timeOffEntry,
   employee,
 }: {
@@ -29,7 +53,7 @@ const TestWrapper = ({
   return (
     <FormProvider {...methods}>
       <Suspense fallback={<div>Loading...</div>}>
-        <TimeOffField timeOff={timeOffEntry} employee={employee} />
+        <TimeOffTypeCell timeOff={timeOffEntry} employee={employee} />
       </Suspense>
     </FormProvider>
   )
@@ -77,7 +101,7 @@ describe('TimeOffField', () => {
       hours: '8.0',
     }
 
-    renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
+    renderWithProviders(<TestFieldWrapper timeOffEntry={timeOffEntry} />)
 
     await waitFor(() => {
       expect(screen.getByLabelText('Vacation Hours')).toBeInTheDocument()
@@ -85,17 +109,41 @@ describe('TimeOffField', () => {
     expect(screen.getByDisplayValue('8.0')).toBeInTheDocument()
   })
 
-  it('should show remaining balance for accrual policies', async () => {
+  it('should keep an accessible label when visually hidden', async () => {
     const timeOffEntry: PayrollEmployeeCompensationsTypePaidTimeOff = {
       name: 'Vacation Hours',
       hours: '8.0',
     }
 
-    renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
+    renderWithProviders(<TestFieldWrapper timeOffEntry={timeOffEntry} shouldVisuallyHideLabel />)
 
     await waitFor(() => {
-      expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
+      expect(screen.getByLabelText('Vacation Hours')).toBeInTheDocument()
     })
+  })
+
+  it('should not render if timeOffEntry has no name', () => {
+    const timeOffEntry: PayrollEmployeeCompensationsTypePaidTimeOff = { hours: '8.0' }
+
+    renderWithProviders(<TestFieldWrapper timeOffEntry={timeOffEntry} />)
+
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+  })
+})
+
+describe('TimeOffTypeCell', () => {
+  it('should render the time off name and remaining balance for accrual policies', async () => {
+    const timeOffEntry: PayrollEmployeeCompensationsTypePaidTimeOff = {
+      name: 'Vacation Hours',
+      hours: '8.0',
+    }
+
+    renderWithProviders(<TestTypeCellWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Vacation Hours')).toBeInTheDocument()
+    })
+    expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
   })
 
   it('should not show balance for unlimited policies', async () => {
@@ -104,20 +152,12 @@ describe('TimeOffField', () => {
       hours: '0.0',
     }
 
-    renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
+    renderWithProviders(<TestTypeCellWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
+      expect(screen.getByText('Sick Hours')).toBeInTheDocument()
     })
-    expect(screen.queryByText('remaining')).not.toBeInTheDocument()
-  })
-
-  it('should not render if timeOffEntry has no name', () => {
-    const timeOffEntry: PayrollEmployeeCompensationsTypePaidTimeOff = { hours: '8.0' }
-
-    renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
-
-    expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+    expect(screen.queryByText(/remaining/)).not.toBeInTheDocument()
   })
 
   it('should not show balance if no matching policy found', async () => {
@@ -126,11 +166,11 @@ describe('TimeOffField', () => {
       hours: '8.0',
     }
 
-    renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
+    renderWithProviders(<TestTypeCellWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Unknown Policy')).toBeInTheDocument()
+      expect(screen.getByText('Unknown Policy')).toBeInTheDocument()
     })
-    expect(screen.queryByText('remaining')).not.toBeInTheDocument()
+    expect(screen.queryByText(/remaining/)).not.toBeInTheDocument()
   })
 })
