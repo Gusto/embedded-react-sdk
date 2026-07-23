@@ -12,13 +12,13 @@ export type StateTaxesFormValues = Record<string, Record<string, unknown> | unde
 /** @internal */
 export function isRequirementApplicable(
   requirement: TaxRequirement,
-  setKey: string,
+  requirementSetKey: string,
   formValues: StateTaxesFormValues,
 ): boolean {
   const constraints = requirement.applicableIf
   if (!constraints || constraints.length === 0) return true
 
-  const setValues = formValues[setKey]
+  const setValues = formValues[requirementSetKey]
   if (!setValues) return false
 
   return constraints.every(({ key, value }) => {

@@ -139,7 +139,10 @@ export function AddTaxRateDialog({ isOpen, state, group, onClose }: AddTaxRateDi
             }))}
           />
           {hasEditableFields ? (
-            <RequirementFields requirements={templateSet?.requirements} setKey="fields" />
+            <RequirementFields
+              requirements={templateSet?.requirements}
+              requirementSetKey="fields"
+            />
           ) : (
             <Components.Alert status="info" label={t('noEditableFieldsTitle')}>
               {t('noEditableFieldsDescription')}

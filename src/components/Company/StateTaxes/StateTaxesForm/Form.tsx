@@ -20,9 +20,9 @@ export function Form() {
   return requirementSets.map((requirementSet, index) => {
     const { requirements, label, effectiveFrom, key } = requirementSet
     if (!key) return null
-    const setPath = getUniqueRhfKey(requirementSet, index, requirementSets)
+    const requirementSetPath = getUniqueRhfKey(requirementSet, index, requirementSets)
     return (
-      <Fragment key={setPath}>
+      <Fragment key={requirementSetPath}>
         <div>
           <Components.Heading as="h3">{label}</Components.Heading>
           {effectiveFrom && (
@@ -31,7 +31,7 @@ export function Form() {
             </Components.Text>
           )}
         </div>
-        <RequirementFields requirements={requirements} setKey={setPath} />
+        <RequirementFields requirements={requirements} requirementSetKey={requirementSetPath} />
       </Fragment>
     )
   })

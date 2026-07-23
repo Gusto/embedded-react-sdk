@@ -97,12 +97,12 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
     requirementSets.forEach((requirementSet, index) => {
       if (!requirementSet.key) return
 
-      const setPath = getUniqueRhfKey(requirementSet, index, requirementSets)
+      const requirementSetPath = getUniqueRhfKey(requirementSet, index, requirementSets)
       const { shape, defaults } = buildRequirementSchema(requirementSet.requirements, t)
 
       if (Object.keys(shape).length > 0) {
-        schemaShape[setPath] = z.object(shape)
-        values[setPath] = defaults
+        schemaShape[requirementSetPath] = z.object(shape)
+        values[requirementSetPath] = defaults
       }
     })
 
@@ -131,19 +131,19 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         .map((requirementSet, setIndex) => ({ requirementSet, setIndex }))
         .filter(({ requirementSet, setIndex }) => {
           if (!requirementSet.key) return false
-          const setPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
-          return Boolean(payload[setPath])
+          const requirementSetPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
+          return Boolean(payload[requirementSetPath])
         })
         .map(({ requirementSet, setIndex }) => {
           const requirementSetKey = requirementSet.key as string
-          const setPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
-          const payloadSet = payload[setPath] as Record<string, unknown>
+          const requirementSetPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
+          const payloadSet = payload[requirementSetPath] as Record<string, unknown>
           const requirements = requirementSet.requirements ?? []
 
           const applicableRequirements = requirements
             .map((req, index) => ({ req, index }))
             .filter(({ req }) => req.editable !== false)
-            .filter(({ req }) => isRequirementApplicable(req, setPath, formValues))
+            .filter(({ req }) => isRequirementApplicable(req, requirementSetPath, formValues))
 
           return {
             state,
