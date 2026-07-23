@@ -1303,6 +1303,10 @@ export const componentEvents: {
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
     readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
+    readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: "contractor/management/profile/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
+    readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED: "contractor/management/profile/editCancelled";
+    readonly CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED: "contractor/management/profile/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1771,6 +1775,12 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        Profile_3 as Profile,
+        ProfileCard_2 as ProfileCard,
+        ProfileEditForm_2 as ProfileEditForm,
+        ProfileProps_3 as ProfileProps,
+        ProfileCardProps_2 as ProfileCardProps,
+        ProfileEditFormProps_2 as ProfileEditFormProps,
         PaymentFlow,
         PaymentFlowProps,
         PaymentsList,
@@ -4313,11 +4323,23 @@ function Profile(input: ProfileProps): JSX;
 function Profile_2(input: ProfileProps_2): JSX;
 
 // @public
+function Profile_3(input: ProfileProps_3): JSX;
+
+// @public
 function ProfileCard(props: ProfileCardProps): JSX;
+
+// @public
+function ProfileCard_2(props: ProfileCardProps_2): JSX;
 
 // @public
 interface ProfileCardProps {
     employeeId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface ProfileCardProps_2 {
+    contractorId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4344,8 +4366,16 @@ type ProfileDefaultValues = RequireAtLeastOne<{
 function ProfileEditForm(input: ProfileEditFormProps): JSX;
 
 // @public
+function ProfileEditForm_2(input: ProfileEditFormProps_2): JSX;
+
+// @public
 interface ProfileEditFormProps extends BaseComponentInterface<'Employee.Management.Profile'> {
     employeeId: string;
+}
+
+// @public
+interface ProfileEditFormProps_2 extends BaseComponentInterface<'Contractor.Management.Profile'> {
+    contractorId: string;
 }
 
 // @public
@@ -4360,6 +4390,11 @@ interface ProfileProps extends BaseComponentInterface<'Employee.Profile'> {
 // @public
 interface ProfileProps_2 extends BaseComponentInterface<'Employee.Management.Profile'> {
     employeeId: string;
+}
+
+// @public
+interface ProfileProps_3 extends BaseComponentInterface<'Contractor.Management.Profile'> {
+    contractorId: string;
 }
 
 // @public
@@ -4528,6 +4563,8 @@ export interface Resources {
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)
     'Contractor.Landing': Translations.ContractorLanding
+    // (undocumented)
+    'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)
     'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
     // (undocumented)
@@ -5678,6 +5715,7 @@ export type UseContractorDetailsFormResult = HookLoadingResult | UseContractorDe
 // @public
 export type UseContractorDetailsFormSharedProps = {
     withSelfOnboardingField?: boolean;
+    showEmailField?: boolean;
     optionalFieldsToRequire?: ContractorDetailsOptionalFieldsToRequire;
     defaultValues?: Partial<ContractorDetailsFormData>;
     validationMode?: UseFormProps['mode'];

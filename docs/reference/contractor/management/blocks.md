@@ -338,6 +338,124 @@ Props for [PaymentSummary](#paymentsummary).
 
 ***
 
+<a id="profile"></a>
+
+## Profile
+
+Management surface for viewing and editing a contractor's basic profile details after onboarding.
+
+### Remarks
+
+Drives the read-view card and edit form via an internal state machine.
+Emits events on the supplied `onEvent` handler when the user requests an
+edit, saves changes, or cancels.
+
+<br />
+
+### ProfileProps
+
+<a id="profileprops"></a>
+
+Props for [Profile](#profile).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementProfile`](../../Translations/index.md#contractormanagementprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/profile/editRequested` | Fired when the user clicks Edit on the read-view card | `{ contractorId: string }` |
+| `contractor/management/profile/updated` | Fired after the profile is successfully saved | [APIModels.Contractor](../../APIModels/index.md#contractor) |
+| `contractor/management/profile/editCancelled` | Fired when the user cancels editing | — |
+
+***
+
+<a id="profilecard"></a>
+
+## ProfileCard
+
+Read-only card showing a contractor's basic profile details with an Edit action.
+
+### Remarks
+
+Standalone card that fetches its own data. Emits an event when the user
+clicks Edit so the parent can switch to the edit form. The card does not
+render success or error alerts itself — alert presentation is the
+surrounding surface's responsibility.
+
+<br />
+
+### ProfileCardProps
+
+<a id="profilecardprops"></a>
+
+Props for [ProfileCard](#profilecard).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ contractorId: string }` |
+
+***
+
+<a id="profileeditform"></a>
+
+## ProfileEditForm
+
+Standalone edit form for a contractor's basic profile details.
+
+### Remarks
+
+Renders fields for the contractor's name (or business name), start date,
+tax ID (SSN or EIN, depending on the contractor's type), and email — all
+required on update except tax ID and email — and shows a success alert
+when the save completes. An SSN/EIN already on file renders as a locked,
+masked value with a "Change" action rather than a blank editable input.
+Save and Cancel both emit events so the parent can return to the read view.
+
+<br />
+
+### ProfileEditFormProps
+
+<a id="profileeditformprops"></a>
+
+Props for [ProfileEditForm](#profileeditform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementProfile`](../../Translations/index.md#contractormanagementprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/profile/updated` | Fired after the contractor profile is successfully saved | [APIModels.Contractor](../../APIModels/index.md#contractor) |
+| `contractor/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
+
 ## Utility types
 
 <a id="contractortab"></a>
