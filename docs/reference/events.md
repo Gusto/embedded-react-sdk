@@ -82,6 +82,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_SIGNATORY_UPDATED` | `"company/signatory/updated"` |
 | `COMPANY_STATE_TAX_DONE` | `"company/stateTaxes/done"` |
 | `COMPANY_STATE_TAX_EDIT` | `"company/stateTaxes/edit"` |
+| `COMPANY_STATE_TAX_MANAGE_RATES` | `"company/stateTaxes/manageRates"` |
 | `COMPANY_STATE_TAX_UPDATED` | `"company/stateTaxes/updated"` |
 | `COMPANY_VIEW_FORM_TO_SIGN` | `"company/forms/view"` |
 | `CONTRACTOR_ADDRESS_DONE` | `"contractor/address/done"` |
