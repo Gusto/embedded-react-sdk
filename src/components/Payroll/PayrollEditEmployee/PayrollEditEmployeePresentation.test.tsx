@@ -1,5 +1,5 @@
 import { expect, describe, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import {
   type Employee,
   EmployeePaymentMethod1,
@@ -673,12 +673,12 @@ describe('PayrollEditEmployeePresentation', () => {
         expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
       })
 
-      const payoutInputs = screen.getAllByRole('spinbutton', { name: /Vacation Hours|Sick Hours/ })
-      const vacationPayoutInput = payoutInputs.find(
-        input =>
-          input.closest('[class*="fieldGroup"]')?.querySelector('h4')?.textContent ===
-          'Unused time off payout',
-      )
+      const payoutBox = screen
+        .getAllByTestId('data-box')
+        .find(box => box.textContent.includes('Unused time off payout'))
+      const vacationPayoutInput = payoutBox
+        ? within(payoutBox).getByRole('spinbutton', { name: /Vacation Hours/ })
+        : undefined
 
       if (vacationPayoutInput) {
         await user.clear(vacationPayoutInput)
@@ -725,12 +725,12 @@ describe('PayrollEditEmployeePresentation', () => {
         expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
       })
 
-      const payoutInputs = screen.getAllByRole('spinbutton', { name: /Vacation Hours|Sick Hours/ })
-      const vacationPayoutInput = payoutInputs.find(
-        input =>
-          input.closest('[class*="fieldGroup"]')?.querySelector('h4')?.textContent ===
-          'Unused time off payout',
-      )
+      const payoutBox = screen
+        .getAllByTestId('data-box')
+        .find(box => box.textContent.includes('Unused time off payout'))
+      const vacationPayoutInput = payoutBox
+        ? within(payoutBox).getByRole('spinbutton', { name: /Vacation Hours/ })
+        : undefined
 
       if (vacationPayoutInput) {
         await user.clear(vacationPayoutInput)
