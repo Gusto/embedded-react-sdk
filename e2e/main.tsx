@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GustoProvider } from '@/contexts'
 import { OnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingFlow'
@@ -71,7 +71,12 @@ function getConfigFromUrl(): E2EConfig {
 function FlowRenderer({ config }: { config: E2EConfig }) {
   const { flow, companyId, employeeId, contractorId, startDate, endDate, payScheduleUuid, state } =
     config
-  const handleEvent = () => {}
+  // Real partner apps may update their own state in response to SDK events, which could
+  // re-render the SDK's ancestor tree on every event, the same way sdk-app's event log does.
+  // A no-op handler here would mask bugs that only surface under that re-render churn
+  // (e.g. unmemoized props breaking a nested flow's useMemo).
+  const [, setEventCount] = useState(0)
+  const handleEvent = () => setEventCount(count => count + 1)
 
   switch (flow) {
     case 'employee-onboarding':

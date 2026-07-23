@@ -1,13 +1,10 @@
 import { PaymentsListInternal } from '../PaymentsList/PaymentsList'
-import { CreatePayment } from '../CreatePayment/CreatePayment'
-import { PaymentHistory } from '../PaymentHistory/PaymentHistory'
-import { PaymentStatement } from '../PaymentStatement/PaymentStatement'
-import { PaymentSummaryInternal } from '../PaymentSummary/PaymentSummary'
+import { CreatePaymentInternalFlow } from '../CreatePaymentFlow/CreatePaymentFlow'
+import { ViewPaymentInternalFlow } from '../ViewPaymentFlow/ViewPaymentFlow'
 import type { InternalAlert } from '../types'
 import { InformationRequestsFlow } from '@/components/InformationRequests'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
-import type { BreadcrumbTrail } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
 /**
@@ -23,10 +20,7 @@ export interface PaymentFlowProps extends BaseComponentInterface<never> {
 /** @internal */
 export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
-  breadcrumbs?: BreadcrumbTrail
   currentPaymentId?: string
-  currentContractorUuid?: string
-  createdPaymentGroupId?: string
   alerts?: InternalAlert[]
 }
 
@@ -38,42 +32,37 @@ export function PaymentListContextual() {
   )
 }
 
+function useLandingPrefixBreadcrumbs() {
+  const { header } = useFlow<PaymentFlowContextInterface>()
+  const landingBreadcrumb =
+    header?.type === 'breadcrumbs' ? header.breadcrumbs?.landing?.[0] : undefined
+  return landingBreadcrumb ? [landingBreadcrumb] : undefined
+}
+
 /** @internal */
-export function CreatePaymentContextual() {
+export function CreatePaymentFlowContextual() {
   const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
-  return <CreatePayment onEvent={onEvent} companyId={ensureRequired(companyId)} />
-}
+  const prefixBreadcrumbs = useLandingPrefixBreadcrumbs()
 
-/** @internal */
-export function PaymentHistoryContextual() {
-  const { currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
-  return <PaymentHistory onEvent={onEvent} paymentId={ensureRequired(currentPaymentId)} />
-}
-
-/** @internal */
-export function PaymentStatementContextual() {
-  const { currentPaymentId, currentContractorUuid, onEvent } =
-    useFlow<PaymentFlowContextInterface>()
   return (
-    <PaymentStatement
+    <CreatePaymentInternalFlow
+      companyId={ensureRequired(companyId)}
       onEvent={onEvent}
-      paymentGroupId={ensureRequired(currentPaymentId)}
-      contractorUuid={ensureRequired(currentContractorUuid)}
+      prefixBreadcrumbs={prefixBreadcrumbs}
     />
   )
 }
 
 /** @internal */
-export function PaymentSummaryContextual() {
-  const { createdPaymentGroupId, companyId, onEvent, alerts } =
-    useFlow<PaymentFlowContextInterface>()
+export function ViewPaymentFlowContextual() {
+  const { currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  const prefixBreadcrumbs = useLandingPrefixBreadcrumbs()
 
   return (
-    <PaymentSummaryInternal
+    <ViewPaymentInternalFlow
+      paymentId={ensureRequired(currentPaymentId)}
       onEvent={onEvent}
-      paymentGroupId={ensureRequired(createdPaymentGroupId)}
-      companyId={ensureRequired(companyId)}
-      alerts={alerts}
+      prefixBreadcrumbs={prefixBreadcrumbs}
     />
   )
 }
