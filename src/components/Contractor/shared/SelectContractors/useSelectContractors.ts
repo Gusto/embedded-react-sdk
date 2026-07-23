@@ -137,10 +137,8 @@ export function useSelectContractors(companyId: string): UseSelectContractorsRes
 
   const isFetching = isFirstPageFetching || restPageResults.some(r => r.isFetching)
 
-  const selectedIds = useMemo(() => {
-    const validUuids = new Set(eligibleContractors.map(contractor => contractor.uuid))
-    return new Set([...rawSelectedIds].filter(uuid => validUuids.has(uuid)))
-  }, [rawSelectedIds, eligibleContractors])
+  const validContractorIds = new Set(eligibleContractors.map(contractor => contractor.uuid))
+  const selectedIds = new Set([...rawSelectedIds].filter(uuid => validContractorIds.has(uuid)))
 
   const onSelect = useCallback((contractor: Contractor, checked: boolean) => {
     setRawSelectedIds(prev => {
