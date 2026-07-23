@@ -64,6 +64,14 @@ export const EditContractorPaymentPresentation = ({
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
+  const paymentMethodErrorCode = formMethods.formState.errors.paymentMethod?.message
+  const paymentMethodErrorMessage =
+    paymentMethodErrorCode === 'directDepositNotAvailable'
+      ? t('errors.directDepositNotAvailable')
+      : paymentMethodErrorCode === 'unsupportedPaymentMethod'
+        ? t('errors.unsupportedPaymentMethod')
+        : undefined
+
   const paymentMethodOptions: RadioGroupOption[] = [
     { value: 'Check', label: t('paymentMethods.check') },
     {
@@ -142,6 +150,7 @@ export const EditContractorPaymentPresentation = ({
                 name="paymentMethod"
                 options={paymentMethodOptions}
                 label={t('paymentMethodLabel')}
+                errorMessage={paymentMethodErrorMessage}
               />
             </Flex>
           </Flex>

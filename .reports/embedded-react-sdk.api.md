@@ -2877,6 +2877,7 @@ export interface FormBoxHeaderProps {
 export interface FormBoxProps {
     children: ReactNode;
     className?: string;
+    footer?: ReactNode;
     header?: ReactNode;
     withPadding?: boolean;
 }

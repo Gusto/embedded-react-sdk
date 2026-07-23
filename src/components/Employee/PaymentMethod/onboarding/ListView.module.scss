@@ -1,0 +1,7 @@
+.section {
+  padding: toRem(20);
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--g-colorBorderSecondary);
+  }
+}

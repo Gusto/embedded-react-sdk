@@ -187,7 +187,7 @@ async function fillStateTaxes(page: Page) {
 }
 
 async function selectCheckPayment(page: Page) {
-  await expect(page.getByRole('heading', { name: /employee payment details/i })).toBeVisible({
+  await expect(page.getByRole('heading', { name: /payment method/i })).toBeVisible({
     timeout: LONG_WAIT,
   })
 
