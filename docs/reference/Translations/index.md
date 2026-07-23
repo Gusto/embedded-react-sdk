@@ -4482,6 +4482,9 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeesavereimbursementcta"></a> `saveReimbursementCta` | `"Save reimbursement"` |
 | <a id="property-payrollpayrolleditemployeetimeoffbalance"></a> `timeOffBalance` | |
 | `timeOffBalance.remaining` | `"{{balance}} remaining"` |
+| <a id="property-payrollpayrolleditemployeetimeoffcolumns"></a> `timeOffColumns` | |
+| `timeOffColumns.hours` | `"Hours"` |
+| `timeOffColumns.type` | `"Type"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
 
