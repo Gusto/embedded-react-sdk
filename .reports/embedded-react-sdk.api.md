@@ -1773,6 +1773,10 @@ declare namespace ContractorManagement {
         ContractorTab,
         PaymentFlow,
         PaymentFlowProps,
+        CreatePaymentFlow,
+        CreatePaymentFlowProps,
+        ViewHistoryFlow,
+        ViewHistoryFlowProps,
         PaymentsList,
         PaymentsListProps,
         CreatePayment,
@@ -2071,6 +2075,14 @@ type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
+
+// @alpha
+function CreatePaymentFlow(props: CreatePaymentFlowProps): JSX;
+
+// @alpha
+interface CreatePaymentFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
 
 // @public
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
@@ -6204,6 +6216,14 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
 
 // @public
 export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode extends string = never> = Record<TErrorCode, string> & Partial<Record<TOptionalErrorCode, string>>;
+
+// @alpha
+function ViewHistoryFlow(props: ViewHistoryFlowProps): JSX;
+
+// @alpha
+interface ViewHistoryFlowProps extends BaseComponentInterface<never> {
+    paymentId: string;
+}
 
 // @public
 function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX;
