@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { http, HttpResponse } from 'msw'
@@ -10,7 +10,12 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
 import { handleGetContractorPaymentGroup } from '@/test/mocks/apis/contractor_payment_groups'
-import { componentEvents } from '@/shared/constants'
+import { handleGetContractorsList } from '@/test/mocks/apis/contractors'
+import {
+  handleGetInformationRequests,
+  handleSubmitInformationRequest,
+} from '@/test/mocks/apis/information_requests'
+import { componentEvents, informationRequestEvents } from '@/shared/constants'
 
 const COMPANY_ID = 'company-123'
 
@@ -65,6 +70,38 @@ const paymentGroupWithCancelableContractorPayment = handleGetContractorPaymentGr
       debit_amount: '500.00',
     },
   }),
+)
+
+const hourlyContractor = {
+  uuid: 'contractor-hourly',
+  company_uuid: COMPANY_ID,
+  wage_type: 'Hourly',
+  type: 'Individual',
+  first_name: 'Ada',
+  last_name: 'Lovelace',
+  is_active: true,
+  onboarding_status: 'onboarding_completed',
+  hourly_rate: '50.00',
+  payment_method: 'Direct Deposit',
+}
+
+const singleTextInformationRequest = handleGetInformationRequests(() =>
+  HttpResponse.json([
+    {
+      uuid: 'rfi-1',
+      company_uuid: COMPANY_ID,
+      type: 'company_onboarding',
+      status: 'pending_response',
+      blocking_payroll: false,
+      required_questions: [
+        {
+          question_uuid: 'q-1',
+          question_text: 'Please confirm.',
+          response_type: 'text',
+        },
+      ],
+    },
+  ]),
 )
 
 /**
@@ -162,6 +199,97 @@ describe('PaymentFlow', () => {
     await user.click(screen.getByRole('button', { name: 'Contractor payments' }))
 
     await screen.findByRole('heading', { name: 'Contractor payments' })
+  })
+
+  it('creates a payment via CreatePaymentFlow and lands on the summary', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    server.use(
+      handleGetContractorsList(() =>
+        HttpResponse.json([hourlyContractor], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        }),
+      ),
+    )
+
+    renderWithProviders(<PaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'New payment' }))
+    await screen.findByRole('heading', { name: 'Pay contractors' })
+
+    await user.click(await screen.findByRole('button', { name: 'Edit contractor payment' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
+    await screen.findByRole('heading', { name: 'Edit contractor pay' })
+    await user.type(screen.getByLabelText('Hours'), '8')
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Edit contractor pay' })).not.toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await screen.findByRole('heading', { name: 'Review and submit' })
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    await screen.findByRole('heading', { name: 'Payment summary' })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_PAYMENT_CREATED,
+      expect.objectContaining({ uuid: 'new-payment-group-uuid' }),
+    )
+  })
+
+  it('enters the information-requests flow and cancels back to the payments list', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    server.use(singleTextInformationRequest)
+
+    renderWithProviders(<PaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Respond' }))
+    await screen.findByRole('heading', { name: 'Information requests' })
+
+    await user.click(await screen.findByRole('button', { name: 'Respond' }))
+    await screen.findByText('Request for information')
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    await screen.findByRole('heading', { name: 'Contractor payments' })
+    expect(onEvent).toHaveBeenCalledWith(
+      informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL,
+      undefined,
+    )
+  })
+
+  it('completes the information-requests flow and returns to the payments list', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    server.use(
+      singleTextInformationRequest,
+      handleSubmitInformationRequest(() =>
+        HttpResponse.json({
+          uuid: 'rfi-1',
+          company_uuid: COMPANY_ID,
+          type: 'company_onboarding',
+          status: 'pending_review',
+          blocking_payroll: false,
+        }),
+      ),
+    )
+
+    renderWithProviders(<PaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Respond' }))
+    await screen.findByRole('heading', { name: 'Information requests' })
+
+    await user.click(await screen.findByRole('button', { name: 'Respond' }))
+    await screen.findByText('Request for information')
+    await user.type(screen.getByPlaceholderText('Your answer'), 'Confirm')
+    await user.click(screen.getByRole('button', { name: 'Submit response' }))
+
+    await screen.findByRole('heading', { name: 'Contractor payments' })
+    expect(onEvent).toHaveBeenCalledWith(
+      informationRequestEvents.INFORMATION_REQUEST_FORM_DONE,
+      expect.objectContaining({ uuid: 'rfi-1', status: 'pending_review' }),
+    )
   })
 
   it("does not reset the flow's current step when the partner app re-renders its own tree mid-flow", async () => {
