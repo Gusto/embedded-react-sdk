@@ -3,8 +3,10 @@
     "selfOnboardingWarningLabel": "Self-onboarding employees can change your company tax requirements",
     "selfOnboardingWarningDescription": "If your employees are self-onboarding and enter details that change your company's state tax requirements (such as a home address in a new state), you may need to complete state tax setup again.",
     "continueCta": "Continue",
-    "editStateTaxCta": "Edit",
+    "editStateTaxCta": "Edit tax settings",
     "continueStateTaxSetupCta": "Continue setup",
+    "manageRatesCta": "Manage tax rates",
+    "hamburgerTitle": "Actions for {{state}}",
     "requirementsListCol1": "State",
     "requirementsListCol2": "Status",
     "completeBadge": "Complete",
@@ -29,5 +31,25 @@
       "oneOf": "Value must be one of: {{values}}",
       "required": "This field is required"
     }
+  },
+  "manageRates": {
+    "title": "Tax rates for {{state}}",
+    "subtitle": "Effective-dated tax rate history and scheduled future rates.",
+    "backCta": "Back to states",
+    "addRateCta": "Add tax rate",
+    "effectiveDateLabel": "Effective date",
+    "effectiveDatePlaceholder": "Select an effective date",
+    "effectiveDateColumnLabel": "Effective date",
+    "currentBadge": "Current",
+    "scheduledBadge": "Scheduled",
+    "historicalBadge": "Historical",
+    "emptyHistoryTitle": "No effective-dated rates yet",
+    "emptyHistoryDescription": "Add a tax rate to schedule a future-dated configuration.",
+    "addRateDialogTitle": "Add tax rate for {{state}}",
+    "addRateDialogDescription": "Schedule a new tax configuration to take effect on a future date.",
+    "saveRateCta": "Save tax rate",
+    "cancelCta": "Cancel",
+    "noEditableFieldsTitle": "No editable fields",
+    "noEditableFieldsDescription": "This state does not expose editable effective-dated tax requirements."
   }
 }

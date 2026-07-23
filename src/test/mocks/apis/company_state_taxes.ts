@@ -4,13 +4,19 @@ import { API_BASE_URL } from '@/test/constants'
 
 export const getStateTaxRequirements = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
-  async ({ params }) => {
+  async ({ params, request }) => {
     const state = params.state as string
-    const fixtureName = `get-v1-companies-company_id-tax_requirements-${state}`
+    const scheduling = new URL(request.url).searchParams.get('scheduling') === 'true'
+    const fixtureName = scheduling
+      ? `get-v1-companies-company_id-tax_requirements-${state}-scheduling`
+      : `get-v1-companies-company_id-tax_requirements-${state}`
+    const fallbackFixtureName = scheduling
+      ? 'get-v1-companies-company_id-tax_requirements-GA-scheduling'
+      : 'get-v1-companies-company_id-tax_requirements-GA'
     try {
       return HttpResponse.json(await getFixture(fixtureName))
     } catch {
-      return HttpResponse.json(await getFixture('get-v1-companies-company_id-tax_requirements-GA'))
+      return HttpResponse.json(await getFixture(fallbackFixtureName))
     }
   },
 )

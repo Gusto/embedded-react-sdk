@@ -5,12 +5,14 @@ import { useTaxRequirementsGetSuspense } from '@gusto/embedded-api/react-query/t
 import { z } from 'zod'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getUniqueRhfKey } from '../shared/rhfKey'
+import { isRequirementApplicable, type StateTaxesFormValues } from '../shared/applicableIf'
+import { buildRequirementSchema } from '../shared/buildRequirementSchema'
+import { stringifyRequirementValue } from '../shared/requirementValue'
 import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
 import { Actions } from './Actions'
-import { toRhfKey } from './rhfKey'
-import { isRequirementApplicable, type StateTaxesFormValues } from './applicableIf'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
@@ -29,14 +31,6 @@ export interface StateTaxesFormProps extends BaseComponentInterface<'Company.Sta
   companyId: string
   /** Two-letter code of the state whose tax requirements are edited. */
   state: string
-}
-
-function stringifyRequirementValue(value: unknown): string {
-  if (value === undefined || value === null) return ''
-  if (typeof value === 'number') return isNaN(value) ? '' : String(value)
-  if (typeof value === 'string') return value
-  if (typeof value === 'boolean') return String(value)
-  return ''
 }
 
 /**
@@ -94,62 +88,21 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
     const schemaShape: Record<string, z.ZodObject> = {}
     const values: Partial<Record<string, Record<string, string | boolean | number | undefined>>> =
       {}
+    const requirementSets = stateTaxRequirements.requirementSets ?? []
 
-    //Looping through each requirement set
-    stateTaxRequirements.requirementSets?.forEach(requirementSet => {
+    //Looping through each requirement set. A single key (e.g. "taxrates") can appear more than
+    //once when a future-dated set is already scheduled alongside the current one, so each set
+    //needs its own disambiguated path — otherwise two visually distinct sections would silently
+    //share one underlying form field.
+    requirementSets.forEach((requirementSet, index) => {
       if (!requirementSet.key) return
 
-      const requirementSetKey = requirementSet.key
-      const requirementShape: Record<string, z.ZodType> = {}
-      const requirementValues: Record<string, string | boolean | number | undefined> = {}
+      const setPath = getUniqueRhfKey(requirementSet, index, requirementSets)
+      const { shape, defaults } = buildRequirementSchema(requirementSet.requirements, t)
 
-      requirementSet.requirements?.forEach(requirement => {
-        if (!requirement.key) return
-
-        const requirementKey = toRhfKey(requirement.key)
-
-        const isPercentField =
-          requirement.metadata?.type === 'tax_rate' || requirement.metadata?.type === 'percent'
-
-        if (requirement.metadata?.type === 'radio') {
-          requirementValues[requirementKey] = requirement.value ?? undefined
-        } else if (requirement.metadata?.type === 'workers_compensation_rate') {
-          requirementValues[requirementKey] =
-            requirement.value !== null && requirement.value !== undefined
-              ? Number(requirement.value)
-              : undefined
-        } else {
-          requirementValues[requirementKey] = requirement.value ? String(requirement.value) : ''
-        }
-
-        let fieldSchema: z.ZodType = z.string().optional()
-
-        const validation = requirement.metadata?.validation
-
-        if (validation) {
-          if (isPercentField && validation.type === 'one_of') {
-            const oneOfValues = validation.rates as string[]
-            fieldSchema = z
-              .string()
-              .optional()
-              .refine(val => !val || oneOfValues.includes(val), {
-                message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
-              })
-          }
-        }
-
-        if (requirement.metadata?.type === 'radio') {
-          fieldSchema = z.boolean().optional()
-        } else if (requirement.metadata?.type === 'workers_compensation_rate') {
-          fieldSchema = z.number().optional()
-        }
-        requirementShape[requirementKey] = fieldSchema
-        // --- End Schema Logic ---
-      })
-
-      if (Object.keys(requirementShape).length > 0) {
-        schemaShape[requirementSetKey] = z.object(requirementShape)
-        values[requirementSetKey] = requirementValues
+      if (Object.keys(shape).length > 0) {
+        schemaShape[setPath] = z.object(shape)
+        values[setPath] = defaults
       }
     })
 
@@ -173,23 +126,34 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   const onSubmit = async (formData: InferredFormInputs) => {
     await baseSubmitHandler(formData, async payload => {
       const formValues = payload as StateTaxesFormValues
-      const requirementSets = stateTaxRequirements.requirementSets
-        ?.filter(rs => rs.key && payload[rs.key])
-        .map(requirementSet => {
+      const allRequirementSets = stateTaxRequirements.requirementSets ?? []
+      const requirementSets = allRequirementSets
+        .map((requirementSet, setIndex) => ({ requirementSet, setIndex }))
+        .filter(({ requirementSet, setIndex }) => {
+          if (!requirementSet.key) return false
+          const setPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
+          return Boolean(payload[setPath])
+        })
+        .map(({ requirementSet, setIndex }) => {
           const requirementSetKey = requirementSet.key as string
-          const payloadSet = payload[requirementSetKey] as Record<string, unknown>
+          const setPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
+          const payloadSet = payload[setPath] as Record<string, unknown>
+          const requirements = requirementSet.requirements ?? []
 
-          const applicableRequirements = (requirementSet.requirements ?? [])
-            .filter(req => req.editable !== false)
-            .filter(req => isRequirementApplicable(req, requirementSetKey, formValues))
+          const applicableRequirements = requirements
+            .map((req, index) => ({ req, index }))
+            .filter(({ req }) => req.editable !== false)
+            .filter(({ req }) => isRequirementApplicable(req, setPath, formValues))
 
           return {
             state,
             key: requirementSetKey,
             effectiveFrom: requirementSet.effectiveFrom,
-            requirements: applicableRequirements.map(req => ({
+            requirements: applicableRequirements.map(({ req, index }) => ({
               key: req.key as string,
-              value: stringifyRequirementValue(payloadSet[toRhfKey(req.key as string)]),
+              value: stringifyRequirementValue(
+                payloadSet[getUniqueRhfKey(req, index, requirements)],
+              ),
             })),
           }
         })

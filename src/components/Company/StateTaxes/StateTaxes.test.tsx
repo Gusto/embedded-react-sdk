@@ -23,7 +23,9 @@ describe('StateTaxes', () => {
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_DONE, undefined)
 
-    const editButton = await screen.findByText('Edit')
+    const hamburger = await screen.findByRole('button', { name: /Actions for California/i })
+    await user.click(hamburger)
+    const editButton = await screen.findByTestId('edit-state-tax')
     await user.click(editButton)
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_EDIT, {

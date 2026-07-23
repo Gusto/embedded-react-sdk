@@ -203,6 +203,7 @@ export const companyEvents = {
   COMPANY_STATE_TAX_UPDATED: 'company/stateTaxes/updated',
   COMPANY_STATE_TAX_DONE: 'company/stateTaxes/done',
   COMPANY_STATE_TAX_EDIT: 'company/stateTaxes/edit',
+  COMPANY_STATE_TAX_MANAGE_RATES: 'company/stateTaxes/manageRates',
   COMPANY_OVERVIEW_DONE: 'company/overview/done',
   COMPANY_OVERVIEW_CONTINUE: 'company/overview/continue',
 } as const
