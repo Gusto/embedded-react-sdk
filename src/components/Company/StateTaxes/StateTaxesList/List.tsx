@@ -8,7 +8,6 @@ import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
 
 type BadgeStatus = 'success' | 'warning' | 'info'
 
@@ -92,7 +91,6 @@ export const List = () => {
               onClick: () => {
                 handleChange(state)
               },
-              icon: <PencilSvg aria-hidden />,
               'data-testid': 'edit-state-tax',
             },
             {

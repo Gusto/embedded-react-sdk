@@ -202,6 +202,31 @@ describe('TaxRateManagement', () => {
         },
       ],
     })
+
+    expect(
+      await screen.findByText('Tax rate scheduled to take effect on January 1, 2027.'),
+    ).toBeInTheDocument()
+  })
+
+  it('dismisses the success alert when its dismiss control is used', async () => {
+    renderTaxRateManagement(vi.fn(), [
+      http.put(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+        HttpResponse.json({}),
+      ),
+    ])
+    const user = userEvent.setup()
+
+    const section = await screen.findByRole('region', { name: 'Tax Rates' })
+    await user.click(within(section).getByRole('button', { name: 'Add tax rate' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: 'Save tax rate' }))
+
+    await screen.findByText('Tax rate scheduled to take effect on January 1, 2027.')
+    await user.click(screen.getByRole('button', { name: /dismiss/i }))
+
+    expect(
+      screen.queryByText('Tax rate scheduled to take effect on January 1, 2027.'),
+    ).not.toBeInTheDocument()
   })
 
   it('renders requirements that share the same key as independent fields, not a linked pair', async () => {

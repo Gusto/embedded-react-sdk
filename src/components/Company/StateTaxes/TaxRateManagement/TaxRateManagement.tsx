@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTaxRequirementsGetSuspense } from '@gusto/embedded-api/react-query/taxRequirementsGet'
 import { useTaxRequirementsUpdateStateMutation } from '@gusto/embedded-api/react-query/taxRequirementsUpdateState'
@@ -11,6 +11,8 @@ import { useI18n } from '@/i18n/I18n'
 import { DetailViewLayout, Flex } from '@/components/Common'
 import { componentEvents, type STATES_ABBR } from '@/shared/constants'
 import { useBase } from '@/components/Base'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 /**
  * Props for {@link TaxRateManagement}.
@@ -71,6 +73,9 @@ function Root({ companyId, state, className, children }: TaxRateManagementProps)
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'manageRates' })
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
   const { onEvent, baseSubmitHandler } = useBase()
+  const Components = useComponentContext()
+  const dateFormatter = useDateFormatter()
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const { data: currentData } = useTaxRequirementsGetSuspense({ companyUuid: companyId, state })
   const { data: schedulingData } = useTaxRequirementsGetSuspense({
@@ -116,7 +121,8 @@ function Root({ companyId, state, className, children }: TaxRateManagementProps)
     effectiveFrom: string,
     requirements: { key: string; value: string }[],
   ): Promise<boolean> => {
-    let succeeded = false
+    const result = { succeeded: false }
+    setSuccessMessage(null)
     await baseSubmitHandler({ key, effectiveFrom, requirements }, async payload => {
       await updateStateTax({
         request: {
@@ -134,9 +140,14 @@ function Root({ companyId, state, className, children }: TaxRateManagementProps)
           },
         },
       })
-      succeeded = true
+      result.succeeded = true
     })
-    return succeeded
+    if (result.succeeded) {
+      setSuccessMessage(
+        t('rateScheduledSuccess', { date: dateFormatter.formatLongWithYear(effectiveFrom) }),
+      )
+    }
+    return result.succeeded
   }
 
   const singleGroup = groups.length === 1 ? groups[0] : undefined
@@ -145,21 +156,36 @@ function Root({ companyId, state, className, children }: TaxRateManagementProps)
     <TaxRateManagementProvider
       value={{ state, groups, isPendingUpdate, handleCancel, handleAddRate }}
     >
-      <DetailViewLayout
-        className={className}
-        title={t('title', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}
-        subtitle={t('subtitle')}
-        onBack={handleCancel}
-        backLabel={t('backCta')}
-        actions={singleGroup && <AddRateAction state={state} group={singleGroup} />}
-      >
-        <Flex flexDirection="column" gap={32} alignItems="stretch">
-          {children ??
-            groups.map(group => (
-              <TaxRateHistorySection key={group.key} group={group} showHeader={groups.length > 1} />
-            ))}
-        </Flex>
-      </DetailViewLayout>
+      <Flex flexDirection="column" gap={16} alignItems="stretch">
+        {successMessage && (
+          <Components.Alert
+            status="success"
+            label={successMessage}
+            onDismiss={() => {
+              setSuccessMessage(null)
+            }}
+          />
+        )}
+        <DetailViewLayout
+          className={className}
+          title={t('title', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}
+          subtitle={t('subtitle')}
+          onBack={handleCancel}
+          backLabel={t('backCta')}
+          actions={singleGroup && <AddRateAction state={state} group={singleGroup} />}
+        >
+          <Flex flexDirection="column" gap={32} alignItems="stretch">
+            {children ??
+              groups.map(group => (
+                <TaxRateHistorySection
+                  key={group.key}
+                  group={group}
+                  showHeader={groups.length > 1}
+                />
+              ))}
+          </Flex>
+        </DetailViewLayout>
+      </Flex>
     </TaxRateManagementProvider>
   )
 }

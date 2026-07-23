@@ -742,7 +742,7 @@ export namespace Translations {
       selfOnboardingWarningDescription: string
       /** @defaultValue `"Continue"` */
       continueCta: string
-      /** @defaultValue `"Edit"` */
+      /** @defaultValue `"Edit tax settings"` */
       editStateTaxCta: string
       /** @defaultValue `"Continue setup"` */
       continueStateTaxSetupCta: string
@@ -832,6 +832,8 @@ export namespace Translations {
       noEditableFieldsTitle: string
       /** @defaultValue `"This state does not expose editable effective-dated tax requirements."` */
       noEditableFieldsDescription: string
+      /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
+      rateScheduledSuccess: string
     }
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */
