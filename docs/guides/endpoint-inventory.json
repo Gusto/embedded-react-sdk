@@ -1837,6 +1837,24 @@
         "companyUuid"
       ]
     },
+    "CompanyOnboarding.TaxRateManagement": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "state"
+      ]
+    },
     "CompanyOnboarding.AssignSignatory": {
       "endpoints": [
         {
