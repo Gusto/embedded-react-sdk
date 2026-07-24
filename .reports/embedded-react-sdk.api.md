@@ -342,7 +342,27 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 function Address_2(input: AddressProps): JSX.Element;
 
 // @public
+function Address_3(input: AddressProps_2): JSX;
+
+// @public
+function AddressCard(props: AddressCardProps): JSX;
+
+// @public
+interface AddressCardProps {
+    contractorId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
 type AddressDefaultValues = RequireAtLeastOne<ContractorAddressFormData>;
+
+// @public
+function AddressEditForm(input: AddressEditFormProps): JSX;
+
+// @public
+interface AddressEditFormProps extends BaseComponentInterface<'Contractor.Management.Address'> {
+    contractorId: string;
+}
 
 // @public
 interface AddressProps {
@@ -352,6 +372,11 @@ interface AddressProps {
     dictionary?: ResourceDictionary<'Contractor.Address'>;
     FallbackComponent?: (props: FallbackProps) => JSX.Element;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface AddressProps_2 extends BaseComponentInterface<'Contractor.Management.Address'> {
+    contractorId: string;
 }
 
 // @public
@@ -1309,6 +1334,10 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED: "contractor/management/profile/editCancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED: "contractor/management/profile/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_REQUESTED: "contractor/management/address/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED: "contractor/management/address/updated";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED: "contractor/management/address/editCancelled";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED: "contractor/management/address/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1784,6 +1813,12 @@ declare namespace ContractorManagement {
         ProfileProps_3 as ProfileProps,
         ProfileCardProps_2 as ProfileCardProps,
         ProfileEditFormProps_2 as ProfileEditFormProps,
+        Address_3 as Address,
+        AddressCard,
+        AddressEditForm,
+        AddressProps_2 as AddressProps,
+        AddressCardProps,
+        AddressEditFormProps,
         PaymentFlow,
         PaymentFlowProps,
         PaymentsList,
@@ -4566,6 +4601,8 @@ export interface Resources {
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)
     'Contractor.Landing': Translations.ContractorLanding
+    // (undocumented)
+    'Contractor.Management.Address': Translations.ContractorManagementAddress
     // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)

@@ -10,6 +10,121 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
+<a id="address"></a>
+
+## Address
+
+Management surface for viewing and editing a contractor's mailing address after onboarding.
+
+### Remarks
+
+Drives the read-view card and edit form via an internal state machine.
+Emits events on the supplied `onEvent` handler when the user requests an
+edit, saves changes, or cancels.
+
+<br />
+
+### AddressProps
+
+<a id="addressprops"></a>
+
+Props for [Address](#address).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementAddress`](../../Translations/index.md#contractormanagementaddress)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/address/editRequested` | Fired when the user clicks Edit on the read-view card | `{ contractorId: string }` |
+| `contractor/management/address/updated` | Fired after the address is successfully saved | [APIModels.ContractorAddress](../../APIModels/index.md#contractoraddress) |
+| `contractor/management/address/editCancelled` | Fired when the user cancels editing | — |
+
+***
+
+<a id="addresscard"></a>
+
+## AddressCard
+
+Read-only card showing a contractor's mailing address with an Edit action.
+
+### Remarks
+
+Standalone card that fetches its own data. Emits an event when the user
+clicks Edit so the parent can switch to the edit form. The card does not
+render success or error alerts itself — alert presentation is the
+surrounding surface's responsibility.
+
+<br />
+
+### AddressCardProps
+
+<a id="addresscardprops"></a>
+
+Props for [AddressCard](#addresscard).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the address. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/address/editRequested` | Fired when the user clicks the Edit button | `{ contractorId: string }` |
+
+***
+
+<a id="addresseditform"></a>
+
+## AddressEditForm
+
+Standalone edit form for a contractor's mailing address.
+
+### Remarks
+
+Renders fields for street address, city, state, and ZIP code — all
+required — and shows a success alert when the save completes. Save and
+Cancel both emit events so the parent can return to the read view.
+
+<br />
+
+### AddressEditFormProps
+
+<a id="addresseditformprops"></a>
+
+Props for [AddressEditForm](#addresseditform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementAddress`](../../Translations/index.md#contractormanagementaddress)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/address/updated` | Fired after the address is successfully saved | The updated `ContractorAddress` entity |
+| `contractor/management/address/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
+
 <a id="contractorlist"></a>
 
 ## ContractorList

@@ -20,6 +20,10 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyOnboarding.StateTaxes': ['companyId'],
   'CompanyOnboarding.StateTaxesForm': ['companyId'],
   'CompanyOnboarding.StateTaxesList': ['companyId'],
+  'CompanyOnboarding.TaxRateManagement': ['companyId'],
+  'ContractorManagement.Address': ['contractorId'],
+  'ContractorManagement.AddressCard': ['contractorId'],
+  'ContractorManagement.AddressEditForm': ['contractorId'],
   'ContractorManagement.ContractorList': ['companyId'],
   'ContractorManagement.CreatePayment': ['companyId'],
   'ContractorManagement.PaymentFlow': ['companyId'],
@@ -143,6 +147,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
 export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'CompanyOnboarding.SignatureForm': ['formId'],
   'CompanyOnboarding.StateTaxesForm': ['state'],
+  'CompanyOnboarding.TaxRateManagement': ['state'],
   'ContractorManagement.PaymentHistory': ['paymentId'],
   'ContractorManagement.PaymentStatement': ['paymentGroupId', 'contractorUuid'],
   'ContractorManagement.PaymentSummary': ['paymentGroupId'],

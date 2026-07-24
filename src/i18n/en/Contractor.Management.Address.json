@@ -1,0 +1,34 @@
+{
+  "homeTitle": "Home address",
+  "businessTitle": "Business address",
+  "editCta": "Edit",
+  "addressLine1": "Address line 1",
+  "addressLine2": "Address line 2",
+  "city": "City",
+  "state": "State",
+  "zip": "ZIP code",
+  "listEmptyPlaceholder": "No value on file",
+  "alerts": {
+    "addressUpdated": "Address updated"
+  },
+  "form": {
+    "homeTitle": "Home address",
+    "businessTitle": "Business address",
+    "street1": "Street 1",
+    "street2": "Street 2",
+    "city": "City",
+    "state": "State",
+    "statePlaceholder": "Select state...",
+    "zip": "Zip",
+    "cancelCta": "Cancel",
+    "saveCta": "Save",
+    "successAlert": "Address updated",
+    "validations": {
+      "street1": "Street address is required",
+      "city": "Please provide valid city name",
+      "state": "Please select a state",
+      "zip": "Please provide valid zip code",
+      "zipInvalid": "Please enter a valid ZIP code"
+    }
+  }
+}

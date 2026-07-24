@@ -5,6 +5,8 @@ export {
 } from '../ContractorList/management/ManagementContractorList'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
+export { Address, AddressCard, AddressEditForm } from '../Address/management'
+export type { AddressProps, AddressCardProps, AddressEditFormProps } from '../Address/management'
 export { PaymentFlow, type PaymentFlowProps } from '../Payments/PaymentFlow'
 export { PaymentsList, type PaymentsListProps } from '../Payments/PaymentsList/PaymentsList'
 export { CreatePayment, type CreatePaymentProps } from '../Payments/CreatePayment/CreatePayment'
