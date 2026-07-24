@@ -1889,33 +1889,23 @@ export namespace Translations {
   }
   /** Translation keys for the `Contractor.Management.Address` i18n namespace. */
   export interface ContractorManagementAddress {
-    /** @defaultValue `"Home address"` */
-    homeTitle: string
-    /** @defaultValue `"Business address"` */
-    businessTitle: string
+    /** @defaultValue `"Address"` */
+    title: string
     /** @defaultValue `"Edit"` */
     editCta: string
-    /** @defaultValue `"Address line 1"` */
-    addressLine1: string
-    /** @defaultValue `"Address line 2"` */
-    addressLine2: string
-    /** @defaultValue `"City"` */
-    city: string
-    /** @defaultValue `"State"` */
-    state: string
-    /** @defaultValue `"ZIP code"` */
-    zip: string
-    /** @defaultValue `"No value on file"` */
-    listEmptyPlaceholder: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
     alerts: {
       /** @defaultValue `"Address updated"` */
       addressUpdated: string
     }
     form: {
-      /** @defaultValue `"Home address"` */
-      homeTitle: string
-      /** @defaultValue `"Business address"` */
-      businessTitle: string
+      /** @defaultValue `"Edit address"` */
+      title: string
+      /** @defaultValue `"Update {{name}}’s business address."` */
+      businessDescription: string
+      /** @defaultValue `"Update {{name}}’s home address."` */
+      homeDescription: string
       /** @defaultValue `"Street 1"` */
       street1: string
       /** @defaultValue `"Street 2"` */

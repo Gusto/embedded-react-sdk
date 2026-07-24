@@ -6,10 +6,12 @@ import type { ContractorAddressOptionalFieldsToRequire } from '../shared/useCont
 import styles from './AddressEditForm.module.scss'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
+import { Flex } from '@/components/Common/Flex/Flex'
 import { Form } from '@/components/Common/Form'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useI18n, useComponentDictionary } from '@/i18n'
+import { firstLastName } from '@/helpers/formattedStrings'
 import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -82,7 +84,11 @@ function AddressEditFormRoot({
     return <BaseLayout isLoading error={contractorAddress.errorHandling.errors} />
   }
 
-  const isBusiness = contractorAddress.data.contractorType === CONTRACTOR_TYPE.BUSINESS
+  const { contractor, contractorType } = contractorAddress.data
+  const isBusiness = contractorType === CONTRACTOR_TYPE.BUSINESS
+  const legalName = isBusiness
+    ? (contractor.businessName ?? '')
+    : firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
   const { Fields } = contractorAddress.form
 
   const handleSubmit = async () => {
@@ -113,9 +119,14 @@ function AddressEditFormRoot({
         <SDKFormProvider formHookResult={contractorAddress}>
           <Form onSubmit={handleSubmit}>
             {alert}
-            <Components.Heading as="h1">
-              {isBusiness ? t('form.businessTitle') : t('form.homeTitle')}
-            </Components.Heading>
+            <Flex flexDirection="column" gap={4}>
+              <Components.Heading as="h2">{t('form.title')}</Components.Heading>
+              <Components.Text variant="supporting">
+                {t(isBusiness ? 'form.businessDescription' : 'form.homeDescription', {
+                  name: legalName,
+                })}
+              </Components.Text>
+            </Flex>
             <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
               <Fields.Street1
                 label={t('form.street1')}

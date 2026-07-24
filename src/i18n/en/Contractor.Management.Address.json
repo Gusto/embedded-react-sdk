@@ -1,19 +1,14 @@
 {
-  "homeTitle": "Home address",
-  "businessTitle": "Business address",
+  "title": "Address",
   "editCta": "Edit",
-  "addressLine1": "Address line 1",
-  "addressLine2": "Address line 2",
-  "city": "City",
-  "state": "State",
-  "zip": "ZIP code",
-  "listEmptyPlaceholder": "No value on file",
+  "emptyPlaceholder": "–",
   "alerts": {
     "addressUpdated": "Address updated"
   },
   "form": {
-    "homeTitle": "Home address",
-    "businessTitle": "Business address",
+    "title": "Edit address",
+    "businessDescription": "Update {{name}}’s business address.",
+    "homeDescription": "Update {{name}}’s home address.",
     "street1": "Street 1",
     "street2": "Street 2",
     "city": "City",

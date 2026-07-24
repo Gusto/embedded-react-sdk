@@ -65,48 +65,41 @@ describe('AddressCard', () => {
     mockAddress()
   })
 
-  it('renders the home address title, Edit button, and address details once loaded', async () => {
+  it('renders the Address title, Edit button, and address details once loaded', async () => {
     renderWithProviders(<AddressCard contractorId="contractor-123" onEvent={onEvent} />)
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
     })
 
-    expect(screen.getByText('Home address')).toBeInTheDocument()
+    expect(screen.getByText('Address')).toBeInTheDocument()
     expect(screen.getByText('999 Kiera Stravenue')).toBeInTheDocument()
     expect(screen.getByText('Suite 541')).toBeInTheDocument()
-    expect(screen.getByText('San Francisco')).toBeInTheDocument()
-    expect(screen.getByText('CA')).toBeInTheDocument()
-    expect(screen.getByText('94107')).toBeInTheDocument()
+    expect(screen.getByText(/San Francisco.*CA.*94107/)).toBeInTheDocument()
   })
 
-  it('shows the business address title for a business contractor', async () => {
-    mockContractor({
-      type: 'Business',
-      business_name: 'Pacific Design Co.',
-      first_name: null,
-      last_name: null,
-      has_ssn: false,
-      has_ein: true,
-    })
-
-    renderWithProviders(<AddressCard contractorId="contractor-123" onEvent={onEvent} />)
-
-    await waitFor(() => {
-      expect(screen.getByText('Business address')).toBeInTheDocument()
-    })
-  })
-
-  it('shows an empty placeholder for a missing address line 2', async () => {
+  it('omits the second address line when street2 is absent', async () => {
     mockAddress({ street_2: null })
 
     renderWithProviders(<AddressCard contractorId="contractor-123" onEvent={onEvent} />)
 
     await waitFor(() => {
+      expect(screen.getByText('999 Kiera Stravenue')).toBeInTheDocument()
+    })
+
+    expect(screen.queryByText('Suite 541')).toBeNull()
+  })
+
+  it('shows an empty placeholder when the contractor has no address on file', async () => {
+    mockAddress({ street_1: null, street_2: null, city: null, state: null, zip: null })
+
+    renderWithProviders(<AddressCard contractorId="contractor-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
     })
 
-    expect(screen.getByText('–')).toHaveAttribute('aria-label', 'No value on file')
+    expect(screen.getByText('–')).toBeInTheDocument()
   })
 
   it('fires CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_REQUESTED with { contractorId } when Edit is clicked', async () => {

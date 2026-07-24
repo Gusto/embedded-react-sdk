@@ -1370,24 +1370,22 @@ Translation keys for the `Contractor.Management.Address` i18n namespace.
 
 | Property | Default value |
 | ------ | ------ |
-| <a id="property-contractormanagementaddressaddressline1"></a> `addressLine1` | `"Address line 1"` |
-| <a id="property-contractormanagementaddressaddressline2"></a> `addressLine2` | `"Address line 2"` |
 | <a id="property-contractormanagementaddressalerts"></a> `alerts` | |
 | `alerts.addressUpdated` | `"Address updated"` |
-| <a id="property-contractormanagementaddressbusinesstitle"></a> `businessTitle` | `"Business address"` |
-| <a id="property-contractormanagementaddresscity"></a> `city` | `"City"` |
 | <a id="property-contractormanagementaddresseditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementaddressemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
 | <a id="property-contractormanagementaddressform"></a> `form` | |
-| `form.businessTitle` | `"Business address"` |
+| `form.businessDescription` | `"Update {{name}}’s business address."` |
 | `form.cancelCta` | `"Cancel"` |
 | `form.city` | `"City"` |
-| `form.homeTitle` | `"Home address"` |
+| `form.homeDescription` | `"Update {{name}}’s home address."` |
 | `form.saveCta` | `"Save"` |
 | `form.state` | `"State"` |
 | `form.statePlaceholder` | `"Select state..."` |
 | `form.street1` | `"Street 1"` |
 | `form.street2` | `"Street 2"` |
 | `form.successAlert` | `"Address updated"` |
+| `form.title` | `"Edit address"` |
 | `form.validations` | |
 | `form.validations.city` | `"Please provide valid city name"` |
 | `form.validations.state` | `"Please select a state"` |
@@ -1395,10 +1393,7 @@ Translation keys for the `Contractor.Management.Address` i18n namespace.
 | `form.validations.zip` | `"Please provide valid zip code"` |
 | `form.validations.zipInvalid` | `"Please enter a valid ZIP code"` |
 | `form.zip` | `"Zip"` |
-| <a id="property-contractormanagementaddresshometitle"></a> `homeTitle` | `"Home address"` |
-| <a id="property-contractormanagementaddresslistemptyplaceholder"></a> `listEmptyPlaceholder` | `"No value on file"` |
-| <a id="property-contractormanagementaddressstate"></a> `state` | `"State"` |
-| <a id="property-contractormanagementaddresszip"></a> `zip` | `"ZIP code"` |
+| <a id="property-contractormanagementaddresstitle"></a> `title` | `"Address"` |
 
 ***
 

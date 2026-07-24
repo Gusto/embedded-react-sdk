@@ -33,14 +33,14 @@ describe('Address (management block)', () => {
     server.use(handleGetContractorAddress(() => HttpResponse.json(fullAddressResponse)))
   })
 
-  it('renders the card initially with the home address title and Edit button', async () => {
+  it('renders the card initially with the Address title and Edit button', async () => {
     renderWithProviders(<Address contractorId="contractor-123" onEvent={onEvent} />)
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
     })
 
-    expect(screen.getByText('Home address')).toBeInTheDocument()
+    expect(screen.getByText('Address')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Save' })).toBeNull()
   })
 

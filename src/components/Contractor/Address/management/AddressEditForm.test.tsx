@@ -31,6 +31,8 @@ function mockContractor(overrides: Record<string, unknown> = {}) {
       HttpResponse.json({
         uuid: 'contractor-123',
         type: 'Individual',
+        first_name: 'Ada',
+        last_name: 'Lovelace',
         is_active: true,
         file_new_hire_report: false,
         ...overrides,
@@ -49,12 +51,13 @@ describe('AddressEditForm — individual contractor', () => {
     server.use(handleGetContractorAddress(() => HttpResponse.json(fullAddressResponse)))
   })
 
-  it('renders the home address title and pre-fills fields from the loaded address', async () => {
+  it('renders the edit-address title, home description, and pre-fills fields from the loaded address', async () => {
     renderWithProviders(<AddressEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('999 Kiera Stravenue')
 
-    expect(screen.getByText('Home address')).toBeInTheDocument()
+    expect(screen.getByText('Edit address')).toBeInTheDocument()
+    expect(screen.getByText('Update Ada Lovelace’s home address.')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Suite 541')).toBeInTheDocument()
     expect(screen.getByDisplayValue('San Francisco')).toBeInTheDocument()
     expect(screen.getByDisplayValue('94107')).toBeInTheDocument()
@@ -127,14 +130,19 @@ describe('AddressEditForm — business contractor', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
-    mockContractor({ type: 'Business' })
+    mockContractor({
+      type: 'Business',
+      business_name: 'Pacific Design Co.',
+      first_name: null,
+      last_name: null,
+    })
     server.use(handleGetContractorAddress(() => HttpResponse.json(fullAddressResponse)))
   })
 
-  it('renders the business address title', async () => {
+  it('renders the business description with the business name', async () => {
     renderWithProviders(<AddressEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('999 Kiera Stravenue')
-    expect(screen.getByText('Business address')).toBeInTheDocument()
+    expect(screen.getByText('Update Pacific Design Co.’s business address.')).toBeInTheDocument()
   })
 })

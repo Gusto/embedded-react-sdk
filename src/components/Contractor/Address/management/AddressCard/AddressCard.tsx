@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { useContractorAddressSummary } from '../../shared/useContractorAddressSummary'
 import { Loading } from '@/components/Common'
+import { Flex } from '@/components/Common/Flex/Flex'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { componentEvents, CONTRACTOR_TYPE, type EventType } from '@/shared/constants'
+import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
 /**
@@ -54,18 +55,6 @@ function AddressCardContent({ contractorId, onEvent }: AddressCardProps) {
 
   const isLoading = summary.isLoading
   const contractorAddress = summary.isLoading ? undefined : summary.data.contractorAddress
-  const isBusiness = !summary.isLoading && summary.data.contractorType === CONTRACTOR_TYPE.BUSINESS
-
-  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
-  const addressItems = contractorAddress
-    ? [
-        { term: t('addressLine1'), description: contractorAddress.street1 || emptyPlaceholder },
-        { term: t('addressLine2'), description: contractorAddress.street2 || emptyPlaceholder },
-        { term: t('city'), description: contractorAddress.city || emptyPlaceholder },
-        { term: t('state'), description: contractorAddress.state || emptyPlaceholder },
-        { term: t('zip'), description: contractorAddress.zip || emptyPlaceholder },
-      ]
-    : []
 
   const handleEdit = () => {
     onEvent(componentEvents.CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_REQUESTED, { contractorId })
@@ -76,7 +65,7 @@ function AddressCardContent({ contractorId, onEvent }: AddressCardProps) {
       <Components.Box
         header={
           <Components.BoxHeader
-            title={isBusiness ? t('businessTitle') : t('homeTitle')}
+            title={t('title')}
             action={
               <Components.Button variant="secondary" onClick={handleEdit} isDisabled={isLoading}>
                 {t('editCta')}
@@ -87,9 +76,19 @@ function AddressCardContent({ contractorId, onEvent }: AddressCardProps) {
       >
         {isLoading ? (
           <Loading />
-        ) : contractorAddress ? (
-          <Components.DescriptionList items={addressItems} />
-        ) : null}
+        ) : contractorAddress?.street1 ? (
+          <Flex flexDirection="column" gap={0}>
+            <Components.Text weight="medium">{contractorAddress.street1}</Components.Text>
+            {contractorAddress.street2 && (
+              <Components.Text>{contractorAddress.street2}</Components.Text>
+            )}
+            <Components.Text>
+              {contractorAddress.city}, {contractorAddress.state} {contractorAddress.zip}
+            </Components.Text>
+          </Flex>
+        ) : (
+          <Components.Text>{t('emptyPlaceholder')}</Components.Text>
+        )}
       </Components.Box>
     </BaseLayout>
   )
