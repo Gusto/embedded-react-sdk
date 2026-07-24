@@ -297,7 +297,7 @@ Renders an icon-only `<button>`; requires `aria-label` since there is no visible
 | `onKeyUp?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `tabIndex?` | `number` | | - |
 | `title?` | `string` | | - |
-| `type?` | `"submit"` \| `"reset"` \| `"button"` | `undefined` | - |
+| `type?` | `"submit"` \| `"button"` \| `"reset"` | `undefined` | - |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -340,7 +340,7 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 | `onKeyUp?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `tabIndex?` | `number` | | - |
 | `title?` | `string` | | - |
-| `type?` | `"submit"` \| `"reset"` \| `"button"` | `undefined` | - |
+| `type?` | `"submit"` \| `"button"` \| `"reset"` | `undefined` | - |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
