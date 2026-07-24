@@ -59,6 +59,18 @@ describe('useContractorDetailsForm', () => {
       expect(ready.form.Fields.Ein).toBeUndefined()
     })
 
+    it('exposes email regardless of selfOnboarding when showEmailField is set', async () => {
+      const { result } = renderForm({ companyId: 'company-1', showEmailField: true })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const ready = result.current
+      assertReady(ready)
+
+      expect(ready.form.Fields.Email).toBeDefined()
+    })
+
     it('shows business fields and hides individual fields for a business contractor', async () => {
       const { result } = renderForm({
         companyId: 'company-1',
