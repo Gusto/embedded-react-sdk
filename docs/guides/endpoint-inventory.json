@@ -2334,7 +2334,6 @@
     },
     "ContractorManagement.ViewPaymentFlow": {
       "blocks": [
-        "ContractorManagement.CreatePayment",
         "ContractorManagement.PaymentHistory",
         "ContractorManagement.PaymentStatement"
       ]
