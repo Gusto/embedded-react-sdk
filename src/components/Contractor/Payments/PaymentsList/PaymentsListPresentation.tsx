@@ -39,7 +39,7 @@ export const PaymentsListPresentation = ({
   onEvent,
   paginationProps,
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Heading, Select, ButtonIcon, Alert } = useComponentContext()
+  const { Box, Button, Heading, Text, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
@@ -174,6 +174,22 @@ export const PaymentsListPresentation = ({
       </Flex>
 
       <DataView label={t('subtitle')} {...dataViewProps} />
+
+      <div className={styles.historicalPaymentCta}>
+        <Box
+          header={
+            <Flex flexDirection="column" gap={4}>
+              <Text weight="semibold">{t('historicalPaymentCta.title')}</Text>
+              <Text variant="supporting">{t('historicalPaymentCta.description')}</Text>
+            </Flex>
+          }
+          footer={
+            <Button variant="secondary" onClick={() => {}}>
+              {t('historicalPaymentCta.button')}
+            </Button>
+          }
+        />
+      </div>
     </Flex>
   )
 }
