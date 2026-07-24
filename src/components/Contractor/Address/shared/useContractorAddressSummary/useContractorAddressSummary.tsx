@@ -5,58 +5,23 @@ import type { ContractorAddress } from '@gusto/embedded-api/models/components/co
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
-/**
- * Options for {@link useContractorAddressSummary}.
- *
- * @public
- */
+/** @internal */
 export interface UseContractorAddressSummaryParams {
-  /** The associated contractor identifier. */
   contractorId: string
 }
 
 type UseContractorAddressSummaryReady = BaseHookReady<
   {
     contractorAddress: ContractorAddress
-    /** The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). */
     contractorType: ContractorType | undefined
   },
   { isFetching: boolean; isPending: boolean }
 >
 
-/**
- * Return type of {@link useContractorAddressSummary}.
- *
- * @public
- */
+/** @internal */
 export type UseContractorAddressSummaryResult = HookLoadingResult | UseContractorAddressSummaryReady
 
-/**
- * Read-only data hook for the contractor Address management card.
- *
- * @remarks
- * Fetches the contractor's single address alongside the contractor entity, scoped to the
- * fields the read-view card displays. Pair with `useContractorAddressForm` to render an edit
- * form against the same record.
- *
- * @param input - See {@link UseContractorAddressSummaryParams}.
- * @returns A {@link HookLoadingResult} while loading, or the ready result with the loaded address once available.
- * @public
- *
- * @example
- * ```tsx
- * import { useContractorAddressSummary } from '@gusto/embedded-react-sdk'
- *
- * function AddressSummary({ contractorId }: { contractorId: string }) {
- *   const summary = useContractorAddressSummary({ contractorId })
- *
- *   if (summary.isLoading) return <div>Loading...</div>
- *
- *   const { contractorAddress } = summary.data
- *   return <p>{contractorAddress.city}, {contractorAddress.state}</p>
- * }
- * ```
- */
+/** @internal */
 export function useContractorAddressSummary({
   contractorId,
 }: UseContractorAddressSummaryParams): UseContractorAddressSummaryResult {
