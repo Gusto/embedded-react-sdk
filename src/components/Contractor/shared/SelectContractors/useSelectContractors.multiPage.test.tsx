@@ -5,7 +5,7 @@ import type * as GustoContext from '@gusto/embedded-api/react-query/_context'
 import type { ReactNode } from 'react'
 import { useSelectContractors } from './useSelectContractors'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import { ContractorOnboardingStatus } from '@/shared/constants'
+import { buildContractorIndividual } from '@/test/factories/contractor'
 
 // This file exercises the multi-page fetch path in useSelectContractors:
 // - reads x-total-pages from the first page's response headers
@@ -16,18 +16,8 @@ vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
 }))
 
-function makeContractor(uuid: string, firstName: string) {
-  return {
-    uuid,
-    isActive: true,
-    onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED,
-    firstName,
-    lastName: 'Contractor',
-  }
-}
-
-const page1Contractors = [makeContractor('1', 'Page1')]
-const page2Contractors = [makeContractor('2', 'Page2')]
+const page1Contractors = [buildContractorIndividual({ uuid: '1', firstName: 'Page1' })]
+const page2Contractors = [buildContractorIndividual({ uuid: '2', firstName: 'Page2' })]
 
 let mockTotalPages = 1
 const buildContractorsListQueryMock = vi.fn()

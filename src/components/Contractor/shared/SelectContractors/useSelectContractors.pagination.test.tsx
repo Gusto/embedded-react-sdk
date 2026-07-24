@@ -5,7 +5,7 @@ import type * as GustoContext from '@gusto/embedded-api/react-query/_context'
 import type { ReactNode } from 'react'
 import { useSelectContractors } from './useSelectContractors'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import { ContractorOnboardingStatus } from '@/shared/constants'
+import { buildContractorIndividual, buildContractorBusiness } from '@/test/factories/contractor'
 
 // These tests exercise the client-side pagination state machine and the
 // onSelectAll scoping behavior directly: page handlers, per-page
@@ -23,19 +23,15 @@ vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
 }))
 
-function makeContractor(index: number) {
-  return {
-    uuid: `uuid-${index}`,
-    isActive: true,
-    onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED,
-    type: 'Individual',
-    firstName: `Contractor${index}`,
-    lastName: 'Test',
-  }
-}
-
 // 52 contractors fits cleanly into "25 per page" → 3 pages (25/25/2).
-const contractors = Array.from({ length: 52 }, (_, i) => makeContractor(i))
+// Alternates Individual/Business contractors — both name fields carry the
+// same "ContractorN" token so the search-count assertions below hold
+// regardless of which type lands on a given index.
+const contractors = Array.from({ length: 52 }, (_, i) =>
+  i % 2 === 0
+    ? buildContractorIndividual({ uuid: `uuid-${i}`, firstName: `Contractor${i}` })
+    : buildContractorBusiness({ uuid: `uuid-${i}`, businessName: `Contractor${i}` }),
+)
 
 vi.mock('@gusto/embedded-api/react-query/contractorsList', () => ({
   useContractorsList: () => ({
