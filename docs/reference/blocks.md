@@ -33,6 +33,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [CompanyOnboarding.StateTaxes](company/onboarding/blocks#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
 | [CompanyOnboarding.StateTaxesForm](company/onboarding/blocks#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
 | [CompanyOnboarding.StateTaxesList](company/onboarding/blocks#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
+| [CompanyOnboarding.TaxRateManagement](company/onboarding/blocks#taxratemanagement) | Standalone view of a company's effective-dated state tax rate history, with the ability to schedule a new future-dated rate. |
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
@@ -238,6 +239,7 @@ shape mixed into every public SDK feature component.
 - [`StateTaxesProps`](company/onboarding/blocks.md#statetaxesprops)
 - [`StateTaxesFormProps`](company/onboarding/blocks.md#statetaxesformprops)
 - [`StateTaxesListProps`](company/onboarding/blocks.md#statetaxeslistprops)
+- [`TaxRateManagementProps`](company/onboarding/blocks.md#taxratemanagementprops)
 - [`AssignSignatoryProps`](company/onboarding/blocks.md#assignsignatoryprops)
 - [`CreateSignatoryProps`](company/onboarding/blocks.md#createsignatoryprops)
 - [`InviteSignatoryProps`](company/onboarding/blocks.md#invitesignatoryprops)

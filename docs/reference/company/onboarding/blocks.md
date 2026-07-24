@@ -738,9 +738,10 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |
+| `company/stateTaxes/manageRates` | A state row's tax rate history/scheduling view was opened | `{ state: string }` |
 | `company/stateTaxes/updated` | State tax requirements were saved | — |
 | `company/stateTaxes/done` | The list view was completed | — |
-| `CANCEL` | Editing was cancelled and the form was closed | — |
+| `CANCEL` | Editing or rate management was cancelled and the list was shown again | — |
 
 <br />
 
@@ -854,6 +855,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
+| `company/stateTaxes/manageRates` | A user chose to view rate history/scheduling for a specific state | `{ state: string }` |
 | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
 
 <br />
@@ -863,6 +865,74 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
+
+***
+
+<a id="taxratemanagement"></a>
+
+## TaxRateManagement
+
+Standalone view of a company's effective-dated state tax rate history, with the ability to
+schedule a new future-dated rate.
+
+### Remarks
+
+Lower-level building block used by [StateTaxes](#statetaxes) for its "manage tax rates" view. Only
+effective-dated requirement keys (e.g. tax rates, deposit schedules) are shown — non-dated
+sections like registration numbers have no history/scheduling story and are edited via
+[StateTaxesForm](#statetaxesform) instead.
+
+<br />
+
+### Example
+
+```tsx
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <CompanyOnboarding.TaxRateManagement
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      state="CA"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+<br />
+
+### TaxRateManagementProps
+
+<a id="taxratemanagementprops"></a>
+
+Props for [TaxRateManagement](#taxratemanagement).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `state` | `string` | Two-letter code of the state whose tax rate history is managed. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../../Translations/index.md#companystatetaxes)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `CANCEL` | The user navigated back to the state tax list | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 
 ***
 

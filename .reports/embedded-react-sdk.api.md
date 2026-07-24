@@ -1036,6 +1036,8 @@ declare namespace CompanyOnboarding {
         StateTaxesFormProps,
         StateTaxesList,
         StateTaxesListProps,
+        TaxRateManagement,
+        TaxRateManagementProps,
         AssignSignatory,
         AssignSignatoryProps,
         AssignSignatoryDefaultValues,
@@ -1345,6 +1347,7 @@ export const componentEvents: {
     readonly COMPANY_STATE_TAX_UPDATED: "company/stateTaxes/updated";
     readonly COMPANY_STATE_TAX_DONE: "company/stateTaxes/done";
     readonly COMPANY_STATE_TAX_EDIT: "company/stateTaxes/edit";
+    readonly COMPANY_STATE_TAX_MANAGE_RATES: "company/stateTaxes/manageRates";
     readonly COMPANY_OVERVIEW_DONE: "company/overview/done";
     readonly COMPANY_OVERVIEW_CONTINUE: "company/overview/continue";
     readonly EMPLOYEE_CREATE: "employee/create";
@@ -5273,6 +5276,15 @@ export interface TabsProps {
     onSelectionChange: (id: string) => void;
     selectedId?: string;
     tabs: TabProps[];
+}
+
+// @public
+function TaxRateManagement(props: TaxRateManagementProps): JSX;
+
+// @public
+interface TaxRateManagementProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+    state: string;
 }
 
 // @public

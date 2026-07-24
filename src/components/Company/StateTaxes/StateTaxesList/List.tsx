@@ -7,6 +7,7 @@ import { useStateTaxesList } from './context'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 
 type BadgeStatus = 'success' | 'warning' | 'info'
 
@@ -34,7 +35,7 @@ function getSetupStatus(req: TaxRequirementStatesList): SetupStatus {
 
 /** @internal */
 export const List = () => {
-  const { stateTaxRequirements, handleChange } = useStateTaxesList()
+  const { stateTaxRequirements, handleChange, handleManageRates } = useStateTaxesList()
   const Components = useComponentContext()
 
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'list' })
@@ -77,15 +78,31 @@ export const List = () => {
     ],
     itemMenu: requirement => {
       const status = getSetupStatus(requirement)
+      const state = requirement.state
+      if (!state) return null
       return (
-        <Components.Button
-          variant="secondary"
-          onClick={() => {
-            if (requirement.state) handleChange(requirement.state)
-          }}
-        >
-          {t(ctaLabelMap[status])}
-        </Components.Button>
+        <HamburgerMenu
+          triggerLabel={t('hamburgerTitle', {
+            state: statesHash(state as (typeof STATES_ABBR)[number]),
+          })}
+          items={[
+            {
+              label: t(ctaLabelMap[status]),
+              onClick: () => {
+                handleChange(state)
+              },
+              'data-testid': 'edit-state-tax',
+            },
+            {
+              label: t('manageRatesCta'),
+              onClick: () => {
+                handleManageRates(state)
+              },
+              'data-testid': 'manage-tax-rates',
+            },
+          ]}
+          data-testid="state-tax-hamburger"
+        />
       )
     },
 

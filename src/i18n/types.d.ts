@@ -743,10 +743,14 @@ export namespace Translations {
       selfOnboardingWarningDescription: string
       /** @defaultValue `"Continue"` */
       continueCta: string
-      /** @defaultValue `"Edit"` */
+      /** @defaultValue `"Edit tax settings"` */
       editStateTaxCta: string
       /** @defaultValue `"Continue setup"` */
       continueStateTaxSetupCta: string
+      /** @defaultValue `"Manage tax rates"` */
+      manageRatesCta: string
+      /** @defaultValue `"Actions for {{state}}"` */
+      hamburgerTitle: string
       /** @defaultValue `"State"` */
       requirementsListCol1: string
       /** @defaultValue `"Status"` */
@@ -791,6 +795,46 @@ export namespace Translations {
         /** @defaultValue `"This field is required"` */
         required: string
       }
+    }
+    manageRates: {
+      /** @defaultValue `"Tax rates for {{state}}"` */
+      title: string
+      /** @defaultValue `"Effective-dated tax rate history and scheduled future rates."` */
+      subtitle: string
+      /** @defaultValue `"Back to states"` */
+      backCta: string
+      /** @defaultValue `"Add tax rate"` */
+      addRateCta: string
+      /** @defaultValue `"Effective date"` */
+      effectiveDateLabel: string
+      /** @defaultValue `"Select an effective date"` */
+      effectiveDatePlaceholder: string
+      /** @defaultValue `"Effective date"` */
+      effectiveDateColumnLabel: string
+      /** @defaultValue `"Current"` */
+      currentBadge: string
+      /** @defaultValue `"Scheduled"` */
+      scheduledBadge: string
+      /** @defaultValue `"Historical"` */
+      historicalBadge: string
+      /** @defaultValue `"No effective-dated rates yet"` */
+      emptyHistoryTitle: string
+      /** @defaultValue `"Add a tax rate to schedule a future-dated configuration."` */
+      emptyHistoryDescription: string
+      /** @defaultValue `"Add tax rate for {{state}}"` */
+      addRateDialogTitle: string
+      /** @defaultValue `"Schedule a new tax configuration to take effect on a future date."` */
+      addRateDialogDescription: string
+      /** @defaultValue `"Save tax rate"` */
+      saveRateCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"No editable fields"` */
+      noEditableFieldsTitle: string
+      /** @defaultValue `"This state does not expose editable effective-dated tax requirements."` */
+      noEditableFieldsDescription: string
+      /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
+      rateScheduledSuccess: string
     }
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */

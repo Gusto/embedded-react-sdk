@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { Dialog } from './Dialog'
 import { DialogDefaults } from './DialogTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
+import { ThemeProvider, useTheme } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 
@@ -94,6 +94,30 @@ describe('Dialog', () => {
     closeButton.click()
 
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it("overrides the theme portal container so nested overlays (Select, ComboBox, DatePicker) render inside the dialog's own DOM subtree instead of the page-level container", () => {
+    // Refs populate during the commit phase, after the component's render body runs — capture
+    // the ref object itself during render, then read `.current` after `render()` has committed.
+    const captured: { container: { current: HTMLElement | null } | null } = { container: null }
+    function CaptureContainer() {
+      const { container } = useTheme()
+      captured.container = container
+      return null
+    }
+
+    renderWithProviders(
+      <Dialog {...defaultProps} isOpen>
+        <CaptureContainer />
+      </Dialog>,
+    )
+
+    const dialogElement = document.querySelector('dialog')
+    expect(dialogElement).not.toBeNull()
+    expect(captured.container?.current).not.toBeNull()
+    // A native <dialog> makes everything outside its own subtree inert while open, so
+    // popover-based fields must portal to a container inside the dialog, not the page-level one.
+    expect(dialogElement?.contains(captured.container?.current ?? null)).toBe(true)
   })
 
   it('renders action buttons via the Button component adapter', () => {

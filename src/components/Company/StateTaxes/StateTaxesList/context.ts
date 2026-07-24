@@ -6,6 +6,7 @@ type StateTaxesListContextType = {
   stateTaxRequirements: TaxRequirementStatesList[]
   handleContinue: () => void
   handleChange: (state: string) => void
+  handleManageRates: (state: string) => void
 }
 
 const [useStateTaxesList, StateTaxesListProvider] =
