@@ -2,7 +2,7 @@ import { reduce, state, transition } from 'robot3'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { getContractorDisplayName } from '../CreatePayment/helpers'
+import { getContractorDisplayName } from '../../shared/helpers'
 import {
   CreatePaymentContextual,
   type PaymentFlowContextInterface,
