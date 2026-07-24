@@ -52,6 +52,7 @@ export interface Resources {
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
   'Contractor.Profile': Translations.ContractorProfile
+  'Contractor.SelectContractors': Translations.ContractorSelectContractors
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
   'Contractor.Submit': Translations.ContractorSubmit
   'Employee.BankAccount': Translations.EmployeeBankAccount
@@ -2706,6 +2707,19 @@ export namespace Translations {
       /** @defaultValue `"Saving…"` */
       updating: string
     }
+  }
+  /** Translation keys for the `Contractor.SelectContractors` i18n namespace. */
+  export interface ContractorSelectContractors {
+    /** @defaultValue `"Name"` */
+    nameColumn: string
+    /** @defaultValue `"Search by name"` */
+    searchLabel: string
+    /** @defaultValue `"Search by name"` */
+    searchPlaceholder: string
+    /** @defaultValue `"Contractors"` */
+    tableLabel: string
+    /** @defaultValue `"No eligible contractors found."` */
+    emptyState: string
   }
   /** Translation keys for the `Contractor.SignatureForm` i18n namespace. */
   export interface ContractorSignatureForm {

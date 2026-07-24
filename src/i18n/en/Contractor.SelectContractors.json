@@ -1,0 +1,7 @@
+{
+  "nameColumn": "Name",
+  "searchLabel": "Search by name",
+  "searchPlaceholder": "Search by name",
+  "tableLabel": "Contractors",
+  "emptyState": "No eligible contractors found."
+}
