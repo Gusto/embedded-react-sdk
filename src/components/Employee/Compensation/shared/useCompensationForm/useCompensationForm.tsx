@@ -464,7 +464,7 @@ export function useCompensationForm({
 
   const minWagesQuery = useLocationsGetMinimumWages(
     { locationUuid: locationUuid ?? '' },
-    { enabled: !!locationUuid },
+    { enabled: !!locationUuid, staleTime: Infinity },
   )
 
   const minimumWages = minWagesQuery.data?.minimumWageList ?? []
