@@ -28,6 +28,7 @@ function makeContractor(index: number) {
     uuid: `uuid-${index}`,
     isActive: true,
     onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED,
+    type: 'Individual',
     firstName: `Contractor${index}`,
     lastName: 'Test',
   }

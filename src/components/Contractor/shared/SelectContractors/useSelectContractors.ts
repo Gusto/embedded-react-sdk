@@ -11,6 +11,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { ContractorOnboardingStatus } from '@/shared/constants'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { getContractorDisplayName } from '@/components/Contractor/shared/helpers'
 
 const SERVER_MAX_PER_PAGE = 100
 
@@ -23,9 +24,7 @@ export function isEligibleContractor(contractor: Contractor): boolean {
 }
 
 function matchesContractorSearch(contractor: Contractor, query: string): boolean {
-  const name =
-    contractor.businessName ?? `${contractor.firstName ?? ''} ${contractor.lastName ?? ''}`
-  return name.toLowerCase().includes(query.toLowerCase())
+  return getContractorDisplayName(contractor).toLowerCase().includes(query.toLowerCase())
 }
 
 /**
