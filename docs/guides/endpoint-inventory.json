@@ -2318,14 +2318,24 @@
         "EmployeeOnboarding.OnboardingFlow"
       ]
     },
-    "ContractorManagement.PaymentFlow": {
+    "ContractorManagement.CreatePaymentFlow": {
       "blocks": [
         "ContractorManagement.CreatePayment",
-        "ContractorManagement.PaymentHistory",
-        "ContractorManagement.PaymentStatement",
-        "ContractorManagement.PaymentSummary",
+        "ContractorManagement.PaymentSummary"
+      ]
+    },
+    "ContractorManagement.PaymentFlow": {
+      "blocks": [
+        "ContractorManagement.CreatePaymentFlow",
         "ContractorManagement.PaymentsList",
+        "ContractorManagement.ViewPaymentFlow",
         "InformationRequests.InformationRequestsFlow"
+      ]
+    },
+    "ContractorManagement.ViewPaymentFlow": {
+      "blocks": [
+        "ContractorManagement.PaymentHistory",
+        "ContractorManagement.PaymentStatement"
       ]
     },
     "ContractorOnboarding.OnboardingFlow": {
