@@ -1897,6 +1897,24 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 
 ***
 
+<a id="contractorselectcontractors"></a>
+
+### ContractorSelectContractors
+
+Translation keys for the `Contractor.SelectContractors` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorselectcontractorsemptystate"></a> `emptyState` | `"No eligible contractors found."` |
+| <a id="property-contractorselectcontractorsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractorselectcontractorssearchlabel"></a> `searchLabel` | `"Search by name"` |
+| <a id="property-contractorselectcontractorssearchplaceholder"></a> `searchPlaceholder` | `"Search by name"` |
+| <a id="property-contractorselectcontractorstablelabel"></a> `tableLabel` | `"Contractors"` |
+
+***
+
 <a id="contractorsignatureform"></a>
 
 ### ContractorSignatureForm
@@ -5180,6 +5198,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorselectcontractors"></a> `Contractor.SelectContractors` | [`ContractorSelectContractors`](#contractorselectcontractors) |
 | <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |
 | <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |
 | <a id="property-resourcesemployeebankaccount"></a> `Employee.BankAccount` | [`EmployeeBankAccount`](#employeebankaccount) |
