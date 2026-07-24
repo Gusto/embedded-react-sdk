@@ -1,0 +1,41 @@
+{
+  "title": "Basic details",
+  "editCta": "Edit",
+  "legalName": "Legal name",
+  "startDate": "Start date",
+  "socialSecurityNumber": "Social security number",
+  "employerIdentificationNumber": "Employer Identification Number (EIN)",
+  "email": "Email",
+  "listEmptyPlaceholder": "No value on file",
+  "alerts": {
+    "profileUpdated": "Profile updated"
+  },
+  "form": {
+    "title": "Basic details",
+    "firstName": "First name",
+    "middleInitial": "Middle initial",
+    "lastName": "Last name",
+    "businessName": "Business name",
+    "startDate": "Start date",
+    "ssnLabel": "Social security number",
+    "ssnMask": "•••-••-••••",
+    "einLabel": "Employer Identification Number (EIN)",
+    "einMask": "••-•••••••",
+    "onFileHint": "Already on file.",
+    "changeCta": "Change",
+    "email": "Email address",
+    "emailDescription": "Used to send onboarding and payment notifications.",
+    "cancelCta": "Cancel",
+    "saveCta": "Save",
+    "successAlert": "Profile updated",
+    "validations": {
+      "firstName": "First name is required",
+      "lastName": "Last name is required",
+      "businessName": "Business name is required",
+      "startDate": "Start date is required",
+      "email": "Enter a valid email address",
+      "ssn": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+      "ein": "The EIN must be exactly 9 digits long."
+    }
+  }
+}

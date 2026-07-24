@@ -38,9 +38,10 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |
+ * | `company/stateTaxes/manageRates` | A state row's tax rate history/scheduling view was opened | `{ state: string }` |
  * | `company/stateTaxes/updated` | State tax requirements were saved | — |
  * | `company/stateTaxes/done` | The list view was completed | — |
- * | `CANCEL` | Editing was cancelled and the form was closed | — |
+ * | `CANCEL` | Editing or rate management was cancelled and the list was shown again | — |
  *
  * @param props - {@link StateTaxesProps}
  * @returns The rendered state taxes flow.

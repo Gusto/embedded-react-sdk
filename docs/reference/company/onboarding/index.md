@@ -45,3 +45,4 @@ import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 | [StateTaxes](blocks.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
 | [StateTaxesForm](blocks.md#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
 | [StateTaxesList](blocks.md#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
+| [TaxRateManagement](blocks.md#taxratemanagement) | Standalone view of a company's effective-dated state tax rate history, with the ability to schedule a new future-dated rate. |

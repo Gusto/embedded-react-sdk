@@ -651,8 +651,10 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.editStateTaxCta` |
 | `list.emptyTableDescription` |
 | `list.emptyTableTitle` |
+| `list.hamburgerTitle` |
 | `list.incompleteBadge` |
 | `list.inProgressBadge` |
+| `list.manageRatesCta` |
 | `list.notStartedBadge` |
 | `list.readyToRunPayrollBadge` |
 | `list.requirementsListCol1` |
@@ -661,6 +663,26 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.selfOnboardingWarningDescription` |
 | `list.selfOnboardingWarningLabel` |
 | `list.startStateTaxSetupCta` |
+| <a id="property-companystatetaxesmanagerates"></a> `manageRates` |
+| `manageRates.addRateCta` |
+| `manageRates.addRateDialogDescription` |
+| `manageRates.addRateDialogTitle` |
+| `manageRates.backCta` |
+| `manageRates.cancelCta` |
+| `manageRates.currentBadge` |
+| `manageRates.effectiveDateColumnLabel` |
+| `manageRates.effectiveDateLabel` |
+| `manageRates.effectiveDatePlaceholder` |
+| `manageRates.emptyHistoryDescription` |
+| `manageRates.emptyHistoryTitle` |
+| `manageRates.historicalBadge` |
+| `manageRates.noEditableFieldsDescription` |
+| `manageRates.noEditableFieldsTitle` |
+| `manageRates.rateScheduledSuccess` |
+| `manageRates.saveRateCta` |
+| `manageRates.scheduledBadge` |
+| `manageRates.subtitle` |
+| `manageRates.title` |
 
 ***
 
@@ -1399,6 +1421,55 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlisttabslabel"></a> `tabsLabel` | `"Contractor status tabs"` |
 | <a id="property-contractormanagementcontractorlisttitle"></a> `title` | `"Contractors"` |
 | <a id="property-contractormanagementcontractorlistviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
+
+***
+
+<a id="contractormanagementprofile"></a>
+
+### ContractorManagementProfile
+
+Translation keys for the `Contractor.Management.Profile` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementprofilealerts"></a> `alerts` | |
+| `alerts.profileUpdated` | `"Profile updated"` |
+| <a id="property-contractormanagementprofileeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementprofileemail"></a> `email` | `"Email"` |
+| <a id="property-contractormanagementprofileemployeridentificationnumber"></a> `employerIdentificationNumber` | `"Employer Identification Number (EIN)"` |
+| <a id="property-contractormanagementprofileform"></a> `form` | |
+| `form.businessName` | `"Business name"` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.changeCta` | `"Change"` |
+| `form.einLabel` | `"Employer Identification Number (EIN)"` |
+| `form.einMask` | `"••-•••••••"` |
+| `form.email` | `"Email address"` |
+| `form.emailDescription` | `"Used to send onboarding and payment notifications."` |
+| `form.firstName` | `"First name"` |
+| `form.lastName` | `"Last name"` |
+| `form.middleInitial` | `"Middle initial"` |
+| `form.onFileHint` | `"Already on file."` |
+| `form.saveCta` | `"Save"` |
+| `form.ssnLabel` | `"Social security number"` |
+| `form.ssnMask` | `"•••-••-••••"` |
+| `form.startDate` | `"Start date"` |
+| `form.successAlert` | `"Profile updated"` |
+| `form.title` | `"Basic details"` |
+| `form.validations` | |
+| `form.validations.businessName` | `"Business name is required"` |
+| `form.validations.ein` | `"The EIN must be exactly 9 digits long."` |
+| `form.validations.email` | `"Enter a valid email address"` |
+| `form.validations.firstName` | `"First name is required"` |
+| `form.validations.lastName` | `"Last name is required"` |
+| `form.validations.ssn` | `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` |
+| `form.validations.startDate` | `"Start date is required"` |
+| <a id="property-contractormanagementprofilelegalname"></a> `legalName` | `"Legal name"` |
+| <a id="property-contractormanagementprofilelistemptyplaceholder"></a> `listEmptyPlaceholder` | `"No value on file"` |
+| <a id="property-contractormanagementprofilesocialsecuritynumber"></a> `socialSecurityNumber` | `"Social security number"` |
+| <a id="property-contractormanagementprofilestartdate"></a> `startDate` | `"Start date"` |
+| <a id="property-contractormanagementprofiletitle"></a> `title` | `"Basic details"` |
 
 ***
 
@@ -5098,6 +5169,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |

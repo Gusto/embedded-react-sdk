@@ -1,6 +1,6 @@
 import { reduce, state, transition } from 'robot3'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { getContractorDisplayName } from '../CreatePayment/helpers'
+import { getContractorDisplayName } from '../../shared/helpers'
 import {
   PaymentHistoryContextual,
   PaymentStatementContextual,

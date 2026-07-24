@@ -34,3 +34,6 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 | [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+| [Profile](blocks.md#profile) | Management surface for viewing and editing a contractor's basic profile details after onboarding. |
+| [ProfileCard](blocks.md#profilecard) | Read-only card showing a contractor's basic profile details with an Edit action. |
+| [ProfileEditForm](blocks.md#profileeditform) | Standalone edit form for a contractor's basic profile details. |

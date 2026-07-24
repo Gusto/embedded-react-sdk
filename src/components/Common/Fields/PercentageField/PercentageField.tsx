@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useFormContext } from 'react-hook-form'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import { useField } from '@/components/Common/Fields/hooks/useField'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -30,43 +30,44 @@ export function PercentageField({
 }: PercentageFieldProps) {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
-
-  const validationRules = useMemo(() => {
-    const rules: Record<string, (value: string) => string | true> = {}
-
-    if (decimalMin !== undefined) {
-      const minNum = parseFloat(decimalMin)
-      rules.min = (value: string) => {
-        const num = Number(value)
-        if (isNaN(num)) return true
-        return (
-          num >= minNum || t('validations.percentageMin', { min: decimalToPercent(decimalMin) })
-        )
-      }
-    }
-
-    if (decimalMax !== undefined) {
-      const maxNum = parseFloat(decimalMax)
-      rules.max = (value: string) => {
-        const num = Number(value)
-        if (isNaN(num)) return true
-        return (
-          num <= maxNum || t('validations.percentageMax', { max: decimalToPercent(decimalMax) })
-        )
-      }
-    }
-
-    return rules
-  }, [decimalMin, decimalMax, t])
+  const { setError, clearErrors } = useFormContext()
 
   const { value, onChange, ...fieldProps } = useField({
     ...props,
     defaultValue: toDefaultString(decimalValue),
-    rules: { validate: validationRules },
   })
 
+  // Deliberately not passed to NumberInput's `min`/`max` props: react-aria's NumberField
+  // treats those as hard bounds and silently clamps out-of-range values to them on blur,
+  // with no error shown. Validating here instead keeps the value the user actually typed
+  // on screen, paired with a real error message.
+  const validateRange = (rawDecimalValue: string) => {
+    const num = Number(rawDecimalValue)
+    if (rawDecimalValue === '' || Number.isNaN(num)) {
+      clearErrors(props.name)
+      return
+    }
+    if (decimalMin !== undefined && num < parseFloat(decimalMin)) {
+      setError(props.name, {
+        type: 'min',
+        message: t('validations.percentageMin', { min: decimalToPercent(decimalMin) }),
+      })
+      return
+    }
+    if (decimalMax !== undefined && num > parseFloat(decimalMax)) {
+      setError(props.name, {
+        type: 'max',
+        message: t('validations.percentageMax', { max: decimalToPercent(decimalMax) }),
+      })
+      return
+    }
+    clearErrors(props.name)
+  }
+
   const handleChange = (percentValue: number) => {
-    onChange(percentToDecimal(percentValue))
+    const decimalStr = percentToDecimal(percentValue)
+    validateRange(decimalStr)
+    onChange(decimalStr)
   }
 
   return (
@@ -75,8 +76,6 @@ export function PercentageField({
       {...fieldProps}
       value={decimalToPercent(value)}
       onChange={handleChange}
-      min={decimalMin ? decimalToPercent(decimalMin) : undefined}
-      max={decimalMax ? decimalToPercent(decimalMax) : undefined}
       format="percent"
       maximumFractionDigits={4}
     />

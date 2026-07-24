@@ -5,6 +5,7 @@ import styles from './Dialog.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { ThemeContext } from '@/contexts/ThemeProvider/useTheme'
 
 /**
  * Modal dialog with a title, body, primary action, and close action.
@@ -83,7 +84,16 @@ export function Dialog(rawProps: DialogProps) {
       containerRef={modalContainerRef}
       footer={dialogFooter}
     >
-      {dialogContent}
+      {/*
+        The default Modal renders a native <dialog>, which makes everything outside its own DOM
+        subtree inert while open. Popover-based fields (Select, ComboBox, DatePicker, Menu) portal
+        to ThemeProvider's page-level container by default, which would land outside the <dialog>
+        and become inert/unclickable. Overriding the container here to a node already inside the
+        <dialog> (the same ref Modal uses for its backdrop) keeps those portals interactive.
+      */}
+      <ThemeContext.Provider value={{ container: modalContainerRef }}>
+        {dialogContent}
+      </ThemeContext.Provider>
     </Components.Modal>
   )
 }
