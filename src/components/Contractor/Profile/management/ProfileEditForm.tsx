@@ -135,7 +135,7 @@ function ProfileEditFormRoot({
                 {contractor.hasEin && !isEditingEin ? (
                   <LockedField
                     label={t('form.einLabel')}
-                    maskedValue={t('form.einMask')}
+                    maskedValue={contractor.ein ?? t('form.einMask')}
                     hint={t('form.onFileHint')}
                     changeLabel={t('form.changeCta')}
                     onEdit={() => {

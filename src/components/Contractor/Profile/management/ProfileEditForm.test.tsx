@@ -38,7 +38,7 @@ const baseBusiness = {
   last_name: null,
   has_ssn: false,
   has_ein: true,
-  ein: null,
+  ein: 'XX-XXX4879',
 }
 
 function mockContractor(overrides: Record<string, unknown> = {}) {
@@ -161,7 +161,7 @@ describe('ProfileEditForm — business contractor', () => {
 
     await screen.findByDisplayValue('Pacific Design Co.')
 
-    expect(screen.getByDisplayValue('••-•••••••')).toBeDisabled()
+    expect(screen.getByDisplayValue('XX-XXX4879')).toBeDisabled()
     expect(screen.getAllByText('Employer Identification Number (EIN)').length).toBeGreaterThan(0)
     expect(screen.queryByLabelText('First name')).not.toBeInTheDocument()
   })

@@ -67,7 +67,7 @@ function ProfileCardContent({ contractorId, onEvent }: ProfileCardProps) {
     : undefined
   const startDate = contractor ? formatDateLongWithYear(contractor.startDate) : undefined
   const maskedSsn = contractor?.hasSsn ? 'XXX-XX-XXXX' : undefined
-  const maskedEin = contractor?.hasEin ? 'XX-XXXXXXX' : undefined
+  const maskedEin = contractor?.hasEin ? (contractor.ein ?? undefined) : undefined
 
   const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
   const profileItems = contractor

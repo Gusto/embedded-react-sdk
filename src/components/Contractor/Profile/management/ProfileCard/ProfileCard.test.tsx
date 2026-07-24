@@ -62,6 +62,7 @@ describe('ProfileCard', () => {
       last_name: null,
       has_ssn: false,
       has_ein: true,
+      ein: 'XX-XXX4879',
     })
 
     renderWithProviders(<ProfileCard contractorId="contractor-123" onEvent={onEvent} />)
@@ -71,7 +72,7 @@ describe('ProfileCard', () => {
     })
 
     expect(screen.getByText('Employer Identification Number (EIN)')).toBeInTheDocument()
-    expect(screen.getByText('XX-XXXXXXX')).toBeInTheDocument()
+    expect(screen.getByText('XX-XXX4879')).toBeInTheDocument()
   })
 
   it('fires CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED with { contractorId } when Edit is clicked', async () => {
