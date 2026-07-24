@@ -473,6 +473,72 @@ describe('PayrollEditEmployeePresentation', () => {
     )
   })
 
+  describe('Overtime', () => {
+    it('hides overtime rows behind an Add overtime button until revealed', async () => {
+      const user = userEvent.setup()
+      const compensationWithZeroOvertime: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        hourlyCompensations: [
+          {
+            name: 'Regular Hours',
+            hours: '40.000',
+            flsaStatus: 'Nonexempt',
+            jobUuid: 'job-1',
+            amount: '1000.0',
+            compensationMultiplier: 1.0,
+          },
+          {
+            name: 'Overtime',
+            hours: '0',
+            flsaStatus: 'Nonexempt',
+            jobUuid: 'job-1',
+            amount: '0',
+            compensationMultiplier: 1.5,
+          },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employeeCompensation={compensationWithZeroOvertime}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Regular Hours')).toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText('Overtime')).not.toBeInTheDocument()
+
+      const addOvertimeButton = screen.getByText('Add overtime')
+      await user.click(addOvertimeButton)
+
+      expect(screen.getByLabelText('Overtime')).toBeInTheDocument()
+      expect(screen.queryByText('Add overtime')).not.toBeInTheDocument()
+    })
+
+    it('reveals overtime rows by default when the employee already has overtime hours', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      expect(await screen.findByLabelText('Overtime')).toBeInTheDocument()
+      expect(screen.queryByText('Add overtime')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Section order', () => {
+    it('renders Additional earnings before Time off', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      const additionalEarningsHeading = await screen.findByText('Additional earnings')
+      const timeOffHeading = screen.getByText('Time off')
+
+      expect(
+        additionalEarningsHeading.compareDocumentPosition(timeOffHeading) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy()
+    })
+  })
+
   describe('Time Off', () => {
     it('renders time off section when employee has time off data', async () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
@@ -819,6 +885,35 @@ describe('PayrollEditEmployeePresentation', () => {
         expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
         expect(screen.getByLabelText('Commission')).toBeInTheDocument()
       })
+    })
+
+    it('renders cash and paycheck tips under a separate Other section', async () => {
+      const compensationWithTips: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        fixedCompensations: [
+          { name: 'Bonus', amount: '500.00', jobUuid: 'job-1' },
+          { name: 'Cash Tips', amount: '20.00', jobUuid: 'job-1' },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employeeCompensation={compensationWithTips}
+          fixedCompensationTypes={[{ name: 'Bonus' }, { name: 'Cash Tips' }]}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Additional earnings')).toBeInTheDocument()
+      })
+      expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
+      const otherHeading = screen.getByText('Other')
+      const cashTipsInput = screen.getByLabelText('Cash tips')
+      expect(cashTipsInput).toBeInTheDocument()
+      expect(
+        otherHeading.compareDocumentPosition(cashTipsInput) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy()
     })
 
     it('renders reimbursement rows when present', async () => {

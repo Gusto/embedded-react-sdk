@@ -219,6 +219,125 @@ function TimeOffDataView({ timeOffs, employee, label, Field }: TimeOffDataViewPr
   return <DataView label={label} isWithinBox {...dataViewProps} />
 }
 
+interface HourRow {
+  compensationName: string
+  label: string
+  fieldName: string
+}
+
+interface HoursDataViewProps {
+  rows: HourRow[]
+  label: string
+  title: string
+  isOvertimeRevealed: boolean
+  onAddOvertime: () => void
+}
+
+function HoursDataView({
+  rows,
+  label,
+  title,
+  isOvertimeRevealed,
+  onAddOvertime,
+}: HoursDataViewProps) {
+  const { t } = useTranslation('Payroll.PayrollEditEmployee')
+  const { Box, BoxHeader, Button } = useComponentContext()
+
+  const overtimeRows = rows.filter(
+    r =>
+      r.compensationName === COMPENSATION_NAME_OVERTIME ||
+      r.compensationName === COMPENSATION_NAME_DOUBLE_OVERTIME,
+  )
+  const baseRows = rows.filter(
+    r =>
+      r.compensationName !== COMPENSATION_NAME_OVERTIME &&
+      r.compensationName !== COMPENSATION_NAME_DOUBLE_OVERTIME,
+  )
+  const visibleRows = isOvertimeRevealed ? rows : baseRows
+
+  const dataViewProps = useDataView<HourRow>({
+    data: visibleRows,
+    columns: [
+      { title: t('hoursColumns.type'), key: 'label' },
+      {
+        title: t('hoursColumns.hours'),
+        justify: 'end',
+        render: row => (
+          <div className={styles.inputContainer}>
+            <TextInputField
+              name={row.fieldName}
+              type="number"
+              min={0}
+              adornmentEnd={t('hoursUnit')}
+              isRequired
+              label={row.label}
+              shouldVisuallyHideLabel
+            />
+          </div>
+        ),
+      },
+    ],
+  })
+
+  const showAddOvertimeFooter = overtimeRows.length > 0 && !isOvertimeRevealed
+
+  return (
+    <Box
+      header={<BoxHeader title={title} />}
+      withPadding={false}
+      footer={
+        showAddOvertimeFooter ? (
+          <Button variant="secondary" onClick={onAddOvertime}>
+            {t('addOvertimeCta')}
+          </Button>
+        ) : undefined
+      }
+    >
+      <DataView label={label} isWithinBox {...dataViewProps} />
+    </Box>
+  )
+}
+
+interface FixedAmountRow {
+  name: string
+  label: string
+  fieldName: string
+}
+
+interface FixedAmountsDataViewProps {
+  rows: FixedAmountRow[]
+  label: string
+}
+
+function FixedAmountsDataView({ rows, label }: FixedAmountsDataViewProps) {
+  const { t } = useTranslation('Payroll.PayrollEditEmployee')
+
+  const dataViewProps = useDataView<FixedAmountRow>({
+    data: rows,
+    columns: [
+      { title: t('fixedAmountColumns.type'), key: 'label' },
+      {
+        title: t('fixedAmountColumns.amount'),
+        justify: 'end',
+        render: row => (
+          <div className={styles.inputContainer}>
+            <TextInputField
+              name={row.fieldName}
+              type="number"
+              min={0}
+              adornmentStart="$"
+              isRequired
+              label={row.label}
+              shouldVisuallyHideLabel
+            />
+          </div>
+        ),
+      },
+    ],
+  })
+  return <DataView label={label} isWithinBox {...dataViewProps} />
+}
+
 /** @internal */
 export const PayrollEditEmployeePresentation = ({
   onSave,
@@ -332,6 +451,25 @@ export const PayrollEditEmployeePresentation = ({
     }
   }
 
+  const PRIMARY_EARNING_NAMES = new Set(
+    [
+      COMPENSATION_NAME_BONUS,
+      COMPENSATION_NAME_COMMISSION,
+      COMPENSATION_NAME_CORRECTION_PAYMENT,
+    ].map(n => n.toLowerCase()),
+  )
+  const toFixedAmountRow = (item: { name?: string | null }): FixedAmountRow => ({
+    name: item.name!,
+    label: getFixedCompensationLabel(item.name ?? undefined) ?? item.name!,
+    fieldName: `fixedCompensations.${item.name}`,
+  })
+  const primaryEarningRows: FixedAmountRow[] = additionalEarnings
+    .filter(item => PRIMARY_EARNING_NAMES.has((item.name ?? '').toLowerCase()))
+    .map(toFixedAmountRow)
+  const otherEarningRows: FixedAmountRow[] = additionalEarnings
+    .filter(item => !PRIMARY_EARNING_NAMES.has((item.name ?? '').toLowerCase()))
+    .map(toFixedAmountRow)
+
   const defaultValues = {
     hourlyCompensations: (() => {
       const hourlyCompensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
@@ -406,6 +544,14 @@ export const PayrollEditEmployeePresentation = ({
     resolver: zodResolver(PayrollEditEmployeeFormSchema),
     defaultValues,
   })
+
+  const initialHasOvertimeValues = hourlyJobs.some(job =>
+    [COMPENSATION_NAME_OVERTIME, COMPENSATION_NAME_DOUBLE_OVERTIME].some(
+      name => parseFloat(defaultValues.hourlyCompensations[job.uuid]?.[name] ?? '0') > 0,
+    ),
+  )
+  const [forceShowOvertime, setForceShowOvertime] = useState(initialHasOvertimeValues)
+  const isOvertimeRevealed = forceShowOvertime
 
   const {
     fields: reimbursementFields,
@@ -649,33 +795,48 @@ export const PayrollEditEmployeePresentation = ({
         <Form>
           {hourlyJobs.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h3">{t('regularHoursTitle')}</Heading>
-              {hourlyJobs.map(hourlyJob => (
-                <Flex key={hourlyJob.uuid} flexDirection="column" gap={8}>
-                  {hourlyJobs.length > 1 && <Heading as="h4">{hourlyJob.title}</Heading>}
-                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                    {HOURS_COMPENSATION_NAMES.map(compensationName => {
-                      const employeeHourlyCompensation = findMatchingCompensation(
-                        hourlyJob.uuid,
-                        compensationName,
-                      )
-                      if (employeeHourlyCompensation) {
-                        return (
-                          <TextInputField
-                            key={compensationName}
-                            type="number"
-                            min={0}
-                            adornmentEnd={t('hoursUnit')}
-                            isRequired
-                            label={getCompensationLabel(compensationName)}
-                            name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
-                          />
-                        )
-                      }
-                    })}
-                  </Grid>
-                </Flex>
-              ))}
+              {hourlyJobs.length > 1 && <Heading as="h3">{t('regularHoursTitle')}</Heading>}
+              {hourlyJobs.map(hourlyJob => {
+                const rows: HourRow[] = HOURS_COMPENSATION_NAMES.flatMap(compensationName => {
+                  const match = findMatchingCompensation(hourlyJob.uuid, compensationName)
+                  if (!match) return []
+                  return [
+                    {
+                      compensationName,
+                      label: getCompensationLabel(compensationName) ?? compensationName,
+                      fieldName: `hourlyCompensations.${hourlyJob.uuid}.${match.name!}`,
+                    },
+                  ]
+                })
+
+                const boxTitle =
+                  hourlyJobs.length > 1
+                    ? (hourlyJob.title ?? t('regularHoursTitle'))
+                    : t('regularHoursTitle')
+
+                return (
+                  <HoursDataView
+                    key={hourlyJob.uuid}
+                    rows={rows}
+                    label={t('regularHoursTitle')}
+                    title={boxTitle}
+                    isOvertimeRevealed={isOvertimeRevealed}
+                    onAddOvertime={() => {
+                      setForceShowOvertime(true)
+                    }}
+                  />
+                )
+              })}
+            </div>
+          )}
+          {primaryEarningRows.length > 0 && (
+            <div className={styles.fieldGroup}>
+              <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
+                <FixedAmountsDataView
+                  rows={primaryEarningRows}
+                  label={t('additionalEarningsTitle')}
+                />
+              </Box>
             </div>
           )}
           {timeOff.length > 0 && (
@@ -721,25 +882,11 @@ export const PayrollEditEmployeePresentation = ({
               </Box>
             </div>
           )}
-          {additionalEarnings.length > 0 && (
+          {otherEarningRows.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('additionalEarningsTitle')}</Heading>
-              <Grid
-                gridTemplateColumns={{ base: '1fr', small: [320, 320], large: [320, 320, 320] }}
-                gap={20}
-              >
-                {additionalEarnings.map(fixedCompensation => (
-                  <TextInputField
-                    key={fixedCompensation.name}
-                    type="number"
-                    min={0}
-                    adornmentStart="$"
-                    isRequired
-                    label={getFixedCompensationLabel(fixedCompensation.name)}
-                    name={`fixedCompensations.${fixedCompensation.name}`}
-                  />
-                ))}
-              </Grid>
+              <Box header={<BoxHeader title={t('otherEarningsTitle')} />} withPadding={false}>
+                <FixedAmountsDataView rows={otherEarningRows} label={t('otherEarningsTitle')} />
+              </Box>
             </div>
           )}
           {showLegacyReimbursementField && (

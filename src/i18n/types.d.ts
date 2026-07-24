@@ -6434,10 +6434,18 @@ export namespace Translations {
     grossPayLabel: string
     /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
     grossPayLabelMobile: string
-    /** @defaultValue `"Regular hours"` */
+    /** @defaultValue `"Regular and overtime hours"` */
     regularHoursTitle: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
+    /** @defaultValue `"Add overtime"` */
+    addOvertimeCta: string
+    hoursColumns: {
+      /** @defaultValue `"Hour type"` */
+      type: string
+      /** @defaultValue `"Hours"` */
+      hours: string
+    }
     /** @defaultValue `"Save"` */
     saveCta: string
     /** @defaultValue `"Cancel"` */
@@ -6470,6 +6478,14 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
+    /** @defaultValue `"Other"` */
+    otherEarningsTitle: string
+    fixedAmountColumns: {
+      /** @defaultValue `"Type"` */
+      type: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+    }
     /** @defaultValue `"Reimbursements"` */
     reimbursementTitle: string
     /** @defaultValue `"Description"` */
