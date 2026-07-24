@@ -24,8 +24,8 @@ self-onboarding preference.
 Returns a discriminated union: a loading variant while the contractor fetch
 resolves, and a ready variant exposing the form's data, pending status,
 submit action, error handling, and bound `Fields`. Field visibility is
-driven by the current `type` and `wageType` (self-onboarding only toggles the
-`Email` field); fields that do not apply are `undefined` on `form.Fields`.
+driven by the current `type` and `wageType` (self-onboarding toggles the
+`Email` field unless `showEmailField` is set); fields that do not apply are `undefined` on `form.Fields`.
 SSN/EIN are exposed by contractor type regardless of self-onboarding — each
 consumer decides whether to render them. Self-onboarding is only toggleable
 when the contractor's onboarding status allows it.
@@ -97,6 +97,7 @@ Discriminated by mode: in create mode supply `companyId` and omit
 | `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
 | `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
 | `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
+| `showEmailField?` | `boolean` | Whether `form.Fields.Email` is available regardless of the `selfOnboarding` value. **Remarks** By default `Email` is only exposed while `selfOnboarding` is `true`, since email is otherwise only collected to send a self-onboarding invite. Set this to `true` for surfaces that let an admin edit an already-onboarded contractor's email directly. Defaults to `false`. |
 | `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
 | `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
 

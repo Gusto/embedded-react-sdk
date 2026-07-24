@@ -40,6 +40,9 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.PaymentsList](contractor/management/blocks#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [ContractorManagement.PaymentStatement](contractor/management/blocks#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [ContractorManagement.PaymentSummary](contractor/management/blocks#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+| [ContractorManagement.Profile](contractor/management/blocks#profile) | Management surface for viewing and editing a contractor's basic profile details after onboarding. |
+| [ContractorManagement.ProfileCard](contractor/management/blocks#profilecard) | Read-only card showing a contractor's basic profile details with an Edit action. |
+| [ContractorManagement.ProfileEditForm](contractor/management/blocks#profileeditform) | Standalone edit form for a contractor's basic profile details. |
 | [ContractorOnboarding.Address](contractor/onboarding/blocks#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
 | [ContractorOnboarding.ContractorList](contractor/onboarding/blocks#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
 | [ContractorOnboarding.ContractorProfile](contractor/onboarding/blocks#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
@@ -253,6 +256,8 @@ shape mixed into every public SDK feature component.
 - [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
 - [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
+- [`ProfileProps`](contractor/management/blocks.md#profileprops)
+- [`ProfileEditFormProps`](contractor/management/blocks.md#profileeditformprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)
