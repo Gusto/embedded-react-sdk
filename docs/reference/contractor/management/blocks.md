@@ -383,6 +383,45 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="dashboard"></a>
+
+## Dashboard
+
+Contractor management dashboard summarizing a single contractor's basic details, pay, and documents.
+
+### Remarks
+
+Renders a tabbed overview of the contractor, wrapped in the SDK's standard error and suspense
+boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
+case it defaults to details. Each tab composes the read-only section cards listed below.
+
+<br />
+
+### DashboardProps
+
+<a id="dashboardprops"></a>
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorDashboard`](../../Translations/index.md#contractordashboard)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `selectedTab?` | [`DashboardTab`](#dashboardtab) | The currently active tab. Defaults to `'details'` when uncontrolled. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Components
+
+- [ProfileCard](#profilecard)
+- [AddressCard](#addresscard)
+- [PaymentMethodCard](#paymentmethodcard)
+- [CompensationCard](#compensationcard)
+- [DocumentsCard](#documentscard)
+
+***
+
 <a id="documentscard"></a>
 
 ## DocumentsCard
@@ -869,3 +908,11 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 > **ContractorTab** = `"active"` \| `"onboarding"` \| `"dismissed"`
 
 The tab currently selected on [ManagementContractorList](#contractorlist).
+
+***
+
+<a id="dashboardtab"></a>
+
+### DashboardTab
+
+> **DashboardTab** = `"details"` \| `"pay"` \| `"documents"`

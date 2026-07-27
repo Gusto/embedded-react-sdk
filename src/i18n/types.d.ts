@@ -39,6 +39,7 @@ export interface Resources {
   'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
   'Contractor.Address': Translations.ContractorAddress
   'Contractor.ContractorList': Translations.ContractorContractorList
+  'Contractor.Dashboard': Translations.ContractorDashboard
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
   'Contractor.Management.Address': Translations.ContractorManagementAddress
@@ -1836,6 +1837,33 @@ export namespace Translations {
       confirmCta: string
       /** @defaultValue `"Cancel"` */
       cancelCta: string
+    }
+  }
+  /** Translation keys for the `Contractor.Dashboard` i18n namespace. */
+  export interface ContractorDashboard {
+    /** @defaultValue `"Contractor"` */
+    contractorRoleLabel: string
+    /** @defaultValue `"Contractor dashboard tabs"` */
+    tabsLabel: string
+    tabs: {
+      /** @defaultValue `"Details"` */
+      details: string
+      /** @defaultValue `"Pay"` */
+      pay: string
+      /** @defaultValue `"Documents"` */
+      documents: string
+    }
+    alerts: {
+      /** @defaultValue `"Profile updated"` */
+      profileUpdated: string
+      /** @defaultValue `"Address updated"` */
+      addressUpdated: string
+      /** @defaultValue `"Bank account added"` */
+      bankAccountAdded: string
+      /** @defaultValue `"Bank account removed"` */
+      bankAccountRemoved: string
+      /** @defaultValue `"Compensation updated"` */
+      compensationUpdated: string
     }
   }
   /** Translation keys for the `Contractor.DocumentsList` i18n namespace. */

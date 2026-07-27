@@ -2179,6 +2179,18 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.DashboardFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.Compensation": {
       "endpoints": [
         {
@@ -2345,6 +2357,15 @@
         "CompanyOnboarding.PaySchedule",
         "CompanyOnboarding.StateTaxes",
         "EmployeeOnboarding.OnboardingFlow"
+      ]
+    },
+    "ContractorManagement.DashboardFlow": {
+      "blocks": [
+        "ContractorManagement.Address",
+        "ContractorManagement.Compensation",
+        "ContractorManagement.DocumentsCard",
+        "ContractorManagement.PaymentMethod",
+        "ContractorManagement.Profile"
       ]
     },
     "ContractorManagement.PaymentFlow": {

@@ -90,6 +90,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_BANK_ACCOUNT_CREATED` | `"contractor/bankAccount/created"` |
 | `CONTRACTOR_CREATE` | `"contractor/create"` |
 | `CONTRACTOR_CREATED` | `"contractor/created"` |
+| `CONTRACTOR_DASHBOARD_ALERT_DISMISSED` | `"contractor/dashboard/alertDismissed"` |
+| `CONTRACTOR_DASHBOARD_TAB_CHANGE` | `"contractor/dashboard/tabChange"` |
 | `CONTRACTOR_DELETED` | `"contractor/deleted"` |
 | `CONTRACTOR_DISMISS` | `"contractor/dismiss"` |
 | `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
