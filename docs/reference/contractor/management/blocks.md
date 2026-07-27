@@ -125,6 +125,130 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="compensation"></a>
+
+## Compensation
+
+Management surface for viewing and editing a contractor's compensation after onboarding.
+
+### Remarks
+
+Drives the read-view card and edit form via an internal state machine.
+Emits events on the supplied `onEvent` handler when the user requests an
+edit, saves changes, or cancels.
+
+<br />
+
+### CompensationProps
+
+<a id="compensationprops"></a>
+
+Props for [Compensation](#compensation).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementCompensation`](../../Translations/index.md#contractormanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/compensation/editRequested` | Fired when the user clicks Edit on the read-view card | `{ contractorId: string }` |
+| `contractor/management/compensation/updated` | Fired after compensation is successfully saved | [APIModels.Contractor](../../APIModels/index.md#contractor) |
+| `contractor/management/compensation/editCancelled` | Fired when the user cancels editing | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
+
+***
+
+<a id="compensationcard"></a>
+
+## CompensationCard
+
+Read-only card showing a contractor's compensation type and rate with an Edit action.
+
+### Remarks
+
+Standalone card that fetches its own data. Emits an event when the user
+clicks Edit so the parent can switch to the edit form. The card does not
+render success or error alerts itself — alert presentation is the
+surrounding surface's responsibility.
+
+<br />
+
+### CompensationCardProps
+
+<a id="compensationcardprops"></a>
+
+Props for [CompensationCard](#compensationcard).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit compensation. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/compensation/editRequested` | Fired when the user clicks the Edit button | `{ contractorId: string }` |
+
+***
+
+<a id="compensationeditform"></a>
+
+## CompensationEditForm
+
+Standalone edit form for a contractor's compensation type and rate.
+
+### Remarks
+
+Renders a Fixed/Hourly compensation-type selector and, when Hourly, an
+hourly-rate field. Save and Cancel both emit events so the parent can
+return to the read view.
+
+<br />
+
+### CompensationEditFormProps
+
+<a id="compensationeditformprops"></a>
+
+Props for [CompensationEditForm](#compensationeditform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementCompensation`](../../Translations/index.md#contractormanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/compensation/updated` | Fired after compensation is successfully saved | The updated `Contractor` entity |
+| `contractor/management/compensation/editCancelled` | Fired when the user clicks Cancel | — |
+
+***
+
 <a id="contractorlist"></a>
 
 ## ContractorList

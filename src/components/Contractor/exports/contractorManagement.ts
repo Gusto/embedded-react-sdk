@@ -17,6 +17,12 @@ export type {
   PaymentMethodCardProps,
   PaymentMethodEditFormProps,
 } from '../PaymentMethod/management'
+export { Compensation, CompensationCard, CompensationEditForm } from '../Compensation/management'
+export type {
+  CompensationProps,
+  CompensationCardProps,
+  CompensationEditFormProps,
+} from '../Compensation/management'
 export { PaymentFlow, type PaymentFlowProps } from '../Payments/PaymentFlow'
 export { PaymentsList, type PaymentsListProps } from '../Payments/PaymentsList/PaymentsList'
 export { CreatePayment, type CreatePaymentProps } from '../Payments/CreatePayment/CreatePayment'

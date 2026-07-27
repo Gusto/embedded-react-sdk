@@ -267,6 +267,13 @@ export const contractorEvents = {
     'contractor/management/paymentMethod/bankForm/cancelled',
   CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED:
     'contractor/management/paymentMethod/alertDismissed',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_REQUESTED:
+    'contractor/management/compensation/editRequested',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED: 'contractor/management/compensation/updated',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED:
+    'contractor/management/compensation/editCancelled',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED:
+    'contractor/management/compensation/alertDismissed',
 } as const
 
 /**
