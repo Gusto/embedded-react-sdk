@@ -187,7 +187,7 @@ export function useEmployeeList({
       case 'onboarding':
         return { ...baseParams, onboarded: false }
       case 'terminated':
-        return { ...baseParams, terminated: true }
+        return { ...baseParams, terminatedToday: true }
       default:
         return baseParams
     }

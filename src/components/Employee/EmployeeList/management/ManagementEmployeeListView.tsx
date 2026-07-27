@@ -143,41 +143,44 @@ export function ManagementEmployeeListView({
   const { ...dataViewProps } = useDataView({
     data: employees,
     columns: getColumns(),
-    itemMenu: employee => {
-      const menuItems = []
+    itemMenu:
+      selectedTab === 'dismissed'
+        ? undefined
+        : employee => {
+            const menuItems = []
 
-      if (employee.allowedActions.includes('edit')) {
-        menuItems.push({
-          label: t('editCta'),
-          onClick: () => {
-            onEdit(employee.uuid)
+            if (employee.allowedActions.includes('edit')) {
+              menuItems.push({
+                label: t('editCta'),
+                onClick: () => {
+                  onEdit(employee.uuid)
+                },
+                icon: <PencilSvg aria-hidden />,
+              })
+            }
+
+            if (employee.allowedActions.includes('dismiss')) {
+              menuItems.push({
+                label: t('dismissCta'),
+                onClick: () => {
+                  onDismiss(employee.uuid)
+                },
+                icon: <TrashCanSvg aria-hidden />,
+              })
+            }
+
+            if (employee.allowedActions.includes('delete')) {
+              menuItems.push({
+                label: t('cancelCta'),
+                onClick: () => {
+                  setEmployeeToDelete(employee.uuid)
+                },
+                icon: <PencilSvg aria-hidden />,
+              })
+            }
+
+            return <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
           },
-          icon: <PencilSvg aria-hidden />,
-        })
-      }
-
-      if (employee.allowedActions.includes('dismiss')) {
-        menuItems.push({
-          label: t('dismissCta'),
-          onClick: () => {
-            onDismiss(employee.uuid)
-          },
-          icon: <TrashCanSvg aria-hidden />,
-        })
-      }
-
-      if (employee.allowedActions.includes('delete')) {
-        menuItems.push({
-          label: t('cancelCta'),
-          onClick: () => {
-            setEmployeeToDelete(employee.uuid)
-          },
-          icon: <PencilSvg aria-hidden />,
-        })
-      }
-
-      return <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
-    },
     isFetching,
     pagination: {
       handleNextPage,
