@@ -176,6 +176,10 @@ export function ManagementEmployeeListView({
         })
       }
 
+      if (menuItems.length === 0) {
+        return null
+      }
+
       return <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
     },
     isFetching,
