@@ -5149,8 +5149,6 @@ export namespace Translations {
     dismissCta: string
     /** @defaultValue `"Cancel onboarding"` */
     cancelCta: string
-    /** @defaultValue `"Rehire employee"` */
-    rehireCta: string
     /** @defaultValue `"Employee actions menu"` */
     hamburgerTitle: string
     /** @defaultValue `"List of employees"` */
