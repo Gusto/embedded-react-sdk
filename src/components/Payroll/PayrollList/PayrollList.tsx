@@ -75,10 +75,12 @@ export function PayrollList(props: PayrollListBlockProps) {
 
 const FUTURE_LOOKAHEAD_MONTHS = 3
 
-const getFutureEndDate = (): string => {
-  const endDate = new Date()
-  endDate.setMonth(endDate.getMonth() + FUTURE_LOOKAHEAD_MONTHS)
-  return endDate.toISOString().split('T')[0]!
+const getDefaultStartDate = (): Date => new Date()
+
+const getDefaultEndDate = (): Date => {
+  const date = new Date()
+  date.setMonth(date.getMonth() + FUTURE_LOOKAHEAD_MONTHS)
+  return date
 }
 
 const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
@@ -91,6 +93,8 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const [deletingPayrollId, setDeletingPayrollId] = useState<string | null>(null)
 
   const dateRangeFilter = useDateRangeFilter({
+    initialStartDate: getDefaultStartDate(),
+    initialEndDate: getDefaultEndDate(),
     onFilterChange: useCallback(() => {
       resetPage()
     }, [resetPage]),
@@ -101,7 +105,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
     companyId,
     processingStatuses: [ProcessingStatuses.Unprocessed],
     startDate: dateFilterParams.startDate,
-    endDate: dateFilterParams.endDate ?? getFutureEndDate(),
+    endDate: dateFilterParams.endDate,
     payrollTypes: [
       QueryParamPayrollTypes.Regular,
       QueryParamPayrollTypes.OffCycle,

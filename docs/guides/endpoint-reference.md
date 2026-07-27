@@ -63,6 +63,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **CompanyOnboarding.StateTaxesForm** | GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
 |  | PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 | **CompanyOnboarding.StateTaxesList** | GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements) |
+| **CompanyOnboarding.TaxRateManagement** | GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+|  | PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 | **CompanyOnboarding.AssignSignatory** | GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories) |
 |  | POST | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-company-signatories) |
 |  | PUT | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
@@ -341,7 +343,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Flow | Blocks included |
 | --- | --- |
-| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement, ContractorManagement.PaymentSummary, ContractorManagement.PaymentsList, InformationRequests.InformationRequestsFlow |
+| **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
+| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePaymentFlow, ContractorManagement.PaymentsList, ContractorManagement.ViewPaymentFlow, InformationRequests.InformationRequestsFlow |
+| **ContractorManagement.ViewPaymentFlow** | ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
 | **ContractorOnboarding.SelfOnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorProfile, ContractorOnboarding.DocumentSigner, ContractorOnboarding.Landing, ContractorOnboarding.OnboardingSummary, ContractorOnboarding.PaymentMethod |
 

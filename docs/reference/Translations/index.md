@@ -651,8 +651,10 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.editStateTaxCta` |
 | `list.emptyTableDescription` |
 | `list.emptyTableTitle` |
+| `list.hamburgerTitle` |
 | `list.incompleteBadge` |
 | `list.inProgressBadge` |
+| `list.manageRatesCta` |
 | `list.notStartedBadge` |
 | `list.readyToRunPayrollBadge` |
 | `list.requirementsListCol1` |
@@ -661,6 +663,26 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `list.selfOnboardingWarningDescription` |
 | `list.selfOnboardingWarningLabel` |
 | `list.startStateTaxSetupCta` |
+| <a id="property-companystatetaxesmanagerates"></a> `manageRates` |
+| `manageRates.addRateCta` |
+| `manageRates.addRateDialogDescription` |
+| `manageRates.addRateDialogTitle` |
+| `manageRates.backCta` |
+| `manageRates.cancelCta` |
+| `manageRates.currentBadge` |
+| `manageRates.effectiveDateColumnLabel` |
+| `manageRates.effectiveDateLabel` |
+| `manageRates.effectiveDatePlaceholder` |
+| `manageRates.emptyHistoryDescription` |
+| `manageRates.emptyHistoryTitle` |
+| `manageRates.historicalBadge` |
+| `manageRates.noEditableFieldsDescription` |
+| `manageRates.noEditableFieldsTitle` |
+| `manageRates.rateScheduledSuccess` |
+| `manageRates.saveRateCta` |
+| `manageRates.scheduledBadge` |
+| `manageRates.subtitle` |
+| `manageRates.title` |
 
 ***
 
@@ -1399,6 +1421,55 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlisttabslabel"></a> `tabsLabel` | `"Contractor status tabs"` |
 | <a id="property-contractormanagementcontractorlisttitle"></a> `title` | `"Contractors"` |
 | <a id="property-contractormanagementcontractorlistviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
+
+***
+
+<a id="contractormanagementprofile"></a>
+
+### ContractorManagementProfile
+
+Translation keys for the `Contractor.Management.Profile` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementprofilealerts"></a> `alerts` | |
+| `alerts.profileUpdated` | `"Profile updated"` |
+| <a id="property-contractormanagementprofileeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementprofileemail"></a> `email` | `"Email"` |
+| <a id="property-contractormanagementprofileemployeridentificationnumber"></a> `employerIdentificationNumber` | `"Employer Identification Number (EIN)"` |
+| <a id="property-contractormanagementprofileform"></a> `form` | |
+| `form.businessName` | `"Business name"` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.changeCta` | `"Change"` |
+| `form.einLabel` | `"Employer Identification Number (EIN)"` |
+| `form.einMask` | `"••-•••••••"` |
+| `form.email` | `"Email address"` |
+| `form.emailDescription` | `"Used to send onboarding and payment notifications."` |
+| `form.firstName` | `"First name"` |
+| `form.lastName` | `"Last name"` |
+| `form.middleInitial` | `"Middle initial"` |
+| `form.onFileHint` | `"Already on file."` |
+| `form.saveCta` | `"Save"` |
+| `form.ssnLabel` | `"Social security number"` |
+| `form.ssnMask` | `"•••-••-••••"` |
+| `form.startDate` | `"Start date"` |
+| `form.successAlert` | `"Profile updated"` |
+| `form.title` | `"Basic details"` |
+| `form.validations` | |
+| `form.validations.businessName` | `"Business name is required"` |
+| `form.validations.ein` | `"The EIN must be exactly 9 digits long."` |
+| `form.validations.email` | `"Enter a valid email address"` |
+| `form.validations.firstName` | `"First name is required"` |
+| `form.validations.lastName` | `"Last name is required"` |
+| `form.validations.ssn` | `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` |
+| `form.validations.startDate` | `"Start date is required"` |
+| <a id="property-contractormanagementprofilelegalname"></a> `legalName` | `"Legal name"` |
+| <a id="property-contractormanagementprofilelistemptyplaceholder"></a> `listEmptyPlaceholder` | `"No value on file"` |
+| <a id="property-contractormanagementprofilesocialsecuritynumber"></a> `socialSecurityNumber` | `"Social security number"` |
+| <a id="property-contractormanagementprofilestartdate"></a> `startDate` | `"Start date"` |
+| <a id="property-contractormanagementprofiletitle"></a> `title` | `"Basic details"` |
 
 ***
 
@@ -3231,6 +3302,7 @@ Translation keys for the `Employee.Management.PaymentMethodBankForm` i18n namesp
 | <a id="property-employeemanagementpaymentmethodbankformroutingnumberdescription"></a> `routingNumberDescription` | `"(9 digits)"` |
 | <a id="property-employeemanagementpaymentmethodbankformroutingnumberlabel"></a> `routingNumberLabel` | `"Routing number"` |
 | <a id="property-employeemanagementpaymentmethodbankformsavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-employeemanagementpaymentmethodbankformtitle"></a> `title` | `"Add bank account"` |
 | <a id="property-employeemanagementpaymentmethodbankformvalidations"></a> `validations` | |
 | `validations.accountName` | `"Account name is required"` |
 | `validations.accountNumber` | `"Account number is a required field"` |
@@ -3257,7 +3329,7 @@ Translation keys for the `Employee.Management.PaymentMethodSplitForm` i18n names
 | <a id="property-employeemanagementpaymentmethodsplitformsavecta"></a> `saveCta` | `"Save"` |
 | <a id="property-employeemanagementpaymentmethodsplitformsplitamountlabel"></a> `splitAmountLabel` | `"{{name}} ({{account_number}})"` |
 | <a id="property-employeemanagementpaymentmethodsplitformsplitbylabel"></a> `splitByLabel` | `"Split by"` |
-| <a id="property-employeemanagementpaymentmethodsplitformsplitdescription"></a> `splitDescription` | `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` |
+| <a id="property-employeemanagementpaymentmethodsplitformsplitdescription"></a> `splitDescription` | `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` |
 | <a id="property-employeemanagementpaymentmethodsplitformtitle"></a> `title` | `"Split employee paycheck"` |
 | <a id="property-employeemanagementpaymentmethodsplitformvalidations"></a> `validations` | |
 | `validations.amountError` | `"Please enter valid amount"` |
@@ -3485,6 +3557,7 @@ Translation keys for the `Employee.PaymentMethod` i18n namespace.
 | <a id="property-employeepaymentmethodactioncolumn"></a> `actionColumn` | `"Bank account actions"` |
 | <a id="property-employeepaymentmethodaddanothercta"></a> `addAnotherCta` | `"+ Add another bank account"` |
 | <a id="property-employeepaymentmethodaddbankaccountcta"></a> `addBankAccountCta` | `"Add bank account"` |
+| <a id="property-employeepaymentmethodaddbankaccountformtitle"></a> `addBankAccountFormTitle` | `"Add bank account"` |
 | <a id="property-employeepaymentmethodallocationcolumn"></a> `allocationColumn` | `"Allocation"` |
 | <a id="property-employeepaymentmethodamountlabel"></a> `amountLabel` | `"Fixed amount"` |
 | <a id="property-employeepaymentmethodbankaccountslistlabel"></a> `bankAccountsListLabel` | `"List of employee bank accounts"` |
@@ -3525,11 +3598,11 @@ Translation keys for the `Employee.PaymentMethod` i18n namespace.
 | <a id="property-employeepaymentmethodsplitamountlabel"></a> `splitAmountLabel` | `"{{name}} ({{account_number}})"` |
 | <a id="property-employeepaymentmethodsplitbylabel"></a> `splitByLabel` | `"Split by"` |
 | <a id="property-employeepaymentmethodsplitcta"></a> `splitCta` | `"Split paycheck"` |
-| <a id="property-employeepaymentmethodsplitdescription"></a> `splitDescription` | `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` |
+| <a id="property-employeepaymentmethodsplitdescription"></a> `splitDescription` | `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` |
 | <a id="property-employeepaymentmethodsplittitle"></a> `splitTitle` | `"Split employee paycheck"` |
 | <a id="property-employeepaymentmethodsplitviewsuccessalert"></a> `splitViewSuccessAlert` | `"Payment split was successfully updated"` |
 | <a id="property-employeepaymentmethodsubmitcta"></a> `submitCta` | `"Continue"` |
-| <a id="property-employeepaymentmethodtitle"></a> `title` | `"Employee payment details"` |
+| <a id="property-employeepaymentmethodtitle"></a> `title` | `"Payment method"` |
 | <a id="property-employeepaymentmethodvalidations"></a> `validations` | |
 | `validations.accountName` | `"Account name is required"` |
 | `validations.accountNumber` | `"Account number is a required field"` |
@@ -3656,7 +3729,7 @@ Translation keys for the `Employee.SplitPaymentsFormBody` i18n namespace.
 | <a id="property-employeesplitpaymentsformbodysavecta"></a> `saveCta` | `"Save"` |
 | <a id="property-employeesplitpaymentsformbodysplitamountlabel"></a> `splitAmountLabel` | `"{{name}} ({{account_number}})"` |
 | <a id="property-employeesplitpaymentsformbodysplitbylabel"></a> `splitByLabel` | `"Split by"` |
-| <a id="property-employeesplitpaymentsformbodysplitdescription"></a> `splitDescription` | `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` |
+| <a id="property-employeesplitpaymentsformbodysplitdescription"></a> `splitDescription` | `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` |
 | <a id="property-employeesplitpaymentsformbodytitle"></a> `title` | `"Split employee paycheck"` |
 | <a id="property-employeesplitpaymentsformbodyvalidations"></a> `validations` | |
 | `validations.amountError` | `"Please enter valid amount"` |
@@ -4532,8 +4605,12 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | `dateFilter.startDate` | `"From"` |
 | `dateFilter.trigger` | `"Filter by date"` |
 | <a id="property-payrollpayrollhistoryemptystate"></a> `emptyState` | |
-| `emptyState.description` | `"When you run payrolls, they'll appear here for easy reference."` |
-| `emptyState.title` | `"No payroll history"` |
+| `emptyState.default` | |
+| `emptyState.default.description` | `"When you run payrolls, they'll appear here for easy reference."` |
+| `emptyState.default.title` | `"No payroll history"` |
+| `emptyState.filtered` | |
+| `emptyState.filtered.description` | `"Try adjusting the date filter to see more payrolls."` |
+| `emptyState.filtered.title` | `"No payrolls in this date range"` |
 | <a id="property-payrollpayrollhistorylabels"></a> `labels` | |
 | `labels.noAmount` | `"—"` |
 | <a id="property-payrollpayrollhistorymenu"></a> `menu` | |
@@ -4595,7 +4672,12 @@ Translation keys for the `Payroll.PayrollList` i18n namespace.
 | `deletePayrollDialog.confirmCta` | `"Yes, cancel payroll"` |
 | `deletePayrollDialog.title` | `"Cancel {{payPeriod}} payroll?"` |
 | <a id="property-payrollpayrolllistdeletesuccessalert"></a> `deleteSuccessAlert` | `"Payroll cancelled"` |
-| <a id="property-payrollpayrolllistemptystate"></a> `emptyState` | `"All payrolls have been processed"` |
+| <a id="property-payrollpayrolllistemptystate"></a> `emptyState` | |
+| `emptyState.default` | |
+| `emptyState.default.title` | `"All payrolls have been processed"` |
+| `emptyState.filtered` | |
+| `emptyState.filtered.description` | `"Try adjusting the date filter to see more payrolls."` |
+| `emptyState.filtered.title` | `"No payrolls in this date range"` |
 | <a id="property-payrollpayrolllistoffcyclecta"></a> `offCycleCta` | |
 | `offCycleCta.button` | `"Run off-cycle payroll"` |
 | `offCycleCta.description` | `"You can pay an employee outside of your normal payroll schedule by running an off-cycle payroll."` |
@@ -5087,6 +5169,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |

@@ -439,9 +439,9 @@ Displays historical payroll records with filtering and management capabilities.
 ### Remarks
 
 Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
-check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
-cancelling processed payrolls when they remain within the cancellation window. Each row shows
-the pay period, payroll type, pay date, status, and total pay amount.
+pay period, viewing payroll summaries and receipts, and cancelling processed payrolls when they
+remain within the cancellation window. Each row shows the pay period, payroll type, pay date,
+status, and total pay amount.
 
 <br />
 

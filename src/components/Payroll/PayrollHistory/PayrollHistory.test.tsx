@@ -709,16 +709,34 @@ describe('PayrollHistory', () => {
       })
     })
 
-    it('does not pass date params to API by default', async () => {
+    it('passes default date params (3 months back through today, filtered by pay period) to the API', async () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(capturedPayrollListUrl).not.toBeNull()
       })
 
-      expect(capturedPayrollListUrl!.searchParams.get('start_date')).toBeNull()
-      expect(capturedPayrollListUrl!.searchParams.get('end_date')).toBeNull()
+      const startDateParam = capturedPayrollListUrl!.searchParams.get('start_date')
+      const endDateParam = capturedPayrollListUrl!.searchParams.get('end_date')
+      expect(startDateParam).toBeTruthy()
+      expect(endDateParam).toBeTruthy()
       expect(capturedPayrollListUrl!.searchParams.get('date_filter_by')).toBeNull()
+
+      const startDate = new Date(startDateParam!)
+      const endDate = new Date(endDateParam!)
+      const fourMonthsAgo = new Date()
+      fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4)
+      const twoMonthsAgo = new Date()
+      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2)
+      expect(startDate.getTime()).toBeGreaterThan(fourMonthsAgo.getTime())
+      expect(startDate.getTime()).toBeLessThan(twoMonthsAgo.getTime())
+
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      expect(endDate.getTime()).toBeGreaterThan(yesterday.getTime())
+      expect(endDate.getTime()).toBeLessThan(tomorrow.getTime())
     })
   })
 

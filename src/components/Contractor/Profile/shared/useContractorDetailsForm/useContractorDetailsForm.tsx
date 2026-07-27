@@ -90,6 +90,16 @@ export interface ContractorDetailsSubmitOptions {
 export type UseContractorDetailsFormSharedProps = {
   /** Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. */
   withSelfOnboardingField?: boolean
+  /**
+   * Whether `form.Fields.Email` is available regardless of the `selfOnboarding` value.
+   *
+   * @remarks
+   * By default `Email` is only exposed while `selfOnboarding` is `true`, since email is
+   * otherwise only collected to send a self-onboarding invite. Set this to `true` for
+   * surfaces that let an admin edit an already-onboarded contractor's email directly.
+   * Defaults to `false`.
+   */
+  showEmailField?: boolean
   /** Fields that are optional by default but should be promoted to required for this form instance. */
   optionalFieldsToRequire?: ContractorDetailsOptionalFieldsToRequire
   /** Initial values applied before any contractor data loads. */
@@ -251,8 +261,8 @@ function buildContractorDetailsFieldsMetadata(
  * Returns a discriminated union: a loading variant while the contractor fetch
  * resolves, and a ready variant exposing the form's data, pending status,
  * submit action, error handling, and bound `Fields`. Field visibility is
- * driven by the current `type` and `wageType` (self-onboarding only toggles the
- * `Email` field); fields that do not apply are `undefined` on `form.Fields`.
+ * driven by the current `type` and `wageType` (self-onboarding toggles the
+ * `Email` field unless `showEmailField` is set); fields that do not apply are `undefined` on `form.Fields`.
  * SSN/EIN are exposed by contractor type regardless of self-onboarding — each
  * consumer decides whether to render them. Self-onboarding is only toggleable
  * when the contractor's onboarding status allows it.
@@ -310,6 +320,7 @@ export function useContractorDetailsForm({
   companyId,
   contractorId,
   withSelfOnboardingField = true,
+  showEmailField = false,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
@@ -526,7 +537,7 @@ export function useContractorDetailsForm({
         SelfOnboarding:
           withSelfOnboardingField && isSelfOnboardingToggleable ? SelfOnboardingField : undefined,
         FileNewHireReport: isIndividual ? FileNewHireReportField : undefined,
-        Email: watchedSelfOnboarding ? EmailField : undefined,
+        Email: showEmailField || watchedSelfOnboarding ? EmailField : undefined,
         FirstName: isIndividual ? FirstNameField : undefined,
         LastName: isIndividual ? LastNameField : undefined,
         MiddleInitial: isIndividual ? MiddleInitialField : undefined,

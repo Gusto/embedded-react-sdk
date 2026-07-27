@@ -46,7 +46,14 @@ describe('FormBox Component', () => {
     expect(screen.getByTestId('data-form-box')).toHaveClass('custom-style')
   })
 
-  test('does not render header section when header is not provided', () => {
+  test('renders footer when provided', () => {
+    renderWithProviders(<FormBox footer="Footer Text">Content</FormBox>)
+
+    expect(screen.getByText('Footer Text')).toBeInTheDocument()
+    expect(screen.getByText('Content')).toBeInTheDocument()
+  })
+
+  test('does not render header or footer section when neither is provided', () => {
     renderWithProviders(<FormBox>Content</FormBox>)
 
     const box = screen.getByTestId('data-form-box')

@@ -257,4 +257,125 @@ describe('StateTaxesForm', () => {
       )
     })
   })
+
+  // Regression: a state's plain (non-scheduling) GET response can return two requirement sets
+  // sharing the same `key` — e.g. a currently-effective period and an already-scheduled future
+  // period for "taxrates". Each rendered section must bind to its own form state, not share one.
+  describe('State with two requirement sets sharing the same key', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json({
+            company_uuid: 'company-123',
+            state: 'CA',
+            requirement_sets: [
+              {
+                state: 'CA',
+                key: 'taxrates',
+                label: 'Tax Rates',
+                effective_from: '2026-01-01',
+                requirements: [
+                  {
+                    key: 'rate-uuid',
+                    label: 'Unemployment tax rate',
+                    value: '0.02',
+                    editable: true,
+                    metadata: {
+                      type: 'tax_rate',
+                      validation: { type: 'min_max', min: '0.015', max: '0.062' },
+                    },
+                  },
+                ],
+              },
+              {
+                state: 'CA',
+                key: 'taxrates',
+                label: 'Tax Rates',
+                effective_from: '2026-04-01',
+                requirements: [
+                  {
+                    key: 'rate-uuid',
+                    label: 'Unemployment tax rate',
+                    value: '0.02',
+                    editable: true,
+                    metadata: {
+                      type: 'tax_rate',
+                      validation: { type: 'min_max', min: '0.015', max: '0.062' },
+                    },
+                  },
+                ],
+              },
+            ],
+          }),
+        ),
+      )
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CA" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+    })
+
+    it('renders each set as an independent field, not a linked pair', async () => {
+      const user = userEvent.setup()
+      const fields = await screen.findAllByLabelText(/Unemployment tax rate/i)
+      expect(fields).toHaveLength(2)
+      const [januarySet, aprilSet] = fields
+
+      await user.clear(januarySet!)
+      await user.type(januarySet!, '3')
+      await user.tab()
+
+      expect(aprilSet).toHaveValue('2')
+    })
+
+    it('submits both sets with their own independently-edited values', async () => {
+      const user = userEvent.setup()
+      let capturedBody: unknown = null
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
+          async ({ request }) => {
+            capturedBody = await request.json()
+            return HttpResponse.json({})
+          },
+        ),
+      )
+
+      const [januarySet, aprilSet] = await screen.findAllByLabelText(/Unemployment tax rate/i)
+      await user.clear(januarySet!)
+      await user.type(januarySet!, '3')
+      await user.tab()
+      await user.clear(aprilSet!)
+      await user.type(aprilSet!, '4')
+      await user.tab()
+
+      const submitButton = await screen.findByRole('button', { name: /Save/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+      })
+
+      const body = capturedBody as {
+        requirement_sets: Array<{
+          effective_from: string
+          requirements: Array<{ key: string; value: string }>
+        }>
+      }
+      expect(body.requirement_sets).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            effective_from: '2026-01-01',
+            requirements: [{ key: 'rate-uuid', value: '0.03' }],
+          }),
+          expect.objectContaining({
+            effective_from: '2026-04-01',
+            requirements: [{ key: 'rate-uuid', value: '0.04' }],
+          }),
+        ]),
+      )
+    })
+  })
 })

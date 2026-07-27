@@ -25,8 +25,14 @@
     "cancelPayroll": "Cancel payroll"
   },
   "emptyState": {
-    "title": "No payroll history",
-    "description": "When you run payrolls, they'll appear here for easy reference."
+    "default": {
+      "title": "No payroll history",
+      "description": "When you run payrolls, they'll appear here for easy reference."
+    },
+    "filtered": {
+      "title": "No payrolls in this date range",
+      "description": "Try adjusting the date filter to see more payrolls."
+    }
   },
   "labels": {
     "noAmount": "—"

@@ -23,7 +23,6 @@ interface DateRangeFilterProps {
   resetLabel: string
   selectDatesLabel: string
   triggerLabel: string
-  isFilterActive: boolean
   maxEndDate?: Date
   minStartDate?: Date
 }
@@ -42,7 +41,6 @@ export const DateRangeFilter = ({
   resetLabel,
   selectDatesLabel,
   triggerLabel,
-  isFilterActive,
   maxEndDate,
   minStartDate,
 }: DateRangeFilterProps) => {
@@ -82,9 +80,9 @@ export const DateRangeFilter = ({
   }, [])
 
   const filterDateLabel = useMemo(() => {
-    if (!isFilterActive || !startDate || !endDate) return null
+    if (!startDate || !endDate) return null
     return `${formatFilterDate(startDate)} – ${formatFilterDate(endDate)}`
-  }, [isFilterActive, startDate, endDate])
+  }, [startDate, endDate])
 
   const triggerButton = (
     <Button

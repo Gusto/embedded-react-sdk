@@ -203,6 +203,7 @@ export const companyEvents = {
   COMPANY_STATE_TAX_UPDATED: 'company/stateTaxes/updated',
   COMPANY_STATE_TAX_DONE: 'company/stateTaxes/done',
   COMPANY_STATE_TAX_EDIT: 'company/stateTaxes/edit',
+  COMPANY_STATE_TAX_MANAGE_RATES: 'company/stateTaxes/manageRates',
   COMPANY_OVERVIEW_DONE: 'company/overview/done',
   COMPANY_OVERVIEW_CONTINUE: 'company/overview/continue',
 } as const
@@ -246,6 +247,10 @@ export const contractorEvents = {
   CONTRACTOR_REHIRE: 'contractor/rehire',
   CONTRACTOR_DISMISSAL_CANCELLED: 'contractor/dismissal/cancelled',
   CONTRACTOR_REHIRE_CANCELLED: 'contractor/rehire/cancelled',
+  CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: 'contractor/management/profile/editRequested',
+  CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: 'contractor/management/profile/updated',
+  CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED: 'contractor/management/profile/editCancelled',
+  CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED: 'contractor/management/profile/alertDismissed',
 } as const
 
 /**

@@ -41,6 +41,7 @@ export interface Resources {
   'Contractor.ContractorList': Translations.ContractorContractorList
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
+  'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
@@ -742,10 +743,14 @@ export namespace Translations {
       selfOnboardingWarningDescription: string
       /** @defaultValue `"Continue"` */
       continueCta: string
-      /** @defaultValue `"Edit"` */
+      /** @defaultValue `"Edit tax settings"` */
       editStateTaxCta: string
       /** @defaultValue `"Continue setup"` */
       continueStateTaxSetupCta: string
+      /** @defaultValue `"Manage tax rates"` */
+      manageRatesCta: string
+      /** @defaultValue `"Actions for {{state}}"` */
+      hamburgerTitle: string
       /** @defaultValue `"State"` */
       requirementsListCol1: string
       /** @defaultValue `"Status"` */
@@ -790,6 +795,46 @@ export namespace Translations {
         /** @defaultValue `"This field is required"` */
         required: string
       }
+    }
+    manageRates: {
+      /** @defaultValue `"Tax rates for {{state}}"` */
+      title: string
+      /** @defaultValue `"Effective-dated tax rate history and scheduled future rates."` */
+      subtitle: string
+      /** @defaultValue `"Back to states"` */
+      backCta: string
+      /** @defaultValue `"Add tax rate"` */
+      addRateCta: string
+      /** @defaultValue `"Effective date"` */
+      effectiveDateLabel: string
+      /** @defaultValue `"Select an effective date"` */
+      effectiveDatePlaceholder: string
+      /** @defaultValue `"Effective date"` */
+      effectiveDateColumnLabel: string
+      /** @defaultValue `"Current"` */
+      currentBadge: string
+      /** @defaultValue `"Scheduled"` */
+      scheduledBadge: string
+      /** @defaultValue `"Historical"` */
+      historicalBadge: string
+      /** @defaultValue `"No effective-dated rates yet"` */
+      emptyHistoryTitle: string
+      /** @defaultValue `"Add a tax rate to schedule a future-dated configuration."` */
+      emptyHistoryDescription: string
+      /** @defaultValue `"Add tax rate for {{state}}"` */
+      addRateDialogTitle: string
+      /** @defaultValue `"Schedule a new tax configuration to take effect on a future date."` */
+      addRateDialogDescription: string
+      /** @defaultValue `"Save tax rate"` */
+      saveRateCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"No editable fields"` */
+      noEditableFieldsTitle: string
+      /** @defaultValue `"This state does not expose editable effective-dated tax requirements."` */
+      noEditableFieldsDescription: string
+      /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
+      rateScheduledSuccess: string
     }
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */
@@ -1840,6 +1885,81 @@ export namespace Translations {
     getStartedCta: string
     /** @defaultValue `"there"` */
     fallbackName: string
+  }
+  /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */
+  export interface ContractorManagementProfile {
+    /** @defaultValue `"Basic details"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Legal name"` */
+    legalName: string
+    /** @defaultValue `"Start date"` */
+    startDate: string
+    /** @defaultValue `"Social security number"` */
+    socialSecurityNumber: string
+    /** @defaultValue `"Employer Identification Number (EIN)"` */
+    employerIdentificationNumber: string
+    /** @defaultValue `"Email"` */
+    email: string
+    /** @defaultValue `"No value on file"` */
+    listEmptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Profile updated"` */
+      profileUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Basic details"` */
+      title: string
+      /** @defaultValue `"First name"` */
+      firstName: string
+      /** @defaultValue `"Middle initial"` */
+      middleInitial: string
+      /** @defaultValue `"Last name"` */
+      lastName: string
+      /** @defaultValue `"Business name"` */
+      businessName: string
+      /** @defaultValue `"Start date"` */
+      startDate: string
+      /** @defaultValue `"Social security number"` */
+      ssnLabel: string
+      /** @defaultValue `"•••-••-••••"` */
+      ssnMask: string
+      /** @defaultValue `"Employer Identification Number (EIN)"` */
+      einLabel: string
+      /** @defaultValue `"••-•••••••"` */
+      einMask: string
+      /** @defaultValue `"Already on file."` */
+      onFileHint: string
+      /** @defaultValue `"Change"` */
+      changeCta: string
+      /** @defaultValue `"Email address"` */
+      email: string
+      /** @defaultValue `"Used to send onboarding and payment notifications."` */
+      emailDescription: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Profile updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"First name is required"` */
+        firstName: string
+        /** @defaultValue `"Last name is required"` */
+        lastName: string
+        /** @defaultValue `"Business name is required"` */
+        businessName: string
+        /** @defaultValue `"Start date is required"` */
+        startDate: string
+        /** @defaultValue `"Enter a valid email address"` */
+        email: string
+        /** @defaultValue `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` */
+        ssn: string
+        /** @defaultValue `"The EIN must be exactly 9 digits long."` */
+        ein: string
+      }
+    }
   }
   /** Translation keys for the `Contractor.ManagementContractorList` i18n namespace. */
   export interface ContractorManagementContractorList {
@@ -4715,6 +4835,8 @@ export namespace Translations {
   }
   /** Translation keys for the `Employee.Management.PaymentMethodBankForm` i18n namespace. */
   export interface EmployeeManagementPaymentMethodBankForm {
+    /** @defaultValue `"Add bank account"` */
+    title: string
     /** @defaultValue `"Account nickname"` */
     nameLabel: string
     /** @defaultValue `"Routing number"` */
@@ -4748,7 +4870,7 @@ export namespace Translations {
   export interface EmployeeManagementPaymentMethodSplitForm {
     /** @defaultValue `"Split employee paycheck"` */
     title: string
-    /** @defaultValue `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` */
+    /** @defaultValue `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` */
     splitDescription: string
     /** @defaultValue `"Split by"` */
     splitByLabel: string
@@ -5170,6 +5292,8 @@ export namespace Translations {
     addAnotherCta: string
     /** @defaultValue `"Add bank account"` */
     addBankAccountCta: string
+    /** @defaultValue `"Add bank account"` */
+    addBankAccountFormTitle: string
     /** @defaultValue `"List of employee bank accounts"` */
     bankAccountsListLabel: string
     /** @defaultValue `"Back"` */
@@ -5222,11 +5346,11 @@ export namespace Translations {
     splitCta: string
     /** @defaultValue `"Continue"` */
     submitCta: string
-    /** @defaultValue `"Employee payment details"` */
+    /** @defaultValue `"Payment method"` */
     title: string
     /** @defaultValue `"Fixed amount"` */
     amountLabel: string
-    /** @defaultValue `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` */
+    /** @defaultValue `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` */
     splitDescription: string
     /** @defaultValue `"Reorderable list of bank accounts"` */
     draggableListLabel: string
@@ -5387,7 +5511,7 @@ export namespace Translations {
   export interface EmployeeSplitPaymentsFormBody {
     /** @defaultValue `"Split employee paycheck"` */
     title: string
-    /** @defaultValue `"<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>"` */
+    /** @defaultValue `"You can split your paycheck into different accounts by percentage or flat dollar amounts. When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account."` */
     splitDescription: string
     /** @defaultValue `"Split by"` */
     splitByLabel: string
@@ -6575,10 +6699,18 @@ export namespace Translations {
       cancelPayroll: string
     }
     emptyState: {
-      /** @defaultValue `"No payroll history"` */
-      title: string
-      /** @defaultValue `"When you run payrolls, they'll appear here for easy reference."` */
-      description: string
+      default: {
+        /** @defaultValue `"No payroll history"` */
+        title: string
+        /** @defaultValue `"When you run payrolls, they'll appear here for easy reference."` */
+        description: string
+      }
+      filtered: {
+        /** @defaultValue `"No payrolls in this date range"` */
+        title: string
+        /** @defaultValue `"Try adjusting the date filter to see more payrolls."` */
+        description: string
+      }
     }
     labels: {
       /** @defaultValue `"—"` */
@@ -6628,8 +6760,18 @@ export namespace Translations {
   }
   /** Translation keys for the `Payroll.PayrollList` i18n namespace. */
   export interface PayrollPayrollList {
-    /** @defaultValue `"All payrolls have been processed"` */
-    emptyState: string
+    emptyState: {
+      default: {
+        /** @defaultValue `"All payrolls have been processed"` */
+        title: string
+      }
+      filtered: {
+        /** @defaultValue `"No payrolls in this date range"` */
+        title: string
+        /** @defaultValue `"Try adjusting the date filter to see more payrolls."` */
+        description: string
+      }
+    }
     /** @defaultValue `"Upcoming payroll"` */
     title: string
     dateFilter: {

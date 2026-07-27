@@ -39,6 +39,7 @@ export interface StateTaxesListProps extends BaseComponentInterface<'Company.Sta
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
+ * | `company/stateTaxes/manageRates` | A user chose to view rate history/scheduling for a specific state | `{ state: string }` |
  * | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
  *
  * @param props - Component props including the `companyId` whose state tax requirements should be listed.
@@ -67,6 +68,10 @@ function Root({ className, children, companyId, showContinueButton = true }: Sta
     onEvent(componentEvents.COMPANY_STATE_TAX_EDIT, { state })
   }
 
+  const handleManageRates = (state: string) => {
+    onEvent(componentEvents.COMPANY_STATE_TAX_MANAGE_RATES, { state })
+  }
+
   return (
     <section className={className}>
       <StateTaxesListProvider
@@ -75,6 +80,7 @@ function Root({ className, children, companyId, showContinueButton = true }: Sta
           stateTaxRequirements,
           handleContinue,
           handleChange,
+          handleManageRates,
         }}
       >
         <Flex flexDirection="column" gap={32}>

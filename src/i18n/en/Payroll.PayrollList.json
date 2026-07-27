@@ -1,5 +1,13 @@
 {
-  "emptyState": "All payrolls have been processed",
+  "emptyState": {
+    "default": {
+      "title": "All payrolls have been processed"
+    },
+    "filtered": {
+      "title": "No payrolls in this date range",
+      "description": "Try adjusting the date filter to see more payrolls."
+    }
+  },
   "title": "Upcoming payroll",
   "dateFilter": {
     "startDate": "From",

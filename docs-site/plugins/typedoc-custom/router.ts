@@ -62,6 +62,16 @@ import {
 const API_MODELS_NAMESPACE = 'APIModels'
 
 /**
+ * `@alpha`/`@beta` are TypeDoc modifier tags with no built-in exclusion
+ * behavior (unlike `@internal`, which `excludeInternal` strips) — left alone
+ * they render as an "Alpha"/"Beta" badge instead of disappearing. Kept as
+ * `@alpha`/`@beta` in source (rather than `@internal`) so API Extractor's
+ * release-tag report ({@link file://../../../.reports/embedded-react-sdk.api.md})
+ * still classifies these exports correctly; this list only controls the docs site.
+ */
+const UNRELEASED_MODIFIER_TAGS = ['@alpha', '@beta'] as const
+
+/**
  * The `Translations` namespace (referenced by the `Resources` map interface in
  * src/i18n/types.d.ts) holding each i18n namespace's overridable message keys,
  * browsable as `Translations.CompanyAddresses`.
@@ -553,6 +563,32 @@ export class SDKRouter extends MemberRouter {
   // before CommentPlugin (0).
   static reparentDeprecated(context: Context): void {
     reparentDeprecatedMembers(context.project)
+  }
+
+  /**
+   * Remove reflections (and their children) tagged {@link UNRELEASED_MODIFIER_TAGS}
+   * from the project so they never reach a rendered page. Must run before
+   * GroupPlugin builds `project.groups` (RESOLVE_END, priority -100); any
+   * RESOLVE_BEGIN priority satisfies that.
+   *
+   * For an exported function, TypeDoc attaches the JSDoc comment (and its
+   * `@alpha`/`@beta` tag) to the call signature, not the parent
+   * DeclarationReflection — so a signature-only check would strip the docs
+   * but leave an empty page behind. Check each declaration's own comment and
+   * its signatures' comments, and always remove the declaration itself.
+   */
+  static excludeUnreleasedTags(context: Context): void {
+    const { project } = context
+    const hasUnreleasedTag = (comment?: Comment): boolean =>
+      !!comment && UNRELEASED_MODIFIER_TAGS.some(tag => comment.hasModifier(tag))
+
+    const unreleased = Object.values(project.reflections).filter(
+      reflection =>
+        reflection instanceof DeclarationReflection &&
+        (hasUnreleasedTag(reflection.comment) ||
+          reflection.signatures?.some(sig => hasUnreleasedTag(sig.comment))),
+    )
+    unreleased.forEach(reflection => project.removeReflection(reflection))
   }
 
   /**

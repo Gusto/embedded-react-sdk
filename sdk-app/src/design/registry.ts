@@ -20,7 +20,26 @@ export const categorizedRegistry: CategorizedRegistry = {
         'A single page demonstrating SDK components like Button, TextInput, Select, Alert, and more.',
     },
   ],
-  Companies: [],
+  Companies: [
+    {
+      name: 'State Taxes with Future Rates',
+      path: '/design/state-taxes-with-future-rates',
+      description:
+        'Extends the company state tax onboarding component with an effective-dated tax rate history and a dialog for scheduling future rates.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/state-taxes-with-future-rates',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/state-taxes-with-future-rates/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+  ],
   Contractors: [
     {
       name: 'Contractor Management',

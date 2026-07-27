@@ -3,7 +3,6 @@ import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payroll
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import {
-  DateFilterBy,
   ProcessingStatuses,
   QueryParamPayrollTypes,
   QueryParamSortOrder as SortOrder,
@@ -33,9 +32,9 @@ export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.Pay
  *
  * @remarks
  * Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
- * check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
- * cancelling processed payrolls when they remain within the cancellation window. Each row shows
- * the pay period, payroll type, pay date, status, and total pay amount.
+ * pay period, viewing payroll summaries and receipts, and cancelling processed payrolls when they
+ * remain within the cancellation window. Each row shows the pay period, payroll type, pay date,
+ * status, and total pay amount.
  *
  * @events
  * | Event | Description | Data |
@@ -56,6 +55,16 @@ export function PayrollHistory(props: PayrollHistoryProps) {
   )
 }
 
+const DEFAULT_LOOKBACK_MONTHS = 3
+
+const getDefaultStartDate = (): Date => {
+  const date = new Date()
+  date.setMonth(date.getMonth() - DEFAULT_LOOKBACK_MONTHS)
+  return date
+}
+
+const getDefaultEndDate = (): Date => new Date()
+
 const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
@@ -65,6 +74,8 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
 
   const dateRangeFilter = useDateRangeFilter({
+    initialStartDate: getDefaultStartDate(),
+    initialEndDate: getDefaultEndDate(),
     onFilterChange: useCallback(() => {
       resetPage()
     }, [resetPage]),
@@ -84,7 +95,6 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
     sortOrder: SortOrder.Desc,
     startDate: dateFilterParams.startDate,
     endDate: dateFilterParams.endDate,
-    dateFilterBy: dateRangeFilter.isFilterActive ? DateFilterBy.CheckDate : undefined,
     page: currentPage,
     per: itemsPerPage,
   })

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 /**
  * Props your `FormBox` implementation must accept from the component adapter.
- * Renders a sectioned container used to group related form fields, with an optional header slot.
+ * Renders a sectioned container used to group related form fields, with optional header and footer slots.
  *
  * @public
  * @group Component props
@@ -16,6 +16,10 @@ export interface FormBoxProps {
    * Optional content rendered above the body in the form box header section.
    */
   header?: ReactNode
+  /**
+   * Optional content rendered below the body in the form box footer section.
+   */
+  footer?: ReactNode
   /**
    * Whether the body should apply the default inner padding. Defaults to true; set to false for content that needs to be flush with the form box edges.
    */

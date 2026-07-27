@@ -30,6 +30,7 @@ export {
 export { StateTaxes, type StateTaxesProps } from '../StateTaxes/StateTaxes'
 export { StateTaxesForm, type StateTaxesFormProps } from '../StateTaxes/StateTaxesForm'
 export { StateTaxesList, type StateTaxesListProps } from '../StateTaxes/StateTaxesList'
+export { TaxRateManagement, type TaxRateManagementProps } from '../StateTaxes/TaxRateManagement'
 export {
   AssignSignatory,
   type AssignSignatoryProps,
