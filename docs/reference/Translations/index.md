@@ -1461,6 +1461,53 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 
 ***
 
+<a id="contractormanagementpaymentmethod"></a>
+
+### ContractorManagementPaymentMethod
+
+Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementpaymentmethodaccounttypecolumn"></a> `accountTypeColumn` | `"Account type"` |
+| <a id="property-contractormanagementpaymentmethodaddbankaccountcta"></a> `addBankAccountCta` | `"Add bank account"` |
+| <a id="property-contractormanagementpaymentmethodalerts"></a> `alerts` | |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| <a id="property-contractormanagementpaymentmethodbankaccountlistlabel"></a> `bankAccountListLabel` | `"Contractor bank account"` |
+| <a id="property-contractormanagementpaymentmethodchecklabel"></a> `checkLabel` | `"Check"` |
+| <a id="property-contractormanagementpaymentmethodeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementpaymentmethodform"></a> `form` | |
+| `form.accountNumberLabel` | `"Account number"` |
+| `form.accountTypeChecking` | `"Checking"` |
+| `form.accountTypeLabel` | `"Account type"` |
+| `form.accountTypeSavings` | `"Savings"` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.nameLabel` | `"Account nickname"` |
+| `form.routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| `form.routingNumberLabel` | `"Routing number"` |
+| `form.saveCta` | `"Save"` |
+| `form.title` | `"Add bank account"` |
+| `form.validations` | |
+| `form.validations.accountNumber` | `"Enter a valid account number"` |
+| `form.validations.name` | `"Account nickname is required"` |
+| `form.validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+| <a id="property-contractormanagementpaymentmethodhamburgertitle"></a> `hamburgerTitle` | `"Bank account actions"` |
+| <a id="property-contractormanagementpaymentmethodnicknamecolumn"></a> `nicknameColumn` | `"Nickname"` |
+| <a id="property-contractormanagementpaymentmethodpaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountcta"></a> `removeBankAccountCta` | `"Remove account"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountdialog"></a> `removeBankAccountDialog` | |
+| `removeBankAccountDialog.cancelCta` | `"Cancel"` |
+| `removeBankAccountDialog.confirmCta` | `"Remove"` |
+| `removeBankAccountDialog.description` | `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` |
+| `removeBankAccountDialog.title` | `"Remove bank account"` |
+| <a id="property-contractormanagementpaymentmethodroutingnumbercolumn"></a> `routingNumberColumn` | `"Routing number"` |
+| <a id="property-contractormanagementpaymentmethodtitle"></a> `title` | `"Payment"` |
+
+***
+
 <a id="contractormanagementprofile"></a>
 
 ### ContractorManagementProfile
@@ -5207,6 +5254,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
 | <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
+| <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |

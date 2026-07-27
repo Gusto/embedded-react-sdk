@@ -42,6 +42,7 @@ export interface Resources {
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
   'Contractor.Management.Address': Translations.ContractorManagementAddress
+  'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
@@ -1935,6 +1936,77 @@ export namespace Translations {
         zip: string
         /** @defaultValue `"Please enter a valid ZIP code"` */
         zipInvalid: string
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace. */
+  export interface ContractorManagementPaymentMethod {
+    /** @defaultValue `"Payment"` */
+    title: string
+    /** @defaultValue `"Add bank account"` */
+    addBankAccountCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Remove account"` */
+    removeBankAccountCta: string
+    /** @defaultValue `"Bank account actions"` */
+    hamburgerTitle: string
+    /** @defaultValue `"Contractor bank account"` */
+    bankAccountListLabel: string
+    /** @defaultValue `"Nickname"` */
+    nicknameColumn: string
+    /** @defaultValue `"Routing number"` */
+    routingNumberColumn: string
+    /** @defaultValue `"Account type"` */
+    accountTypeColumn: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodLabel: string
+    /** @defaultValue `"Check"` */
+    checkLabel: string
+    removeBankAccountDialog: {
+      /** @defaultValue `"Remove bank account"` */
+      title: string
+      /** @defaultValue `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` */
+      description: string
+      /** @defaultValue `"Remove"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Bank account added"` */
+      bankAccountAdded: string
+      /** @defaultValue `"Bank account removed"` */
+      bankAccountRemoved: string
+    }
+    form: {
+      /** @defaultValue `"Add bank account"` */
+      title: string
+      /** @defaultValue `"Account nickname"` */
+      nameLabel: string
+      /** @defaultValue `"Routing number"` */
+      routingNumberLabel: string
+      /** @defaultValue `"9 digits, on the bottom left of a check"` */
+      routingNumberDescription: string
+      /** @defaultValue `"Account number"` */
+      accountNumberLabel: string
+      /** @defaultValue `"Account type"` */
+      accountTypeLabel: string
+      /** @defaultValue `"Checking"` */
+      accountTypeChecking: string
+      /** @defaultValue `"Savings"` */
+      accountTypeSavings: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      validations: {
+        /** @defaultValue `"Account nickname is required"` */
+        name: string
+        /** @defaultValue `"Enter a valid 9-digit routing number"` */
+        routingNumber: string
+        /** @defaultValue `"Enter a valid account number"` */
+        accountNumber: string
       }
     }
   }
