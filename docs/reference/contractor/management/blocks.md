@@ -383,6 +383,51 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="documentscard"></a>
+
+## DocumentsCard
+
+Standalone read-only "Documents" card.
+
+### Remarks
+
+Fetches its own data via [useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and renders a
+table of the contractor's forms with a per-row "View" action that opens
+the document's PDF in a new tab. Read-only — signing happens during
+contractor onboarding, not from this surface.
+
+<br />
+
+### DocumentsCardProps
+
+<a id="documentscardprops"></a>
+
+Props for [DocumentsCard](#documentscard).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user views a document. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/documents/card/viewRequested` | Fired when a document row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` |
+| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
+
+***
+
 <a id="paymenthistory"></a>
 
 ## PaymentHistory

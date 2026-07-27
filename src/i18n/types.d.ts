@@ -43,6 +43,7 @@ export interface Resources {
   'Contractor.Landing': Translations.ContractorLanding
   'Contractor.Management.Address': Translations.ContractorManagementAddress
   'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+  'Contractor.Management.Documents': Translations.ContractorManagementDocuments
   'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
@@ -1983,6 +1984,25 @@ export namespace Translations {
         /** @defaultValue `"Enter a valid hourly rate"` */
         hourlyRate: string
       }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Documents` i18n namespace. */
+  export interface ContractorManagementDocuments {
+    /** @defaultValue `"Documents"` */
+    title: string
+    /** @defaultValue `"Contractor documents"` */
+    listLabel: string
+    /** @defaultValue `"Name"` */
+    nameColumn: string
+    /** @defaultValue `"Description"` */
+    descriptionColumn: string
+    /** @defaultValue `"View"` */
+    viewCta: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    emptyState: {
+      /** @defaultValue `"No documents yet"` */
+      title: string
     }
   }
   /** Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace. */

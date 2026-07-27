@@ -274,6 +274,9 @@ export const contractorEvents = {
     'contractor/management/compensation/editCancelled',
   CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED:
     'contractor/management/compensation/alertDismissed',
+  CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED:
+    'contractor/management/documents/card/viewRequested',
+  CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: 'contractor/management/documents/card/viewed',
 } as const
 
 /**

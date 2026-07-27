@@ -2196,6 +2196,18 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.DocumentsCard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
+        }
+      ],
+      "variables": [
+        "documentUuid"
+      ]
+    },
     "ContractorManagement.PaymentsList": {
       "endpoints": [
         {

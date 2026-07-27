@@ -103,6 +103,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED` | `"contractor/management/compensation/editCancelled"` |
 | `CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_REQUESTED` | `"contractor/management/compensation/editRequested"` |
 | `CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED` | `"contractor/management/compensation/updated"` |
+| `CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED` | `"contractor/management/documents/card/viewRequested"` |
+| `CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED` | `"contractor/management/documents/card/viewed"` |
 | `CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED` | `"contractor/management/paymentMethod/alertDismissed"` |
 | `CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED` | `"contractor/management/paymentMethod/bankForm/cancelled"` |
 | `CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED` | `"contractor/management/paymentMethod/bankForm/submitted"` |

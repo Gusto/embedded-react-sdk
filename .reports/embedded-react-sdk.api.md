@@ -1373,6 +1373,8 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED: "contractor/management/compensation/updated";
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED: "contractor/management/compensation/editCancelled";
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
+    readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1866,6 +1868,8 @@ declare namespace ContractorManagement {
         CompensationProps_3 as CompensationProps,
         CompensationCardProps_2 as CompensationCardProps,
         CompensationEditFormProps_2 as CompensationEditFormProps,
+        DocumentsCard_2 as DocumentsCard,
+        DocumentsCardProps_2 as DocumentsCardProps,
         PaymentFlow,
         PaymentFlowProps,
         PaymentsList,
@@ -2515,8 +2519,17 @@ function Documents(input: DocumentsProps): JSX;
 function DocumentsCard(props: DocumentsCardProps): JSX;
 
 // @public
+function DocumentsCard_2(props: DocumentsCardProps_2): JSX;
+
+// @public
 interface DocumentsCardProps {
     employeeId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface DocumentsCardProps_2 {
+    contractorId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4715,6 +4728,8 @@ export interface Resources {
     'Contractor.Management.Address': Translations.ContractorManagementAddress
     // (undocumented)
     'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+    // (undocumented)
+    'Contractor.Management.Documents': Translations.ContractorManagementDocuments
     // (undocumented)
     'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
     // (undocumented)

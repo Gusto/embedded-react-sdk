@@ -42,6 +42,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.CompensationEditForm](contractor/management/blocks#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [ContractorManagement.DocumentsCard](contractor/management/blocks#documentscard) | Standalone read-only "Documents" card. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [ContractorManagement.PaymentMethod](contractor/management/blocks#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
 | [ContractorManagement.PaymentMethodCard](contractor/management/blocks#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |

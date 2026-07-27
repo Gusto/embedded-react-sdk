@@ -36,6 +36,7 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 | [CompensationEditForm](blocks.md#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
 | [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [DocumentsCard](blocks.md#documentscard) | Standalone read-only "Documents" card. |
 | [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [PaymentMethod](blocks.md#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
 | [PaymentMethodCard](blocks.md#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |

@@ -1,0 +1,11 @@
+{
+  "title": "Documents",
+  "listLabel": "Contractor documents",
+  "nameColumn": "Name",
+  "descriptionColumn": "Description",
+  "viewCta": "View",
+  "emptyPlaceholder": "–",
+  "emptyState": {
+    "title": "No documents yet"
+  }
+}
