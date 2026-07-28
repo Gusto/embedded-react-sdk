@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
+import type { ContractorDetailsFormData } from '../shared/useContractorDetailsForm'
 import { ContractorProfile } from './ContractorProfile'
-import type { ContractorDetailsFormData } from './shared/useContractorDetailsForm'
 
 export default {
   title: 'Domain/Contractor/Profile',

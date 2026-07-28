@@ -18,7 +18,7 @@ export {
   type ContractorProfileProps,
   type ContractorProfileAdminProps,
   type ContractorProfileSelfOnboardingProps,
-} from '../Profile'
+} from '../Profile/onboarding/ContractorProfile'
 export type { ContractorDetailsFormData as ContractorProfileFormData } from '../Profile/shared'
 export { Address, type AddressProps } from '../Address'
 export type { AddressDefaultValues } from '../Address/types'
