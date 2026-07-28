@@ -1,6 +1,6 @@
 import type { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned'
 import { DocumentsList } from '../DocumentsList/DocumentsList'
-import { SignatureForm } from '../SignatureForm/SignatureForm'
+import { SignatureForm } from '../../shared/SignatureForm/SignatureForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'

@@ -23,6 +23,7 @@ export type {
   CompensationCardProps,
   CompensationEditFormProps,
 } from '../Compensation/management'
+export { DocumentsCard, type DocumentsCardProps } from '../Documents/management'
 export { PaymentFlow, type PaymentFlowProps } from '../Payments/PaymentFlow'
 export { CreatePaymentFlow, type CreatePaymentFlowProps } from '../Payments/CreatePaymentFlow'
 export { ViewPaymentFlow, type ViewPaymentFlowProps } from '../Payments/ViewPaymentFlow'
