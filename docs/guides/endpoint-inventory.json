@@ -2191,6 +2191,78 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.Profile": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.Address": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.PaymentMethod": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.Compensation": {
       "endpoints": [
         {
@@ -2212,11 +2284,17 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents"
+        },
+        {
+          "method": "GET",
           "path": "/v1/documents/:documentUuid/pdf",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
         }
       ],
       "variables": [
+        "contractorUuid",
         "documentUuid"
       ]
     },
@@ -2359,6 +2437,12 @@
         "EmployeeOnboarding.OnboardingFlow"
       ]
     },
+    "ContractorManagement.CreatePaymentFlow": {
+      "blocks": [
+        "ContractorManagement.CreatePayment",
+        "ContractorManagement.PaymentSummary"
+      ]
+    },
     "ContractorManagement.DashboardFlow": {
       "blocks": [
         "ContractorManagement.Address",
@@ -2370,12 +2454,16 @@
     },
     "ContractorManagement.PaymentFlow": {
       "blocks": [
-        "ContractorManagement.CreatePayment",
-        "ContractorManagement.PaymentHistory",
-        "ContractorManagement.PaymentStatement",
-        "ContractorManagement.PaymentSummary",
+        "ContractorManagement.CreatePaymentFlow",
         "ContractorManagement.PaymentsList",
+        "ContractorManagement.ViewPaymentFlow",
         "InformationRequests.InformationRequestsFlow"
+      ]
+    },
+    "ContractorManagement.ViewPaymentFlow": {
+      "blocks": [
+        "ContractorManagement.PaymentHistory",
+        "ContractorManagement.PaymentStatement"
       ]
     },
     "ContractorOnboarding.OnboardingFlow": {
