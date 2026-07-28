@@ -4746,6 +4746,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Address': Translations.ContractorAddress
     // (undocumented)
+    'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
+    // (undocumented)
     'Contractor.ContractorList': Translations.ContractorContractorList
     // (undocumented)
     'Contractor.Dashboard': Translations.ContractorDashboard
