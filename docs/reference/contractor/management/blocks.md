@@ -424,6 +424,7 @@ Props for [DocumentsCard](#documentscard).
 
 | Method | Path |
 | --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
 | GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
 
 ***
