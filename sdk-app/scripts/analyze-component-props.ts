@@ -18,6 +18,7 @@
 import { resolve } from 'path'
 import { writeFileSync } from 'fs'
 import { Project, SyntaxKind, type Type } from 'ts-morph'
+import { format, resolveConfig } from 'prettier'
 
 const ROOT = resolve(import.meta.dirname, '../..')
 const OUTPUT = resolve(import.meta.dirname, '../src/generated-registry-data.ts')
@@ -159,7 +160,7 @@ function analyzeComponents(): Record<string, ComponentData> {
   return results
 }
 
-function generate() {
+async function generate() {
   console.log('Analyzing component interfaces...\n')
 
   const results = analyzeComponents()
@@ -186,6 +187,13 @@ function generate() {
   }
   output += `}\n`
 
+  // Format with the repo's Prettier config before writing — otherwise this
+  // hand-built output (single-line arrays) diffs against the previously
+  // committed, Prettier-formatted file every time this script re-runs, even
+  // when the underlying component data hasn't changed.
+  const prettierConfig = await resolveConfig(OUTPUT)
+  output = await format(output, { ...prettierConfig, filepath: OUTPUT })
+
   writeFileSync(OUTPUT, output)
   console.log(`\nGenerated: ${OUTPUT}`)
   console.log(`  ${sortedKeys.length} components analyzed`)
@@ -199,4 +207,4 @@ function generate() {
   }
 }
 
-generate()
+await generate()
