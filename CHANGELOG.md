@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.53.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.2...v0.53.0) (2026-07-24)
+
+### ⚠ Breaking Changes
+
+- **`BoxProps.children` is now optional** ([#2427](https://github.com/Gusto/embedded-react-sdk/issues/2427)). If you have a custom `Box` adapter with `children` typed as required, update it to accept `undefined`:
+
+  ```diff
+   interface BoxProps {
+  -  children: ReactNode
+  +  children?: ReactNode
+   }
+  ```
+
+  Runtime behavior is unchanged — React renders nothing when `children` is `undefined`.
+
+### Features & Enhancements
+
+- `StateTaxes` gained a "Manage tax rates" view showing each state's effective-dated rate history (current, scheduled, and historical), with the ability to schedule a new rate for a future effective date. ([#2462](https://github.com/Gusto/embedded-react-sdk/issues/2462))
+- `GustoProvider` and `GustoProviderCustomUIAdapter` accept a new `nonce` prop for partners with a strict `style-src 'nonce-…'` Content Security Policy, so the SDK's runtime-injected styles no longer require `unsafe-inline`. The nonce is also exposed to custom UI components via a new `useNonce` hook. ([#2191](https://github.com/Gusto/embedded-react-sdk/issues/2191))
+- `PaymentMethod` onboarding now shows the bank account form inline when Direct Deposit is selected, instead of requiring an extra click to reveal it. ([#2420](https://github.com/Gusto/embedded-react-sdk/issues/2420))
+- Added `ContractorManagement.ContractorList`, a tabbed (Active/Onboarding/Dismissed) contractor list for management flows with view, dismiss, rehire, and cancel-dismissal/cancel-rehire actions. ([#2443](https://github.com/Gusto/embedded-react-sdk/issues/2443))
+
+### Fixes
+
+- Fixed off-by-one date bugs across `DatePicker` defaults and date serialization, where dates near a timezone boundary could display or submit one day off. ([#2430](https://github.com/Gusto/embedded-react-sdk/issues/2430))
+- Fixed an off-by-one bug in `StateTaxes`' effective date display. ([#2429](https://github.com/Gusto/embedded-react-sdk/issues/2429))
+- The "Continue" button in `PaymentMethod` onboarding is now disabled when Direct Deposit is selected but no bank account has been added yet. ([#2419](https://github.com/Gusto/embedded-react-sdk/issues/2419))
+- Field-level errors returned by the API are now cleared as soon as the user edits the field, instead of persisting until the next submit. ([#2415](https://github.com/Gusto/embedded-react-sdk/issues/2415))
+- `BankAccount`, `DocumentSigner`, and `PaySchedule` no longer get stuck read-only after their "done" event fires — they remain editable, matching `StateTaxes`. ([#2428](https://github.com/Gusto/embedded-react-sdk/issues/2428))
+- `PayrollList` filters now apply and display a sensible default date range instead of an empty one. ([#2441](https://github.com/Gusto/embedded-react-sdk/issues/2441))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`storybook` and its addons, `typescript-eslint`, `@typescript-eslint/rule-tester`, `@microsoft/api-extractor`, `prettier`, `markdownlint-cli2`, `eslint-plugin-storybook`, `axios`)
+- Bump dependencies (`react-i18next`, `react-hook-form`, `js-yaml`, `shell-quote`)
+
 ## [0.52.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.1...v0.52.2) (2026-07-17)
 
 ### Features & Enhancements

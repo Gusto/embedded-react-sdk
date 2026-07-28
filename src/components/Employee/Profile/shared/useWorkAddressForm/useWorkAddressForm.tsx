@@ -220,7 +220,10 @@ export function useWorkAddressForm({
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
-  const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
+  const locationsQuery = useLocationsGet(
+    { companyId: companyId ?? '' },
+    { enabled: !!companyId, staleTime: Infinity },
+  )
 
   const hasInitialAddressMatch = !!workAddressUuid && initialAddress?.uuid === workAddressUuid
 

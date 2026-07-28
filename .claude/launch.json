@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "sdk-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "sdk-app"],
+      "port": 5200,
+      "autoPort": true
+    }
+  ]
+}

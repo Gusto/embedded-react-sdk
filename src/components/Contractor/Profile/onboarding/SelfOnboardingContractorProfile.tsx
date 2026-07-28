@@ -1,5 +1,5 @@
 import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
-import { ContractorType } from './shared/useContractorDetailsForm'
+import { ContractorType } from '../shared/useContractorDetailsForm'
 import { IndividualSelfOnboardingProfile } from './IndividualSelfOnboardingProfile'
 import { BusinessSelfOnboardingProfile } from './BusinessSelfOnboardingProfile'
 import { BaseLayout } from '@/components/Base'
