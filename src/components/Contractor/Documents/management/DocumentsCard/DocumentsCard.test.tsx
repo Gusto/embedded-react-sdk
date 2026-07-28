@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
@@ -12,19 +12,18 @@ import {
 } from '@/test/mocks/apis/contractor_documents'
 import { componentEvents } from '@/shared/constants'
 
-const originalOpen = window.open
-
 describe('DocumentsCard', () => {
   const onEvent = vi.fn()
+  let openSpy: MockInstance<typeof window.open>
 
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
-    window.open = vi.fn()
+    openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
   })
 
   afterEach(() => {
-    window.open = originalOpen
+    openSpy.mockRestore()
   })
 
   it('renders the documents table with title and description columns', async () => {
@@ -71,7 +70,7 @@ describe('DocumentsCard', () => {
     await waitFor(() => {
       expect(pdfResolver).toHaveBeenCalledTimes(1)
     })
-    expect(window.open).toHaveBeenCalledWith(
+    expect(openSpy).toHaveBeenCalledWith(
       'https://gusto-test.com/w9.pdf',
       '_blank',
       'noopener,noreferrer',
