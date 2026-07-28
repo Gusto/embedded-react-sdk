@@ -7,6 +7,16 @@ export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
 export { Address, AddressCard, AddressEditForm } from '../Address/management'
 export type { AddressProps, AddressCardProps, AddressEditFormProps } from '../Address/management'
+export {
+  PaymentMethod,
+  PaymentMethodCard,
+  PaymentMethodEditForm,
+} from '../PaymentMethod/management'
+export type {
+  PaymentMethodProps,
+  PaymentMethodCardProps,
+  PaymentMethodEditFormProps,
+} from '../PaymentMethod/management'
 export { PaymentFlow, type PaymentFlowProps } from '../Payments/PaymentFlow'
 export { CreatePaymentFlow, type CreatePaymentFlowProps } from '../Payments/CreatePaymentFlow'
 export { ViewPaymentFlow, type ViewPaymentFlowProps } from '../Payments/ViewPaymentFlow'

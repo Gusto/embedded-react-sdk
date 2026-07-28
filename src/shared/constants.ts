@@ -255,6 +255,18 @@ export const contractorEvents = {
   CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED: 'contractor/management/address/updated',
   CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED: 'contractor/management/address/editCancelled',
   CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED: 'contractor/management/address/alertDismissed',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED:
+    'contractor/management/paymentMethod/card/addRequested',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_EDIT_REQUESTED:
+    'contractor/management/paymentMethod/card/editRequested',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED:
+    'contractor/management/paymentMethod/card/removed',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED:
+    'contractor/management/paymentMethod/bankForm/submitted',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED:
+    'contractor/management/paymentMethod/bankForm/cancelled',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED:
+    'contractor/management/paymentMethod/alertDismissed',
 } as const
 
 /**

@@ -333,6 +333,137 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="paymentmethod"></a>
+
+## PaymentMethod
+
+Management surface for viewing and editing a contractor's payment method after onboarding.
+
+### Remarks
+
+Drives the read-view card and bank-account form via an internal state
+machine. Emits events on the supplied `onEvent` handler when the user
+requests to add or edit a bank account, saves changes, or cancels.
+
+<br />
+
+### PaymentMethodProps
+
+<a id="paymentmethodprops"></a>
+
+Props for [PaymentMethod](#paymentmethod).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementPaymentMethod`](../../Translations/index.md#contractormanagementpaymentmethod)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/paymentMethod/card/addRequested` | Fired when the user clicks "Add bank account" on the read-view card | `{ contractorId: string }` |
+| `contractor/management/paymentMethod/card/editRequested` | Fired when the user chooses "Edit" from the bank account row menu | `{ contractorId: string }` |
+| `contractor/management/paymentMethod/card/removed` | Fired after the bank account is removed and the payment method reverts to Check | [APIModels.ContractorPaymentMethod](../../APIModels/index.md#contractorpaymentmethod) |
+| `contractor/management/paymentMethod/bankForm/submitted` | Fired after the bank-account form is successfully saved | [APIModels.ContractorBankAccount](../../APIModels/index.md#contractorbankaccount) |
+| `contractor/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the bank-account form | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
+| POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
+| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
+| PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method) |
+
+***
+
+<a id="paymentmethodcard"></a>
+
+## PaymentMethodCard
+
+Standalone "Payment" card showing a contractor's payment method.
+
+### Remarks
+
+Fetches its own data and emits the management block's scoped events when
+the user clicks the card's CTAs or confirms removing the bank account. The
+card has no alert API — alert rendering is the orchestrator's
+responsibility.
+
+<br />
+
+### PaymentMethodCardProps
+
+<a id="paymentmethodcardprops"></a>
+
+Props for [PaymentMethodCard](#paymentmethodcard).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/paymentMethod/card/addRequested` | Fired when the user clicks "Add bank account" | `{ contractorId: string }` |
+| `contractor/management/paymentMethod/card/editRequested` | Fired when the user chooses "Edit" from the bank account row menu | `{ contractorId: string }` |
+| `contractor/management/paymentMethod/card/removed` | Fired after the bank account is removed and the payment method reverts to Check | The updated `ContractorPaymentMethod` entity |
+
+***
+
+<a id="paymentmethodeditform"></a>
+
+## PaymentMethodEditForm
+
+Standalone bank-account form for a contractor's payment method.
+
+### Remarks
+
+Renders fields for the account nickname, routing number, account number,
+and account type. Saving creates the bank account, which updates the
+contractor's payment method to Direct Deposit as a server-side effect. Save
+and Cancel both emit events so the parent can return to the read view.
+
+<br />
+
+### PaymentMethodEditFormProps
+
+<a id="paymentmethodeditformprops"></a>
+
+Props for [PaymentMethodEditForm](#paymentmethodeditform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementPaymentMethod`](../../Translations/index.md#contractormanagementpaymentmethod)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/paymentMethod/bankForm/submitted` | Fired after the bank account is successfully saved | The created `ContractorBankAccount` entity |
+| `contractor/management/paymentMethod/bankForm/cancelled` | Fired when the user clicks Cancel | — |
+
+***
+
 <a id="paymentslist"></a>
 
 ## PaymentsList

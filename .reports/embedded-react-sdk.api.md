@@ -1338,6 +1338,12 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED: "contractor/management/address/updated";
     readonly CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED: "contractor/management/address/editCancelled";
     readonly CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED: "contractor/management/address/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED: "contractor/management/paymentMethod/card/addRequested";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_EDIT_REQUESTED: "contractor/management/paymentMethod/card/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED: "contractor/management/paymentMethod/card/removed";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED: "contractor/management/paymentMethod/bankForm/submitted";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED: "contractor/management/paymentMethod/bankForm/cancelled";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED: "contractor/management/paymentMethod/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1819,6 +1825,12 @@ declare namespace ContractorManagement {
         AddressProps_2 as AddressProps,
         AddressCardProps,
         AddressEditFormProps,
+        PaymentMethod_4 as PaymentMethod,
+        PaymentMethodCard_2 as PaymentMethodCard,
+        PaymentMethodEditForm,
+        PaymentMethodProps_4 as PaymentMethodProps,
+        PaymentMethodCardProps_2 as PaymentMethodCardProps,
+        PaymentMethodEditFormProps,
         PaymentFlow,
         PaymentFlowProps,
         CreatePaymentFlow,
@@ -3861,6 +3873,9 @@ function PaymentMethod_2(input: PaymentMethodProps_2): JSX;
 function PaymentMethod_3(input: PaymentMethodProps_3): JSX;
 
 // @public
+function PaymentMethod_4(input: PaymentMethodProps_4): JSX;
+
+// @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
 
 // @public
@@ -3873,9 +3888,26 @@ interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'
 function PaymentMethodCard(props: PaymentMethodCardProps): JSX;
 
 // @public
+function PaymentMethodCard_2(props: PaymentMethodCardProps_2): JSX;
+
+// @public
 interface PaymentMethodCardProps {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface PaymentMethodCardProps_2 {
+    contractorId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+function PaymentMethodEditForm(input: PaymentMethodEditFormProps): JSX;
+
+// @public
+interface PaymentMethodEditFormProps extends BaseComponentInterface<'Contractor.Management.PaymentMethod'> {
+    contractorId: string;
 }
 
 // @public
@@ -3923,6 +3955,11 @@ interface PaymentMethodProps_2 extends BaseComponentInterface<'Employee.Manageme
 
 // @public
 interface PaymentMethodProps_3 extends BaseComponentInterface<'Contractor.PaymentMethod'> {
+    contractorId: string;
+}
+
+// @public
+interface PaymentMethodProps_4 extends BaseComponentInterface<'Contractor.Management.PaymentMethod'> {
     contractorId: string;
 }
 
@@ -4608,6 +4645,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Address': Translations.ContractorAddress
     // (undocumented)
+    'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
+    // (undocumented)
     'Contractor.ContractorList': Translations.ContractorContractorList
     // (undocumented)
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
@@ -4615,6 +4654,8 @@ export interface Resources {
     'Contractor.Landing': Translations.ContractorLanding
     // (undocumented)
     'Contractor.Management.Address': Translations.ContractorManagementAddress
+    // (undocumented)
+    'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
     // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)

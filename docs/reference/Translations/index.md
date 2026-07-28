@@ -1278,6 +1278,33 @@ Translation keys for the `Contractor.Address` i18n namespace.
 
 ***
 
+<a id="contractorbankaccountfields"></a>
+
+### ContractorBankAccountFields
+
+Translation keys for the `Contractor.BankAccountFields` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorbankaccountfieldsaccountnumberlabel"></a> `accountNumberLabel` | `"Account number"` |
+| <a id="property-contractorbankaccountfieldsaccounttypechecking"></a> `accountTypeChecking` | `"Checking"` |
+| <a id="property-contractorbankaccountfieldsaccounttypelabel"></a> `accountTypeLabel` | `"Account type"` |
+| <a id="property-contractorbankaccountfieldsaccounttypesavings"></a> `accountTypeSavings` | `"Savings"` |
+| <a id="property-contractorbankaccountfieldscancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-contractorbankaccountfieldsnamelabel"></a> `nameLabel` | `"Account nickname"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberdescription"></a> `routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberlabel"></a> `routingNumberLabel` | `"Routing number"` |
+| <a id="property-contractorbankaccountfieldssavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-contractorbankaccountfieldsvalidations"></a> `validations` | |
+| `validations.accountName` | `"Account nickname is required"` |
+| `validations.accountNumber` | `"Enter a valid account number"` |
+| `validations.accountNumberFormat` | `"Enter a valid account number"` |
+| `validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+
+***
+
 <a id="contractorcontractorlist"></a>
 
 ### ContractorContractorList
@@ -1458,6 +1485,53 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlisttabslabel"></a> `tabsLabel` | `"Contractor status tabs"` |
 | <a id="property-contractormanagementcontractorlisttitle"></a> `title` | `"Contractors"` |
 | <a id="property-contractormanagementcontractorlistviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
+
+***
+
+<a id="contractormanagementpaymentmethod"></a>
+
+### ContractorManagementPaymentMethod
+
+Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementpaymentmethodaccounttypecolumn"></a> `accountTypeColumn` | `"Account type"` |
+| <a id="property-contractormanagementpaymentmethodaddbankaccountcta"></a> `addBankAccountCta` | `"Add bank account"` |
+| <a id="property-contractormanagementpaymentmethodalerts"></a> `alerts` | |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| <a id="property-contractormanagementpaymentmethodbankaccountlistlabel"></a> `bankAccountListLabel` | `"Contractor bank account"` |
+| <a id="property-contractormanagementpaymentmethodchecklabel"></a> `checkLabel` | `"Check"` |
+| <a id="property-contractormanagementpaymentmethodeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementpaymentmethodform"></a> `form` | |
+| `form.accountNumberLabel` | `"Account number"` |
+| `form.accountTypeChecking` | `"Checking"` |
+| `form.accountTypeLabel` | `"Account type"` |
+| `form.accountTypeSavings` | `"Savings"` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.nameLabel` | `"Account nickname"` |
+| `form.routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| `form.routingNumberLabel` | `"Routing number"` |
+| `form.saveCta` | `"Save"` |
+| `form.title` | `"Add bank account"` |
+| `form.validations` | |
+| `form.validations.accountNumber` | `"Enter a valid account number"` |
+| `form.validations.name` | `"Account nickname is required"` |
+| `form.validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+| <a id="property-contractormanagementpaymentmethodhamburgertitle"></a> `hamburgerTitle` | `"Bank account actions"` |
+| <a id="property-contractormanagementpaymentmethodnicknamecolumn"></a> `nicknameColumn` | `"Nickname"` |
+| <a id="property-contractormanagementpaymentmethodpaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountcta"></a> `removeBankAccountCta` | `"Remove account"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountdialog"></a> `removeBankAccountDialog` | |
+| `removeBankAccountDialog.cancelCta` | `"Cancel"` |
+| `removeBankAccountDialog.confirmCta` | `"Remove"` |
+| `removeBankAccountDialog.description` | `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` |
+| `removeBankAccountDialog.title` | `"Remove bank account"` |
+| <a id="property-contractormanagementpaymentmethodroutingnumbercolumn"></a> `routingNumberColumn` | `"Routing number"` |
+| <a id="property-contractormanagementpaymentmethodtitle"></a> `title` | `"Payment"` |
 
 ***
 
@@ -5203,10 +5277,12 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanytimeofftimeoffpolicydetails"></a> `Company.TimeOff.TimeOffPolicyDetails` | [`CompanyTimeOffTimeOffPolicyDetails`](#companytimeofftimeoffpolicydetails) |
 | <a id="property-resourcescompanytimeofftimeoffrequests"></a> `Company.TimeOff.TimeOffRequests` | [`CompanyTimeOffTimeOffRequests`](#companytimeofftimeoffrequests) |
 | <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
+| <a id="property-resourcescontractorbankaccountfields"></a> `Contractor.BankAccountFields` | [`ContractorBankAccountFields`](#contractorbankaccountfields) |
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
 | <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
+| <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |

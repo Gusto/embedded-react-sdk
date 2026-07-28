@@ -40,6 +40,9 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
+| [ContractorManagement.PaymentMethod](contractor/management/blocks#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
+| [ContractorManagement.PaymentMethodCard](contractor/management/blocks#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
+| [ContractorManagement.PaymentMethodEditForm](contractor/management/blocks#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
 | [ContractorManagement.PaymentsList](contractor/management/blocks#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [ContractorManagement.PaymentStatement](contractor/management/blocks#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [ContractorManagement.PaymentSummary](contractor/management/blocks#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
@@ -263,6 +266,8 @@ shape mixed into every public SDK feature component.
 - [`ProfileEditFormProps`](contractor/management/blocks.md#profileeditformprops)
 - [`AddressProps`](contractor/management/blocks.md#addressprops)
 - [`AddressEditFormProps`](contractor/management/blocks.md#addresseditformprops)
+- [`PaymentMethodProps`](contractor/management/blocks.md#paymentmethodprops)
+- [`PaymentMethodEditFormProps`](contractor/management/blocks.md#paymentmethodeditformprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)
