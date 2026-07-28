@@ -322,6 +322,12 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
 |  | DELETE | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire) |
 |  | DELETE | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination) |
+| **ContractorManagement.Profile** | POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors) |
+|  | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+|  | PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
+| **ContractorManagement.Address** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+|  | GET | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address) |
+|  | PUT | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address) |
 | **ContractorManagement.PaymentMethod** | GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
 |  | POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
 |  | GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
@@ -347,7 +353,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Flow | Blocks included |
 | --- | --- |
-| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement, ContractorManagement.PaymentSummary, ContractorManagement.PaymentsList, InformationRequests.InformationRequestsFlow |
+| **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
+| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePaymentFlow, ContractorManagement.PaymentsList, ContractorManagement.ViewPaymentFlow, InformationRequests.InformationRequestsFlow |
+| **ContractorManagement.ViewPaymentFlow** | ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
 | **ContractorOnboarding.SelfOnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorProfile, ContractorOnboarding.DocumentSigner, ContractorOnboarding.Landing, ContractorOnboarding.OnboardingSummary, ContractorOnboarding.PaymentMethod |
 
