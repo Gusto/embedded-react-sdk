@@ -11,7 +11,10 @@ import {
 } from './useContractorBankAccountFormSchema'
 import { server } from '@/test/mocks/server'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { handleCreateContractorBankAccount } from '@/test/mocks/apis/contractor_payment_method'
+import {
+  handleCreateContractorBankAccount,
+  handleGetContractorPaymentMethod,
+} from '@/test/mocks/apis/contractor_payment_method'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 type ReadyResult = Extract<UseContractorBankAccountFormResult, { isLoading: false }>
@@ -148,6 +151,34 @@ describe('useContractorBankAccountForm', () => {
     expect(getValues('name')).toBe('BoA Checking Account')
     // The masked token is seeded so it can be submitted as the keep-existing sentinel.
     expect(getValues('accountNumber')).toBe('XXXX1207')
+  })
+
+  it('does not prefill from a leftover bank account once the payment method reverts to Check', async () => {
+    // The bank account API has no proper delete: removing a bank account just
+    // reverts the payment method to Check and leaves the account record on
+    // file. The bank-accounts endpoint here still returns that leftover
+    // record, but the form must start blank since it's no longer the active
+    // account.
+    server.use(
+      handleGetContractorPaymentMethod(() =>
+        HttpResponse.json({ version: 'v1', type: 'Check', splits: [] }),
+      ),
+    )
+
+    const { result } = renderHook(
+      () => useContractorBankAccountForm({ contractorId: 'contractor-123' }),
+      { wrapper: GustoTestProvider },
+    )
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    assertReady(result.current)
+    expect(result.current.data.bankAccount).toBeUndefined()
+    const { getValues } = result.current.form.hookFormInternals.formMethods
+    expect(getValues('name')).toBe('')
+    expect(getValues('accountNumber')).toBe('')
   })
 
   it('submits the masked token unchanged to keep the existing account', async () => {

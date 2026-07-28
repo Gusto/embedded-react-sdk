@@ -5,6 +5,7 @@ import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
 import { useContractorPaymentMethodGetBankAccounts } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
+import { useContractorPaymentMethodGet } from '@gusto/embedded-api/react-query/contractorPaymentMethodGet'
 import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodsCreateBankAccount'
 import {
   ACCOUNT_TYPES,
@@ -35,6 +36,7 @@ import type {
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
+import { PAYMENT_METHODS } from '@/shared/constants'
 
 /**
  * Props for {@link useContractorBankAccountForm}.
@@ -87,7 +89,12 @@ export interface UseContractorBankAccountFormReady extends BaseFormHookReady<
   ContractorBankAccountFormData,
   ContractorBankAccountFormFields
 > {
-  /** The contractor's current bank account, loaded from the API, if any. */
+  /**
+   * The contractor's current bank account, loaded from the API, if any.
+   * `undefined` whenever the payment method isn't Direct Deposit — including
+   * right after a bank account is removed, since removal only reverts the
+   * payment method to Check and leaves the bank account record on file.
+   */
   data: {
     bankAccount: ContractorBankAccount | undefined
   }
@@ -123,8 +130,12 @@ function buildContractorBankAccountFieldsMetadata(
  * Direct Deposit on the Gusto API as a side-effect, so the Direct Deposit path
  * needs only this submit — no separate payment method update.
  *
- * When the contractor already has a bank account on file, the account number
- * field is pre-filled with the masked token the API returns (e.g. "XXXX1207").
+ * When the contractor's payment method is currently Direct Deposit, the account
+ * number field is pre-filled with the masked token the API returns for that
+ * account (e.g. "XXXX1207"). The bank account API has no proper delete, so
+ * removing a bank account only reverts the payment method to Check and leaves
+ * the account record itself on file — this hook ignores that leftover record
+ * (the form starts blank) until the payment method is Direct Deposit again.
  * The API requires `account_number` on every write and treats that exact masked
  * value as "keep the existing account," so submitting it unchanged preserves the
  * account while still applying any name/routing/type edits; typing a real number
@@ -173,7 +184,21 @@ export function useContractorBankAccountForm({
   const bankAccountsQuery = useContractorPaymentMethodGetBankAccounts({
     contractorUuid: contractorId,
   })
-  const bankAccount = bankAccountsQuery.data?.contractorBankAccountList?.[0] ?? undefined
+  const paymentMethodQuery = useContractorPaymentMethodGet({ contractorUuid: contractorId })
+
+  // The bank account API has no proper delete — removing a bank account just
+  // reverts the payment method to Check, leaving the bank account record
+  // itself on file (see gws-flows' BankAccountsController#destroy). So a
+  // bank account returned by the list endpoint is only the contractor's
+  // *current* account when the payment method is actually Direct Deposit;
+  // otherwise it's a detached leftover from a prior removal and must not be
+  // used to prefill this form, or "Add bank account" would resurrect stale
+  // data instead of starting blank.
+  const isDirectDeposit =
+    paymentMethodQuery.data?.contractorPaymentMethod?.type === PAYMENT_METHODS.directDeposit
+  const bankAccount = isDirectDeposit
+    ? (bankAccountsQuery.data?.contractorBankAccountList?.[0] ?? undefined)
+    : undefined
 
   const existingAccountNumberMask = bankAccount?.hiddenAccountNumber ?? undefined
 
@@ -224,7 +249,7 @@ export function useContractorBankAccountForm({
     setError: setSubmitError,
   } = useBaseSubmit('ContractorBankAccountForm')
 
-  const errorHandling = composeErrorHandler([bankAccountsQuery], {
+  const errorHandling = composeErrorHandler([bankAccountsQuery, paymentMethodQuery], {
     submitError,
     setSubmitError,
   })
@@ -270,7 +295,7 @@ export function useContractorBankAccountForm({
 
   const hookFormInternals = useHookFormInternals(formMethods)
 
-  if (bankAccountsQuery.isLoading) {
+  if (bankAccountsQuery.isLoading || paymentMethodQuery.isLoading) {
     return { isLoading: true as const, errorHandling }
   }
 

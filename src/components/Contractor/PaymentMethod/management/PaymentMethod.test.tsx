@@ -80,6 +80,9 @@ describe('PaymentMethod (management block)', () => {
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
     })
+    await user.type(screen.getByLabelText('Account nickname'), 'New Bank')
+    await user.type(screen.getByLabelText('Routing number'), '266905059')
+    await user.type(screen.getByLabelText('Account number'), '123123123')
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(
