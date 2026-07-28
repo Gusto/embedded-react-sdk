@@ -1,1 +1,5 @@
-export { InformationRequestForm, type InformationRequestFormProps } from './InformationRequestForm'
+export {
+  InformationRequestForm,
+  Footer,
+  type InformationRequestFormProps,
+} from './InformationRequestForm'

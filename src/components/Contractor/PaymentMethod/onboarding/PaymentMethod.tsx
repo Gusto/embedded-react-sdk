@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import type { PaymentMethodProps } from './types'
 import {
   useContractorPaymentMethodForm,
   type ContractorPaymentMethodFormType,
-} from './shared/useContractorPaymentMethodForm'
-import { useContractorBankAccountForm } from './shared/useContractorBankAccountForm'
-import { ContractorBankAccountFields } from './shared/ContractorBankAccountFields'
+} from '../shared/useContractorPaymentMethodForm'
+import { useContractorBankAccountForm } from '../shared/useContractorBankAccountForm'
+import { ContractorBankAccountFields } from '../shared/ContractorBankAccountFields'
+import type { PaymentMethodProps } from './types'
 import { useOnboardingBankAccountFieldsDictionary } from './useFormDictionary'
 import styles from './PaymentMethod.module.scss'
 import { useI18n } from '@/i18n'

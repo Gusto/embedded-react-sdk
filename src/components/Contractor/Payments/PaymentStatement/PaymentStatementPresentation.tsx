@@ -3,7 +3,7 @@ import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/compo
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useMemo } from 'react'
 import type { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/contractorpaymentreceipt'
-import { getContractorDisplayName } from '../CreatePayment/helpers'
+import { getContractorDisplayName } from '../../shared/helpers'
 import styles from './PaymentStatementPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'

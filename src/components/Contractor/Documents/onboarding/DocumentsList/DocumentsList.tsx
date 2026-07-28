@@ -3,8 +3,8 @@ import type { Document } from '@gusto/embedded-api/models/components/document'
 import {
   W9_DOCUMENT_NAME,
   getPresentFieldNames,
-} from '../SignatureForm/useContractorSignatureForm/w9Fields'
-import { useContractorDocumentsList } from './useContractorDocumentsList'
+} from '../../shared/SignatureForm/useContractorSignatureForm/w9Fields'
+import { useContractorDocumentsList } from '../../shared/useContractorDocumentsList'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { BaseLayout } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'

@@ -9,7 +9,7 @@ import {
   type ContractorDetailsFormData,
   type ContractorDetailsOptionalFieldsToRequire,
   type UseContractorDetailsFormReady,
-} from './shared/useContractorDetailsForm'
+} from '../shared/useContractorDetailsForm'
 import { SelfOnboardingContractorProfile } from './SelfOnboardingContractorProfile'
 import styles from './ContractorProfile.module.scss'
 import type { BaseComponentInterface } from '@/components/Base/Base'

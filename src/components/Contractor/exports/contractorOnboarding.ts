@@ -18,15 +18,15 @@ export {
   type ContractorProfileProps,
   type ContractorProfileAdminProps,
   type ContractorProfileSelfOnboardingProps,
-} from '../Profile'
+} from '../Profile/onboarding/ContractorProfile'
 export type { ContractorDetailsFormData as ContractorProfileFormData } from '../Profile/shared'
-export { Address, type AddressProps } from '../Address'
-export type { AddressDefaultValues } from '../Address/types'
-export { PaymentMethod } from '../PaymentMethod/PaymentMethod'
-export type { PaymentMethodProps } from '../PaymentMethod/types'
+export { Address, type AddressProps } from '../Address/onboarding/Address'
+export type { AddressDefaultValues } from '../Address/onboarding/types'
+export { PaymentMethod } from '../PaymentMethod/onboarding/PaymentMethod'
+export type { PaymentMethodProps } from '../PaymentMethod/onboarding/types'
 export { NewHireReport } from '../NewHireReport/NewHireReport'
 export type { NewHireReportProps } from '../NewHireReport/types'
 export { ContractorSubmit, type ContractorSubmitProps } from '../Submit/Submit'
-export { DocumentSigner, type DocumentSignerProps } from '../Documents/DocumentSigner'
-export { DocumentsList, type DocumentsListProps } from '../Documents/DocumentsList'
-export { SignatureForm, type SignatureFormProps } from '../Documents/SignatureForm'
+export { DocumentSigner, type DocumentSignerProps } from '../Documents/onboarding/DocumentSigner'
+export { DocumentsList, type DocumentsListProps } from '../Documents/onboarding/DocumentsList'
+export { SignatureForm, type SignatureFormProps } from '../Documents/shared/SignatureForm'
