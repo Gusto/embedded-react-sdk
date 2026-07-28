@@ -1523,6 +1523,31 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 
 ***
 
+<a id="contractormanagementdocuments"></a>
+
+### ContractorManagementDocuments
+
+Translation keys for the `Contractor.Management.Documents` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementdocumentsdescriptioncolumn"></a> `descriptionColumn` | `"Description"` |
+| <a id="property-contractormanagementdocumentsemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementdocumentsemptystate"></a> `emptyState` | |
+| `emptyState.title` | `"No documents yet"` |
+| <a id="property-contractormanagementdocumentslistlabel"></a> `listLabel` | `"Contractor documents"` |
+| <a id="property-contractormanagementdocumentsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractormanagementdocumentssigningstatus"></a> `signingStatus` | |
+| `signingStatus.notSigned` | `"Not signed"` |
+| `signingStatus.signed` | `"Signed"` |
+| <a id="property-contractormanagementdocumentssigningstatuscolumn"></a> `signingStatusColumn` | `"Signing status"` |
+| <a id="property-contractormanagementdocumentstitle"></a> `title` | `"Documents"` |
+| <a id="property-contractormanagementdocumentsviewcta"></a> `viewCta` | `"View"` |
+
+***
+
 <a id="contractormanagementpaymentmethod"></a>
 
 ### ContractorManagementPaymentMethod
@@ -5318,6 +5343,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
 | <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
 | <a id="property-resourcescontractormanagementcompensation"></a> `Contractor.Management.Compensation` | [`ContractorManagementCompensation`](#contractormanagementcompensation) |
+| <a id="property-resourcescontractormanagementdocuments"></a> `Contractor.Management.Documents` | [`ContractorManagementDocuments`](#contractormanagementdocuments) |
 | <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |

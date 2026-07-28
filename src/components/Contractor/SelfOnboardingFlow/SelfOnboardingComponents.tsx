@@ -6,7 +6,7 @@ import { Landing as LandingComponent } from '@/components/Contractor/Landing'
 import { ContractorProfile as ProfileComponent } from '@/components/Contractor/Profile/onboarding/ContractorProfile'
 import { Address as AddressComponent } from '@/components/Contractor/Address/onboarding/Address'
 import { PaymentMethod as PaymentMethodComponent } from '@/components/Contractor/PaymentMethod/onboarding/PaymentMethod'
-import { DocumentSigner as DocumentSignerComponent } from '@/components/Contractor/Documents/DocumentSigner'
+import { DocumentSigner as DocumentSignerComponent } from '@/components/Contractor/Documents/onboarding/DocumentSigner'
 import { OnboardingSummary as OnboardingSummaryComponent } from '@/components/Contractor/OnboardingSummary'
 
 /**

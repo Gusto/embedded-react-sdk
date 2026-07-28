@@ -3,8 +3,9 @@ import type { Document } from '@gusto/embedded-api/models/components/document'
 import {
   W9_DOCUMENT_NAME,
   getPresentFieldNames,
-} from '../SignatureForm/useContractorSignatureForm/w9Fields'
-import { useContractorDocumentsList } from './useContractorDocumentsList'
+} from '../../shared/SignatureForm/useContractorSignatureForm/w9Fields'
+import { requiresSignature } from '../../shared/documentSigningStatus'
+import { useContractorDocumentsList } from '../../shared/useContractorDocumentsList'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { BaseLayout } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -22,22 +23,6 @@ import { contractorEvents } from '@/shared/constants'
 export interface DocumentsListProps extends BaseComponentInterface<'Contractor.DocumentsList'> {
   /** The associated contractor identifier. */
   contractorId: string
-}
-
-/**
- * Returns whether a document still needs the contractor's signature.
- *
- * @remarks
- * In the contractor onboarding flow every listed document must be signed, so a
- * document is outstanding whenever it has not yet been signed (`signedAt` is
- * unset). We intentionally do not defer to the API's `requiresSigning` flag
- * here: an unsigned document whose template is not yet prepared comes back with
- * `requiresSigning: false`, and treating that as "complete" would render an
- * unsigned document as signed and let the contractor skip it. Keying off
- * `signedAt` keeps "complete" meaning "actually signed" for this component.
- */
-function requiresSignature(document: Document): boolean {
-  return !document.signedAt
 }
 
 /**

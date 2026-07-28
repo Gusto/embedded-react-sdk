@@ -12,7 +12,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { W9_DOCUMENT_NAME } from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm/w9Fields'
+import { W9_DOCUMENT_NAME } from '@/components/Contractor/Documents/shared/SignatureForm/useContractorSignatureForm/w9Fields'
 import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
 
 /**

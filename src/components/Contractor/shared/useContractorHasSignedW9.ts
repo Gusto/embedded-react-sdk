@@ -1,5 +1,5 @@
 import { useContractorDocumentsGetAllSuspense } from '@gusto/embedded-api/react-query/contractorDocumentsGetAll'
-import { isW9Document } from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
+import { isW9Document } from '@/components/Contractor/Documents/shared/SignatureForm/useContractorSignatureForm'
 
 /**
  * Returns `true` when the contractor has a W-9 with a `signedAt` timestamp on
