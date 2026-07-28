@@ -3,7 +3,7 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import type { PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
 import type { InternalAlert } from '../types'
-import { getContractorDisplayName } from './helpers'
+import { getContractorDisplayName } from '../../shared/helpers'
 import type { ApiPayrollBlocker } from '@/components/Payroll/PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '@/components/Payroll/PayrollBlocker/components/PayrollBlockerAlerts'
 import { DataView, Flex, FlexItem, EmptyData } from '@/components/Common'

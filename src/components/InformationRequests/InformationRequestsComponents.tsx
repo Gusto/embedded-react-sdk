@@ -1,4 +1,4 @@
-import { InformationRequestForm } from './InformationRequestForm'
+import { InformationRequestForm, Footer } from './InformationRequestForm'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
@@ -31,3 +31,4 @@ export function InformationRequestFormContextual() {
     />
   )
 }
+InformationRequestFormContextual.Footer = Footer

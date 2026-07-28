@@ -18,7 +18,9 @@ test.describe.serial('ContractorCanary 03 — contractor payment end-to-end', ()
 
     await runContractorPayment(page, scenario)
 
-    await expect(page.getByRole('heading', { name: /^payment summary$/i })).toBeVisible({
+    // "Payment summary" is also the review page's own totals-grid heading, so
+    // asserting on it alone can pass before submission actually completes.
+    await expect(page.getByRole('heading', { name: /^review and submit$/i })).toBeHidden({
       timeout: 60_000,
     })
   })

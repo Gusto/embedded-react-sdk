@@ -1,4 +1,4 @@
-import type { ContractorAddressFormData } from './shared/useContractorAddressForm'
+import type { ContractorAddressFormData } from '../shared/useContractorAddressForm'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
 /**

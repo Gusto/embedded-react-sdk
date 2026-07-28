@@ -2922,8 +2922,10 @@ export namespace Translations {
       exemptions: string
       /** @defaultValue `"Address"` */
       address: string
-      /** @defaultValue `"Taxpayer Identification Number (TIN)"` */
-      tin: string
+      /** @defaultValue `"Social security number (SSN)"` */
+      ssn: string
+      /** @defaultValue `"Employer identification number (EIN)"` */
+      ein: string
       /** @defaultValue `"Certification"` */
       certification: string
     }
@@ -2932,10 +2934,10 @@ export namespace Translations {
       exemptions: string
       /** @defaultValue `"See sections 5-7 of IRS Form W-9 for instructions."` */
       address: string
-      /** @defaultValue `"For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN)."` */
-      tin: string
-      /** @defaultValue `"See Part 1 of the IRS Form W-9 for instructions."` */
-      tinSecondary: string
+      /** @defaultValue `"Your SSN is required as an individual contractor. See Part 1 of the IRS Form W-9 for instructions."` */
+      ssn: string
+      /** @defaultValue `"Your EIN is required as a business contractor. See Part 1 of the IRS Form W-9 for instructions."` */
+      ein: string
       /** @defaultValue `"See Part 2 of the IRS Form W-9 for instructions."` */
       certification: string
     }
@@ -5349,8 +5351,6 @@ export namespace Translations {
     dismissCta: string
     /** @defaultValue `"Cancel onboarding"` */
     cancelCta: string
-    /** @defaultValue `"Rehire employee"` */
-    rehireCta: string
     /** @defaultValue `"Employee actions menu"` */
     hamburgerTitle: string
     /** @defaultValue `"List of employees"` */
