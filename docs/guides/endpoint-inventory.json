@@ -2202,6 +2202,28 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.Address": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.PaymentsList": {
       "endpoints": [
         {

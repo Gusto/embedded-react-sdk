@@ -1360,6 +1360,43 @@ Translation keys for the `Contractor.Landing` i18n namespace.
 
 ***
 
+<a id="contractormanagementaddress"></a>
+
+### ContractorManagementAddress
+
+Translation keys for the `Contractor.Management.Address` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementaddressalerts"></a> `alerts` | |
+| `alerts.addressUpdated` | `"Address updated"` |
+| <a id="property-contractormanagementaddresseditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementaddressemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementaddressform"></a> `form` | |
+| `form.businessDescription` | `"Update {{name}}’s business address."` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.city` | `"City"` |
+| `form.homeDescription` | `"Update {{name}}’s home address."` |
+| `form.saveCta` | `"Save"` |
+| `form.state` | `"State"` |
+| `form.statePlaceholder` | `"Select state..."` |
+| `form.street1` | `"Street 1"` |
+| `form.street2` | `"Street 2"` |
+| `form.successAlert` | `"Address updated"` |
+| `form.title` | `"Edit address"` |
+| `form.validations` | |
+| `form.validations.city` | `"Please provide valid city name"` |
+| `form.validations.state` | `"Please select a state"` |
+| `form.validations.street1` | `"Street address is required"` |
+| `form.validations.zip` | `"Please provide valid zip code"` |
+| `form.validations.zipInvalid` | `"Please enter a valid ZIP code"` |
+| `form.zip` | `"Zip"` |
+| <a id="property-contractormanagementaddresstitle"></a> `title` | `"Address"` |
+
+***
+
 <a id="contractormanagementcontractorlist"></a>
 
 ### ContractorManagementContractorList
@@ -5169,6 +5206,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |

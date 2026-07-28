@@ -251,6 +251,10 @@ export const contractorEvents = {
   CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: 'contractor/management/profile/updated',
   CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED: 'contractor/management/profile/editCancelled',
   CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED: 'contractor/management/profile/alertDismissed',
+  CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_REQUESTED: 'contractor/management/address/editRequested',
+  CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED: 'contractor/management/address/updated',
+  CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED: 'contractor/management/address/editCancelled',
+  CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED: 'contractor/management/address/alertDismissed',
 } as const
 
 /**

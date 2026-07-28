@@ -41,6 +41,7 @@ export interface Resources {
   'Contractor.ContractorList': Translations.ContractorContractorList
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
+  'Contractor.Management.Address': Translations.ContractorManagementAddress
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
@@ -1885,6 +1886,57 @@ export namespace Translations {
     getStartedCta: string
     /** @defaultValue `"there"` */
     fallbackName: string
+  }
+  /** Translation keys for the `Contractor.Management.Address` i18n namespace. */
+  export interface ContractorManagementAddress {
+    /** @defaultValue `"Address"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Address updated"` */
+      addressUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Edit address"` */
+      title: string
+      /** @defaultValue `"Update {{name}}’s business address."` */
+      businessDescription: string
+      /** @defaultValue `"Update {{name}}’s home address."` */
+      homeDescription: string
+      /** @defaultValue `"Street 1"` */
+      street1: string
+      /** @defaultValue `"Street 2"` */
+      street2: string
+      /** @defaultValue `"City"` */
+      city: string
+      /** @defaultValue `"State"` */
+      state: string
+      /** @defaultValue `"Select state..."` */
+      statePlaceholder: string
+      /** @defaultValue `"Zip"` */
+      zip: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Address updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"Street address is required"` */
+        street1: string
+        /** @defaultValue `"Please provide valid city name"` */
+        city: string
+        /** @defaultValue `"Please select a state"` */
+        state: string
+        /** @defaultValue `"Please provide valid zip code"` */
+        zip: string
+        /** @defaultValue `"Please enter a valid ZIP code"` */
+        zipInvalid: string
+      }
+    }
   }
   /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */
   export interface ContractorManagementProfile {

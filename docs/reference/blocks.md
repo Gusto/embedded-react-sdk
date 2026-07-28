@@ -34,6 +34,9 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [CompanyOnboarding.StateTaxesForm](company/onboarding/blocks#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
 | [CompanyOnboarding.StateTaxesList](company/onboarding/blocks#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
 | [CompanyOnboarding.TaxRateManagement](company/onboarding/blocks#taxratemanagement) | Standalone view of a company's effective-dated state tax rate history, with the ability to schedule a new future-dated rate. |
+| [ContractorManagement.Address](contractor/management/blocks#address) | Management surface for viewing and editing a contractor's mailing address after onboarding. |
+| [ContractorManagement.AddressCard](contractor/management/blocks#addresscard) | Read-only card showing a contractor's mailing address with an Edit action. |
+| [ContractorManagement.AddressEditForm](contractor/management/blocks#addresseditform) | Standalone edit form for a contractor's mailing address. |
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
@@ -258,6 +261,8 @@ shape mixed into every public SDK feature component.
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
 - [`ProfileProps`](contractor/management/blocks.md#profileprops)
 - [`ProfileEditFormProps`](contractor/management/blocks.md#profileeditformprops)
+- [`AddressProps`](contractor/management/blocks.md#addressprops)
+- [`AddressEditFormProps`](contractor/management/blocks.md#addresseditformprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)
