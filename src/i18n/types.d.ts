@@ -1998,6 +1998,8 @@ export namespace Translations {
     form: {
       /** @defaultValue `"Edit compensation"` */
       title: string
+      /** @defaultValue `"Update the contractor's compensation type and rate."` */
+      description: string
       /** @defaultValue `"Compensation type"` */
       wageTypeLabel: string
       /** @defaultValue `"Pay a fixed amount each pay period."` */

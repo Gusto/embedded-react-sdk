@@ -4,6 +4,7 @@ import { useContractorPayForm, WageType } from '../shared/useContractorPayForm'
 import styles from './CompensationEditForm.module.scss'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
+import { Flex } from '@/components/Common/Flex/Flex'
 import { Form } from '@/components/Common/Form'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useI18n, useComponentDictionary } from '@/i18n'
@@ -97,7 +98,10 @@ function CompensationEditFormRoot({
       <BaseLayout error={payForm.errorHandling.errors}>
         <SDKFormProvider formHookResult={payForm}>
           <Form onSubmit={handleSubmit}>
-            <Components.Heading as="h2">{t('form.title')}</Components.Heading>
+            <Flex flexDirection="column" gap={4}>
+              <Components.Heading as="h2">{t('form.title')}</Components.Heading>
+              <Components.Text variant="supporting">{t('form.description')}</Components.Text>
+            </Flex>
             <Fields.WageType
               label={t('form.wageTypeLabel')}
               getOptionLabel={(value: string) =>
