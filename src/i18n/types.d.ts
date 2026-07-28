@@ -2026,6 +2026,8 @@ export namespace Translations {
     form: {
       /** @defaultValue `"Edit compensation"` */
       title: string
+      /** @defaultValue `"Update the contractor's compensation type and rate."` */
+      description: string
       /** @defaultValue `"Compensation type"` */
       wageTypeLabel: string
       /** @defaultValue `"Pay a fixed amount each pay period."` */
@@ -2056,10 +2058,18 @@ export namespace Translations {
     nameColumn: string
     /** @defaultValue `"Description"` */
     descriptionColumn: string
+    /** @defaultValue `"Signing status"` */
+    signingStatusColumn: string
     /** @defaultValue `"View"` */
     viewCta: string
     /** @defaultValue `"–"` */
     emptyPlaceholder: string
+    signingStatus: {
+      /** @defaultValue `"Signed"` */
+      signed: string
+      /** @defaultValue `"Not signed"` */
+      notSigned: string
+    }
     emptyState: {
       /** @defaultValue `"No documents yet"` */
       title: string

@@ -1466,6 +1466,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | <a id="property-contractormanagementcompensationfixedlabel"></a> `fixedLabel` | `"Fixed"` |
 | <a id="property-contractormanagementcompensationform"></a> `form` | |
 | `form.cancelCta` | `"Cancel"` |
+| `form.description` | `"Update the contractor's compensation type and rate."` |
 | `form.fixedDescription` | `"Pay a fixed amount each pay period."` |
 | `form.hourlyDescription` | `"Pay based on hours worked."` |
 | `form.hourlyRateLabel` | `"Hourly rate"` |
@@ -1563,6 +1564,10 @@ Translation keys for the `Contractor.Management.Documents` i18n namespace.
 | `emptyState.title` | `"No documents yet"` |
 | <a id="property-contractormanagementdocumentslistlabel"></a> `listLabel` | `"Contractor documents"` |
 | <a id="property-contractormanagementdocumentsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractormanagementdocumentssigningstatus"></a> `signingStatus` | |
+| `signingStatus.notSigned` | `"Not signed"` |
+| `signingStatus.signed` | `"Signed"` |
+| <a id="property-contractormanagementdocumentssigningstatuscolumn"></a> `signingStatusColumn` | `"Signing status"` |
 | <a id="property-contractormanagementdocumentstitle"></a> `title` | `"Documents"` |
 | <a id="property-contractormanagementdocumentsviewcta"></a> `viewCta` | `"View"` |
 

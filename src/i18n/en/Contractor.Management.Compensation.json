@@ -12,6 +12,7 @@
   },
   "form": {
     "title": "Edit compensation",
+    "description": "Update the contractor's compensation type and rate.",
     "wageTypeLabel": "Compensation type",
     "fixedDescription": "Pay a fixed amount each pay period.",
     "hourlyDescription": "Pay based on hours worked.",

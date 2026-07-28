@@ -35,6 +35,15 @@ describe('DocumentsCard', () => {
     expect(screen.getAllByRole('button', { name: 'View' }).length).toBe(2)
   })
 
+  it('shows the signing status for each document without offering a sign action', async () => {
+    renderWithProviders(<DocumentsCard contractorId="contractor-123" onEvent={onEvent} />)
+
+    await screen.findByText('W-9')
+    expect(screen.getByText('Not signed')).toBeInTheDocument()
+    expect(screen.getByText('Signed')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /sign/i })).toBeNull()
+  })
+
   it('shows an empty state when the contractor has no documents', async () => {
     server.use(handleGetContractorDocuments(() => HttpResponse.json([])))
 
