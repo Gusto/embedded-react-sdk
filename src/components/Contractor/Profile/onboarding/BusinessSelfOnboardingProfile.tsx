@@ -3,27 +3,27 @@ import classNames from 'classnames'
 import {
   useContractorDetailsForm,
   type ContractorDetailsOptionalFieldsToRequire,
-} from './shared/useContractorDetailsForm'
+} from '../shared/useContractorDetailsForm'
 import type { ContractorSelfOnboardingProfileProps } from './SelfOnboardingContractorProfile'
 import styles from './ContractorProfile.module.scss'
 import { BaseLayout } from '@/components/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { Form } from '@/components/Common/Form'
-import { Flex, Grid } from '@/components/Common'
+import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents } from '@/shared/constants'
 
-const INDIVIDUAL_REQUIRED_FIELDS: ContractorDetailsOptionalFieldsToRequire = {
-  update: ['firstName', 'lastName', 'ssn'],
+const BUSINESS_REQUIRED_FIELDS: ContractorDetailsOptionalFieldsToRequire = {
+  update: ['businessName', 'ein'],
 }
 
 /**
- * Self-onboarding profile for an individual contractor — collects legal name
- * and SSN.
+ * Self-onboarding profile for a business contractor — collects business name
+ * and EIN.
  *
  * @internal
  */
-export function IndividualSelfOnboardingProfile({
+export function BusinessSelfOnboardingProfile({
   contractorId,
   onEvent,
   className,
@@ -35,7 +35,7 @@ export function IndividualSelfOnboardingProfile({
     contractorId,
     withSelfOnboardingField: false,
     defaultValues: { selfOnboarding: true },
-    optionalFieldsToRequire: INDIVIDUAL_REQUIRED_FIELDS,
+    optionalFieldsToRequire: BUSINESS_REQUIRED_FIELDS,
   })
 
   if (contractor.isLoading) {
@@ -66,38 +66,23 @@ export function IndividualSelfOnboardingProfile({
                 <Flex flexDirection="column" gap={4}>
                   <Components.Heading as="h2">{t('selfOnboarding.title')}</Components.Heading>
                   <Components.Text variant="supporting">
-                    {t('selfOnboarding.individualDescription')}
+                    {t('selfOnboarding.businessDescription')}
                   </Components.Text>
                 </Flex>
               </header>
 
-              {Fields.FirstName && Fields.LastName && (
+              {Fields.BusinessName && (
                 <>
-                  <Grid gridTemplateColumns={{ base: '1fr', medium: '1fr 1fr' }} gap={16}>
-                    <Fields.FirstName
-                      label={t('fields.firstName.label')}
-                      validationMessages={{
-                        REQUIRED: t('validations.firstName'),
-                        INVALID_NAME: t('validations.firstNameFormat'),
-                      }}
-                    />
-                    {Fields.MiddleInitial && (
-                      <Fields.MiddleInitial label={t('fields.middleInitial.label')} />
-                    )}
-                  </Grid>
-                  <Fields.LastName
-                    label={t('fields.lastName.label')}
-                    validationMessages={{
-                      REQUIRED: t('validations.lastName'),
-                      INVALID_NAME: t('validations.lastNameFormat'),
-                    }}
+                  <Fields.BusinessName
+                    label={t('fields.businessName.label')}
+                    validationMessages={{ REQUIRED: t('validations.businessName') }}
                   />
-                  {Fields.Ssn && (
-                    <Fields.Ssn
-                      label={t('fields.ssn.label')}
+                  {Fields.Ein && (
+                    <Fields.Ein
+                      label={t('fields.ein.label')}
                       validationMessages={{
-                        INVALID_SSN: t('validations.ssnFormat'),
-                        REQUIRED: t('validations.ssn'),
+                        INVALID_EIN: t('validations.einFormat'),
+                        REQUIRED: t('validations.ein'),
                       }}
                     />
                   )}

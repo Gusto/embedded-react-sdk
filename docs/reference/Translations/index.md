@@ -2093,14 +2093,15 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | <a id="property-contractorsignatureformsectioninstructions"></a> `sectionInstructions` | |
 | `sectionInstructions.address` | `"See sections 5-7 of IRS Form W-9 for instructions."` |
 | `sectionInstructions.certification` | `"See Part 2 of the IRS Form W-9 for instructions."` |
+| `sectionInstructions.ein` | `"Your EIN is required as a business contractor. See Part 1 of the IRS Form W-9 for instructions."` |
 | `sectionInstructions.exemptions` | `"See section 4 of IRS Form W-9 for instructions."` |
-| `sectionInstructions.tin` | `"For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN)."` |
-| `sectionInstructions.tinSecondary` | `"See Part 1 of the IRS Form W-9 for instructions."` |
+| `sectionInstructions.ssn` | `"Your SSN is required as an individual contractor. See Part 1 of the IRS Form W-9 for instructions."` |
 | <a id="property-contractorsignatureformsections"></a> `sections` | |
 | `sections.address` | `"Address"` |
 | `sections.certification` | `"Certification"` |
+| `sections.ein` | `"Employer identification number (EIN)"` |
 | `sections.exemptions` | `"Exemptions"` |
-| `sections.tin` | `"Taxpayer Identification Number (TIN)"` |
+| `sections.ssn` | `"Social security number (SSN)"` |
 | <a id="property-contractorsignatureformsignaturerequired"></a> `signatureRequired` | `"Signature required"` |
 | <a id="property-contractorsignatureformsigncta"></a> `signCta` | `"Sign"` |
 | <a id="property-contractorsignatureformsigningcta"></a> `signingCta` | `"Signing…"` |
@@ -3227,7 +3228,6 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
-| <a id="property-employeemanagementemployeelistrehirecta"></a> `rehireCta` | `"Rehire employee"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |
