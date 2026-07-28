@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useContractorDocumentsGetPdf } from '@gusto/embedded-api/react-query/contractorDocumentsGetPdf'
 import type { Document } from '@gusto/embedded-api/models/components/document'
+import { requiresSignature } from '../../shared/documentSigningStatus'
 import { useContractorDocumentsList } from '../../shared/useContractorDocumentsList'
 import { DataView, EmptyData, useDataView, Loading } from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
@@ -77,6 +78,16 @@ function DocumentsCardContent({ contractorId, onEvent }: DocumentsCardProps) {
           {document.description ?? t('emptyPlaceholder')}
         </Components.Text>
       ),
+    },
+    {
+      key: 'signingStatus',
+      title: t('signingStatusColumn'),
+      render: (document: Document) =>
+        requiresSignature(document) ? (
+          <Components.Badge status="warning">{t('signingStatus.notSigned')}</Components.Badge>
+        ) : (
+          <Components.Badge status="success">{t('signingStatus.signed')}</Components.Badge>
+        ),
     },
   ]
 

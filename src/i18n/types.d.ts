@@ -2028,10 +2028,18 @@ export namespace Translations {
     nameColumn: string
     /** @defaultValue `"Description"` */
     descriptionColumn: string
+    /** @defaultValue `"Signing status"` */
+    signingStatusColumn: string
     /** @defaultValue `"View"` */
     viewCta: string
     /** @defaultValue `"–"` */
     emptyPlaceholder: string
+    signingStatus: {
+      /** @defaultValue `"Signed"` */
+      signed: string
+      /** @defaultValue `"Not signed"` */
+      notSigned: string
+    }
     emptyState: {
       /** @defaultValue `"No documents yet"` */
       title: string
