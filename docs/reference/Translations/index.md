@@ -1441,6 +1441,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | <a id="property-contractormanagementcompensationfixedlabel"></a> `fixedLabel` | `"Fixed"` |
 | <a id="property-contractormanagementcompensationform"></a> `form` | |
 | `form.cancelCta` | `"Cancel"` |
+| `form.description` | `"Update the contractor's compensation type and rate."` |
 | `form.fixedDescription` | `"Pay a fixed amount each pay period."` |
 | `form.hourlyDescription` | `"Pay based on hours worked."` |
 | `form.hourlyRateLabel` | `"Hourly rate"` |
