@@ -1,0 +1,29 @@
+{
+  "title": "Address",
+  "editCta": "Edit",
+  "emptyPlaceholder": "–",
+  "alerts": {
+    "addressUpdated": "Address updated"
+  },
+  "form": {
+    "title": "Edit address",
+    "businessDescription": "Update {{name}}’s business address.",
+    "homeDescription": "Update {{name}}’s home address.",
+    "street1": "Street 1",
+    "street2": "Street 2",
+    "city": "City",
+    "state": "State",
+    "statePlaceholder": "Select state...",
+    "zip": "Zip",
+    "cancelCta": "Cancel",
+    "saveCta": "Save",
+    "successAlert": "Address updated",
+    "validations": {
+      "street1": "Street address is required",
+      "city": "Please provide valid city name",
+      "state": "Please select a state",
+      "zip": "Please provide valid zip code",
+      "zipInvalid": "Please enter a valid ZIP code"
+    }
+  }
+}

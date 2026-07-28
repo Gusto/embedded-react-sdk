@@ -38,9 +38,13 @@ export interface Resources {
   'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
   'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
   'Contractor.Address': Translations.ContractorAddress
+  'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
   'Contractor.ContractorList': Translations.ContractorContractorList
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
+  'Contractor.Management.Address': Translations.ContractorManagementAddress
+  'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+  'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
@@ -1791,6 +1795,37 @@ export namespace Translations {
       zipInvalid: string
     }
   }
+  /** Translation keys for the `Contractor.BankAccountFields` i18n namespace. */
+  export interface ContractorBankAccountFields {
+    /** @defaultValue `"Account nickname"` */
+    nameLabel: string
+    /** @defaultValue `"Routing number"` */
+    routingNumberLabel: string
+    /** @defaultValue `"9 digits, on the bottom left of a check"` */
+    routingNumberDescription: string
+    /** @defaultValue `"Account number"` */
+    accountNumberLabel: string
+    /** @defaultValue `"Account type"` */
+    accountTypeLabel: string
+    /** @defaultValue `"Checking"` */
+    accountTypeChecking: string
+    /** @defaultValue `"Savings"` */
+    accountTypeSavings: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    validations: {
+      /** @defaultValue `"Account nickname is required"` */
+      accountName: string
+      /** @defaultValue `"Enter a valid 9-digit routing number"` */
+      routingNumber: string
+      /** @defaultValue `"Enter a valid account number"` */
+      accountNumber: string
+      /** @defaultValue `"Enter a valid account number"` */
+      accountNumberFormat: string
+    }
+  }
   /** Translation keys for the `Contractor.ContractorList` i18n namespace. */
   export interface ContractorContractorList {
     /** @defaultValue `"Add a contractor"` */
@@ -1885,6 +1920,175 @@ export namespace Translations {
     getStartedCta: string
     /** @defaultValue `"there"` */
     fallbackName: string
+  }
+  /** Translation keys for the `Contractor.Management.Address` i18n namespace. */
+  export interface ContractorManagementAddress {
+    /** @defaultValue `"Address"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Address updated"` */
+      addressUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Edit address"` */
+      title: string
+      /** @defaultValue `"Update {{name}}’s business address."` */
+      businessDescription: string
+      /** @defaultValue `"Update {{name}}’s home address."` */
+      homeDescription: string
+      /** @defaultValue `"Street 1"` */
+      street1: string
+      /** @defaultValue `"Street 2"` */
+      street2: string
+      /** @defaultValue `"City"` */
+      city: string
+      /** @defaultValue `"State"` */
+      state: string
+      /** @defaultValue `"Select state..."` */
+      statePlaceholder: string
+      /** @defaultValue `"Zip"` */
+      zip: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Address updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"Street address is required"` */
+        street1: string
+        /** @defaultValue `"Please provide valid city name"` */
+        city: string
+        /** @defaultValue `"Please select a state"` */
+        state: string
+        /** @defaultValue `"Please provide valid zip code"` */
+        zip: string
+        /** @defaultValue `"Please enter a valid ZIP code"` */
+        zipInvalid: string
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Compensation` i18n namespace. */
+  export interface ContractorManagementCompensation {
+    /** @defaultValue `"Compensation"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Type"` */
+    typeLabel: string
+    /** @defaultValue `"Wage"` */
+    wageLabel: string
+    /** @defaultValue `"Fixed"` */
+    fixedLabel: string
+    /** @defaultValue `"Hourly"` */
+    hourlyLabel: string
+    /** @defaultValue `"${{rate}}/hr"` */
+    hourlyRateValue: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Compensation updated"` */
+      compensationUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Edit compensation"` */
+      title: string
+      /** @defaultValue `"Update the contractor's compensation type and rate."` */
+      description: string
+      /** @defaultValue `"Compensation type"` */
+      wageTypeLabel: string
+      /** @defaultValue `"Pay a fixed amount each pay period."` */
+      fixedDescription: string
+      /** @defaultValue `"Pay based on hours worked."` */
+      hourlyDescription: string
+      /** @defaultValue `"Hourly rate"` */
+      hourlyRateLabel: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Compensation updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"Enter a valid hourly rate"` */
+        hourlyRate: string
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace. */
+  export interface ContractorManagementPaymentMethod {
+    /** @defaultValue `"Payment"` */
+    title: string
+    /** @defaultValue `"Add bank account"` */
+    addBankAccountCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Remove account"` */
+    removeBankAccountCta: string
+    /** @defaultValue `"Bank account actions"` */
+    hamburgerTitle: string
+    /** @defaultValue `"Contractor bank account"` */
+    bankAccountListLabel: string
+    /** @defaultValue `"Nickname"` */
+    nicknameColumn: string
+    /** @defaultValue `"Routing number"` */
+    routingNumberColumn: string
+    /** @defaultValue `"Account type"` */
+    accountTypeColumn: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodLabel: string
+    /** @defaultValue `"Check"` */
+    checkLabel: string
+    removeBankAccountDialog: {
+      /** @defaultValue `"Remove bank account"` */
+      title: string
+      /** @defaultValue `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` */
+      description: string
+      /** @defaultValue `"Remove"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Bank account added"` */
+      bankAccountAdded: string
+      /** @defaultValue `"Bank account removed"` */
+      bankAccountRemoved: string
+    }
+    form: {
+      /** @defaultValue `"Add bank account"` */
+      title: string
+      /** @defaultValue `"Account nickname"` */
+      nameLabel: string
+      /** @defaultValue `"Routing number"` */
+      routingNumberLabel: string
+      /** @defaultValue `"9 digits, on the bottom left of a check"` */
+      routingNumberDescription: string
+      /** @defaultValue `"Account number"` */
+      accountNumberLabel: string
+      /** @defaultValue `"Account type"` */
+      accountTypeLabel: string
+      /** @defaultValue `"Checking"` */
+      accountTypeChecking: string
+      /** @defaultValue `"Savings"` */
+      accountTypeSavings: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      validations: {
+        /** @defaultValue `"Account nickname is required"` */
+        name: string
+        /** @defaultValue `"Enter a valid 9-digit routing number"` */
+        routingNumber: string
+        /** @defaultValue `"Enter a valid account number"` */
+        accountNumber: string
+      }
+    }
   }
   /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */
   export interface ContractorManagementProfile {

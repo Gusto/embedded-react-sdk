@@ -1,0 +1,27 @@
+{
+  "title": "Compensation",
+  "editCta": "Edit",
+  "typeLabel": "Type",
+  "wageLabel": "Wage",
+  "fixedLabel": "Fixed",
+  "hourlyLabel": "Hourly",
+  "hourlyRateValue": "${{rate}}/hr",
+  "emptyPlaceholder": "–",
+  "alerts": {
+    "compensationUpdated": "Compensation updated"
+  },
+  "form": {
+    "title": "Edit compensation",
+    "description": "Update the contractor's compensation type and rate.",
+    "wageTypeLabel": "Compensation type",
+    "fixedDescription": "Pay a fixed amount each pay period.",
+    "hourlyDescription": "Pay based on hours worked.",
+    "hourlyRateLabel": "Hourly rate",
+    "cancelCta": "Cancel",
+    "saveCta": "Save",
+    "successAlert": "Compensation updated",
+    "validations": {
+      "hourlyRate": "Enter a valid hourly rate"
+    }
+  }
+}

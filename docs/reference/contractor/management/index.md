@@ -28,9 +28,18 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 | Component | Description |
 | --------- | ----------- |
+| [Address](blocks.md#address) | Management surface for viewing and editing a contractor's mailing address after onboarding. |
+| [AddressCard](blocks.md#addresscard) | Read-only card showing a contractor's mailing address with an Edit action. |
+| [AddressEditForm](blocks.md#addresseditform) | Standalone edit form for a contractor's mailing address. |
+| [Compensation](blocks.md#compensation) | Management surface for viewing and editing a contractor's compensation after onboarding. |
+| [CompensationCard](blocks.md#compensationcard) | Read-only card showing a contractor's compensation type and rate with an Edit action. |
+| [CompensationEditForm](blocks.md#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
 | [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
+| [PaymentMethod](blocks.md#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
+| [PaymentMethodCard](blocks.md#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
+| [PaymentMethodEditForm](blocks.md#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
 | [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |

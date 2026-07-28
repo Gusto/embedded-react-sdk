@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import type { PaymentMethodProps } from './types'
 import {
   useContractorPaymentMethodForm,
   type ContractorPaymentMethodFormType,
-} from './shared/useContractorPaymentMethodForm'
-import { useContractorBankAccountForm } from './shared/useContractorBankAccountForm'
+} from '../shared/useContractorPaymentMethodForm'
+import { useContractorBankAccountForm } from '../shared/useContractorBankAccountForm'
+import { ContractorBankAccountFields } from '../shared/ContractorBankAccountFields'
+import type { PaymentMethodProps } from './types'
+import { useOnboardingBankAccountFieldsDictionary } from './useFormDictionary'
 import styles from './PaymentMethod.module.scss'
 import { useI18n } from '@/i18n'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
@@ -74,6 +76,7 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
     contractorId,
     shouldFocusError: false,
   })
+  const bankAccountFieldsDictionary = useOnboardingBankAccountFieldsDictionary()
 
   if (paymentMethodForm.isLoading || bankAccountForm.isLoading) {
     const loadingErrorHandling = composeErrorHandler([paymentMethodForm, bankAccountForm])
@@ -82,7 +85,6 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
 
   const isDirectDeposit = paymentMethodForm.status.isDirectDeposit
   const { Type } = paymentMethodForm.form.Fields
-  const { Name, RoutingNumber, AccountNumber, AccountType } = bankAccountForm.form.Fields
 
   // Direct Deposit always submits the bank account (which sets the payment
   // method server-side); Check updates the payment method type directly. The
@@ -145,39 +147,10 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
                 formHookResult={paymentMethodForm}
               />
               {isDirectDeposit && (
-                <>
-                  <Name
-                    label={t('bankAccountForm.nameLabel')}
-                    validationMessages={{ REQUIRED: t('bankAccountForm.validations.accountName') }}
-                    formHookResult={bankAccountForm}
-                  />
-                  <RoutingNumber
-                    label={t('bankAccountForm.routingNumberLabel')}
-                    description={t('bankAccountForm.routingNumberDescription')}
-                    validationMessages={{
-                      REQUIRED: t('bankAccountForm.validations.routingNumber'),
-                      INVALID_ROUTING_NUMBER: t('bankAccountForm.validations.routingNumber'),
-                    }}
-                    formHookResult={bankAccountForm}
-                  />
-                  <AccountNumber
-                    label={t('bankAccountForm.accountNumberLabel')}
-                    validationMessages={{
-                      REQUIRED: t('bankAccountForm.validations.accountNumber'),
-                      INVALID_ACCOUNT_NUMBER: t('bankAccountForm.validations.accountNumber'),
-                    }}
-                    formHookResult={bankAccountForm}
-                  />
-                  <AccountType
-                    label={t('bankAccountForm.accountTypeLabel')}
-                    getOptionLabel={(value: string) =>
-                      value === 'Checking'
-                        ? t('bankAccountForm.accountTypeChecking')
-                        : t('bankAccountForm.accountTypeSavings')
-                    }
-                    formHookResult={bankAccountForm}
-                  />
-                </>
+                <ContractorBankAccountFields
+                  bankAccountForm={bankAccountForm}
+                  dictionary={bankAccountFieldsDictionary}
+                />
               )}
             </Flex>
             <ActionsLayout>

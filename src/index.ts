@@ -321,6 +321,25 @@ export type {
 } from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
 
 export {
+  useContractorPayForm,
+  ContractorPayErrorCodes,
+  WageType as ContractorPayWageType,
+} from '@/components/Contractor/Compensation/shared/useContractorPayForm'
+export type {
+  UseContractorPayFormProps,
+  UseContractorPayFormResult,
+  UseContractorPayFormReady,
+  ContractorPayFormFields,
+  ContractorPayFieldsMetadata,
+  ContractorPayErrorCode,
+  ContractorPayFormData,
+  ContractorPayFormField,
+  RequiredValidation as ContractorPayRequiredValidation,
+  WageTypeFieldProps as ContractorPayWageTypeFieldProps,
+  HourlyRateFieldProps as ContractorPayHourlyRateFieldProps,
+} from '@/components/Contractor/Compensation/shared/useContractorPayForm'
+
+export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
