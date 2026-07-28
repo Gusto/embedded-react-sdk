@@ -1082,6 +1082,9 @@ function Compensation_2(props: CompensationProps): JSX;
 function Compensation_3(input: CompensationProps_2): JSX;
 
 // @public
+function Compensation_4(input: CompensationProps_3): JSX;
+
+// @public
 function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps): JSX;
 
 // @public
@@ -1103,8 +1106,17 @@ interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee
 function CompensationCard(props: CompensationCardProps): JSX;
 
 // @public
+function CompensationCard_2(props: CompensationCardProps_2): JSX;
+
+// @public
 interface CompensationCardProps {
     employeeId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface CompensationCardProps_2 {
+    contractorId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1120,10 +1132,18 @@ type CompensationDefaultValues = RequireAtLeastOne<{
 function CompensationEditForm(input: CompensationEditFormProps): JSX;
 
 // @public
+function CompensationEditForm_2(input: CompensationEditFormProps_2): JSX;
+
+// @public
 interface CompensationEditFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
     jobId: string;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface CompensationEditFormProps_2 extends BaseComponentInterface<'Contractor.Management.Compensation'> {
+    contractorId: string;
 }
 
 // @public
@@ -1185,6 +1205,11 @@ interface CompensationProps extends BaseComponentInterface<'Employee.Compensatio
 // @public
 interface CompensationProps_2 extends BaseComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
+}
+
+// @public
+interface CompensationProps_3 extends BaseComponentInterface<'Contractor.Management.Compensation'> {
+    contractorId: string;
 }
 
 // @public
@@ -1344,6 +1369,10 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED: "contractor/management/paymentMethod/bankForm/submitted";
     readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED: "contractor/management/paymentMethod/bankForm/cancelled";
     readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED: "contractor/management/paymentMethod/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_REQUESTED: "contractor/management/compensation/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED: "contractor/management/compensation/updated";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED: "contractor/management/compensation/editCancelled";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1831,6 +1860,12 @@ declare namespace ContractorManagement {
         PaymentMethodProps_4 as PaymentMethodProps,
         PaymentMethodCardProps_2 as PaymentMethodCardProps,
         PaymentMethodEditFormProps,
+        Compensation_4 as Compensation,
+        CompensationCard_2 as CompensationCard,
+        CompensationEditForm_2 as CompensationEditForm,
+        CompensationProps_3 as CompensationProps,
+        CompensationCardProps_2 as CompensationCardProps,
+        CompensationEditFormProps_2 as CompensationEditFormProps,
         PaymentFlow,
         PaymentFlowProps,
         CreatePaymentFlow,
@@ -1901,6 +1936,32 @@ export const ContractorOnboardingStatus: {
 };
 
 // @public
+export type ContractorPayErrorCode = (typeof ContractorPayErrorCodes)[keyof typeof ContractorPayErrorCodes];
+
+// @public
+export const ContractorPayErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type ContractorPayFieldsMetadata = { wageType: FieldMetadataWithOptions<"Fixed" | "Hourly">; hourlyRate: FieldMetadata; };
+
+// @public
+export type ContractorPayFormData = { wageType: "Fixed" | "Hourly"; hourlyRate: number; };
+
+// @public
+export type ContractorPayFormField = "hourlyRate" | "wageType";
+
+// @public
+export interface ContractorPayFormFields {
+    HourlyRate: ComponentType<ContractorPayHourlyRateFieldProps>;
+    WageType: ComponentType<ContractorPayWageTypeFieldProps>;
+}
+
+// @public
+export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation>>;
+
+// @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
 
 // @public
@@ -1927,6 +1988,18 @@ export type ContractorPaymentMethodFormType = "Check" | "Direct Deposit";
 
 // @public
 export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
+
+// @public
+export type ContractorPayRequiredValidation = typeof ContractorPayErrorCodes.REQUIRED;
+
+// @public
+export const ContractorPayWageType: {
+    readonly Fixed: "Fixed";
+    readonly Hourly: "Hourly";
+};
+
+// @public
+export type ContractorPayWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPayFormData['wageType']>>;
 
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
@@ -4655,6 +4728,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Management.Address': Translations.ContractorManagementAddress
     // (undocumented)
+    'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+    // (undocumented)
     'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
     // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
@@ -5841,6 +5916,34 @@ export type UseContractorDocumentsListReady = BaseHookReady<{
 
 // @public
 export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
+
+// @public
+export function useContractorPayForm(input: UseContractorPayFormProps): HookLoadingResult | UseContractorPayFormReady;
+
+// @public
+export interface UseContractorPayFormProps {
+    contractorId: string;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorPayFormReady extends BaseFormHookReady<ContractorPayFieldsMetadata, ContractorPayFormData, ContractorPayFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<Contractor> | undefined>;
+    };
+    data: {
+        contractor: Contractor;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+        isHourly: boolean;
+    };
+}
+
+// @public
+export type UseContractorPayFormResult = HookLoadingResult | UseContractorPayFormReady;
 
 // @public
 export function useContractorPaymentMethodForm(input: UseContractorPaymentMethodFormProps): HookLoadingResult | UseContractorPaymentMethodFormReady;

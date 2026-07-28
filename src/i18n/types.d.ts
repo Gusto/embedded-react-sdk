@@ -43,6 +43,7 @@ export interface Resources {
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
   'Contractor.Management.Address': Translations.ContractorManagementAddress
+  'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
   'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
@@ -1968,6 +1969,53 @@ export namespace Translations {
         zip: string
         /** @defaultValue `"Please enter a valid ZIP code"` */
         zipInvalid: string
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Compensation` i18n namespace. */
+  export interface ContractorManagementCompensation {
+    /** @defaultValue `"Compensation"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Type"` */
+    typeLabel: string
+    /** @defaultValue `"Wage"` */
+    wageLabel: string
+    /** @defaultValue `"Fixed"` */
+    fixedLabel: string
+    /** @defaultValue `"Hourly"` */
+    hourlyLabel: string
+    /** @defaultValue `"${{rate}}/hr"` */
+    hourlyRateValue: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Compensation updated"` */
+      compensationUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Edit compensation"` */
+      title: string
+      /** @defaultValue `"Update the contractor's compensation type and rate."` */
+      description: string
+      /** @defaultValue `"Compensation type"` */
+      wageTypeLabel: string
+      /** @defaultValue `"Pay a fixed amount each pay period."` */
+      fixedDescription: string
+      /** @defaultValue `"Pay based on hours worked."` */
+      hourlyDescription: string
+      /** @defaultValue `"Hourly rate"` */
+      hourlyRateLabel: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Compensation updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"Enter a valid hourly rate"` */
+        hourlyRate: string
       }
     }
   }

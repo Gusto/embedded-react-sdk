@@ -37,6 +37,9 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.Address](contractor/management/blocks#address) | Management surface for viewing and editing a contractor's mailing address after onboarding. |
 | [ContractorManagement.AddressCard](contractor/management/blocks#addresscard) | Read-only card showing a contractor's mailing address with an Edit action. |
 | [ContractorManagement.AddressEditForm](contractor/management/blocks#addresseditform) | Standalone edit form for a contractor's mailing address. |
+| [ContractorManagement.Compensation](contractor/management/blocks#compensation) | Management surface for viewing and editing a contractor's compensation after onboarding. |
+| [ContractorManagement.CompensationCard](contractor/management/blocks#compensationcard) | Read-only card showing a contractor's compensation type and rate with an Edit action. |
+| [ContractorManagement.CompensationEditForm](contractor/management/blocks#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
@@ -268,6 +271,8 @@ shape mixed into every public SDK feature component.
 - [`AddressEditFormProps`](contractor/management/blocks.md#addresseditformprops)
 - [`PaymentMethodProps`](contractor/management/blocks.md#paymentmethodprops)
 - [`PaymentMethodEditFormProps`](contractor/management/blocks.md#paymentmethodeditformprops)
+- [`CompensationProps`](contractor/management/blocks.md#compensationprops)
+- [`CompensationEditFormProps`](contractor/management/blocks.md#compensationeditformprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)

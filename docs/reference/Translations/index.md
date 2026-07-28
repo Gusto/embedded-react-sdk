@@ -1424,6 +1424,41 @@ Translation keys for the `Contractor.Management.Address` i18n namespace.
 
 ***
 
+<a id="contractormanagementcompensation"></a>
+
+### ContractorManagementCompensation
+
+Translation keys for the `Contractor.Management.Compensation` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementcompensationalerts"></a> `alerts` | |
+| `alerts.compensationUpdated` | `"Compensation updated"` |
+| <a id="property-contractormanagementcompensationeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementcompensationemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementcompensationfixedlabel"></a> `fixedLabel` | `"Fixed"` |
+| <a id="property-contractormanagementcompensationform"></a> `form` | |
+| `form.cancelCta` | `"Cancel"` |
+| `form.description` | `"Update the contractor's compensation type and rate."` |
+| `form.fixedDescription` | `"Pay a fixed amount each pay period."` |
+| `form.hourlyDescription` | `"Pay based on hours worked."` |
+| `form.hourlyRateLabel` | `"Hourly rate"` |
+| `form.saveCta` | `"Save"` |
+| `form.successAlert` | `"Compensation updated"` |
+| `form.title` | `"Edit compensation"` |
+| `form.validations` | |
+| `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.wageTypeLabel` | `"Compensation type"` |
+| <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
+| <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
+| <a id="property-contractormanagementcompensationtitle"></a> `title` | `"Compensation"` |
+| <a id="property-contractormanagementcompensationtypelabel"></a> `typeLabel` | `"Type"` |
+| <a id="property-contractormanagementcompensationwagelabel"></a> `wageLabel` | `"Wage"` |
+
+***
+
 <a id="contractormanagementcontractorlist"></a>
 
 ### ContractorManagementContractorList
@@ -5282,6 +5317,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
 | <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
+| <a id="property-resourcescontractormanagementcompensation"></a> `Contractor.Management.Compensation` | [`ContractorManagementCompensation`](#contractormanagementcompensation) |
 | <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
