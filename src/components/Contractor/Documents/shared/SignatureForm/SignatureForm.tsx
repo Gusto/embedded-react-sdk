@@ -309,14 +309,15 @@ function W9Fields({ hookResult }: W9FieldsProps) {
         </Flex>
       </Components.Box>
 
-      {/* Taxpayer Identification Number */}
       {(Fields.Ssn || Fields.Ein) && (
         <Components.Box
           header={
             <Flex flexDirection="column" gap={2}>
-              <Components.Heading as="h3">{t('sections.tin')}</Components.Heading>
+              <Components.Heading as="h3">
+                {Fields.Ssn ? t('sections.ssn') : t('sections.ein')}
+              </Components.Heading>
               <Components.Text variant="supporting">
-                {t('sectionInstructions.tin')} {t('sectionInstructions.tinSecondary')}
+                {Fields.Ssn ? t('sectionInstructions.ssn') : t('sectionInstructions.ein')}
               </Components.Text>
             </Flex>
           }

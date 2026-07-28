@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ContractorBankAccountFieldsDictionary } from './shared/ContractorBankAccountFields'
+import type { ContractorBankAccountFieldsDictionary } from '../shared/ContractorBankAccountFields'
 import { useI18n } from '@/i18n'
 
 /**

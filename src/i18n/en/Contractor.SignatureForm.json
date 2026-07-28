@@ -5,14 +5,15 @@
   "sections": {
     "exemptions": "Exemptions",
     "address": "Address",
-    "tin": "Taxpayer Identification Number (TIN)",
+    "ssn": "Social security number (SSN)",
+    "ein": "Employer identification number (EIN)",
     "certification": "Certification"
   },
   "sectionInstructions": {
     "exemptions": "See section 4 of IRS Form W-9 for instructions.",
     "address": "See sections 5-7 of IRS Form W-9 for instructions.",
-    "tin": "For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN).",
-    "tinSecondary": "See Part 1 of the IRS Form W-9 for instructions.",
+    "ssn": "Your SSN is required as an individual contractor. See Part 1 of the IRS Form W-9 for instructions.",
+    "ein": "Your EIN is required as a business contractor. See Part 1 of the IRS Form W-9 for instructions.",
     "certification": "See Part 2 of the IRS Form W-9 for instructions."
   },
   "certificationIntro": "Under penalties of perjury, I certify that:",
