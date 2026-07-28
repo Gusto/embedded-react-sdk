@@ -1,0 +1,17 @@
+{
+  "nameLabel": "Account nickname",
+  "routingNumberLabel": "Routing number",
+  "routingNumberDescription": "9 digits, on the bottom left of a check",
+  "accountNumberLabel": "Account number",
+  "accountTypeLabel": "Account type",
+  "accountTypeChecking": "Checking",
+  "accountTypeSavings": "Savings",
+  "cancelCta": "Cancel",
+  "saveCta": "Save",
+  "validations": {
+    "accountName": "Account nickname is required",
+    "routingNumber": "Enter a valid 9-digit routing number",
+    "accountNumber": "Enter a valid account number",
+    "accountNumberFormat": "Enter a valid account number"
+  }
+}

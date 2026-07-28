@@ -1278,6 +1278,33 @@ Translation keys for the `Contractor.Address` i18n namespace.
 
 ***
 
+<a id="contractorbankaccountfields"></a>
+
+### ContractorBankAccountFields
+
+Translation keys for the `Contractor.BankAccountFields` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorbankaccountfieldsaccountnumberlabel"></a> `accountNumberLabel` | `"Account number"` |
+| <a id="property-contractorbankaccountfieldsaccounttypechecking"></a> `accountTypeChecking` | `"Checking"` |
+| <a id="property-contractorbankaccountfieldsaccounttypelabel"></a> `accountTypeLabel` | `"Account type"` |
+| <a id="property-contractorbankaccountfieldsaccounttypesavings"></a> `accountTypeSavings` | `"Savings"` |
+| <a id="property-contractorbankaccountfieldscancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-contractorbankaccountfieldsnamelabel"></a> `nameLabel` | `"Account nickname"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberdescription"></a> `routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberlabel"></a> `routingNumberLabel` | `"Routing number"` |
+| <a id="property-contractorbankaccountfieldssavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-contractorbankaccountfieldsvalidations"></a> `validations` | |
+| `validations.accountName` | `"Account nickname is required"` |
+| `validations.accountNumber` | `"Enter a valid account number"` |
+| `validations.accountNumberFormat` | `"Enter a valid account number"` |
+| `validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+
+***
+
 <a id="contractorcontractorlist"></a>
 
 ### ContractorContractorList
@@ -5284,6 +5311,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanytimeofftimeoffpolicydetails"></a> `Company.TimeOff.TimeOffPolicyDetails` | [`CompanyTimeOffTimeOffPolicyDetails`](#companytimeofftimeoffpolicydetails) |
 | <a id="property-resourcescompanytimeofftimeoffrequests"></a> `Company.TimeOff.TimeOffRequests` | [`CompanyTimeOffTimeOffRequests`](#companytimeofftimeoffrequests) |
 | <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
+| <a id="property-resourcescontractorbankaccountfields"></a> `Contractor.BankAccountFields` | [`ContractorBankAccountFields`](#contractorbankaccountfields) |
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |

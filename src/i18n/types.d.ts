@@ -38,6 +38,7 @@ export interface Resources {
   'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
   'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
   'Contractor.Address': Translations.ContractorAddress
+  'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
   'Contractor.ContractorList': Translations.ContractorContractorList
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
@@ -1792,6 +1793,37 @@ export namespace Translations {
       zip: string
       /** @defaultValue `"Please enter a valid ZIP code"` */
       zipInvalid: string
+    }
+  }
+  /** Translation keys for the `Contractor.BankAccountFields` i18n namespace. */
+  export interface ContractorBankAccountFields {
+    /** @defaultValue `"Account nickname"` */
+    nameLabel: string
+    /** @defaultValue `"Routing number"` */
+    routingNumberLabel: string
+    /** @defaultValue `"9 digits, on the bottom left of a check"` */
+    routingNumberDescription: string
+    /** @defaultValue `"Account number"` */
+    accountNumberLabel: string
+    /** @defaultValue `"Account type"` */
+    accountTypeLabel: string
+    /** @defaultValue `"Checking"` */
+    accountTypeChecking: string
+    /** @defaultValue `"Savings"` */
+    accountTypeSavings: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    validations: {
+      /** @defaultValue `"Account nickname is required"` */
+      accountName: string
+      /** @defaultValue `"Enter a valid 9-digit routing number"` */
+      routingNumber: string
+      /** @defaultValue `"Enter a valid account number"` */
+      accountNumber: string
+      /** @defaultValue `"Enter a valid account number"` */
+      accountNumberFormat: string
     }
   }
   /** Translation keys for the `Contractor.ContractorList` i18n namespace. */
