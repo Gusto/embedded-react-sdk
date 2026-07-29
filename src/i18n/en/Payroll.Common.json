@@ -1,7 +1,6 @@
 {
   "status": {
     "processed": "Processed",
-    "unprocessed": "Unprocessed",
     "calculating": "Calculating...",
     "readyToSubmit": "Ready to submit",
     "processing": "Processing",

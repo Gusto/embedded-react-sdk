@@ -6077,8 +6077,6 @@ export namespace Translations {
     status: {
       /** @defaultValue `"Processed"` */
       processed: string
-      /** @defaultValue `"Unprocessed"` */
-      unprocessed: string
       /** @defaultValue `"Calculating..."` */
       calculating: string
       /** @defaultValue `"Ready to submit"` */
