@@ -19,6 +19,10 @@
   "timeOffBalance": {
     "remaining": "{{balance}} remaining"
   },
+  "timeOffColumns": {
+    "type": "Type",
+    "hours": "Hours"
+  },
   "additionalEarningsTitle": "Additional earnings",
   "reimbursementTitle": "Reimbursements",
   "reimbursementDescriptionLabel": "Description",

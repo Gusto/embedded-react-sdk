@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './PayrollEditEmployeePresentation.module.scss'
-import { TimeOffField, PayoutTimeOffField } from './TimeOffField'
+import { TimeOffField, PayoutTimeOffField, TimeOffTypeCell } from './TimeOffField'
 import {
   Flex,
   Grid,
@@ -186,6 +186,39 @@ const buildCompensationFromFormData = (
   return updatedCompensation
 }
 
+type TimeOffFieldComponent = typeof TimeOffField | typeof PayoutTimeOffField
+
+interface TimeOffDataViewProps {
+  timeOffs: PayrollEmployeeCompensationsTypePaidTimeOff[]
+  employee: Employee
+  label: string
+  Field: TimeOffFieldComponent
+}
+
+function TimeOffDataView({ timeOffs, employee, label, Field }: TimeOffDataViewProps) {
+  const { t } = useTranslation('Payroll.PayrollEditEmployee')
+
+  const dataViewProps = useDataView<PayrollEmployeeCompensationsTypePaidTimeOff>({
+    data: timeOffs,
+    columns: [
+      {
+        title: t('timeOffColumns.type'),
+        render: row => <TimeOffTypeCell timeOff={row} employee={employee} />,
+      },
+      {
+        title: t('timeOffColumns.hours'),
+        justify: 'end',
+        render: row => (
+          <div className={styles.inputContainer}>
+            <Field timeOff={row} shouldVisuallyHideLabel />
+          </div>
+        ),
+      },
+    ],
+  })
+  return <DataView label={label} isWithinBox {...dataViewProps} />
+}
+
 /** @internal */
 export const PayrollEditEmployeePresentation = ({
   onSave,
@@ -200,7 +233,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
+  const { Box, BoxHeader, Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -647,37 +680,45 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">
-                {payrollCategory === PayrollCategory.Dismissal
-                  ? t('timeOffTitleDismissal')
-                  : t('timeOffTitle')}
-              </Heading>
-              <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                {timeOff.map(timeOffEntry => (
-                  <TimeOffField
-                    key={timeOffEntry.name}
-                    timeOff={timeOffEntry}
-                    employee={employee}
+              <Box
+                header={
+                  <BoxHeader
+                    title={
+                      payrollCategory === PayrollCategory.Dismissal
+                        ? t('timeOffTitleDismissal')
+                        : t('timeOffTitle')
+                    }
                   />
-                ))}
-              </Grid>
+                }
+                withPadding={false}
+              >
+                <TimeOffDataView
+                  timeOffs={timeOff}
+                  employee={employee}
+                  label={t('timeOffTitle')}
+                  Field={TimeOffField}
+                />
+              </Box>
             </div>
           )}
           {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Flex flexDirection="column" gap={4}>
-                <Heading as="h4">{t('finalPayoutTitle')}</Heading>
-                <Text variant="supporting">{t('finalPayoutDescription')}</Text>
-              </Flex>
-              <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                {timeOff.map(timeOffEntry => (
-                  <PayoutTimeOffField
-                    key={`payout-${timeOffEntry.name}`}
-                    timeOff={timeOffEntry}
-                    employee={employee}
+              <Box
+                header={
+                  <BoxHeader
+                    title={t('finalPayoutTitle')}
+                    description={t('finalPayoutDescription')}
                   />
-                ))}
-              </Grid>
+                }
+                withPadding={false}
+              >
+                <TimeOffDataView
+                  timeOffs={timeOff}
+                  employee={employee}
+                  label={t('finalPayoutTitle')}
+                  Field={PayoutTimeOffField}
+                />
+              </Box>
             </div>
           )}
           {additionalEarnings.length > 0 && (

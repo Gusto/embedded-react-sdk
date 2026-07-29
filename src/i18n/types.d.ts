@@ -6840,6 +6840,12 @@ export namespace Translations {
       /** @defaultValue `"{{balance}} remaining"` */
       remaining: string
     }
+    timeOffColumns: {
+      /** @defaultValue `"Type"` */
+      type: string
+      /** @defaultValue `"Hours"` */
+      hours: string
+    }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
     /** @defaultValue `"Reimbursements"` */
