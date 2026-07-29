@@ -42,6 +42,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.CompensationEditForm](contractor/management/blocks#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [ContractorManagement.Dashboard](contractor/management/blocks#dashboard) | Contractor management dashboard summarizing a single contractor's basic details, pay, and documents. |
 | [ContractorManagement.DocumentsCard](contractor/management/blocks#documentscard) | Standalone read-only "Documents" card. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [ContractorManagement.PaymentMethod](contractor/management/blocks#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
@@ -266,6 +267,8 @@ shape mixed into every public SDK feature component.
 - [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
 - [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
+- [`DashboardFlowProps`](contractor/management/dashboard-flow.md#dashboardflowprops)
+- [`DashboardProps`](contractor/management/blocks.md#dashboardprops)
 - [`ProfileProps`](contractor/management/blocks.md#profileprops)
 - [`ProfileEditFormProps`](contractor/management/blocks.md#profileeditformprops)
 - [`AddressProps`](contractor/management/blocks.md#addressprops)

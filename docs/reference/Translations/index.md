@@ -1338,6 +1338,31 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 
 ***
 
+<a id="contractordashboard"></a>
+
+### ContractorDashboard
+
+Translation keys for the `Contractor.Dashboard` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractordashboardalerts"></a> `alerts` | |
+| `alerts.addressUpdated` | `"Address updated"` |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| `alerts.compensationUpdated` | `"Compensation updated"` |
+| `alerts.profileUpdated` | `"Profile updated"` |
+| <a id="property-contractordashboardcontractorrolelabel"></a> `contractorRoleLabel` | `"Contractor"` |
+| <a id="property-contractordashboardtabs"></a> `tabs` | |
+| `tabs.details` | `"Details"` |
+| `tabs.documents` | `"Documents"` |
+| `tabs.pay` | `"Pay"` |
+| <a id="property-contractordashboardtabslabel"></a> `tabsLabel` | `"Contractor dashboard tabs"` |
+
+***
+
 <a id="contractordocumentslist"></a>
 
 ### ContractorDocumentsList
@@ -5338,6 +5363,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
 | <a id="property-resourcescontractorbankaccountfields"></a> `Contractor.BankAccountFields` | [`ContractorBankAccountFields`](#contractorbankaccountfields) |
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
+| <a id="property-resourcescontractordashboard"></a> `Contractor.Dashboard` | [`ContractorDashboard`](#contractordashboard) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
 | <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |

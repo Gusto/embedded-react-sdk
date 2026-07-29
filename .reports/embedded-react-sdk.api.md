@@ -1375,6 +1375,8 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
+    readonly CONTRACTOR_DASHBOARD_TAB_CHANGE: "contractor/dashboard/tabChange";
+    readonly CONTRACTOR_DASHBOARD_ALERT_DISMISSED: "contractor/dashboard/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1844,6 +1846,11 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        DashboardFlow_2 as DashboardFlow,
+        Dashboard_2 as Dashboard,
+        DashboardFlowProps_2 as DashboardFlowProps,
+        DashboardProps_2 as DashboardProps,
+        DashboardTab_2 as DashboardTab,
         Profile_3 as Profile,
         ProfileCard_2 as ProfileCard,
         ProfileEditForm_2 as ProfileEditForm,
@@ -2262,11 +2269,22 @@ export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldPr
 function Dashboard(input: DashboardProps): JSX;
 
 // @public
+function Dashboard_2(input: DashboardProps_2): JSX;
+
+// @public
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
+
+// @public
+const DashboardFlow_2: (input: DashboardFlowProps_2) => JSX;
 
 // @public
 interface DashboardFlowProps extends BaseComponentInterface<never> {
     employeeId: string;
+}
+
+// @public
+interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
+    contractorId: string;
 }
 
 // @public (undocumented)
@@ -2276,7 +2294,16 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
 }
 
 // @public (undocumented)
+interface DashboardProps_2 extends BaseComponentInterface<'Contractor.Dashboard'> {
+    contractorId: string;
+    selectedTab?: DashboardTab_2;
+}
+
+// @public (undocumented)
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
+
+// @public (undocumented)
+type DashboardTab_2 = 'details' | 'pay' | 'documents';
 
 // @public
 export type DataAttributes = {
@@ -4734,6 +4761,8 @@ export interface Resources {
     'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
     // (undocumented)
     'Contractor.ContractorList': Translations.ContractorContractorList
+    // (undocumented)
+    'Contractor.Dashboard': Translations.ContractorDashboard
     // (undocumented)
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)

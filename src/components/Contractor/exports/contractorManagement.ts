@@ -3,6 +3,8 @@ export {
   type ManagementContractorListProps,
   type ContractorTab,
 } from '../ContractorList/management/ManagementContractorList'
+export { DashboardFlow, Dashboard } from '../Dashboard'
+export type { DashboardFlowProps, DashboardProps, DashboardTab } from '../Dashboard'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
 export { Address, AddressCard, AddressEditForm } from '../Address/management'
