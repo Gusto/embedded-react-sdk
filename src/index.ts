@@ -48,6 +48,7 @@ export type {
 export type {
   BaseComponentInterface,
   CommonComponentInterface,
+  LoaderComponentType,
   OnEventType,
 } from '@/components/Base'
 export type {

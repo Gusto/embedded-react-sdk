@@ -8,6 +8,7 @@ import { getStreet, getCityStateZip } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link HomeAddressCard}.
@@ -19,6 +20,8 @@ export interface HomeAddressCardProps {
   employeeId: string
   /** Event handler fired when the card's Manage button is clicked. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -36,13 +39,16 @@ export interface HomeAddressCardProps {
  */
 export function HomeAddressCard(props: HomeAddressCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.HomeAddress">
+    <BaseBoundaries
+      componentName="Employee.Management.HomeAddress"
+      LoaderComponent={props.LoaderComponent}
+    >
       <HomeAddressCardContent {...props} />
     </BaseBoundaries>
   )
 }
 
-function HomeAddressCardContent({ employeeId, onEvent }: HomeAddressCardProps) {
+function HomeAddressCardContent({ employeeId, onEvent, LoaderComponent }: HomeAddressCardProps) {
   useI18n('Employee.Management.HomeAddress')
   const { t } = useTranslation('Employee.Management.HomeAddress')
   const Components = useComponentContext()
@@ -57,7 +63,7 @@ function HomeAddressCardContent({ employeeId, onEvent }: HomeAddressCardProps) {
   }
 
   return (
-    <BaseLayout error={summary.errorHandling.errors}>
+    <BaseLayout error={summary.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         header={
           <Components.BoxHeader

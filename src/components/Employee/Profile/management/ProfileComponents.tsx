@@ -17,7 +17,7 @@ export interface ProfileContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function CardContextual() {
-  const { employeeId, onEvent, successAlert } = useFlow<ProfileContextInterface>()
+  const { employeeId, onEvent, successAlert, LoaderComponent } = useFlow<ProfileContextInterface>()
   const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()
   return (
@@ -31,13 +31,23 @@ export function CardContextual() {
           }}
         />
       ) : null}
-      <ProfileCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+      <ProfileCard
+        employeeId={ensureRequired(employeeId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function ProfileEditFormContextual() {
-  const { employeeId, onEvent } = useFlow<ProfileContextInterface>()
-  return <ProfileEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<ProfileContextInterface>()
+  return (
+    <ProfileEditForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

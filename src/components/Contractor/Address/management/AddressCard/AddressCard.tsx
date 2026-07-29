@@ -7,6 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link AddressCard}.
@@ -18,6 +19,8 @@ export interface AddressCardProps {
   contractorId: string
   /** Event handler fired when the user requests to edit the address. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -38,15 +41,15 @@ export interface AddressCardProps {
  * @returns The contractor address card.
  * @public
  */
-export function AddressCard(props: AddressCardProps) {
+export function AddressCard({ LoaderComponent, ...props }: AddressCardProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Management.Address">
-      <AddressCardContent {...props} />
+    <BaseBoundaries componentName="Contractor.Management.Address" LoaderComponent={LoaderComponent}>
+      <AddressCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function AddressCardContent({ contractorId, onEvent }: AddressCardProps) {
+function AddressCardContent({ contractorId, onEvent, LoaderComponent }: AddressCardProps) {
   useI18n('Contractor.Management.Address')
   const { t } = useTranslation('Contractor.Management.Address')
   const Components = useComponentContext()
@@ -61,7 +64,7 @@ function AddressCardContent({ contractorId, onEvent }: AddressCardProps) {
   }
 
   return (
-    <BaseLayout error={summary.errorHandling.errors}>
+    <BaseLayout error={summary.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         header={
           <Components.BoxHeader

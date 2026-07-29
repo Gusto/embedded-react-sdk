@@ -17,7 +17,8 @@ export interface FederalTaxesContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function FederalTaxesCardContextual() {
-  const { employeeId, onEvent, successAlert } = useFlow<FederalTaxesContextInterface>()
+  const { employeeId, onEvent, successAlert, LoaderComponent } =
+    useFlow<FederalTaxesContextInterface>()
   const { t } = useTranslation('Employee.Management.FederalTaxes')
   const Components = useComponentContext()
   return (
@@ -31,13 +32,23 @@ export function FederalTaxesCardContextual() {
           }}
         />
       ) : null}
-      <FederalTaxesCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+      <FederalTaxesCard
+        employeeId={ensureRequired(employeeId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function FederalTaxesEditFormContextual() {
-  const { employeeId, onEvent } = useFlow<FederalTaxesContextInterface>()
-  return <FederalTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<FederalTaxesContextInterface>()
+  return (
+    <FederalTaxesEditForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

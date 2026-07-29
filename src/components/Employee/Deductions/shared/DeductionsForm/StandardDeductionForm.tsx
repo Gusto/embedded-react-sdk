@@ -13,6 +13,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { LoaderComponentType } from '@/components/Base'
 
 interface StandardDeductionFormProps {
   employeeId: string
@@ -28,6 +29,7 @@ interface StandardDeductionFormProps {
   title: string
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
+  LoaderComponent?: LoaderComponentType
 }
 
 /** @internal */
@@ -39,6 +41,7 @@ export function StandardDeductionForm({
   title,
   onSaved,
   onCancel,
+  LoaderComponent,
 }: StandardDeductionFormProps) {
   const { t } = useTranslation('Employee.DeductionsForm')
   const Components = useComponentContext()
@@ -51,7 +54,9 @@ export function StandardDeductionForm({
   })
 
   if (form.isLoading) {
-    return <BaseLayout isLoading error={form.errorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const { Fields } = form.form
@@ -64,6 +69,7 @@ export function StandardDeductionForm({
       title={title}
       onSaved={onSaved}
       onCancel={onCancel}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
@@ -78,6 +84,7 @@ function ReadyForm({
   title,
   onSaved,
   onCancel,
+  LoaderComponent,
 }: {
   form: Extract<ReturnType<typeof useDeductionForm>, { isLoading: false }>
   Fields: Extract<ReturnType<typeof useDeductionForm>, { isLoading: false }>['form']['Fields']
@@ -86,6 +93,7 @@ function ReadyForm({
   title: string
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
+  LoaderComponent?: LoaderComponentType
 }) {
   // useWatch subscribes to changes; getValues only reads once. We need the
   // subscription because `Fields.Amount`'s `format` and `description` props
@@ -108,7 +116,7 @@ function ReadyForm({
   }
 
   return (
-    <BaseLayout error={form.errorHandling.errors}>
+    <BaseLayout error={form.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={form}>
         <Form onSubmit={handleSubmit}>
           <Flex flexDirection="column" gap={32}>

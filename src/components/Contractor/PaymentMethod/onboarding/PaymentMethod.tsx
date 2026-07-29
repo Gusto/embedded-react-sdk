@@ -54,16 +54,21 @@ import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGro
  * }
  * ```
  */
-export function PaymentMethod({ dictionary, ...props }: PaymentMethodProps) {
+export function PaymentMethod({ dictionary, LoaderComponent, ...props }: PaymentMethodProps) {
   useComponentDictionary('Contractor.PaymentMethod', dictionary)
   return (
-    <BaseBoundaries componentName="Contractor.PaymentMethod">
-      <Root {...props} />
+    <BaseBoundaries componentName="Contractor.PaymentMethod" LoaderComponent={LoaderComponent}>
+      <Root LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'dictionary'>) {
+function Root({
+  contractorId,
+  className,
+  onEvent,
+  LoaderComponent,
+}: Omit<PaymentMethodProps, 'dictionary'>) {
   useI18n('Contractor.PaymentMethod')
   const { t } = useTranslation('Contractor.PaymentMethod')
   const Components = useComponentContext()
@@ -80,7 +85,9 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
 
   if (paymentMethodForm.isLoading || bankAccountForm.isLoading) {
     const loadingErrorHandling = composeErrorHandler([paymentMethodForm, bankAccountForm])
-    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={loadingErrorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const isDirectDeposit = paymentMethodForm.status.isDirectDeposit
@@ -131,7 +138,7 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
 
   return (
     <section className={classNames(styles.root, className)}>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Form onSubmit={handleSubmit}>
           <Flex gap={32} flexDirection="column">
             <Components.Heading as="h2">{t('title')}</Components.Heading>

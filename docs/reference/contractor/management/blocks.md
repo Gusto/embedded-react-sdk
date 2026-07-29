@@ -85,6 +85,7 @@ Props for [AddressCard](#addresscard).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the address. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -209,6 +210,7 @@ Props for [CompensationCard](#compensationcard).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit compensation. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -457,6 +459,7 @@ Props for [DocumentsCard](#documentscard).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user views a document. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -620,6 +623,7 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -878,6 +882,7 @@ Props for [ProfileCard](#profilecard).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 

@@ -20,7 +20,8 @@ export interface PaymentMethodContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function PaymentMethodCardContextual() {
-  const { employeeId, onEvent, successAlert } = useFlow<PaymentMethodContextInterface>()
+  const { employeeId, onEvent, successAlert, LoaderComponent } =
+    useFlow<PaymentMethodContextInterface>()
   const { t } = useTranslation('Employee.Management.PaymentMethod')
   const Components = useComponentContext()
   return (
@@ -34,7 +35,11 @@ export function PaymentMethodCardContextual() {
           }}
         />
       ) : null}
-      <PaymentMethodCard employeeId={employeeId} onEvent={onEvent} />
+      <PaymentMethodCard
+        employeeId={employeeId}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }

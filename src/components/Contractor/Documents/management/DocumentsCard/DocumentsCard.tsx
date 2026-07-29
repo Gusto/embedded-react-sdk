@@ -10,6 +10,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link DocumentsCard}.
@@ -21,6 +22,8 @@ export interface DocumentsCardProps {
   contractorId: string
   /** Event handler fired when the user views a document. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -42,15 +45,18 @@ export interface DocumentsCardProps {
  * @returns The contractor documents card.
  * @public
  */
-export function DocumentsCard(props: DocumentsCardProps) {
+export function DocumentsCard({ LoaderComponent, ...props }: DocumentsCardProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Management.Documents">
-      <DocumentsCardContent {...props} />
+    <BaseBoundaries
+      componentName="Contractor.Management.Documents"
+      LoaderComponent={LoaderComponent}
+    >
+      <DocumentsCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function DocumentsCardContent({ contractorId, onEvent }: DocumentsCardProps) {
+function DocumentsCardContent({ contractorId, onEvent, LoaderComponent }: DocumentsCardProps) {
   useI18n('Contractor.Management.Documents')
   const { t } = useTranslation('Contractor.Management.Documents')
   const Components = useComponentContext()
@@ -102,7 +108,7 @@ function DocumentsCardContent({ contractorId, onEvent }: DocumentsCardProps) {
   })
 
   return (
-    <BaseLayout error={documentsList.errorHandling.errors}>
+    <BaseLayout error={documentsList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         withPadding={!isShowingTable}
         header={<Components.BoxHeader title={t('title')} />}

@@ -23,6 +23,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus, type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
+import type { LoaderComponentType } from '@/components/Base'
 
 const checkHasCompletedSelfOnboarding = (employee?: Employee) => {
   return (
@@ -57,6 +58,7 @@ export function AdminProfile({
   className = '',
   dictionary,
   onEvent,
+  LoaderComponent,
 }: ProfileProps) {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
@@ -114,7 +116,9 @@ export function AdminProfile({
 
   if (employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading) {
     const loadingErrorHandling = composeErrorHandler([employeeDetails, homeAddress, workAddress])
-    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={loadingErrorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   return (
@@ -129,6 +133,7 @@ export function AdminProfile({
       setSelfOnboardingActive={setSelfOnboardingActive}
       onEvent={onEvent}
       className={className}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
@@ -144,6 +149,7 @@ interface AdminProfileReadyProps {
   setSelfOnboardingActive: (active: boolean) => void
   onEvent: (event: EventType, data?: unknown) => void
   className: string
+  LoaderComponent?: LoaderComponentType
 }
 
 function AdminProfileReady({
@@ -157,6 +163,7 @@ function AdminProfileReady({
   setSelfOnboardingActive,
   onEvent,
   className,
+  LoaderComponent,
 }: AdminProfileReadyProps) {
   const { t } = useTranslation('Employee.Profile')
   const { t: tHome } = useTranslation('Employee.HomeAddress')
@@ -260,7 +267,7 @@ function AdminProfileReady({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Form onSubmit={handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24}>
             <Flex flexDirection="column" gap={4}>

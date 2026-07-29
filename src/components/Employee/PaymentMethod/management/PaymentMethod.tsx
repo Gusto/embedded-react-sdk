@@ -33,6 +33,7 @@ function PaymentMethodFlow({
   isAdmin = true,
   initialState = 'list',
   onEvent,
+  LoaderComponent,
 }: PaymentMethodProps) {
   useI18n('Employee.Management.PaymentMethod')
 
@@ -54,9 +55,10 @@ function PaymentMethodFlow({
           employeeId,
           isAdmin,
           successAlert: null,
+          LoaderComponent,
         }),
       ),
-    [employeeId, isAdmin, initialState, initialComponent],
+    [employeeId, isAdmin, initialState, initialComponent, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -91,14 +93,20 @@ function PaymentMethodFlow({
  * }
  * ```
  */
-export function PaymentMethod({ dictionary, FallbackComponent, ...props }: PaymentMethodProps) {
+export function PaymentMethod({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: PaymentMethodProps) {
   useComponentDictionary('Employee.Management.PaymentMethod', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.PaymentMethod"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <PaymentMethodFlow {...props} />
+      <PaymentMethodFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

@@ -91,6 +91,7 @@ Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../blocks.md#commoncomponentinterface)._
 
@@ -128,6 +129,7 @@ Props for [CompensationAddJobForm](#compensationaddjobform).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../blocks.md#commoncomponentinterface)._
 
@@ -164,6 +166,7 @@ Props for [CompensationCard](#compensationcard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -203,6 +206,7 @@ Props for [CompensationEditForm](#compensationeditform).
 | `jobId` | `string` | The id of the job whose compensation is being edited (for example, the `jobId` from the [CompensationCard](#compensationcard) `employee/management/compensation/card/editRequested` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled future-dated change. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../../Translations/index.md#employeemanagementcompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../blocks.md#commoncomponentinterface)._
 
@@ -327,6 +331,7 @@ Props for [DeductionsCard](#deductionscard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -493,6 +498,7 @@ Props for [DocumentsCard](#documentscard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 ***
 
@@ -616,6 +622,7 @@ Props for [FederalTaxesCard](#federaltaxescard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 ***
 
@@ -725,6 +732,7 @@ Props for [HomeAddressCard](#homeaddresscard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -901,6 +909,7 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -977,6 +986,7 @@ Props for [PaystubsCard](#paystubscard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -1065,6 +1075,7 @@ Props for [ProfileCard](#profilecard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -1187,6 +1198,7 @@ Props for [StateTaxesCard](#statetaxescard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -1457,6 +1469,7 @@ Props for [WorkAddressCard](#workaddresscard).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 

@@ -7,6 +7,7 @@ import type { OnEventType } from '@/components/Base/useBase'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useI18n } from '@/i18n'
 import type { EventType } from '@/shared/constants'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props shared by the contractor self-onboarding profile components.
@@ -20,6 +21,8 @@ export interface ContractorSelfOnboardingProfileProps {
   onEvent: OnEventType<EventType, unknown>
   /** Optional class name applied to the root element. */
   className?: string
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -32,6 +35,7 @@ export function SelfOnboardingContractorProfile({
   contractorId,
   onEvent,
   className,
+  LoaderComponent,
 }: ContractorSelfOnboardingProfileProps) {
   useI18n('Contractor.Profile')
 
@@ -40,7 +44,7 @@ export function SelfOnboardingContractorProfile({
 
   if (contractorQuery.isLoading || !contractor) {
     const errorHandling = composeErrorHandler([contractorQuery])
-    return <BaseLayout isLoading error={errorHandling.errors} />
+    return <BaseLayout isLoading error={errorHandling.errors} LoaderComponent={LoaderComponent} />
   }
 
   return contractor.type === ContractorType.Business ? (
@@ -48,12 +52,14 @@ export function SelfOnboardingContractorProfile({
       contractorId={contractorId}
       onEvent={onEvent}
       className={className}
+      LoaderComponent={LoaderComponent}
     />
   ) : (
     <IndividualSelfOnboardingProfile
       contractorId={contractorId}
       onEvent={onEvent}
       className={className}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

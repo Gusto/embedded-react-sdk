@@ -17,7 +17,7 @@ export interface ProfileProps extends BaseComponentInterface<'Employee.Managemen
   employeeId: string
 }
 
-function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
+function ProfileFlow({ employeeId, onEvent, LoaderComponent }: ProfileProps) {
   useI18n('Employee.Management.Profile')
 
   const machine = useMemo(
@@ -27,8 +27,9 @@ function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
         component: CardContextual,
         employeeId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -53,14 +54,20 @@ function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
  * @returns The employee profile management surface.
  * @public
  */
-export function Profile({ dictionary, FallbackComponent, ...props }: ProfileProps) {
+export function Profile({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: ProfileProps) {
   useComponentDictionary('Employee.Management.Profile', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.Profile"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <ProfileFlow {...props} />
+      <ProfileFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

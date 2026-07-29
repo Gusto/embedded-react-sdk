@@ -3,6 +3,7 @@ import { EditCompensation } from '../../onboarding/EditCompensation/EditCompensa
 import { useManagementCompensationDictionary } from '../useManagementCompensationDictionary'
 import { BaseBoundaries, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 
@@ -16,6 +17,8 @@ export interface CompensationAddJobFormProps extends CommonComponentInterface<'E
   employeeId: string
   /** Callback invoked when the form emits an event. See the events table on {@link CompensationAddJobForm} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -35,16 +38,27 @@ export interface CompensationAddJobFormProps extends CommonComponentInterface<'E
  * @public
  * @group Block components
  */
-export function CompensationAddJobForm({ dictionary, ...props }: CompensationAddJobFormProps) {
+export function CompensationAddJobForm({
+  dictionary,
+  LoaderComponent,
+  ...props
+}: CompensationAddJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Management.Compensation">
-      <Root {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.Compensation"
+      LoaderComponent={LoaderComponent}
+    >
+      <Root {...props} LoaderComponent={LoaderComponent} />
     </BaseBoundaries>
   )
 }
 
-function Root({ employeeId, onEvent }: Omit<CompensationAddJobFormProps, 'dictionary'>) {
+function Root({
+  employeeId,
+  onEvent,
+  LoaderComponent,
+}: Omit<CompensationAddJobFormProps, 'dictionary'>) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
   const editCompensationDictionary = useManagementCompensationDictionary()
@@ -55,6 +69,7 @@ function Root({ employeeId, onEvent }: Omit<CompensationAddJobFormProps, 'dictio
       title={t('addJobTitle')}
       submitCtaLabel={t('saveNewJobCta')}
       dictionary={editCompensationDictionary}
+      LoaderComponent={LoaderComponent}
       onEvent={(type, data) => {
         // The onboarding EditCompensation fires its own job/compensation events;
         // the management block exposes a single scoped "submitted" event keyed off

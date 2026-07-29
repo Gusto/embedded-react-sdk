@@ -53,18 +53,19 @@ export interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff
  * @returns The rendered policy list.
  * @public
  */
-export function PolicyList({ FallbackComponent, ...props }: PolicyListProps) {
+export function PolicyList({ FallbackComponent, LoaderComponent, ...props }: PolicyListProps) {
   return (
     <BaseBoundaries
       componentName="Company.TimeOff.TimeOffPolicies"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <Root {...props} />
+      <Root LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function Root({ companyId, onEvent }: PolicyListProps) {
+function Root({ companyId, onEvent, LoaderComponent }: PolicyListProps) {
   useI18n('Company.TimeOff.TimeOffPolicies')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicies')
   const queryClient = useQueryClient()
@@ -200,7 +201,7 @@ function Root({ companyId, onEvent }: PolicyListProps) {
   }
 
   return (
-    <BaseLayout error={errorHandling.errors}>
+    <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
       <PolicyListPresentation
         policies={policies}
         onCreatePolicy={handleCreatePolicy}

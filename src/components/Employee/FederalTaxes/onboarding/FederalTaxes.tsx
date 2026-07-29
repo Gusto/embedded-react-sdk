@@ -43,10 +43,14 @@ export interface FederalTaxesProps extends BaseComponentInterface<'Employee.Fede
  * @public
  * @group Block components
  */
-export function FederalTaxes({ FallbackComponent, ...props }: FederalTaxesProps) {
+export function FederalTaxes({ FallbackComponent, LoaderComponent, ...props }: FederalTaxesProps) {
   return (
-    <BaseBoundaries componentName="Employee.FederalTaxes" FallbackComponent={FallbackComponent}>
-      <FederalTaxesRoot {...props} />
+    <BaseBoundaries
+      componentName="Employee.FederalTaxes"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <FederalTaxesRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -58,6 +62,7 @@ function FederalTaxesRoot({
   dictionary,
   defaultValues,
   onEvent,
+  LoaderComponent,
 }: FederalTaxesProps) {
   useI18n('Employee.FederalTaxes')
   useComponentDictionary('Employee.FederalTaxes', dictionary)
@@ -72,7 +77,13 @@ function FederalTaxesRoot({
   } satisfies UseFederalTaxesFormProps)
 
   if (federalTaxes.isLoading) {
-    return <BaseLayout isLoading error={federalTaxes.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={federalTaxes.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleSubmit = async () => {
@@ -87,6 +98,7 @@ function FederalTaxesRoot({
     <FederalTaxesView
       federalTaxes={federalTaxes}
       onSubmit={handleSubmit}
+      LoaderComponent={LoaderComponent}
       actions={<ContinueAction isPending={federalTaxes.status.isPending} />}
       className={className}
       dictionary={viewDictionary}

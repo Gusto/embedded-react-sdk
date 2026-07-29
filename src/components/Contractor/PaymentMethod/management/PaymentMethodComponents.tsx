@@ -17,7 +17,8 @@ export interface PaymentMethodContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function CardContextual() {
-  const { contractorId, onEvent, successAlert } = useFlow<PaymentMethodContextInterface>()
+  const { contractorId, onEvent, successAlert, LoaderComponent } =
+    useFlow<PaymentMethodContextInterface>()
   const { t } = useTranslation('Contractor.Management.PaymentMethod')
   const Components = useComponentContext()
   return (
@@ -31,13 +32,23 @@ export function CardContextual() {
           }}
         />
       ) : null}
-      <PaymentMethodCard contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+      <PaymentMethodCard
+        contractorId={ensureRequired(contractorId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function PaymentMethodEditFormContextual() {
-  const { contractorId, onEvent } = useFlow<PaymentMethodContextInterface>()
-  return <PaymentMethodEditForm contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+  const { contractorId, onEvent, LoaderComponent } = useFlow<PaymentMethodContextInterface>()
+  return (
+    <PaymentMethodEditForm
+      contractorId={ensureRequired(contractorId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
