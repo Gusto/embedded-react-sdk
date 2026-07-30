@@ -9,12 +9,14 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { LoaderComponentType } from '@/components/Base'
 
 interface ChildSupportFormViewProps {
   employeeId: string
   deduction: Garnishment | null
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
+  LoaderComponent?: LoaderComponentType
 }
 
 /** @internal */
@@ -23,6 +25,7 @@ export function ChildSupportFormView({
   deduction,
   onSaved,
   onCancel,
+  LoaderComponent,
 }: ChildSupportFormViewProps) {
   const { t } = useTranslation('Employee.DeductionsForm')
   const Components = useComponentContext()
@@ -33,7 +36,9 @@ export function ChildSupportFormView({
   })
 
   if (form.isLoading) {
-    return <BaseLayout isLoading error={form.errorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const { Fields } = form.form
@@ -45,7 +50,7 @@ export function ChildSupportFormView({
   }
 
   return (
-    <BaseLayout error={form.errorHandling.errors}>
+    <BaseLayout error={form.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={form}>
         <Form onSubmit={handleSubmit}>
           <Flex flexDirection="column" gap={32}>

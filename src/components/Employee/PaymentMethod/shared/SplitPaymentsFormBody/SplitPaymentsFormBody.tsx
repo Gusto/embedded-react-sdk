@@ -18,6 +18,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { SPLIT_BY } from '@/shared/constants'
 import type { ResourceDictionary } from '@/types/Helpers'
+import type { LoaderComponentType } from '@/components/Base'
 
 /** @internal */
 export type SplitPaymentsFormBodyDictionary = ResourceDictionary<'Employee.SplitPaymentsFormBody'>
@@ -33,6 +34,7 @@ export interface SplitPaymentsFormBodyProps extends UseSplitPaymentsFormProps {
   /** Called with the updated payment method after a successful submit. */
   onSaved: (paymentMethod: EmployeePaymentMethod) => void
   onCancel: () => void
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -48,6 +50,7 @@ export function SplitPaymentsFormBody({
   dictionary,
   onSaved,
   onCancel,
+  LoaderComponent,
   ...hookProps
 }: SplitPaymentsFormBodyProps) {
   useI18n('Employee.SplitPaymentsFormBody')
@@ -55,22 +58,37 @@ export function SplitPaymentsFormBody({
   const splitForm = useSplitPaymentsForm(hookProps)
 
   if (splitForm.isLoading) {
-    return <BaseLayout isLoading error={splitForm.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={splitForm.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
-  return <SplitPaymentsFormBodyReady onSaved={onSaved} onCancel={onCancel} splitForm={splitForm} />
+  return (
+    <SplitPaymentsFormBodyReady
+      onSaved={onSaved}
+      onCancel={onCancel}
+      splitForm={splitForm}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
 
 interface SplitPaymentsFormBodyReadyProps {
   onSaved: (paymentMethod: EmployeePaymentMethod) => void
   onCancel: () => void
   splitForm: UseSplitPaymentsFormReady
+  LoaderComponent?: LoaderComponentType
 }
 
 function SplitPaymentsFormBodyReady({
   onSaved,
   onCancel,
   splitForm,
+  LoaderComponent,
 }: SplitPaymentsFormBodyReadyProps) {
   const { t } = useTranslation('Employee.SplitPaymentsFormBody')
   const Components = useComponentContext()
@@ -102,7 +120,7 @@ function SplitPaymentsFormBodyReady({
   }
 
   return (
-    <BaseLayout error={splitForm.errorHandling.errors}>
+    <BaseLayout error={splitForm.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={splitForm}>
         <Form onSubmit={handleSubmit}>
           {hasPercentageImbalance && (

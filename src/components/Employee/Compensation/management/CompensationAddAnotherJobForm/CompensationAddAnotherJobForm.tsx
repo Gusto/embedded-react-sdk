@@ -8,6 +8,7 @@ import { useManagementCompensationDictionary } from '../useManagementCompensatio
 import styles from './CompensationAddAnotherJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -24,6 +25,8 @@ export interface CompensationAddAnotherJobFormProps extends CommonComponentInter
   employeeId: string
   /** Callback invoked when the form emits an event. See the events table on {@link CompensationAddAnotherJobForm} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -45,12 +48,16 @@ export interface CompensationAddAnotherJobFormProps extends CommonComponentInter
  */
 export function CompensationAddAnotherJobForm({
   dictionary,
+  LoaderComponent,
   ...props
 }: CompensationAddAnotherJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Management.Compensation">
-      <Root {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.Compensation"
+      LoaderComponent={LoaderComponent}
+    >
+      <Root LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -59,6 +66,7 @@ function Root({
   employeeId,
   className,
   onEvent,
+  LoaderComponent,
 }: Omit<CompensationAddAnotherJobFormProps, 'dictionary'>) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
@@ -91,7 +99,9 @@ function Root({
 
   if (jobForm.isLoading || compensationForm.isLoading) {
     const loadingErrorHandling = composeErrorHandler([jobForm, compensationForm])
-    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={loadingErrorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   // The API defaults a secondary job's hire_date to the primary job's hire_date
@@ -129,7 +139,7 @@ function Root({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Form onSubmit={submitResult.handleSubmit}>
           <AddCompensationFormBody
             jobForm={jobForm}

@@ -21,7 +21,8 @@ export interface DeductionsContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DeductionsCardContextual() {
-  const { employeeId, onEvent, successAlert } = useFlow<DeductionsContextInterface>()
+  const { employeeId, onEvent, successAlert, LoaderComponent } =
+    useFlow<DeductionsContextInterface>()
   const { t } = useTranslation('Employee.Management.Deductions')
   const Components = useComponentContext()
   return (
@@ -35,19 +36,25 @@ export function DeductionsCardContextual() {
           }}
         />
       ) : null}
-      <DeductionsCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+      <DeductionsCard
+        employeeId={ensureRequired(employeeId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function DeductionsEditFormContextual() {
-  const { employeeId, editingDeductionId, onEvent } = useFlow<DeductionsContextInterface>()
+  const { employeeId, editingDeductionId, onEvent, LoaderComponent } =
+    useFlow<DeductionsContextInterface>()
   return (
     <DeductionsEditForm
       employeeId={ensureRequired(employeeId)}
       editingDeductionId={editingDeductionId}
       onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

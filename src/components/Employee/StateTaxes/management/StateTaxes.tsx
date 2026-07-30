@@ -17,7 +17,7 @@ export interface StateTaxesProps extends BaseComponentInterface<'Employee.Manage
   employeeId: string
 }
 
-function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
+function StateTaxesFlow({ employeeId, onEvent, LoaderComponent }: StateTaxesProps) {
   useI18n('Employee.Management.StateTaxes')
 
   const machine = useMemo(
@@ -26,8 +26,9 @@ function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
         ...ctx,
         component: StateTaxesCardContextual,
         employeeId,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -49,14 +50,20 @@ function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
  * @param props - The component props.
  * @public
  */
-export function StateTaxes({ dictionary, FallbackComponent, ...props }: StateTaxesProps) {
+export function StateTaxes({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: StateTaxesProps) {
   useComponentDictionary('Employee.Management.StateTaxes', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.StateTaxes"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <StateTaxesFlow {...props} />
+      <StateTaxesFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

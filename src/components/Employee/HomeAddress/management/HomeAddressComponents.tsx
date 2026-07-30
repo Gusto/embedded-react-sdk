@@ -10,12 +10,24 @@ export interface HomeAddressContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function CardContextual() {
-  const { employeeId, onEvent } = useFlow<HomeAddressContextInterface>()
-  return <HomeAddressCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<HomeAddressContextInterface>()
+  return (
+    <HomeAddressCard
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
 
 /** @internal */
 export function HomeAddressEditFormContextual() {
-  const { employeeId, onEvent } = useFlow<HomeAddressContextInterface>()
-  return <HomeAddressEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<HomeAddressContextInterface>()
+  return (
+    <HomeAddressEditForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

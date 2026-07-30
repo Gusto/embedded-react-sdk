@@ -19,18 +19,29 @@ export interface WorkAddressEditFormProps extends BaseComponentInterface<'Employ
   employeeId: string
 }
 
-function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddressEditFormProps) {
+function WorkAddressEditFormRoot({
+  employeeId,
+  dictionary,
+  onEvent,
+  LoaderComponent,
+}: WorkAddressEditFormProps) {
   useI18n(['Employee.Management.WorkAddress'])
   useComponentDictionary('Employee.Management.WorkAddress', dictionary)
 
   const management = useWorkAddressManagement({ employeeId, onEvent })
 
   if (management.isLoading) {
-    return <BaseLayout isLoading error={management.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={management.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   if (!isUseWorkAddressManagementSuccess(management)) {
-    return <BaseLayout error={management.errorHandling.errors} />
+    return <BaseLayout error={management.errorHandling.errors} LoaderComponent={LoaderComponent} />
   }
 
   const handleWorkAddressSaved = (result: HookSubmitResult<EmployeeWorkAddress>) => {
@@ -42,7 +53,7 @@ function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddres
   }
 
   return (
-    <BaseLayout error={management.errorHandling.errors}>
+    <BaseLayout error={management.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <WorkAddressView
         editWorkAddressForm={management.data.editWorkAddressForm}
         changeWorkAddressForm={management.data.changeWorkAddressForm}
@@ -74,13 +85,18 @@ function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddres
  *
  * @public
  */
-export function WorkAddressEditForm({ FallbackComponent, ...props }: WorkAddressEditFormProps) {
+export function WorkAddressEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: WorkAddressEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.WorkAddress"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <WorkAddressEditFormRoot {...props} />
+      <WorkAddressEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

@@ -41,18 +41,29 @@ export interface ProfileEditFormProps extends BaseComponentInterface<'Employee.M
  * @returns The employee profile edit form.
  * @public
  */
-export function ProfileEditForm({ FallbackComponent, ...props }: ProfileEditFormProps) {
+export function ProfileEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: ProfileEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.Profile"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <ProfileEditFormRoot {...props} />
+      <ProfileEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: ProfileEditFormProps) {
+function ProfileEditFormRoot({
+  employeeId,
+  className,
+  dictionary,
+  onEvent,
+  LoaderComponent,
+}: ProfileEditFormProps) {
   useI18n('Employee.Management.Profile')
   useComponentDictionary('Employee.Management.Profile', dictionary)
   const { t } = useTranslation('Employee.Management.Profile')
@@ -69,7 +80,13 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
   const [showSuccess, setShowSuccess] = useState(false)
 
   if (employeeDetails.isLoading) {
-    return <BaseLayout isLoading error={employeeDetails.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={employeeDetails.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const Fields = employeeDetails.form.Fields
@@ -101,7 +118,7 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={employeeDetails.errorHandling.errors}>
+      <BaseLayout error={employeeDetails.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={employeeDetails}>
           <Form onSubmit={handleSubmit}>
             {alert}

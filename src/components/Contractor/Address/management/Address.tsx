@@ -17,7 +17,7 @@ export interface AddressProps extends BaseComponentInterface<'Contractor.Managem
   contractorId: string
 }
 
-function AddressFlow({ contractorId, onEvent }: AddressProps) {
+function AddressFlow({ contractorId, onEvent, LoaderComponent }: AddressProps) {
   useI18n('Contractor.Management.Address')
 
   const machine = useMemo(
@@ -27,8 +27,9 @@ function AddressFlow({ contractorId, onEvent }: AddressProps) {
         component: CardContextual,
         contractorId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [contractorId],
+    [contractorId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -53,14 +54,20 @@ function AddressFlow({ contractorId, onEvent }: AddressProps) {
  * @returns The contractor address management surface.
  * @public
  */
-export function Address({ dictionary, FallbackComponent, ...props }: AddressProps) {
+export function Address({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: AddressProps) {
   useComponentDictionary('Contractor.Management.Address', dictionary)
   return (
     <BaseBoundaries
       componentName="Contractor.Management.Address"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <AddressFlow {...props} />
+      <AddressFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

@@ -17,7 +17,8 @@ export interface AddressContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function CardContextual() {
-  const { contractorId, onEvent, successAlert } = useFlow<AddressContextInterface>()
+  const { contractorId, onEvent, successAlert, LoaderComponent } =
+    useFlow<AddressContextInterface>()
   const { t } = useTranslation('Contractor.Management.Address')
   const Components = useComponentContext()
   return (
@@ -31,13 +32,23 @@ export function CardContextual() {
           }}
         />
       ) : null}
-      <AddressCard contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+      <AddressCard
+        contractorId={ensureRequired(contractorId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function AddressEditFormContextual() {
-  const { contractorId, onEvent } = useFlow<AddressContextInterface>()
-  return <AddressEditForm contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+  const { contractorId, onEvent, LoaderComponent } = useFlow<AddressContextInterface>()
+  return (
+    <AddressEditForm
+      contractorId={ensureRequired(contractorId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

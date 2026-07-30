@@ -21,6 +21,7 @@ function ContractorListRoot({
   onEvent,
   dictionary,
   successMessage,
+  LoaderComponent,
 }: ContractorListProps) {
   useI18n('Contractor.ContractorList')
   useComponentDictionary('Contractor.ContractorList', dictionary)
@@ -28,7 +29,13 @@ function ContractorListRoot({
   const contractorList = useContractorList({ companyId })
 
   if (contractorList.isLoading) {
-    return <BaseLayout isLoading error={contractorList.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractorList.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleAddContractor = () => {
@@ -44,7 +51,7 @@ function ContractorListRoot({
   }
 
   return (
-    <BaseLayout error={contractorList.errorHandling.errors}>
+    <BaseLayout error={contractorList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <ContractorListView
         contractors={contractorList.data.contractors}
         isFetching={contractorList.status.isFetching}
@@ -84,10 +91,18 @@ function ContractorListRoot({
  * @returns The rendered contractor list.
  * @public
  */
-export function ContractorList({ FallbackComponent, ...props }: ContractorListProps) {
+export function ContractorList({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: ContractorListProps) {
   return (
-    <BaseBoundaries componentName="Contractor.ContractorList" FallbackComponent={FallbackComponent}>
-      <ContractorListRoot {...props} />
+    <BaseBoundaries
+      componentName="Contractor.ContractorList"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <ContractorListRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

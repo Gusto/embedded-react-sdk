@@ -12,6 +12,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
+import type { LoaderComponentType } from '@/components/Base'
 
 /** @internal */
 export type DeductionsFormDictionary = ResourceDictionary<'Employee.DeductionsForm'>
@@ -57,6 +58,8 @@ export interface DeductionsFormProps {
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   /** Called when the user cancels the form. */
   onCancel: () => void
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /** @internal */
@@ -67,6 +70,7 @@ export function DeductionsForm({
   dictionary,
   onSaved,
   onCancel,
+  LoaderComponent,
 }: DeductionsFormProps) {
   useI18n('Employee.DeductionsForm')
   useComponentDictionary('Employee.DeductionsForm', dictionary)
@@ -159,6 +163,7 @@ export function DeductionsForm({
             title={t('types.custom')}
             onSaved={onSaved}
             onCancel={onCancel}
+            LoaderComponent={LoaderComponent}
           />
         )}
         {variant?.kind === 'garnishment' && variant.type === 'child_support' && (
@@ -167,6 +172,7 @@ export function DeductionsForm({
             deduction={deduction ?? null}
             onSaved={onSaved}
             onCancel={onCancel}
+            LoaderComponent={LoaderComponent}
           />
         )}
         {variant?.kind === 'garnishment' && variant.type !== 'child_support' && (
@@ -178,6 +184,7 @@ export function DeductionsForm({
             title={garnishmentTypeLabel(t, variant.type)}
             onSaved={onSaved}
             onCancel={onCancel}
+            LoaderComponent={LoaderComponent}
           />
         )}
       </Grid>

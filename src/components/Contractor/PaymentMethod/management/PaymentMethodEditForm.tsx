@@ -37,13 +37,18 @@ export interface PaymentMethodEditFormProps extends BaseComponentInterface<'Cont
  * @returns The contractor payment method bank-account form.
  * @public
  */
-export function PaymentMethodEditForm({ FallbackComponent, ...props }: PaymentMethodEditFormProps) {
+export function PaymentMethodEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: PaymentMethodEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Contractor.Management.PaymentMethod"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <PaymentMethodEditFormRoot {...props} />
+      <PaymentMethodEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -53,6 +58,7 @@ function PaymentMethodEditFormRoot({
   className,
   dictionary,
   onEvent,
+  LoaderComponent,
 }: PaymentMethodEditFormProps) {
   useI18n('Contractor.Management.PaymentMethod')
   useComponentDictionary('Contractor.Management.PaymentMethod', dictionary)
@@ -66,6 +72,7 @@ function PaymentMethodEditFormRoot({
       <ContractorBankAccountFormBody
         contractorId={contractorId}
         dictionary={bankAccountFieldsDictionary}
+        LoaderComponent={LoaderComponent}
         onSaved={data => {
           onEvent(componentEvents.CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED, data)
         }}

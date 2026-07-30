@@ -7,6 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link CompensationCard}.
@@ -18,6 +19,8 @@ export interface CompensationCardProps {
   contractorId: string
   /** Event handler fired when the user requests to edit compensation. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -38,15 +41,22 @@ export interface CompensationCardProps {
  * @returns The contractor compensation card.
  * @public
  */
-export function CompensationCard(props: CompensationCardProps) {
+export function CompensationCard({ LoaderComponent, ...props }: CompensationCardProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Management.Compensation">
-      <CompensationCardContent {...props} />
+    <BaseBoundaries
+      componentName="Contractor.Management.Compensation"
+      LoaderComponent={LoaderComponent}
+    >
+      <CompensationCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function CompensationCardContent({ contractorId, onEvent }: CompensationCardProps) {
+function CompensationCardContent({
+  contractorId,
+  onEvent,
+  LoaderComponent,
+}: CompensationCardProps) {
   useI18n('Contractor.Management.Compensation')
   const { t } = useTranslation('Contractor.Management.Compensation')
   const Components = useComponentContext()
@@ -84,7 +94,7 @@ function CompensationCardContent({ contractorId, onEvent }: CompensationCardProp
   }
 
   return (
-    <BaseLayout error={summary.errorHandling.errors}>
+    <BaseLayout error={summary.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         header={
           <Components.BoxHeader

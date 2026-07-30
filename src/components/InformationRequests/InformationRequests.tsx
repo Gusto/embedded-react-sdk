@@ -93,6 +93,7 @@ export function InformationRequestsFlow({
   dictionary,
   withAlert = true,
   onEvent = () => {},
+  LoaderComponent,
 }: InformationRequestsFlowProps) {
   useComponentDictionary('InformationRequests', dictionary)
   useI18n('InformationRequests')
@@ -127,9 +128,10 @@ export function InformationRequestsFlow({
           component: null,
           companyId,
           onEvent: handleEvent,
+          LoaderComponent,
         }),
       ),
-    [companyId],
+    [companyId, LoaderComponent],
   )
   const [current, send] = useMachine(informationRequestsMachineInstance)
 
@@ -191,7 +193,7 @@ export function InformationRequestsFlow({
           onClose={handleCloseModal}
           footer={
             Footer && (
-              <BaseBoundaries>
+              <BaseBoundaries LoaderComponent={LoaderComponent}>
                 <Suspense fallback={<LoadingSpinner size="sm" />}>
                   <Footer onEvent={handleEvent} />
                 </Suspense>

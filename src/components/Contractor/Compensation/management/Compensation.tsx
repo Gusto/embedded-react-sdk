@@ -17,7 +17,7 @@ export interface CompensationProps extends BaseComponentInterface<'Contractor.Ma
   contractorId: string
 }
 
-function CompensationFlow({ contractorId, onEvent }: CompensationProps) {
+function CompensationFlow({ contractorId, onEvent, LoaderComponent }: CompensationProps) {
   useI18n('Contractor.Management.Compensation')
 
   const machine = useMemo(
@@ -27,8 +27,9 @@ function CompensationFlow({ contractorId, onEvent }: CompensationProps) {
         component: CardContextual,
         contractorId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [contractorId],
+    [contractorId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -53,14 +54,20 @@ function CompensationFlow({ contractorId, onEvent }: CompensationProps) {
  * @returns The contractor compensation management surface.
  * @public
  */
-export function Compensation({ dictionary, FallbackComponent, ...props }: CompensationProps) {
+export function Compensation({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: CompensationProps) {
   useComponentDictionary('Contractor.Management.Compensation', dictionary)
   return (
     <BaseBoundaries
       componentName="Contractor.Management.Compensation"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <CompensationFlow {...props} />
+      <CompensationFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

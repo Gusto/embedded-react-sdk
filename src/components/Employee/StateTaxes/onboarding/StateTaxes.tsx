@@ -33,10 +33,14 @@ export interface StateTaxesProps extends BaseComponentInterface<'Employee.StateT
  * @param props - The component props.
  * @public
  */
-export function StateTaxes({ FallbackComponent, ...props }: StateTaxesProps) {
+export function StateTaxes({ FallbackComponent, LoaderComponent, ...props }: StateTaxesProps) {
   return (
-    <BaseBoundaries componentName="Employee.StateTaxes" FallbackComponent={FallbackComponent}>
-      <StateTaxesRoot {...props} />
+    <BaseBoundaries
+      componentName="Employee.StateTaxes"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <StateTaxesRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -47,6 +51,7 @@ function StateTaxesRoot({
   dictionary,
   onEvent,
   isAdmin = false,
+  LoaderComponent,
 }: StateTaxesProps) {
   useI18n('Employee.StateTaxes')
   useComponentDictionary('Employee.StateTaxes', dictionary)
@@ -55,7 +60,13 @@ function StateTaxesRoot({
   const onboardingStateTaxesDictionary = useOnboardingStateTaxesViewDictionary()
 
   if (stateTaxes.isLoading) {
-    return <BaseLayout isLoading error={stateTaxes.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={stateTaxes.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleSubmit = async () => {
@@ -75,6 +86,7 @@ function StateTaxesRoot({
       actions={<ContinueAction isPending={stateTaxes.status.isPending} />}
       className={className}
       dictionary={onboardingStateTaxesDictionary}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

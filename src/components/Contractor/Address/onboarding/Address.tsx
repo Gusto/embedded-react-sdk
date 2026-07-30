@@ -15,6 +15,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
 import { contractorEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
 
 // The hook defaults to the API contract, which treats every address field as
@@ -42,6 +43,8 @@ export interface AddressProps {
   className?: string
   /** Custom React component rendered when an unhandled error is caught by the component-level error boundary. */
   FallbackComponent?: (props: FallbackProps) => JSX.Element
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -71,10 +74,19 @@ export interface AddressProps {
  * }
  * ```
  */
-export function Address({ onEvent, FallbackComponent, ...rootProps }: AddressProps) {
+export function Address({
+  onEvent,
+  FallbackComponent,
+  LoaderComponent,
+  ...rootProps
+}: AddressProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Address" FallbackComponent={FallbackComponent}>
-      <AddressRoot onEvent={onEvent} {...rootProps} />
+    <BaseBoundaries
+      componentName="Contractor.Address"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <AddressRoot onEvent={onEvent} LoaderComponent={LoaderComponent} {...rootProps} />
     </BaseBoundaries>
   )
 }
@@ -97,6 +109,7 @@ function AddressRoot({
   onEvent,
   dictionary,
   className,
+  LoaderComponent,
 }: Omit<AddressProps, 'FallbackComponent'>) {
   useComponentDictionary('Contractor.Address', dictionary)
   useI18n('Contractor.Address')
@@ -111,7 +124,13 @@ function AddressRoot({
   })
 
   if (contractorAddress.isLoading) {
-    return <BaseLayout isLoading error={contractorAddress.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractorAddress.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const { Fields } = contractorAddress.form
@@ -127,7 +146,7 @@ function AddressRoot({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={contractorAddress.errorHandling.errors}>
+      <BaseLayout error={contractorAddress.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={contractorAddress}>
           <Form onSubmit={() => void handleSubmit()}>
             <ContractorAddressW9Warning contractorId={contractorId} />

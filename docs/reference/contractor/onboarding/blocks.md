@@ -49,6 +49,7 @@ Props for [Address](#address).
 | `defaultValues?` | [`AddressDefaultValues`](#addressdefaultvalues) | Pre-fill values for address fields. Server data takes precedence when the contractor already has an address on file. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorAddress`](../../Translations/index.md#contractoraddress)\>\> | Overrides for the component's i18n strings. |
 | `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 
 <br />
 
@@ -605,7 +606,7 @@ updates the existing contractor.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorProfile`](../../Translations/index.md#contractorprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `isAdmin?` | `true` | When `true` (the default), renders the admin create/edit form. |
-| `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ***
 
@@ -661,7 +662,7 @@ which fields to display.
 | `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorProfile`](../../Translations/index.md#contractorprofile)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ***
 

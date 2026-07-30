@@ -9,6 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
@@ -22,6 +23,8 @@ export interface PaymentMethodCardProps {
   contractorId: string
   /** Event handler fired on card interactions. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -44,15 +47,22 @@ export interface PaymentMethodCardProps {
  * @returns The "Payment" card.
  * @public
  */
-export function PaymentMethodCard(props: PaymentMethodCardProps) {
+export function PaymentMethodCard({ LoaderComponent, ...props }: PaymentMethodCardProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Management.PaymentMethod">
-      <PaymentMethodCardContent {...props} />
+    <BaseBoundaries
+      componentName="Contractor.Management.PaymentMethod"
+      LoaderComponent={LoaderComponent}
+    >
+      <PaymentMethodCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function PaymentMethodCardContent({ contractorId, onEvent }: PaymentMethodCardProps) {
+function PaymentMethodCardContent({
+  contractorId,
+  onEvent,
+  LoaderComponent,
+}: PaymentMethodCardProps) {
   useI18n('Contractor.Management.PaymentMethod')
   const { t } = useTranslation('Contractor.Management.PaymentMethod')
   const Components = useComponentContext()
@@ -116,7 +126,7 @@ function PaymentMethodCardContent({ contractorId, onEvent }: PaymentMethodCardPr
   }
 
   return (
-    <BaseLayout error={summary.errorHandling.errors}>
+    <BaseLayout error={summary.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         withPadding={!isDirectDeposit}
         header={

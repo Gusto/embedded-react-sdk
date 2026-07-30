@@ -20,7 +20,7 @@ export interface CompensationProps extends BaseComponentInterface<'Employee.Mana
   employeeId: string
 }
 
-function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
+function CompensationFlow({ employeeId, onEvent, LoaderComponent }: CompensationProps) {
   useI18n('Employee.Management.Compensation')
 
   const machine = useMemo(
@@ -30,8 +30,9 @@ function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
         component: CompensationCardContextual,
         employeeId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -66,14 +67,20 @@ function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
  * @public
  * @group Block components
  */
-export function Compensation({ dictionary, FallbackComponent, ...props }: CompensationProps) {
+export function Compensation({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: CompensationProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.Compensation"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <CompensationFlow {...props} />
+      <CompensationFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

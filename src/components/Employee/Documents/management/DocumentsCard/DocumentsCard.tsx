@@ -7,6 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link DocumentsCard}.
@@ -18,6 +19,8 @@ export interface DocumentsCardProps {
   employeeId: string
   /** Event handler fired when a row's View CTA is clicked. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -36,13 +39,16 @@ export interface DocumentsCardProps {
  */
 export function DocumentsCard(props: DocumentsCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.Documents">
+    <BaseBoundaries
+      componentName="Employee.Management.Documents"
+      LoaderComponent={props.LoaderComponent}
+    >
       <DocumentsCardContent {...props} />
     </BaseBoundaries>
   )
 }
 
-function DocumentsCardContent({ employeeId, onEvent }: DocumentsCardProps) {
+function DocumentsCardContent({ employeeId, onEvent, LoaderComponent }: DocumentsCardProps) {
   useI18n('Employee.Management.Documents')
   const { t } = useTranslation('Employee.Management.Documents')
   const Components = useComponentContext()
@@ -101,7 +107,7 @@ function DocumentsCardContent({ employeeId, onEvent }: DocumentsCardProps) {
   })
 
   return (
-    <BaseLayout error={documentsList.errorHandling.errors}>
+    <BaseLayout error={documentsList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box withPadding={false} header={<Components.BoxHeader title={t('title')} />}>
         {documentsList.isLoading ? (
           <Loading />

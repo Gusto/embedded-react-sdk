@@ -17,7 +17,7 @@ export interface HomeAddressProps extends BaseComponentInterface<'Employee.Manag
   employeeId: string
 }
 
-function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
+function HomeAddressFlow({ employeeId, onEvent, LoaderComponent }: HomeAddressProps) {
   useI18n('Employee.Management.HomeAddress')
 
   const machine = useMemo(
@@ -26,8 +26,9 @@ function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
         ...ctx,
         component: CardContextual,
         employeeId,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -47,14 +48,20 @@ function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
  *
  * @public
  */
-export function HomeAddress({ dictionary, FallbackComponent, ...props }: HomeAddressProps) {
+export function HomeAddress({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: HomeAddressProps) {
   useComponentDictionary('Employee.Management.HomeAddress', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.HomeAddress"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <HomeAddressFlow {...props} />
+      <HomeAddressFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

@@ -22,6 +22,7 @@ import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
+import type { LoaderComponentType } from '@/components/Base'
 
 // Once the contractor has finished self-onboarding (or the record is otherwise
 // under admin review / completed), the admin needs to view and edit SSN/EIN even
@@ -137,12 +138,17 @@ export type ContractorProfileProps =
 export function ContractorProfile(props: ContractorProfileProps) {
   useComponentDictionary('Contractor.Profile', props.dictionary)
   return (
-    <BaseBoundaries componentName="Contractor.Profile" FallbackComponent={props.FallbackComponent}>
+    <BaseBoundaries
+      componentName="Contractor.Profile"
+      FallbackComponent={props.FallbackComponent}
+      LoaderComponent={props.LoaderComponent}
+    >
       {props.isAdmin === false ? (
         <SelfOnboardingContractorProfile
           contractorId={props.contractorId}
           onEvent={props.onEvent}
           className={props.className}
+          LoaderComponent={props.LoaderComponent}
         />
       ) : (
         <ContractorProfileRoot {...props} />
@@ -169,6 +175,7 @@ function ContractorProfileRoot({
   defaultValues,
   className,
   onEvent,
+  LoaderComponent,
 }: ContractorProfileProps) {
   useI18n('Contractor.Profile')
 
@@ -205,7 +212,13 @@ function ContractorProfileRoot({
   )
 
   if (contractor.isLoading) {
-    return <BaseLayout isLoading error={contractor.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractor.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   return (
@@ -214,6 +227,7 @@ function ContractorProfileRoot({
       onEvent={onEvent}
       className={className}
       setSelfOnboardingActive={setSelfOnboardingActive}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
@@ -223,6 +237,7 @@ interface ContractorProfileReadyProps {
   onEvent: ContractorProfileProps['onEvent']
   className?: string
   setSelfOnboardingActive: (value: boolean) => void
+  LoaderComponent?: LoaderComponentType
 }
 
 function ContractorProfileReady({
@@ -230,6 +245,7 @@ function ContractorProfileReady({
   onEvent,
   className,
   setSelfOnboardingActive,
+  LoaderComponent,
 }: ContractorProfileReadyProps) {
   const { t } = useTranslation('Contractor.Profile')
   const Components = useComponentContext()
@@ -271,7 +287,7 @@ function ContractorProfileReady({
 
   return (
     <section className={classNames(styles.root, className)}>
-      <BaseLayout error={contractor.errorHandling.errors}>
+      <BaseLayout error={contractor.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={contractor}>
           <Form onSubmit={() => void handleSubmit()}>
             <Flex flexDirection="column" gap={20} alignItems="stretch">
