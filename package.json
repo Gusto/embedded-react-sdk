@@ -134,7 +134,7 @@
     "fuse.js": "^7.5.0",
     "globals": "^17.8.0",
     "husky": "^9.1.7",
-    "jest-axe": "^9.0.0",
+    "jest-axe": "^11.0.0",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
     "json-schema-to-typescript": "^15.0.4",
