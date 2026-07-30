@@ -2712,6 +2712,10 @@ export namespace Translations {
   export interface ContractorSelectContractors {
     /** @defaultValue `"Name"` */
     nameColumn: string
+    /** @defaultValue `"Wage"` */
+    wageColumn: string
+    /** @defaultValue `"Hourly · {{rate}}/hr"` */
+    wageHourly: string
     /** @defaultValue `"Search by name"` */
     searchLabel: string
     /** @defaultValue `"Search by name"` */

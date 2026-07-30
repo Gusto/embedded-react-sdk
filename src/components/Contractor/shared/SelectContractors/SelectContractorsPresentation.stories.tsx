@@ -27,11 +27,46 @@ export default {
 }
 
 const mockContractors: Contractor[] = [
-  { uuid: '1', isActive: true, type: 'Individual', firstName: 'Alejandro', lastName: 'Kuhic' },
-  { uuid: '2', isActive: true, type: 'Individual', firstName: 'Hannah', lastName: 'Arendt' },
-  { uuid: '3', isActive: true, type: 'Business', businessName: 'Kant Consulting LLC' },
-  { uuid: '4', isActive: true, type: 'Individual', firstName: 'Isaiah', lastName: 'Berlin' },
-  { uuid: '5', isActive: true, type: 'Business', businessName: 'Spektor Studio' },
+  {
+    uuid: '1',
+    isActive: true,
+    type: 'Individual',
+    firstName: 'Alejandro',
+    lastName: 'Kuhic',
+    wageType: 'Hourly',
+    hourlyRate: '45.00',
+  },
+  {
+    uuid: '2',
+    isActive: true,
+    type: 'Individual',
+    firstName: 'Hannah',
+    lastName: 'Arendt',
+    wageType: 'Fixed',
+  },
+  {
+    uuid: '3',
+    isActive: true,
+    type: 'Business',
+    businessName: 'Kant Consulting LLC',
+    wageType: 'Fixed',
+  },
+  {
+    uuid: '4',
+    isActive: true,
+    type: 'Individual',
+    firstName: 'Isaiah',
+    lastName: 'Berlin',
+    wageType: 'Hourly',
+    hourlyRate: '60.00',
+  },
+  {
+    uuid: '5',
+    isActive: true,
+    type: 'Business',
+    businessName: 'Spektor Studio',
+    wageType: 'Fixed',
+  },
 ]
 
 const mockPagination: PaginationControlProps = {
@@ -50,10 +85,14 @@ function StoryWrapper({
   initialSelected = new Set<string>(),
   contractors = mockContractors,
   pagination,
+  emptyStateTitle,
+  emptyStateDescription,
 }: {
   initialSelected?: Set<string>
   contractors?: Contractor[]
   pagination?: PaginationControlProps
+  emptyStateTitle?: string
+  emptyStateDescription?: string
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [selectedIds, setSelectedIds] = useState(initialSelected)
@@ -84,6 +123,8 @@ function StoryWrapper({
       onSelectAll={handleSelectAll}
       pagination={pagination ?? mockPagination}
       isFetching={false}
+      emptyStateTitle={emptyStateTitle}
+      emptyStateDescription={emptyStateDescription}
     />
   )
 }
@@ -97,6 +138,14 @@ export const AllSelected = () => (
 )
 
 export const EmptyState = () => <StoryWrapper contractors={[]} />
+
+export const CustomEmptyState = () => (
+  <StoryWrapper
+    contractors={[]}
+    emptyStateTitle="No active contractors"
+    emptyStateDescription="Activate at least one contractor before recording a historical payment."
+  />
+)
 
 export const Fetching = () => (
   <SelectContractorsPresentation

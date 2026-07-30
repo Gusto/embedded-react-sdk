@@ -1,5 +1,7 @@
 {
   "nameColumn": "Name",
+  "wageColumn": "Wage",
+  "wageHourly": "Hourly · {{rate}}/hr",
   "searchLabel": "Search by name",
   "searchPlaceholder": "Search by name",
   "tableLabel": "Contractors",

@@ -7,6 +7,7 @@ import { buildContractorIndividual, buildContractorBusiness } from '@/test/facto
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
+import { LocaleProvider } from '@/contexts/LocaleProvider'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 vi.mock('@/i18n/I18n', () => ({
@@ -14,8 +15,14 @@ vi.mock('@/i18n/I18n', () => ({
 }))
 
 const mockContractors = [
-  buildContractorIndividual({ uuid: '1', firstName: 'Alice', lastName: 'Smith' }),
-  buildContractorBusiness({ uuid: '2', businessName: 'Acme LLC' }),
+  buildContractorIndividual({
+    uuid: '1',
+    firstName: 'Alice',
+    lastName: 'Smith',
+    wageType: 'Hourly',
+    hourlyRate: '45.00',
+  }),
+  buildContractorBusiness({ uuid: '2', businessName: 'Acme LLC', wageType: 'Fixed' }),
 ]
 
 const pagination: PaginationControlProps = {
@@ -44,11 +51,13 @@ const defaultProps: SelectContractorsPresentationProps = {
 
 function renderPresentation(overrides: Partial<SelectContractorsPresentationProps> = {}) {
   return render(
-    <ThemeProvider>
-      <ComponentsProvider value={defaultComponents}>
-        <SelectContractorsPresentation {...defaultProps} {...overrides} />
-      </ComponentsProvider>
-    </ThemeProvider>,
+    <LocaleProvider>
+      <ThemeProvider>
+        <ComponentsProvider value={defaultComponents}>
+          <SelectContractorsPresentation {...defaultProps} {...overrides} />
+        </ComponentsProvider>
+      </ThemeProvider>
+    </LocaleProvider>,
   )
 }
 
@@ -61,6 +70,18 @@ describe('SelectContractorsPresentation', () => {
     renderPresentation()
     expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     expect(screen.getByText('Acme LLC')).toBeInTheDocument()
+  })
+
+  test('renders contractor type beneath the name', () => {
+    renderPresentation()
+    expect(screen.getByText('Individual')).toBeInTheDocument()
+    expect(screen.getByText('Business')).toBeInTheDocument()
+  })
+
+  test('renders wage for hourly and fixed contractors', () => {
+    renderPresentation()
+    expect(screen.getByText('wageHourly')).toBeInTheDocument()
+    expect(screen.getByText('Fixed')).toBeInTheDocument()
   })
 
   test('calls onSelect with the contractor and checked=true when a row checkbox is clicked', async () => {
@@ -107,6 +128,19 @@ describe('SelectContractorsPresentation', () => {
   test('shows the empty state when there are no contractors', () => {
     renderPresentation({ contractors: [] })
     expect(screen.getByText('emptyState')).toBeInTheDocument()
+  })
+
+  test('shows a custom empty state title and description when provided', () => {
+    renderPresentation({
+      contractors: [],
+      emptyStateTitle: 'No active contractors',
+      emptyStateDescription:
+        'Activate at least one contractor before recording a historical payment.',
+    })
+    expect(screen.getByText('No active contractors')).toBeInTheDocument()
+    expect(
+      screen.getByText('Activate at least one contractor before recording a historical payment.'),
+    ).toBeInTheDocument()
   })
 
   test('renders pagination controls', () => {

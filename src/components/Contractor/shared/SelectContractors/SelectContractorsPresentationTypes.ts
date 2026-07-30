@@ -12,4 +12,8 @@ export interface SelectContractorsPresentationProps {
   onSearchClear: () => void
   pagination: PaginationControlProps
   isFetching: boolean
+  /** Overrides the default empty-state title shown when no contractors match. */
+  emptyStateTitle?: string
+  /** Overrides the default empty-state description shown when no contractors match. */
+  emptyStateDescription?: string
 }

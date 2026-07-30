@@ -8,6 +8,10 @@ export interface SelectContractorsProps {
   companyId: string
   /** Called with the currently selected contractor ids whenever the selection changes. */
   onSelectionChange: (selectedIds: string[]) => void
+  /** Overrides the default empty-state title shown when no contractors match. */
+  emptyStateTitle?: string
+  /** Overrides the default empty-state description shown when no contractors match. */
+  emptyStateDescription?: string
 }
 
 /**
@@ -18,7 +22,12 @@ export interface SelectContractorsProps {
  *
  * @internal
  */
-export function SelectContractors({ companyId, onSelectionChange }: SelectContractorsProps) {
+export function SelectContractors({
+  companyId,
+  onSelectionChange,
+  emptyStateTitle,
+  emptyStateDescription,
+}: SelectContractorsProps) {
   const result = useSelectContractors(companyId)
 
   const selectedIdsKey = result.isLoading ? null : [...result.selectedIds].sort().join(',')
@@ -49,6 +58,8 @@ export function SelectContractors({ companyId, onSelectionChange }: SelectContra
         onSearchClear={result.actions.onSearchClear}
         pagination={result.pagination}
         isFetching={result.status.isFetching}
+        emptyStateTitle={emptyStateTitle}
+        emptyStateDescription={emptyStateDescription}
       />
     </BaseLayout>
   )
