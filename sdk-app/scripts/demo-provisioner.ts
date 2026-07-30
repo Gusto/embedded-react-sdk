@@ -80,7 +80,7 @@ export async function createDemoAndProvision(
     'demo[company_name]': `SDK Dev ${new Date().toISOString().slice(0, 10)}`,
   })
 
-  const ciHeaders = process.env.CI ? { 'X-Gusto-Client': 'sdk-ci' } : {}
+  const ciHeaders = { 'X-Gusto-Client': process.env.CI ? 'sdk-ci' : 'sdk-local' }
   const createRes = await fetch(`${safeHost}/demos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...ciHeaders },

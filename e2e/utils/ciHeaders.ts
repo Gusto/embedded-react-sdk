@@ -1,3 +1,3 @@
-export const CI_HEADERS: Record<string, string> = process.env.CI
-  ? { 'X-Gusto-Client': 'sdk-ci' }
-  : {}
+export const CI_HEADERS: Record<string, string> = {
+  'X-Gusto-Client': process.env.CI ? 'sdk-ci' : 'sdk-local',
+}
