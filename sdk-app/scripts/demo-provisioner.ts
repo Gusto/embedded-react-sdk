@@ -80,9 +80,10 @@ export async function createDemoAndProvision(
     'demo[company_name]': `SDK Dev ${new Date().toISOString().slice(0, 10)}`,
   })
 
+  const ciHeaders = process.env.CI ? { 'X-Gusto-Client': 'sdk-ci' } : {}
   const createRes = await fetch(`${safeHost}/demos`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...ciHeaders },
     body: formBody.toString(),
     redirect: 'follow',
   })
@@ -112,6 +113,7 @@ export async function createDemoAndProvision(
     try {
       const pollRes = await fetch(`${safeHost}/demos/${demoId}`, {
         signal: AbortSignal.timeout(10000),
+        headers: ciHeaders,
       })
       const html = await pollRes.text()
       const linkMatch = html.match(/https?:\/\/[^"]*\/flows\/([a-zA-Z0-9_-]{20,})/)
