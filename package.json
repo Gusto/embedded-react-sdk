@@ -148,7 +148,7 @@
     "prism-react-renderer": "^2.4.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^7.18.2",
     "release-it": "^21.0.0",
     "sass-embedded": "^1.100.0",
     "storybook": "^10.5.5",
