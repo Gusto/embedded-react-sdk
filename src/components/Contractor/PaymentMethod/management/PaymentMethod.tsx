@@ -17,7 +17,7 @@ export interface PaymentMethodProps extends BaseComponentInterface<'Contractor.M
   contractorId: string
 }
 
-function PaymentMethodFlow({ contractorId, onEvent }: PaymentMethodProps) {
+function PaymentMethodFlow({ contractorId, onEvent, LoaderComponent }: PaymentMethodProps) {
   useI18n('Contractor.Management.PaymentMethod')
 
   const machine = useMemo(
@@ -27,8 +27,9 @@ function PaymentMethodFlow({ contractorId, onEvent }: PaymentMethodProps) {
         component: CardContextual,
         contractorId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [contractorId],
+    [contractorId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -55,14 +56,20 @@ function PaymentMethodFlow({ contractorId, onEvent }: PaymentMethodProps) {
  * @returns The contractor payment method management surface.
  * @public
  */
-export function PaymentMethod({ dictionary, FallbackComponent, ...props }: PaymentMethodProps) {
+export function PaymentMethod({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: PaymentMethodProps) {
   useComponentDictionary('Contractor.Management.PaymentMethod', dictionary)
   return (
     <BaseBoundaries
       componentName="Contractor.Management.PaymentMethod"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <PaymentMethodFlow {...props} />
+      <PaymentMethodFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

@@ -18,7 +18,8 @@ export interface StateTaxesContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function StateTaxesCardContextual() {
-  const { employeeId, onEvent, successAlert } = useFlow<StateTaxesContextInterface>()
+  const { employeeId, onEvent, successAlert, LoaderComponent } =
+    useFlow<StateTaxesContextInterface>()
   const { t } = useTranslation('Employee.Management.StateTaxes')
   const Components = useComponentContext()
   return (
@@ -32,13 +33,23 @@ export function StateTaxesCardContextual() {
           }}
         />
       ) : null}
-      <StateTaxesCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+      <StateTaxesCard
+        employeeId={ensureRequired(employeeId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function StateTaxesEditFormContextual() {
-  const { employeeId, onEvent } = useFlow<StateTaxesContextInterface>()
-  return <StateTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<StateTaxesContextInterface>()
+  return (
+    <StateTaxesEditForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

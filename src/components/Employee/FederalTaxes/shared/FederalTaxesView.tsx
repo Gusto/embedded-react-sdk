@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { type useFederalTaxesForm, type FilingStatusValue } from './useFederalTaxesForm'
 import { BaseLayout } from '@/components/Base'
+import type { LoaderComponentType } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { Flex } from '@/components/Common/Flex'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
@@ -40,6 +41,7 @@ export interface FederalTaxesViewProps {
    * overrides on the flow's `dictionary` prop propagate into the view.
    */
   dictionary?: FederalTaxesViewDictionary
+  LoaderComponent?: LoaderComponentType
 }
 
 /** @internal */
@@ -51,6 +53,7 @@ export function FederalTaxesView({
   className,
   children,
   dictionary,
+  LoaderComponent,
 }: FederalTaxesViewProps) {
   useI18n('Employee.FederalTaxesView')
   useComponentDictionary('Employee.FederalTaxesView', dictionary)
@@ -75,7 +78,7 @@ export function FederalTaxesView({
   return (
     <Flex flexDirection="column" alignItems="stretch">
       <section className={className}>
-        <BaseLayout error={federalTaxes.errorHandling.errors}>
+        <BaseLayout error={federalTaxes.errorHandling.errors} LoaderComponent={LoaderComponent}>
           <SDKFormProvider formHookResult={federalTaxes}>
             <Form onSubmit={onSubmit}>
               {children ?? (

@@ -13,18 +13,25 @@ export interface DocumentsContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DocumentsCardContextual() {
-  const { employeeId, onEvent } = useFlow<DocumentsContextInterface>()
-  return <DocumentsCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<DocumentsContextInterface>()
+  return (
+    <DocumentsCard
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
 
 /** @internal */
 export function DocumentManagerContextual() {
-  const { employeeId, formId, onEvent } = useFlow<DocumentsContextInterface>()
+  const { employeeId, formId, onEvent, LoaderComponent } = useFlow<DocumentsContextInterface>()
   return (
     <DocumentManager
       employeeId={ensureRequired(employeeId)}
       formId={ensureRequired(formId)}
       onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

@@ -345,11 +345,12 @@ function Address_2(input: AddressProps): JSX.Element;
 function Address_3(input: AddressProps_2): JSX;
 
 // @public
-function AddressCard(props: AddressCardProps): JSX;
+function AddressCard(input: AddressCardProps): JSX;
 
 // @public
 interface AddressCardProps {
     contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -371,6 +372,7 @@ interface AddressProps {
     defaultValues?: AddressDefaultValues;
     dictionary?: ResourceDictionary<'Contractor.Address'>;
     FallbackComponent?: (props: FallbackProps) => JSX.Element;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -773,9 +775,7 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
 // @public
 export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources> extends CommonComponentInterface<TResourceKey> {
     FallbackComponent?: (props: FallbackProps) => JSX.Element;
-    LoaderComponent?: (input: {
-        children?: ReactNode;
-    }) => JSX.Element;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1090,6 +1090,7 @@ function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps
 // @public
 interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1099,24 +1100,27 @@ function CompensationAddJobForm(input: CompensationAddJobFormProps): JSX;
 // @public
 interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
-function CompensationCard(props: CompensationCardProps): JSX;
+function CompensationCard(input: CompensationCardProps): JSX;
 
 // @public
-function CompensationCard_2(props: CompensationCardProps_2): JSX;
+function CompensationCard_2(input: CompensationCardProps_2): JSX;
 
 // @public
 interface CompensationCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 interface CompensationCardProps_2 {
     contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1138,6 +1142,7 @@ function CompensationEditForm_2(input: CompensationEditFormProps_2): JSX;
 interface CompensationEditFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
     jobId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2430,11 +2435,12 @@ function Deductions_2(input: DeductionsProps): JSX;
 function Deductions_3(input: DeductionsProps_2): JSX;
 
 // @public
-function DeductionsCard(props: DeductionsCardProps): JSX;
+function DeductionsCard(input: DeductionsCardProps): JSX;
 
 // @public
 interface DeductionsCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2558,17 +2564,19 @@ function Documents(input: DocumentsProps): JSX;
 function DocumentsCard(props: DocumentsCardProps): JSX;
 
 // @public
-function DocumentsCard_2(props: DocumentsCardProps_2): JSX;
+function DocumentsCard_2(input: DocumentsCardProps_2): JSX;
 
 // @public
 interface DocumentsCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 interface DocumentsCardProps_2 {
     contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2619,6 +2627,7 @@ function EditCompensation(input: EditCompensationProps): JSX;
 interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
     currentJobId?: string | null;
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onCancel?: () => void;
     onEvent: OnEventType<EventType, unknown>;
     partnerDefaultValues?: CompensationDefaultValues;
@@ -2924,6 +2933,7 @@ function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 // @public
 interface FederalTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -3262,6 +3272,7 @@ function HomeAddressCard(props: HomeAddressCardProps): JSX;
 // @public
 interface HomeAddressCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -3560,6 +3571,11 @@ export interface LinkProps extends Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 | 'title'> {
     children?: ReactNode;
 }
+
+// @public
+export type LoaderComponentType = (input: {
+    children?: ReactNode;
+}) => JSX.Element;
 
 // @public
 export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
@@ -3998,20 +4014,22 @@ interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'
 }
 
 // @public
-function PaymentMethodCard(props: PaymentMethodCardProps): JSX;
+function PaymentMethodCard(input: PaymentMethodCardProps): JSX;
 
 // @public
-function PaymentMethodCard_2(props: PaymentMethodCardProps_2): JSX;
+function PaymentMethodCard_2(input: PaymentMethodCardProps_2): JSX;
 
 // @public
 interface PaymentMethodCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 interface PaymentMethodCardProps_2 {
     contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4365,11 +4383,12 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
 // @public
-function PaystubsCard(props: PaystubsCardProps): JSX;
+function PaystubsCard(input: PaystubsCardProps): JSX;
 
 // @public
 interface PaystubsCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4526,20 +4545,22 @@ function Profile_2(input: ProfileProps_2): JSX;
 function Profile_3(input: ProfileProps_3): JSX;
 
 // @public
-function ProfileCard(props: ProfileCardProps): JSX;
+function ProfileCard(input: ProfileCardProps): JSX;
 
 // @public
-function ProfileCard_2(props: ProfileCardProps_2): JSX;
+function ProfileCard_2(input: ProfileCardProps_2): JSX;
 
 // @public
 interface ProfileCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 interface ProfileCardProps_2 {
     contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -5328,11 +5349,12 @@ function StateTaxes_2(input: StateTaxesProps_2): JSX;
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
 // @public
-function StateTaxesCard(props: StateTaxesCardProps): JSX;
+function StateTaxesCard(input: StateTaxesCardProps): JSX;
 
 // @public
 interface StateTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -6549,6 +6571,7 @@ function WorkAddressCard(props: WorkAddressCardProps): JSX;
 // @public
 interface WorkAddressCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 

@@ -36,6 +36,7 @@ function EmployeeListRoot({
   onEvent,
   dictionary,
   showContinueButton = false,
+  LoaderComponent,
 }: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   useComponentDictionary('Employee.EmployeeList', dictionary)
@@ -45,7 +46,13 @@ function EmployeeListRoot({
   })
 
   if (employeeList.isLoading) {
-    return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={employeeList.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleEdit = (employeeId: string, onboardingStatus?: OnboardingStatus) => {
@@ -61,7 +68,7 @@ function EmployeeListRoot({
   }
 
   return (
-    <BaseLayout error={employeeList.errorHandling.errors}>
+    <BaseLayout error={employeeList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <EmployeeListView
         employees={employeeList.data.employees}
         isFetching={employeeList.status.isFetching}
@@ -109,10 +116,14 @@ function EmployeeListRoot({
  *
  * @public
  */
-export function EmployeeList({ FallbackComponent, ...props }: EmployeeListProps) {
+export function EmployeeList({ FallbackComponent, LoaderComponent, ...props }: EmployeeListProps) {
   return (
-    <BaseBoundaries componentName="Employee.EmployeeList" FallbackComponent={FallbackComponent}>
-      <EmployeeListRoot {...props} />
+    <BaseBoundaries
+      componentName="Employee.EmployeeList"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <EmployeeListRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

@@ -33,6 +33,7 @@ export function EmployeeProfile({
   className = '',
   dictionary,
   onEvent,
+  LoaderComponent,
 }: ProfileProps) {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
@@ -79,7 +80,9 @@ export function EmployeeProfile({
       homeAddress,
       workAddressesQuery,
     ])
-    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={loadingErrorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const EmpFields = employeeDetails.form.Fields
@@ -124,7 +127,7 @@ export function EmployeeProfile({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Form onSubmit={submitResult.handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24}>
             <div>

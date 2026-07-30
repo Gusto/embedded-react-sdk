@@ -12,6 +12,7 @@ import { BaseLayout } from '@/components/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { LoaderComponentType } from '@/components/Base'
 
 /** @internal */
 export interface ContractorBankAccountFormBodyProps extends Omit<
@@ -29,6 +30,8 @@ export interface ContractorBankAccountFormBodyProps extends Omit<
   /** Called with the created bank account after a successful submit. */
   onSaved: (bankAccount: ContractorBankAccount) => void
   onCancel?: () => void
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -45,6 +48,7 @@ export function ContractorBankAccountFormBody({
   dictionary,
   onSaved,
   onCancel,
+  LoaderComponent,
   ...hookProps
 }: ContractorBankAccountFormBodyProps) {
   useI18n('Contractor.BankAccountFields')
@@ -54,7 +58,13 @@ export function ContractorBankAccountFormBody({
   const Components = useComponentContext()
 
   if (bankAccountForm.isLoading) {
-    return <BaseLayout isLoading error={bankAccountForm.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={bankAccountForm.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleSubmit = async () => {
@@ -65,7 +75,7 @@ export function ContractorBankAccountFormBody({
   }
 
   return (
-    <BaseLayout error={bankAccountForm.errorHandling.errors}>
+    <BaseLayout error={bankAccountForm.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={bankAccountForm}>
         <Form onSubmit={handleSubmit}>
           <ContractorBankAccountFields bankAccountForm={bankAccountForm} dictionary={dictionary} />

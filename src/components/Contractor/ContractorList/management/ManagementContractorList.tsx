@@ -40,6 +40,7 @@ function ManagementContractorListRoot({
   initialTab = 'active',
   onEvent,
   dictionary,
+  LoaderComponent,
 }: ManagementContractorListProps) {
   useI18n('Contractor.ManagementContractorList')
   useComponentDictionary('Contractor.ManagementContractorList', dictionary)
@@ -52,7 +53,13 @@ function ManagementContractorListRoot({
   })
 
   if (contractorList.isLoading) {
-    return <BaseLayout isLoading error={contractorList.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractorList.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleEdit = (contractorId: string) => {
@@ -80,7 +87,7 @@ function ManagementContractorListRoot({
   }
 
   return (
-    <BaseLayout error={contractorList.errorHandling.errors}>
+    <BaseLayout error={contractorList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <ManagementContractorListView
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
@@ -137,14 +144,16 @@ function ManagementContractorListRoot({
  */
 export function ManagementContractorList({
   FallbackComponent,
+  LoaderComponent,
   ...props
 }: ManagementContractorListProps) {
   return (
     <BaseBoundaries
       componentName="Contractor.ManagementContractorList"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <ManagementContractorListRoot {...props} />
+      <ManagementContractorListRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

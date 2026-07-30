@@ -27,6 +27,7 @@ function DashboardRoot({
   dictionary,
   onEvent,
   selectedTab: controlledTab,
+  LoaderComponent,
 }: DashboardProps) {
   useI18n('Contractor.Dashboard')
   useComponentDictionary('Contractor.Dashboard', dictionary)
@@ -67,7 +68,11 @@ function DashboardRoot({
           {selectedTab === 'pay' && <PayView contractorId={contractorId} onEvent={onEvent} />}
 
           {selectedTab === 'documents' && (
-            <DocumentsCard contractorId={contractorId} onEvent={onEvent} />
+            <DocumentsCard
+              contractorId={contractorId}
+              onEvent={onEvent}
+              LoaderComponent={LoaderComponent}
+            />
           )}
         </Flex>
       </Flex>
@@ -116,10 +121,14 @@ function DashboardHeader({ contractorId }: { contractorId: string }) {
  * @returns A React element rendering the contractor dashboard.
  * @public
  */
-export function Dashboard({ FallbackComponent, ...props }: DashboardProps) {
+export function Dashboard({ FallbackComponent, LoaderComponent, ...props }: DashboardProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Dashboard" FallbackComponent={FallbackComponent}>
-      <DashboardRoot {...props} />
+    <BaseBoundaries
+      componentName="Contractor.Dashboard"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <DashboardRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

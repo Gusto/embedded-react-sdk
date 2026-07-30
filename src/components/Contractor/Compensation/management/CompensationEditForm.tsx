@@ -40,13 +40,18 @@ export interface CompensationEditFormProps extends BaseComponentInterface<'Contr
  * @returns The contractor compensation edit form.
  * @public
  */
-export function CompensationEditForm({ FallbackComponent, ...props }: CompensationEditFormProps) {
+export function CompensationEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: CompensationEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Contractor.Management.Compensation"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <CompensationEditFormRoot {...props} />
+      <CompensationEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -56,6 +61,7 @@ function CompensationEditFormRoot({
   className,
   dictionary,
   onEvent,
+  LoaderComponent,
 }: CompensationEditFormProps) {
   useI18n('Contractor.Management.Compensation')
   useComponentDictionary('Contractor.Management.Compensation', dictionary)
@@ -65,7 +71,13 @@ function CompensationEditFormRoot({
   const payForm = useContractorPayForm({ contractorId })
 
   if (payForm.isLoading) {
-    return <BaseLayout isLoading error={payForm.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={payForm.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const { Fields } = payForm.form
@@ -95,7 +107,7 @@ function CompensationEditFormRoot({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={payForm.errorHandling.errors}>
+      <BaseLayout error={payForm.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={payForm}>
           <Form onSubmit={handleSubmit}>
             <Flex flexDirection="column" gap={4}>

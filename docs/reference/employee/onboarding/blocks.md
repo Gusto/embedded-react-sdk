@@ -307,6 +307,7 @@ Props for [EditCompensation](#editcompensation).
 | `title` | `string` | Heading text shown above the form. |
 | `currentJobId?` | `string` \| `null` | Existing job to edit. When omitted, a new job is created on submit. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeCompensation`](../../Translations/index.md#employeecompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
 | `onCancel?` | () => `void` | Optional handler invoked when the secondary cancel button is clicked. |
 | `partnerDefaultValues?` | [`CompensationDefaultValues`](#compensationdefaultvalues) | Initial values for the job title and compensation fields. |
 | `startDate?` | `string` | When provided, the hire date is pre-filled from this value and the hire date field is hidden. When absent, the hire date field is rendered so it can be set explicitly. |

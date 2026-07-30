@@ -50,13 +50,18 @@ export interface AddressEditFormProps extends BaseComponentInterface<'Contractor
  * @returns The contractor address edit form.
  * @public
  */
-export function AddressEditForm({ FallbackComponent, ...props }: AddressEditFormProps) {
+export function AddressEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: AddressEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Contractor.Management.Address"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <AddressEditFormRoot {...props} />
+      <AddressEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -66,6 +71,7 @@ function AddressEditFormRoot({
   className,
   dictionary,
   onEvent,
+  LoaderComponent,
 }: AddressEditFormProps) {
   useI18n('Contractor.Management.Address')
   useComponentDictionary('Contractor.Management.Address', dictionary)
@@ -81,7 +87,13 @@ function AddressEditFormRoot({
   const [showSuccess, setShowSuccess] = useState(false)
 
   if (contractorAddress.isLoading) {
-    return <BaseLayout isLoading error={contractorAddress.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractorAddress.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const { contractor, contractorType } = contractorAddress.data
@@ -115,7 +127,7 @@ function AddressEditFormRoot({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={contractorAddress.errorHandling.errors}>
+      <BaseLayout error={contractorAddress.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={contractorAddress}>
           <Form onSubmit={handleSubmit}>
             {alert}

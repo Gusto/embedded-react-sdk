@@ -20,7 +20,7 @@ export interface FederalTaxesProps extends BaseComponentInterface<'Employee.Mana
   employeeId: string
 }
 
-function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
+function FederalTaxesFlow({ employeeId, onEvent, LoaderComponent }: FederalTaxesProps) {
   useI18n('Employee.Management.FederalTaxes')
 
   const machine = useMemo(
@@ -30,8 +30,9 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
         component: FederalTaxesCardContextual,
         employeeId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -58,14 +59,20 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
  * @public
  * @group Block components
  */
-export function FederalTaxes({ dictionary, FallbackComponent, ...props }: FederalTaxesProps) {
+export function FederalTaxes({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: FederalTaxesProps) {
   useComponentDictionary('Employee.Management.FederalTaxes', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.FederalTaxes"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <FederalTaxesFlow {...props} />
+      <FederalTaxesFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

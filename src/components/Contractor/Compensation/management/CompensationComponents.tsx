@@ -17,7 +17,8 @@ export interface CompensationContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function CardContextual() {
-  const { contractorId, onEvent, successAlert } = useFlow<CompensationContextInterface>()
+  const { contractorId, onEvent, successAlert, LoaderComponent } =
+    useFlow<CompensationContextInterface>()
   const { t } = useTranslation('Contractor.Management.Compensation')
   const Components = useComponentContext()
   return (
@@ -31,13 +32,23 @@ export function CardContextual() {
           }}
         />
       ) : null}
-      <CompensationCard contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+      <CompensationCard
+        contractorId={ensureRequired(contractorId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function CompensationEditFormContextual() {
-  const { contractorId, onEvent } = useFlow<CompensationContextInterface>()
-  return <CompensationEditForm contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+  const { contractorId, onEvent, LoaderComponent } = useFlow<CompensationContextInterface>()
+  return (
+    <CompensationEditForm
+      contractorId={ensureRequired(contractorId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

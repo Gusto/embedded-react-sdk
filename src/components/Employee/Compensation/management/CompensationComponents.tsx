@@ -22,7 +22,8 @@ export interface CompensationContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function CompensationCardContextual() {
-  const { employeeId, onEvent, successAlert } = useFlow<CompensationContextInterface>()
+  const { employeeId, onEvent, successAlert, LoaderComponent } =
+    useFlow<CompensationContextInterface>()
   const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
   return (
@@ -36,31 +37,49 @@ export function CompensationCardContextual() {
           }}
         />
       ) : null}
-      <CompensationCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+      <CompensationCard
+        employeeId={ensureRequired(employeeId)}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </Flex>
   )
 }
 
 /** @internal */
 export function CompensationEditFormContextual() {
-  const { employeeId, currentJobId, onEvent } = useFlow<CompensationContextInterface>()
+  const { employeeId, currentJobId, onEvent, LoaderComponent } =
+    useFlow<CompensationContextInterface>()
   return (
     <CompensationEditForm
       employeeId={ensureRequired(employeeId)}
       jobId={ensureRequired(currentJobId ?? undefined)}
       onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
 
 /** @internal */
 export function CompensationAddJobFormContextual() {
-  const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
-  return <CompensationAddJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<CompensationContextInterface>()
+  return (
+    <CompensationAddJobForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
 
 /** @internal */
 export function CompensationAddAnotherJobFormContextual() {
-  const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
-  return <CompensationAddAnotherJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<CompensationContextInterface>()
+  return (
+    <CompensationAddAnotherJobForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

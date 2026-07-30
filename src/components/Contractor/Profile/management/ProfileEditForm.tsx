@@ -43,13 +43,18 @@ export interface ProfileEditFormProps extends BaseComponentInterface<'Contractor
  * @returns The contractor profile edit form.
  * @public
  */
-export function ProfileEditForm({ FallbackComponent, ...props }: ProfileEditFormProps) {
+export function ProfileEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: ProfileEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Contractor.Management.Profile"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <ProfileEditFormRoot {...props} />
+      <ProfileEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -59,6 +64,7 @@ function ProfileEditFormRoot({
   className,
   dictionary,
   onEvent,
+  LoaderComponent,
 }: ProfileEditFormProps) {
   useI18n('Contractor.Management.Profile')
   useComponentDictionary('Contractor.Management.Profile', dictionary)
@@ -79,12 +85,23 @@ function ProfileEditFormRoot({
   const [isEditingEin, setIsEditingEin] = useState(false)
 
   if (contractorDetails.isLoading) {
-    return <BaseLayout isLoading error={contractorDetails.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractorDetails.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const contractor = contractorDetails.data.contractor
   if (!contractor) {
-    return <BaseLayout error={contractorDetails.errorHandling.errors} />
+    return (
+      <BaseLayout
+        error={contractorDetails.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const isBusiness = contractor.type === CONTRACTOR_TYPE.BUSINESS
@@ -115,7 +132,7 @@ function ProfileEditFormRoot({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={contractorDetails.errorHandling.errors}>
+      <BaseLayout error={contractorDetails.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={contractorDetails}>
           <Form onSubmit={handleSubmit}>
             {alert}

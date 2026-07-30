@@ -19,18 +19,29 @@ export interface HomeAddressEditFormProps extends BaseComponentInterface<'Employ
   employeeId: string
 }
 
-function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddressEditFormProps) {
+function HomeAddressEditFormRoot({
+  employeeId,
+  onEvent,
+  dictionary,
+  LoaderComponent,
+}: HomeAddressEditFormProps) {
   useI18n('Employee.Management.HomeAddress')
   useComponentDictionary('Employee.Management.HomeAddress', dictionary)
 
   const management = useHomeAddressManagement({ employeeId, onEvent })
 
   if (management.isLoading) {
-    return <BaseLayout isLoading error={management.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={management.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   if (!isUseHomeAddressManagementSuccess(management)) {
-    return <BaseLayout error={management.errorHandling.errors} />
+    return <BaseLayout error={management.errorHandling.errors} LoaderComponent={LoaderComponent} />
   }
 
   const handleSaved = (result: HookSubmitResult<EmployeeAddress>) => {
@@ -42,7 +53,7 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
   }
 
   return (
-    <BaseLayout error={management.errorHandling.errors}>
+    <BaseLayout error={management.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <HomeAddressView
         editHomeAddressForm={management.data.editHomeAddressForm}
         createHomeAddressForm={management.data.createHomeAddressForm}
@@ -74,13 +85,18 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
  *
  * @public
  */
-export function HomeAddressEditForm({ FallbackComponent, ...props }: HomeAddressEditFormProps) {
+export function HomeAddressEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: HomeAddressEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.HomeAddress"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <HomeAddressEditFormRoot {...props} />
+      <HomeAddressEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

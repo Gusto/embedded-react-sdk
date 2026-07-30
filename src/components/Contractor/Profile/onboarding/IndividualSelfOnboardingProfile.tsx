@@ -27,6 +27,7 @@ export function IndividualSelfOnboardingProfile({
   contractorId,
   onEvent,
   className,
+  LoaderComponent,
 }: ContractorSelfOnboardingProfileProps) {
   const { t } = useTranslation('Contractor.Profile')
   const Components = useComponentContext()
@@ -39,7 +40,13 @@ export function IndividualSelfOnboardingProfile({
   })
 
   if (contractor.isLoading) {
-    return <BaseLayout isLoading error={contractor.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={contractor.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const { Fields } = contractor.form
@@ -58,7 +65,7 @@ export function IndividualSelfOnboardingProfile({
 
   return (
     <section className={classNames(styles.root, className)}>
-      <BaseLayout error={contractor.errorHandling.errors}>
+      <BaseLayout error={contractor.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={contractor}>
           <Form onSubmit={() => void handleSubmit()}>
             <Flex flexDirection="column" gap={20} alignItems="stretch">

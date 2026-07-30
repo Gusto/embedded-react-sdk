@@ -17,7 +17,7 @@ export interface DocumentsProps extends BaseComponentInterface<'Employee.Managem
   employeeId: string
 }
 
-function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
+function DocumentsFlow({ employeeId, onEvent, LoaderComponent }: DocumentsProps) {
   useI18n('Employee.Management.Documents')
 
   const machine = useMemo(
@@ -26,8 +26,9 @@ function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
         ...ctx,
         component: DocumentsCardContextual,
         employeeId,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -51,14 +52,20 @@ function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
  * @returns The documents management flow.
  * @public
  */
-export function Documents({ dictionary, FallbackComponent, ...props }: DocumentsProps) {
+export function Documents({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: DocumentsProps) {
   useComponentDictionary('Employee.Management.Documents', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.Documents"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <DocumentsFlow {...props} />
+      <DocumentsFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

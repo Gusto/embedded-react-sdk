@@ -92,18 +92,38 @@ export interface ProfileProps extends BaseComponentInterface<'Employee.Profile'>
  * @returns The employee profile onboarding step.
  * @public
  */
-export function Profile({ FallbackComponent, isAdmin = false, ...props }: ProfileProps) {
+export function Profile({
+  FallbackComponent,
+  isAdmin = false,
+  LoaderComponent,
+  ...props
+}: ProfileProps) {
   return (
-    <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
-      {isAdmin ? <AdminProfile {...props} isAdmin /> : <EmployeeProfile {...props} />}
+    <BaseBoundaries
+      componentName="Employee.Profile"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      {isAdmin ? (
+        <AdminProfile {...props} isAdmin LoaderComponent={LoaderComponent} />
+      ) : (
+        <EmployeeProfile {...props} LoaderComponent={LoaderComponent} />
+      )}
     </BaseBoundaries>
   )
 }
 
 /** @internal */
 export const ProfileContextual = () => {
-  const { companyId, employeeId, onEvent, isAdmin, defaultValues, isSelfOnboardingEnabled } =
-    useFlow<OnboardingContextInterface>()
+  const {
+    companyId,
+    employeeId,
+    onEvent,
+    isAdmin,
+    defaultValues,
+    isSelfOnboardingEnabled,
+    LoaderComponent,
+  } = useFlow<OnboardingContextInterface>()
 
   return (
     <Profile
@@ -113,6 +133,7 @@ export const ProfileContextual = () => {
       isAdmin={isAdmin}
       defaultValues={defaultValues?.profile}
       isSelfOnboardingEnabled={isSelfOnboardingEnabled}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
