@@ -108,13 +108,40 @@ jobs:
               exit 1
             fi
 
-            conflicts=$(git diff --name-only --diff-filter=U)
-            if [ -n "$conflicts" ]; then
+            # Capture the conflicted set for control flow + the scope guard below.
+            # NUL-delimited because git filenames may contain newlines/spaces.
+            mapfile -d '' conflicted < <(git diff -z --name-only --diff-filter=U)
+
+            if [ "${#conflicted[@]}" -gt 0 ]; then
+              # SECURITY: do NOT interpolate the conflicted filenames into the prompt.
+              # Filenames are attacker-controlled (a crafted name can carry prompt-
+              # injection text). Pass no untrusted data — Claude discovers the conflicts
+              # itself via its own tools. Its toolset excludes Bash, so it can only edit
+              # files, not run commands.
               npx --yes @anthropic-ai/claude-code -p \
-                "You are resolving git merge conflicts during a rebase. These files contain conflict markers (<<<<<<<, =======, >>>>>>>): $conflicts. Edit each file to a single coherent resolution that preserves the intent of both sides, and remove all conflict markers. Do NOT run any git commands." \
+                "A git rebase is in progress in this repository and has stopped on merge conflicts. Some tracked files contain conflict markers (lines starting with <<<<<<<, =======, or >>>>>>>). Find every such file and edit it to a single coherent resolution that preserves the intent of both sides, removing all conflict markers. Only edit files that contain conflict markers. Do NOT run any git commands." \
                 --allowedTools "Edit,Read,Write,Glob,Grep" \
                 --permission-mode acceptEdits \
                 --max-turns 30
+
+              # Defense in depth: conflict file *contents* are attacker-controlled too, so
+              # a hijacked resolution could try to write a backdoor elsewhere. Refuse to
+              # continue if anything outside the conflicted set was modified or created.
+              mapfile -d '' changed < <(git diff -z --name-only; git ls-files -z --others --exclude-standard)
+              for f in "${changed[@]}"; do
+                [ -z "$f" ] && continue
+                in_scope=false
+                for c in "${conflicted[@]}"; do
+                  [ "$f" = "$c" ] && { in_scope=true; break; }
+                done
+                if ! $in_scope; then
+                  echo "Resolution modified a file outside the conflict set: $f"
+                  git rebase --abort || true
+                  echo "result=out-of-scope-edit" >> "$GITHUB_OUTPUT"
+                  exit 1
+                fi
+              done
+
               git add -A
             fi
 
