@@ -40,6 +40,10 @@ import {
   StateTaxesWithFutureRatesPrototype,
   StateTaxesWithFutureRatesStates,
 } from './design/prototypes/company-onboarding/StateTaxesWithFutureRates'
+import {
+  ManagePaySchedulesPrototype,
+  ManagePaySchedulesStates,
+} from './design/prototypes/company-management/ManagePaySchedules'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -155,6 +159,22 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <StateTaxesWithFutureRatesStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'manage-pay-schedules',
+            children: [
+              { index: true, element: <ManagePaySchedulesPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <ManagePaySchedulesStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <ManagePaySchedulesStates />,
                   },
                 ],
               },
