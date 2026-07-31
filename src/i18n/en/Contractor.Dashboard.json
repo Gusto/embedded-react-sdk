@@ -1,0 +1,16 @@
+{
+  "contractorRoleLabel": "Contractor",
+  "tabsLabel": "Contractor dashboard tabs",
+  "tabs": {
+    "details": "Details",
+    "pay": "Pay",
+    "documents": "Documents"
+  },
+  "alerts": {
+    "profileUpdated": "Profile updated",
+    "addressUpdated": "Address updated",
+    "bankAccountAdded": "Bank account added",
+    "bankAccountRemoved": "Bank account removed",
+    "compensationUpdated": "Compensation updated"
+  }
+}

@@ -12,9 +12,12 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import { normalizeToDate } from '@/helpers/dateFormatting'
+import type { LoaderComponentType } from '@/components/Base'
 
 interface PayScheduleFormProps extends UsePayScheduleFormProps {
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 // Pay period preview dates are RFCDate (`YYYY-MM-DD`) instances; normalizeToDate parses
@@ -23,15 +26,15 @@ interface PayScheduleFormProps extends UsePayScheduleFormProps {
 const toLocalDate = (rfcDate: { toString(): string }): Date => normalizeToDate(rfcDate.toString())!
 
 /** @internal */
-export function PayScheduleForm({ onEvent, ...hookProps }: PayScheduleFormProps) {
+export function PayScheduleForm({ onEvent, LoaderComponent, ...hookProps }: PayScheduleFormProps) {
   return (
-    <BaseBoundaries componentName="Company.PayScheduleForm">
-      <PayScheduleFormRoot onEvent={onEvent} {...hookProps} />
+    <BaseBoundaries componentName="Company.PayScheduleForm" LoaderComponent={LoaderComponent}>
+      <PayScheduleFormRoot onEvent={onEvent} LoaderComponent={LoaderComponent} {...hookProps} />
     </BaseBoundaries>
   )
 }
 
-function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
+function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PayScheduleFormProps) {
   const { t } = useTranslation('Company.PaySchedule')
   const Components = useComponentContext()
   const dateFormatter = useDateFormatter()
@@ -39,7 +42,13 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState(0)
 
   if (paySchedule.isLoading) {
-    return <BaseLayout isLoading error={paySchedule.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={paySchedule.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleSubmit = async () => {
@@ -71,7 +80,7 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
   }
 
   return (
-    <BaseLayout error={paySchedule.errorHandling.errors}>
+    <BaseLayout error={paySchedule.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={paySchedule}>
         <Form onSubmit={() => void handleSubmit()}>
           <Flex flexDirection="column">

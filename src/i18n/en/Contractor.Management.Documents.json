@@ -1,0 +1,16 @@
+{
+  "title": "Documents",
+  "listLabel": "Contractor documents",
+  "nameColumn": "Name",
+  "descriptionColumn": "Description",
+  "signingStatusColumn": "Signing status",
+  "viewCta": "View",
+  "emptyPlaceholder": "–",
+  "signingStatus": {
+    "signed": "Signed",
+    "notSigned": "Not signed"
+  },
+  "emptyState": {
+    "title": "No documents yet"
+  }
+}

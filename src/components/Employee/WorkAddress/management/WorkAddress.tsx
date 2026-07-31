@@ -20,7 +20,7 @@ export interface WorkAddressProps extends BaseComponentInterface<'Employee.Manag
   employeeId: string
 }
 
-function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
+function WorkAddressFlow({ employeeId, onEvent, LoaderComponent }: WorkAddressProps) {
   useI18n('Employee.Management.WorkAddress')
 
   const machine = useMemo(
@@ -29,8 +29,9 @@ function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
         ...ctx,
         component: WorkAddressCardContextual,
         employeeId,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -50,14 +51,20 @@ function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
  *
  * @public
  */
-export function WorkAddress({ dictionary, FallbackComponent, ...props }: WorkAddressProps) {
+export function WorkAddress({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: WorkAddressProps) {
   useComponentDictionary('Employee.Management.WorkAddress', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.WorkAddress"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <WorkAddressFlow {...props} />
+      <WorkAddressFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

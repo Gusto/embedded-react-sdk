@@ -32,13 +32,18 @@ export interface StateTaxesEditFormProps extends BaseComponentInterface<'Employe
  * @param props - The component props.
  * @public
  */
-export function StateTaxesEditForm({ FallbackComponent, ...props }: StateTaxesEditFormProps) {
+export function StateTaxesEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: StateTaxesEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.StateTaxes"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <StateTaxesEditFormRoot {...props} />
+      <StateTaxesEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -48,6 +53,7 @@ function StateTaxesEditFormRoot({
   className,
   dictionary,
   onEvent,
+  LoaderComponent,
 }: StateTaxesEditFormProps) {
   useI18n('Employee.Management.StateTaxes')
   useComponentDictionary('Employee.Management.StateTaxes', dictionary)
@@ -58,7 +64,13 @@ function StateTaxesEditFormRoot({
   const managementStateTaxesDictionary = useManagementStateTaxesViewDictionary()
 
   if (stateTaxes.isLoading) {
-    return <BaseLayout isLoading error={stateTaxes.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={stateTaxes.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleSubmit = async () => {
@@ -90,6 +102,7 @@ function StateTaxesEditFormRoot({
       }
       className={className}
       dictionary={managementStateTaxesDictionary}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

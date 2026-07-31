@@ -1278,6 +1278,33 @@ Translation keys for the `Contractor.Address` i18n namespace.
 
 ***
 
+<a id="contractorbankaccountfields"></a>
+
+### ContractorBankAccountFields
+
+Translation keys for the `Contractor.BankAccountFields` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorbankaccountfieldsaccountnumberlabel"></a> `accountNumberLabel` | `"Account number"` |
+| <a id="property-contractorbankaccountfieldsaccounttypechecking"></a> `accountTypeChecking` | `"Checking"` |
+| <a id="property-contractorbankaccountfieldsaccounttypelabel"></a> `accountTypeLabel` | `"Account type"` |
+| <a id="property-contractorbankaccountfieldsaccounttypesavings"></a> `accountTypeSavings` | `"Savings"` |
+| <a id="property-contractorbankaccountfieldscancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-contractorbankaccountfieldsnamelabel"></a> `nameLabel` | `"Account nickname"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberdescription"></a> `routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberlabel"></a> `routingNumberLabel` | `"Routing number"` |
+| <a id="property-contractorbankaccountfieldssavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-contractorbankaccountfieldsvalidations"></a> `validations` | |
+| `validations.accountName` | `"Account nickname is required"` |
+| `validations.accountNumber` | `"Enter a valid account number"` |
+| `validations.accountNumberFormat` | `"Enter a valid account number"` |
+| `validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+
+***
+
 <a id="contractorcontractorlist"></a>
 
 ### ContractorContractorList
@@ -1308,6 +1335,31 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | <a id="property-contractorcontractorlistprogressbarcta"></a> `progressBarCta` | `"Back to contractors"` |
 | <a id="property-contractorcontractorlistreviewcta"></a> `reviewCta` | `"Review"` |
 | <a id="property-contractorcontractorlisttitle"></a> `title` | `"Contractors"` |
+
+***
+
+<a id="contractordashboard"></a>
+
+### ContractorDashboard
+
+Translation keys for the `Contractor.Dashboard` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractordashboardalerts"></a> `alerts` | |
+| `alerts.addressUpdated` | `"Address updated"` |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| `alerts.compensationUpdated` | `"Compensation updated"` |
+| `alerts.profileUpdated` | `"Profile updated"` |
+| <a id="property-contractordashboardcontractorrolelabel"></a> `contractorRoleLabel` | `"Contractor"` |
+| <a id="property-contractordashboardtabs"></a> `tabs` | |
+| `tabs.details` | `"Details"` |
+| `tabs.documents` | `"Documents"` |
+| `tabs.pay` | `"Pay"` |
+| <a id="property-contractordashboardtabslabel"></a> `tabsLabel` | `"Contractor dashboard tabs"` |
 
 ***
 
@@ -1357,6 +1409,78 @@ Translation keys for the `Contractor.Landing` i18n namespace.
 | `steps.paymentMethod` | `"Set up your payment method"` |
 | `steps.profile` | `"Complete your profile and tax information"` |
 | <a id="property-contractorlandingstepssubtitle"></a> `stepsSubtitle` | `"Here's what you'll need to do:"` |
+
+***
+
+<a id="contractormanagementaddress"></a>
+
+### ContractorManagementAddress
+
+Translation keys for the `Contractor.Management.Address` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementaddressalerts"></a> `alerts` | |
+| `alerts.addressUpdated` | `"Address updated"` |
+| <a id="property-contractormanagementaddresseditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementaddressemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementaddressform"></a> `form` | |
+| `form.businessDescription` | `"Update {{name}}’s business address."` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.city` | `"City"` |
+| `form.homeDescription` | `"Update {{name}}’s home address."` |
+| `form.saveCta` | `"Save"` |
+| `form.state` | `"State"` |
+| `form.statePlaceholder` | `"Select state..."` |
+| `form.street1` | `"Street 1"` |
+| `form.street2` | `"Street 2"` |
+| `form.successAlert` | `"Address updated"` |
+| `form.title` | `"Edit address"` |
+| `form.validations` | |
+| `form.validations.city` | `"Please provide valid city name"` |
+| `form.validations.state` | `"Please select a state"` |
+| `form.validations.street1` | `"Street address is required"` |
+| `form.validations.zip` | `"Please provide valid zip code"` |
+| `form.validations.zipInvalid` | `"Please enter a valid ZIP code"` |
+| `form.zip` | `"Zip"` |
+| <a id="property-contractormanagementaddresstitle"></a> `title` | `"Address"` |
+
+***
+
+<a id="contractormanagementcompensation"></a>
+
+### ContractorManagementCompensation
+
+Translation keys for the `Contractor.Management.Compensation` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementcompensationalerts"></a> `alerts` | |
+| `alerts.compensationUpdated` | `"Compensation updated"` |
+| <a id="property-contractormanagementcompensationeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementcompensationemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementcompensationfixedlabel"></a> `fixedLabel` | `"Fixed"` |
+| <a id="property-contractormanagementcompensationform"></a> `form` | |
+| `form.cancelCta` | `"Cancel"` |
+| `form.description` | `"Update the contractor's compensation type and rate."` |
+| `form.fixedDescription` | `"Pay a fixed amount each pay period."` |
+| `form.hourlyDescription` | `"Pay based on hours worked."` |
+| `form.hourlyRateLabel` | `"Hourly rate"` |
+| `form.saveCta` | `"Save"` |
+| `form.successAlert` | `"Compensation updated"` |
+| `form.title` | `"Edit compensation"` |
+| `form.validations` | |
+| `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.wageTypeLabel` | `"Compensation type"` |
+| <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
+| <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
+| <a id="property-contractormanagementcompensationtitle"></a> `title` | `"Compensation"` |
+| <a id="property-contractormanagementcompensationtypelabel"></a> `typeLabel` | `"Type"` |
+| <a id="property-contractormanagementcompensationwagelabel"></a> `wageLabel` | `"Wage"` |
 
 ***
 
@@ -1421,6 +1545,78 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlisttabslabel"></a> `tabsLabel` | `"Contractor status tabs"` |
 | <a id="property-contractormanagementcontractorlisttitle"></a> `title` | `"Contractors"` |
 | <a id="property-contractormanagementcontractorlistviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
+
+***
+
+<a id="contractormanagementdocuments"></a>
+
+### ContractorManagementDocuments
+
+Translation keys for the `Contractor.Management.Documents` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementdocumentsdescriptioncolumn"></a> `descriptionColumn` | `"Description"` |
+| <a id="property-contractormanagementdocumentsemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementdocumentsemptystate"></a> `emptyState` | |
+| `emptyState.title` | `"No documents yet"` |
+| <a id="property-contractormanagementdocumentslistlabel"></a> `listLabel` | `"Contractor documents"` |
+| <a id="property-contractormanagementdocumentsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractormanagementdocumentssigningstatus"></a> `signingStatus` | |
+| `signingStatus.notSigned` | `"Not signed"` |
+| `signingStatus.signed` | `"Signed"` |
+| <a id="property-contractormanagementdocumentssigningstatuscolumn"></a> `signingStatusColumn` | `"Signing status"` |
+| <a id="property-contractormanagementdocumentstitle"></a> `title` | `"Documents"` |
+| <a id="property-contractormanagementdocumentsviewcta"></a> `viewCta` | `"View"` |
+
+***
+
+<a id="contractormanagementpaymentmethod"></a>
+
+### ContractorManagementPaymentMethod
+
+Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementpaymentmethodaccounttypecolumn"></a> `accountTypeColumn` | `"Account type"` |
+| <a id="property-contractormanagementpaymentmethodaddbankaccountcta"></a> `addBankAccountCta` | `"Add bank account"` |
+| <a id="property-contractormanagementpaymentmethodalerts"></a> `alerts` | |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| <a id="property-contractormanagementpaymentmethodbankaccountlistlabel"></a> `bankAccountListLabel` | `"Contractor bank account"` |
+| <a id="property-contractormanagementpaymentmethodchecklabel"></a> `checkLabel` | `"Check"` |
+| <a id="property-contractormanagementpaymentmethodeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementpaymentmethodform"></a> `form` | |
+| `form.accountNumberLabel` | `"Account number"` |
+| `form.accountTypeChecking` | `"Checking"` |
+| `form.accountTypeLabel` | `"Account type"` |
+| `form.accountTypeSavings` | `"Savings"` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.nameLabel` | `"Account nickname"` |
+| `form.routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| `form.routingNumberLabel` | `"Routing number"` |
+| `form.saveCta` | `"Save"` |
+| `form.title` | `"Add bank account"` |
+| `form.validations` | |
+| `form.validations.accountNumber` | `"Enter a valid account number"` |
+| `form.validations.name` | `"Account nickname is required"` |
+| `form.validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+| <a id="property-contractormanagementpaymentmethodhamburgertitle"></a> `hamburgerTitle` | `"Bank account actions"` |
+| <a id="property-contractormanagementpaymentmethodnicknamecolumn"></a> `nicknameColumn` | `"Nickname"` |
+| <a id="property-contractormanagementpaymentmethodpaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountcta"></a> `removeBankAccountCta` | `"Remove account"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountdialog"></a> `removeBankAccountDialog` | |
+| `removeBankAccountDialog.cancelCta` | `"Cancel"` |
+| `removeBankAccountDialog.confirmCta` | `"Remove"` |
+| `removeBankAccountDialog.description` | `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` |
+| `removeBankAccountDialog.title` | `"Remove bank account"` |
+| <a id="property-contractormanagementpaymentmethodroutingnumbercolumn"></a> `routingNumberColumn` | `"Routing number"` |
+| <a id="property-contractormanagementpaymentmethodtitle"></a> `title` | `"Payment"` |
 
 ***
 
@@ -2021,14 +2217,15 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | <a id="property-contractorsignatureformsectioninstructions"></a> `sectionInstructions` | |
 | `sectionInstructions.address` | `"See sections 5-7 of IRS Form W-9 for instructions."` |
 | `sectionInstructions.certification` | `"See Part 2 of the IRS Form W-9 for instructions."` |
+| `sectionInstructions.ein` | `"Your EIN is required as a business contractor. See Part 1 of the IRS Form W-9 for instructions."` |
 | `sectionInstructions.exemptions` | `"See section 4 of IRS Form W-9 for instructions."` |
-| `sectionInstructions.tin` | `"For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN)."` |
-| `sectionInstructions.tinSecondary` | `"See Part 1 of the IRS Form W-9 for instructions."` |
+| `sectionInstructions.ssn` | `"Your SSN is required as an individual contractor. See Part 1 of the IRS Form W-9 for instructions."` |
 | <a id="property-contractorsignatureformsections"></a> `sections` | |
 | `sections.address` | `"Address"` |
 | `sections.certification` | `"Certification"` |
+| `sections.ein` | `"Employer identification number (EIN)"` |
 | `sections.exemptions` | `"Exemptions"` |
-| `sections.tin` | `"Taxpayer Identification Number (TIN)"` |
+| `sections.ssn` | `"Social security number (SSN)"` |
 | <a id="property-contractorsignatureformsignaturerequired"></a> `signatureRequired` | `"Signature required"` |
 | <a id="property-contractorsignatureformsigncta"></a> `signCta` | `"Sign"` |
 | <a id="property-contractorsignatureformsigningcta"></a> `signingCta` | `"Signing…"` |
@@ -3155,7 +3352,6 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
-| <a id="property-employeemanagementemployeelistrehirecta"></a> `rehireCta` | `"Rehire employee"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |
@@ -4048,7 +4244,6 @@ Translation keys for the `Payroll.Common` i18n namespace.
 | `status.processing` |
 | `status.readyToSubmit` |
 | `status.submitted` |
-| `status.unprocessed` |
 | `status.waitingForWireIn` |
 
 ***
@@ -5205,9 +5400,15 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanytimeofftimeoffpolicydetails"></a> `Company.TimeOff.TimeOffPolicyDetails` | [`CompanyTimeOffTimeOffPolicyDetails`](#companytimeofftimeoffpolicydetails) |
 | <a id="property-resourcescompanytimeofftimeoffrequests"></a> `Company.TimeOff.TimeOffRequests` | [`CompanyTimeOffTimeOffRequests`](#companytimeofftimeoffrequests) |
 | <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
+| <a id="property-resourcescontractorbankaccountfields"></a> `Contractor.BankAccountFields` | [`ContractorBankAccountFields`](#contractorbankaccountfields) |
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
+| <a id="property-resourcescontractordashboard"></a> `Contractor.Dashboard` | [`ContractorDashboard`](#contractordashboard) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
+| <a id="property-resourcescontractormanagementcompensation"></a> `Contractor.Management.Compensation` | [`ContractorManagementCompensation`](#contractormanagementcompensation) |
+| <a id="property-resourcescontractormanagementdocuments"></a> `Contractor.Management.Documents` | [`ContractorManagementDocuments`](#contractormanagementdocuments) |
+| <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |

@@ -59,7 +59,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 | Component | Description |
 | ------ | ------ |
-| [EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
+| [EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no available actions, so no menu is rendered for them. |
 | [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single employee's profile, pay, and documents. |
 | [TerminationFlow](termination-flow.md) | Guided flow to terminate an employee and arrange their final paycheck. |
 | [EmployeeOnboarding.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | Guided flow to onboard an employee. |

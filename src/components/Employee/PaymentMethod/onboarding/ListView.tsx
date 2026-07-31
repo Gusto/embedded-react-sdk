@@ -24,6 +24,7 @@ import { centsToDollars } from '@/helpers/currencyHelpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -32,17 +33,18 @@ interface ListViewProps {
   employeeId: string
   isAdmin: boolean
   onEvent: OnEventType<EventType, unknown>
+  LoaderComponent?: LoaderComponentType
 }
 
 /** @internal */
-export function ListView({ employeeId, isAdmin, onEvent }: ListViewProps) {
+export function ListView({ employeeId, isAdmin, onEvent, LoaderComponent }: ListViewProps) {
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethodForm = usePaymentMethodForm({ employeeId })
 
   const errorHandling = composeErrorHandler([paymentMethodList, paymentMethodForm])
 
   if (paymentMethodList.isLoading || paymentMethodForm.isLoading) {
-    return <BaseLayout isLoading error={errorHandling.errors} />
+    return <BaseLayout isLoading error={errorHandling.errors} LoaderComponent={LoaderComponent} />
   }
 
   return (
@@ -53,6 +55,7 @@ export function ListView({ employeeId, isAdmin, onEvent }: ListViewProps) {
       paymentMethodList={paymentMethodList}
       paymentMethodForm={paymentMethodForm}
       errorHandling={errorHandling}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
@@ -70,6 +73,7 @@ function ListViewReady({
   paymentMethodList,
   paymentMethodForm,
   errorHandling,
+  LoaderComponent,
 }: ListViewReadyProps) {
   const { paymentMethod, bankAccounts } = paymentMethodList.data
   const { deletePendingBankAccountUuid } = paymentMethodList.status
@@ -193,7 +197,7 @@ function ListViewReady({
 
   return (
     <>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={paymentMethodForm}>
           {deletedAccountNumber !== null && (
             <Components.Alert

@@ -20,6 +20,7 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 
 /**
@@ -32,6 +33,8 @@ export interface PaystubsCardProps {
   employeeId: string
   /** Event handler fired when paystub interactions occur. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -45,15 +48,15 @@ export interface PaystubsCardProps {
  *
  * @public
  */
-export function PaystubsCard(props: PaystubsCardProps) {
+export function PaystubsCard({ LoaderComponent, ...props }: PaystubsCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.Paystubs">
-      <PaystubsCardContent {...props} />
+    <BaseBoundaries componentName="Employee.Management.Paystubs" LoaderComponent={LoaderComponent}>
+      <PaystubsCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function PaystubsCardContent({ employeeId, onEvent }: PaystubsCardProps) {
+function PaystubsCardContent({ employeeId, onEvent, LoaderComponent }: PaystubsCardProps) {
   useI18n('Employee.Management.Paystubs')
   const { t } = useTranslation('Employee.Management.Paystubs')
   const Components = useComponentContext()
@@ -64,7 +67,7 @@ function PaystubsCardContent({ employeeId, onEvent }: PaystubsCardProps) {
 
   if (paystubsList.isLoading) {
     return (
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Components.Box header={<Components.BoxHeader title={t('title')} />}>
           <Loading />
         </Components.Box>
@@ -79,6 +82,7 @@ function PaystubsCardContent({ employeeId, onEvent }: PaystubsCardProps) {
       paystubsList={paystubsList}
       paymentMethodList={paymentMethodList}
       errorHandling={errorHandling}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
@@ -95,6 +99,7 @@ function PaystubsCardReady({
   paystubsList,
   paymentMethodList,
   errorHandling,
+  LoaderComponent,
 }: PaystubsCardReadyProps) {
   const { t } = useTranslation('Employee.Management.Paystubs')
   const Components = useComponentContext()
@@ -247,7 +252,7 @@ function PaystubsCardReady({
   const isShowingTable = payStubs.length > 0
 
   return (
-    <BaseLayout error={errorHandling.errors}>
+    <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         withPadding={!isShowingTable}
         header={<Components.BoxHeader title={t('title')} />}

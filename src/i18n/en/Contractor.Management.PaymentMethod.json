@@ -1,0 +1,40 @@
+{
+  "title": "Payment",
+  "addBankAccountCta": "Add bank account",
+  "editCta": "Edit",
+  "removeBankAccountCta": "Remove account",
+  "hamburgerTitle": "Bank account actions",
+  "bankAccountListLabel": "Contractor bank account",
+  "nicknameColumn": "Nickname",
+  "routingNumberColumn": "Routing number",
+  "accountTypeColumn": "Account type",
+  "paymentMethodLabel": "Payment method",
+  "checkLabel": "Check",
+  "removeBankAccountDialog": {
+    "title": "Remove bank account",
+    "description": "Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check.",
+    "confirmCta": "Remove",
+    "cancelCta": "Cancel"
+  },
+  "alerts": {
+    "bankAccountAdded": "Bank account added",
+    "bankAccountRemoved": "Bank account removed"
+  },
+  "form": {
+    "title": "Add bank account",
+    "nameLabel": "Account nickname",
+    "routingNumberLabel": "Routing number",
+    "routingNumberDescription": "9 digits, on the bottom left of a check",
+    "accountNumberLabel": "Account number",
+    "accountTypeLabel": "Account type",
+    "accountTypeChecking": "Checking",
+    "accountTypeSavings": "Savings",
+    "cancelCta": "Cancel",
+    "saveCta": "Save",
+    "validations": {
+      "name": "Account nickname is required",
+      "routingNumber": "Enter a valid 9-digit routing number",
+      "accountNumber": "Enter a valid account number"
+    }
+  }
+}

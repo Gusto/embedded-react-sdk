@@ -7,6 +7,7 @@ import { ManagementCompensationFormBody } from '../ManagementCompensationFormBod
 import styles from './CompensationEditJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -27,6 +28,8 @@ export interface CompensationEditJobFormProps extends CommonComponentInterface<'
    *  `Compensation`) on a successful save, and
    *  `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -34,11 +37,18 @@ export interface CompensationEditJobFormProps extends CommonComponentInterface<'
  *
  * @public
  */
-export function CompensationEditJobForm({ dictionary, ...props }: CompensationEditJobFormProps) {
+export function CompensationEditJobForm({
+  dictionary,
+  LoaderComponent,
+  ...props
+}: CompensationEditJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Management.Compensation">
-      <CompensationDefaultsLoader {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.Compensation"
+      LoaderComponent={LoaderComponent}
+    >
+      <CompensationDefaultsLoader LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -55,13 +65,14 @@ function CompensationDefaultsLoader({
   employeeId,
   jobId,
   defaultValues: _baseDefaults,
+  LoaderComponent,
   ...rest
 }: LoaderProps) {
   const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId }, { enabled: !!employeeId })
 
   if (jobsQuery.isLoading || !jobsQuery.data) {
     const errorHandling = composeErrorHandler([jobsQuery])
-    return <BaseLayout isLoading error={errorHandling.errors} />
+    return <BaseLayout isLoading error={errorHandling.errors} LoaderComponent={LoaderComponent} />
   }
 
   const job = jobsQuery.data.jobs?.find(j => j.uuid === jobId)
@@ -82,14 +93,29 @@ function CompensationDefaultsLoader({
       }
     : undefined
 
-  return <Root employeeId={employeeId} jobId={jobId} defaultValues={defaultValues} {...rest} />
+  return (
+    <Root
+      employeeId={employeeId}
+      jobId={jobId}
+      defaultValues={defaultValues}
+      LoaderComponent={LoaderComponent}
+      {...rest}
+    />
+  )
 }
 
 interface RootProps extends LoaderProps {
   defaultValues?: Partial<CompensationFormData>
 }
 
-function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProps) {
+function Root({
+  employeeId,
+  jobId,
+  defaultValues,
+  className,
+  onEvent,
+  LoaderComponent,
+}: RootProps) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
 
@@ -123,7 +149,9 @@ function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProp
 
   if (jobForm.isLoading || compensationForm.isLoading) {
     const loadingErrorHandling = composeErrorHandler([jobForm, compensationForm])
-    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={loadingErrorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   // PUT job first (immediate mutation of 2% shareholder / WC), then POST
@@ -148,7 +176,7 @@ function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProp
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Form onSubmit={submitResult.handleSubmit}>
           <ManagementCompensationFormBody
             jobForm={jobForm}

@@ -29,6 +29,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | [useContractorAddressForm](contractor/hooks/use-contractor-address-form) | Form hook for editing a contractor's address. |
 | [useContractorBankAccountForm](contractor/hooks/use-contractor-bank-account-form) | Headless React Hook Form hook for creating a contractor's bank account. |
 | [useContractorDetailsForm](contractor/hooks/use-contractor-details-form) | Headless hook for creating or updating a contractor's profile details — individual vs. business type, wage type, names, SSN/EIN, work state, and the self-onboarding preference. |
+| [useContractorPayForm](contractor/hooks/use-contractor-pay-form) | Headless React Hook Form hook for editing a contractor's compensation. |
 | [useContractorPaymentMethodForm](contractor/hooks/use-contractor-payment-method-form) | Headless React Hook Form hook for managing a contractor's payment method type. |
 | [useContractorSignatureForm](contractor/hooks/use-contractor-signature-form) | Headless hook for signing a contractor document — collects the document's fields plus a typed signature and consent. |
 | [useCurrentHomeAddressForm](employee/hooks/use-current-home-address-form) | Convenience wrapper around [useHomeAddressForm](employee/hooks/use-home-address-form.md#usehomeaddressform) that auto-resolves the employee's current home address. |
@@ -441,6 +442,7 @@ parsed values (or `undefined` if invalid).
 - [`UseContractorDetailsFormReady`](contractor/hooks/use-contractor-details-form.md#usecontractordetailsformready)
 - [`UseContractorBankAccountFormReady`](contractor/hooks/use-contractor-bank-account-form.md#usecontractorbankaccountformready)
 - [`UseContractorPaymentMethodFormReady`](contractor/hooks/use-contractor-payment-method-form.md#usecontractorpaymentmethodformready)
+- [`UseContractorPayFormReady`](contractor/hooks/use-contractor-pay-form.md#usecontractorpayformready)
 - [`UseWorkAddressFormReady`](employee/hooks/use-work-address-form.md#useworkaddressformready)
 - [`UseHomeAddressFormReady`](employee/hooks/use-home-address-form.md#usehomeaddressformready)
 - [`UseContractorAddressFormReady`](contractor/hooks/use-contractor-address-form.md#usecontractoraddressformready)

@@ -57,15 +57,20 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
  * }
  * ```
  */
-export function Deductions({ employeeId, dictionary, onEvent }: DeductionsProps) {
+export function Deductions({ employeeId, dictionary, onEvent, LoaderComponent }: DeductionsProps) {
   return (
-    <BaseBoundaries componentName="Employee.Deductions">
-      <DeductionsRoot employeeId={employeeId} dictionary={dictionary} onEvent={onEvent} />
+    <BaseBoundaries componentName="Employee.Deductions" LoaderComponent={LoaderComponent}>
+      <DeductionsRoot
+        employeeId={employeeId}
+        dictionary={dictionary}
+        onEvent={onEvent}
+        LoaderComponent={LoaderComponent}
+      />
     </BaseBoundaries>
   )
 }
 
-function DeductionsRoot({ employeeId, dictionary, onEvent }: DeductionsProps) {
+function DeductionsRoot({ employeeId, dictionary, onEvent, LoaderComponent }: DeductionsProps) {
   useComponentDictionary('Employee.Deductions', dictionary)
   useI18n('Employee.Deductions')
 
@@ -75,8 +80,9 @@ function DeductionsRoot({ employeeId, dictionary, onEvent }: DeductionsProps) {
         ...initialContext,
         component: DeductionsListContextual,
         employeeId,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />

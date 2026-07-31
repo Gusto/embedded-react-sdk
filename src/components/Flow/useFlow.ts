@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import type { CustomTypeOptions } from 'i18next'
 import type { OnEventType } from '../Base/useBase'
-import type { CommonComponentInterface } from '../Base'
+import type { CommonComponentInterface, LoaderComponentType } from '../Base'
 import type { BreadcrumbTrail } from '../Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import type { EventType } from '@/shared/constants'
 
@@ -77,6 +77,12 @@ export interface FlowContextInterface {
    * (or set to `null`), no header is shown.
    */
   header?: FlowHeaderConfig | null
+  /**
+   * Optional loading indicator propagated from the flow's entry component so step
+   * components can forward it to their `BaseLayout`. Falls back to the
+   * `LoadingIndicatorContext` value when omitted.
+   */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**

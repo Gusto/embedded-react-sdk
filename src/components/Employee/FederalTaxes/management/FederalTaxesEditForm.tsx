@@ -41,13 +41,18 @@ export interface FederalTaxesEditFormProps extends BaseComponentInterface<'Emplo
  * @public
  * @group Block components
  */
-export function FederalTaxesEditForm({ FallbackComponent, ...props }: FederalTaxesEditFormProps) {
+export function FederalTaxesEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: FederalTaxesEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.FederalTaxes"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <FederalTaxesEditFormRoot {...props} />
+      <FederalTaxesEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -59,6 +64,7 @@ function FederalTaxesEditFormRoot({
   dictionary,
   defaultValues,
   onEvent,
+  LoaderComponent,
 }: FederalTaxesEditFormProps) {
   useI18n('Employee.Management.FederalTaxes')
   useComponentDictionary('Employee.Management.FederalTaxes', dictionary)
@@ -75,7 +81,13 @@ function FederalTaxesEditFormRoot({
   } satisfies UseFederalTaxesFormProps)
 
   if (federalTaxes.isLoading) {
-    return <BaseLayout isLoading error={federalTaxes.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={federalTaxes.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleSubmit = async () => {
@@ -93,6 +105,7 @@ function FederalTaxesEditFormRoot({
     <FederalTaxesView
       federalTaxes={federalTaxes}
       onSubmit={handleSubmit}
+      LoaderComponent={LoaderComponent}
       actions={
         <ActionsLayout>
           <Components.Button variant="secondary" onClick={handleCancel}>

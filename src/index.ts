@@ -48,6 +48,7 @@ export type {
 export type {
   BaseComponentInterface,
   CommonComponentInterface,
+  LoaderComponentType,
   OnEventType,
 } from '@/components/Base'
 export type {
@@ -319,6 +320,25 @@ export type {
   ContractorPaymentMethodFormField,
   TypeFieldProps as ContractorPaymentMethodTypeFieldProps,
 } from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
+
+export {
+  useContractorPayForm,
+  ContractorPayErrorCodes,
+  WageType as ContractorPayWageType,
+} from '@/components/Contractor/Compensation/shared/useContractorPayForm'
+export type {
+  UseContractorPayFormProps,
+  UseContractorPayFormResult,
+  UseContractorPayFormReady,
+  ContractorPayFormFields,
+  ContractorPayFieldsMetadata,
+  ContractorPayErrorCode,
+  ContractorPayFormData,
+  ContractorPayFormField,
+  RequiredValidation as ContractorPayRequiredValidation,
+  WageTypeFieldProps as ContractorPayWageTypeFieldProps,
+  HourlyRateFieldProps as ContractorPayHourlyRateFieldProps,
+} from '@/components/Contractor/Compensation/shared/useContractorPayForm'
 
 export {
   useWorkAddressForm,
@@ -611,17 +631,17 @@ export type {
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
 
 // Domain data hooks - Contractor
-export { useContractorDocumentsList } from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+export { useContractorDocumentsList } from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
 export type {
   UseContractorDocumentsListParams,
   UseContractorDocumentsListResult,
   UseContractorDocumentsListReady,
-} from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+} from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
 
 export {
   useContractorSignatureForm,
   ContractorSignatureFormErrorCodes,
-} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
+} from '@/components/Contractor/Documents/shared/SignatureForm/useContractorSignatureForm'
 export type {
   UseContractorSignatureFormProps,
   UseContractorSignatureFormResult,
@@ -654,4 +674,4 @@ export type {
   ContractorSignatureAgreeValidation,
   ContractorSignatureSsnValidation,
   ContractorSignatureEinValidation,
-} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
+} from '@/components/Contractor/Documents/shared/SignatureForm/useContractorSignatureForm'

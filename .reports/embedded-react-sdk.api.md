@@ -342,7 +342,28 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 function Address_2(input: AddressProps): JSX.Element;
 
 // @public
+function Address_3(input: AddressProps_2): JSX;
+
+// @public
+function AddressCard(input: AddressCardProps): JSX;
+
+// @public
+interface AddressCardProps {
+    contractorId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
 type AddressDefaultValues = RequireAtLeastOne<ContractorAddressFormData>;
+
+// @public
+function AddressEditForm(input: AddressEditFormProps): JSX;
+
+// @public
+interface AddressEditFormProps extends BaseComponentInterface<'Contractor.Management.Address'> {
+    contractorId: string;
+}
 
 // @public
 interface AddressProps {
@@ -351,7 +372,13 @@ interface AddressProps {
     defaultValues?: AddressDefaultValues;
     dictionary?: ResourceDictionary<'Contractor.Address'>;
     FallbackComponent?: (props: FallbackProps) => JSX.Element;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface AddressProps_2 extends BaseComponentInterface<'Contractor.Management.Address'> {
+    contractorId: string;
 }
 
 // @public
@@ -748,9 +775,7 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
 // @public
 export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources> extends CommonComponentInterface<TResourceKey> {
     FallbackComponent?: (props: FallbackProps) => JSX.Element;
-    LoaderComponent?: (input: {
-        children?: ReactNode;
-    }) => JSX.Element;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1057,11 +1082,15 @@ function Compensation_2(props: CompensationProps): JSX;
 function Compensation_3(input: CompensationProps_2): JSX;
 
 // @public
+function Compensation_4(input: CompensationProps_3): JSX;
+
+// @public
 function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps): JSX;
 
 // @public
 interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1071,15 +1100,27 @@ function CompensationAddJobForm(input: CompensationAddJobFormProps): JSX;
 // @public
 interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
-function CompensationCard(props: CompensationCardProps): JSX;
+function CompensationCard(input: CompensationCardProps): JSX;
+
+// @public
+function CompensationCard_2(input: CompensationCardProps_2): JSX;
 
 // @public
 interface CompensationCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface CompensationCardProps_2 {
+    contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1095,10 +1136,19 @@ type CompensationDefaultValues = RequireAtLeastOne<{
 function CompensationEditForm(input: CompensationEditFormProps): JSX;
 
 // @public
+function CompensationEditForm_2(input: CompensationEditFormProps_2): JSX;
+
+// @public
 interface CompensationEditFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
     jobId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface CompensationEditFormProps_2 extends BaseComponentInterface<'Contractor.Management.Compensation'> {
+    contractorId: string;
 }
 
 // @public
@@ -1160,6 +1210,11 @@ interface CompensationProps extends BaseComponentInterface<'Employee.Compensatio
 // @public
 interface CompensationProps_2 extends BaseComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
+}
+
+// @public
+interface CompensationProps_3 extends BaseComponentInterface<'Contractor.Management.Compensation'> {
+    contractorId: string;
 }
 
 // @public
@@ -1310,6 +1365,24 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED: "contractor/management/profile/editCancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED: "contractor/management/profile/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_REQUESTED: "contractor/management/address/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED: "contractor/management/address/updated";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED: "contractor/management/address/editCancelled";
+    readonly CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED: "contractor/management/address/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED: "contractor/management/paymentMethod/card/addRequested";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_EDIT_REQUESTED: "contractor/management/paymentMethod/card/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED: "contractor/management/paymentMethod/card/removed";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED: "contractor/management/paymentMethod/bankForm/submitted";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED: "contractor/management/paymentMethod/bankForm/cancelled";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED: "contractor/management/paymentMethod/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_REQUESTED: "contractor/management/compensation/editRequested";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED: "contractor/management/compensation/updated";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED: "contractor/management/compensation/editCancelled";
+    readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
+    readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
+    readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
+    readonly CONTRACTOR_DASHBOARD_TAB_CHANGE: "contractor/dashboard/tabChange";
+    readonly CONTRACTOR_DASHBOARD_ALERT_DISMISSED: "contractor/dashboard/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1779,12 +1852,37 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        DashboardFlow_2 as DashboardFlow,
+        Dashboard_2 as Dashboard,
+        DashboardFlowProps_2 as DashboardFlowProps,
+        DashboardProps_2 as DashboardProps,
+        DashboardTab_2 as DashboardTab,
         Profile_3 as Profile,
         ProfileCard_2 as ProfileCard,
         ProfileEditForm_2 as ProfileEditForm,
         ProfileProps_3 as ProfileProps,
         ProfileCardProps_2 as ProfileCardProps,
         ProfileEditFormProps_2 as ProfileEditFormProps,
+        Address_3 as Address,
+        AddressCard,
+        AddressEditForm,
+        AddressProps_2 as AddressProps,
+        AddressCardProps,
+        AddressEditFormProps,
+        PaymentMethod_4 as PaymentMethod,
+        PaymentMethodCard_2 as PaymentMethodCard,
+        PaymentMethodEditForm,
+        PaymentMethodProps_4 as PaymentMethodProps,
+        PaymentMethodCardProps_2 as PaymentMethodCardProps,
+        PaymentMethodEditFormProps,
+        Compensation_4 as Compensation,
+        CompensationCard_2 as CompensationCard,
+        CompensationEditForm_2 as CompensationEditForm,
+        CompensationProps_3 as CompensationProps,
+        CompensationCardProps_2 as CompensationCardProps,
+        CompensationEditFormProps_2 as CompensationEditFormProps,
+        DocumentsCard_2 as DocumentsCard,
+        DocumentsCardProps_2 as DocumentsCardProps,
         PaymentFlow,
         PaymentFlowProps,
         CreatePaymentFlow,
@@ -1857,6 +1955,32 @@ export const ContractorOnboardingStatus: {
 };
 
 // @public
+export type ContractorPayErrorCode = (typeof ContractorPayErrorCodes)[keyof typeof ContractorPayErrorCodes];
+
+// @public
+export const ContractorPayErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type ContractorPayFieldsMetadata = { wageType: FieldMetadataWithOptions<"Fixed" | "Hourly">; hourlyRate: FieldMetadata; };
+
+// @public
+export type ContractorPayFormData = { wageType: "Fixed" | "Hourly"; hourlyRate: number; };
+
+// @public
+export type ContractorPayFormField = "hourlyRate" | "wageType";
+
+// @public
+export interface ContractorPayFormFields {
+    HourlyRate: ComponentType<ContractorPayHourlyRateFieldProps>;
+    WageType: ComponentType<ContractorPayWageTypeFieldProps>;
+}
+
+// @public
+export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation>>;
+
+// @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
 
 // @public
@@ -1883,6 +2007,18 @@ export type ContractorPaymentMethodFormType = "Check" | "Direct Deposit";
 
 // @public
 export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
+
+// @public
+export type ContractorPayRequiredValidation = typeof ContractorPayErrorCodes.REQUIRED;
+
+// @public
+export const ContractorPayWageType: {
+    readonly Fixed: "Fixed";
+    readonly Hourly: "Hourly";
+};
+
+// @public
+export type ContractorPayWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPayFormData['wageType']>>;
 
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
@@ -2141,11 +2277,22 @@ export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldPr
 function Dashboard(input: DashboardProps): JSX;
 
 // @public
+function Dashboard_2(input: DashboardProps_2): JSX;
+
+// @public
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
+
+// @public
+const DashboardFlow_2: (input: DashboardFlowProps_2) => JSX;
 
 // @public
 interface DashboardFlowProps extends BaseComponentInterface<never> {
     employeeId: string;
+}
+
+// @public
+interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
+    contractorId: string;
 }
 
 // @public (undocumented)
@@ -2155,7 +2302,16 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
 }
 
 // @public (undocumented)
+interface DashboardProps_2 extends BaseComponentInterface<'Contractor.Dashboard'> {
+    contractorId: string;
+    selectedTab?: DashboardTab_2;
+}
+
+// @public (undocumented)
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
+
+// @public (undocumented)
+type DashboardTab_2 = 'details' | 'pay' | 'documents';
 
 // @public
 export type DataAttributes = {
@@ -2282,11 +2438,12 @@ function Deductions_2(input: DeductionsProps): JSX;
 function Deductions_3(input: DeductionsProps_2): JSX;
 
 // @public
-function DeductionsCard(props: DeductionsCardProps): JSX;
+function DeductionsCard(input: DeductionsCardProps): JSX;
 
 // @public
 interface DeductionsCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2410,8 +2567,19 @@ function Documents(input: DocumentsProps): JSX;
 function DocumentsCard(props: DocumentsCardProps): JSX;
 
 // @public
+function DocumentsCard_2(input: DocumentsCardProps_2): JSX;
+
+// @public
 interface DocumentsCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface DocumentsCardProps_2 {
+    contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2462,6 +2630,7 @@ function EditCompensation(input: EditCompensationProps): JSX;
 interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
     currentJobId?: string | null;
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onCancel?: () => void;
     onEvent: OnEventType<EventType, unknown>;
     partnerDefaultValues?: CompensationDefaultValues;
@@ -2767,6 +2936,7 @@ function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 // @public
 interface FederalTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -3113,6 +3283,7 @@ function HomeAddressCard(props: HomeAddressCardProps): JSX;
 // @public
 interface HomeAddressCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -3411,6 +3582,11 @@ export interface LinkProps extends Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 | 'title'> {
     children?: ReactNode;
 }
+
+// @public
+export type LoaderComponentType = (input: {
+    children?: ReactNode;
+}) => JSX.Element;
 
 // @public
 export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
@@ -3837,6 +4013,9 @@ function PaymentMethod_2(input: PaymentMethodProps_2): JSX;
 function PaymentMethod_3(input: PaymentMethodProps_3): JSX;
 
 // @public
+function PaymentMethod_4(input: PaymentMethodProps_4): JSX;
+
+// @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
 
 // @public
@@ -3846,12 +4025,31 @@ interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'
 }
 
 // @public
-function PaymentMethodCard(props: PaymentMethodCardProps): JSX;
+function PaymentMethodCard(input: PaymentMethodCardProps): JSX;
+
+// @public
+function PaymentMethodCard_2(input: PaymentMethodCardProps_2): JSX;
 
 // @public
 interface PaymentMethodCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface PaymentMethodCardProps_2 {
+    contractorId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+function PaymentMethodEditForm(input: PaymentMethodEditFormProps): JSX;
+
+// @public
+interface PaymentMethodEditFormProps extends BaseComponentInterface<'Contractor.Management.PaymentMethod'> {
+    contractorId: string;
 }
 
 // @public
@@ -3899,6 +4097,11 @@ interface PaymentMethodProps_2 extends BaseComponentInterface<'Employee.Manageme
 
 // @public
 interface PaymentMethodProps_3 extends BaseComponentInterface<'Contractor.PaymentMethod'> {
+    contractorId: string;
+}
+
+// @public
+interface PaymentMethodProps_4 extends BaseComponentInterface<'Contractor.Management.PaymentMethod'> {
     contractorId: string;
 }
 
@@ -4191,11 +4394,12 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
 // @public
-function PaystubsCard(props: PaystubsCardProps): JSX;
+function PaystubsCard(input: PaystubsCardProps): JSX;
 
 // @public
 interface PaystubsCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4352,20 +4556,22 @@ function Profile_2(input: ProfileProps_2): JSX;
 function Profile_3(input: ProfileProps_3): JSX;
 
 // @public
-function ProfileCard(props: ProfileCardProps): JSX;
+function ProfileCard(input: ProfileCardProps): JSX;
 
 // @public
-function ProfileCard_2(props: ProfileCardProps_2): JSX;
+function ProfileCard_2(input: ProfileCardProps_2): JSX;
 
 // @public
 interface ProfileCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 interface ProfileCardProps_2 {
     contractorId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4584,11 +4790,23 @@ export interface Resources {
     // (undocumented)
     'Contractor.Address': Translations.ContractorAddress
     // (undocumented)
+    'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
+    // (undocumented)
     'Contractor.ContractorList': Translations.ContractorContractorList
+    // (undocumented)
+    'Contractor.Dashboard': Translations.ContractorDashboard
     // (undocumented)
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)
     'Contractor.Landing': Translations.ContractorLanding
+    // (undocumented)
+    'Contractor.Management.Address': Translations.ContractorManagementAddress
+    // (undocumented)
+    'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+    // (undocumented)
+    'Contractor.Management.Documents': Translations.ContractorManagementDocuments
+    // (undocumented)
+    'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
     // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)
@@ -5146,11 +5364,12 @@ function StateTaxes_2(input: StateTaxesProps_2): JSX;
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
 // @public
-function StateTaxesCard(props: StateTaxesCardProps): JSX;
+function StateTaxesCard(input: StateTaxesCardProps): JSX;
 
 // @public
 interface StateTaxesCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -5780,6 +5999,34 @@ export type UseContractorDocumentsListReady = BaseHookReady<{
 export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
 
 // @public
+export function useContractorPayForm(input: UseContractorPayFormProps): HookLoadingResult | UseContractorPayFormReady;
+
+// @public
+export interface UseContractorPayFormProps {
+    contractorId: string;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorPayFormReady extends BaseFormHookReady<ContractorPayFieldsMetadata, ContractorPayFormData, ContractorPayFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<Contractor> | undefined>;
+    };
+    data: {
+        contractor: Contractor;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+        isHourly: boolean;
+    };
+}
+
+// @public
+export type UseContractorPayFormResult = HookLoadingResult | UseContractorPayFormReady;
+
+// @public
 export function useContractorPaymentMethodForm(input: UseContractorPaymentMethodFormProps): HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
@@ -6339,6 +6586,7 @@ function WorkAddressCard(props: WorkAddressCardProps): JSX;
 // @public
 interface WorkAddressCardProps {
     employeeId: string;
+    LoaderComponent?: LoaderComponentType;
     onEvent: OnEventType<EventType, unknown>;
 }
 

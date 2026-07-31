@@ -20,6 +20,7 @@ import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -40,6 +41,8 @@ export interface CompensationCardProps {
   employeeId: string
   /** Callback invoked when the card emits an event. See the events table on {@link CompensationCard} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -62,15 +65,18 @@ export interface CompensationCardProps {
  * @public
  * @group Block components
  */
-export function CompensationCard(props: CompensationCardProps) {
+export function CompensationCard({ LoaderComponent, ...props }: CompensationCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.Compensation">
-      <CompensationCardContent {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.Compensation"
+      LoaderComponent={LoaderComponent}
+    >
+      <CompensationCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function CompensationCardContent({ employeeId, onEvent }: CompensationCardProps) {
+function CompensationCardContent({ employeeId, onEvent, LoaderComponent }: CompensationCardProps) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
@@ -79,7 +85,7 @@ function CompensationCardContent({ employeeId, onEvent }: CompensationCardProps)
 
   if (compensation.isLoading) {
     return (
-      <BaseLayout error={compensation.errorHandling.errors}>
+      <BaseLayout error={compensation.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Components.Box header={<Components.BoxHeader title={t('card.title')} />}>
           <Loading />
         </Components.Box>
@@ -88,7 +94,12 @@ function CompensationCardContent({ employeeId, onEvent }: CompensationCardProps)
   }
 
   return (
-    <CompensationCardReady employeeId={employeeId} onEvent={onEvent} compensation={compensation} />
+    <CompensationCardReady
+      employeeId={employeeId}
+      onEvent={onEvent}
+      compensation={compensation}
+      LoaderComponent={LoaderComponent}
+    />
   )
 }
 
@@ -96,7 +107,12 @@ interface CompensationCardReadyProps extends CompensationCardProps {
   compensation: UseCompensationManagementReady
 }
 
-function CompensationCardReady({ employeeId, onEvent, compensation }: CompensationCardReadyProps) {
+function CompensationCardReady({
+  employeeId,
+  onEvent,
+  compensation,
+  LoaderComponent,
+}: CompensationCardReadyProps) {
   const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
   const formatCompensationRate = useFormatCompensationRate()
@@ -308,7 +324,7 @@ function CompensationCardReady({ employeeId, onEvent, compensation }: Compensati
   })
 
   return (
-    <BaseLayout error={compensation.errorHandling.errors}>
+    <BaseLayout error={compensation.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         withPadding={!hasMultipleJobs}
         header={

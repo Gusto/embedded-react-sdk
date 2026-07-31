@@ -10,12 +10,24 @@ export interface WorkAddressContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function WorkAddressCardContextual() {
-  const { employeeId, onEvent } = useFlow<WorkAddressContextInterface>()
-  return <WorkAddressCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<WorkAddressContextInterface>()
+  return (
+    <WorkAddressCard
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
 
 /** @internal */
 export function WorkAddressEditFormContextual() {
-  const { employeeId, onEvent } = useFlow<WorkAddressContextInterface>()
-  return <WorkAddressEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  const { employeeId, onEvent, LoaderComponent } = useFlow<WorkAddressContextInterface>()
+  return (
+    <WorkAddressEditForm
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }

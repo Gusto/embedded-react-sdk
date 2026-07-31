@@ -37,13 +37,18 @@ export interface DeductionsEditFormProps extends BaseComponentInterface<'Employe
  * @returns The rendered add/edit form.
  * @public
  */
-export function DeductionsEditForm({ FallbackComponent, ...props }: DeductionsEditFormProps) {
+export function DeductionsEditForm({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: DeductionsEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.Deductions"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <DeductionsEditFormRoot {...props} />
+      <DeductionsEditFormRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
@@ -53,6 +58,7 @@ function DeductionsEditFormRoot({
   editingDeductionId,
   dictionary,
   onEvent,
+  LoaderComponent,
 }: DeductionsEditFormProps) {
   useI18n('Employee.Management.Deductions')
   useComponentDictionary('Employee.Management.Deductions', dictionary)
@@ -63,7 +69,9 @@ function DeductionsEditFormRoot({
   const formDictionary = useManagementDeductionsFormDictionary()
 
   if (list.isLoading) {
-    return <BaseLayout isLoading error={list.errorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={list.errorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const deduction = editingDeductionId
@@ -71,11 +79,12 @@ function DeductionsEditFormRoot({
     : null
 
   return (
-    <BaseLayout error={list.errorHandling.errors}>
+    <BaseLayout error={list.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <DeductionsForm
         employeeId={employeeId}
         deduction={deduction}
         dictionary={formDictionary}
+        LoaderComponent={LoaderComponent}
         onSaved={(saved, mode) => {
           onEvent(
             mode === 'create'

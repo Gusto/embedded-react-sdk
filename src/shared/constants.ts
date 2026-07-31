@@ -251,6 +251,34 @@ export const contractorEvents = {
   CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: 'contractor/management/profile/updated',
   CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED: 'contractor/management/profile/editCancelled',
   CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED: 'contractor/management/profile/alertDismissed',
+  CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_REQUESTED: 'contractor/management/address/editRequested',
+  CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED: 'contractor/management/address/updated',
+  CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED: 'contractor/management/address/editCancelled',
+  CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED: 'contractor/management/address/alertDismissed',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED:
+    'contractor/management/paymentMethod/card/addRequested',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_EDIT_REQUESTED:
+    'contractor/management/paymentMethod/card/editRequested',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED:
+    'contractor/management/paymentMethod/card/removed',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED:
+    'contractor/management/paymentMethod/bankForm/submitted',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED:
+    'contractor/management/paymentMethod/bankForm/cancelled',
+  CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED:
+    'contractor/management/paymentMethod/alertDismissed',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_REQUESTED:
+    'contractor/management/compensation/editRequested',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED: 'contractor/management/compensation/updated',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED:
+    'contractor/management/compensation/editCancelled',
+  CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED:
+    'contractor/management/compensation/alertDismissed',
+  CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED:
+    'contractor/management/documents/card/viewRequested',
+  CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: 'contractor/management/documents/card/viewed',
+  CONTRACTOR_DASHBOARD_TAB_CHANGE: 'contractor/dashboard/tabChange',
+  CONTRACTOR_DASHBOARD_ALERT_DISMISSED: 'contractor/dashboard/alertDismissed',
 } as const
 
 /**

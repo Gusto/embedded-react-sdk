@@ -8,6 +8,7 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
+import type { LoaderComponentType } from '@/components/Base'
 
 /** @internal */
 export type BankFormBodyDictionary = ResourceDictionary<'Employee.BankFormBody'>
@@ -24,6 +25,7 @@ export interface BankFormBodyProps extends Omit<UseBankFormProps, 'employeeId'> 
   /** Called with the created bank account after a successful submit. */
   onSaved: (bankAccount: EmployeeBankAccount) => void
   onCancel?: () => void
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -40,6 +42,7 @@ export function BankFormBody({
   dictionary,
   onSaved,
   onCancel,
+  LoaderComponent,
   ...hookProps
 }: BankFormBodyProps) {
   useI18n('Employee.BankFormBody')
@@ -49,7 +52,13 @@ export function BankFormBody({
   const Components = useComponentContext()
 
   if (bankForm.isLoading) {
-    return <BaseLayout isLoading error={bankForm.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={bankForm.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const { Fields } = bankForm.form
@@ -62,7 +71,7 @@ export function BankFormBody({
   }
 
   return (
-    <BaseLayout error={bankForm.errorHandling.errors}>
+    <BaseLayout error={bankForm.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={bankForm}>
         <Form onSubmit={handleSubmit}>
           <Fields.Name

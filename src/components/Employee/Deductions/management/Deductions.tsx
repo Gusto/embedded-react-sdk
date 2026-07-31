@@ -17,7 +17,7 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Manage
   employeeId: string
 }
 
-function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
+function DeductionsFlow({ employeeId, onEvent, LoaderComponent }: DeductionsProps) {
   useI18n('Employee.Management.Deductions')
 
   const machine = useMemo(
@@ -27,8 +27,9 @@ function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
         component: DeductionsCardContextual,
         employeeId,
         successAlert: null,
+        LoaderComponent,
       })),
-    [employeeId],
+    [employeeId, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -58,14 +59,20 @@ function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
  * @public
  * @group Block components
  */
-export function Deductions({ dictionary, FallbackComponent, ...props }: DeductionsProps) {
+export function Deductions({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: DeductionsProps) {
   useComponentDictionary('Employee.Management.Deductions', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.Management.Deductions"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <DeductionsFlow {...props} />
+      <DeductionsFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
