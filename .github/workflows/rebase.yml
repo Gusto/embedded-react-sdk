@@ -84,7 +84,7 @@ jobs:
       - name: Rebase onto main (Claude resolves conflicts)
         id: rebase
         env:
-          GIT_EDITOR: "true" # accept existing commit messages non-interactively
+          GIT_EDITOR: 'true' # accept existing commit messages non-interactively
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           set -uo pipefail
