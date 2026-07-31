@@ -24,6 +24,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.ContractorList': ['companyId'],
   'ContractorManagement.CreatePayment': ['companyId'],
   'ContractorManagement.CreatePaymentFlow': ['companyId'],
+  'ContractorManagement.HistoricalPaymentContractors': ['companyId'],
   'ContractorManagement.PaymentFlow': ['companyId'],
   'ContractorManagement.PaymentHistory': ['companyId'],
   'ContractorManagement.PaymentStatement': ['companyId'],

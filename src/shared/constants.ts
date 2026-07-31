@@ -279,6 +279,21 @@ export const contractorPaymentEvents = {
 } as const
 
 /**
+ * Event keys emitted by historical contractor payment components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Kept separate from
+ * {@link contractorPaymentEvents} since historical payments are a distinct
+ * flow with their own event scope.
+ *
+ * @public
+ */
+export const contractorHistoricalPaymentEvents = {
+  CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED:
+    'contractor/historicalPayments/contractorsSelected',
+} as const
+
+/**
  * Event keys emitted by employee termination components.
  *
  * @remarks
@@ -521,6 +536,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
+  ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,
   ...terminationEvents,
   ...timeOffEvents,
