@@ -281,9 +281,6 @@ describe('PayrollOverview calculatedAt guard', () => {
   })
 
   it('shows the loading state instead of throwing when a not-yet-fresh snapshot has a null calculatedAt while a refetch is in flight', async () => {
-    // Stale-while-revalidate: the cached snapshot lacks `calculatedAt` but a
-    // background refetch is running, so this is a transient loading state — not a
-    // genuinely uncalculated payroll — and must not trip the error boundary.
     mockPayrollData = {
       ...basePayrollData,
       calculatedAt: null,
@@ -300,8 +297,6 @@ describe('PayrollOverview calculatedAt guard', () => {
   })
 
   it('throws to the error boundary once the fetch has settled on a genuinely uncalculated payroll', async () => {
-    // No refetch in flight and still no `calculatedAt`: the payroll really is not
-    // calculated, so the component contract (calculated payroll required) is enforced.
     mockPayrollData = {
       ...basePayrollData,
       calculatedAt: null,
