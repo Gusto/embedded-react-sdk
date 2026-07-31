@@ -182,6 +182,7 @@ function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {
 function App({ config }: { config: E2EConfig }) {
   return (
     <StrictMode>
+      <h1>E2E Test Harness</h1>
       <FlowSelector currentFlow={config.flow} />
       <main>
         <GustoProvider config={{ baseUrl: config.baseUrl }}>
