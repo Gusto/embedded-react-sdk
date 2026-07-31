@@ -25,6 +25,9 @@ test.describe('ContractorOnboardingFlow - cancel mid-onboarding returns to list'
       timeout: 30000,
     })
 
+    // Checked here too, not just at the final state the fixture's automatic
+    // a11y check covers — the profile step is a real intermediate screen this
+    // test navigates away from before ending.
     await expectNoAxeViolations(page)
 
     const backCta = page.getByRole('button', { name: /back to contractors/i }).first()
@@ -35,7 +38,5 @@ test.describe('ContractorOnboardingFlow - cancel mid-onboarding returns to list'
     await expect(page.getByRole('heading', { name: /^contractors$/i })).toBeVisible({
       timeout: 30000,
     })
-
-    await expectNoAxeViolations(page)
   })
 })

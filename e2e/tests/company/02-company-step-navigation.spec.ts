@@ -5,7 +5,6 @@ import {
   landOnCompanyOnboarding,
 } from '../../utils/companyFlowDrivers'
 import { waitForLoadingComplete } from '../../utils/helpers'
-import { expectNoAxeViolations } from '../../utils/a11y'
 
 test.describe('CompanyOnboarding — step navigation', () => {
   test.beforeEach(({}, testInfo) => {
@@ -25,8 +24,6 @@ test.describe('CompanyOnboarding — step navigation', () => {
       timeout: 30000,
     })
     await expect(page.getByRole('progressbar')).toBeVisible()
-
-    await expectNoAxeViolations(page)
   })
 
   test('back button on first step returns to onboarding overview when present', async ({
@@ -49,7 +46,5 @@ test.describe('CompanyOnboarding — step navigation', () => {
         timeout: 30000,
       })
     }
-
-    await expectNoAxeViolations(page)
   })
 })

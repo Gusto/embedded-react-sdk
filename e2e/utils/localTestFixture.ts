@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import type { ScenarioContext } from '../scenario/context'
 import { createValidationErrorCollector } from './validationErrorCollector'
+import { expectNoAxeViolations } from './a11y'
 
 interface E2EState {
   flowToken: string
@@ -267,6 +268,19 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
             `attachment for the full text.\n\n${detail}`,
         )
       }
+    }
+
+    // Automatic a11y check on the final page state, mirroring the vitest-side
+    // global afterEach gate (src/test/setup.ts). Every spec using this fixture
+    // gets this for free — no per-test expectNoAxeViolations call needed.
+    // Skipped for tests that never reached a real page (test.skip before
+    // page.goto) or that already failed for another reason, so this doesn't
+    // pile unrelated a11y noise onto an existing failure.
+    if (
+      (testInfo.status === 'passed' || testInfo.status === undefined) &&
+      page.url() !== 'about:blank'
+    ) {
+      await expectNoAxeViolations(page)
     }
   },
 })

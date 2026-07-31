@@ -1,7 +1,6 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { OVERVIEW_HEADING, BEGIN_ONBOARDING_BUTTON } from '../../utils/companyFlowDrivers'
 import { generateUniqueEIN, waitForLoadingComplete } from '../../utils/helpers'
-import { expectNoAxeViolations } from '../../utils/a11y'
 
 test.describe('CompanyOnboardingFlow', () => {
   test.beforeEach(({}, testInfo) => {
@@ -25,8 +24,6 @@ test.describe('CompanyOnboardingFlow', () => {
     await expect(page.getByText(/employees/i).first()).toBeVisible()
 
     await expect(page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON })).toBeVisible()
-
-    await expectNoAxeViolations(page)
   })
 
   test('can navigate to first step (Company addresses)', async ({ page }) => {
@@ -38,8 +35,6 @@ test.describe('CompanyOnboardingFlow', () => {
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
     await expect(page.getByRole('progressbar')).toBeVisible()
-
-    await expectNoAxeViolations(page)
   })
 
   test('can navigate through federal taxes to industry', async ({ page }) => {
@@ -82,7 +77,5 @@ test.describe('CompanyOnboardingFlow', () => {
     await waitForLoadingComplete(page)
 
     await expect(page.getByRole('heading', { name: /industry/i })).toBeVisible({ timeout: 30000 })
-
-    await expectNoAxeViolations(page)
   })
 })

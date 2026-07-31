@@ -1,6 +1,5 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { waitForLoadingComplete } from '../../utils/helpers'
-import { expectNoAxeViolations } from '../../utils/a11y'
 
 test.describe('PayrollFlow — regular biweekly', () => {
   test.beforeEach(({}, testInfo) => {
@@ -19,8 +18,6 @@ test.describe('PayrollFlow — regular biweekly', () => {
 
     const tabpanel = page.getByRole('tabpanel')
     await expect(tabpanel).toBeVisible({ timeout: 15000 })
-
-    await expectNoAxeViolations(page)
   })
 
   test('payroll history tab toggles aria-selected and reveals its panel', async ({ page }) => {
@@ -36,8 +33,6 @@ test.describe('PayrollFlow — regular biweekly', () => {
     await expect(historyTab).toHaveAttribute('aria-selected', 'true')
     const tabpanel = page.getByRole('tabpanel', { name: /payroll history/i })
     await expect(tabpanel).toBeVisible({ timeout: 15000 })
-
-    await expectNoAxeViolations(page)
   })
 
   test('renders run-payroll panel content (pay period column or blocker surface)', async ({
@@ -57,7 +52,5 @@ test.describe('PayrollFlow — regular biweekly', () => {
       .first()
 
     await expect(payPeriodHeader.or(blockerSurface).first()).toBeVisible({ timeout: 30000 })
-
-    await expectNoAxeViolations(page)
   })
 })
