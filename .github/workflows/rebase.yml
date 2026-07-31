@@ -1,0 +1,153 @@
+name: Rebase PR
+
+# Comment "/rebase" on a pull request to rebase its branch onto the latest main
+# and force-push the result. This is a deterministic git workflow that owns every
+# history-rewriting operation (rebase, --continue, force-push) in shell steps.
+# Claude is invoked ONLY to resolve merge conflicts (editing the conflicted files);
+# it never runs a git command. This separation is why this works where the tagged
+# @claude action cannot: the action blocks destructive git ops in its system prompt,
+# but that only governs what Claude runs — not what a `run:` step runs.
+
+on:
+  issue_comment:
+    types: [created]
+
+# Serialize multiple /rebase comments on the same PR so they can't race the force-push.
+concurrency:
+  group: rebase-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  rebase:
+    # Only on PR comments (a PR is an issue under the hood), only for the /rebase
+    # keyword, and only from trusted authors. The author gate matters because this
+    # event runs in the base-repo context with a write-scoped token.
+    if: >-
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/rebase') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: read # git write happens via REBASE_TOKEN below, not GITHUB_TOKEN
+      pull-requests: write # post the result comment
+      issues: write # add the 👀 reaction to the triggering comment
+    steps:
+      - name: Acknowledge with a reaction
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" \
+            -f content=eyes --silent || true
+
+      - name: Resolve PR branch
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # issue_comment payloads carry the PR number but not its head branch — look it up.
+          data=$(gh pr view "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --json headRefName,isCrossRepository)
+          branch=$(echo "$data" | jq -r .headRefName)
+          cross=$(echo "$data" | jq -r .isCrossRepository)
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "cross=$cross" >> "$GITHUB_OUTPUT"
+
+      - name: Reject fork PRs
+        if: steps.pr.outputs.cross == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" \
+            --body "🚫 \`/rebase\` can't rebase a fork PR — the workflow can't push to another repo's branch. Please rebase locally.
+
+          *(Rebase bot)*"
+          exit 1
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.branch }}
+          fetch-depth: 0 # full history — rebase needs every commit
+          # TODO(token): REBASE_TOKEN must be a credential with `contents: write`
+          # (and `workflows: write` so it can also rebase conflicts inside
+          # .github/workflows/**). Options: grant the existing gusto-claude-assistant
+          # GitHub App those scopes and mint an app token here, or store a fine-grained
+          # PAT as this secret. The default GITHUB_TOKEN is intentionally NOT used —
+          # it can't force-push under branch protection or touch workflow files.
+          token: ${{ secrets.REBASE_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Rebase onto main (Claude resolves conflicts)
+        id: rebase
+        env:
+          GIT_EDITOR: "true" # accept existing commit messages non-interactively
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          set -uo pipefail
+          git config user.name "gusto-claude-assistant[bot]"
+          git config user.email "gusto-claude-assistant[bot]@users.noreply.github.com"
+
+          git fetch origin main
+
+          # First attempt. If it's clean, the loop below is skipped entirely.
+          git rebase origin/main || true
+
+          # While a rebase is in progress, hand each conflicted stop to Claude to
+          # resolve, then let the shell continue the rebase. Claude only edits files.
+          attempts=0
+          while [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; do
+            attempts=$((attempts + 1))
+            if [ "$attempts" -gt 20 ]; then
+              echo "Too many conflict rounds; aborting."
+              git rebase --abort || true
+              echo "result=too-complex" >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+
+            conflicts=$(git diff --name-only --diff-filter=U)
+            if [ -n "$conflicts" ]; then
+              npx --yes @anthropic-ai/claude-code -p \
+                "You are resolving git merge conflicts during a rebase. These files contain conflict markers (<<<<<<<, =======, >>>>>>>): $conflicts. Edit each file to a single coherent resolution that preserves the intent of both sides, and remove all conflict markers. Do NOT run any git commands." \
+                --allowedTools "Edit,Read,Write,Glob,Grep" \
+                --permission-mode acceptEdits \
+                --max-turns 30
+              git add -A
+            fi
+
+            git rebase --continue || true
+          done
+
+          # Guard: if Claude left conflict markers behind, git considers the rebase
+          # "done" but the tree is broken — fail loudly instead of force-pushing it.
+          if git grep -nE '^(<{7}|>{7}) ' -- . ; then
+            echo "Unresolved conflict markers remain; refusing to push."
+            echo "result=unresolved" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          git push --force-with-lease
+          echo "result=ok" >> "$GITHUB_OUTPUT"
+
+      - name: Report success
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" \
+            --body "✅ Rebased \`${{ steps.pr.outputs.branch }}\` onto \`main\` and force-pushed.
+
+          *(Rebase bot)*"
+
+      - name: Report failure
+        if: failure() && steps.pr.outputs.cross != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" \
+            --body "⚠️ Couldn't complete the rebase automatically — likely conflicts too complex to resolve safely. Please rebase locally. See the [run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+
+          *(Rebase bot)*"
