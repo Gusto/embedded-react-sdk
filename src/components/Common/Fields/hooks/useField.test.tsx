@@ -325,7 +325,7 @@ describe('useField', () => {
   describe('field element registry', () => {
     function TestField({ name }: { name: string }) {
       const { inputRef } = useField({ name })
-      return <input data-testid={`input-${name}`} ref={inputRef} />
+      return <input aria-label={name} data-testid={`input-${name}`} ref={inputRef} />
     }
 
     function RegistryFormWrapper({
