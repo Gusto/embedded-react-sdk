@@ -44,7 +44,12 @@ jobs:
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
 
-          # Optional: Add claude_args to customize behavior and configuration
+          # Pre-approve the verification commands Claude needs to run non-interactively.
+          # Without these, Claude cannot self-verify changes in CI (there is no human to
+          # approve the Bash prompt) and reports that it was unable to run the test suite.
+          # Scope is intentionally limited to read-only verification scripts (see package.json);
+          # e2e/storybook/publish/release scripts are excluded on purpose.
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://code.claude.com/docs/en/cli-reference for available options
-          # claude_args: '--allowed-tools Bash(gh pr *)'
+          claude_args: >-
+            --allowed-tools
+            "Bash(npm ci),Bash(npm install),Bash(npm run test:*),Bash(npm run lint:check),Bash(npm run format:check),Bash(npm run tsc),Bash(npm run build)"
