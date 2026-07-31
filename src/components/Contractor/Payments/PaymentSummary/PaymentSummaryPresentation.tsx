@@ -152,7 +152,7 @@ export const PaymentSummaryPresentation = ({
                     contractors.find(
                       contractor => contractor.uuid === contractorPayment.contractorUuid,
                     ),
-                  ),
+                  ) || t('notAvailable'),
               },
               {
                 title: t('wageType'),

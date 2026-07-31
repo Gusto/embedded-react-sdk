@@ -19,6 +19,7 @@
     "totalPay": "Total pay"
   },
   "skippedBadge": "Skipped",
+  "unknownEmployeeFallback": "Unknown employee",
   "editMenu": {
     "edit": "Edit",
     "skip": "Skip employee",

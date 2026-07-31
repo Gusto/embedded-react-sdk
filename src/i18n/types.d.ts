@@ -819,6 +819,8 @@ export namespace Translations {
       effectiveDatePlaceholder: string
       /** @defaultValue `"Effective date"` */
       effectiveDateColumnLabel: string
+      /** @defaultValue `"Status"` */
+      statusColumnLabel: string
       /** @defaultValue `"Current"` */
       currentBadge: string
       /** @defaultValue `"Scheduled"` */
@@ -1020,6 +1022,8 @@ export namespace Translations {
   export interface CompanyTimeOffEmployeeTable {
     /** @defaultValue `"Name"` */
     name: string
+    /** @defaultValue `"Unknown employee"` */
+    unknownEmployeeFallback: string
     /** @defaultValue `"Job title"` */
     jobTitle: string
     /** @defaultValue `"Department"` */
@@ -2245,6 +2249,8 @@ export namespace Translations {
     rateLabel: string
     /** @defaultValue `"Onboarding status"` */
     onboardingStatusLabel: string
+    /** @defaultValue `"Status"` */
+    statusColumnLabel: string
     /** @defaultValue `"Dismissal date"` */
     dismissalDateLabel: string
     /** @defaultValue `"Hourly — {{rate}}/hr"` */
@@ -6787,6 +6793,8 @@ export namespace Translations {
     }
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
+    /** @defaultValue `"Unknown employee"` */
+    unknownEmployeeFallback: string
     editMenu: {
       /** @defaultValue `"Edit"` */
       edit: string

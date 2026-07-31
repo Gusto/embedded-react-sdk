@@ -103,9 +103,10 @@ export const PayrollConfigurationPresentation = ({
 
   const getEmployeeName = (employeeUuid: string) => {
     const employee = employeeMap.get(employeeUuid)
-    return employee
+    const name = employee
       ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
-      : null
+      : ''
+    return name || t('unknownEmployeeFallback')
   }
 
   return (
