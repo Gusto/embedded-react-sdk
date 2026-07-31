@@ -1,5 +1,6 @@
 import { test, expect } from '../utils/localTestFixture'
 import { waitForLoadingComplete } from '../utils/helpers'
+import { expectNoAxeViolations } from '../utils/a11y'
 
 test.describe('DismissalFlow', () => {
   test.beforeEach(({ localConfig }) => {
@@ -34,6 +35,8 @@ test.describe('DismissalFlow', () => {
 
       const continueButton = page.getByRole('button', { name: /continue/i })
       await expect(continueButton).toBeVisible()
+
+      await expectNoAxeViolations(page)
     })
 
     test('continue button enables after selecting a pay period', async ({ page, localConfig }) => {
@@ -102,6 +105,8 @@ test.describe('DismissalFlow', () => {
       })
 
       await expect(page.getByText(/no unprocessed termination pay periods/i)).toBeVisible()
+
+      await expectNoAxeViolations(page)
     })
   })
 
@@ -133,6 +138,8 @@ test.describe('DismissalFlow', () => {
         name: /edit payroll|preparing payroll|calculating payroll/i,
       })
       await expect(payrollExecutionHeading.first()).toBeVisible({ timeout: 60000 })
+
+      await expectNoAxeViolations(page)
     })
   })
 })

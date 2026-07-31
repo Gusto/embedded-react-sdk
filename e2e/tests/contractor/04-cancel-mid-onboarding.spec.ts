@@ -1,5 +1,6 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { waitForLoadingComplete } from '../../utils/helpers'
+import { expectNoAxeViolations } from '../../utils/a11y'
 
 test.describe('ContractorOnboardingFlow - cancel mid-onboarding returns to list', () => {
   test.beforeEach(({}, testInfo) => {
@@ -24,6 +25,8 @@ test.describe('ContractorOnboardingFlow - cancel mid-onboarding returns to list'
       timeout: 30000,
     })
 
+    await expectNoAxeViolations(page)
+
     const backCta = page.getByRole('button', { name: /back to contractors/i }).first()
     await expect(backCta).toBeVisible()
     await backCta.click()
@@ -32,5 +35,7 @@ test.describe('ContractorOnboardingFlow - cancel mid-onboarding returns to list'
     await expect(page.getByRole('heading', { name: /^contractors$/i })).toBeVisible({
       timeout: 30000,
     })
+
+    await expectNoAxeViolations(page)
   })
 })

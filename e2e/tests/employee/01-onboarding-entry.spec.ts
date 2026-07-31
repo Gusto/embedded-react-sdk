@@ -1,5 +1,6 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { waitForLoadingComplete } from '../../utils/helpers'
+import { expectNoAxeViolations } from '../../utils/a11y'
 
 test.describe('EmployeeOnboarding — entry into Add Employee', () => {
   test.beforeEach(({}, testInfo) => {
@@ -18,6 +19,8 @@ test.describe('EmployeeOnboarding — entry into Add Employee', () => {
     const addButton = page.getByRole('button', { name: /Add/i })
     await addButton.waitFor({ state: 'visible', timeout: 30000 })
     await expect(addButton).toBeVisible()
+
+    await expectNoAxeViolations(page)
   })
 
   test('clicking Add opens basics form with first/last name and SSN inputs', async ({ page }) => {
@@ -34,5 +37,7 @@ test.describe('EmployeeOnboarding — entry into Add Employee', () => {
     await expect(page.getByLabel(/first name/i)).toBeVisible({ timeout: 30000 })
     await expect(page.getByLabel(/last name/i)).toBeVisible()
     await expect(page.getByLabel(/social/i)).toBeVisible()
+
+    await expectNoAxeViolations(page)
   })
 })
