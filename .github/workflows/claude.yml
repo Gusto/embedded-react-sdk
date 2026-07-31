@@ -44,12 +44,22 @@ jobs:
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
 
-          # Pre-approve the verification commands Claude needs to run non-interactively.
-          # Without these, Claude cannot self-verify changes in CI (there is no human to
-          # approve the Bash prompt) and reports that it was unable to run the test suite.
-          # Scope is intentionally limited to read-only verification scripts (see package.json);
+          # Pre-approve the commands Claude needs to run non-interactively. Without these,
+          # Claude hits a Bash approval prompt it cannot clear in CI (there is no human to
+          # approve it) and reports that it was unable to run the command.
+          #
+          # Scope is intentionally limited to:
+          #   - read-only verification scripts from package.json (test/lint/format/tsc/build)
+          #   - npm ci/install, since deps are not installed by the action
+          #   - read-only git inspection (status/diff/log/show/branch/fetch/remote)
           # e2e/storybook/publish/release scripts are excluded on purpose.
+          #
+          # NOTE: history-rewriting git operations (rebase, force-push) and edits to files
+          # under .github/workflows/ CANNOT be enabled here. Rebase/force-push are blocked in
+          # Claude's system prompt, and workflow-file writes require a GitHub App permission the
+          # Claude app deliberately lacks. See the FAQ:
+          # https://github.com/anthropics/claude-code-action/blob/main/docs/faq.md
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           claude_args: >-
             --allowed-tools
-            "Bash(npm ci),Bash(npm install),Bash(npm run test:*),Bash(npm run lint:check),Bash(npm run format:check),Bash(npm run tsc),Bash(npm run build)"
+            "Bash(npm ci),Bash(npm install),Bash(npm run test:*),Bash(npm run lint:check),Bash(npm run format:check),Bash(npm run tsc),Bash(npm run build),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git branch:*),Bash(git fetch:*),Bash(git remote:*)"
