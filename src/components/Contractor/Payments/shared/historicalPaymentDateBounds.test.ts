@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getHistoricalPaymentCheckDateBounds } from './historicalPaymentDateBounds'
 
 describe('getHistoricalPaymentCheckDateBounds', () => {
@@ -41,9 +41,21 @@ describe('getHistoricalPaymentCheckDateBounds', () => {
     expect(minDate).toEqual(new Date(2025, 0, 1))
   })
 
-  it('normalizes maxDate to local midnight, dropping any time-of-day component', () => {
-    const { maxDate } = getHistoricalPaymentCheckDateBounds(new Date('2026-07-27T23:45:00-07:00'))
+  describe('local midnight normalization', () => {
+    beforeEach(() => {
+      // Pins the runner's local timezone to match the fixture's -07:00 offset,
+      // since maxDate is derived from the input's local calendar date.
+      vi.stubEnv('TZ', 'America/Los_Angeles')
+    })
 
-    expect(maxDate).toEqual(new Date(2026, 6, 27))
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('normalizes maxDate to local midnight, dropping any time-of-day component', () => {
+      const { maxDate } = getHistoricalPaymentCheckDateBounds(new Date('2026-07-27T23:45:00-07:00'))
+
+      expect(maxDate).toEqual(new Date(2026, 6, 27))
+    })
   })
 })
