@@ -1,13 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { SelectContractors } from './SelectContractors'
 import { useSelectContractors } from './useSelectContractors'
 import type { UseSelectContractorsReady, UseSelectContractorsResult } from './useSelectContractors'
 import { buildContractorIndividual, buildContractorBusiness } from '@/test/factories/contractor'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
-import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
-import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
-import { LocaleProvider } from '@/contexts/LocaleProvider'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import type { SDKError } from '@/types/sdkError'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
@@ -64,18 +61,12 @@ function renderComponent(
   onSelectionChange: (ids: string[]) => void = vi.fn(),
   overrides: { emptyStateTitle?: string; emptyStateDescription?: string } = {},
 ) {
-  return render(
-    <LocaleProvider>
-      <ThemeProvider>
-        <ComponentsProvider value={defaultComponents}>
-          <SelectContractors
-            companyId="company-123"
-            onSelectionChange={onSelectionChange}
-            {...overrides}
-          />
-        </ComponentsProvider>
-      </ThemeProvider>
-    </LocaleProvider>,
+  return renderWithProviders(
+    <SelectContractors
+      companyId="company-123"
+      onSelectionChange={onSelectionChange}
+      {...overrides}
+    />,
   )
 }
 
@@ -91,7 +82,7 @@ describe('SelectContractors', () => {
     }
     mockUseSelectContractors.mockReturnValue(loadingResult)
     renderComponent()
-    expect(screen.getByLabelText('status.loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Loading component...')).toBeInTheDocument()
   })
 
   test('renders eligible contractors once loaded', () => {
@@ -115,15 +106,7 @@ describe('SelectContractors', () => {
     const { rerender } = renderComponent(onSelectionChange)
 
     mockUseSelectContractors.mockReturnValue(readyResult({ selectedIds: new Set(['1', '2']) }))
-    rerender(
-      <LocaleProvider>
-        <ThemeProvider>
-          <ComponentsProvider value={defaultComponents}>
-            <SelectContractors companyId="company-123" onSelectionChange={onSelectionChange} />
-          </ComponentsProvider>
-        </ThemeProvider>
-      </LocaleProvider>,
-    )
+    rerender(<SelectContractors companyId="company-123" onSelectionChange={onSelectionChange} />)
 
     expect(onSelectionChange).toHaveBeenCalledTimes(2)
     expect(onSelectionChange).toHaveBeenLastCalledWith(['1', '2'])
@@ -139,15 +122,7 @@ describe('SelectContractors', () => {
     expect(onSelectionChange).toHaveBeenCalledTimes(1)
 
     mockUseSelectContractors.mockReturnValue(readyResult({ selectedIds: new Set(['1']) }))
-    rerender(
-      <LocaleProvider>
-        <ThemeProvider>
-          <ComponentsProvider value={defaultComponents}>
-            <SelectContractors companyId="company-123" onSelectionChange={onSelectionChange} />
-          </ComponentsProvider>
-        </ThemeProvider>
-      </LocaleProvider>,
-    )
+    rerender(<SelectContractors companyId="company-123" onSelectionChange={onSelectionChange} />)
 
     expect(onSelectionChange).toHaveBeenCalledTimes(1)
   })
