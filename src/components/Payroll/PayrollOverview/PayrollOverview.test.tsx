@@ -63,6 +63,7 @@ const basePayrollData: PayrollShow = {
 }
 
 let mockPayrollData = { ...basePayrollData }
+let mockIsFetching = false
 
 vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGet: () => ({
@@ -74,7 +75,7 @@ vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
         },
       },
     },
-    isFetching: false,
+    isFetching: mockIsFetching,
   }),
 }))
 
@@ -127,6 +128,7 @@ describe('PayrollOverview polling', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
   })
 
   it('stops polling and emits RUN_PAYROLL_PROCESSED when processed is true even without submit_success status', async () => {
@@ -202,6 +204,7 @@ describe('PayrollOverview submit-in-progress overlay', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
   })
 
   it('renders the review UI with active Submit and Edit controls when loading a payroll whose server-side status is already submitting', async () => {
@@ -229,6 +232,7 @@ describe('PayrollOverview tax totals', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
   })
 
   it('derives the per-tax breakdown from the payrollTaxes aggregate, not the paginated compensations', async () => {
@@ -266,5 +270,44 @@ describe('PayrollOverview tax totals', () => {
     // Aggregate amount ($100.00) is shown; the page-level sum ($1.00) is not.
     expect(screen.getAllByText('$100.00').length).toBeGreaterThan(0)
     expect(screen.queryByText('$1.00')).not.toBeInTheDocument()
+  })
+})
+
+describe('PayrollOverview calculatedAt guard', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
+  })
+
+  it('shows the loading state instead of throwing when a not-yet-fresh snapshot has a null calculatedAt while a refetch is in flight', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      calculatedAt: null,
+    }
+    mockIsFetching = true
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByText(/Loading payroll/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('internal-error-card')).toBeNull()
+    expect(screen.queryByText(/Review payroll/i)).toBeNull()
+  })
+
+  it('throws to the error boundary once the fetch has settled on a genuinely uncalculated payroll', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      calculatedAt: null,
+    }
+    mockIsFetching = false
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByText(/Review payroll/i)).toBeNull()
   })
 })
