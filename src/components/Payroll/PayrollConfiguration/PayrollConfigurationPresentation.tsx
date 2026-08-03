@@ -187,7 +187,9 @@ export const PayrollConfigurationPresentation = ({
             )}
             <Flex flexDirection="column" gap={20}>
               <FlexItem>
-                <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
+                <Heading as="h2" styledAs="h3">
+                  {t('hoursAndEarningsTitle')}
+                </Heading>
                 <Text variant="supporting">{t('hoursAndEarningsDescription')}</Text>
               </FlexItem>
 
