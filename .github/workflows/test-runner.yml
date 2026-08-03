@@ -3,13 +3,15 @@ on:
   push:
     branches: [test-claude-local-runner]
 jobs:
-  ping:
+  worker:
     runs-on: [self-hosted, serikjensen]
-    timeout-minutes: 5
+    permissions:
+      contents: read
+    timeout-minutes: 15
     steps:
-      - run: |
-          echo "host: $(hostname)  user: $(whoami)"
-          echo "PATH=$PATH"
-          command -v gh     >/dev/null && echo "gh: ok"     || echo "gh: MISSING"
-          command -v claude >/dev/null && echo "claude: ok" || echo "claude: MISSING"
-          command -v mise   >/dev/null && echo "mise: ok"   || echo "mise: MISSING"
+      - uses: actions/checkout@v4
+      - name: Full worker test (read-only task)
+        env:
+          PR: '2510'
+        run: |
+          ~/bin/claude-pr "$PR" "Summarize what this PR changes and whether it is rebased on origin/main. Do not modify, push, or comment on anything."
