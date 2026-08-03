@@ -1,0 +1,39 @@
+# Progressive enhancement: runs ALONGSIDE the existing @claude cloud action.
+# @claude        -> unchanged, GitHub-hosted, reviews/comments (cannot rebase/merge)
+# @claude-local  -> routes to the COMMENTER's own machine to do what the cloud action can't
+#
+# Two layers of authorization (this is a PUBLIC repo — untrusted users can comment):
+#   1. author_association guard — only OWNER/MEMBER/COLLABORATOR can trigger a job at
+#      all. Mirrors the trusted-authors guard on the main @claude workflow (PR #2503).
+#      Blocks drive-by commenters (NONE/CONTRIBUTOR/FIRST_TIME_CONTRIBUTOR) up front.
+#   2. runner-label routing — the job targets a runner labeled with the commenter's
+#      login, so it can ONLY execute on a machine that person personally registered
+#      (see scripts/claude-local/runner-setup.sh). No allowlist of names → team-agnostic.
+name: claude-local
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run:
+    # startsWith (not contains) so a plain @claude mention never trips this job.
+    # author_association gate keeps randos on this public repo from spawning jobs.
+    if: >
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '@claude-local') &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: [self-hosted, '${{ github.event.comment.user.login }}']
+    # Least privilege: the relay uses each person's own local `gh` auth, not this
+    # workflow token, so the run needs nothing beyond reading the repo.
+    permissions:
+      contents: read
+    timeout-minutes: 30 # reap orphan jobs when the commenter has no runner
+    steps:
+      - name: Relay to local Claude
+        env:
+          PR: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.comment.body }} # via env, never inline — avoids shell injection
+        run: |
+          INSTRUCTION="${BODY#@claude-local}"
+          ~/bin/claude-pr "$PR" "$INSTRUCTION"
