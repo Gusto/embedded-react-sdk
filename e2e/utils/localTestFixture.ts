@@ -3,7 +3,8 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import type { ScenarioContext } from '../scenario/context'
 import { createValidationErrorCollector } from './validationErrorCollector'
-import { createA11yEventCollector } from './a11yEventCollector'
+import { a11yViolationTracker } from './a11yViolationTracker'
+import { waitForSuspenseDetach } from './helpers'
 import { expectNoAxeViolations } from './a11y'
 
 interface E2EState {
@@ -190,7 +191,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
     // so we fail the test if any such error fires during its lifetime. See
     // `validationErrorCollector` for the detection contract and tests.
     const validationErrors = createValidationErrorCollector(page)
-    const a11yEvents = await createA11yEventCollector(page)
+    a11yViolationTracker.reset()
 
     const originalGoto = page.goto.bind(page)
 
@@ -247,7 +248,16 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
       }
 
       const newUrl = `${parsedUrl.pathname}?${params.toString()}`
-      return originalGoto(newUrl, options)
+      const response = await originalGoto(newUrl, options)
+
+      // Covers the landing screen of every test, including ones that never
+      // call waitForLoadingComplete or end on a state reachable any other
+      // way. Tolerant of pages with no loading region at all -- see
+      // waitForSuspenseDetach.
+      await waitForSuspenseDetach(page, 30_000)
+      await a11yViolationTracker.check(page, 'page load')
+
+      return response
     }
 
     await use(page)
@@ -273,23 +283,23 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
     }
 
     // Catches a11y violations on intermediate screens the test navigated
-    // through but never ended on -- see createA11yEventCollector for how
-    // these are gathered via the SDK's onEvent callback.
-    await a11yEvents.awaitPending()
-    const a11yEventViolations = a11yEvents.getViolations()
+    // through but never ended on -- collected by page.goto (above) and every
+    // waitForLoadingComplete call during the test body. See
+    // a11yViolationTracker for how these are gathered and deduped.
+    const trackedViolations = a11yViolationTracker.getViolations()
     if (
-      a11yEventViolations.length > 0 &&
+      trackedViolations.length > 0 &&
       (testInfo.status === 'passed' || testInfo.status === undefined)
     ) {
-      const detail = a11yEvents.format()
-      await testInfo.attach('a11y-event-violations.txt', {
+      const detail = a11yViolationTracker.format()
+      await testInfo.attach('a11y-intermediate-violations.txt', {
         body: detail,
         contentType: 'text/plain',
       })
       throw new Error(
-        `Detected ${a11yEventViolations.length} accessibility violation(s) on intermediate ` +
-          `screen(s) during this test (caught via the SDK's onEvent callback, not just the ` +
-          `final page state). See the a11y-event-violations.txt attachment for details.\n\n${detail}`,
+        `Detected ${trackedViolations.length} accessibility violation(s) on intermediate ` +
+          `screen(s) during this test (not just the final page state). See the ` +
+          `a11y-intermediate-violations.txt attachment for details.\n\n${detail}`,
       )
     }
 
