@@ -76,7 +76,14 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
   // A no-op handler here would mask bugs that only surface under that re-render churn
   // (e.g. unmemoized props breaking a nested flow's useMemo).
   const [, setEventCount] = useState(0)
-  const handleEvent = () => setEventCount(count => count + 1)
+  const handleEvent = (type: string) => {
+    setEventCount(count => count + 1)
+    // Notifies createA11yEventCollector (e2e/utils/a11yEventCollector.ts), which axe-checks
+    // the current screen on every SDK event -- not just the final one a test ends on.
+    ;(
+      window as unknown as Record<string, ((eventType: string) => void) | undefined>
+    ).__e2eOnSdkEvent?.(type)
+  }
 
   switch (flow) {
     case 'employee-onboarding':

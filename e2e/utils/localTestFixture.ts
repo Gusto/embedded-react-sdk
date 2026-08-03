@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import type { ScenarioContext } from '../scenario/context'
 import { createValidationErrorCollector } from './validationErrorCollector'
+import { createA11yEventCollector } from './a11yEventCollector'
 import { expectNoAxeViolations } from './a11y'
 
 interface E2EState {
@@ -189,6 +190,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
     // so we fail the test if any such error fires during its lifetime. See
     // `validationErrorCollector` for the detection contract and tests.
     const validationErrors = createValidationErrorCollector(page)
+    const a11yEvents = await createA11yEventCollector(page)
 
     const originalGoto = page.goto.bind(page)
 
@@ -268,6 +270,27 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
             `attachment for the full text.\n\n${detail}`,
         )
       }
+    }
+
+    // Catches a11y violations on intermediate screens the test navigated
+    // through but never ended on -- see createA11yEventCollector for how
+    // these are gathered via the SDK's onEvent callback.
+    await a11yEvents.awaitPending()
+    const a11yEventViolations = a11yEvents.getViolations()
+    if (
+      a11yEventViolations.length > 0 &&
+      (testInfo.status === 'passed' || testInfo.status === undefined)
+    ) {
+      const detail = a11yEvents.format()
+      await testInfo.attach('a11y-event-violations.txt', {
+        body: detail,
+        contentType: 'text/plain',
+      })
+      throw new Error(
+        `Detected ${a11yEventViolations.length} accessibility violation(s) on intermediate ` +
+          `screen(s) during this test (caught via the SDK's onEvent callback, not just the ` +
+          `final page state). See the a11y-event-violations.txt attachment for details.\n\n${detail}`,
+      )
     }
 
     // Automatic a11y check on the final page state, mirroring the vitest-side
