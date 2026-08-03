@@ -53,11 +53,13 @@ export interface Resources {
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+  'Contractor.Payments.HistoricalPaymentContractors': Translations.ContractorPaymentsHistoricalPaymentContractors
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
   'Contractor.Profile': Translations.ContractorProfile
+  'Contractor.SelectContractors': Translations.ContractorSelectContractors
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
   'Contractor.Submit': Translations.ContractorSubmit
   'Employee.BankAccount': Translations.EmployeeBankAccount
@@ -2636,6 +2638,21 @@ export namespace Translations {
       }
     }
   }
+  /** Translation keys for the `Contractor.Payments.HistoricalPaymentContractors` i18n namespace. */
+  export interface ContractorPaymentsHistoricalPaymentContractors {
+    /** @defaultValue `"Record a historical payment"` */
+    heading: string
+    /** @defaultValue `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` */
+    subtitle: string
+    /** @defaultValue `"Payment date"` */
+    dateLabel: string
+    /** @defaultValue `"You cannot issue historical payments for the future. Please choose a date in the past."` */
+    dateInFutureError: string
+    /** @defaultValue `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` */
+    dateTooEarlyError: string
+    /** @defaultValue `"Continue"` */
+    continueButton: string
+  }
   /** Translation keys for the `Contractor.Payments.PaymentHistory` i18n namespace. */
   export interface ContractorPaymentsPaymentHistory {
     /** @defaultValue `"Contractor payment history"` */
@@ -2966,6 +2983,23 @@ export namespace Translations {
       /** @defaultValue `"Saving…"` */
       updating: string
     }
+  }
+  /** Translation keys for the `Contractor.SelectContractors` i18n namespace. */
+  export interface ContractorSelectContractors {
+    /** @defaultValue `"Name"` */
+    nameColumn: string
+    /** @defaultValue `"Wage"` */
+    wageColumn: string
+    /** @defaultValue `"Hourly · {{rate}}/hr"` */
+    wageHourly: string
+    /** @defaultValue `"Search by name"` */
+    searchLabel: string
+    /** @defaultValue `"Search by name"` */
+    searchPlaceholder: string
+    /** @defaultValue `"Contractors"` */
+    tableLabel: string
+    /** @defaultValue `"No eligible contractors found."` */
+    emptyState: string
   }
   /** Translation keys for the `Contractor.SignatureForm` i18n namespace. */
   export interface ContractorSignatureForm {
