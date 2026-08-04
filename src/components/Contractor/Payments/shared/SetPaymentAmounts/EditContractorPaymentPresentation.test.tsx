@@ -27,6 +27,7 @@ const renderPresentation = (defaultValues: Partial<EditContractorPaymentFormValu
         onClose={vi.fn()}
         onSubmit={vi.fn()}
         formMethods={formMethods}
+        allowedPaymentMethods={['Check', 'Direct Deposit']}
       />
     )
   }
@@ -64,6 +65,7 @@ describe('EditContractorPaymentPresentation validation errors', () => {
             onClose={vi.fn()}
             onSubmit={vi.fn()}
             formMethods={formMethods}
+            allowedPaymentMethods={['Check', 'Direct Deposit']}
             contractorPaymentMethod="Check"
           />
         </>
@@ -82,6 +84,37 @@ describe('EditContractorPaymentPresentation validation errors', () => {
         ),
       ).toBeInTheDocument()
     })
+  })
+})
+
+describe('EditContractorPaymentPresentation allowedPaymentMethods', () => {
+  it('hides the payment method picker when only one payment method is allowed', async () => {
+    const Harness = () => {
+      const formMethods = useForm<EditContractorPaymentFormValues>({
+        defaultValues: {
+          wageType: 'Hourly',
+          paymentMethod: 'Historical Payment',
+          contractorUuid: 'contractor-1',
+        },
+      })
+
+      return (
+        <EditContractorPaymentPresentation
+          isOpen
+          onClose={vi.fn()}
+          onSubmit={vi.fn()}
+          formMethods={formMethods}
+          allowedPaymentMethods={['Historical Payment']}
+        />
+      )
+    }
+
+    renderWithProviders(<Harness />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Hours')).toBeInTheDocument()
+    })
+    expect(screen.queryByText('Payment Method')).toBeNull()
   })
 })
 

@@ -1,16 +1,14 @@
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { fn } from 'storybook/test'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
-import type { EditContractorPaymentFormValues } from '../shared/SetPaymentAmounts/EditContractorPaymentFormSchema'
-import type { UsePaymentAmountsEditorReturn } from '../shared/usePaymentAmountsEditor'
-import { CreatePaymentPresentation } from './CreatePaymentPresentation'
-import { useCreatePaymentAmountsDictionary } from './useFormDictionary'
+import type { UsePaymentAmountsEditorReturn } from '../usePaymentAmountsEditor'
+import { SetPaymentAmounts } from './SetPaymentAmounts'
+import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 export default {
-  title: 'Domain/Contractor/Payments/CreatePayment',
+  title: 'Domain/Contractor/Payments/SetPaymentAmounts',
 }
 
 const mockContractors: Contractor[] = [
@@ -35,15 +33,6 @@ const mockContractors: Contractor[] = [
     paymentMethod: 'Check',
     onboardingStatus: 'onboarding_completed',
   },
-  {
-    uuid: 'contractor-3',
-    businessName: 'Acme Consulting LLC',
-    type: 'Business',
-    wageType: 'Fixed',
-    isActive: true,
-    paymentMethod: 'Direct Deposit',
-    onboardingStatus: 'onboarding_completed',
-  },
 ]
 
 const mockContractorPayments: ContractorPayments[] = [
@@ -63,34 +52,15 @@ const mockContractorPayments: ContractorPayments[] = [
     bonus: '0',
     reimbursement: '75',
   },
-  {
-    contractorUuid: 'contractor-3',
-    paymentMethod: 'Direct Deposit',
-    wage: '5000',
-    hours: '0',
-    bonus: '500',
-    reimbursement: '0',
-  },
 ]
 
 function StoryWrapper({
   contractors,
   contractorPayments,
-  paymentSpeedDays = 2,
 }: {
   contractors: Contractor[]
   contractorPayments: ContractorPayments[]
-  paymentSpeedDays?: number
 }) {
-  const today = new Date()
-  const [paymentDate, setPaymentDate] = useState(
-    [
-      String(today.getFullYear()).padStart(4, '0'),
-      String(today.getMonth() + 1).padStart(2, '0'),
-      String(today.getDate()).padStart(2, '0'),
-    ].join('-'),
-  )
-
   const totals = contractorPayments.reduce(
     (acc, payment) => {
       const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
@@ -122,23 +92,15 @@ function StoryWrapper({
     close: fn().mockName('editModal.close'),
     submit: fn().mockName('editModal.submit'),
   }
-  const paymentAmountsDictionary = useCreatePaymentAmountsDictionary()
 
   return (
     <GustoTestProvider>
-      <CreatePaymentPresentation
+      <SetPaymentAmounts
         contractors={contractors}
         contractorPayments={contractorPayments}
-        paymentDate={paymentDate}
-        onPaymentDateChange={setPaymentDate}
-        onSaveAndContinue={fn().mockName('onSaveAndContinue')}
-        editModal={editModal}
-        allowedPaymentMethods={['Check', 'Direct Deposit']}
-        paymentAmountsDictionary={paymentAmountsDictionary}
         totals={totals}
-        alerts={{}}
-        isLoading={false}
-        paymentSpeedDays={paymentSpeedDays}
+        allowedPaymentMethods={['Check', 'Direct Deposit']}
+        editModal={editModal}
       />
     </GustoTestProvider>
   )
@@ -150,18 +112,33 @@ export const WithContractors = () => (
 
 export const EmptyState = () => <StoryWrapper contractors={[]} contractorPayments={[]} />
 
-export const PaymentSpeed1Day = () => (
-  <StoryWrapper
-    paymentSpeedDays={1}
-    contractors={mockContractors}
-    contractorPayments={mockContractorPayments}
-  />
-)
+export const FixedHistoricalPaymentMethod = () => {
+  const historicalPayments = mockContractorPayments.map(payment => ({
+    ...payment,
+    paymentMethod: 'Historical Payment' as const,
+  }))
 
-export const PaymentSpeed4Day = () => (
-  <StoryWrapper
-    paymentSpeedDays={4}
-    contractors={mockContractors}
-    contractorPayments={mockContractorPayments}
-  />
-)
+  const formMethods = useForm<EditContractorPaymentFormValues>({
+    defaultValues: { wageType: 'Hourly', paymentMethod: 'Historical Payment', contractorUuid: '' },
+  })
+  const editModal: UsePaymentAmountsEditorReturn['editModal'] = {
+    isOpen: false,
+    formMethods,
+    open: fn().mockName('editModal.open'),
+    close: fn().mockName('editModal.close'),
+    submit: fn().mockName('editModal.submit'),
+  }
+  const totals = { wage: 2500, bonus: 100, reimbursement: 125, total: 4725 }
+
+  return (
+    <GustoTestProvider>
+      <SetPaymentAmounts
+        contractors={mockContractors}
+        contractorPayments={historicalPayments}
+        totals={totals}
+        allowedPaymentMethods={['Historical Payment']}
+        editModal={editModal}
+      />
+    </GustoTestProvider>
+  )
+}

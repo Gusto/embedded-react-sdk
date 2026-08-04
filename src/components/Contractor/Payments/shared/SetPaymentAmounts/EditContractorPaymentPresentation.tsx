@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import type { PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as ContractorPaymentMethod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ActionsLayout, Flex, NumberInputField, RadioGroupField } from '@/components/Common'
@@ -14,6 +15,7 @@ interface EditContractorPaymentPresentationProps {
   onClose: () => void
   formMethods: UseFormReturn<EditContractorPaymentFormValues>
   onSubmit: (data: EditContractorPaymentFormValues) => void
+  allowedPaymentMethods: ContractorPaymentMethod[]
   contractorPaymentMethod?: string
 }
 
@@ -23,11 +25,12 @@ export const EditContractorPaymentPresentation = ({
   onClose,
   formMethods,
   onSubmit,
+  allowedPaymentMethods,
   contractorPaymentMethod,
 }: EditContractorPaymentPresentationProps) => {
   const formId = useId()
-  useI18n('Contractor.Payments.CreatePayment')
-  const { t } = useTranslation('Contractor.Payments.CreatePayment', {
+  useI18n('Contractor.Payments.SetPaymentAmounts')
+  const { t } = useTranslation('Contractor.Payments.SetPaymentAmounts', {
     keyPrefix: 'editContractorPayment',
   })
   const { Modal, Button, Text, Heading } = useComponentContext()
@@ -72,15 +75,16 @@ export const EditContractorPaymentPresentation = ({
         ? t('errors.unsupportedPaymentMethod')
         : undefined
 
-  const paymentMethodOptions: RadioGroupOption[] = [
-    { value: 'Check', label: t('paymentMethods.check') },
-    {
-      value: 'Direct Deposit',
-      label: t('paymentMethods.directDeposit'),
-      isDisabled: isDirectDepositDisabled,
-    },
-    // { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
-  ]
+  const paymentMethodLabels: Record<ContractorPaymentMethod, string> = {
+    Check: t('paymentMethods.check'),
+    'Direct Deposit': t('paymentMethods.directDeposit'),
+    'Historical Payment': t('paymentMethods.historicalPayment'),
+  }
+  const paymentMethodOptions: RadioGroupOption[] = allowedPaymentMethods.map(method => ({
+    value: method,
+    label: paymentMethodLabels[method],
+    isDisabled: method === 'Direct Deposit' && isDirectDepositDisabled,
+  }))
 
   return (
     <Modal
@@ -145,14 +149,16 @@ export const EditContractorPaymentPresentation = ({
               />
             </Flex>
 
-            <Flex flexDirection="column" gap={16}>
-              <RadioGroupField
-                name="paymentMethod"
-                options={paymentMethodOptions}
-                label={t('paymentMethodLabel')}
-                errorMessage={paymentMethodErrorMessage}
-              />
-            </Flex>
+            {allowedPaymentMethods.length > 1 && (
+              <Flex flexDirection="column" gap={16}>
+                <RadioGroupField
+                  name="paymentMethod"
+                  options={paymentMethodOptions}
+                  label={t('paymentMethodLabel')}
+                  errorMessage={paymentMethodErrorMessage}
+                />
+              </Flex>
+            )}
           </Flex>
         </Form>
       </FormProvider>
