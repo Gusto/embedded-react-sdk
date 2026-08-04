@@ -4,9 +4,55 @@ import userEvent from '@testing-library/user-event'
 import { useForm } from 'react-hook-form'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { UsePaymentAmountsEditorReturn } from '../usePaymentAmountsEditor'
-import { SetPaymentAmounts } from './SetPaymentAmounts'
+import { SetPaymentAmounts, type SetPaymentAmountsDictionary } from './SetPaymentAmounts'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+const dictionary: SetPaymentAmountsDictionary = {
+  hoursAndPaymentsLabel: 'Hours and payments',
+  contractorTableHeaders: {
+    contractor: 'Contractor',
+    wageType: 'Wage',
+    paymentMethod: 'Payment method',
+    hours: 'Hours',
+    wage: 'Fixed amount',
+    bonus: 'Bonus',
+    reimbursement: 'Reimbursement',
+    total: 'Total',
+  },
+  emptyTableTitle: 'No contractors available for payment',
+  emptyTableDescription:
+    'There are no active contractors with completed onboarding. Add and onboard contractors before creating payments.',
+  na: 'N/A',
+  totalsLabel: 'Totals',
+  editContractor: 'Edit contractor payment',
+  perHour: '/hr',
+  editContractorPayment: {
+    title: 'Edit contractor pay',
+    subtitle:
+      'Edit contractor\'s hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click "Done" to apply the change.',
+    hoursLabel: 'Hours',
+    hoursAdornment: 'hrs',
+    hoursPayDescription: (rate, total) => `${rate}/hr × hours = ${total}`,
+    wageLabel: 'Fixed amount',
+    bonusLabel: 'Bonus',
+    reimbursementLabel: 'Reimbursement',
+    paymentMethodLabel: 'Payment Method',
+    cancelCta: 'Cancel',
+    saveCta: 'Done',
+    paymentMethods: {
+      check: 'Check',
+      directDeposit: 'Direct deposit',
+      historicalPayment: 'Historical payment',
+    },
+    errors: {
+      directDepositNotAvailable:
+        'Direct Deposit is not available for contractors set up for Check payments',
+      unsupportedPaymentMethod:
+        'This payment method is not supported. Please select Check or Direct Deposit.',
+    },
+  },
+}
 
 const contractors: Contractor[] = [
   {
@@ -56,6 +102,7 @@ function renderSetPaymentAmounts(overrides: Partial<Parameters<typeof SetPayment
         totals={totals}
         allowedPaymentMethods={['Check', 'Direct Deposit']}
         editModal={editModal}
+        dictionary={dictionary}
         {...overrides}
       />
     )
@@ -96,9 +143,9 @@ describe('SetPaymentAmounts', () => {
     expect(open).toHaveBeenCalledWith('contractor-1')
   })
 
-  it('applies a caller-provided dictionary override', async () => {
+  it('renders the caller-provided dictionary', async () => {
     renderSetPaymentAmounts({
-      dictionary: { en: { hoursAndPaymentsLabel: 'Custom amounts label' } },
+      dictionary: { ...dictionary, hoursAndPaymentsLabel: 'Custom amounts label' },
     })
 
     await waitFor(() => {

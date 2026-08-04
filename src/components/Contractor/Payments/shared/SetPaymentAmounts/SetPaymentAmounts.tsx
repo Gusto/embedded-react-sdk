@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type {
@@ -7,20 +6,47 @@ import type {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import type { UsePaymentAmountsEditorReturn } from '../usePaymentAmountsEditor'
 import { getContractorDisplayName } from '../../../shared/helpers'
-import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
+import {
+  EditContractorPaymentPresentation,
+  type EditContractorPaymentDictionary,
+} from './EditContractorPaymentPresentation'
 import { DataView, Flex, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { useComponentDictionary, useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
-import type { ResourceDictionary } from '@/types/Helpers'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
-/** @internal */
-export type SetPaymentAmountsDictionary =
-  ResourceDictionary<'Contractor.Payments.SetPaymentAmounts'>
+/**
+ * Every string `SetPaymentAmounts` and its edit modal render. There is no default copy or
+ * namespace of its own — `SetPaymentAmounts` is `@internal`, so each caller (`CreatePayment`,
+ * `HistoricalPaymentAmounts`) must fully resolve this from its own public namespace and pass it
+ * down, rather than this component owning a namespace that would show up in the SDK's public
+ * translation types without ever being a real partner override surface.
+ *
+ * @internal
+ */
+export interface SetPaymentAmountsDictionary {
+  hoursAndPaymentsLabel: string
+  contractorTableHeaders: {
+    contractor: string
+    wageType: string
+    paymentMethod: string
+    hours: string
+    wage: string
+    bonus: string
+    reimbursement: string
+    total: string
+  }
+  emptyTableTitle: string
+  emptyTableDescription: string
+  na: string
+  totalsLabel: string
+  editContractor: string
+  perHour: string
+  editContractorPayment: EditContractorPaymentDictionary
+}
 
 /** @internal */
 export interface SetPaymentAmountsProps {
@@ -29,12 +55,8 @@ export interface SetPaymentAmountsProps {
   totals: { wage: number; bonus: number; reimbursement: number; total: number }
   allowedPaymentMethods: ContractorPaymentMethod[]
   editModal: UsePaymentAmountsEditorReturn['editModal']
-  /**
-   * Translation overrides for the grid and edit modal. Each consuming screen
-   * passes the dictionary it resolved from its own namespace so partner
-   * overrides on that namespace flow into this shared surface.
-   */
-  dictionary?: SetPaymentAmountsDictionary
+  /** Every string the grid and edit modal render, resolved by the caller from its own namespace. */
+  dictionary: SetPaymentAmountsDictionary
 }
 
 /** @internal */
@@ -46,16 +68,13 @@ export const SetPaymentAmounts = ({
   editModal,
   dictionary,
 }: SetPaymentAmountsProps) => {
-  useI18n('Contractor.Payments.SetPaymentAmounts')
-  useComponentDictionary('Contractor.Payments.SetPaymentAmounts', dictionary)
-  const { t } = useTranslation('Contractor.Payments.SetPaymentAmounts')
   const { Heading } = useComponentContext()
   const currencyFormatter = useNumberFormatter('currency')
 
   const formatWageType = (contractor?: Contractor) => {
     if (!contractor) return ''
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return ` ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+      return ` ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${dictionary.perHour}`
     }
     return contractor.wageType
   }
@@ -78,50 +97,50 @@ export const SetPaymentAmounts = ({
 
   return (
     <Flex flexDirection="column" gap={16}>
-      <Heading as="h3">{t('hoursAndPaymentsLabel')}</Heading>
+      <Heading as="h3">{dictionary.hoursAndPaymentsLabel}</Heading>
       <DataView
         columns={[
           {
-            title: t('contractorTableHeaders.contractor'),
+            title: dictionary.contractorTableHeaders.contractor,
             render: paymentData => getContractorDisplayName(paymentData.contractorDetails),
           },
           {
-            title: t('contractorTableHeaders.wageType'),
+            title: dictionary.contractorTableHeaders.wageType,
             render: paymentData => formatWageType(paymentData.contractorDetails),
           },
           {
-            title: t('contractorTableHeaders.paymentMethod'),
-            render: paymentData => paymentData.paymentMethod || t('na'),
+            title: dictionary.contractorTableHeaders.paymentMethod,
+            render: paymentData => paymentData.paymentMethod || dictionary.na,
           },
           {
-            title: t('contractorTableHeaders.hours'),
+            title: dictionary.contractorTableHeaders.hours,
             justify: 'end',
             render: paymentData => {
-              if (paymentData.contractorDetails?.wageType === 'Fixed') return t('na')
+              if (paymentData.contractorDetails?.wageType === 'Fixed') return dictionary.na
               const hours = Number(paymentData.hours || '0')
               return hours ? formatHoursDisplay(hours) : ZERO_HOURS_DISPLAY
             },
           },
           {
-            title: t('contractorTableHeaders.wage'),
+            title: dictionary.contractorTableHeaders.wage,
             justify: 'end',
             render: paymentData => {
-              if (paymentData.contractorDetails?.wageType === 'Hourly') return t('na')
+              if (paymentData.contractorDetails?.wageType === 'Hourly') return dictionary.na
               return currencyFormatter(Number(paymentData.wage || '0'))
             },
           },
           {
-            title: t('contractorTableHeaders.bonus'),
+            title: dictionary.contractorTableHeaders.bonus,
             justify: 'end',
             render: paymentData => currencyFormatter(Number(paymentData.bonus || '0')),
           },
           {
-            title: t('contractorTableHeaders.reimbursement'),
+            title: dictionary.contractorTableHeaders.reimbursement,
             justify: 'end',
             render: paymentData => currencyFormatter(Number(paymentData.reimbursement || '0')),
           },
           {
-            title: t('contractorTableHeaders.total'),
+            title: dictionary.contractorTableHeaders.total,
             justify: 'end',
             render: ({ bonus, reimbursement, wage, hours, contractorDetails }) => {
               const totalAmount =
@@ -139,7 +158,7 @@ export const SetPaymentAmounts = ({
         footer={
           tableData.length > 0
             ? () => ({
-                'column-0': t('totalsLabel'),
+                'column-0': dictionary.totalsLabel,
                 'column-4': currencyFormatter(totals.wage),
                 'column-5': currencyFormatter(totals.bonus),
                 'column-6': currencyFormatter(totals.reimbursement),
@@ -147,22 +166,25 @@ export const SetPaymentAmounts = ({
               })
             : undefined
         }
-        label={t('hoursAndPaymentsLabel')}
+        label={dictionary.hoursAndPaymentsLabel}
         itemMenu={paymentData => (
           <HamburgerMenu
             items={[
               {
-                label: t('editContractor'),
+                label: dictionary.editContractor,
                 onClick: () => {
                   editModal.open(paymentData.contractorUuid!)
                 },
               },
             ]}
-            triggerLabel={t('editContractor')}
+            triggerLabel={dictionary.editContractor}
           />
         )}
         emptyState={() => (
-          <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
+          <EmptyData
+            title={dictionary.emptyTableTitle}
+            description={dictionary.emptyTableDescription}
+          />
         )}
       />
       <EditContractorPaymentPresentation
@@ -172,6 +194,7 @@ export const SetPaymentAmounts = ({
         onSubmit={editModal.submit}
         allowedPaymentMethods={allowedPaymentMethods}
         contractorPaymentMethod={contractorPaymentMethod ?? undefined}
+        dictionary={dictionary.editContractorPayment}
       />
     </Flex>
   )

@@ -59,7 +59,6 @@ export interface Resources {
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
-  'Contractor.Payments.SetPaymentAmounts': Translations.ContractorPaymentsSetPaymentAmounts
   'Contractor.Profile': Translations.ContractorProfile
   'Contractor.SelectContractors': Translations.ContractorSelectContractors
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
@@ -2962,97 +2961,6 @@ export namespace Translations {
       last6Months: string
       /** @defaultValue `"Last 12 months"` */
       last12Months: string
-    }
-  }
-  /** Translation keys for the `Contractor.Payments.SetPaymentAmounts` i18n namespace. */
-  export interface ContractorPaymentsSetPaymentAmounts {
-    /** @defaultValue `"Hours and payments"` */
-    hoursAndPaymentsLabel: string
-    contractorTableHeaders: {
-      /** @defaultValue `"Contractor"` */
-      contractor: string
-      /** @defaultValue `"Wage"` */
-      wageType: string
-      /** @defaultValue `"Payment method"` */
-      paymentMethod: string
-      /** @defaultValue `"Hours"` */
-      hours: string
-      /** @defaultValue `"Fixed amount"` */
-      wage: string
-      /** @defaultValue `"Bonus"` */
-      bonus: string
-      /** @defaultValue `"Reimbursement"` */
-      reimbursement: string
-      /** @defaultValue `"Total"` */
-      total: string
-    }
-    /** @defaultValue `"No contractors available for payment"` */
-    emptyTableTitle: string
-    /** @defaultValue `"There are no active contractors with completed onboarding. Add and onboard contractors before creating payments."` */
-    emptyTableDescription: string
-    /** @defaultValue `"N/A"` */
-    na: string
-    /** @defaultValue `"Totals"` */
-    totalsLabel: string
-    /** @defaultValue `"Edit contractor payment"` */
-    editContractor: string
-    /** @defaultValue `"/hr"` */
-    perHour: string
-    wageTypes: {
-      /** @defaultValue `"Fixed"` */
-      fixed: string
-      /** @defaultValue `"Hourly"` */
-      hourly: string
-    }
-    paymentMethods: {
-      /** @defaultValue `"Direct Deposit"` */
-      directDeposit: string
-      /** @defaultValue `"Check"` */
-      check: string
-      /** @defaultValue `"Historical Payment"` */
-      historicalPayment: string
-    }
-    alerts: {
-      /** @defaultValue `"Pay updated for {{contractorName}}"` */
-      contractorPaymentUpdated: string
-    }
-    editContractorPayment: {
-      /** @defaultValue `"Edit contractor pay"` */
-      title: string
-      /** @defaultValue `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` */
-      subtitle: string
-      /** @defaultValue `"Hours"` */
-      hoursLabel: string
-      /** @defaultValue `"hrs"` */
-      hoursAdornment: string
-      /** @defaultValue `"{{rate}}/hr × hours = {{total}}"` */
-      hoursPayDescription: string
-      /** @defaultValue `"Fixed amount"` */
-      wageLabel: string
-      /** @defaultValue `"Bonus"` */
-      bonusLabel: string
-      /** @defaultValue `"Reimbursement"` */
-      reimbursementLabel: string
-      /** @defaultValue `"Payment Method"` */
-      paymentMethodLabel: string
-      /** @defaultValue `"Cancel"` */
-      cancelCta: string
-      /** @defaultValue `"Done"` */
-      saveCta: string
-      paymentMethods: {
-        /** @defaultValue `"Check"` */
-        check: string
-        /** @defaultValue `"Direct deposit"` */
-        directDeposit: string
-        /** @defaultValue `"Historical payment"` */
-        historicalPayment: string
-      }
-      errors: {
-        /** @defaultValue `"Direct Deposit is not available for contractors set up for Check payments"` */
-        directDepositNotAvailable: string
-        /** @defaultValue `"This payment method is not supported. Please select Check or Direct Deposit."` */
-        unsupportedPaymentMethod: string
-      }
     }
   }
   /** Translation keys for the `Contractor.Profile` i18n namespace. */
