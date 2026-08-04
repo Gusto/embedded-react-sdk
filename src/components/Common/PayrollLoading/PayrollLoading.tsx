@@ -11,7 +11,7 @@ const DefaultPayrollLoading = ({ title, description }: PayrollLoadingProps) => {
     <LoadingIndicator>
       <Flex flexDirection="column" alignItems="center" gap={4}>
         <LoadingSpinner size="lg" />
-        <Heading as="h4">{title}</Heading>
+        <Heading as="h2">{title}</Heading>
         {description && <Text>{description}</Text>}
       </Flex>
     </LoadingIndicator>
