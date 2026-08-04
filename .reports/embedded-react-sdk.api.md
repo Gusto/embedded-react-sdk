@@ -4833,8 +4833,6 @@ export interface Resources {
     // (undocumented)
     'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
     // (undocumented)
-    'Contractor.Payments.SetPaymentAmounts': Translations.ContractorPaymentsSetPaymentAmounts
-    // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
     // (undocumented)
     'Contractor.SelectContractors': Translations.ContractorSelectContractors
