@@ -159,6 +159,41 @@ export const WithContractors = () => (
 
 export const EmptyState = () => <StoryWrapper contractors={[]} contractorPayments={[]} />
 
+export const EditModalOpen = () => {
+  const formMethods = useForm<EditContractorPaymentFormValues>({
+    defaultValues: {
+      wageType: 'Hourly',
+      paymentMethod: 'Direct Deposit',
+      contractorUuid: 'contractor-1',
+      hours: 40,
+      bonus: 100,
+      reimbursement: 50,
+      hourlyRate: 50,
+    },
+  })
+  const editModal: UsePaymentAmountsEditorReturn['editModal'] = {
+    isOpen: true,
+    formMethods,
+    open: fn().mockName('editModal.open'),
+    close: fn().mockName('editModal.close'),
+    submit: fn().mockName('editModal.submit'),
+  }
+  const totals = { wage: 2500, bonus: 100, reimbursement: 125, total: 4725 }
+
+  return (
+    <GustoTestProvider>
+      <SetPaymentAmounts
+        contractors={mockContractors}
+        contractorPayments={mockContractorPayments}
+        totals={totals}
+        allowedPaymentMethods={['Check', 'Direct Deposit']}
+        editModal={editModal}
+        dictionary={dictionary}
+      />
+    </GustoTestProvider>
+  )
+}
+
 export const FixedHistoricalPaymentMethod = () => {
   const historicalPayments = mockContractorPayments.map(payment => ({
     ...payment,
@@ -170,6 +205,46 @@ export const FixedHistoricalPaymentMethod = () => {
   })
   const editModal: UsePaymentAmountsEditorReturn['editModal'] = {
     isOpen: false,
+    formMethods,
+    open: fn().mockName('editModal.open'),
+    close: fn().mockName('editModal.close'),
+    submit: fn().mockName('editModal.submit'),
+  }
+  const totals = { wage: 2500, bonus: 100, reimbursement: 125, total: 4725 }
+
+  return (
+    <GustoTestProvider>
+      <SetPaymentAmounts
+        contractors={mockContractors}
+        contractorPayments={historicalPayments}
+        totals={totals}
+        allowedPaymentMethods={['Historical Payment']}
+        editModal={editModal}
+        dictionary={dictionary}
+      />
+    </GustoTestProvider>
+  )
+}
+
+export const HistoricalEditModalOpen = () => {
+  const historicalPayments = mockContractorPayments.map(payment => ({
+    ...payment,
+    paymentMethod: 'Historical Payment' as const,
+  }))
+
+  const formMethods = useForm<EditContractorPaymentFormValues>({
+    defaultValues: {
+      wageType: 'Hourly',
+      paymentMethod: 'Historical Payment',
+      contractorUuid: 'contractor-1',
+      hours: 40,
+      bonus: 100,
+      reimbursement: 50,
+      hourlyRate: 50,
+    },
+  })
+  const editModal: UsePaymentAmountsEditorReturn['editModal'] = {
+    isOpen: true,
     formMethods,
     open: fn().mockName('editModal.open'),
     close: fn().mockName('editModal.close'),
