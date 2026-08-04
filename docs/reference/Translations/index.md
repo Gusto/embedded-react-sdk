@@ -1870,6 +1870,66 @@ Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace.
 
 ***
 
+<a id="contractorpaymentshistoricalpaymentamounts"></a>
+
+### ContractorPaymentsHistoricalPaymentAmounts
+
+Translation keys for the `Contractor.Payments.HistoricalPaymentAmounts` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentshistoricalpaymentamountsalerts"></a> `alerts` | |
+| `alerts.contractorPaymentUpdated` | `"Pay updated for {{contractorName}}"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountscontinuebutton"></a> `continueButton` | `"Continue"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountscontractortableheaders"></a> `contractorTableHeaders` | |
+| `contractorTableHeaders.bonus` | `"Bonus"` |
+| `contractorTableHeaders.contractor` | `"Contractor"` |
+| `contractorTableHeaders.hours` | `"Hours"` |
+| `contractorTableHeaders.paymentMethod` | `"Payment method"` |
+| `contractorTableHeaders.reimbursement` | `"Reimbursement"` |
+| `contractorTableHeaders.total` | `"Total"` |
+| `contractorTableHeaders.wage` | `"Fixed amount"` |
+| `contractorTableHeaders.wageType` | `"Wage"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountseditcontractor"></a> `editContractor` | `"Edit contractor payment"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountseditcontractorpayment"></a> `editContractorPayment` | |
+| `editContractorPayment.bonusLabel` | `"Bonus"` |
+| `editContractorPayment.cancelCta` | `"Cancel"` |
+| `editContractorPayment.errors` | |
+| `editContractorPayment.errors.directDepositNotAvailable` | `"Direct Deposit is not available for contractors set up for Check payments"` |
+| `editContractorPayment.errors.unsupportedPaymentMethod` | `"This payment method is not supported. Please select Check or Direct Deposit."` |
+| `editContractorPayment.hoursAdornment` | `"hrs"` |
+| `editContractorPayment.hoursLabel` | `"Hours"` |
+| `editContractorPayment.hoursPayDescription` | `"{{rate}}/hr × hours = {{total}}"` |
+| `editContractorPayment.paymentMethodLabel` | `"Payment Method"` |
+| `editContractorPayment.paymentMethods` | |
+| `editContractorPayment.paymentMethods.check` | `"Check"` |
+| `editContractorPayment.paymentMethods.directDeposit` | `"Direct deposit"` |
+| `editContractorPayment.paymentMethods.historicalPayment` | `"Historical payment"` |
+| `editContractorPayment.reimbursementLabel` | `"Reimbursement"` |
+| `editContractorPayment.saveCta` | `"Done"` |
+| `editContractorPayment.subtitle` | `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` |
+| `editContractorPayment.title` | `"Edit contractor pay"` |
+| `editContractorPayment.wageLabel` | `"Fixed amount"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountsemptytabledescription"></a> `emptyTableDescription` | `"Go back and select at least one contractor."` |
+| <a id="property-contractorpaymentshistoricalpaymentamountsemptytabletitle"></a> `emptyTableTitle` | `"No contractors selected"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountsheading"></a> `heading` | `"Enter payment amounts"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountshoursandpaymentslabel"></a> `hoursAndPaymentsLabel` | `"Hours and payments"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountsna"></a> `na` | `"N/A"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountspaymentmethods"></a> `paymentMethods` | |
+| `paymentMethods.check` | `"Check"` |
+| `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountsperhour"></a> `perHour` | `"/hr"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountssubtitle"></a> `subtitle` | `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
+| <a id="property-contractorpaymentshistoricalpaymentamountstotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentshistoricalpaymentamountswagetypes"></a> `wageTypes` | |
+| `wageTypes.fixed` | `"Fixed"` |
+| `wageTypes.hourly` | `"Hourly"` |
+
+***
+
 <a id="contractorpaymentshistoricalpaymentcontractors"></a>
 
 ### ContractorPaymentsHistoricalPaymentContractors
@@ -2038,6 +2098,63 @@ Translation keys for the `Contractor.Payments.PaymentSummary` i18n namespace.
 | <a id="property-contractorpaymentspaymentsummarywage"></a> `wage` | `"Wage"` |
 | <a id="property-contractorpaymentspaymentsummarywagetype"></a> `wageType` | `"Wage Type"` |
 | <a id="property-contractorpaymentspaymentsummarywiredetailssubmittedtitle"></a> `wireDetailsSubmittedTitle` | `"Wire details submitted"` |
+
+***
+
+<a id="contractorpaymentssetpaymentamounts"></a>
+
+### ContractorPaymentsSetPaymentAmounts
+
+Translation keys for the `Contractor.Payments.SetPaymentAmounts` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentssetpaymentamountsalerts"></a> `alerts` | |
+| `alerts.contractorPaymentUpdated` | `"Pay updated for {{contractorName}}"` |
+| <a id="property-contractorpaymentssetpaymentamountscontractortableheaders"></a> `contractorTableHeaders` | |
+| `contractorTableHeaders.bonus` | `"Bonus"` |
+| `contractorTableHeaders.contractor` | `"Contractor"` |
+| `contractorTableHeaders.hours` | `"Hours"` |
+| `contractorTableHeaders.paymentMethod` | `"Payment method"` |
+| `contractorTableHeaders.reimbursement` | `"Reimbursement"` |
+| `contractorTableHeaders.total` | `"Total"` |
+| `contractorTableHeaders.wage` | `"Fixed amount"` |
+| `contractorTableHeaders.wageType` | `"Wage"` |
+| <a id="property-contractorpaymentssetpaymentamountseditcontractor"></a> `editContractor` | `"Edit contractor payment"` |
+| <a id="property-contractorpaymentssetpaymentamountseditcontractorpayment"></a> `editContractorPayment` | |
+| `editContractorPayment.bonusLabel` | `"Bonus"` |
+| `editContractorPayment.cancelCta` | `"Cancel"` |
+| `editContractorPayment.errors` | |
+| `editContractorPayment.errors.directDepositNotAvailable` | `"Direct Deposit is not available for contractors set up for Check payments"` |
+| `editContractorPayment.errors.unsupportedPaymentMethod` | `"This payment method is not supported. Please select Check or Direct Deposit."` |
+| `editContractorPayment.hoursAdornment` | `"hrs"` |
+| `editContractorPayment.hoursLabel` | `"Hours"` |
+| `editContractorPayment.hoursPayDescription` | `"{{rate}}/hr × hours = {{total}}"` |
+| `editContractorPayment.paymentMethodLabel` | `"Payment Method"` |
+| `editContractorPayment.paymentMethods` | |
+| `editContractorPayment.paymentMethods.check` | `"Check"` |
+| `editContractorPayment.paymentMethods.directDeposit` | `"Direct deposit"` |
+| `editContractorPayment.paymentMethods.historicalPayment` | `"Historical payment"` |
+| `editContractorPayment.reimbursementLabel` | `"Reimbursement"` |
+| `editContractorPayment.saveCta` | `"Done"` |
+| `editContractorPayment.subtitle` | `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` |
+| `editContractorPayment.title` | `"Edit contractor pay"` |
+| `editContractorPayment.wageLabel` | `"Fixed amount"` |
+| <a id="property-contractorpaymentssetpaymentamountsemptytabledescription"></a> `emptyTableDescription` | `"There are no active contractors with completed onboarding. Add and onboard contractors before creating payments."` |
+| <a id="property-contractorpaymentssetpaymentamountsemptytabletitle"></a> `emptyTableTitle` | `"No contractors available for payment"` |
+| <a id="property-contractorpaymentssetpaymentamountshoursandpaymentslabel"></a> `hoursAndPaymentsLabel` | `"Hours and payments"` |
+| <a id="property-contractorpaymentssetpaymentamountsna"></a> `na` | `"N/A"` |
+| <a id="property-contractorpaymentssetpaymentamountspaymentmethods"></a> `paymentMethods` | |
+| `paymentMethods.check` | `"Check"` |
+| `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
+| <a id="property-contractorpaymentssetpaymentamountsperhour"></a> `perHour` | `"/hr"` |
+| <a id="property-contractorpaymentssetpaymentamountstotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentssetpaymentamountswagetypes"></a> `wageTypes` | |
+| `wageTypes.fixed` | `"Fixed"` |
+| `wageTypes.hourly` | `"Hourly"` |
 
 ***
 
@@ -5415,11 +5532,13 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
 | <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
 | <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
+| <a id="property-resourcescontractorpaymentshistoricalpaymentamounts"></a> `Contractor.Payments.HistoricalPaymentAmounts` | [`ContractorPaymentsHistoricalPaymentAmounts`](#contractorpaymentshistoricalpaymentamounts) |
 | <a id="property-resourcescontractorpaymentshistoricalpaymentcontractors"></a> `Contractor.Payments.HistoricalPaymentContractors` | [`ContractorPaymentsHistoricalPaymentContractors`](#contractorpaymentshistoricalpaymentcontractors) |
 | <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
 | <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
+| <a id="property-resourcescontractorpaymentssetpaymentamounts"></a> `Contractor.Payments.SetPaymentAmounts` | [`ContractorPaymentsSetPaymentAmounts`](#contractorpaymentssetpaymentamounts) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
 | <a id="property-resourcescontractorselectcontractors"></a> `Contractor.SelectContractors` | [`ContractorSelectContractors`](#contractorselectcontractors) |
 | <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |

@@ -1276,6 +1276,7 @@ export const componentEvents: {
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED: "contractor/historicalPayments/contractorsSelected";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_AMOUNTS_SUBMITTED: "contractor/historicalPayments/amountsSubmitted";
     readonly CONTRACTOR_PAYMENT_CREATE: "contractor/payments/create";
     readonly CONTRACTOR_PAYMENT_EDIT: "contractor/payments/edit";
     readonly CONTRACTOR_PAYMENT_UPDATE: "contractor/payments/update";
@@ -4820,6 +4821,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
     // (undocumented)
+    'Contractor.Payments.HistoricalPaymentAmounts': Translations.ContractorPaymentsHistoricalPaymentAmounts
+    // (undocumented)
     'Contractor.Payments.HistoricalPaymentContractors': Translations.ContractorPaymentsHistoricalPaymentContractors
     // (undocumented)
     'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
@@ -4829,6 +4832,8 @@ export interface Resources {
     'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
     // (undocumented)
     'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
+    // (undocumented)
+    'Contractor.Payments.SetPaymentAmounts': Translations.ContractorPaymentsSetPaymentAmounts
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
     // (undocumented)
