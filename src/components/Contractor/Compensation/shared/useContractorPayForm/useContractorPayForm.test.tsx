@@ -62,8 +62,15 @@ describe('useContractorPayForm', () => {
       expect(result.current.isLoading).toBe(false)
     })
 
+    // isHourly is useWatch-derived, so it reflects the values-driven reset to
+    // the loaded wageType one render after isLoading flips. Wait on that single
+    // signal, then read the rest of the settled state synchronously.
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(result.current.status.isHourly).toBe(true)
+    })
+
     assertReady(result.current)
-    expect(result.current.status.isHourly).toBe(true)
     expect(result.current.form.getFormSubmissionValues()).toMatchObject({
       wageType: 'Hourly',
       hourlyRate: 45,
