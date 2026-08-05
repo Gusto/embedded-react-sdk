@@ -1870,6 +1870,25 @@ Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace.
 
 ***
 
+<a id="contractorpaymentshistoricalpaymentcontractors"></a>
+
+### ContractorPaymentsHistoricalPaymentContractors
+
+Translation keys for the `Contractor.Payments.HistoricalPaymentContractors` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentshistoricalpaymentcontractorscontinuebutton"></a> `continueButton` | `"Continue"` |
+| <a id="property-contractorpaymentshistoricalpaymentcontractorsdateinfutureerror"></a> `dateInFutureError` | `"You cannot issue historical payments for the future. Please choose a date in the past."` |
+| <a id="property-contractorpaymentshistoricalpaymentcontractorsdatelabel"></a> `dateLabel` | `"Payment date"` |
+| <a id="property-contractorpaymentshistoricalpaymentcontractorsdatetooearlyerror"></a> `dateTooEarlyError` | `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` |
+| <a id="property-contractorpaymentshistoricalpaymentcontractorsheading"></a> `heading` | `"Record a historical payment"` |
+| <a id="property-contractorpaymentshistoricalpaymentcontractorssubtitle"></a> `subtitle` | `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` |
+
+***
+
 <a id="contractorpaymentspaymenthistory"></a>
 
 ### ContractorPaymentsPaymentHistory
@@ -2090,6 +2109,26 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | <a id="property-contractorprofilew9editwarning"></a> `w9EditWarning` | |
 | `w9EditWarning.body` | `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` |
 | `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
+
+***
+
+<a id="contractorselectcontractors"></a>
+
+### ContractorSelectContractors
+
+Translation keys for the `Contractor.SelectContractors` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorselectcontractorsemptystate"></a> `emptyState` | `"No eligible contractors found."` |
+| <a id="property-contractorselectcontractorsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractorselectcontractorssearchlabel"></a> `searchLabel` | `"Search by name"` |
+| <a id="property-contractorselectcontractorssearchplaceholder"></a> `searchPlaceholder` | `"Search by name"` |
+| <a id="property-contractorselectcontractorstablelabel"></a> `tableLabel` | `"Contractors"` |
+| <a id="property-contractorselectcontractorswagecolumn"></a> `wageColumn` | `"Wage"` |
+| <a id="property-contractorselectcontractorswagehourly"></a> `wageHourly` | `"Hourly · {{rate}}/hr"` |
 
 ***
 
@@ -5376,11 +5415,13 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
 | <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
 | <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
+| <a id="property-resourcescontractorpaymentshistoricalpaymentcontractors"></a> `Contractor.Payments.HistoricalPaymentContractors` | [`ContractorPaymentsHistoricalPaymentContractors`](#contractorpaymentshistoricalpaymentcontractors) |
 | <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
 | <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorselectcontractors"></a> `Contractor.SelectContractors` | [`ContractorSelectContractors`](#contractorselectcontractors) |
 | <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |
 | <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |
 | <a id="property-resourcesemployeebankaccount"></a> `Employee.BankAccount` | [`EmployeeBankAccount`](#employeebankaccount) |

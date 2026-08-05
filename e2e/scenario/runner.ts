@@ -2,6 +2,7 @@ import { resolve, relative } from 'node:path'
 import type { ScenarioContext } from './context'
 import { loadScenario } from './loader'
 import { createDemoAndProvision } from '../../sdk-app/scripts/demo-provisioner'
+import { CI_HEADERS } from '../utils/ciHeaders'
 import type {
   Scenario,
   EmployeeDecoration,
@@ -31,9 +32,8 @@ export function makeApi(gwsFlowsBase: string, flowToken: string): ApiClient {
     const url = `${base}${path}`
     const response = await fetch(url, {
       method,
-      ...(body
-        ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
-        : {}),
+      headers: body ? { 'Content-Type': 'application/json', ...CI_HEADERS } : { ...CI_HEADERS },
+      ...(body ? { body: JSON.stringify(body) } : {}),
     })
     if (!response.ok) {
       const errorBody = await response.text().catch(() => '')

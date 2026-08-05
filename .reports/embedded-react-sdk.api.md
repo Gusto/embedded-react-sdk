@@ -1275,6 +1275,7 @@ export const componentEvents: {
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED: "contractor/historicalPayments/contractorsSelected";
     readonly CONTRACTOR_PAYMENT_CREATE: "contractor/payments/create";
     readonly CONTRACTOR_PAYMENT_EDIT: "contractor/payments/edit";
     readonly CONTRACTOR_PAYMENT_UPDATE: "contractor/payments/update";
@@ -1892,6 +1893,8 @@ declare namespace ContractorManagement {
         PaymentsListProps,
         CreatePayment,
         CreatePaymentProps,
+        HistoricalPaymentContractors,
+        HistoricalPaymentContractorsProps,
         PaymentHistory,
         PaymentHistoryProps,
         PaymentSummary,
@@ -3223,6 +3226,14 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 
 // @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
+
+// @alpha
+function HistoricalPaymentContractors(props: HistoricalPaymentContractorsProps): JSX;
+
+// @alpha
+interface HistoricalPaymentContractorsProps extends BaseComponentInterface<'Contractor.Payments.HistoricalPaymentContractors'> {
+    companyId: string;
+}
 
 // @public
 interface HolidayItem {
@@ -4809,6 +4820,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
     // (undocumented)
+    'Contractor.Payments.HistoricalPaymentContractors': Translations.ContractorPaymentsHistoricalPaymentContractors
+    // (undocumented)
     'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
     // (undocumented)
     'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
@@ -4818,6 +4831,8 @@ export interface Resources {
     'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
+    // (undocumented)
+    'Contractor.SelectContractors': Translations.ContractorSelectContractors
     // (undocumented)
     'Contractor.SignatureForm': Translations.ContractorSignatureForm
     // (undocumented)

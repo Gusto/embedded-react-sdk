@@ -1,9 +1,13 @@
+import { CI_HEADERS } from './ciHeaders'
+
 export function getGWSFlowsBase(): string {
   return process.env.E2E_GWS_FLOWS_HOST || 'https://flows.gusto-demo.com'
 }
 
 export async function fetchApi<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${getGWSFlowsBase()}${endpoint}`)
+  const response = await fetch(`${getGWSFlowsBase()}${endpoint}`, {
+    headers: CI_HEADERS,
+  })
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '')
     throw new Error(`API GET ${endpoint} failed (${response.status}): ${errorBody}`)
@@ -14,7 +18,7 @@ export async function fetchApi<T>(endpoint: string): Promise<T> {
 export async function postApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
   const response = await fetch(`${getGWSFlowsBase()}${endpoint}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...CI_HEADERS },
     body: JSON.stringify(data),
   })
   if (!response.ok) {
@@ -27,7 +31,7 @@ export async function postApi<T>(endpoint: string, data: Record<string, unknown>
 export async function putApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
   const response = await fetch(`${getGWSFlowsBase()}${endpoint}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...CI_HEADERS },
     body: JSON.stringify(data),
   })
   if (!response.ok) {

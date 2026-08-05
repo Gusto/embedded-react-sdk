@@ -96,6 +96,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_DISMISS` | `"contractor/dismiss"` |
 | `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
 | `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED` | `"contractor/historicalPayments/contractorsSelected"` |
 | `CONTRACTOR_INVITE_CONTRACTOR` | `"contractor/invite/selfOnboarding"` |
 | `CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED` | `"contractor/management/address/alertDismissed"` |
 | `CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED` | `"contractor/management/address/editCancelled"` |
