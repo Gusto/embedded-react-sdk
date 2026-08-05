@@ -2349,6 +2349,18 @@
         "companyUuid"
       ]
     },
+    "ContractorManagement.HistoricalPaymentAmounts": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
+        }
+      ],
+      "variables": [
+        "companyUuid"
+      ]
+    },
     "ContractorManagement.PaymentHistory": {
       "endpoints": [
         {

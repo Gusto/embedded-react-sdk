@@ -3,7 +3,7 @@ import type { EntityIds } from './entity-config'
 
 export type { EntityIds }
 
-const STORAGE_KEY = 'sdk-app-entity-ids'
+export const STORAGE_KEY = 'sdk-app-entity-ids'
 const STORAGE_ENV_COMPANY_KEY = 'sdk-app-env-company-id'
 
 function getEnvDefaults(): EntityIds {
