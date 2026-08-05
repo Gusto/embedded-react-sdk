@@ -319,6 +319,7 @@ export const contractorPaymentEvents = {
 export const contractorHistoricalPaymentEvents = {
   CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED:
     'contractor/historicalPayments/contractorsSelected',
+  CONTRACTOR_HISTORICAL_PAYMENT_AMOUNTS_SUBMITTED: 'contractor/historicalPayments/amountsSubmitted',
 } as const
 
 /**

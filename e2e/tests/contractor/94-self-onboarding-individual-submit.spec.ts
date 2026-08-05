@@ -10,11 +10,7 @@ test.describe.serial('ContractorCanary 04 — individual self-onboarding end-to-
     })
   })
 
-  // Quarantined: a recent demo-backend proxy regression stopped forwarding the
-  // client IP on proxied requests, so the upstream API can no longer resolve
-  // signed_by_ip_address for the W-9 sign call and rejects it with 422.
-  // Re-enable once the proxy fix ships to the demo backend.
-  test.fixme('drives the seeded individual contractor through self-onboarding to "You\'re all set!"', async ({
+  test('drives the seeded individual contractor through self-onboarding to "You\'re all set!"', async ({
     page,
     scenario,
   }) => {
