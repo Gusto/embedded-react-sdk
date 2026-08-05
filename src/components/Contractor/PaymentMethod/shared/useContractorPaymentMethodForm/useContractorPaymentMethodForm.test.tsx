@@ -62,8 +62,12 @@ describe('useContractorPaymentMethodForm', () => {
     assertReady(result.current)
     expect(result.current.status.mode).toBe('update')
     expect(result.current.data.paymentMethod.type).toBe(PAYMENT_METHODS.directDeposit)
-    expect(result.current.status.isDirectDeposit).toBe(true)
     expect(typeof result.current.form.Fields.Type).toBe('function')
+
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(result.current.status.isDirectDeposit).toBe(true)
+    })
   })
 
   it('reflects the selected type via status.isDirectDeposit', async () => {
