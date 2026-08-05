@@ -503,13 +503,14 @@ describe('Compensation', () => {
     })
 
     // Regression test for SDK-1169: after leaving and returning to a still-mounted
-    // Compensation component, "Add new job"/"Edit" silently stopped navigating.
-    // Root cause: `done` is a robot3 final state (no transitions out), so a host that
-    // doesn't unmount Compensation once `employee/compensation/done` fires is left
-    // showing a jobs list whose controls can never navigate again. The fix clears the
-    // rendered component on the DONE transition so a still-mounted host renders
-    // nothing (fails loud) instead of a dead, seemingly-interactive jobs list.
-    it('SDK-1169: renders nothing once DONE fires, rather than leaving a dead jobs list up, if the host fails to unmount', async () => {
+    // Compensation component, "Add new job"/"Edit" silently stopped navigating. Root
+    // cause: `done` was modeled as a robot3 final state (no transitions out), so a host
+    // that doesn't unmount Compensation once `employee/compensation/done` fires was
+    // left with a jobs list whose controls could never navigate again. The fix removes
+    // the terminal state entirely — Flow re-emits the DONE event to the parent
+    // regardless of whether the local machine transitions, so a host that keeps this
+    // component mounted past completion keeps a fully working jobs list instead.
+    it('SDK-1169: keeps Add new job/Edit working after DONE fires, if the host fails to unmount', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
@@ -528,10 +529,17 @@ describe('Compensation', () => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE, undefined)
       })
 
-      // The host never unmounted <Compensation>. Once DONE has fired, the jobs list —
-      // and its now-inert Add/Edit controls — must not still be on screen.
-      expect(screen.queryByTestId('data-view')).not.toBeInTheDocument()
-      expect(screen.queryByRole('button', { name: 'Job actions' })).not.toBeInTheDocument()
+      // The host never unmounted <Compensation>. Edit must still work after DONE fires.
+      const cards = screen.getAllByTestId('data-card')
+      const nonPrimaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('An additional job'),
+      )!
+      await user.click(within(nonPrimaryJobCard).getByRole('button', { name: 'Job actions' }))
+      await user.click(screen.getByRole('menuitem', { name: 'Edit' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Edit job')).toBeInTheDocument()
+      })
     })
 
     it('should not show delete option for the primary job', async () => {

@@ -29,21 +29,17 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
 }
 
 describe('compensationStateMachine', () => {
-  it('reaches the final done state on EMPLOYEE_COMPENSATION_DONE from viewJobs', () => {
+  // Regression test for SDK-1169: Add new job/Edit silently stopped navigating after
+  // leaving and returning to a still-mounted Compensation component. `done` used to be
+  // a robot3 final state (no transitions out), so once EMPLOYEE_COMPENSATION_DONE
+  // fired, every subsequent event was a documented robot3 no-op and the machine could
+  // never advance. EMPLOYEE_COMPENSATION_DONE now has no transition at all: the
+  // machine stays in `viewJobs`, and Flow re-emits the event to the parent regardless.
+  it('SDK-1169: keeps handling EMPLOYEE_JOB_ADD/EMPLOYEE_JOB_EDIT after DONE fires', () => {
     const service = createService()
 
     send(service, componentEvents.EMPLOYEE_COMPENSATION_DONE)
-
-    expect(service.machine.current).toBe('done')
-  })
-
-  // Regression test for SDK-1169: Add new job/Edit silently stopped navigating after
-  // leaving and returning to a still-mounted Compensation component. Root cause:
-  // `done` is a robot3 final state (no transitions out), so if the host doesn't
-  // unmount Compensation once EMPLOYEE_COMPENSATION_DONE fires, every subsequent
-  // event is a documented robot3 no-op and the machine can never advance.
-  it('SDK-1169: drops EMPLOYEE_JOB_ADD/EMPLOYEE_JOB_EDIT once DONE has fired, if the machine keeps running', () => {
-    const service = createService()
+    expect(service.machine.current).toBe('viewJobs')
 
     send(service, componentEvents.EMPLOYEE_JOB_ADD)
     expect(service.machine.current).toBe('editJob')
@@ -52,21 +48,10 @@ describe('compensationStateMachine', () => {
     expect(service.machine.current).toBe('viewJobs')
 
     send(service, componentEvents.EMPLOYEE_COMPENSATION_DONE)
-    expect(service.machine.current).toBe('done')
-
-    send(service, componentEvents.EMPLOYEE_JOB_ADD)
-    expect(service.machine.current).toBe('done')
+    expect(service.machine.current).toBe('viewJobs')
 
     send(service, componentEvents.EMPLOYEE_JOB_EDIT, { uuid: 'job-2' })
-    expect(service.machine.current).toBe('done')
-  })
-
-  it('SDK-1169: clears the rendered component once DONE fires, so a still-mounted host renders nothing rather than a dead jobs list', () => {
-    const service = createService()
-
-    send(service, componentEvents.EMPLOYEE_COMPENSATION_DONE)
-
-    expect(service.machine.current).toBe('done')
-    expect(service.context.component).toBeNull()
+    expect(service.machine.current).toBe('editJob')
+    expect(service.context.currentJobId).toBe('job-2')
   })
 })
