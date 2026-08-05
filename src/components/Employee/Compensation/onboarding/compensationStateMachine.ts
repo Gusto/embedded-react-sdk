@@ -11,7 +11,14 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 /** @internal */
 export const compensationStateMachine = {
   initialEditJob: state<MachineTransition>(
-    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'done'),
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_DONE,
+      'done',
+      reduce((ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
+        ...ctx,
+        component: null,
+      })),
+    ),
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST,
       'viewJobs',
@@ -46,7 +53,14 @@ export const compensationStateMachine = {
         }),
       ),
     ),
-    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'done'),
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_DONE,
+      'done',
+      reduce((ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
+        ...ctx,
+        component: null,
+      })),
+    ),
   ),
   editJob: state<MachineTransition>(
     transition(

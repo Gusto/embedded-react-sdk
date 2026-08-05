@@ -502,6 +502,38 @@ describe('Compensation', () => {
       })
     })
 
+    // Regression test for SDK-1169: after leaving and returning to a still-mounted
+    // Compensation component, "Add new job"/"Edit" silently stopped navigating.
+    // Root cause: `done` is a robot3 final state (no transitions out), so a host that
+    // doesn't unmount Compensation once `employee/compensation/done` fires is left
+    // showing a jobs list whose controls can never navigate again. The fix clears the
+    // rendered component on the DONE transition so a still-mounted host renders
+    // nothing (fails loud) instead of a dead, seemingly-interactive jobs list.
+    it('SDK-1169: renders nothing once DONE fires, rather than leaving a dead jobs list up, if the host fails to unmount', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      })
+
+      const continueButton = screen.getByRole('button', { name: 'Continue' })
+      await user.click(continueButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE, undefined)
+      })
+
+      // The host never unmounted <Compensation>. Once DONE has fired, the jobs list —
+      // and its now-inert Add/Edit controls — must not still be on screen.
+      expect(screen.queryByTestId('data-view')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Job actions' })).not.toBeInTheDocument()
+    })
+
     it('should not show delete option for the primary job', async () => {
       const user = userEvent.setup()
 
