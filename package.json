@@ -11,7 +11,7 @@
   },
   "module": "./dist/index.js",
   "type": "module",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -28,7 +28,8 @@
     "dist",
     "docs/guides/endpoint-inventory.json",
     "./README.md",
-    "./CHANGELOG.md"
+    "./CHANGELOG.md",
+    "./DISCLAIMER.md"
   ],
   "scripts": {
     "build": "npm run build:clean && vite build",
