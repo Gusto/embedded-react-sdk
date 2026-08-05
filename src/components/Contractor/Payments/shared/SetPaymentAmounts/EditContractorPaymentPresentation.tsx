@@ -1,20 +1,51 @@
 import { useId, useState } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import type { PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as ContractorPaymentMethod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ActionsLayout, Flex, NumberInputField, RadioGroupField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import type { RadioGroupOption } from '@/index'
+
+/**
+ * Every string the edit-contractor-pay modal renders. `hoursPayDescription` is a formatter
+ * rather than a translated string, since the rate/total it displays are computed at render
+ * time and there's no i18next instance backing this component to interpolate them.
+ *
+ * @internal
+ */
+export interface EditContractorPaymentDictionary {
+  title: string
+  subtitle: string
+  hoursLabel: string
+  hoursAdornment: string
+  hoursPayDescription: (rate: string, total: string) => string
+  wageLabel: string
+  bonusLabel: string
+  reimbursementLabel: string
+  paymentMethodLabel: string
+  cancelCta: string
+  saveCta: string
+  paymentMethods: {
+    check: string
+    directDeposit: string
+    historicalPayment: string
+  }
+  errors: {
+    directDepositNotAvailable: string
+    unsupportedPaymentMethod: string
+  }
+}
 
 interface EditContractorPaymentPresentationProps {
   isOpen: boolean
   onClose: () => void
   formMethods: UseFormReturn<EditContractorPaymentFormValues>
   onSubmit: (data: EditContractorPaymentFormValues) => void
+  allowedPaymentMethods: ContractorPaymentMethod[]
   contractorPaymentMethod?: string
+  dictionary: EditContractorPaymentDictionary
 }
 
 /** @internal */
@@ -23,13 +54,11 @@ export const EditContractorPaymentPresentation = ({
   onClose,
   formMethods,
   onSubmit,
+  allowedPaymentMethods,
   contractorPaymentMethod,
+  dictionary,
 }: EditContractorPaymentPresentationProps) => {
   const formId = useId()
-  useI18n('Contractor.Payments.CreatePayment')
-  const { t } = useTranslation('Contractor.Payments.CreatePayment', {
-    keyPrefix: 'editContractorPayment',
-  })
   const { Modal, Button, Text, Heading } = useComponentContext()
   const currencyFormatter = useNumberFormatter('currency')
 
@@ -49,10 +78,10 @@ export const EditContractorPaymentPresentation = ({
 
   const computeHoursPayDescription = (hours: number) => {
     if (!hourlyRate || hourlyRate <= 0) return ''
-    return t('hoursPayDescription', {
-      rate: currencyFormatter(hourlyRate),
-      total: currencyFormatter(hours * hourlyRate),
-    })
+    return dictionary.hoursPayDescription(
+      currencyFormatter(hourlyRate),
+      currencyFormatter(hours * hourlyRate),
+    )
   }
 
   const initialHours = formMethods.getValues('hours')
@@ -67,20 +96,21 @@ export const EditContractorPaymentPresentation = ({
   const paymentMethodErrorCode = formMethods.formState.errors.paymentMethod?.message
   const paymentMethodErrorMessage =
     paymentMethodErrorCode === 'directDepositNotAvailable'
-      ? t('errors.directDepositNotAvailable')
+      ? dictionary.errors.directDepositNotAvailable
       : paymentMethodErrorCode === 'unsupportedPaymentMethod'
-        ? t('errors.unsupportedPaymentMethod')
+        ? dictionary.errors.unsupportedPaymentMethod
         : undefined
 
-  const paymentMethodOptions: RadioGroupOption[] = [
-    { value: 'Check', label: t('paymentMethods.check') },
-    {
-      value: 'Direct Deposit',
-      label: t('paymentMethods.directDeposit'),
-      isDisabled: isDirectDepositDisabled,
-    },
-    // { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
-  ]
+  const paymentMethodLabels: Record<ContractorPaymentMethod, string> = {
+    Check: dictionary.paymentMethods.check,
+    'Direct Deposit': dictionary.paymentMethods.directDeposit,
+    'Historical Payment': dictionary.paymentMethods.historicalPayment,
+  }
+  const paymentMethodOptions: RadioGroupOption[] = allowedPaymentMethods.map(method => ({
+    value: method,
+    label: paymentMethodLabels[method],
+    isDisabled: method === 'Direct Deposit' && isDirectDepositDisabled,
+  }))
 
   return (
     <Modal
@@ -89,7 +119,7 @@ export const EditContractorPaymentPresentation = ({
       footer={
         <ActionsLayout>
           <Button variant="secondary" onClick={onClose}>
-            {t('cancelCta')}
+            {dictionary.cancelCta}
           </Button>
           <Button
             variant="primary"
@@ -97,7 +127,7 @@ export const EditContractorPaymentPresentation = ({
             form={formId}
             onClick={() => formMethods.handleSubmit(onSubmit)}
           >
-            {t('saveCta')}
+            {dictionary.saveCta}
           </Button>
         </ActionsLayout>
       }
@@ -106,8 +136,8 @@ export const EditContractorPaymentPresentation = ({
         <Form id={formId} onSubmit={formMethods.handleSubmit(onSubmit)}>
           <Flex flexDirection="column" gap={32}>
             <Flex flexDirection="column" gap={4}>
-              <Heading as="h2">{t('title')}</Heading>
-              <Text variant="supporting">{t('subtitle')}</Text>
+              <Heading as="h2">{dictionary.title}</Heading>
+              <Text variant="supporting">{dictionary.subtitle}</Text>
             </Flex>
             <Flex flexDirection="column" gap={20}>
               {wageType === 'Hourly' && (
@@ -115,8 +145,8 @@ export const EditContractorPaymentPresentation = ({
                   min={0}
                   name="hours"
                   isRequired
-                  label={t('hoursLabel')}
-                  adornmentEnd={t('hoursAdornment')}
+                  label={dictionary.hoursLabel}
+                  adornmentEnd={dictionary.hoursAdornment}
                   description={hourlyRate && hourlyRate > 0 ? hoursPayDescription : undefined}
                   onInputChange={raw => {
                     setHoursPayDescription(computeHoursPayDescription(parseHours(raw)))
@@ -129,30 +159,37 @@ export const EditContractorPaymentPresentation = ({
                   min={0}
                   name="wage"
                   isRequired
-                  label={t('wageLabel')}
+                  label={dictionary.wageLabel}
                   format="currency"
                 />
               )}
 
               {wageType === 'Hourly' && (
-                <NumberInputField min={0} name="bonus" label={t('bonusLabel')} format="currency" />
+                <NumberInputField
+                  min={0}
+                  name="bonus"
+                  label={dictionary.bonusLabel}
+                  format="currency"
+                />
               )}
               <NumberInputField
                 min={0}
                 name="reimbursement"
-                label={t('reimbursementLabel')}
+                label={dictionary.reimbursementLabel}
                 format="currency"
               />
             </Flex>
 
-            <Flex flexDirection="column" gap={16}>
-              <RadioGroupField
-                name="paymentMethod"
-                options={paymentMethodOptions}
-                label={t('paymentMethodLabel')}
-                errorMessage={paymentMethodErrorMessage}
-              />
-            </Flex>
+            {allowedPaymentMethods.length > 1 && (
+              <Flex flexDirection="column" gap={16}>
+                <RadioGroupField
+                  name="paymentMethod"
+                  options={paymentMethodOptions}
+                  label={dictionary.paymentMethodLabel}
+                  errorMessage={paymentMethodErrorMessage}
+                />
+              </Flex>
+            )}
           </Flex>
         </Form>
       </FormProvider>
