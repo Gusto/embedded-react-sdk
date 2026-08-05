@@ -62,11 +62,13 @@ describe('useContractorPayForm', () => {
       expect(result.current.isLoading).toBe(false)
     })
 
-    assertReady(result.current)
-    expect(result.current.status.isHourly).toBe(true)
-    expect(result.current.form.getFormSubmissionValues()).toMatchObject({
-      wageType: 'Hourly',
-      hourlyRate: 45,
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(result.current.status.isHourly).toBe(true)
+      expect(result.current.form.getFormSubmissionValues()).toMatchObject({
+        wageType: 'Hourly',
+        hourlyRate: 45,
+      })
     })
   })
 

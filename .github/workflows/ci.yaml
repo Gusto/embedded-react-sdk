@@ -1,6 +1,13 @@
 name: CI
 on:
   push:
+    # Exclude the merge queue's ephemeral branches: the merge_group event
+    # below already runs CI on the exact commit being merged, so letting the
+    # branch push trigger a second run doubles load and stamps a duplicate
+    # `test` status on the merge commit — a flake in that redundant run evicts
+    # the PR from the queue even when the merge_group run passed.
+    branches-ignore:
+      - 'gh-readonly-queue/**'
   merge_group:
   workflow_dispatch:
 
