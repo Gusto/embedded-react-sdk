@@ -1,4 +1,4 @@
-import { state, transition, reduce, state as final } from 'robot3'
+import { state, transition, reduce } from 'robot3'
 import type { DocumentSignerContextInterface, EventPayloads } from './documentSignerStateMachine'
 import {
   SignatureFormContextual,
@@ -9,7 +9,18 @@ import {
 import { componentEvents, I9_FORM_NAME } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
-/** @internal */
+/**
+ * `EMPLOYEE_FORMS_DONE` deliberately has no transition out of `index`. `Flow` re-emits every
+ * event to the upstream `onEvent` regardless of whether the local machine has a matching
+ * transition, so the parent flow still advances/unmounts this component on that signal. Modeling
+ * completion as a robot3 final state instead left `component` pointing at a step whose controls
+ * could never fire another transition — if a host doesn't unmount immediately, the screen would
+ * look interactive but be permanently dead (see SDK-1169, the same bug in
+ * `Compensation`'s onboarding machine). Staying in `index` means a host that keeps this
+ * component mounted past completion keeps a fully working document list instead.
+ *
+ * @internal
+ */
 export const documentSignerMachine = {
   employmentEligibility: state<MachineTransition>(
     transition(
@@ -48,7 +59,6 @@ export const documentSignerMachine = {
         },
       ),
     ),
-    transition(componentEvents.EMPLOYEE_FORMS_DONE, 'done'),
   ),
   signatureForm: state<MachineTransition>(
     transition(
@@ -100,5 +110,4 @@ export const documentSignerMachine = {
       ),
     ),
   ),
-  done: final(),
 }
