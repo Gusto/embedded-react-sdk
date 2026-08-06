@@ -3,12 +3,41 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
+import {
+  EditContractorPaymentPresentation,
+  type EditContractorPaymentDictionary,
+} from './EditContractorPaymentPresentation'
 import {
   createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
 } from './EditContractorPaymentFormSchema'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+const dictionary: EditContractorPaymentDictionary = {
+  title: 'Edit contractor pay',
+  subtitle:
+    'Edit contractor\'s hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click "Done" to apply the change.',
+  hoursLabel: 'Hours',
+  hoursAdornment: 'hrs',
+  hoursPayDescription: (rate, total) => `${rate}/hr × hours = ${total}`,
+  wageLabel: 'Fixed amount',
+  bonusLabel: 'Bonus',
+  reimbursementLabel: 'Reimbursement',
+  paymentMethodLabel: 'Payment Method',
+  cancelCta: 'Cancel',
+  saveCta: 'Done',
+  paymentMethods: {
+    check: 'Check',
+    directDeposit: 'Direct deposit',
+    historicalPayment: 'Historical payment',
+  },
+  errors: {
+    directDepositNotAvailable:
+      'Direct Deposit is not available for contractors set up for Check payments',
+    unsupportedPaymentMethod:
+      'This payment method is not supported. Please select Check or Direct Deposit.',
+  },
+}
 
 const renderPresentation = (defaultValues: Partial<EditContractorPaymentFormValues>) => {
   const Harness = () => {
@@ -27,6 +56,8 @@ const renderPresentation = (defaultValues: Partial<EditContractorPaymentFormValu
         onClose={vi.fn()}
         onSubmit={vi.fn()}
         formMethods={formMethods}
+        allowedPaymentMethods={['Check', 'Direct Deposit']}
+        dictionary={dictionary}
       />
     )
   }
@@ -64,7 +95,9 @@ describe('EditContractorPaymentPresentation validation errors', () => {
             onClose={vi.fn()}
             onSubmit={vi.fn()}
             formMethods={formMethods}
+            allowedPaymentMethods={['Check', 'Direct Deposit']}
             contractorPaymentMethod="Check"
+            dictionary={dictionary}
           />
         </>
       )
@@ -82,6 +115,38 @@ describe('EditContractorPaymentPresentation validation errors', () => {
         ),
       ).toBeInTheDocument()
     })
+  })
+})
+
+describe('EditContractorPaymentPresentation allowedPaymentMethods', () => {
+  it('hides the payment method picker when only one payment method is allowed', async () => {
+    const Harness = () => {
+      const formMethods = useForm<EditContractorPaymentFormValues>({
+        defaultValues: {
+          wageType: 'Hourly',
+          paymentMethod: 'Historical Payment',
+          contractorUuid: 'contractor-1',
+        },
+      })
+
+      return (
+        <EditContractorPaymentPresentation
+          isOpen
+          onClose={vi.fn()}
+          onSubmit={vi.fn()}
+          formMethods={formMethods}
+          allowedPaymentMethods={['Historical Payment']}
+          dictionary={dictionary}
+        />
+      )
+    }
+
+    renderWithProviders(<Harness />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Hours')).toBeInTheDocument()
+    })
+    expect(screen.queryByText('Payment Method')).toBeNull()
   })
 })
 

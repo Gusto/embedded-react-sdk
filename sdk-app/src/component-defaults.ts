@@ -8,8 +8,21 @@
  * Values can be static or use factory functions (evaluated at render time).
  */
 
-type PropValue = string | number | boolean | null
+import { STORAGE_KEY as ENTITY_IDS_STORAGE_KEY } from './useEntities'
+
+type PropValue = string | number | boolean | string[] | null
 type PropValueOrFactory = PropValue | (() => PropValue)
+
+/** Reads the contractor ID already configured in the Settings panel, so fixtures needing a contractor don't need a second, disconnected ID hardcoded here. */
+function currentContractorIds(): string[] {
+  try {
+    const stored = localStorage.getItem(ENTITY_IDS_STORAGE_KEY)
+    const contractorId = stored ? (JSON.parse(stored).contractorId as string | undefined) : ''
+    return contractorId ? [contractorId] : []
+  } catch {
+    return []
+  }
+}
 
 export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrFactory>> = {
   'EmployeeOnboarding.Profile': {
@@ -23,6 +36,10 @@ export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrF
   },
   'EmployeeOnboarding.StateTaxes': {
     isAdmin: true,
+  },
+  'ContractorManagement.HistoricalPaymentAmounts': {
+    contractorIds: currentContractorIds,
+    checkDate: '2025-06-15',
   },
 }
 

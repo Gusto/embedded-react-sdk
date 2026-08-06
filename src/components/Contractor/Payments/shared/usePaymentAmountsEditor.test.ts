@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { usePaymentAmountsEditor } from './usePaymentAmountsEditor'
-import type { EditContractorPaymentFormValues } from '../CreatePayment/EditContractorPaymentFormSchema'
+import type { EditContractorPaymentFormValues } from './SetPaymentAmounts/EditContractorPaymentFormSchema'
 
 const contractor: Contractor = {
   uuid: 'contractor-1',
@@ -69,5 +69,18 @@ describe('usePaymentAmountsEditor', () => {
     expect(
       result.current.virtualContractorPayments.find(p => p.contractorUuid === 'contractor-1'),
     ).toMatchObject({ wage: '100', isTouched: true })
+  })
+
+  it('defaults an unallowed on-file payment method to the first allowed method', () => {
+    const { result } = renderHook(() =>
+      usePaymentAmountsEditor({
+        contractors: [contractor],
+        allowedPaymentMethods: ['Historical Payment'],
+      }),
+    )
+
+    expect(
+      result.current.virtualContractorPayments.find(p => p.contractorUuid === 'contractor-1'),
+    ).toMatchObject({ paymentMethod: 'Historical Payment' })
   })
 })

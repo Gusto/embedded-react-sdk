@@ -9,7 +9,7 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import {
   createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
-} from '../CreatePayment/EditContractorPaymentFormSchema'
+} from './SetPaymentAmounts/EditContractorPaymentFormSchema'
 
 /** @internal */
 export interface UsePaymentAmountsEditorParams {
@@ -32,6 +32,15 @@ export interface UsePaymentAmountsEditorReturn {
   }
 }
 
+function sanitizePaymentMethod(
+  rawPaymentMethod: string | undefined,
+  allowedPaymentMethods: ContractorPaymentMethod[],
+): ContractorPaymentMethod {
+  return allowedPaymentMethods.includes(rawPaymentMethod as ContractorPaymentMethod)
+    ? (rawPaymentMethod as ContractorPaymentMethod)
+    : (allowedPaymentMethods[0] ?? 'Check')
+}
+
 /** @internal */
 export function usePaymentAmountsEditor({
   contractors,
@@ -45,14 +54,17 @@ export function usePaymentAmountsEditor({
     () =>
       contractors.map(contractor => ({
         contractorUuid: contractor.uuid,
-        paymentMethod: contractor.paymentMethod ?? 'Direct Deposit',
+        paymentMethod: sanitizePaymentMethod(
+          contractor.paymentMethod ?? 'Direct Deposit',
+          allowedPaymentMethods,
+        ),
         wage: '0',
         hours: '0',
         bonus: '0',
         reimbursement: '0',
         isTouched: false,
       })),
-    [contractors],
+    [contractors, allowedPaymentMethods],
   )
 
   const [virtualContractorPayments, setVirtualContractorPayments] =
@@ -108,10 +120,10 @@ export function usePaymentAmountsEditor({
       p => p.contractorUuid === contractorUuid,
     )
 
-    const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
-    const sanitizedPaymentMethod = allowedPaymentMethods.includes(rawPaymentMethod)
-      ? rawPaymentMethod
-      : (allowedPaymentMethods[0] ?? 'Check')
+    const sanitizedPaymentMethod = sanitizePaymentMethod(
+      contractorPayment?.paymentMethod || 'Direct Deposit',
+      allowedPaymentMethods,
+    )
 
     formMethods.reset(
       {

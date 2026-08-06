@@ -35,6 +35,10 @@ export {
   HistoricalPaymentContractors,
   type HistoricalPaymentContractorsProps,
 } from '../Payments/HistoricalPaymentContractors'
+export {
+  HistoricalPaymentAmounts,
+  type HistoricalPaymentAmountsProps,
+} from '../Payments/HistoricalPaymentAmounts'
 export { PaymentHistory, type PaymentHistoryProps } from '../Payments/PaymentHistory/PaymentHistory'
 export { PaymentSummary, type PaymentSummaryProps } from '../Payments/PaymentSummary'
 export {

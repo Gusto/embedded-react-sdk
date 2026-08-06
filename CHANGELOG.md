@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.54.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.53.0...v0.54.0) (2026-08-06)
+
+### Features & Enhancements
+
+- Added contractor management components under the `ContractorManagement` namespace, each with a read-only card and an edit form: `ContractorManagement.Profile`, `ContractorManagement.Address`, `ContractorManagement.PaymentMethod`, `ContractorManagement.Compensation`, and `ContractorManagement.DocumentsCard`. ([#2469](https://github.com/Gusto/embedded-react-sdk/issues/2469), [#2470](https://github.com/Gusto/embedded-react-sdk/issues/2470), [#2474](https://github.com/Gusto/embedded-react-sdk/issues/2474), [#2475](https://github.com/Gusto/embedded-react-sdk/issues/2475), [#2476](https://github.com/Gusto/embedded-react-sdk/issues/2476))
+- Added a contractor dashboard — `ContractorManagement.Dashboard` and the orchestrated `ContractorManagement.DashboardFlow` — providing a tabbed overview that ties the contractor management surfaces together. ([#2477](https://github.com/Gusto/embedded-react-sdk/issues/2477))
+- Added components for recording historical (off-platform) contractor payments: `ContractorManagement.HistoricalPaymentContractors` for selecting which contractors to include, and `ContractorManagement.HistoricalPaymentAmounts` for entering their amounts. ([#2500](https://github.com/Gusto/embedded-react-sdk/issues/2500), [#2511](https://github.com/Gusto/embedded-react-sdk/issues/2511))
+- Hook-based components now honor a custom `LoaderComponent`, so your loading UI renders consistently across them. ([#2493](https://github.com/Gusto/embedded-react-sdk/issues/2493))
+
+### Fixes
+
+- Onboarding blocks (`Compensation`, `Deductions`, and `DocumentSigner`) no longer become unresponsive after their step-completion event fires. Previously, once a block signaled "done" it entered a terminal state, so its "Edit" and "Add another" actions silently stopped working until you navigated away from the block and back. ([#2522](https://github.com/Gusto/embedded-react-sdk/issues/2522))
+- Fixed the W-9 TIN section copy in contractor onboarding to correctly reflect whether the contractor is an individual or a business. ([#2479](https://github.com/Gusto/embedded-react-sdk/issues/2479))
+- `PayrollOverview` no longer throws when its `calculatedAt` value is momentarily stale right after a payroll is calculated. ([#2501](https://github.com/Gusto/embedded-react-sdk/issues/2501))
+- Payroll landing and list views now stretch their columns to fill the available width instead of leaving unused horizontal space. ([#2523](https://github.com/Gusto/embedded-react-sdk/issues/2523))
+- The `EmployeeList` row actions menu is now hidden for dismissed employees. ([#2480](https://github.com/Gusto/embedded-react-sdk/issues/2480))
+- Company locations queries are now cached, avoiding a refetch on every mount. ([#2471](https://github.com/Gusto/embedded-react-sdk/issues/2471))
+- Removed the "unprocessed" payroll status badge. ([#2426](https://github.com/Gusto/embedded-react-sdk/issues/2426))
+
+### Chores & Maintenance
+
+- Clarified the project license as Apache 2.0. ([#2519](https://github.com/Gusto/embedded-react-sdk/issues/2519))
+- Bump runtime dependencies (`react-hook-form`, `react-router-dom`, `@hookform/resolvers`, `@internationalized/date`).
+- Bump dev and build dependencies (`storybook` and its addons, `@playwright/test`, `release-it`, `@release-it/conventional-changelog`, `@vitejs/plugin-react-swc`, `vite-plugin-checker`, `lint-staged`, `@testing-library/jest-dom`, `jest-axe`, `@types/react`, `@types/react-dom`, `postcss`, `webpack-dev-server`, and related tooling).
+
 ## [0.53.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.2...v0.53.0) (2026-07-24)
 
 ### ⚠ Breaking Changes

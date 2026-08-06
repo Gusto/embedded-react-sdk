@@ -53,6 +53,7 @@ export interface Resources {
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+  'Contractor.Payments.HistoricalPaymentAmounts': Translations.ContractorPaymentsHistoricalPaymentAmounts
   'Contractor.Payments.HistoricalPaymentContractors': Translations.ContractorPaymentsHistoricalPaymentContractors
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
@@ -2641,6 +2642,103 @@ export namespace Translations {
           /** @defaultValue `"You have not yet earned access to faster contractor payments."` */
           title: string
         }
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Payments.HistoricalPaymentAmounts` i18n namespace. */
+  export interface ContractorPaymentsHistoricalPaymentAmounts {
+    /** @defaultValue `"Enter payment amounts"` */
+    heading: string
+    /** @defaultValue `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` */
+    subtitle: string
+    /** @defaultValue `"Continue"` */
+    continueButton: string
+    /** @defaultValue `"Hours and payments"` */
+    hoursAndPaymentsLabel: string
+    contractorTableHeaders: {
+      /** @defaultValue `"Contractor"` */
+      contractor: string
+      /** @defaultValue `"Wage"` */
+      wageType: string
+      /** @defaultValue `"Payment method"` */
+      paymentMethod: string
+      /** @defaultValue `"Hours"` */
+      hours: string
+      /** @defaultValue `"Fixed amount"` */
+      wage: string
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+      /** @defaultValue `"Total"` */
+      total: string
+    }
+    /** @defaultValue `"No contractors selected"` */
+    emptyTableTitle: string
+    /** @defaultValue `"Go back and select at least one contractor."` */
+    emptyTableDescription: string
+    /** @defaultValue `"N/A"` */
+    na: string
+    /** @defaultValue `"Totals"` */
+    totalsLabel: string
+    /** @defaultValue `"Edit contractor payment"` */
+    editContractor: string
+    /** @defaultValue `"/hr"` */
+    perHour: string
+    wageTypes: {
+      /** @defaultValue `"Fixed"` */
+      fixed: string
+      /** @defaultValue `"Hourly"` */
+      hourly: string
+    }
+    paymentMethods: {
+      /** @defaultValue `"Direct Deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
+    }
+    alerts: {
+      /** @defaultValue `"Pay updated for {{contractorName}}"` */
+      contractorPaymentUpdated: string
+    }
+    editContractorPayment: {
+      /** @defaultValue `"Edit contractor pay"` */
+      title: string
+      /** @defaultValue `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` */
+      subtitle: string
+      /** @defaultValue `"Hours"` */
+      hoursLabel: string
+      /** @defaultValue `"hrs"` */
+      hoursAdornment: string
+      /** @defaultValue `"{{rate}}/hr × hours = {{total}}"` */
+      hoursPayDescription: string
+      /** @defaultValue `"Fixed amount"` */
+      wageLabel: string
+      /** @defaultValue `"Bonus"` */
+      bonusLabel: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursementLabel: string
+      /** @defaultValue `"Payment Method"` */
+      paymentMethodLabel: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Done"` */
+      saveCta: string
+      paymentMethods: {
+        /** @defaultValue `"Check"` */
+        check: string
+        /** @defaultValue `"Direct deposit"` */
+        directDeposit: string
+        /** @defaultValue `"Historical payment"` */
+        historicalPayment: string
+      }
+      errors: {
+        /** @defaultValue `"Direct Deposit is not available for contractors set up for Check payments"` */
+        directDepositNotAvailable: string
+        /** @defaultValue `"This payment method is not supported. Please select Check or Direct Deposit."` */
+        unsupportedPaymentMethod: string
       }
     }
   }

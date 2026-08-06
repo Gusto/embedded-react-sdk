@@ -137,6 +137,14 @@ const date = normalizeToDate(existingRecord.effectiveDate)
 const wireValue = formatDateToStringDate(pickedDate)
 ```
 
+### State Machines (robot3)
+
+Multi-step components are driven by `robot3` state machines rendered through `<Flow>` (`src/components/Flow/Flow.tsx`). `Flow` re-emits every event to the upstream `onEvent` regardless of whether the local machine has a transition for it — so a parent already receives a step's completion signal without the child machine needing to transition anywhere for it.
+
+- **Guided flows** — top-level `*Flow` orchestrators driving a linear, wizard-style sequence with a real end (`OnboardingFlow`, `TimeOffFlow`) — may use a robot3 final state (`final()`, or an equivalent zero-transition `state()`) for their terminal step, since the parent app is expected to unmount the whole flow once it completes.
+- **Hub-and-spoke flows** — orchestrators the user can navigate through freely with no natural "end" — should not use a final state, since there's no terminal step to model one around.
+- **Public, standalone components with their own internal state machine** (a step component like `Compensation`, `Deductions`, or `DocumentSigner` that can also be mounted directly by a partner) must **not** model completion as a final state, guided or not. A robot3 final state has no transitions out — if the host doesn't unmount the component immediately after its completion event fires, every further interaction becomes a silent no-op while the last-rendered screen keeps looking interactive (SDK-1169). Let the completion event bubble via `onEvent` without transitioning the local machine, so a host that keeps the component mounted past completion keeps a fully working screen instead of a dead one.
+
 ### Component & Feature Conventions
 
 Durable conventions that apply SDK-wide to any component or feature:

@@ -2,6 +2,7 @@ import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/cont
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type {
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
+  PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as ContractorPaymentMethod,
   SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
@@ -14,8 +15,8 @@ import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccounts
 import { usePaymentAmountsEditor } from '../shared/usePaymentAmountsEditor'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
-import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
 import { PreviewPresentation } from './PreviewPresentation'
+import { useCreatePaymentAmountsDictionary } from './useFormDictionary'
 import { addBusinessDays } from '@/helpers/dateFormatting'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
@@ -26,6 +27,8 @@ import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
+
+const ALLOWED_PAYMENT_METHODS: ContractorPaymentMethod[] = ['Check', 'Direct Deposit']
 
 function formatLocalDate(date: Date): string {
   return [
@@ -145,9 +148,11 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
     setAlertsState({})
   }
 
+  const paymentAmountsDictionary = useCreatePaymentAmountsDictionary()
+
   const { virtualContractorPayments, totals, editModal } = usePaymentAmountsEditor({
     contractors,
-    allowedPaymentMethods: ['Check', 'Direct Deposit'],
+    allowedPaymentMethods: ALLOWED_PAYMENT_METHODS,
     onEditOpen: () => {
       clearAlerts()
       onEvent(componentEvents.CONTRACTOR_PAYMENT_EDIT)
@@ -284,7 +289,9 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
           paymentDate={paymentDate}
           onPaymentDateChange={setPaymentDate}
           onSaveAndContinue={onContinueToPreview}
-          onEditContractor={editModal.open}
+          editModal={editModal}
+          allowedPaymentMethods={ALLOWED_PAYMENT_METHODS}
+          paymentAmountsDictionary={paymentAmountsDictionary}
           totals={totals}
           alerts={alerts}
           payrollBlockers={payrollBlockers}
@@ -293,16 +300,6 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
           paymentSpeedDays={paymentSpeedDays}
         />
       )}
-      <EditContractorPaymentPresentation
-        isOpen={editModal.isOpen}
-        onClose={editModal.close}
-        formMethods={editModal.formMethods}
-        onSubmit={editModal.submit}
-        contractorPaymentMethod={
-          contractors.find(c => c.uuid === editModal.formMethods.getValues('contractorUuid'))
-            ?.paymentMethod ?? undefined
-        }
-      />
     </>
   )
 }

@@ -229,7 +229,7 @@ export const PayrollListPresentation = ({
 
   return (
     <div ref={containerRef} className={styles.container}>
-      <Flex flexDirection="column" gap={16}>
+      <Flex flexDirection="column" gap={16} alignItems="stretch">
         {showSkipSuccessAlert && (
           <div className={styles.alertContainer}>
             <Alert
