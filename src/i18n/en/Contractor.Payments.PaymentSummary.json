@@ -22,7 +22,8 @@
   "paymentMethod": "Payment Method",
   "paymentMethods": {
     "directDeposit": "Direct Deposit",
-    "check": "Check"
+    "check": "Check",
+    "historicalPayment": "Historical Payment"
   },
   "hours": "Hours",
   "wage": "Wage",
