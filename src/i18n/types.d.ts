@@ -2890,6 +2890,8 @@ export namespace Translations {
       directDeposit: string
       /** @defaultValue `"Check"` */
       check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
     }
     /** @defaultValue `"Hours"` */
     hours: string
