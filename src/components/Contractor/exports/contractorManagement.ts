@@ -32,13 +32,9 @@ export { ViewPaymentFlow, type ViewPaymentFlowProps } from '../Payments/ViewPaym
 export { PaymentsList, type PaymentsListProps } from '../Payments/PaymentsList/PaymentsList'
 export { CreatePayment, type CreatePaymentProps } from '../Payments/CreatePayment/CreatePayment'
 export {
-  HistoricalPaymentContractors,
-  type HistoricalPaymentContractorsProps,
-} from '../Payments/HistoricalPaymentContractors'
-export {
-  HistoricalPaymentAmounts,
-  type HistoricalPaymentAmountsProps,
-} from '../Payments/HistoricalPaymentAmounts'
+  CreateHistoricalPayment,
+  type CreateHistoricalPaymentProps,
+} from '../Payments/CreateHistoricalPayment'
 export { PaymentHistory, type PaymentHistoryProps } from '../Payments/PaymentHistory/PaymentHistory'
 export { PaymentSummary, type PaymentSummaryProps } from '../Payments/PaymentSummary'
 export {

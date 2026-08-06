@@ -317,9 +317,7 @@ export const contractorPaymentEvents = {
  * @public
  */
 export const contractorHistoricalPaymentEvents = {
-  CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED:
-    'contractor/historicalPayments/contractorsSelected',
-  CONTRACTOR_HISTORICAL_PAYMENT_AMOUNTS_SUBMITTED: 'contractor/historicalPayments/amountsSubmitted',
+  CONTRACTOR_HISTORICAL_PAYMENT_CREATED: 'contractor/historicalPayments/created',
 } as const
 
 /**
