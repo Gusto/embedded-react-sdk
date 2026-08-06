@@ -54,6 +54,7 @@ export interface Resources {
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
   'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+  'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
@@ -2786,6 +2787,57 @@ export namespace Translations {
         }
       }
     }
+  }
+  /** Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace. */
+  export interface ContractorPaymentsHistoricalPaymentSummary {
+    /** @defaultValue `"Historical payment recorded successfully"` */
+    successTitle: string
+    /** @defaultValue `"{{count}} contractor payment has been recorded."` */
+    successMessage_one: string
+    /** @defaultValue `"{{count}} contractor payments have been recorded."` */
+    successMessage_other: string
+    /** @defaultValue `"Payment summary"` */
+    summaryTitle: string
+    /** @defaultValue `"Historical payment for {{checkDate}}"` */
+    summarySubtitle: string
+    /** @defaultValue `"Done"` */
+    doneCta: string
+    /** @defaultValue `"Payment Summary"` */
+    paymentSummaryTitle: string
+    /** @defaultValue `"Total Amount"` */
+    totalAmount: string
+    /** @defaultValue `"Contractor Pay Date"` */
+    contractorPayDate: string
+    /** @defaultValue `"Contractor Payments"` */
+    contractorPaymentsTitle: string
+    /** @defaultValue `"Contractor"` */
+    contractor: string
+    /** @defaultValue `"Wage Type"` */
+    wageType: string
+    /** @defaultValue `"Payment Method"` */
+    paymentMethod: string
+    paymentMethods: {
+      /** @defaultValue `"Direct Deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
+    }
+    /** @defaultValue `"Hours"` */
+    hours: string
+    /** @defaultValue `"Wage"` */
+    wage: string
+    /** @defaultValue `"Bonus"` */
+    bonus: string
+    /** @defaultValue `"Reimbursement"` */
+    reimbursement: string
+    /** @defaultValue `"Total"` */
+    total: string
+    /** @defaultValue `"Totals"` */
+    totalsLabel: string
+    /** @defaultValue `"N/A"` */
+    notAvailable: string
   }
   /** Translation keys for the `Contractor.Payments.PaymentHistory` i18n namespace. */
   export interface ContractorPaymentsPaymentHistory {

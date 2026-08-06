@@ -1276,6 +1276,7 @@ export const componentEvents: {
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATED: "contractor/historicalPayments/created";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_EXIT: "contractor/historicalPayments/exit";
     readonly CONTRACTOR_PAYMENT_CREATE: "contractor/payments/create";
     readonly CONTRACTOR_PAYMENT_EDIT: "contractor/payments/edit";
     readonly CONTRACTOR_PAYMENT_UPDATE: "contractor/payments/update";
@@ -1895,6 +1896,8 @@ declare namespace ContractorManagement {
         CreatePaymentProps,
         CreateHistoricalPayment,
         CreateHistoricalPaymentProps,
+        HistoricalPaymentSummary,
+        HistoricalPaymentSummaryProps,
         PaymentHistory,
         PaymentHistoryProps,
         PaymentSummary,
@@ -3234,6 +3237,15 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 
 // @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
+
+// @alpha
+function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps): JSX;
+
+// @alpha
+interface HistoricalPaymentSummaryProps extends BaseComponentInterface<'Contractor.Payments.HistoricalPaymentSummary'> {
+    companyId: string;
+    paymentGroupId: string;
+}
 
 // @public
 interface HolidayItem {
@@ -4821,6 +4833,8 @@ export interface Resources {
     'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
     // (undocumented)
     'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+    // (undocumented)
+    'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
     // (undocumented)
     'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
     // (undocumented)

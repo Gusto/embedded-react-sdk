@@ -1956,6 +1956,43 @@ Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace.
 
 ***
 
+<a id="contractorpaymentshistoricalpaymentsummary"></a>
+
+### ContractorPaymentsHistoricalPaymentSummary
+
+Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentshistoricalpaymentsummarybonus"></a> `bonus` | `"Bonus"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractor"></a> `contractor` | `"Contractor"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractorpaydate"></a> `contractorPayDate` | `"Contractor Pay Date"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractorpaymentstitle"></a> `contractorPaymentsTitle` | `"Contractor Payments"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarydonecta"></a> `doneCta` | `"Done"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummaryhours"></a> `hours` | `"Hours"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarynotavailable"></a> `notAvailable` | `"N/A"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentmethod"></a> `paymentMethod` | `"Payment Method"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentmethods"></a> `paymentMethods` | |
+| `paymentMethods.check` | `"Check"` |
+| `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentsummarytitle"></a> `paymentSummaryTitle` | `"Payment Summary"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummaryreimbursement"></a> `reimbursement` | `"Reimbursement"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccessmessage_one"></a> `successMessage_one` | `"{{count}} contractor payment has been recorded."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccessmessage_other"></a> `successMessage_other` | `"{{count}} contractor payments have been recorded."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccesstitle"></a> `successTitle` | `"Historical payment recorded successfully"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysummarysubtitle"></a> `summarySubtitle` | `"Historical payment for {{checkDate}}"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysummarytitle"></a> `summaryTitle` | `"Payment summary"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotal"></a> `total` | `"Total"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotalamount"></a> `totalAmount` | `"Total Amount"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarywage"></a> `wage` | `"Wage"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarywagetype"></a> `wageType` | `"Wage Type"` |
+
+***
+
 <a id="contractorpaymentspaymenthistory"></a>
 
 ### ContractorPaymentsPaymentHistory
@@ -5484,6 +5521,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
 | <a id="property-resourcescontractorpaymentscreatehistoricalpayment"></a> `Contractor.Payments.CreateHistoricalPayment` | [`ContractorPaymentsCreateHistoricalPayment`](#contractorpaymentscreatehistoricalpayment) |
 | <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
+| <a id="property-resourcescontractorpaymentshistoricalpaymentsummary"></a> `Contractor.Payments.HistoricalPaymentSummary` | [`ContractorPaymentsHistoricalPaymentSummary`](#contractorpaymentshistoricalpaymentsummary) |
 | <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
 | <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
