@@ -133,7 +133,7 @@
     "eslint-plugin-storybook": "^10.5.5",
     "eslint-plugin-tsdoc": "^0.5.2",
     "fuse.js": "^7.5.0",
-    "globals": "^17.8.0",
+    "globals": "^17.9.0",
     "husky": "^9.1.7",
     "jest-axe": "^11.0.0",
     "jsdom": "^26.1.0",
@@ -185,7 +185,7 @@
   "dependencies": {
     "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-06-15@^0.1.0",
     "@hookform/error-message": "^2.0.1",
-    "@hookform/resolvers": "^5.5.7",
+    "@hookform/resolvers": "^5.6.0",
     "@internationalized/date": "^3.12.3",
     "@internationalized/number": "^3.6.7",
     "classnames": "^2.5.1",
