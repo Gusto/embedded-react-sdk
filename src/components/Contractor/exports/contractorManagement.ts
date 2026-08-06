@@ -42,6 +42,10 @@ export {
 export { PaymentHistory, type PaymentHistoryProps } from '../Payments/PaymentHistory/PaymentHistory'
 export { PaymentSummary, type PaymentSummaryProps } from '../Payments/PaymentSummary'
 export {
+  HistoricalPaymentSummary,
+  type HistoricalPaymentSummaryProps,
+} from '../Payments/HistoricalPaymentSummary'
+export {
   PaymentStatement,
   type PaymentStatementProps,
 } from '../Payments/PaymentStatement/PaymentStatement'

@@ -1,0 +1,30 @@
+{
+  "reviewTitle": "Review and submit",
+  "reviewSubtitle": "Historical payment for {{checkDate}}",
+  "submitCta": "Submit historical payment",
+  "createdTitle": "Payment summary",
+  "createdSubtitle": "Historical payment for {{checkDate}}",
+  "doneCta": "Done",
+  "successTitle": "Historical payment recorded successfully",
+  "successMessage_one": "{{count}} contractor payment has been recorded.",
+  "successMessage_other": "{{count}} contractor payments have been recorded.",
+  "paymentSummaryTitle": "Payment Summary",
+  "totalAmount": "Total Amount",
+  "contractorPayDate": "Contractor Pay Date",
+  "contractorPaymentsTitle": "Contractor Payments",
+  "contractor": "Contractor",
+  "wageType": "Wage Type",
+  "paymentMethod": "Payment Method",
+  "paymentMethods": {
+    "directDeposit": "Direct Deposit",
+    "check": "Check",
+    "historicalPayment": "Historical Payment"
+  },
+  "hours": "Hours",
+  "wage": "Wage",
+  "bonus": "Bonus",
+  "reimbursement": "Reimbursement",
+  "total": "Total",
+  "totalsLabel": "Totals",
+  "notAvailable": "N/A"
+}
