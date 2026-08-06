@@ -1,6 +1,9 @@
 {
-  "heading": "Enter payment amounts",
-  "subtitle": "Enter the hours or wage paid to each contractor along with any bonuses and reimbursements.",
+  "heading": "Record a historical payment",
+  "subtitle": "Log a contractor payment that already happened outside Gusto. Enter the paid date and the hours or wage paid to each contractor along with any bonuses and reimbursements.",
+  "dateLabel": "Payment date",
+  "dateInFutureError": "You cannot issue historical payments for the future. Please choose a date in the past.",
+  "dateTooEarlyError": "You cannot create a payment in {{year}}. Please select a {{allowedYear}} date.",
   "continueButton": "Continue",
   "hoursAndPaymentsLabel": "Hours and payments",
   "contractorTableHeaders": {
@@ -13,8 +16,8 @@
     "reimbursement": "Reimbursement",
     "total": "Total"
   },
-  "emptyTableTitle": "No contractors selected",
-  "emptyTableDescription": "Go back and select at least one contractor.",
+  "emptyTableTitle": "No eligible contractors",
+  "emptyTableDescription": "Add a contractor to record a historical payment for them.",
   "na": "N/A",
   "totalsLabel": "Totals",
   "editContractor": "Edit contractor payment",
@@ -52,5 +55,30 @@
       "directDepositNotAvailable": "Direct Deposit is not available for contractors set up for Check payments",
       "unsupportedPaymentMethod": "This payment method is not supported. Please select Check or Direct Deposit."
     }
+  },
+  "review": {
+    "title": "Review and submit",
+    "subtitle": "Historical payment for {{checkDate}}",
+    "editButton": "Edit",
+    "submitButton": "Submit historical payment",
+    "paymentSummaryTitle": "Payment Summary",
+    "totalAmount": "Total Amount",
+    "contractorPayDate": "Contractor Pay Date",
+    "contractorPaymentsTitle": "Contractor Payments",
+    "contractor": "Contractor",
+    "wageType": "Wage Type",
+    "paymentMethod": "Payment Method",
+    "paymentMethods": {
+      "directDeposit": "Direct Deposit",
+      "check": "Check",
+      "historicalPayment": "Historical Payment"
+    },
+    "hours": "Hours",
+    "wage": "Wage",
+    "bonus": "Bonus",
+    "reimbursement": "Reimbursement",
+    "total": "Total",
+    "totalsLabel": "Totals",
+    "notAvailable": "N/A"
   }
 }
