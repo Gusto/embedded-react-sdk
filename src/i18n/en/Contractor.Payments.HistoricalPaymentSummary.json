@@ -1,0 +1,27 @@
+{
+  "successTitle": "Historical payment recorded successfully",
+  "successMessage_one": "{{count}} contractor payment has been recorded.",
+  "successMessage_other": "{{count}} contractor payments have been recorded.",
+  "summaryTitle": "Payment summary",
+  "summarySubtitle": "Historical payment for {{checkDate}}",
+  "doneCta": "Done",
+  "paymentSummaryTitle": "Payment Summary",
+  "totalAmount": "Total Amount",
+  "contractorPayDate": "Contractor Pay Date",
+  "contractorPaymentsTitle": "Contractor Payments",
+  "contractor": "Contractor",
+  "wageType": "Wage Type",
+  "paymentMethod": "Payment Method",
+  "paymentMethods": {
+    "directDeposit": "Direct Deposit",
+    "check": "Check",
+    "historicalPayment": "Historical Payment"
+  },
+  "hours": "Hours",
+  "wage": "Wage",
+  "bonus": "Bonus",
+  "reimbursement": "Reimbursement",
+  "total": "Total",
+  "totalsLabel": "Totals",
+  "notAvailable": "N/A"
+}
