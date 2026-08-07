@@ -317,6 +317,10 @@ export const contractorPaymentEvents = {
  * @public
  */
 export const contractorHistoricalPaymentEvents = {
+  CONTRACTOR_HISTORICAL_PAYMENT_EDIT: 'contractor/historicalPayments/edit',
+  CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: 'contractor/historicalPayments/update',
+  CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: 'contractor/historicalPayments/preview',
+  CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT: 'contractor/historicalPayments/backToEdit',
   CONTRACTOR_HISTORICAL_PAYMENT_CREATED: 'contractor/historicalPayments/created',
   CONTRACTOR_HISTORICAL_PAYMENT_EXIT: 'contractor/historicalPayments/exit',
 } as const

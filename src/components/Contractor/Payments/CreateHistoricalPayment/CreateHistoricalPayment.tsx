@@ -15,12 +15,13 @@ import {
   useCreateHistoricalPaymentReviewDictionary,
 } from './useFormDictionary'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
-import { Flex, FlexItem } from '@/components/Common'
+import { ActionsLayout, Flex, FlexItem } from '@/components/Common'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { componentEvents } from '@/shared/constants'
+import { SelectContractors } from '@/components/Contractor/shared/SelectContractors/SelectContractors'
 
 const ALLOWED_PAYMENT_METHODS: ContractorPaymentMethod[] = ['Historical Payment']
 
@@ -36,26 +37,32 @@ export interface CreateHistoricalPaymentProps extends BaseComponentInterface<'Co
 
 /**
  * Records a historical contractor payment — one that already happened outside Gusto and does not
- * move money — by picking a paid date and entering hours, wages, bonuses, and reimbursements for
- * whichever contractors were paid, then reviewing and submitting.
+ * move money — by picking a paid date and the contractors being paid, entering hours, wages,
+ * bonuses, and reimbursements for them, then reviewing and submitting.
  *
  * @remarks
- * Every eligible contractor is listed; entering an amount for a contractor is what includes them
- * — there is no separate selection step. Every contractor payment is fixed to the
- * `Historical Payment` payment method, so there is no payment method choice or debit information
- * to review.
- * Continue is disabled until the paid date is valid and at least one contractor has a payment
- * total greater than zero. Clicking Continue swaps the amounts grid for an in-place review
- * (mirroring `CreatePayment`'s preview step); Edit returns to the grid without losing entered
- * amounts, and Submit creates the contractor payment group.
+ * Every contractor payment is fixed to the `Historical Payment` payment method, so there is no
+ * payment method choice or debit information to review.
+ * Continue on the contractor-selection step is disabled until the paid date is valid and at least
+ * one contractor is selected. Continue on the amounts step is disabled until at least one selected
+ * contractor has a payment total greater than zero, and swaps the amounts grid for an in-place
+ * review (mirroring `CreatePayment`'s preview step); Edit returns to the grid without losing
+ * entered amounts, and Submit creates the contractor payment group. Once creation succeeds, the
+ * Edit and Submit buttons are replaced with a success message, since the creation token has been
+ * consumed and the host is expected to navigate away (e.g. to `HistoricalPaymentSummary`).
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/historicalPayments/created` | The payment group was successfully created. | `{ paymentGroupId: string }` |
+ * | `contractor/historicalPayments/edit` | The edit modal was opened for a contractor. | — |
+ * | `contractor/historicalPayments/update` | A contractor's payment values were updated locally. | The updated form values (hours, wage, bonus, reimbursement, payment method, etc.). |
+ * | `contractor/historicalPayments/preview` | The preview API call succeeded. | The contractor payment group preview response. |
+ * | `contractor/historicalPayments/backToEdit` | The user returned from preview to continue editing. | — |
+ * | `contractor/historicalPayments/created` | The payment group was successfully created. | The created contractor payment group response. |
  *
  * @param props - See {@link CreateHistoricalPaymentProps}.
- * @returns The rendered payment-amounts entry screen, or its in-place review.
+ * @returns The rendered contractor-selection screen, the payment-amounts entry screen, or its
+ * in-place review.
  * @alpha
  */
 export function CreateHistoricalPayment(props: CreateHistoricalPaymentProps) {
@@ -66,42 +73,113 @@ export function CreateHistoricalPayment(props: CreateHistoricalPaymentProps) {
   )
 }
 
+interface ContractorSelection {
+  contractorIds: string[]
+  checkDate: string
+}
+
 function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) {
   useI18n('Contractor.Payments.CreateHistoricalPayment')
   useComponentDictionary('Contractor.Payments.CreateHistoricalPayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')
   const { Heading, Text, Button, DatePicker } = useComponentContext()
+
+  const { minDate, maxDate } = useMemo(() => getHistoricalPaymentCheckDateBounds(), [])
+  const [checkDate, setCheckDate] = useState<Date | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [selection, setSelection] = useState<ContractorSelection | null>(null)
+
+  let dateError: string | null = null
+  if (checkDate !== null && checkDate > maxDate) {
+    dateError = t('select.dateInFutureError')
+  } else if (checkDate !== null && checkDate < minDate) {
+    dateError = t('select.dateTooEarlyError', {
+      year: checkDate.getFullYear(),
+      allowedYear: minDate.getFullYear(),
+    })
+  }
+
+  const canContinue = selectedIds.length > 0 && checkDate !== null && dateError === null
+
+  const handleContinue = () => {
+    if (!canContinue) return
+    const checkDateString = formatDateToStringDate(checkDate)
+    if (!checkDateString) return
+    setSelection({ contractorIds: selectedIds, checkDate: checkDateString })
+  }
+
+  if (!selection) {
+    return (
+      <Flex flexDirection="column" gap={32}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('select.heading')}</Heading>
+          <Text variant="supporting">{t('select.subtitle')}</Text>
+        </Flex>
+
+        <DatePicker
+          label={t('select.dateLabel')}
+          isRequired
+          value={checkDate}
+          onChange={setCheckDate}
+          minDate={minDate}
+          maxDate={maxDate}
+          isInvalid={dateError !== null}
+          errorMessage={dateError ?? undefined}
+        />
+
+        <SelectContractors companyId={companyId} onSelectionChange={setSelectedIds} />
+
+        <ActionsLayout>
+          <Button onClick={handleContinue} variant="primary" isDisabled={!canContinue}>
+            {t('select.continueButton')}
+          </Button>
+        </ActionsLayout>
+      </Flex>
+    )
+  }
+
+  return (
+    <AmountsAndReview
+      companyId={companyId}
+      contractorIds={selection.contractorIds}
+      checkDate={selection.checkDate}
+      onEvent={onEvent}
+    />
+  )
+}
+
+interface AmountsAndReviewProps {
+  companyId: string
+  contractorIds: string[]
+  checkDate: string
+  onEvent: CreateHistoricalPaymentProps['onEvent']
+}
+
+function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: AmountsAndReviewProps) {
+  const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')
+  const { Heading, Text, Button, Alert } = useComponentContext()
   const { baseSubmitHandler } = useBase()
   const { formatLongWithYear } = useDateFormatter()
   const paymentAmountsDictionary = useCreateHistoricalPaymentDictionary()
   const reviewDictionary = useCreateHistoricalPaymentReviewDictionary()
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = (contractorList.contractors || []).filter(
-    contractor =>
-      contractor.isActive &&
-      contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
+  const contractors = (contractorList.contractors ?? []).filter(contractor =>
+    contractorIds.includes(contractor.uuid),
   )
-
-  const { minDate, maxDate } = useMemo(() => getHistoricalPaymentCheckDateBounds(), [])
-  const [checkDate, setCheckDate] = useState<Date | null>(null)
-
-  let dateError: string | null = null
-  if (checkDate !== null && checkDate > maxDate) {
-    dateError = t('dateInFutureError')
-  } else if (checkDate !== null && checkDate < minDate) {
-    dateError = t('dateTooEarlyError', {
-      year: checkDate.getFullYear(),
-      allowedYear: minDate.getFullYear(),
-    })
-  }
 
   const { virtualContractorPayments, totals, editModal } = usePaymentAmountsEditor({
     contractors,
     allowedPaymentMethods: ALLOWED_PAYMENT_METHODS,
+    onEditOpen: () => {
+      onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EDIT)
+    },
+    onEditSave: data => {
+      onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_UPDATE, data)
+    },
   })
 
-  const canContinue = totals.total > 0 && checkDate !== null && dateError === null
+  const canContinue = totals.total > 0
 
   const { mutateAsync: previewContractorPaymentGroup, isPending: isPreviewing } =
     useContractorPaymentGroupsPreviewMutation()
@@ -109,6 +187,7 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
     useContractorPaymentGroupsCreateMutation()
 
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
+  const [isCreated, setIsCreated] = useState(false)
 
   const touchedContractorPayments = () =>
     virtualContractorPayments
@@ -117,48 +196,53 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
 
   const handleContinue = async () => {
     if (!canContinue) return
-    const checkDateString = formatDateToStringDate(checkDate)
-    if (!checkDateString) return
 
     await baseSubmitHandler(null, async () => {
       const response = await previewContractorPaymentGroup({
         request: {
           companyId,
           requestBody: {
-            checkDate: new RFCDate(checkDateString),
+            checkDate: new RFCDate(checkDate),
             contractorPayments: touchedContractorPayments(),
           },
         },
       })
       setPreviewData(response.contractorPaymentGroupPreview || null)
+      onEvent(
+        componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW,
+        response.contractorPaymentGroupPreview,
+      )
     })
   }
 
   const handleBackToEdit = () => {
     setPreviewData(null)
+    onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT)
   }
 
   const handleSubmit = async () => {
     const creationToken = previewData?.creationToken
-    const checkDateString = checkDate !== null ? formatDateToStringDate(checkDate) : null
-    if (!creationToken || !checkDateString) return
+    if (!creationToken || isCreated) return
 
     await baseSubmitHandler(null, async () => {
       const response = await createContractorPaymentGroup({
         request: {
           companyId,
           requestBody: {
-            checkDate: new RFCDate(checkDateString),
+            checkDate: new RFCDate(checkDate),
             creationToken,
             contractorPayments: touchedContractorPayments(),
           },
         },
       })
 
-      const paymentGroupId = response.contractorPaymentGroup?.uuid
-      if (!paymentGroupId) return
+      if (!response.contractorPaymentGroup) return
 
-      onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED, { paymentGroupId })
+      setIsCreated(true)
+      onEvent(
+        componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
+        response.contractorPaymentGroup,
+      )
     })
   }
 
@@ -174,8 +258,8 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
               })}
             </Text>
           </Flex>
-          <FlexItem>
-            <Flex gap={16}>
+          {!isCreated && (
+            <Flex justifyContent="flex-end" gap={16}>
               <Button onClick={handleBackToEdit} variant="secondary">
                 {t('review.editButton')}
               </Button>
@@ -183,8 +267,14 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
                 {t('review.submitButton')}
               </Button>
             </Flex>
-          </FlexItem>
+          )}
         </Flex>
+
+        {isCreated && (
+          <Alert status="success" label={t('review.successTitle')}>
+            <Text>{t('review.successMessage')}</Text>
+          </Alert>
+        )}
 
         <PaymentSummaryBlock
           contractorPaymentGroup={previewData}
@@ -200,8 +290,8 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
     <Flex flexDirection="column" gap={32}>
       <Flex justifyContent="flex-end" gap={16}>
         <Flex flexDirection="column" gap={4}>
-          <Heading as="h2">{t('heading')}</Heading>
-          <Text variant="supporting">{t('subtitle')}</Text>
+          <Heading as="h2">{t('amounts.heading')}</Heading>
+          <Text variant="supporting">{t('amounts.subtitle')}</Text>
         </Flex>
         <FlexItem>
           <Button
@@ -210,21 +300,10 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
             isDisabled={!canContinue}
             isLoading={isPreviewing}
           >
-            {t('continueButton')}
+            {t('amounts.continueButton')}
           </Button>
         </FlexItem>
       </Flex>
-
-      <DatePicker
-        label={t('dateLabel')}
-        isRequired
-        value={checkDate}
-        onChange={setCheckDate}
-        minDate={minDate}
-        maxDate={maxDate}
-        isInvalid={dateError !== null}
-        errorMessage={dateError ?? undefined}
-      />
 
       <SetPaymentAmounts
         contractors={contractors}

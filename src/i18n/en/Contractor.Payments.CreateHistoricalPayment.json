@@ -1,10 +1,17 @@
 {
-  "heading": "Record a historical payment",
-  "subtitle": "Log a contractor payment that already happened outside Gusto. Enter the paid date and the hours or wage paid to each contractor along with any bonuses and reimbursements.",
-  "dateLabel": "Payment date",
-  "dateInFutureError": "You cannot issue historical payments for the future. Please choose a date in the past.",
-  "dateTooEarlyError": "You cannot create a payment in {{year}}. Please select a {{allowedYear}} date.",
-  "continueButton": "Continue",
+  "select": {
+    "heading": "Record a historical payment",
+    "subtitle": "Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid.",
+    "dateLabel": "Payment date",
+    "dateInFutureError": "You cannot issue historical payments for the future. Please choose a date in the past.",
+    "dateTooEarlyError": "You cannot create a payment in {{year}}. Please select a {{allowedYear}} date.",
+    "continueButton": "Continue"
+  },
+  "amounts": {
+    "heading": "Enter payment amounts",
+    "subtitle": "Enter the hours or wage paid to each contractor along with any bonuses and reimbursements.",
+    "continueButton": "Continue"
+  },
   "hoursAndPaymentsLabel": "Hours and payments",
   "contractorTableHeaders": {
     "contractor": "Contractor",
@@ -16,8 +23,8 @@
     "reimbursement": "Reimbursement",
     "total": "Total"
   },
-  "emptyTableTitle": "No eligible contractors",
-  "emptyTableDescription": "Add a contractor to record a historical payment for them.",
+  "emptyTableTitle": "No contractors selected",
+  "emptyTableDescription": "Select at least one contractor to record a payment.",
   "na": "N/A",
   "totalsLabel": "Totals",
   "editContractor": "Edit contractor payment",
@@ -61,6 +68,8 @@
     "subtitle": "Historical payment for {{checkDate}}",
     "editButton": "Edit",
     "submitButton": "Submit historical payment",
+    "successTitle": "Historical payment recorded successfully",
+    "successMessage": "This payment has been recorded. View it from the payments list to see its full details.",
     "paymentSummaryTitle": "Payment Summary",
     "totalAmount": "Total Amount",
     "contractorPayDate": "Contractor Pay Date",
