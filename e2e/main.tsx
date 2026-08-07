@@ -183,9 +183,11 @@ function App({ config }: { config: E2EConfig }) {
   return (
     <StrictMode>
       <FlowSelector currentFlow={config.flow} />
-      <GustoProvider config={{ baseUrl: config.baseUrl }}>
-        <FlowRenderer config={config} />
-      </GustoProvider>
+      <main>
+        <GustoProvider config={{ baseUrl: config.baseUrl }}>
+          <FlowRenderer config={config} />
+        </GustoProvider>
+      </main>
     </StrictMode>
   )
 }

@@ -721,16 +721,11 @@ describe('PayrollEditEmployeePresentation', () => {
         />,
       )
 
-      await waitFor(() => {
-        expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
-      })
+      const payoutHeading = await screen.findByText('Unused time off payout')
+      const payoutFieldGroup = payoutHeading.closest('[class*="fieldGroup"]')
 
       const payoutInputs = screen.getAllByRole('spinbutton', { name: /Vacation Hours|Sick Hours/ })
-      const vacationPayoutInput = payoutInputs.find(
-        input =>
-          input.closest('[class*="fieldGroup"]')?.querySelector('h4')?.textContent ===
-          'Unused time off payout',
-      )
+      const vacationPayoutInput = payoutInputs.find(input => payoutFieldGroup?.contains(input))
 
       if (vacationPayoutInput) {
         await user.clear(vacationPayoutInput)

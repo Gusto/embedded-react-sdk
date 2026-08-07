@@ -103,9 +103,10 @@ export const PayrollConfigurationPresentation = ({
 
   const getEmployeeName = (employeeUuid: string) => {
     const employee = employeeMap.get(employeeUuid)
-    return employee
+    const name = employee
       ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
-      : null
+      : ''
+    return name || t('unknownEmployeeFallback')
   }
 
   return (
@@ -186,7 +187,9 @@ export const PayrollConfigurationPresentation = ({
             )}
             <Flex flexDirection="column" gap={20}>
               <FlexItem>
-                <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
+                <Heading as="h2" styledAs="h3">
+                  {t('hoursAndEarningsTitle')}
+                </Heading>
                 <Text variant="supporting">{t('hoursAndEarningsDescription')}</Text>
               </FlexItem>
 
