@@ -70,6 +70,10 @@ export type PayScheduleFormOutputs = PayScheduleFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 
+function needsCustomTwicePerMonth(data: PayScheduleFormData): boolean {
+  return data.frequency === 'Twice per month'
+}
+
 function needsDay1(data: PayScheduleFormData): boolean {
   const freq = data.frequency
   const custom = data.customTwicePerMonth
@@ -83,7 +87,7 @@ function needsDay2(data: PayScheduleFormData): boolean {
 }
 
 const requiredFieldsConfig = {
-  customTwicePerMonth: 'never',
+  customTwicePerMonth: needsCustomTwicePerMonth,
   day1: needsDay1,
   day2: needsDay2,
 } satisfies RequiredFieldConfig<typeof fieldValidators>

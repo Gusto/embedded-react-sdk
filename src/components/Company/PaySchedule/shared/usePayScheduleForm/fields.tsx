@@ -66,7 +66,9 @@ export function FrequencyField(props: FrequencyFieldProps) {
  *
  * @public
  */
-export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>
+export type CustomTwicePerMonthFieldProps = HookFieldProps<
+  RadioGroupHookFieldProps<RequiredValidation, string>
+>
 
 /** @internal */
 export function CustomTwicePerMonthField(props: CustomTwicePerMonthFieldProps) {
