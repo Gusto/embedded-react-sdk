@@ -1753,7 +1753,10 @@ Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n name
 | ------ | ------ |
 | <a id="property-contractorpaymentscreatehistoricalpaymentalerts"></a> `alerts` | |
 | `alerts.contractorPaymentUpdated` | `"Pay updated for {{contractorName}}"` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentcontinuebutton"></a> `continueButton` | `"Continue"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentamounts"></a> `amounts` | |
+| `amounts.continueButton` | `"Continue"` |
+| `amounts.heading` | `"Enter payment amounts"` |
+| `amounts.subtitle` | `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
 | <a id="property-contractorpaymentscreatehistoricalpaymentcontractortableheaders"></a> `contractorTableHeaders` | |
 | `contractorTableHeaders.bonus` | `"Bonus"` |
 | `contractorTableHeaders.contractor` | `"Contractor"` |
@@ -1763,9 +1766,6 @@ Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n name
 | `contractorTableHeaders.total` | `"Total"` |
 | `contractorTableHeaders.wage` | `"Fixed amount"` |
 | `contractorTableHeaders.wageType` | `"Wage"` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentdateinfutureerror"></a> `dateInFutureError` | `"You cannot issue historical payments for the future. Please choose a date in the past."` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentdatelabel"></a> `dateLabel` | `"Payment date"` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentdatetooearlyerror"></a> `dateTooEarlyError` | `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` |
 | <a id="property-contractorpaymentscreatehistoricalpaymenteditcontractor"></a> `editContractor` | `"Edit contractor payment"` |
 | <a id="property-contractorpaymentscreatehistoricalpaymenteditcontractorpayment"></a> `editContractorPayment` | |
 | `editContractorPayment.bonusLabel` | `"Bonus"` |
@@ -1786,9 +1786,8 @@ Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n name
 | `editContractorPayment.subtitle` | `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` |
 | `editContractorPayment.title` | `"Edit contractor pay"` |
 | `editContractorPayment.wageLabel` | `"Fixed amount"` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabledescription"></a> `emptyTableDescription` | `"Add a contractor to record a historical payment for them."` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabletitle"></a> `emptyTableTitle` | `"No eligible contractors"` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentheading"></a> `heading` | `"Record a historical payment"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabledescription"></a> `emptyTableDescription` | `"Select at least one contractor to record a payment."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabletitle"></a> `emptyTableTitle` | `"No contractors selected"` |
 | <a id="property-contractorpaymentscreatehistoricalpaymenthoursandpaymentslabel"></a> `hoursAndPaymentsLabel` | `"Hours and payments"` |
 | <a id="property-contractorpaymentscreatehistoricalpaymentna"></a> `na` | `"N/A"` |
 | <a id="property-contractorpaymentscreatehistoricalpaymentpaymentmethods"></a> `paymentMethods` | |
@@ -1813,13 +1812,21 @@ Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n name
 | `review.reimbursement` | `"Reimbursement"` |
 | `review.submitButton` | `"Submit historical payment"` |
 | `review.subtitle` | `"Historical payment for {{checkDate}}"` |
+| `review.successMessage` | `"This payment has been recorded. View it from the payments list to see its full details."` |
+| `review.successTitle` | `"Historical payment recorded successfully"` |
 | `review.title` | `"Review and submit"` |
 | `review.total` | `"Total"` |
 | `review.totalAmount` | `"Total Amount"` |
 | `review.totalsLabel` | `"Totals"` |
 | `review.wage` | `"Wage"` |
 | `review.wageType` | `"Wage Type"` |
-| <a id="property-contractorpaymentscreatehistoricalpaymentsubtitle"></a> `subtitle` | `"Log a contractor payment that already happened outside Gusto. Enter the paid date and the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentselect"></a> `select` | |
+| `select.continueButton` | `"Continue"` |
+| `select.dateInFutureError` | `"You cannot issue historical payments for the future. Please choose a date in the past."` |
+| `select.dateLabel` | `"Payment date"` |
+| `select.dateTooEarlyError` | `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` |
+| `select.heading` | `"Record a historical payment"` |
+| `select.subtitle` | `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` |
 | <a id="property-contractorpaymentscreatehistoricalpaymenttotalslabel"></a> `totalsLabel` | `"Totals"` |
 | <a id="property-contractorpaymentscreatehistoricalpaymentwagetypes"></a> `wageTypes` | |
 | `wageTypes.fixed` | `"Fixed"` |

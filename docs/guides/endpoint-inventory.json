@@ -2349,8 +2349,18 @@
         "companyUuid"
       ]
     },
-    "ContractorManagement.HistoricalPaymentAmounts": {
+    "ContractorManagement.CreateHistoricalPayment": {
       "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/contractor_payment_groups",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-contractor_payment_groups"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/contractor_payment_groups/preview",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-contractor_payment_groups-preview"
+        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors",
@@ -2358,7 +2368,26 @@
         }
       ],
       "variables": [
+        "companyId",
         "companyUuid"
+      ]
+    },
+    "ContractorManagement.HistoricalPaymentSummary": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorPaymentGroupUuid"
       ]
     },
     "ContractorManagement.PaymentHistory": {

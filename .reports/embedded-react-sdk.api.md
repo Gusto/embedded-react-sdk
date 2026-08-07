@@ -1275,6 +1275,10 @@ export const componentEvents: {
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_EDIT: "contractor/historicalPayments/edit";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: "contractor/historicalPayments/update";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: "contractor/historicalPayments/preview";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT: "contractor/historicalPayments/backToEdit";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATED: "contractor/historicalPayments/created";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_EXIT: "contractor/historicalPayments/exit";
     readonly CONTRACTOR_PAYMENT_CREATE: "contractor/payments/create";
