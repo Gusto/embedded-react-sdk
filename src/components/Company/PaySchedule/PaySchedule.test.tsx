@@ -499,6 +499,38 @@ describe('PaySchedule', () => {
       expect(screen.queryByText(/frequency options/i)).not.toBeInTheDocument()
     })
 
+    it('surfaces the frequency-option required error on submit for "Twice per month"', async () => {
+      // Schema-level requiredness is covered in usePayScheduleForm.test.tsx; this
+      // asserts the UI wiring — that selecting "Twice per month" and submitting
+      // without a strategy renders the required message on the radio itself.
+      const user = userEvent.setup()
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
+
+      const frequencySelect = screen.getByRole('button', { name: /frequency/i })
+      await user.click(frequencySelect)
+      await user.click(screen.getByRole('option', { name: /twice per month/i }))
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/please select the pay days for the month/i)).toBeInTheDocument()
+      })
+    })
+
     it('hides frequency options radio group for "Monthly"', async () => {
       const user = userEvent.setup()
 

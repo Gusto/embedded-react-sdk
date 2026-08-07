@@ -594,6 +594,7 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `validations.firstPayDayOfTheMonth` | `"First pay day of the month is required"` |
 | `validations.firstPayPeriodEndDate` | `"First pay period end date is required"` |
 | `validations.frequency` | `"Pay frequency is required"` |
+| `validations.frequencyOptions` | `"Please select the pay days for the month"` |
 | `validations.lastPayDayOfTheMonth` | `"Last pay day of the month is required"` |
 | `validations.name` | `"Pay schedule name is required"` |
 
