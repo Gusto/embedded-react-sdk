@@ -1,5 +1,7 @@
 import { randomInt } from 'node:crypto'
 import type { Locator, Page } from '@playwright/test'
+import { a11yViolationTracker } from './a11yViolationTracker'
+import { getCallerLabel } from './callerInfo'
 
 export function generateUniqueSSN(): string {
   const area = randomInt(1, 666)
@@ -119,14 +121,51 @@ interface WaitForLoadingOptions {
  * calls produce more misleading errors if it's silenced. Always waits on
  * `.first()` so a page with multiple Suspense fallbacks doesn't deadlock the
  * helper.
+ *
+ * Also axe-checks the settled screen via `a11yViolationTracker`, labeled
+ * with the calling function (or file:line for an inline test-body callback)
+ * -- this is called at nearly every point a test expects the screen to have
+ * changed, so it's the main source of a11y coverage on intermediate screens
+ * a test navigates through but never ends on.
  */
 export async function waitForLoadingComplete(
   page: Page,
   timeoutOrOptions: number | WaitForLoadingOptions = 30_000,
 ): Promise<void> {
+  // Captured synchronously, before this function's own await below -- V8 loses
+  // the caller's identity once *this* frame has already resumed from an
+  // await of its own, even though the caller's own prior awaits don't matter.
+  // See getCallerLabel's doc comment.
+  const callerLabel = getCallerLabel()
+
   const { timeout = 30_000, anchor } =
     typeof timeoutOrOptions === 'number' ? { timeout: timeoutOrOptions } : timeoutOrOptions
 
+  await waitForSuspenseDetach(page, timeout, anchor)
+  await a11yViolationTracker.check(page, callerLabel)
+}
+
+/**
+ * Waits for React to have rendered *something* into `<main>`. Guards the
+ * loading-indicator wait below: `.waitFor({ state: 'detached' })` on a
+ * locator that never matched anything resolves immediately, so right after
+ * navigation -- before React has even called `createRoot().render()`, which
+ * can lag behind `domcontentloaded` under Vite's unbundled dev-mode ESM
+ * graph -- that wait (and an axe check right after it) would race ahead of
+ * the app mounting at all, not just ahead of loading finishing. Throws like
+ * the rest of this file if nothing mounts within `timeout`: an SDK flow that
+ * never renders anything is a real bug, not something to wait out silently.
+ */
+async function waitForMainMounted(page: Page, timeout: number): Promise<void> {
+  await page.locator('main > *').first().waitFor({ state: 'attached', timeout })
+}
+
+/** Shared by waitForLoadingComplete and the page.goto wrapper in localTestFixture.ts. */
+export async function waitForSuspenseDetach(
+  page: Page,
+  timeout: number,
+  anchor?: Locator,
+): Promise<void> {
   await waitForMainMounted(page, timeout)
 
   // The SDK's Loading component (src/components/Common/Loading/Loading.tsx)
@@ -142,21 +181,6 @@ export async function waitForLoadingComplete(
   }
 
   await detach
-}
-
-/**
- * Waits for React to have rendered *something* into `<main>`. Guards the
- * loading-indicator wait above: `.waitFor({ state: 'detached' })` on a
- * locator that never matched anything resolves immediately, so right after
- * navigation -- before React has even called `createRoot().render()`, which
- * can lag behind `domcontentloaded` under Vite's unbundled dev-mode ESM
- * graph -- that wait would race ahead of the app mounting at all, not just
- * ahead of loading finishing. Throws like the rest of this file if nothing
- * mounts within `timeout`: an SDK flow that never renders anything is a real
- * bug, not something to wait out silently.
- */
-async function waitForMainMounted(page: Page, timeout: number): Promise<void> {
-  await page.locator('main > *').first().waitFor({ state: 'attached', timeout })
 }
 
 export async function skipPendingPayrolls(config: { flowToken: string; companyId: string }) {

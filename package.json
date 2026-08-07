@@ -94,6 +94,7 @@
     "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "@eslint/js": "^9.39.5",

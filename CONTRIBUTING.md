@@ -229,6 +229,16 @@ You can run the test suite locally with the following command:
 npm run test
 ```
 
+### Accessibility testing
+
+Every test that renders a component is automatically checked for accessibility violations — a global `afterEach` hook (`src/test/setup.ts`) runs [axe](https://github.com/dequelabs/axe-core) against the rendered DOM before cleanup. You don't need to add anything to a new test to get this coverage, and CI fails on any violation (zero-tolerance threshold) since this runs inside the same `test:ci` job that already gates PRs.
+
+The global check uses a relaxed rule set (see `INTEGRATION_TEST_DISABLED_RULES` in `src/test/accessibility.ts`) that ignores page-level rules like `region` and `heading-order` — an isolated component rendered outside a real page layout will always trip those, since it has no surrounding landmarks or document title to check against.
+
+Components with dedicated accessibility test cases can still opt in to a stricter, narrower check via `expectNoAxeViolations(container)` (from `src/test/accessibility.ts`, available globally in tests) scoped to just that component's render output — this catches real issues like missing landmark roles or bad heading order that the relaxed global check intentionally skips. Keep these where they already exist; they're checking something the global gate doesn't.
+
+If a violation is a genuine false positive rather than a real bug, disable only that specific rule with a comment explaining why (following the existing entries in `DEFAULT_DISABLED_RULES`/`INTEGRATION_TEST_DISABLED_RULES`) — don't reach for a broader escape hatch.
+
 ## Pull requests
 
 When creating a pull request, use the provided PR template (`.github/PULL_REQUEST_TEMPLATE.md`). Here are the guidelines:
