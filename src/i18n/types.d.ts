@@ -2406,18 +2406,28 @@ export namespace Translations {
   }
   /** Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n namespace. */
   export interface ContractorPaymentsCreateHistoricalPayment {
-    /** @defaultValue `"Record a historical payment"` */
-    heading: string
-    /** @defaultValue `"Log a contractor payment that already happened outside Gusto. Enter the paid date and the hours or wage paid to each contractor along with any bonuses and reimbursements."` */
-    subtitle: string
-    /** @defaultValue `"Payment date"` */
-    dateLabel: string
-    /** @defaultValue `"You cannot issue historical payments for the future. Please choose a date in the past."` */
-    dateInFutureError: string
-    /** @defaultValue `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` */
-    dateTooEarlyError: string
-    /** @defaultValue `"Continue"` */
-    continueButton: string
+    select: {
+      /** @defaultValue `"Record a historical payment"` */
+      heading: string
+      /** @defaultValue `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` */
+      subtitle: string
+      /** @defaultValue `"Payment date"` */
+      dateLabel: string
+      /** @defaultValue `"You cannot issue historical payments for the future. Please choose a date in the past."` */
+      dateInFutureError: string
+      /** @defaultValue `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` */
+      dateTooEarlyError: string
+      /** @defaultValue `"Continue"` */
+      continueButton: string
+    }
+    amounts: {
+      /** @defaultValue `"Enter payment amounts"` */
+      heading: string
+      /** @defaultValue `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` */
+      subtitle: string
+      /** @defaultValue `"Continue"` */
+      continueButton: string
+    }
     /** @defaultValue `"Hours and payments"` */
     hoursAndPaymentsLabel: string
     contractorTableHeaders: {
@@ -2438,9 +2448,9 @@ export namespace Translations {
       /** @defaultValue `"Total"` */
       total: string
     }
-    /** @defaultValue `"No eligible contractors"` */
+    /** @defaultValue `"No contractors selected"` */
     emptyTableTitle: string
-    /** @defaultValue `"Add a contractor to record a historical payment for them."` */
+    /** @defaultValue `"Select at least one contractor to record a payment."` */
     emptyTableDescription: string
     /** @defaultValue `"N/A"` */
     na: string
@@ -2515,6 +2525,10 @@ export namespace Translations {
       editButton: string
       /** @defaultValue `"Submit historical payment"` */
       submitButton: string
+      /** @defaultValue `"Historical payment recorded successfully"` */
+      successTitle: string
+      /** @defaultValue `"This payment has been recorded. View it from the payments list to see its full details."` */
+      successMessage: string
       /** @defaultValue `"Payment Summary"` */
       paymentSummaryTitle: string
       /** @defaultValue `"Total Amount"` */
