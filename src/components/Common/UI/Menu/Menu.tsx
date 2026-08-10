@@ -40,6 +40,7 @@ export function Menu(rawProps: MenuProps) {
       placement={placement}
       offset={8}
       shouldUpdatePosition={true}
+      aria-label={ariaLabel}
     >
       <AriaMenu onClose={onClose} aria-label={ariaLabel} className={styles.root} {...otherProps}>
         {items?.map(({ onClick, isDisabled, href, icon, label, ...itemProps }, index) => (

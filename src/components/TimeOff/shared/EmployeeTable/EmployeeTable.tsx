@@ -70,7 +70,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
             {firstLastName({
               first_name: item.firstName,
               last_name: item.lastName,
-            })}
+            }) || t('unknownEmployeeFallback')}
           </span>
         ),
       },

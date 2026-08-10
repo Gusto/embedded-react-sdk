@@ -681,6 +681,7 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `manageRates.rateScheduledSuccess` |
 | `manageRates.saveRateCta` |
 | `manageRates.scheduledBadge` |
+| `manageRates.statusColumnLabel` |
 | `manageRates.subtitle` |
 | `manageRates.title` |
 
@@ -806,6 +807,7 @@ Translation keys for the `Company.TimeOff.EmployeeTable` i18n namespace.
 | <a id="property-companytimeoffemployeetableselectallemployees"></a> `selectAllEmployees` | `"Select all employees"` |
 | <a id="property-companytimeoffemployeetableselected"></a> `selected` | `"of {{numAll}} employees selected"` |
 | <a id="property-companytimeoffemployeetabletablelabel"></a> `tableLabel` | `"Employees"` |
+| <a id="property-companytimeoffemployeetableunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
 
@@ -1538,6 +1540,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | `removeDialog.title` | `"Remove contractor?"` |
 | <a id="property-contractormanagementcontractorlistreviewcta"></a> `reviewCta` | `"Review"` |
 | <a id="property-contractormanagementcontractorliststartsbadge"></a> `startsBadge` | `"Starts {{date}}"` |
+| <a id="property-contractormanagementcontractorliststatuscolumnlabel"></a> `statusColumnLabel` | `"Status"` |
 | <a id="property-contractormanagementcontractorlisttabs"></a> `tabs` | |
 | `tabs.active` | `"Active"` |
 | `tabs.dismissed` | `"Dismissed"` |
@@ -4837,6 +4840,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `tableColumns.reimbursements` | `"Reimbursements"` |
 | `tableColumns.timeOff` | `"Time off"` |
 | `tableColumns.totalPay` | `"Total pay"` |
+| <a id="property-payrollpayrollconfigurationunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
 

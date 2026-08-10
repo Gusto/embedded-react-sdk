@@ -180,7 +180,7 @@ export const PaymentSummaryBlock = ({
                   contractors.find(
                     contractor => contractor.uuid === contractorPayment.contractorUuid,
                   ),
-                ),
+                ) || dictionary.notAvailable,
             },
             {
               title: dictionary.wageType,

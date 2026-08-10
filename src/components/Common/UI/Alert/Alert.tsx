@@ -57,7 +57,9 @@ export function Alert(rawProps: AlertProps) {
         <div className={styles.header}>
           <div className={styles.iconLabelContainer}>
             <div className={styles.icon}>{icon || defaultIcon}</div>
-            <h6 id={id}>{label}</h6>
+            <div id={id} className={styles.label}>
+              {label}
+            </div>
             {action && <div className={styles.action}>{action}</div>}
             {onDismiss && (
               <div className={styles.dismiss}>

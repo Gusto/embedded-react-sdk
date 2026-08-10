@@ -37,7 +37,7 @@
       flex-shrink: 0;
     }
 
-    h6 {
+    .label {
       margin: 0;
       color: var(--headerColor);
       font-size: var(--g-fontSizeRegular);
@@ -49,8 +49,8 @@
       font-weight: var(--g-fontWeightRegular);
       color: var(--g-colorBodySubContent);
       padding-bottom: toRem(8);
-      margin-left: toRem(50); // Align with h6 start (icon width + gap)
-      margin-top: toRem(-4); // Pull content closer to H6
+      margin-left: toRem(50); // Align with label start (icon width + gap)
+      margin-top: toRem(-4); // Pull content closer to label
     }
 
     .action {

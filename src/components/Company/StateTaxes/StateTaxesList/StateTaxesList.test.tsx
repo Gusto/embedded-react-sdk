@@ -39,7 +39,7 @@ describe('StateTaxesList', () => {
   it('fires continue event when "continue" is clicked', async () => {
     await waitFor(() => {
       const skeletonElements = document.querySelectorAll(
-        'section[aria-busy="true"][aria-label="Loading component..."]',
+        '[role="status"][aria-busy="true"][aria-label="Loading component..."]',
       )
       expect(skeletonElements.length).toBe(0)
     })

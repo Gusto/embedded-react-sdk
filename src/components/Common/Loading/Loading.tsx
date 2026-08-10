@@ -14,14 +14,15 @@ export const Loading = ({ children }: LoadingProps) => {
   const { t } = useTranslation('common')
   return (
     <FadeIn>
-      <section
+      <div
+        role="status"
         className={styles.skeletonContainer}
         aria-label={t('status.loading')}
         aria-live="polite"
         aria-busy
       >
         <div className={cn(styles.skeleton, styles.skeletonBox)}>{children}</div>
-      </section>
+      </div>
     </FadeIn>
   )
 }

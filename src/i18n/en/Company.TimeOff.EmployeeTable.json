@@ -1,5 +1,6 @@
 {
   "name": "Name",
+  "unknownEmployeeFallback": "Unknown employee",
   "jobTitle": "Job title",
   "department": "Department",
   "selected": "of {{numAll}} employees selected",
