@@ -1,4 +1,5 @@
 {
+  "breadcrumbLabel": "Record a historical payment",
   "select": {
     "heading": "Record a historical payment",
     "subtitle": "Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid.",
