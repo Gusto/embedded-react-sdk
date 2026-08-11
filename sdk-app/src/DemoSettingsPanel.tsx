@@ -391,7 +391,8 @@ export function DemoSettingsPanel({
     entities.contractorId !== confirmedSnapshot.current.contractorId ||
     entities.payrollId !== confirmedSnapshot.current.payrollId ||
     entities.requestId !== confirmedSnapshot.current.requestId ||
-    entities.formId !== confirmedSnapshot.current.formId
+    entities.formId !== confirmedSnapshot.current.formId ||
+    entities.paymentGroupId !== confirmedSnapshot.current.paymentGroupId
 
   const displayEnv = env === 'localzp' ? 'local' : env
 
@@ -818,6 +819,31 @@ export function DemoSettingsPanel({
                     request={buildEntityInspectRequest(
                       'formId',
                       entities.formId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
+            />
+
+            <EntityCombobox
+              label="Payment Group"
+              value={entities.paymentGroupId}
+              options={entityCatalog.paymentGroups}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a payment group id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('paymentGroupId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.paymentGroupId} ariaLabel="Copy payment group ID" />
+                  <InspectIdButton
+                    label="Payment Group"
+                    request={buildEntityInspectRequest(
+                      'paymentGroupId',
+                      entities.paymentGroupId,
                       entities.companyId,
                     )}
                   />

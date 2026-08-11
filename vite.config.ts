@@ -113,6 +113,13 @@ export default defineConfig(({ mode }) => {
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
       exclude: ['**/node_modules/**', '**/e2e/**', '**/docs-site/**'],
+      env: {
+        // RTL's default auto-cleanup afterEach fires before setup.ts's global
+        // afterEach (inner hooks run before outer ones), unmounting the DOM
+        // before the axe check runs. Disable it so setup.ts can run axe first,
+        // then clean up manually.
+        RTL_SKIP_AUTO_CLEANUP: 'true',
+      },
     },
   }
 })

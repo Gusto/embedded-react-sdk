@@ -1275,8 +1275,12 @@ export const componentEvents: {
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
-    readonly CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED: "contractor/historicalPayments/contractorsSelected";
-    readonly CONTRACTOR_HISTORICAL_PAYMENT_AMOUNTS_SUBMITTED: "contractor/historicalPayments/amountsSubmitted";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_EDIT: "contractor/historicalPayments/edit";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: "contractor/historicalPayments/update";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: "contractor/historicalPayments/preview";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT: "contractor/historicalPayments/backToEdit";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATED: "contractor/historicalPayments/created";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_EXIT: "contractor/historicalPayments/exit";
     readonly CONTRACTOR_PAYMENT_CREATE: "contractor/payments/create";
     readonly CONTRACTOR_PAYMENT_EDIT: "contractor/payments/edit";
     readonly CONTRACTOR_PAYMENT_UPDATE: "contractor/payments/update";
@@ -1894,10 +1898,10 @@ declare namespace ContractorManagement {
         PaymentsListProps,
         CreatePayment,
         CreatePaymentProps,
-        HistoricalPaymentContractors,
-        HistoricalPaymentContractorsProps,
-        HistoricalPaymentAmounts,
-        HistoricalPaymentAmountsProps,
+        CreateHistoricalPayment,
+        CreateHistoricalPaymentProps,
+        HistoricalPaymentSummary,
+        HistoricalPaymentSummaryProps,
         PaymentHistory,
         PaymentHistoryProps,
         PaymentSummary,
@@ -2227,6 +2231,14 @@ export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProp
 
 // @public
 type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
+
+// @alpha
+function CreateHistoricalPayment(props: CreateHistoricalPaymentProps): JSX;
+
+// @alpha
+interface CreateHistoricalPaymentProps extends BaseComponentInterface<'Contractor.Payments.CreateHistoricalPayment'> {
+    companyId: string;
+}
 
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
@@ -3231,21 +3243,12 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
 
 // @alpha
-function HistoricalPaymentAmounts(props: HistoricalPaymentAmountsProps): JSX;
+function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps): JSX;
 
 // @alpha
-interface HistoricalPaymentAmountsProps extends BaseComponentInterface<'Contractor.Payments.HistoricalPaymentAmounts'> {
-    checkDate: string;
+interface HistoricalPaymentSummaryProps extends BaseComponentInterface<'Contractor.Payments.HistoricalPaymentSummary'> {
     companyId: string;
-    contractorIds: string[];
-}
-
-// @alpha
-function HistoricalPaymentContractors(props: HistoricalPaymentContractorsProps): JSX;
-
-// @alpha
-interface HistoricalPaymentContractorsProps extends BaseComponentInterface<'Contractor.Payments.HistoricalPaymentContractors'> {
-    companyId: string;
+    paymentGroupId: string;
 }
 
 // @public
@@ -4831,11 +4834,11 @@ export interface Resources {
     // (undocumented)
     'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
     // (undocumented)
+    'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
+    // (undocumented)
     'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
     // (undocumented)
-    'Contractor.Payments.HistoricalPaymentAmounts': Translations.ContractorPaymentsHistoricalPaymentAmounts
-    // (undocumented)
-    'Contractor.Payments.HistoricalPaymentContractors': Translations.ContractorPaymentsHistoricalPaymentContractors
+    'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
     // (undocumented)
     'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
     // (undocumented)

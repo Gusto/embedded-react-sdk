@@ -96,8 +96,12 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_DISMISS` | `"contractor/dismiss"` |
 | `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
 | `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` |
-| `CONTRACTOR_HISTORICAL_PAYMENT_AMOUNTS_SUBMITTED` | `"contractor/historicalPayments/amountsSubmitted"` |
-| `CONTRACTOR_HISTORICAL_PAYMENT_CONTRACTORS_SELECTED` | `"contractor/historicalPayments/contractorsSelected"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT` | `"contractor/historicalPayments/backToEdit"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_CREATED` | `"contractor/historicalPayments/created"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_EDIT` | `"contractor/historicalPayments/edit"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_EXIT` | `"contractor/historicalPayments/exit"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW` | `"contractor/historicalPayments/preview"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_UPDATE` | `"contractor/historicalPayments/update"` |
 | `CONTRACTOR_INVITE_CONTRACTOR` | `"contractor/invite/selfOnboarding"` |
 | `CONTRACTOR_MANAGEMENT_ADDRESS_ALERT_DISMISSED` | `"contractor/management/address/alertDismissed"` |
 | `CONTRACTOR_MANAGEMENT_ADDRESS_EDIT_CANCELLED` | `"contractor/management/address/editCancelled"` |

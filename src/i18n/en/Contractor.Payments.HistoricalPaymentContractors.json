@@ -1,8 +1,0 @@
-{
-  "heading": "Record a historical payment",
-  "subtitle": "Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid.",
-  "dateLabel": "Payment date",
-  "dateInFutureError": "You cannot issue historical payments for the future. Please choose a date in the past.",
-  "dateTooEarlyError": "You cannot create a payment in {{year}}. Please select a {{allowedYear}} date.",
-  "continueButton": "Continue"
-}
