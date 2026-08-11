@@ -2286,7 +2286,7 @@ export interface CurrencyStateTaxQuestion extends SharedQuestionMetadata {
 export type CustomNameFieldProps = HookFieldProps<TextInputHookFieldProps<PayScheduleRequiredValidation>>;
 
 // @public
-export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
+export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<PayScheduleRequiredValidation, string>>;
 
 // @public
 function Dashboard(input: DashboardProps): JSX;

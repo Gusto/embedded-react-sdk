@@ -700,6 +700,8 @@ export namespace Translations {
       name: string
       /** @defaultValue `"Pay frequency is required"` */
       frequency: string
+      /** @defaultValue `"Please select the pay days for the month"` */
+      frequencyOptions: string
       /** @defaultValue `"First pay date is required"` */
       firstPayDate: string
       /** @defaultValue `"First pay period end date is required"` */

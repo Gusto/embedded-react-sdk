@@ -112,6 +112,7 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                         label={t('labels.frequencyOptions')}
                         description={t('descriptions.frequencyOptionsDescription')}
                         getOptionLabel={(entry: string) => twicePerMonthLabels[entry] ?? entry}
+                        validationMessages={{ REQUIRED: t('validations.frequencyOptions') }}
                       />
                     )}
                     <Fields.AnchorPayDate

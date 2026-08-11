@@ -265,7 +265,10 @@ Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only avail
 
 ```tsx
 {form.Fields.CustomTwicePerMonth && (
-  <form.Fields.CustomTwicePerMonth label="Custom twice per month" />
+  <form.Fields.CustomTwicePerMonth
+    label="Custom twice per month"
+    validationMessages={{ REQUIRED: '…' }}
+  />
 )}
 ```
 
@@ -273,7 +276,7 @@ Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only avail
 
 #### CustomTwicePerMonthFieldProps
 
-> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<`never`, `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation), `string`\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwicePerMonth` component.
 
@@ -282,6 +285,7 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwic
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
