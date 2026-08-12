@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { dismissalMachine, dismissalBreadcrumbsNodes } from './dismissalStateMachine'
 import type { DismissalFlowContextInterface } from './DismissalFlowComponents'
 import { componentEvents } from '@/shared/constants'

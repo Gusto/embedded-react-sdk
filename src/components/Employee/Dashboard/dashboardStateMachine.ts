@@ -1,4 +1,3 @@
-import { transition, reduce, state } from 'robot3'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { DashboardTab } from './Dashboard'
 import {
@@ -17,6 +16,7 @@ import {
   AddAnotherJobContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

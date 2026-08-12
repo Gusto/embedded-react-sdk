@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { documentSignerMachine } from './stateMachine'
 import type { DocumentSignerContextInterface } from './documentSignerStateMachine'
 import { componentEvents } from '@/shared/constants'
@@ -27,7 +27,7 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
 }
 
 describe('documentSignerMachine', () => {
-  // Regression test for SDK-1169: `done` used to be a robot3 final state (no
+  // Regression test for SDK-1169: `done` used to be a final state (no
   // transitions out) reached from `index` on EMPLOYEE_FORMS_DONE. A host that kept
   // this component mounted past that signal was left with a document list whose
   // "view form to sign" controls could never fire another transition.

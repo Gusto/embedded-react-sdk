@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMachine, interpret } from 'robot3'
+import { createMachine, interpret } from '@/lib/state-machine'
 import { onboardingMachine } from './onboardingStateMachine'
 import {
   ContractorListContextual,

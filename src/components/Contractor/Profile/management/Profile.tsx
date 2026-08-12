@@ -1,7 +1,7 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { CardContextual, type ProfileContextInterface } from './ProfileComponents'
 import { profileStateMachine } from './profileStateMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'

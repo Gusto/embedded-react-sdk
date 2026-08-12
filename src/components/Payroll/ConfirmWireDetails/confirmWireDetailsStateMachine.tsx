@@ -1,10 +1,10 @@
-import { state, transition, reduce } from 'robot3'
 import type { ConfirmationAlert } from './types'
 import type { ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
 import {
   WireInstructionsContextual,
   ConfirmWireDetailsFormContextual,
 } from './ConfirmWireDetailsComponents'
+import { state, transition, reduce } from '@/lib/state-machine'
 import { payrollWireEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

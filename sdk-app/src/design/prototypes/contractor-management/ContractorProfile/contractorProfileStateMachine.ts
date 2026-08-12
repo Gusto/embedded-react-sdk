@@ -1,4 +1,3 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { ContractorProfileContextInterface } from './ContractorProfileComponents'
 import {
@@ -9,6 +8,7 @@ import {
   EditCompensationContextual,
   EditBasicDetailsContextual,
 } from './ContractorProfileComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 

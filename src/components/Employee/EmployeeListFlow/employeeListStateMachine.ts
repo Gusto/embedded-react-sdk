@@ -1,4 +1,3 @@
-import { transition, reduce, state } from 'robot3'
 import {
   DashboardFlowContextual,
   EmployeeListContextual,
@@ -6,6 +5,7 @@ import {
   TerminationFlowContextual,
   type EmployeeListFlowContextInterface,
 } from './EmployeeListFlowComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'

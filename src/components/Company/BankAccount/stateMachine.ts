@@ -1,10 +1,10 @@
-import { state, transition, reduce } from 'robot3'
 import type { BankAccountContextInterface, EventPayloads } from './BankAccountComponents'
 import {
   BankAccountFormContextual,
   BankAccountVerifyContextual,
   BankAccountListContextual,
 } from './BankAccountComponents'
+import { state, transition, reduce } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

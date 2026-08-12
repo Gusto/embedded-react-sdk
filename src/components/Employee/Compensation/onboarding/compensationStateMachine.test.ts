@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { compensationStateMachine } from './compensationStateMachine'
 import type { CompensationFlowContextInterface } from './CompensationFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -31,8 +31,8 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
 describe('compensationStateMachine', () => {
   // Regression test for SDK-1169: Add new job/Edit silently stopped navigating after
   // leaving and returning to a still-mounted Compensation component. `done` used to be
-  // a robot3 final state (no transitions out), so once EMPLOYEE_COMPENSATION_DONE
-  // fired, every subsequent event was a documented robot3 no-op and the machine could
+  // a final state (no transitions out), so once EMPLOYEE_COMPENSATION_DONE
+  // fired, every subsequent event was a no-op and the machine could
   // never advance. EMPLOYEE_COMPENSATION_DONE now has no transition at all: the
   // machine stays in `viewJobs`, and Flow re-emits the event to the parent regardless.
   it('SDK-1169: keeps handling EMPLOYEE_JOB_ADD/EMPLOYEE_JOB_EDIT after DONE fires', () => {

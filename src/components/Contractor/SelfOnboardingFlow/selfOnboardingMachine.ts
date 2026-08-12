@@ -1,4 +1,3 @@
-import { transition, reduce, state } from 'robot3'
 import type { SelfOnboardingContextInterface } from './SelfOnboardingComponents'
 import {
   Profile,
@@ -7,6 +6,7 @@ import {
   DocumentSigner,
   OnboardingSummary,
 } from './SelfOnboardingComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 

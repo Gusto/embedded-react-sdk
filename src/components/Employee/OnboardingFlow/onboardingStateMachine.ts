@@ -1,9 +1,9 @@
-import { transition, reduce, state } from 'robot3'
 import {
   EmployeeListContextual,
   OnboardingExecutionFlowContextual,
   type OnboardingContextInterface,
 } from './OnboardingFlowComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import { componentEvents, type EmployeeOnboardingStatus } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

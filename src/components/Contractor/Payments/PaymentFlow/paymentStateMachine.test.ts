@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { paymentMachine, paymentFlowBreadcrumbsNodes } from './paymentStateMachine'
 import type { PaymentFlowContextInterface } from './PaymentFlowComponents'
 import { componentEvents, informationRequestEvents, payrollWireEvents } from '@/shared/constants'

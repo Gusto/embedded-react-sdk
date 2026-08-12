@@ -1,7 +1,7 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { ProfileContextInterface } from './ProfileComponents'
 import { CardContextual, ProfileEditFormContextual } from './ProfileComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 

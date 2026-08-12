@@ -1,10 +1,10 @@
-import { transition, reduce, state, guard } from 'robot3'
 import {
   PayrollLandingTabsContextual,
   PayrollLandingReceiptsContextual,
   PayrollLandingOverviewContextual,
   type PayrollLandingFlowContextInterface,
 } from './PayrollLandingFlowComponents'
+import { transition, reduce, state, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
