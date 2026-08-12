@@ -92,7 +92,7 @@ Options accepted by [useEmployeeStateTaxesForm](#useemployeestatetaxesform).
 | `employeeId` | `string` | The UUID of the employee whose state taxes are being updated. |
 | `isAdmin?` | `boolean` | When `true`, admin-only questions are visible and submitted. When `false`, they are filtered out and the surfaced answer for those questions is preserved unchanged on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

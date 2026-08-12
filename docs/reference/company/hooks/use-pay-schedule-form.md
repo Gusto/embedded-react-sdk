@@ -97,7 +97,7 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 | `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
 | `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

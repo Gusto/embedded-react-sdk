@@ -66,7 +66,7 @@ Props for [useContractorPayForm](#usecontractorpayform).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | Contractor whose compensation is being edited. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

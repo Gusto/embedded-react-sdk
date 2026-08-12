@@ -81,7 +81,7 @@ Presence or absence of `homeAddressUuid` selects the API verb — see the
 | `initialAddress?` | [`EmployeeAddress`](../../APIModels/index.md#employeeaddress) | Pre-loaded address matching `homeAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
 | `optionalFieldsToRequire?` | [`HomeAddressOptionalFieldsToRequire`](#homeaddressoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `HomeAddressOptionalFieldsToRequire`. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 | `withEffectiveDateField?` | `boolean` | When `true`, renders `Fields.EffectiveDate`; otherwise it is `undefined`. Defaults to `true`. |
 
 ## Returns

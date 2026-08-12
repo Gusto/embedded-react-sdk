@@ -86,7 +86,7 @@ Props for [useContractorSignatureForm](#usecontractorsignatureform).
 | `documentUuid` | `string` | UUID of the contractor document to sign. |
 | `optionalFieldsToRequire?` | [`ContractorSignatureOptionalFieldsToRequire`](#contractorsignatureoptionalfieldstorequire) | Promote optional W-9 fields to required (e.g. `{ create: ['businessName'] }`). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
 
 ## Returns
 

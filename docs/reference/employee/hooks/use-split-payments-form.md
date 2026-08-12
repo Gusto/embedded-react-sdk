@@ -89,7 +89,7 @@ Props for [useSplitPaymentsForm](#usesplitpaymentsform).
 | `employeeId` | `string` | Employee whose payment splits are being edited. |
 | `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 
