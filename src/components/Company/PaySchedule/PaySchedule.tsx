@@ -70,16 +70,16 @@ export const PaySchedule = ({
   dictionary,
   ...props
 }: PayScheduleProps) => {
-  useI18n('Company.PaySchedule')
-  useComponentDictionary('Company.PaySchedule', dictionary)
   return (
     <BaseComponent {...props}>
-      <Root companyId={companyId} defaultValues={defaultValues} />
+      <Root companyId={companyId} defaultValues={defaultValues} dictionary={dictionary} />
     </BaseComponent>
   )
 }
 
-function Root({ companyId, defaultValues }: Omit<PayScheduleProps, BaseComponentKeys>) {
+function Root({ companyId, defaultValues, dictionary }: Omit<PayScheduleProps, BaseComponentKeys>) {
+  useI18n('Company.PaySchedule')
+  useComponentDictionary('Company.PaySchedule', dictionary)
   const { onEvent } = useBase()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
 

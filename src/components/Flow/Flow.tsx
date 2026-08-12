@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { useMachine } from 'react-robot'
 import { type Machine, type SendFunction } from 'robot3'
 import type { OnEventType } from '../Base/useBase'
@@ -5,7 +6,28 @@ import { Flex } from '../Common/Flex'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
 import { FlowHeader } from './FlowHeader'
+import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import { type EventType } from '@/shared/constants'
+
+/**
+ * Header chrome is short (a back-button row is the only header that can suspend),
+ * so the header fallback matches its height rather than the full content loader —
+ * this keeps the step body at the same level, avoiding a layout shift.
+ */
+const HEADER_LOADER_HEIGHT = 40
+
+/**
+ * Fallback for the {@link FlowHeader} Suspense boundary. FlowHeader calls
+ * `useTranslation` and renders above the active step's own boundary, so a
+ * first-time i18n namespace load during a synchronous transition would otherwise
+ * throw React #426. Reuses the SDK loading indicator sized to the header height
+ * so the placeholder matches the header chrome and the step body doesn't shift.
+ * (Step components manage their own loading via `BaseComponent`/`BaseBoundaries`.)
+ */
+function FlowHeaderFallback() {
+  const { LoadingIndicator } = useLoadingIndicator()
+  return <LoadingIndicator height={HEADER_LOADER_HEIGHT} />
+}
 
 type FlowProps<M extends Machine> = {
   machine: M
@@ -61,7 +83,9 @@ export const Flow = <M extends Machine<object, FlowContextInterface>>({
         }}
       >
         <Flex flexDirection="column" gap={32}>
-          <FlowHeader />
+          <Suspense fallback={<FlowHeaderFallback />}>
+            <FlowHeader />
+          </Suspense>
           {Component && <Component />}
         </Flex>
       </FlowContext.Provider>

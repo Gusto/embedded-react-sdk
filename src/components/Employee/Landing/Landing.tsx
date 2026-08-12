@@ -30,9 +30,6 @@ export interface LandingProps extends BaseComponentInterface<'Employee.Landing'>
  * @public
  */
 export function Landing(props: LandingProps) {
-  useI18n('Employee.Landing')
-  useComponentDictionary('Employee.Landing', props.dictionary)
-
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -40,7 +37,9 @@ export function Landing(props: LandingProps) {
   )
 }
 
-const Root = ({ employeeId, companyId, className }: LandingProps) => {
+const Root = ({ employeeId, companyId, className, dictionary }: LandingProps) => {
+  useI18n('Employee.Landing')
+  useComponentDictionary('Employee.Landing', dictionary)
   const { onEvent } = useBase()
   const Components = useComponentContext()
 

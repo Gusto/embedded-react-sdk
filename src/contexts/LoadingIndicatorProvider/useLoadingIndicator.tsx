@@ -8,15 +8,23 @@ import { Loading } from '@/components/Common/Loading/Loading'
  * @internal
  */
 export interface LoadingIndicatorContextProps {
-  LoadingIndicator: ({ children }: { children?: React.ReactNode }) => JSX.Element
+  LoadingIndicator: ({
+    children,
+    height,
+  }: {
+    children?: React.ReactNode
+    height?: number
+  }) => JSX.Element
 }
 /**
  * React context holding the loading-indicator component used by SDK base components.
  *
  * @internal
  */
-export const LoadingIndicatorContext = createContext({
-  LoadingIndicator: ({ children }: { children?: React.ReactNode }) => <Loading>{children}</Loading>,
+export const LoadingIndicatorContext = createContext<LoadingIndicatorContextProps>({
+  LoadingIndicator: ({ children, height }: { children?: React.ReactNode; height?: number }) => (
+    <Loading height={height}>{children}</Loading>
+  ),
 })
 
 /**

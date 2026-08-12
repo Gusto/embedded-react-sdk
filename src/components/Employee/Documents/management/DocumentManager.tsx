@@ -39,7 +39,6 @@ export interface DocumentManagerProps extends BaseComponentInterface<'Employee.D
  * @public
  */
 export function DocumentManager(props: DocumentManagerProps) {
-  useI18n('Employee.DocumentManager')
   return (
     <BaseComponent {...props} componentName="Employee.DocumentManager">
       <DocumentManagerRoot employeeId={props.employeeId} formId={props.formId} />
@@ -51,6 +50,7 @@ function DocumentManagerRoot({
   employeeId,
   formId,
 }: Omit<DocumentManagerProps, BaseComponentKeys>) {
+  useI18n('Employee.DocumentManager')
   const { t } = useTranslation('Employee.DocumentManager')
   const Components = useComponentContext()
   const { onEvent } = useBase()

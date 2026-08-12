@@ -76,7 +76,7 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 | `defaultValues?` | `Partial`\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | Pre-fill form values. Server data (the current payment method) is used when no override is supplied. |
 | `optionalFieldsToRequire?` | [`PaymentMethodFormOptionalFieldsToRequire`](#paymentmethodformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — `type` is always required and always has a default. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 
