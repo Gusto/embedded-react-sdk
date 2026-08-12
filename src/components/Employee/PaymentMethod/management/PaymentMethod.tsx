@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import type { PaymentMethodContextInterface } from './PaymentMethodComponents'
 import {
@@ -7,6 +6,7 @@ import {
   PaymentMethodSplitFormContextual,
 } from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'

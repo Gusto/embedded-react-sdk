@@ -1,4 +1,3 @@
-import { reduce, state, transition } from 'robot3'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { getContractorDisplayName } from '../../shared/helpers'
 import {
@@ -6,6 +5,7 @@ import {
   PaymentStatementContextual,
   type ViewPaymentFlowContextInterface,
 } from './ViewPaymentFlowComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'

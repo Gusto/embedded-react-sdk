@@ -1,10 +1,10 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import {
   FederalTaxesCardContextual,
   type FederalTaxesContextInterface,
 } from './FederalTaxesComponents'
 import { federalTaxesStateMachine } from './federalTaxesStateMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'

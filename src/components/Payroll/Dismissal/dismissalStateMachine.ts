@@ -1,9 +1,9 @@
-import { state, transition, reduce, guard } from 'robot3'
 import {
   DismissalPayPeriodSelectionContextual,
   DismissalExecutionContextual,
   type DismissalFlowContextInterface,
 } from './DismissalFlowComponents'
+import { state, transition, reduce, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'

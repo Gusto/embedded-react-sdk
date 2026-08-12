@@ -1,8 +1,8 @@
-import { state, transition, reduce } from 'robot3'
 import type { EventPayloads } from './documentSignerStateMachine'
 import { SignatureForm, AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { assignSignatoryState } from './assignSignatoryState'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
+import { state, transition, reduce } from '@/lib/state-machine'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { companyEvents } from '@/shared/constants'
 

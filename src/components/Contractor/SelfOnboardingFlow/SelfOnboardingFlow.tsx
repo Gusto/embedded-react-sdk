@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import type {
   SelfOnboardingContextInterface,
@@ -6,6 +5,7 @@ import type {
 } from './SelfOnboardingComponents'
 import { Landing } from './SelfOnboardingComponents'
 import { contractorSelfOnboardingMachine } from './selfOnboardingMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 
 export type { SelfOnboardingFlowProps } from './SelfOnboardingComponents'

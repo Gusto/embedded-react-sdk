@@ -1,8 +1,8 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { DeductionsContextInterface } from './DeductionsComponents'
 import { DeductionsCardContextual, DeductionsEditFormContextual } from './DeductionsComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

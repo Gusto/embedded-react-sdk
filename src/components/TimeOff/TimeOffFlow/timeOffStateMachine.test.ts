@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { timeOffMachine } from './timeOffStateMachine'
 import type { TimeOffFlowContextInterface } from './TimeOffFlowComponents'
 import { componentEvents } from '@/shared/constants'

@@ -1,8 +1,8 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { timeOffMachine } from './timeOffStateMachine'
 import type { TimeOffFlowProps, TimeOffFlowContextInterface } from './TimeOffFlowComponents'
 import { PolicyListContextual } from './TimeOffFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 
 /**

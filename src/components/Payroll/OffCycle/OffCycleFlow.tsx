@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { createMachine } from 'robot3'
 import { offCycleMachine, offCycleBreadcrumbsNodes } from './offCycleStateMachine'
 import {
   OffCycleCreationContextual,
   type OffCycleFlowContextInterface,
   type OffCycleFlowProps,
 } from './OffCycleFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
