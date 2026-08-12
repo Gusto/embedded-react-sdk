@@ -33,6 +33,13 @@ export interface RawInformationRequest {
   blocking_payroll?: boolean
 }
 
+export interface RawContractorPaymentGroup {
+  uuid?: string
+  check_date?: string
+  status?: string
+  totals?: { amount?: string }
+}
+
 export interface EntityOption {
   value: string
   primary: string
@@ -72,4 +79,10 @@ export function formatInformationRequestType(type: string | null | undefined): s
     .filter(Boolean)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
+}
+
+export function formatPaymentGroup(group: RawContractorPaymentGroup): string {
+  if (!group.check_date) return 'Payment group'
+  const amount = group.totals?.amount
+  return amount ? `Check date ${group.check_date} — $${amount}` : `Check date ${group.check_date}`
 }

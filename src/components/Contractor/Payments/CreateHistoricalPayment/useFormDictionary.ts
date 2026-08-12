@@ -1,16 +1,17 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { SetPaymentAmountsDictionary } from '../shared/SetPaymentAmounts'
+import type { PaymentSummaryBlockDictionary } from '../shared/PaymentSummaryBlock'
 
 /**
- * Resolves `SetPaymentAmounts`'s text against `HistoricalPaymentAmounts`'s own
- * `Contractor.Payments.HistoricalPaymentAmounts` namespace, so partner
+ * Resolves `SetPaymentAmounts`'s text against `CreateHistoricalPayment`'s own
+ * `Contractor.Payments.CreateHistoricalPayment` namespace, so partner
  * overrides on that namespace flow into the shared grid and edit modal.
  *
  * @internal
  */
-export function useHistoricalPaymentAmountsDictionary(): SetPaymentAmountsDictionary {
-  const { t } = useTranslation('Contractor.Payments.HistoricalPaymentAmounts')
+export function useCreateHistoricalPaymentDictionary(): SetPaymentAmountsDictionary {
+  const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')
 
   return useMemo<SetPaymentAmountsDictionary>(
     () => ({
@@ -54,6 +55,44 @@ export function useHistoricalPaymentAmountsDictionary(): SetPaymentAmountsDictio
           unsupportedPaymentMethod: t('editContractorPayment.errors.unsupportedPaymentMethod'),
         },
       },
+    }),
+    [t],
+  )
+}
+
+/**
+ * Resolves `PaymentSummaryBlock`'s text against `CreateHistoricalPayment`'s own
+ * `Contractor.Payments.CreateHistoricalPayment` namespace (under the `review` key), so partner
+ * overrides on that namespace flow into the in-place review step.
+ *
+ * @internal
+ */
+export function useCreateHistoricalPaymentReviewDictionary(): PaymentSummaryBlockDictionary {
+  const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment', {
+    keyPrefix: 'review',
+  })
+
+  return useMemo<PaymentSummaryBlockDictionary>(
+    () => ({
+      paymentSummaryTitle: t('paymentSummaryTitle'),
+      totalAmount: t('totalAmount'),
+      contractorPayDate: t('contractorPayDate'),
+      contractorPaymentsTitle: t('contractorPaymentsTitle'),
+      contractor: t('contractor'),
+      wageType: t('wageType'),
+      paymentMethod: t('paymentMethod'),
+      paymentMethods: {
+        directDeposit: t('paymentMethods.directDeposit'),
+        check: t('paymentMethods.check'),
+        historicalPayment: t('paymentMethods.historicalPayment'),
+      },
+      hours: t('hours'),
+      wage: t('wage'),
+      bonus: t('bonus'),
+      reimbursement: t('reimbursement'),
+      total: t('total'),
+      totalsLabel: t('totalsLabel'),
+      notAvailable: t('notAvailable'),
     }),
     [t],
   )
