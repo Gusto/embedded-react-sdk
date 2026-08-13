@@ -221,15 +221,12 @@ describe('TransitionCreation', () => {
 
       await user.click(screen.getByRole('button', { name: /continue/i }))
 
-      await waitFor(
-        () => {
-          expect(defaultProps.onEvent).toHaveBeenCalledWith(
-            'transition/created',
-            expect.objectContaining({ payrollUuid: 'transition-payroll-uuid-1' }),
-          )
-        },
-        { timeout: 5000 },
-      )
+      await waitFor(() => {
+        expect(defaultProps.onEvent).toHaveBeenCalledWith(
+          'transition/created',
+          expect.objectContaining({ payrollUuid: 'transition-payroll-uuid-1' }),
+        )
+      })
     })
   })
 })
