@@ -70,7 +70,12 @@ export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './Onboard
  * }
  * ```
  */
-export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: OnboardingFlowProps) => {
+export const OnboardingFlow = ({
+  companyId,
+  signatoryId,
+  onEvent,
+  defaultValues,
+}: OnboardingFlowProps) => {
   const onboardingFlow = useMemo(
     () =>
       createMachine(
@@ -80,10 +85,11 @@ export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: Onboarding
           ...initialContext,
           component: OnboardingOverviewContextual,
           companyId,
+          signatoryId,
           defaultValues,
         }),
       ),
-    [companyId, defaultValues],
+    [companyId, signatoryId, defaultValues],
   )
   return <Flow machine={onboardingFlow} onEvent={onEvent} />
 }
