@@ -129,6 +129,7 @@ import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment';
+import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument';
 import { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HolidayPayPolicyEmployees } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -247,6 +248,8 @@ import { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedu
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { PrintablePayrollChecksBody } from '@gusto/embedded-api/models/components/printablepayrollchecksbody';
+import { PrintingFormat } from '@gusto/embedded-api/models/components/printablepayrollchecksbody';
 import { QueryClient } from '@tanstack/react-query';
 import { Questions } from '@gusto/embedded-api/models/components/employeestatetaxesrequest';
 import { RateType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
@@ -537,6 +540,7 @@ declare namespace APIModels {
         Garnishment,
         GarnishmentChildSupport,
         PaymentPeriod,
+        GeneratedDocumentStatus,
         ChristmasDay,
         ColumbusDay,
         HolidayPayPolicyEmployees,
@@ -656,6 +660,8 @@ declare namespace APIModels {
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
         PayScheduleShow,
+        PrintablePayrollChecksBody,
+        PrintingFormat,
         RecoveryCase,
         RecoveryCaseStatus,
         IdentityVerificationStatus,
@@ -1338,6 +1344,9 @@ export const componentEvents: {
     readonly PAYROLL_EXIT_FLOW: "payroll/saveAndExit";
     readonly RUN_PAYROLL_GROSS_UP_SELECTED: "runPayroll/grossUp/selected";
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
+    readonly RUN_PAYROLL_PRINT_CHECKS_REQUESTED: "runPayroll/printChecks/requested";
+    readonly RUN_PAYROLL_PRINT_CHECKS_GENERATED: "runPayroll/printChecks/generated";
+    readonly RUN_PAYROLL_PRINT_CHECKS_FAILED: "runPayroll/printChecks/failed";
     readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
     readonly CONTRACTOR_SELF_ONBOARDING_DONE: "contractor/selfOnboarding/done";
     readonly CONTRACTOR_SELF_ONBOARDING_CANCELLED: "contractor/selfOnboarding/cancelled";
@@ -4981,6 +4990,8 @@ export interface Resources {
     'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
     // (undocumented)
     'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+    // (undocumented)
+    'Payroll.PrintChecksModal': Translations.PayrollPrintChecksModal
     // (undocumented)
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)

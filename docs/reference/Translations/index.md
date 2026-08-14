@@ -5069,9 +5069,9 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
-| `alerts.checkPaymentWarning_one` | `"You noted {{count}} employee who should be paid by check."` |
-| `alerts.checkPaymentWarning_other` | `"You noted {{count}} employees who should be paid by check."` |
-| `alerts.checkPaymentWarningDescription` | `"Employees with this payment method will need their checks delivered to them."` |
+| `alerts.checkPaymentWarning_one` | `"You noted {{count}} employee that should be paid by check."` |
+| `alerts.checkPaymentWarning_other` | `"You noted {{count}} employees that should be paid by check."` |
+| `alerts.checkPaymentWarningDescription` | `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
@@ -5079,6 +5079,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `alerts.payrollProcessingFailedCtaLabel` | `"Recalculate payroll"` |
 | `alerts.payrollProcessingFailedTitle` | `"There was an error submitting payroll"` |
 | `alerts.paystubPdfError` | `"There was an issue generating the paystub PDF. Please try again later."` |
+| `alerts.printChecksCta` | `"View and print checks"` |
 | `alerts.wireDetailsSubmittedMessage` | `"Once we receive the funds from your bank we'll pay your team on {{checkDate}}"` |
 | `alerts.wireDetailsSubmittedTitle` | `"Wire details submitted"` |
 | <a id="property-payrollpayrolloverviewbackcta"></a> `backCta` | `"Back"` |
@@ -5231,6 +5232,37 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptstax"></a> `tax` | |
 | `tax.amount` | `"Amount"` |
 | `tax.name` | `"Tax Type"` |
+
+***
+
+<a id="payrollprintchecksmodal"></a>
+
+### PayrollPrintChecksModal
+
+Translation keys for the `Payroll.PrintChecksModal` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintchecksmodalblankstockdescription"></a> `blankStockDescription` | `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` |
+| <a id="property-payrollprintchecksmodalblankstocklabel"></a> `blankStockLabel` | `"Blank check stock"` |
+| <a id="property-payrollprintchecksmodalcancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-payrollprintchecksmodalclosecta"></a> `closeCta` | `"Close"` |
+| <a id="property-payrollprintchecksmodalcustomstockdescription"></a> `customStockDescription` | `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` |
+| <a id="property-payrollprintchecksmodalcustomstocklabel"></a> `customStockLabel` | `"Custom check stock"` |
+| <a id="property-payrollprintchecksmodalfailedtitle"></a> `failedTitle` | `"We couldn't generate your checks"` |
+| <a id="property-payrollprintchecksmodalmodaltitle"></a> `modalTitle` | `"Choose check stock"` |
+| <a id="property-payrollprintchecksmodalretrycta"></a> `retryCta` | `"Try again"` |
+| <a id="property-payrollprintchecksmodalstartingchecknumberdescription"></a> `startingCheckNumberDescription` | `"This will be the first check number, all other checks will follow sequentially."` |
+| <a id="property-payrollprintchecksmodalstartingchecknumberlabel"></a> `startingCheckNumberLabel` | `"Check number starts with"` |
+| <a id="property-payrollprintchecksmodalsubmitcta"></a> `submitCta` | `"View checks"` |
+| <a id="property-payrollprintchecksmodalsubmitctaloading"></a> `submitCtaLoading` | `"Generating..."` |
+| <a id="property-payrollprintchecksmodalsucceededdescription"></a> `succeededDescription` | `"They should have opened in a new tab."` |
+| <a id="property-payrollprintchecksmodalsucceededtitle"></a> `succeededTitle` | `"Your checks are ready"` |
+| <a id="property-payrollprintchecksmodalvalidations"></a> `validations` | |
+| `validations.startingCheckNumber` | `"Enter a valid check number"` |
+| <a id="property-payrollprintchecksmodalviewcheckscta"></a> `viewChecksCta` | `"View checks"` |
 
 ***
 
@@ -5606,6 +5638,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
 | <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
 | <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
+| <a id="property-resourcespayrollprintchecksmodal"></a> `Payroll.PrintChecksModal` | [`PayrollPrintChecksModal`](#payrollprintchecksmodal) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |

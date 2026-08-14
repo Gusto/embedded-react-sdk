@@ -127,7 +127,9 @@ When any run path finishes processing (`runPayroll/processed`), the flow lands o
 | GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid) |
 | GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
 | GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees-employee_id-bank_accounts) |
+| GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
 | GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
 | POST | [`/v1/payrolls/:payrollUuid/gross_up`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-payrolls-gross-up-payroll_uuid) |
 | GET | [`/v1/payrolls/:payrollUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payment-receipts-payrolls-payroll_uuid) |
 | GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-wire_in_requests-wire_in_request_uuid) |

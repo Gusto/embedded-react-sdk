@@ -665,6 +665,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+| `runPayroll/printChecks/requested` | User submitted the print-checks modal | Generate printable checks response |
+| `runPayroll/printChecks/generated` | Printable checks finished generating | Generated document |
+| `runPayroll/printChecks/failed` | Printable check generation failed | — |
 
 <br />
 
@@ -677,7 +680,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
+| GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
 | GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
+| POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
 | GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-wire_in_requests-wire_in_request_uuid) |
 
 ***

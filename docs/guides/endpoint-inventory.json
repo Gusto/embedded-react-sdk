@@ -268,8 +268,18 @@
         },
         {
           "method": "GET",
+          "path": "/v1/generated_documents/:documentType/:requestUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid"
+        },
+        {
+          "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks"
         },
         {
           "method": "GET",
@@ -280,8 +290,11 @@
       "variables": [
         "companyId",
         "companyUuid",
+        "documentType",
         "employeeId",
         "payrollId",
+        "payrollUuid",
+        "requestUuid",
         "wireInRequestUuid"
       ]
     },

@@ -7680,7 +7680,7 @@ export namespace Translations {
     blankStockLabel: string
     /** @defaultValue `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` */
     blankStockDescription: string
-    /** @defaultValue `"Check number starts with (Optional)"` */
+    /** @defaultValue `"Check number starts with"` */
     startingCheckNumberLabel: string
     /** @defaultValue `"This will be the first check number, all other checks will follow sequentially."` */
     startingCheckNumberDescription: string
