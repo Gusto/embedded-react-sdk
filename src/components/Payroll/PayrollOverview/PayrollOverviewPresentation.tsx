@@ -54,6 +54,7 @@ interface PayrollOverviewProps {
   onCancel: () => void
   onPayrollReceipt: () => void
   onPaystubDownload: (employeeId: string) => void
+  onPrintChecksOpen: () => void
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
   paymentSpeed?: PaymentSpeed
@@ -76,6 +77,7 @@ export const PayrollOverviewPresentation = ({
   onCancel,
   onPayrollReceipt,
   onPaystubDownload,
+  onPrintChecksOpen,
   payrollData,
   bankAccount,
   taxes,
@@ -782,10 +784,19 @@ export const PayrollOverviewPresentation = ({
             )}
             {checkPaymentsCount > 0 && (
               <Alert
-                status="warning"
+                status="info"
                 label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
               >
-                {t('alerts.checkPaymentWarningDescription')}
+                <Flex flexDirection="column" gap={12}>
+                  <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
+                  {isProcessed && (
+                    <div>
+                      <Button variant="secondary" onClick={onPrintChecksOpen}>
+                        {t('alerts.printChecksCta')}
+                      </Button>
+                    </div>
+                  )}
+                </Flex>
               </Alert>
             )}
             <Tabs

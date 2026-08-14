@@ -127,6 +127,7 @@ export interface Resources {
   'Payroll.PayrollList': Translations.PayrollPayrollList
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  'Payroll.PrintChecksModal': Translations.PayrollPrintChecksModal
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
   'Payroll.Transition': Translations.PayrollTransition
@@ -7416,12 +7417,14 @@ export namespace Translations {
       directDepositDeadline: string
       /** @defaultValue `"There was an issue generating the paystub PDF. Please try again later."` */
       paystubPdfError: string
-      /** @defaultValue `"You noted {{count}} employee who should be paid by check."` */
+      /** @defaultValue `"You noted {{count}} employee that should be paid by check."` */
       checkPaymentWarning_one: string
-      /** @defaultValue `"You noted {{count}} employees who should be paid by check."` */
+      /** @defaultValue `"You noted {{count}} employees that should be paid by check."` */
       checkPaymentWarning_other: string
-      /** @defaultValue `"Employees with this payment method will need their checks delivered to them."` */
+      /** @defaultValue `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` */
       checkPaymentWarningDescription: string
+      /** @defaultValue `"View and print checks"` */
+      printChecksCta: string
       /** @defaultValue `"Payroll submitted"` */
       payrollProcessedTitle: string
       /** @defaultValue `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` */
@@ -7663,6 +7666,45 @@ export namespace Translations {
       totalEmployees_one: string
       /** @defaultValue `"{{count}} employees in this payroll"` */
       totalEmployees_other: string
+    }
+  }
+  /** Translation keys for the `Payroll.PrintChecksModal` i18n namespace. */
+  export interface PayrollPrintChecksModal {
+    /** @defaultValue `"Choose check stock"` */
+    modalTitle: string
+    /** @defaultValue `"Custom check stock"` */
+    customStockLabel: string
+    /** @defaultValue `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` */
+    customStockDescription: string
+    /** @defaultValue `"Blank check stock"` */
+    blankStockLabel: string
+    /** @defaultValue `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` */
+    blankStockDescription: string
+    /** @defaultValue `"Check number starts with (Optional)"` */
+    startingCheckNumberLabel: string
+    /** @defaultValue `"This will be the first check number, all other checks will follow sequentially."` */
+    startingCheckNumberDescription: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"View checks"` */
+    submitCta: string
+    /** @defaultValue `"Generating..."` */
+    submitCtaLoading: string
+    /** @defaultValue `"Your checks are ready"` */
+    succeededTitle: string
+    /** @defaultValue `"They should have opened in a new tab."` */
+    succeededDescription: string
+    /** @defaultValue `"View checks"` */
+    viewChecksCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
+    /** @defaultValue `"We couldn't generate your checks"` */
+    failedTitle: string
+    /** @defaultValue `"Try again"` */
+    retryCta: string
+    validations: {
+      /** @defaultValue `"Enter a valid check number"` */
+      startingCheckNumber: string
     }
   }
   /** Translation keys for the `Payroll.RecoveryCasesList` i18n namespace. */

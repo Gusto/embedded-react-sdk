@@ -23,6 +23,7 @@ import ContractorHandlers from './apis/contractors'
 import ContractorDocumentsHandlers from './apis/contractor_documents'
 import ContractorPaymentGroupsHandlers from './apis/contractor_payment_groups'
 import WireInRequestsHandlers from './apis/wire_in_requests'
+import PrintablePayrollChecksHandlers from './apis/printable_payroll_checks'
 import InformationRequestsHandlers from './apis/information_requests'
 import I9AuthorizationHandlers from './apis/i9_authorization'
 import EmployeeFormHandlers from './apis/employee_forms'
@@ -72,6 +73,7 @@ export const handlers = [
   ...ContractorDocumentsHandlers,
   ...ContractorPaymentGroupsHandlers,
   ...WireInRequestsHandlers,
+  ...PrintablePayrollChecksHandlers,
   ...InformationRequestsHandlers,
   ...I9AuthorizationHandlers,
   ...EmployeeFormHandlers,

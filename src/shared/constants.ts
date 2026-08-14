@@ -411,6 +411,9 @@ export const runPayrollEvents = {
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
   RUN_PAYROLL_GROSS_UP_SELECTED: 'runPayroll/grossUp/selected',
   RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',
+  RUN_PAYROLL_PRINT_CHECKS_REQUESTED: 'runPayroll/printChecks/requested',
+  RUN_PAYROLL_PRINT_CHECKS_GENERATED: 'runPayroll/printChecks/generated',
+  RUN_PAYROLL_PRINT_CHECKS_FAILED: 'runPayroll/printChecks/failed',
 } as const
 
 /**

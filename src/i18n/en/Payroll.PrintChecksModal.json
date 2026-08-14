@@ -1,0 +1,21 @@
+{
+  "modalTitle": "Choose check stock",
+  "customStockLabel": "Custom check stock",
+  "customStockDescription": "Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased.",
+  "blankStockLabel": "Blank check stock",
+  "blankStockDescription": "Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF.",
+  "startingCheckNumberLabel": "Check number starts with",
+  "startingCheckNumberDescription": "This will be the first check number, all other checks will follow sequentially.",
+  "cancelCta": "Cancel",
+  "submitCta": "View checks",
+  "submitCtaLoading": "Generating...",
+  "succeededTitle": "Your checks are ready",
+  "succeededDescription": "They should have opened in a new tab.",
+  "viewChecksCta": "View checks",
+  "closeCta": "Close",
+  "failedTitle": "We couldn't generate your checks",
+  "retryCta": "Try again",
+  "validations": {
+    "startingCheckNumber": "Enter a valid check number"
+  }
+}
