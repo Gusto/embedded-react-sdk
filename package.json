@@ -116,7 +116,7 @@
     "@types/pngjs": "^6.0.5",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@typescript-eslint/parser": "^8.66.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "@typescript-eslint/rule-tester": "^8.66.0",
     "@typescript-eslint/utils": "^8.64.0",
     "@vitejs/plugin-react-swc": "^4.3.3",
