@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.55.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.54.1...v0.55.0) (2026-08-13)
+
+### Features & Enhancements
+
+- Add optional `signatoryId` prop to `Company.OnboardingFlow`, forwarded to the document-signing step. When set and matching the company's current signatory, the SDK pre-populates form fields and enables document signing. ([#2561](https://github.com/Gusto/embedded-react-sdk/issues/2561))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`release-it`, `@testing-library/jest-dom`)
+
 ## [0.54.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.54.0...v0.54.1) (2026-08-13)
 
 - drop Cursor cloud agent step from publish workflow ([#2530](https://github.com/Gusto/embedded-react-sdk/issues/2530)) ([9fe07f1](https://github.com/Gusto/embedded-react-sdk/commit/9fe07f1c9517f85cd45238e8e5fa6cef48309588))
