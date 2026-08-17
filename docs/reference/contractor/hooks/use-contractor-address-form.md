@@ -78,7 +78,7 @@ Configuration options for [useContractorAddressForm](#usecontractoraddressform).
 | `defaultValues?` | `Partial`\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | Pre-fill form values. Server data takes precedence. |
 | `optionalFieldsToRequire?` | [`ContractorAddressOptionalFieldsToRequire`](#contractoraddressoptionalfieldstorequire) | Override fields that are optional by default to be required. See `ContractorAddressOptionalFieldsToRequire`. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

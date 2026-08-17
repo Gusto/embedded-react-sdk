@@ -3937,6 +3937,7 @@ interface OnboardingFlowProps extends BaseComponentInterface<never> {
 interface OnboardingFlowProps_2 extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>;
+    signatoryId?: string;
 }
 
 // @public

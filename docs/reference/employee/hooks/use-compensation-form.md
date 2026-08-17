@@ -98,7 +98,7 @@ the same submit chain.
 | `jobId?` | `string` | The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation. |
 | `optionalFieldsToRequire?` | [`CompensationOptionalFieldsToRequire`](#compensationoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [CompensationOptionalFieldsToRequire](#compensationoptionalfieldstorequire). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 | `withEffectiveDateField?` | `boolean` | When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`. |
 
 ## Returns

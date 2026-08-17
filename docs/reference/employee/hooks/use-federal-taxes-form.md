@@ -73,7 +73,7 @@ hook is always in update mode and only `employeeId` is required.
 | `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
 | `optionalFieldsToRequire?` | [`FederalTaxesOptionalFieldsToRequire`](#federaltaxesoptionalfieldstorequire) | Override fields that are optional on update to be required. By default only `filingStatus` is required; pass `{ update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'] }` to require any subset. See [FederalTaxesOptionalFieldsToRequire](#federaltaxesoptionalfieldstorequire). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

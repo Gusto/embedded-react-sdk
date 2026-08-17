@@ -25,7 +25,8 @@ on:
         type: string
 jobs:
   unpublish:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: gusto-ubuntu-default
     permissions:
       contents: read
       id-token: write

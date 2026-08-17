@@ -50,6 +50,7 @@ Props for the company onboarding flow orchestrator.
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | [`RequireAtLeastOne`](../../blocks.md#requireatleastone)\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values applied to individual flow step components (federal taxes, pay schedule). |
+| `signatoryId?` | `string` | ID of the signatory. Forwarded to the document-signing step. When set and it matches the company's current signatory, the SDK treats the user as the signatory: form fields are pre-populated and document signing is enabled. |
 
 _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 

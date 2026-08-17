@@ -94,7 +94,7 @@ post-tax custom variant and the court-ordered garnishment variant.
 | `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
 | `optionalFieldsToRequire?` | [`DeductionFormOptionalFieldsToRequire`](#deductionformoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [DeductionFormOptionalFieldsToRequire](#deductionformoptionalfieldstorequire). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 
