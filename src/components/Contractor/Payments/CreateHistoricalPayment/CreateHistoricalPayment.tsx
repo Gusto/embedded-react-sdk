@@ -278,11 +278,9 @@ function AmountsAndReview({
             </Text>
           </Flex>
           {!isCreated && (
-            <FlexItem>
-              <Button onClick={handleSubmit} variant="primary" isLoading={isCreating}>
-                {t('review.submitButton')}
-              </Button>
-            </FlexItem>
+            <Button onClick={handleSubmit} variant="primary" isLoading={isCreating}>
+              {t('review.submitButton')}
+            </Button>
           )}
         </Flex>
 
@@ -340,10 +338,8 @@ function BackButton({ onClick }: { onClick: () => void }) {
   const { Button } = useComponentContext()
 
   return (
-    <FlexItem>
-      <Button variant="secondary" icon={<CaretLeftIcon aria-hidden="true" />} onClick={onClick}>
-        {t('backButton')}
-      </Button>
-    </FlexItem>
+    <Button variant="secondary" icon={<CaretLeftIcon aria-hidden="true" />} onClick={onClick}>
+      {t('backButton')}
+    </Button>
   )
 }
