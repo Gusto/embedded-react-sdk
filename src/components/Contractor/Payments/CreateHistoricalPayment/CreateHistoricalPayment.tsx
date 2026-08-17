@@ -6,7 +6,10 @@ import type { PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as Co
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { usePaymentAmountsEditor } from '../shared/usePaymentAmountsEditor'
+import {
+  usePaymentAmountsEditor,
+  type VirtualContractorPayment,
+} from '../shared/usePaymentAmountsEditor'
 import { SetPaymentAmounts } from '../shared/SetPaymentAmounts'
 import { PaymentSummaryBlock } from '../shared/PaymentSummaryBlock'
 import { getHistoricalPaymentCheckDateBounds } from '../shared/historicalPaymentDateBounds'
@@ -52,7 +55,7 @@ export interface CreateHistoricalPaymentProps extends BaseComponentInterface<'Co
  * Back and Submit buttons are replaced with a success message, since the creation token has been
  * consumed and the host is expected to navigate away (e.g. to `HistoricalPaymentSummary`).
  * The amounts step also has its own Back button, returning to contractor selection without losing
- * the selected paid date or contractors.
+ * the selected paid date, contractors, or any amounts already entered.
  *
  * @events
  * | Event | Description | Data |
@@ -91,6 +94,9 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
   const [checkDate, setCheckDate] = useState<Date | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [selection, setSelection] = useState<ContractorSelection | null>(null)
+  const [savedContractorPayments, setSavedContractorPayments] = useState<
+    VirtualContractorPayment[] | undefined
+  >(undefined)
 
   let dateError: string | null = null
   if (checkDate !== null && checkDate > maxDate) {
@@ -151,7 +157,9 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
       contractorIds={selection.contractorIds}
       checkDate={selection.checkDate}
       onEvent={onEvent}
-      onBack={() => {
+      preservedContractorPayments={savedContractorPayments}
+      onBack={payments => {
+        setSavedContractorPayments(payments)
         setSelection(null)
       }}
     />
@@ -163,7 +171,8 @@ interface AmountsAndReviewProps {
   contractorIds: string[]
   checkDate: string
   onEvent: CreateHistoricalPaymentProps['onEvent']
-  onBack: () => void
+  preservedContractorPayments?: VirtualContractorPayment[]
+  onBack: (payments: VirtualContractorPayment[]) => void
 }
 
 function AmountsAndReview({
@@ -171,6 +180,7 @@ function AmountsAndReview({
   contractorIds,
   checkDate,
   onEvent,
+  preservedContractorPayments,
   onBack,
 }: AmountsAndReviewProps) {
   const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')
@@ -188,6 +198,7 @@ function AmountsAndReview({
   const { virtualContractorPayments, totals, editModal } = usePaymentAmountsEditor({
     contractors,
     allowedPaymentMethods: ALLOWED_PAYMENT_METHODS,
+    preservedContractorPayments,
     onEditOpen: () => {
       onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EDIT)
     },
@@ -302,7 +313,11 @@ function AmountsAndReview({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <BackButton onClick={onBack} />
+      <BackButton
+        onClick={() => {
+          onBack(virtualContractorPayments)
+        }}
+      />
 
       <Flex justifyContent="flex-end" gap={16}>
         <Flex flexDirection="column" gap={4}>

@@ -330,6 +330,25 @@ describe('CreateHistoricalPayment', () => {
     expect(screen.getAllByRole('checkbox')[1]).toBeChecked()
   })
 
+  it('preserves entered amounts when returning to the amounts screen after Back to contractor selection', async () => {
+    renderScreen([hourlyContractor])
+
+    await selectContractorAndContinue(user)
+    await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
+    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await screen.findByRole('heading', { name: 'Enter payment amounts' })
+    expect(screen.getByRole('row', { name: /Ada Lovelace/ })).toHaveTextContent('10.0')
+  })
+
   it('creates the payment group on submit and emits created with the payment group response', async () => {
     const { onEvent } = renderScreen([hourlyContractor])
 
