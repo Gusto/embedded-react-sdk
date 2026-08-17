@@ -44,9 +44,12 @@ export interface UsePrintChecksModalReturn {
   onRetry: () => void
 }
 
+const isErrorList = (val: unknown): val is { message?: string }[] =>
+  Array.isArray(val) && val.every(entry => typeof entry === 'object' && entry !== null)
+
 const extractErrorMessage = (err: unknown): string | null => {
-  if (err && typeof err === 'object' && 'errors' in err && Array.isArray(err.errors)) {
-    const [firstError] = err.errors as { message?: string }[]
+  if (err && typeof err === 'object' && 'errors' in err && isErrorList(err.errors)) {
+    const [firstError] = err.errors
     if (firstError?.message) return firstError.message
   }
   return err instanceof Error ? err.message : null
@@ -54,7 +57,7 @@ const extractErrorMessage = (err: unknown): string | null => {
 
 const buildRequestBody = (data: PrintChecksFormValues): PrintablePayrollChecksBody => ({
   printingFormat: data.printingFormat,
-  ...(data.printingFormat === PrintingFormat.Bottom && data.startingCheckNumber
+  ...(data.printingFormat === PrintingFormat.Bottom && data.startingCheckNumber !== undefined
     ? { startingCheckNumber: data.startingCheckNumber }
     : {}),
 })
@@ -121,7 +124,7 @@ export function usePrintChecksModal({
       printWindowRef.current?.close()
       printWindowRef.current = null
       setPhase('failed')
-      onEvent(componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED)
+      onEvent(componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED, data.generatedDocument)
     }
   }, [data, isPolling, onEvent])
 
@@ -158,6 +161,7 @@ export function usePrintChecksModal({
         printWindowRef.current = null
         setErrorMessage(extractErrorMessage(err))
         setPhase('failed')
+        onEvent(componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED)
         throw err
       }
     })

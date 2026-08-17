@@ -667,7 +667,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
 | `runPayroll/printChecks/requested` | User submitted the print-checks modal | Generate printable checks response |
 | `runPayroll/printChecks/generated` | Printable checks finished generating | Generated document |
-| `runPayroll/printChecks/failed` | Printable check generation failed | — |
+| `runPayroll/printChecks/failed` | The print-checks request was rejected or generation failed | Generated document, when generation had started |
 
 <br />
 

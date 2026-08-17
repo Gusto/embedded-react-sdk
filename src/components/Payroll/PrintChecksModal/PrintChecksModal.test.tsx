@@ -98,6 +98,31 @@ describe('PrintChecksModal', () => {
     expect(capturedBody).toEqual({ printing_format: 'bottom', starting_check_number: 1001 })
   })
 
+  it('includes a starting_check_number of 0 in the request body for blank check stock', async () => {
+    const user = userEvent.setup()
+    let capturedBody: Record<string, unknown> | null = null
+    const generateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      capturedBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json(createPayrollCheck(), { status: 200 })
+    })
+    server.use(handlePayrollsGeneratePrintableChecks(generateResolver))
+    server.use(
+      handleGeneratedDocumentsGet(() =>
+        HttpResponse.json(createGeneratedDocument({ status: 'pending' })),
+      ),
+    )
+
+    renderWithProviders(<PrintChecksModal {...defaultProps} />)
+
+    await user.click(await screen.findByRole('radio', { name: 'Blank check stock' }))
+    await user.click(screen.getByRole('button', { name: 'View checks' }))
+
+    await waitFor(() => {
+      expect(generateResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(capturedBody).toEqual({ printing_format: 'bottom', starting_check_number: 0 })
+  })
+
   it('calls the generate endpoint before the poll endpoint', async () => {
     const user = userEvent.setup()
     const generateResolver = vi.fn<HttpResponseResolver>(() =>
@@ -156,7 +181,7 @@ describe('PrintChecksModal', () => {
     )
   })
 
-  it('shows the failed state and fires RUN_PAYROLL_PRINT_CHECKS_FAILED when the poll reports failure', async () => {
+  it('shows the failed state and fires RUN_PAYROLL_PRINT_CHECKS_FAILED with the generated document when the poll reports failure', async () => {
     const user = userEvent.setup()
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
@@ -176,10 +201,13 @@ describe('PrintChecksModal', () => {
     await waitFor(() => {
       expect(screen.getByText("We couldn't generate your checks")).toBeInTheDocument()
     })
-    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED)
+    expect(mockOnEvent).toHaveBeenCalledWith(
+      componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED,
+      expect.objectContaining({ status: 'failed' }),
+    )
   })
 
-  it('shows the server error message when the mutation itself is rejected, without a generated/failed event', async () => {
+  it('shows the server error message and fires RUN_PAYROLL_PRINT_CHECKS_FAILED (without a generated document) when the mutation itself is rejected', async () => {
     const user = userEvent.setup()
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
@@ -211,7 +239,7 @@ describe('PrintChecksModal', () => {
       componentEvents.RUN_PAYROLL_PRINT_CHECKS_GENERATED,
       expect.anything(),
     )
-    expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED)
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_PRINT_CHECKS_FAILED)
   })
 
   it('fires RUN_PAYROLL_PRINT_CHECKS_REQUESTED with the mutation result on submit', async () => {
