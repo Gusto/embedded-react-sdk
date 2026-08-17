@@ -212,6 +212,13 @@ describe('TransitionCreation', () => {
       await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
       await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
 
+      await waitFor(() => {
+        expect(within(checkDateGroup).getByRole('spinbutton', { name: /year/i })).toHaveAttribute(
+          'aria-valuenow',
+          '2026',
+        )
+      })
+
       await user.click(screen.getByRole('button', { name: /continue/i }))
 
       await waitFor(() => {

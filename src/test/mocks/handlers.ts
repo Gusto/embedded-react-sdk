@@ -33,6 +33,7 @@ import {
   getCompany,
   getCompanyOnboardingStatus,
   getIndustrySelection,
+  getPaymentConfigs,
   updateIndustrySelection,
 } from './apis/company'
 import { getEmployeeFederalTaxes, updateEmployeeFederalTaxes } from './apis/employee_federal_taxes'
@@ -43,6 +44,7 @@ export const handlers = [
   getCompany,
   getCompanyOnboardingStatus,
   getIndustrySelection,
+  getPaymentConfigs,
   updateIndustrySelection,
   ...EmployeeHandlers,
   getEmployeeOnboardingStatus,
