@@ -39,12 +39,20 @@ export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
 export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
+  /**
+   * ID of the signatory. Forwarded to the document-signing step. When set and
+   * it matches the company's current signatory, the SDK treats the user as
+   * the signatory: form fields are pre-populated and document signing is
+   * enabled.
+   */
+  signatoryId?: string
   /** Default values applied to individual flow step components (federal taxes, pay schedule). */
   defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>
 }
 /** @internal */
 export interface OnboardingFlowContextInterface extends FlowContextInterface {
   companyId: string
+  signatoryId?: string
   defaultValues?: OnboardingFlowDefaultValues
 }
 
@@ -105,8 +113,14 @@ export function StateTaxesContextual() {
 }
 /** @internal */
 export function DocumentSignerContextual() {
-  const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <DocumentSigner onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  const { companyId, signatoryId, onEvent } = useFlow<OnboardingFlowContextInterface>()
+  return (
+    <DocumentSigner
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      signatoryId={signatoryId}
+    />
+  )
 }
 /** @internal */
 export function OnboardingOverviewContextual() {

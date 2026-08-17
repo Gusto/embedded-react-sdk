@@ -79,7 +79,7 @@ Props for [useContractorBankAccountForm](#usecontractorbankaccountform).
 | `defaultValues?` | `Partial`\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | Pre-fill form values. The contractor's existing bank account is used when no override is supplied. |
 | `optionalFieldsToRequire?` | [`ContractorBankAccountOptionalFieldsToRequire`](#contractorbankaccountoptionalfieldstorequire) | Override optional fields to be required. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

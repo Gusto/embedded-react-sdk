@@ -297,7 +297,7 @@ Renders an icon-only `<button>`; requires `aria-label` since there is no visible
 | `onKeyUp?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `tabIndex?` | `number` | | - |
 | `title?` | `string` | | - |
-| `type?` | `"button"` \| `"submit"` \| `"reset"` | `undefined` | - |
+| `type?` | `"button"` \| `"reset"` \| `"submit"` | `undefined` | - |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -340,7 +340,7 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 | `onKeyUp?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `tabIndex?` | `number` | | - |
 | `title?` | `string` | | - |
-| `type?` | `"button"` \| `"submit"` \| `"reset"` | `undefined` | - |
+| `type?` | `"button"` \| `"reset"` \| `"submit"` | `undefined` | - |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -614,7 +614,7 @@ Renders an HTML `<dl>` of term/description pairs in either a stacked or horizont
 | ------ | ------ | ------ | ------ |
 | `items` | [`DescriptionListItem`](#descriptionlistitem)[] | | Term/description pairs to render in order. |
 | `className?` | `string` | | Additional class name applied to the root `<dl>`. |
-| `layout?` | `"stacked"` \| `"horizontal"` | `'stacked'` | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
+| `layout?` | `"horizontal"` \| `"stacked"` | `'stacked'` | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
 | `showSeparators?` | `boolean` | `true` | Whether to render dividers between rows. Defaults to `true`. |
 
 <a id="descriptionlistitem"></a>
@@ -748,7 +748,7 @@ Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled
 | `className?` | `string` | - |
 | `id?` | `string` | - |
 | `styledAs?` | `"h1"` \| `"h2"` \| `"h3"` \| `"h4"` \| `"h5"` \| `"h6"` | Optional visual style to apply, independent of the semantic heading level |
-| `textAlign?` | `"center"` \| `"start"` \| `"end"` | Text alignment within the heading |
+| `textAlign?` | `"center"` \| `"end"` \| `"start"` | Text alignment within the heading |
 
 ***
 
@@ -774,7 +774,7 @@ Higher-level field components like TextInput and NumberInput reuse the
 | `adornmentEnd?` | `ReactNode` | | Content to display at the end of the input |
 | `adornmentStart?` | `ReactNode` | | Content to display at the start of the input |
 | `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-invalid?` | `boolean` \| `"true"` \| `"false"` \| `"grammar"` \| `"spelling"` | `undefined` | Indicates the entered value does not conform to the format expected by the application. **See** aria-errormessage. |
+| `aria-invalid?` | `boolean` \| `"false"` \| `"true"` \| `"grammar"` \| `"spelling"` | `undefined` | Indicates the entered value does not conform to the format expected by the application. **See** aria-errormessage. |
 | `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
 | `className?` | `string` | | - |
 | `id?` | `string` | | - |
@@ -843,7 +843,7 @@ Renders a spinner indicating that content is loading.
 | `className?` | `string` | | - |
 | `id?` | `string` | | - |
 | `size?` | `"sm"` \| `"lg"` | `'lg'` | Size of the spinner |
-| `style?` | `"inline"` \| `"block"` | `'block'` | Display style of the spinner |
+| `style?` | `"block"` \| `"inline"` | `'block'` | Display style of the spinner |
 
 ***
 
@@ -870,7 +870,7 @@ Renders a popover menu of actions anchored to a trigger element.
 | `isOpen?` | `boolean` | `false` | Controls whether the menu is currently open |
 | `items?` | [`MenuItem`](#menuitem)[] | | Array of menu items to display |
 | `onClose?` | () => `void` | | Callback when the menu is closed |
-| `placement?` | `"top"` \| `"top start"` \| `"top end"` \| `"bottom"` \| `"bottom start"` \| `"bottom end"` \| `"left"` \| `"right"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
+| `placement?` | `"left"` \| `"right"` \| `"bottom"` \| `"top"` \| `"top start"` \| `"top end"` \| `"bottom start"` \| `"bottom end"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
 | `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
 | `triggerRef?` | `RefObject`\<`Element` \| `null`\> | `undefined` | Reference to the element that triggers the menu |
 
@@ -1479,12 +1479,12 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `as?` | `"div"` \| `"p"` \| `"span"` \| `"pre"` | `'p'` | HTML element to render the text as |
+| `as?` | `"div"` \| `"pre"` \| `"p"` \| `"span"` | `'p'` | HTML element to render the text as |
 | `children?` | `ReactNode` | | Content to be displayed |
 | `className?` | `string` | | - |
 | `id?` | `string` | | - |
 | `size?` | `"xs"` \| `"sm"` \| `"md"` \| `"lg"` | `'md'` | Size variant of the text |
-| `textAlign?` | `"center"` \| `"start"` \| `"end"` | `undefined` | Text alignment within the container |
+| `textAlign?` | `"center"` \| `"end"` \| `"start"` | `undefined` | Text alignment within the container |
 | `variant?` | `"supporting"` \| `"leading"` | `undefined` | Visual style variant of the text |
 | `weight?` | `"bold"` \| `"medium"` \| `"regular"` \| `"semibold"` | `undefined` | Font weight of the text |
 

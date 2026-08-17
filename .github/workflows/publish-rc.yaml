@@ -18,7 +18,8 @@ on:
         type: string
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: gusto-ubuntu-default
     permissions:
       contents: write
       id-token: write
@@ -158,8 +159,8 @@ jobs:
 
           echo "Publishing RC version: $RC_VERSION from $REF_TYPE: $REF_NAME"
 
-          # Update package.json with RC version (disable git operations)
-          npm version $RC_VERSION --no-git-tag-version --no-git-commit-hooks
+          # Update package.json with RC version (disable git operations and lifecycle scripts)
+          npm version $RC_VERSION --no-git-tag-version --ignore-scripts
 
           # Set environment variable for later steps
           echo "RC_VERSION=$RC_VERSION" >> $GITHUB_ENV

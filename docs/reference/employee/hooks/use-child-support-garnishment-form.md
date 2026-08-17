@@ -92,7 +92,7 @@ Presence or absence of `garnishmentId` selects the API verb — see the
 | `defaultValues?` | `Partial`\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | Pre-fill form values. Server data takes precedence on update. |
 | `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 

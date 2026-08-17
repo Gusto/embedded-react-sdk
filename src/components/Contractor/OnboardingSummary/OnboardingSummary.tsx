@@ -29,9 +29,6 @@ export interface OnboardingSummaryProps extends BaseComponentInterface<'Contract
  * @public
  */
 export function OnboardingSummary(props: OnboardingSummaryProps) {
-  useI18n('Contractor.OnboardingSummary')
-  useComponentDictionary('Contractor.OnboardingSummary', props.dictionary)
-
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -39,7 +36,9 @@ export function OnboardingSummary(props: OnboardingSummaryProps) {
   )
 }
 
-const Root = ({ contractorId, className }: OnboardingSummaryProps) => {
+const Root = ({ contractorId, className, dictionary }: OnboardingSummaryProps) => {
+  useI18n('Contractor.OnboardingSummary')
+  useComponentDictionary('Contractor.OnboardingSummary', dictionary)
   const { onEvent } = useBase()
   const { t } = useTranslation('Contractor.OnboardingSummary')
   const Components = useComponentContext()

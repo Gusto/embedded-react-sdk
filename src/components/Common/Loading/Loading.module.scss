@@ -18,7 +18,7 @@
 }
 
 .skeletonBox {
-  height: 200px;
+  height: var(--loading-height, 200px);
   width: 100%;
   padding: toReam(10);
   display: flex;

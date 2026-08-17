@@ -69,7 +69,7 @@ Props for [useBankForm](#usebankform).
 | `employeeId?` | `string` | Employee for whom to create the bank account. May be supplied later via `BankFormSubmitOptions.employeeId`. |
 | `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 
