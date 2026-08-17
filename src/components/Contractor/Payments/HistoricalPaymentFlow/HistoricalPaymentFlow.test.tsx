@@ -79,8 +79,10 @@ const renderScreen = (onEvent = vi.fn()) => {
     ),
     handleGetContractorPaymentGroup(() => HttpResponse.json(createdPaymentGroup)),
   )
-  renderWithProviders(<HistoricalPaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />)
-  return { onEvent }
+  const { rerender } = renderWithProviders(
+    <HistoricalPaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />,
+  )
+  return { onEvent, rerender }
 }
 
 async function typeDate(
@@ -156,5 +158,57 @@ describe('HistoricalPaymentFlow', () => {
       componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EXIT,
       undefined,
     )
+  })
+
+  it('resets to the first screen when companyId changes', async () => {
+    server.use(
+      handleGetContractorsList(() =>
+        HttpResponse.json([hourlyContractor], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        }),
+      ),
+    )
+    const { rerender } = renderWithProviders(
+      <HistoricalPaymentFlow companyId={COMPANY_ID} onEvent={vi.fn()} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    })
+    await typeDate(user, { month: '07', day: '15', year: '2026' })
+    const checkboxes = screen.getAllByRole('checkbox')
+    await user.click(checkboxes[1] as Element)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await screen.findByRole('heading', { name: 'Enter payment amounts' })
+
+    rerender(<HistoricalPaymentFlow companyId="company-456" onEvent={vi.fn()} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    })
+    expect(screen.queryByRole('heading', { name: 'Enter payment amounts' })).not.toBeInTheDocument()
+  })
+
+  it('preserves in-flight state across a re-render that only carries a new onEvent reference', async () => {
+    const { rerender } = renderScreen()
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    })
+    await typeDate(user, { month: '07', day: '15', year: '2026' })
+    const checkboxes = screen.getAllByRole('checkbox')
+    await user.click(checkboxes[1] as Element)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await screen.findByRole('heading', { name: 'Enter payment amounts' })
+
+    rerender(<HistoricalPaymentFlow companyId={COMPANY_ID} onEvent={vi.fn()} />)
+
+    expect(screen.getByRole('heading', { name: 'Enter payment amounts' })).toBeInTheDocument()
   })
 })
