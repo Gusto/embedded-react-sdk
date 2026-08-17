@@ -1,5 +1,4 @@
 {
-  "breadcrumbLabel": "Payment summary",
   "successTitle": "Historical payment recorded successfully",
   "successMessage_one": "{{count}} contractor payment has been recorded.",
   "successMessage_other": "{{count}} contractor payments have been recorded.",

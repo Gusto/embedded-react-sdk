@@ -2414,8 +2414,8 @@ export namespace Translations {
   }
   /** Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n namespace. */
   export interface ContractorPaymentsCreateHistoricalPayment {
-    /** @defaultValue `"Record a historical payment"` */
-    breadcrumbLabel: string
+    /** @defaultValue `"Back"` */
+    backButton: string
     select: {
       /** @defaultValue `"Record a historical payment"` */
       heading: string
@@ -2531,8 +2531,6 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Historical payment for {{checkDate}}"` */
       subtitle: string
-      /** @defaultValue `"Edit"` */
-      editButton: string
       /** @defaultValue `"Submit historical payment"` */
       submitButton: string
       /** @defaultValue `"Historical payment recorded successfully"` */
@@ -2814,8 +2812,6 @@ export namespace Translations {
   }
   /** Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace. */
   export interface ContractorPaymentsHistoricalPaymentSummary {
-    /** @defaultValue `"Payment summary"` */
-    breadcrumbLabel: string
     /** @defaultValue `"Historical payment recorded successfully"` */
     successTitle: string
     /** @defaultValue `"{{count}} contractor payment has been recorded."` */

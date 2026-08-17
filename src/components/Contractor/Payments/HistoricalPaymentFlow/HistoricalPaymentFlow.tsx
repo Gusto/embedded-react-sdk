@@ -1,9 +1,6 @@
 import { createMachine } from 'robot3'
 import { useState } from 'react'
-import {
-  historicalPaymentBreadcrumbsNodes,
-  historicalPaymentMachine,
-} from './historicalPaymentMachine'
+import { historicalPaymentMachine } from './historicalPaymentMachine'
 import {
   CreateHistoricalPaymentContextual,
   type HistoricalPaymentFlowContextInterface,
@@ -11,7 +8,7 @@ import {
 } from './HistoricalPaymentFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
-import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 const EMPTY_BREADCRUMBS: FlowBreadcrumb[] = []
 
@@ -23,8 +20,10 @@ const EMPTY_BREADCRUMBS: FlowBreadcrumb[] = []
  */
 export interface HistoricalPaymentInternalFlowProps extends HistoricalPaymentFlowProps {
   /**
-   * Breadcrumbs prepended to the flow's own breadcrumb trail. Set by a parent flow (e.g.
-   * `PaymentFlow`) so the breadcrumb history remains coherent across the handoff.
+   * Breadcrumbs prepended to this flow's trail. Set by a parent flow (e.g. `PaymentFlow`) so a
+   * user can navigate out of this flow entirely -- this flow contributes no breadcrumb items of
+   * its own (each of its own screens has its own Back button instead), so the trail is just
+   * `prefixBreadcrumbs` passed straight through.
    */
   prefixBreadcrumbs?: FlowBreadcrumb[]
 }
@@ -48,7 +47,7 @@ export interface HistoricalPaymentInternalFlowProps extends HistoricalPaymentFlo
  * | `contractor/historicalPayments/backToEdit` | The user returned from preview to continue editing | — |
  * | `contractor/historicalPayments/created` | The payment group was successfully created | The created `ContractorPaymentGroup` |
  * | `contractor/historicalPayments/exit` | User is done reviewing the summary | — |
- * | `breadcrumb/navigate` | Fired when the user clicks a breadcrumb to navigate back | `{ key: string, onNavigate: (ctx) => ctx }` |
+ * | `breadcrumb/navigate` | Fired when the user clicks a breadcrumb injected via `prefixBreadcrumbs` | `{ key: string, onNavigate: (ctx) => ctx }` |
  *
  * @components
  * - {@link CreateHistoricalPayment}
@@ -79,7 +78,7 @@ export function HistoricalPaymentFlow(props: HistoricalPaymentFlowProps) {
 /**
  * Flow-internal entry point for {@link HistoricalPaymentFlow} that additionally accepts
  * flow-injected `prefixBreadcrumbs`. Partners use {@link HistoricalPaymentFlow}; `PaymentFlow`
- * renders this directly to prepend its own breadcrumb trail.
+ * renders this directly to give the user a way back to the payments landing screen.
  *
  * @internal
  */
@@ -95,18 +94,13 @@ export function HistoricalPaymentInternalFlow({
   // to a bubbled `onEvent` call, since an inline array literal upstream gets a new reference every
   // render.
   const [historicalPaymentFlow] = useState(() => {
-    const baseBreadcrumbs = buildBreadcrumbs(historicalPaymentBreadcrumbsNodes)
-    const breadcrumbs = Object.fromEntries(
-      Object.entries(baseBreadcrumbs).map(([stateKey, trail]) => [
-        stateKey,
-        [...prefixBreadcrumbs, ...trail],
-      ]),
-    )
-
     const initialBreadcrumbContext = updateBreadcrumbs('createHistoricalPayment', {
       header: {
         type: 'breadcrumbs' as const,
-        breadcrumbs,
+        breadcrumbs: {
+          createHistoricalPayment: prefixBreadcrumbs,
+          historicalPaymentSummary: prefixBreadcrumbs,
+        },
       },
     })
 

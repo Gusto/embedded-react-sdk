@@ -7,33 +7,9 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
-import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED]: ContractorPaymentGroup
-}
-
-/** @internal */
-export const historicalPaymentBreadcrumbsNodes: BreadcrumbNodes = {
-  createHistoricalPayment: {
-    parent: null,
-    item: {
-      id: 'createHistoricalPayment',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.CreateHistoricalPayment',
-      onNavigate: ((ctx: HistoricalPaymentFlowContextInterface) => ({
-        ...updateBreadcrumbs('createHistoricalPayment', ctx),
-      })) as (context: unknown) => unknown,
-    },
-  },
-  historicalPaymentSummary: {
-    parent: null,
-    item: {
-      id: 'historicalPaymentSummary',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.HistoricalPaymentSummary',
-    },
-  },
 }
 
 /**
@@ -44,6 +20,11 @@ export const historicalPaymentBreadcrumbsNodes: BreadcrumbNodes = {
  * `HistoricalPaymentFlow` can be mounted directly by a partner, so `contractor/historicalPayments/exit`
  * bubbles up via `onEvent` without a local transition, keeping the summary screen interactive if the
  * host doesn't unmount the component immediately (see SDK-1169).
+ *
+ * Unlike `createPaymentMachine`, neither state contributes its own breadcrumb item -- each of this
+ * flow's own screens has its own Back button instead. `updateBreadcrumbs` here only keeps
+ * `currentBreadcrumbId` in sync so a parent flow's injected `prefixBreadcrumbs` (see
+ * `HistoricalPaymentInternalFlow`) stays visible as the active trail across both states.
  *
  * @internal
  */
