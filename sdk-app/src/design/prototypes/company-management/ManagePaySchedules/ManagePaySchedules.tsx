@@ -11,10 +11,7 @@ import type { PayScheduleAssignment } from '@gusto/embedded-api/models/component
 import type { PayScheduleAssignmentPreview } from '@gusto/embedded-api/models/components/payscheduleassignmentpreview'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
-import {
-  PaySchedulesList,
-  type PaySchedulesListRow,
-} from '../../../components/company/management/PaySchedulesList/PaySchedulesList'
+import { PaySchedulesList } from '../../../components/company/management/PaySchedulesList/PaySchedulesList'
 import { AutoPilotDialog } from '../../../components/company/management/PaySchedulesList/AutoPilotDialog'
 import { PayScheduleForm } from '../../../components/company/management/PaySchedulesList/PayScheduleForm'
 import {
@@ -26,7 +23,7 @@ import {
   type AssignmentDraft,
 } from '../../../components/company/management/PaySchedulesList/PayScheduleAssignmentForm'
 import { PayScheduleAssignmentReview } from '../../../components/company/management/PaySchedulesList/PayScheduleAssignmentReview'
-import { toRows } from './states'
+import { toListData } from './states'
 import { BaseComponent } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { FlsaStatus } from '@/shared/constants'
@@ -333,7 +330,12 @@ function Root({ companyId }: ManagePaySchedulesProps) {
   )
   const fallbackScheduleUuid = schedules[0]?.uuid ?? ''
 
-  const rows = toRows(schedules, assignment)
+  const listData = toListData({
+    schedules,
+    assignment,
+    departments,
+    employees: assignableEmployees,
+  })
   const scheduleMeta = toAutoPilotState(schedules)
 
   const [view, setView] = useState<View>({ name: 'list' })
@@ -605,17 +607,14 @@ function Root({ companyId }: ManagePaySchedulesProps) {
         />
       ) : null}
       <PaySchedulesList
-        rows={rows}
+        data={listData}
         assignmentType={assignment?.type}
         onManage={startTypeSelection}
-        onEdit={(row: PaySchedulesListRow) => {
-          setView({ name: 'form', payScheduleId: row.id, returnContext: 'list' })
+        onEditSchedule={scheduleId => {
+          setView({ name: 'form', payScheduleId: scheduleId, returnContext: 'list' })
         }}
-        onEditAutoPilot={(row: PaySchedulesListRow) => {
-          setAutoPilotTargetId(row.id)
-        }}
-        onManageEmployees={() => {
-          startTypeSelection()
+        onEditAutoPilot={scheduleId => {
+          setAutoPilotTargetId(scheduleId)
         }}
       />
       <AutoPilotDialog

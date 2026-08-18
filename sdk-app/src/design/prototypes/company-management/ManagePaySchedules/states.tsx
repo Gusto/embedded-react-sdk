@@ -9,7 +9,11 @@ import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/compon
 import type { PrototypeComponent } from '../../prototypeTypes'
 import {
   PaySchedulesList,
-  type PaySchedulesListRow,
+  type PaySchedulesListData,
+  type CompensationRow,
+  type DepartmentRow,
+  type ByEmployeeRow,
+  type SingleSummary,
 } from '../../../components/company/management/PaySchedulesList/PaySchedulesList'
 import { AutoPilotDialog } from '../../../components/company/management/PaySchedulesList/AutoPilotDialog'
 import {
@@ -32,109 +36,246 @@ const FREQUENCY_LABELS: Record<string, string> = {
   Annually: 'Annually',
 }
 
-export function toRows(
-  schedules: PayScheduleShow[],
-  assignment?: PayScheduleAssignment,
-): PaySchedulesListRow[] {
-  const employeeCounts = new Map<string, number>()
-  for (const entry of assignment?.employees ?? []) {
-    if (!entry.payScheduleUuid) continue
-    employeeCounts.set(entry.payScheduleUuid, (employeeCounts.get(entry.payScheduleUuid) ?? 0) + 1)
-  }
-
-  return schedules.map(schedule => ({
-    id: schedule.uuid,
-    name: schedule.customName ?? '',
-    frequency: schedule.frequency
-      ? (FREQUENCY_LABELS[schedule.frequency] ?? schedule.frequency)
-      : '—',
-    autoPilot: schedule.autoPayroll ?? false,
-    employeeCount: employeeCounts.get(schedule.uuid) ?? 0,
-  }))
+function frequencyLabel(schedule?: PayScheduleShow): string {
+  if (!schedule?.frequency) return '—'
+  return FREQUENCY_LABELS[schedule.frequency] ?? schedule.frequency
 }
 
-function buildRow(overrides: Partial<PaySchedulesListRow>): PaySchedulesListRow {
+function scheduleFields(schedule?: PayScheduleShow) {
   return {
-    id: 'row-default',
-    name: 'Bi-weekly',
-    frequency: 'Every other week',
-    autoPilot: false,
-    employeeCount: 0,
-    ...overrides,
+    scheduleId: schedule?.uuid ?? '',
+    scheduleName: schedule?.customName ?? '',
+    frequency: frequencyLabel(schedule),
+    autoPilot: schedule?.autoPayroll ?? false,
   }
 }
 
-const multipleRows: PaySchedulesListRow[] = [
-  buildRow({
-    id: 'schedule-hourly',
-    name: 'Hourly team',
-    frequency: 'Every week',
-    autoPilot: true,
-    employeeCount: 14,
-  }),
-  buildRow({
-    id: 'schedule-salaried',
-    name: 'Salaried team',
+function isHourlyEmployee(employee: Employee): boolean {
+  const flsa = employee.jobs?.[0]?.compensations?.[0]?.flsaStatus
+  return flsa === FlsaStatus.NONEXEMPT
+}
+
+export function toListData({
+  schedules,
+  assignment,
+  departments,
+  employees,
+}: {
+  schedules: PayScheduleShow[]
+  assignment: PayScheduleAssignment | undefined
+  departments: Department[]
+  employees: Employee[]
+}): PaySchedulesListData {
+  if (schedules.length === 0) return { type: 'empty' }
+
+  const byId = new Map(schedules.map(s => [s.uuid, s]))
+  const type = assignment?.type
+
+  if (type === PayScheduleAssignmentBodyType.HourlySalaried) {
+    const salariedSched = byId.get(assignment?.salariedPayScheduleUuid ?? '')
+    const hourlySched = byId.get(assignment?.hourlyPayScheduleUuid ?? '')
+    let salariedCount = 0
+    let hourlyCount = 0
+    for (const e of employees) {
+      if (isHourlyEmployee(e)) hourlyCount += 1
+      else salariedCount += 1
+    }
+    const rows: CompensationRow[] = [
+      {
+        id: 'salaried',
+        classification: 'Salaried',
+        ...scheduleFields(salariedSched),
+        employeeCount: salariedCount,
+        canEditAutoPilot: true,
+      },
+      {
+        id: 'hourly',
+        classification: 'Hourly',
+        ...scheduleFields(hourlySched),
+        employeeCount: hourlyCount,
+        canEditAutoPilot: false,
+      },
+    ]
+    return { type: 'compensation', rows }
+  }
+
+  if (type === PayScheduleAssignmentBodyType.ByDepartment) {
+    const deptToSchedule = new Map<string, string>()
+    for (const d of assignment?.departments ?? []) {
+      if (d.departmentUuid && d.payScheduleUuid)
+        deptToSchedule.set(d.departmentUuid, d.payScheduleUuid)
+    }
+    const defaultUuid = assignment?.defaultPayScheduleUuid ?? ''
+    const employeeCountByDept = new Map<string, number>()
+    let uncategorizedCount = 0
+    for (const e of employees) {
+      if (e.departmentUuid) {
+        employeeCountByDept.set(
+          e.departmentUuid,
+          (employeeCountByDept.get(e.departmentUuid) ?? 0) + 1,
+        )
+      } else {
+        uncategorizedCount += 1
+      }
+    }
+    const rows: DepartmentRow[] = departments
+      .filter(d => d.uuid)
+      .map(dept => {
+        const schedUuid = deptToSchedule.get(dept.uuid!) ?? defaultUuid
+        const sched = byId.get(schedUuid)
+        return {
+          id: dept.uuid!,
+          departmentName: dept.title ?? '—',
+          ...scheduleFields(sched),
+          employeeCount: employeeCountByDept.get(dept.uuid!) ?? 0,
+        }
+      })
+    const defaultSched = byId.get(defaultUuid)
+    rows.push({
+      id: 'uncategorized',
+      departmentName: 'Uncategorized',
+      ...scheduleFields(defaultSched),
+      employeeCount: uncategorizedCount,
+    })
+    return { type: 'department', rows }
+  }
+
+  if (type === PayScheduleAssignmentBodyType.ByEmployee) {
+    const employeeToSchedule = new Map<string, string>()
+    for (const e of assignment?.employees ?? []) {
+      if (e.employeeUuid && e.payScheduleUuid)
+        employeeToSchedule.set(e.employeeUuid, e.payScheduleUuid)
+    }
+    const countBySchedule = new Map<string, number>()
+    for (const emp of employees) {
+      const uuid = employeeToSchedule.get(emp.uuid)
+      if (!uuid) continue
+      countBySchedule.set(uuid, (countBySchedule.get(uuid) ?? 0) + 1)
+    }
+    const rows: ByEmployeeRow[] = schedules.map(sched => ({
+      id: sched.uuid,
+      ...scheduleFields(sched),
+      employeeCount: countBySchedule.get(sched.uuid) ?? 0,
+    }))
+    return { type: 'byEmployee', rows }
+  }
+
+  const singleSched = byId.get(assignment?.defaultPayScheduleUuid ?? '') ?? schedules[0]
+  const summary: SingleSummary = scheduleFields(singleSched)
+  return { type: 'single', summary }
+}
+
+const mockSingleSummary: SingleSummary = {
+  scheduleId: 'schedule-only',
+  scheduleName: 'Everyone',
+  frequency: 'Every other week',
+  autoPilot: false,
+}
+
+const mockCompensationRows: CompensationRow[] = [
+  {
+    id: 'salaried',
+    classification: 'Salaried',
+    scheduleId: 'schedule-salaried',
+    scheduleName: 'Salaried team',
     frequency: 'Twice per month',
     autoPilot: false,
     employeeCount: 6,
-  }),
-  buildRow({
+    canEditAutoPilot: true,
+  },
+  {
+    id: 'hourly',
+    classification: 'Hourly',
+    scheduleId: 'schedule-hourly',
+    scheduleName: 'Hourly team',
+    frequency: 'Every week',
+    autoPilot: true,
+    employeeCount: 14,
+    canEditAutoPilot: false,
+  },
+]
+
+const mockDepartmentRows: DepartmentRow[] = [
+  {
+    id: 'dept-eng',
+    departmentName: 'Engineering',
+    scheduleId: 'schedule-biweekly',
+    scheduleName: 'Bi-weekly',
+    frequency: 'Every other week',
+    autoPilot: false,
+    employeeCount: 8,
+  },
+  {
+    id: 'dept-sales',
+    departmentName: 'Sales',
+    scheduleId: 'schedule-monthly',
+    scheduleName: 'Sales monthly',
+    frequency: 'Monthly',
+    autoPilot: true,
+    employeeCount: 5,
+  },
+  {
+    id: 'dept-ops',
+    departmentName: 'Operations',
+    scheduleId: 'schedule-biweekly',
+    scheduleName: 'Bi-weekly',
+    frequency: 'Every other week',
+    autoPilot: false,
+    employeeCount: 3,
+  },
+  {
+    id: 'uncategorized',
+    departmentName: 'Uncategorized',
+    scheduleId: 'schedule-biweekly',
+    scheduleName: 'Bi-weekly',
+    frequency: 'Every other week',
+    autoPilot: false,
+    employeeCount: 1,
+  },
+]
+
+const mockByEmployeeRows: ByEmployeeRow[] = [
+  {
+    id: 'schedule-hourly',
+    scheduleId: 'schedule-hourly',
+    scheduleName: 'Hourly team',
+    frequency: 'Every week',
+    autoPilot: true,
+    employeeCount: 14,
+  },
+  {
+    id: 'schedule-salaried',
+    scheduleId: 'schedule-salaried',
+    scheduleName: 'Salaried team',
+    frequency: 'Twice per month',
+    autoPilot: false,
+    employeeCount: 6,
+  },
+  {
     id: 'schedule-execs',
-    name: 'Executive',
+    scheduleId: 'schedule-execs',
+    scheduleName: 'Executive',
     frequency: 'Monthly',
     autoPilot: true,
     employeeCount: 3,
-  }),
-]
-
-const singleRow: PaySchedulesListRow[] = [
-  buildRow({
-    id: 'schedule-only',
-    name: 'Everyone',
-    frequency: 'Every other week',
-    autoPilot: false,
-    employeeCount: 12,
-  }),
+  },
 ]
 
 function ListInteractiveStory({
-  initial,
+  data,
   assignmentType,
 }: {
-  initial: PaySchedulesListRow[]
+  data: PaySchedulesListData
   assignmentType?: PayScheduleType | null
 }) {
-  const [rows, setRows] = useState(initial)
-  const [autoPilotTarget, setAutoPilotTarget] = useState<PaySchedulesListRow | null>(null)
-
   return (
-    <>
-      <PaySchedulesList
-        rows={rows}
-        assignmentType={assignmentType}
-        onManage={() => {}}
-        onEdit={() => {}}
-        onEditAutoPilot={row => {
-          setAutoPilotTarget(row)
-        }}
-        onManageEmployees={() => {}}
-      />
-      <AutoPilotDialog
-        isOpen={autoPilotTarget !== null}
-        scheduleName={autoPilotTarget?.name ?? ''}
-        autoPilotEnabled={autoPilotTarget?.autoPilot ?? false}
-        onClose={() => {
-          setAutoPilotTarget(null)
-        }}
-        onSave={enabled => {
-          setRows(prev =>
-            prev.map(r => (r.id === autoPilotTarget?.id ? { ...r, autoPilot: enabled } : r)),
-          )
-          setAutoPilotTarget(null)
-        }}
-      />
-    </>
+    <PaySchedulesList
+      data={data}
+      assignmentType={assignmentType}
+      onManage={() => {}}
+      onEditSchedule={() => {}}
+      onEditAutoPilot={() => {}}
+    />
   )
 }
 
@@ -416,38 +557,53 @@ export const components: PrototypeComponent[] = [
     slug: 'pay-schedules-list',
     name: 'Pay schedules list',
     description:
-      'Landing block: DataView (multiple) / DescriptionList (single) / empty state, with a "Manage" header action and an assignment-mode prose line.',
+      'Landing block on the manage hub. Box title is always "Pay schedule"; the assignment mode drives the sub-heading copy and the shape of the content (DescriptionList for single, per-type DataView otherwise).',
     configurations: [
       {
-        slug: 'multiple-hourly-salaried',
-        name: 'Multiple (hourly + salaried)',
-        description: 'Three schedules; company is on the hourly/salaried assignment mode.',
+        slug: 'single',
+        name: 'Single',
+        description:
+          'DescriptionList of Name / Frequency / AutoPilot for the one schedule everyone is on.',
         render: () => (
           <ListInteractiveStory
-            initial={multipleRows}
+            data={{ type: 'single', summary: mockSingleSummary }}
+            assignmentType={PayScheduleAssignmentBodyType.Single}
+          />
+        ),
+      },
+      {
+        slug: 'compensation',
+        name: 'By compensation type',
+        description:
+          'Two rows: Salaried and Hourly. AutoPilot action is intentionally suppressed on Hourly to match GWS.',
+        render: () => (
+          <ListInteractiveStory
+            data={{ type: 'compensation', rows: mockCompensationRows }}
             assignmentType={PayScheduleAssignmentBodyType.HourlySalaried}
           />
         ),
       },
       {
-        slug: 'multiple-by-employee',
-        name: 'Multiple (by employee)',
-        description: 'Three schedules; company is on the per-employee assignment mode.',
+        slug: 'by-department',
+        name: 'By department',
+        description:
+          'One row per department plus an Uncategorized row for employees with no department.',
         render: () => (
           <ListInteractiveStory
-            initial={multipleRows}
-            assignmentType={PayScheduleAssignmentBodyType.ByEmployee}
+            data={{ type: 'department', rows: mockDepartmentRows }}
+            assignmentType={PayScheduleAssignmentBodyType.ByDepartment}
           />
         ),
       },
       {
-        slug: 'single',
-        name: 'Single',
-        description: 'One schedule — DescriptionList variant. Company is on single assignment.',
+        slug: 'by-employee',
+        name: 'By employee',
+        description:
+          'One row per schedule with employee count — each schedule is a bucket for individually assigned employees.',
         render: () => (
           <ListInteractiveStory
-            initial={singleRow}
-            assignmentType={PayScheduleAssignmentBodyType.Single}
+            data={{ type: 'byEmployee', rows: mockByEmployeeRows }}
+            assignmentType={PayScheduleAssignmentBodyType.ByEmployee}
           />
         ),
       },
@@ -456,7 +612,7 @@ export const components: PrototypeComponent[] = [
         name: 'Empty',
         description:
           'No schedules configured yet — empty state with the Manage action still available.',
-        render: () => <ListInteractiveStory initial={[]} assignmentType={null} />,
+        render: () => <ListInteractiveStory data={{ type: 'empty' }} assignmentType={null} />,
       },
     ],
   },
