@@ -282,6 +282,7 @@ function ListInteractiveStory({
 function AutoPilotDialogStory({ startEnabled }: { startEnabled: boolean }) {
   const [isOpen, setIsOpen] = useState(true)
   const [enabled, setEnabled] = useState(startEnabled)
+  const [isSaving, setIsSaving] = useState(false)
 
   return (
     <>
@@ -289,12 +290,17 @@ function AutoPilotDialogStory({ startEnabled }: { startEnabled: boolean }) {
         isOpen={isOpen}
         scheduleName="Hourly team"
         autoPilotEnabled={enabled}
+        isSaving={isSaving}
         onClose={() => {
-          setIsOpen(false)
+          if (!isSaving) setIsOpen(false)
         }}
         onSave={next => {
-          setEnabled(next)
-          setIsOpen(false)
+          setIsSaving(true)
+          setTimeout(() => {
+            setEnabled(next)
+            setIsSaving(false)
+            setIsOpen(false)
+          }, 1500)
         }}
       />
       {!isOpen && (

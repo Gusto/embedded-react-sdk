@@ -635,6 +635,7 @@ function Root({ companyId }: ManagePaySchedulesProps) {
         isOpen={autoPilotTargetId !== null && target !== undefined}
         scheduleName={target?.name ?? ''}
         autoPilotEnabled={target?.autoPayroll ?? false}
+        isSaving={isSavingAutoPilot}
         onClose={() => {
           if (!isSavingAutoPilot) setAutoPilotTargetId(null)
         }}

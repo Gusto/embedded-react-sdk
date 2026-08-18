@@ -6,6 +6,7 @@ export interface AutoPilotDialogProps {
   isOpen: boolean
   scheduleName: string
   autoPilotEnabled: boolean
+  isSaving?: boolean
   onClose: () => void
   onSave: (enabled: boolean) => void
 }
@@ -14,11 +15,13 @@ export function AutoPilotDialog({
   isOpen,
   scheduleName,
   autoPilotEnabled,
+  isSaving = false,
   onClose,
   onSave,
 }: AutoPilotDialogProps) {
   const Components = useComponentContext()
   const [nextEnabled, setNextEnabled] = useState(autoPilotEnabled)
+  const hasChanges = nextEnabled !== autoPilotEnabled
 
   useEffect(() => {
     if (isOpen) {
@@ -31,11 +34,16 @@ export function AutoPilotDialog({
       isOpen={isOpen}
       onClose={onClose}
       onPrimaryActionClick={() => {
-        onSave(nextEnabled)
+        if (hasChanges) {
+          onSave(nextEnabled)
+        } else {
+          onClose()
+        }
       }}
       title={`AutoPilot — ${scheduleName}`}
       primaryActionLabel="Save"
       closeActionLabel="Cancel"
+      isPrimaryActionLoading={isSaving}
     >
       <Flex flexDirection="column" gap={16}>
         <Components.Text>
