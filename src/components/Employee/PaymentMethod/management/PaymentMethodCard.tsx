@@ -15,6 +15,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
@@ -29,6 +30,8 @@ export interface PaymentMethodCardProps {
   employeeId: string
   /** Event handler fired on card interactions. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -51,15 +54,22 @@ export interface PaymentMethodCardProps {
  * @returns The "Payment" card.
  * @public
  */
-export function PaymentMethodCard(props: PaymentMethodCardProps) {
+export function PaymentMethodCard({ LoaderComponent, ...props }: PaymentMethodCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.PaymentMethod">
-      <PaymentMethodCardContent {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.PaymentMethod"
+      LoaderComponent={LoaderComponent}
+    >
+      <PaymentMethodCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function PaymentMethodCardContent({ employeeId, onEvent }: PaymentMethodCardProps) {
+function PaymentMethodCardContent({
+  employeeId,
+  onEvent,
+  LoaderComponent,
+}: PaymentMethodCardProps) {
   useI18n('Employee.Management.PaymentMethod')
   const { t } = useTranslation('Employee.Management.PaymentMethod')
   const Components = useComponentContext()
@@ -69,7 +79,7 @@ function PaymentMethodCardContent({ employeeId, onEvent }: PaymentMethodCardProp
 
   if (paymentMethodList.isLoading) {
     return (
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Components.Box
           header={
             <Components.BoxHeader
@@ -96,6 +106,7 @@ function PaymentMethodCardContent({ employeeId, onEvent }: PaymentMethodCardProp
       onEvent={onEvent}
       paymentMethodList={paymentMethodList}
       errorHandling={errorHandling}
+      LoaderComponent={LoaderComponent}
     />
   )
 }
@@ -109,6 +120,7 @@ function PaymentMethodCardReady({
   onEvent,
   paymentMethodList,
   errorHandling,
+  LoaderComponent,
 }: PaymentMethodCardReadyProps) {
   const { paymentMethod, bankAccounts } = paymentMethodList.data
   const { deletePendingBankAccountUuid } = paymentMethodList.status
@@ -194,7 +206,7 @@ function PaymentMethodCardReady({
 
   return (
     <>
-      <BaseLayout error={errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
         <Components.Box
           withPadding={!isShowingBankAccountTable}
           header={<Components.BoxHeader title={t('title')} action={headerAction} />}

@@ -9,6 +9,7 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
+import type { LoaderComponentType } from '@/components/Base'
 
 type ReadyEmployeeStateTaxesForm = Extract<
   ReturnType<typeof useEmployeeStateTaxesForm>,
@@ -43,6 +44,7 @@ export interface EmployeeStateTaxesViewProps {
    * overrides on the flow's `dictionary` prop propagate into the view.
    */
   dictionary?: StateTaxesViewDictionary
+  LoaderComponent?: LoaderComponentType
 }
 
 /** @internal */
@@ -53,6 +55,7 @@ export function EmployeeStateTaxesView({
   alert,
   className,
   dictionary,
+  LoaderComponent,
 }: EmployeeStateTaxesViewProps) {
   useI18n('Employee.StateTaxesView')
   useComponentDictionary('Employee.StateTaxesView', dictionary)
@@ -64,7 +67,7 @@ export function EmployeeStateTaxesView({
 
   return (
     <section className={classNames(styles.container, className)}>
-      <BaseLayout error={stateTaxes.errorHandling.errors}>
+      <BaseLayout error={stateTaxes.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={stateTaxes}>
           <Form onSubmit={onSubmit}>
             {alert}

@@ -12,6 +12,7 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -26,6 +27,8 @@ export interface DeductionsCardProps {
   employeeId: string
   /** Callback invoked when the card emits an event. See the events table on {@link DeductionsCard} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -45,15 +48,18 @@ export interface DeductionsCardProps {
  * @returns The rendered deductions card.
  * @public
  */
-export function DeductionsCard(props: DeductionsCardProps) {
+export function DeductionsCard({ LoaderComponent, ...props }: DeductionsCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.Deductions">
-      <DeductionsCardContent {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.Deductions"
+      LoaderComponent={LoaderComponent}
+    >
+      <DeductionsCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function DeductionsCardContent({ employeeId, onEvent }: DeductionsCardProps) {
+function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: DeductionsCardProps) {
   useI18n('Employee.Management.Deductions')
   const { t } = useTranslation('Employee.Management.Deductions')
   const Components = useComponentContext()
@@ -147,7 +153,7 @@ function DeductionsCardContent({ employeeId, onEvent }: DeductionsCardProps) {
   })
 
   return (
-    <BaseLayout error={deductionsList.errorHandling.errors}>
+    <BaseLayout error={deductionsList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         withPadding={false}
         header={

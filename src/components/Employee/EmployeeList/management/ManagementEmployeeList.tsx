@@ -40,6 +40,7 @@ function ManagementEmployeeListRoot({
   initialTab = 'active',
   onEvent,
   dictionary,
+  LoaderComponent,
 }: ManagementEmployeeListProps) {
   useI18n('Employee.ManagementEmployeeList')
   useComponentDictionary('Employee.ManagementEmployeeList', dictionary)
@@ -54,7 +55,13 @@ function ManagementEmployeeListRoot({
   })
 
   if (employeeList.isLoading) {
-    return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
+    return (
+      <BaseLayout
+        isLoading
+        error={employeeList.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
   }
 
   const handleEdit = (employeeId: string) => {
@@ -74,7 +81,7 @@ function ManagementEmployeeListRoot({
   }
 
   return (
-    <BaseLayout error={employeeList.errorHandling.errors}>
+    <BaseLayout error={employeeList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <ManagementEmployeeListView
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
@@ -96,7 +103,8 @@ function ManagementEmployeeListRoot({
 
 /**
  * Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
- * tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
+ * tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no
+ * available actions, so no menu is rendered for them.
  *
  * @events
  * | Event | Description | Data |
@@ -110,14 +118,16 @@ function ManagementEmployeeListRoot({
  */
 export function ManagementEmployeeList({
   FallbackComponent,
+  LoaderComponent,
   ...props
 }: ManagementEmployeeListProps) {
   return (
     <BaseBoundaries
       componentName="Employee.ManagementEmployeeList"
       FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <ManagementEmployeeListRoot {...props} />
+      <ManagementEmployeeListRoot LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }

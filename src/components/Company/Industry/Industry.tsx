@@ -19,6 +19,7 @@ export interface IndustryProps extends BaseComponentInterface<'Company.Industry'
 }
 
 function Root({ children, className, companyId, dictionary }: IndustryProps) {
+  useI18n('Company.Industry')
   useComponentDictionary('Company.Industry', dictionary)
   const { baseSubmitHandler, onEvent } = useBase()
 
@@ -66,8 +67,6 @@ function Root({ children, className, companyId, dictionary }: IndustryProps) {
  * @public
  */
 export function Industry(props: IndustryProps) {
-  useI18n('Company.Industry')
-
   return (
     <BaseComponent {...props}>
       <Root {...props} />

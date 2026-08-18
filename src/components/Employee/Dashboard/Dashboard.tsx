@@ -28,6 +28,7 @@ function DashboardRoot({
   dictionary,
   onEvent,
   selectedTab: controlledTab,
+  LoaderComponent,
 }: DashboardProps) {
   useI18n('Employee.Dashboard')
   useComponentDictionary('Employee.Dashboard', dictionary)
@@ -91,7 +92,11 @@ function DashboardRoot({
           )}
 
           {selectedTab === 'documents' && (
-            <DocumentsCard employeeId={employeeId} onEvent={onEvent} />
+            <DocumentsCard
+              employeeId={employeeId}
+              onEvent={onEvent}
+              LoaderComponent={LoaderComponent}
+            />
           )}
         </Flex>
       </Flex>
@@ -140,10 +145,14 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
  * @returns A React element rendering the employee dashboard.
  * @public
  */
-export function Dashboard({ FallbackComponent, ...props }: DashboardProps) {
+export function Dashboard({ FallbackComponent, LoaderComponent, ...props }: DashboardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Dashboard" FallbackComponent={FallbackComponent}>
-      <DashboardRoot {...props} />
+    <BaseBoundaries
+      componentName="Employee.Dashboard"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <DashboardRoot {...props} LoaderComponent={LoaderComponent} />
     </BaseBoundaries>
   )
 }

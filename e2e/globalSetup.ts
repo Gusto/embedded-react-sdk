@@ -2,6 +2,7 @@ import { resolve } from 'path'
 import { resolve as dnsResolve } from 'dns/promises'
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
+import { CI_HEADERS } from './utils/ciHeaders'
 import { refreshTokenIfNeeded, createFreshDemo } from './scripts/refreshToken'
 import type { ScenarioContext } from './scenario/context'
 import { makeApi, provisionScenario } from './scenario/runner'
@@ -68,6 +69,7 @@ async function checkGWSFlowsHealth(): Promise<{ ok: boolean; detail: string }> {
     const response = await fetch(targetUrl, {
       signal: AbortSignal.timeout(15000),
       redirect: 'follow',
+      headers: CI_HEADERS,
     })
     if (response.ok || response.status === 404) {
       return { ok: true, detail: `status ${response.status}` }
@@ -182,7 +184,7 @@ async function isExistingStateValid(state: Partial<E2EState>): Promise<boolean> 
   try {
     const response = await fetch(
       `${GWS_FLOWS_BASE}/fe_sdk/${flowToken}/v1/companies/${state.companyId}/locations`,
-      { signal: AbortSignal.timeout(5000) },
+      { signal: AbortSignal.timeout(5000), headers: CI_HEADERS },
     )
     if (!response.ok) return false
 
@@ -197,7 +199,7 @@ async function isExistingStateValid(state: Partial<E2EState>): Promise<boolean> 
 }
 
 async function fetchFromApi<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${GWS_FLOWS_BASE}${endpoint}`)
+  const response = await fetch(`${GWS_FLOWS_BASE}${endpoint}`, { headers: CI_HEADERS })
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`)
   }
@@ -207,7 +209,7 @@ async function fetchFromApi<T>(endpoint: string): Promise<T> {
 async function postToApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
   const response = await fetch(`${GWS_FLOWS_BASE}${endpoint}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...CI_HEADERS },
     body: JSON.stringify(data),
   })
   if (!response.ok) {
@@ -220,7 +222,7 @@ async function postToApi<T>(endpoint: string, data: Record<string, unknown>): Pr
 async function putToApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
   const response = await fetch(`${GWS_FLOWS_BASE}${endpoint}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...CI_HEADERS },
     body: JSON.stringify(data),
   })
   if (!response.ok) {

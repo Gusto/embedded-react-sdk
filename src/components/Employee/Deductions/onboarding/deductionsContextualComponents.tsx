@@ -30,11 +30,13 @@ export interface DeductionsContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DeductionsListContextual() {
-  const { employeeId, onEvent } = useFlow<DeductionsContextInterface>()
+  const { employeeId, onEvent, LoaderComponent } = useFlow<DeductionsContextInterface>()
   const list = useDeductionsList({ employeeId: ensureRequired(employeeId) })
 
   if (list.isLoading) {
-    return <BaseLayout isLoading error={list.errorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={list.errorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const onAdd = () => {
@@ -57,7 +59,7 @@ export function DeductionsListContextual() {
   }
 
   return (
-    <BaseLayout error={list.errorHandling.errors}>
+    <BaseLayout error={list.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <DeductionsList
         deductionsList={list}
         onAdd={onAdd}
@@ -73,14 +75,17 @@ export function DeductionsListContextual() {
 
 /** @internal */
 export function DeductionsFormContextual() {
-  const { employeeId, editingDeductionId, onEvent } = useFlow<DeductionsContextInterface>()
+  const { employeeId, editingDeductionId, onEvent, LoaderComponent } =
+    useFlow<DeductionsContextInterface>()
   // The same list query the form hooks use internally — React Query dedupes
   // so this is the only outstanding request.
   const list = useDeductionsList({ employeeId: ensureRequired(employeeId) })
   const formDictionary = useOnboardingDeductionsFormDictionary()
 
   if (list.isLoading) {
-    return <BaseLayout isLoading error={list.errorHandling.errors} />
+    return (
+      <BaseLayout isLoading error={list.errorHandling.errors} LoaderComponent={LoaderComponent} />
+    )
   }
 
   const deduction = editingDeductionId
@@ -105,13 +110,14 @@ export function DeductionsFormContextual() {
   }
 
   return (
-    <BaseLayout error={list.errorHandling.errors}>
+    <BaseLayout error={list.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <DeductionsForm
         employeeId={ensureRequired(employeeId)}
         deduction={deduction}
         dictionary={formDictionary}
         onSaved={onSaved}
         onCancel={onCancel}
+        LoaderComponent={LoaderComponent}
       />
     </BaseLayout>
   )

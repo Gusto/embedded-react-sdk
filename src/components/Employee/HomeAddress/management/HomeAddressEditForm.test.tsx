@@ -195,4 +195,29 @@ describe('HomeAddressEditForm', () => {
     // without round-tripping through delete + create.
     expect(within(dialog).getByText('Start date')).toBeInTheDocument()
   })
+
+  it('renders a partner-supplied LoaderComponent while loading', async () => {
+    const CustomLoader = () => <div data-testid="custom-loader">Loading…</div>
+
+    renderWithProviders(
+      <HomeAddressEditForm
+        employeeId="employee-123"
+        onEvent={onEvent}
+        LoaderComponent={CustomLoader}
+      />,
+    )
+
+    // The custom indicator renders while the management hook is loading, proving
+    // LoaderComponent threads from the public component down to BaseLayout.
+    expect(screen.getByTestId('custom-loader')).toBeInTheDocument()
+
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: 'Manage home address' })).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    expect(screen.queryByTestId('custom-loader')).toBeNull()
+  })
 })

@@ -65,6 +65,7 @@ function entitiesFromManualConfig(config: ManualConfig): EntityIds {
     payrollId: config.payrollId,
     formId: config.formId,
     requestId: config.requestId,
+    paymentGroupId: '',
   }
 }
 
@@ -212,6 +213,7 @@ export function App() {
           payrollId: result.entities.payrollId || '',
           formId: result.entities.formId || '',
           requestId: '',
+          paymentGroupId: result.entities.paymentGroupId || '',
         })
         window.location.reload()
       }

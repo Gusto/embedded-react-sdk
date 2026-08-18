@@ -61,6 +61,7 @@
   "validations": {
     "name": "Pay schedule name is required",
     "frequency": "Pay frequency is required",
+    "frequencyOptions": "Please select the pay days for the month",
     "firstPayDate": "First pay date is required",
     "firstPayPeriodEndDate": "First pay period end date is required",
     "firstPayDayOfTheMonth": "First pay day of the month is required",

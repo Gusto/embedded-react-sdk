@@ -1,8 +1,12 @@
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { fn } from 'storybook/test'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import type { EditContractorPaymentFormValues } from '../shared/SetPaymentAmounts/EditContractorPaymentFormSchema'
+import type { UsePaymentAmountsEditorReturn } from '../shared/usePaymentAmountsEditor'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
+import { useCreatePaymentAmountsDictionary } from './useFormDictionary'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 export default {
@@ -108,6 +112,18 @@ function StoryWrapper({
     { wage: 0, bonus: 0, reimbursement: 0, total: 0 },
   )
 
+  const formMethods = useForm<EditContractorPaymentFormValues>({
+    defaultValues: { wageType: 'Hourly', paymentMethod: 'Check', contractorUuid: '' },
+  })
+  const editModal: UsePaymentAmountsEditorReturn['editModal'] = {
+    isOpen: false,
+    formMethods,
+    open: fn().mockName('editModal.open'),
+    close: fn().mockName('editModal.close'),
+    submit: fn().mockName('editModal.submit'),
+  }
+  const paymentAmountsDictionary = useCreatePaymentAmountsDictionary()
+
   return (
     <GustoTestProvider>
       <CreatePaymentPresentation
@@ -116,7 +132,9 @@ function StoryWrapper({
         paymentDate={paymentDate}
         onPaymentDateChange={setPaymentDate}
         onSaveAndContinue={fn().mockName('onSaveAndContinue')}
-        onEditContractor={fn().mockName('onEditContractor')}
+        editModal={editModal}
+        allowedPaymentMethods={['Check', 'Direct Deposit']}
+        paymentAmountsDictionary={paymentAmountsDictionary}
         totals={totals}
         alerts={{}}
         isLoading={false}

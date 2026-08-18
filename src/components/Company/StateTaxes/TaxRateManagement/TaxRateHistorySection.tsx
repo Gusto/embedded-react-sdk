@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useTaxRateManagement, type TaxRateKeyGroup } from './context'
 import { extractRequirementColumns, toHistoryRows, type HistoryRow } from './toHistoryRows'
 import { AddRateAction } from './AddRateAction'
-import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
+import { DataView, EmptyData, Flex, useDataView, VisuallyHidden } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
@@ -58,7 +58,7 @@ export function TaxRateHistorySection({ group, showHeader = true }: TaxRateHisto
       },
       {
         key: 'status',
-        title: '',
+        title: <VisuallyHidden>{t('statusColumnLabel')}</VisuallyHidden>,
         render: row => (
           <Components.Badge status={statusBadgeMap[row.status]}>
             {t(statusLabelKeyMap[row.status])}

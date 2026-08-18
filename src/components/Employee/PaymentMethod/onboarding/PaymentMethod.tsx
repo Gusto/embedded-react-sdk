@@ -25,7 +25,12 @@ export interface PaymentMethodProps extends BaseComponentInterface<'Employee.Pay
   isAdmin?: boolean
 }
 
-function PaymentMethodFlow({ employeeId, isAdmin = false, onEvent }: PaymentMethodProps) {
+function PaymentMethodFlow({
+  employeeId,
+  isAdmin = false,
+  onEvent,
+  LoaderComponent,
+}: PaymentMethodProps) {
   useI18n('Employee.PaymentMethod')
 
   const machine = useMemo(
@@ -38,9 +43,10 @@ function PaymentMethodFlow({ employeeId, isAdmin = false, onEvent }: PaymentMeth
           component: ListViewContextual,
           employeeId,
           isAdmin,
+          LoaderComponent,
         }),
       ),
-    [employeeId, isAdmin],
+    [employeeId, isAdmin, LoaderComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -80,19 +86,33 @@ function PaymentMethodFlow({ employeeId, isAdmin = false, onEvent }: PaymentMeth
  * }
  * ```
  */
-export function PaymentMethod({ dictionary, FallbackComponent, ...props }: PaymentMethodProps) {
+export function PaymentMethod({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: PaymentMethodProps) {
   useComponentDictionary('Employee.PaymentMethod', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.PaymentMethod" FallbackComponent={FallbackComponent}>
-      <PaymentMethodFlow {...props} />
+    <BaseBoundaries
+      componentName="Employee.PaymentMethod"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <PaymentMethodFlow LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
 /** @internal */
 export function PaymentMethodContextual() {
-  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin, LoaderComponent } = useFlow<OnboardingContextInterface>()
   return (
-    <PaymentMethod employeeId={ensureRequired(employeeId)} onEvent={onEvent} isAdmin={isAdmin} />
+    <PaymentMethod
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      isAdmin={isAdmin}
+      LoaderComponent={LoaderComponent}
+    />
   )
 }

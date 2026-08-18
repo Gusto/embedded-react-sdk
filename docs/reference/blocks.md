@@ -34,9 +34,20 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [CompanyOnboarding.StateTaxesForm](company/onboarding/blocks#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
 | [CompanyOnboarding.StateTaxesList](company/onboarding/blocks#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
 | [CompanyOnboarding.TaxRateManagement](company/onboarding/blocks#taxratemanagement) | Standalone view of a company's effective-dated state tax rate history, with the ability to schedule a new future-dated rate. |
+| [ContractorManagement.Address](contractor/management/blocks#address) | Management surface for viewing and editing a contractor's mailing address after onboarding. |
+| [ContractorManagement.AddressCard](contractor/management/blocks#addresscard) | Read-only card showing a contractor's mailing address with an Edit action. |
+| [ContractorManagement.AddressEditForm](contractor/management/blocks#addresseditform) | Standalone edit form for a contractor's mailing address. |
+| [ContractorManagement.Compensation](contractor/management/blocks#compensation) | Management surface for viewing and editing a contractor's compensation after onboarding. |
+| [ContractorManagement.CompensationCard](contractor/management/blocks#compensationcard) | Read-only card showing a contractor's compensation type and rate with an Edit action. |
+| [ContractorManagement.CompensationEditForm](contractor/management/blocks#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
 | [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [ContractorManagement.Dashboard](contractor/management/blocks#dashboard) | Contractor management dashboard summarizing a single contractor's basic details, pay, and documents. |
+| [ContractorManagement.DocumentsCard](contractor/management/blocks#documentscard) | Standalone read-only "Documents" card. |
 | [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
+| [ContractorManagement.PaymentMethod](contractor/management/blocks#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
+| [ContractorManagement.PaymentMethodCard](contractor/management/blocks#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
+| [ContractorManagement.PaymentMethodEditForm](contractor/management/blocks#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
 | [ContractorManagement.PaymentsList](contractor/management/blocks#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [ContractorManagement.PaymentStatement](contractor/management/blocks#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [ContractorManagement.PaymentSummary](contractor/management/blocks#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
@@ -66,7 +77,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [EmployeeManagement.DocumentManager](employee/management/blocks#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
 | [EmployeeManagement.Documents](employee/management/blocks#documents) | Standalone employee documents management flow. |
 | [EmployeeManagement.DocumentsCard](employee/management/blocks#documentscard) | Standalone "Documents" (forms) card. Owns its own data fetch via useDocumentsList and renders the employee's forms in a table with a per-row "View" action. Emits `employee/management/documents/card/viewRequested` with `{ employeeId, formId }` when a row's View CTA is clicked. The card is read-only — viewing or signing a form happens in the screen the parent routes to — and renders no alerts: alert rendering is the parent's responsibility. |
-| [EmployeeManagement.EmployeeList](employee/management/blocks#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
+| [EmployeeManagement.EmployeeList](employee/management/blocks#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no available actions, so no menu is rendered for them. |
 | [EmployeeManagement.FederalTaxes](employee/management/blocks#federaltaxes) | Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
 | [EmployeeManagement.FederalTaxesCard](employee/management/blocks#federaltaxescard) | Standalone "Federal taxes" card. Owns its own data fetch via `useFederalTaxesSummary` and emits `EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED` when the Edit button is clicked. The card has no alert API — alert rendering (when introduced) is the orchestrator's responsibility. |
 | [EmployeeManagement.FederalTaxesEditForm](employee/management/blocks#federaltaxeseditform) | Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
@@ -256,8 +267,16 @@ shape mixed into every public SDK feature component.
 - [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
 - [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
+- [`DashboardFlowProps`](contractor/management/dashboard-flow.md#dashboardflowprops)
+- [`DashboardProps`](contractor/management/blocks.md#dashboardprops)
 - [`ProfileProps`](contractor/management/blocks.md#profileprops)
 - [`ProfileEditFormProps`](contractor/management/blocks.md#profileeditformprops)
+- [`AddressProps`](contractor/management/blocks.md#addressprops)
+- [`AddressEditFormProps`](contractor/management/blocks.md#addresseditformprops)
+- [`PaymentMethodProps`](contractor/management/blocks.md#paymentmethodprops)
+- [`PaymentMethodEditFormProps`](contractor/management/blocks.md#paymentmethodeditformprops)
+- [`CompensationProps`](contractor/management/blocks.md#compensationprops)
+- [`CompensationEditFormProps`](contractor/management/blocks.md#compensationeditformprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)
@@ -280,7 +299,7 @@ shape mixed into every public SDK feature component.
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | [`ResourceDictionary`](Translations/index.md#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `LoaderComponent?` | [`LoaderComponentType`](#loadercomponenttype) | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ***
 
@@ -313,6 +332,29 @@ Props common to all SDK feature components, including children, an optional clas
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | [`ResourceDictionary`](Translations/index.md#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+***
+
+<a id="loadercomponenttype"></a>
+
+## LoaderComponentType
+
+> **LoaderComponentType** = (`{ children }`: `object`) => `JSX.Element`
+
+Signature of a loading indicator component — a React component that optionally receives `children`.
+Supply one to `GustoProvider` or an individual component's `LoaderComponent` prop to override the
+SDK's default loading indicator.
+
+### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `{ children }` | \{ `children?`: `ReactNode`; \} |
+| `{ children }.children?` | `ReactNode` |
+
+### Returns
+
+`JSX.Element`
 
 ***
 

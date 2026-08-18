@@ -12,8 +12,15 @@ export interface PaymentMethodContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function ListViewContextual() {
-  const { employeeId, isAdmin, onEvent } = useFlow<PaymentMethodContextInterface>()
-  return <ListView employeeId={employeeId} isAdmin={isAdmin} onEvent={onEvent} />
+  const { employeeId, isAdmin, onEvent, LoaderComponent } = useFlow<PaymentMethodContextInterface>()
+  return (
+    <ListView
+      employeeId={employeeId}
+      isAdmin={isAdmin}
+      onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
+    />
+  )
 }
 
 /** @internal */

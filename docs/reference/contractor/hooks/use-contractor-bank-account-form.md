@@ -24,8 +24,12 @@ type. Creating a bank account also updates the contractor's payment method to
 Direct Deposit on the Gusto API as a side-effect, so the Direct Deposit path
 needs only this submit — no separate payment method update.
 
-When the contractor already has a bank account on file, the account number
-field is pre-filled with the masked token the API returns (e.g. "XXXX1207").
+When the contractor's payment method is currently Direct Deposit, the account
+number field is pre-filled with the masked token the API returns for that
+account (e.g. "XXXX1207"). The bank account API has no proper delete, so
+removing a bank account only reverts the payment method to Check and leaves
+the account record itself on file — this hook ignores that leftover record
+(the form starts blank) until the payment method is Direct Deposit again.
 The API requires `account_number` on every write and treats that exact masked
 value as "keep the existing account," so submitting it unchanged preserves the
 account while still applying any name/routing/type edits; typing a real number
@@ -75,7 +79,7 @@ Props for [useContractorBankAccountForm](#usecontractorbankaccountform).
 | `defaultValues?` | `Partial`\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | Pre-fill form values. The contractor's existing bank account is used when no override is supplied. |
 | `optionalFieldsToRequire?` | [`ContractorBankAccountOptionalFieldsToRequire`](#contractorbankaccountoptionalfieldstorequire) | Override optional fields to be required. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 
@@ -103,7 +107,7 @@ Ready-state return value of [useContractorBankAccountForm](#usecontractorbankacc
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the created bank account on success or `undefined` on validation/mutation failure. |
 | `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount)\> \| `undefined`\> | - |
-| `data` | `object` | The contractor's current bank account, loaded from the API, if any. |
+| `data` | `object` | The contractor's current bank account, loaded from the API, if any. `undefined` whenever the payment method isn't Direct Deposit — including right after a bank account is removed, since removal only reverts the payment method to Check and leaves the bank account record on file. |
 | `data.bankAccount` | [`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount) \| `undefined` | - |
 | `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
@@ -393,3 +397,4 @@ Supported bank account type values: checking and savings.
 | --- | --- |
 | GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
 | POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
+| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |

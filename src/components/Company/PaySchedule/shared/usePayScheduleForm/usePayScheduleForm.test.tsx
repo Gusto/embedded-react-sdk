@@ -447,6 +447,33 @@ describe('createPayScheduleSchema', () => {
       expect(result.success).toBe(true)
     })
 
+    it('requires customTwicePerMonth for Twice per month, without leaking day1/day2 errors', () => {
+      const [schema] = createPayScheduleSchema({ mode: 'create' })
+      const result = schema.safeParse({
+        ...VALID_FORM_DATA,
+        frequency: 'Twice per month',
+        customTwicePerMonth: '',
+        day1: 0,
+        day2: 0,
+      })
+      const errors = getFieldErrors(result)
+      expect(errors.customTwicePerMonth).toContain(PayScheduleErrorCodes.REQUIRED)
+      // day1/day2 stay unflagged until 'custom' is chosen — the actionable error
+      // is on the visible radio, not the hidden day fields.
+      expect(errors.day1).toBeUndefined()
+      expect(errors.day2).toBeUndefined()
+    })
+
+    it('does not require customTwicePerMonth for non-twice-per-month frequencies', () => {
+      const [schema] = createPayScheduleSchema({ mode: 'create' })
+      const result = schema.safeParse({
+        ...VALID_FORM_DATA,
+        frequency: 'Every week',
+        customTwicePerMonth: '',
+      })
+      expect(result.success).toBe(true)
+    })
+
     it('produces DAY_RANGE error for day1 > 31', () => {
       const [schema] = createPayScheduleSchema({ mode: 'create' })
       const result = schema.safeParse({
@@ -519,9 +546,15 @@ describe('createPayScheduleSchema', () => {
       expect(metadata.day2.isRequired).toBe(false)
     })
 
-    it('customTwicePerMonth is always optional', () => {
+    it('reports customTwicePerMonth as required for Twice per month', () => {
       const [, { getFieldsMetadata }] = createPayScheduleSchema({ mode: 'create' })
-      const metadata = getFieldsMetadata()
+      const metadata = getFieldsMetadata({ frequency: 'Twice per month', customTwicePerMonth: '' })
+      expect(metadata.customTwicePerMonth.isRequired).toBe(true)
+    })
+
+    it('reports customTwicePerMonth as not required for other frequencies', () => {
+      const [, { getFieldsMetadata }] = createPayScheduleSchema({ mode: 'create' })
+      const metadata = getFieldsMetadata({ frequency: 'Every week', customTwicePerMonth: '' })
       expect(metadata.customTwicePerMonth.isRequired).toBe(false)
     })
   })

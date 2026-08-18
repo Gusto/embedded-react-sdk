@@ -594,6 +594,7 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `validations.firstPayDayOfTheMonth` | `"First pay day of the month is required"` |
 | `validations.firstPayPeriodEndDate` | `"First pay period end date is required"` |
 | `validations.frequency` | `"Pay frequency is required"` |
+| `validations.frequencyOptions` | `"Please select the pay days for the month"` |
 | `validations.lastPayDayOfTheMonth` | `"Last pay day of the month is required"` |
 | `validations.name` | `"Pay schedule name is required"` |
 
@@ -681,6 +682,7 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `manageRates.rateScheduledSuccess` |
 | `manageRates.saveRateCta` |
 | `manageRates.scheduledBadge` |
+| `manageRates.statusColumnLabel` |
 | `manageRates.subtitle` |
 | `manageRates.title` |
 
@@ -806,6 +808,7 @@ Translation keys for the `Company.TimeOff.EmployeeTable` i18n namespace.
 | <a id="property-companytimeoffemployeetableselectallemployees"></a> `selectAllEmployees` | `"Select all employees"` |
 | <a id="property-companytimeoffemployeetableselected"></a> `selected` | `"of {{numAll}} employees selected"` |
 | <a id="property-companytimeoffemployeetabletablelabel"></a> `tableLabel` | `"Employees"` |
+| <a id="property-companytimeoffemployeetableunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
 
@@ -1278,6 +1281,33 @@ Translation keys for the `Contractor.Address` i18n namespace.
 
 ***
 
+<a id="contractorbankaccountfields"></a>
+
+### ContractorBankAccountFields
+
+Translation keys for the `Contractor.BankAccountFields` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorbankaccountfieldsaccountnumberlabel"></a> `accountNumberLabel` | `"Account number"` |
+| <a id="property-contractorbankaccountfieldsaccounttypechecking"></a> `accountTypeChecking` | `"Checking"` |
+| <a id="property-contractorbankaccountfieldsaccounttypelabel"></a> `accountTypeLabel` | `"Account type"` |
+| <a id="property-contractorbankaccountfieldsaccounttypesavings"></a> `accountTypeSavings` | `"Savings"` |
+| <a id="property-contractorbankaccountfieldscancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-contractorbankaccountfieldsnamelabel"></a> `nameLabel` | `"Account nickname"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberdescription"></a> `routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| <a id="property-contractorbankaccountfieldsroutingnumberlabel"></a> `routingNumberLabel` | `"Routing number"` |
+| <a id="property-contractorbankaccountfieldssavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-contractorbankaccountfieldsvalidations"></a> `validations` | |
+| `validations.accountName` | `"Account nickname is required"` |
+| `validations.accountNumber` | `"Enter a valid account number"` |
+| `validations.accountNumberFormat` | `"Enter a valid account number"` |
+| `validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+
+***
+
 <a id="contractorcontractorlist"></a>
 
 ### ContractorContractorList
@@ -1308,6 +1338,31 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | <a id="property-contractorcontractorlistprogressbarcta"></a> `progressBarCta` | `"Back to contractors"` |
 | <a id="property-contractorcontractorlistreviewcta"></a> `reviewCta` | `"Review"` |
 | <a id="property-contractorcontractorlisttitle"></a> `title` | `"Contractors"` |
+
+***
+
+<a id="contractordashboard"></a>
+
+### ContractorDashboard
+
+Translation keys for the `Contractor.Dashboard` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractordashboardalerts"></a> `alerts` | |
+| `alerts.addressUpdated` | `"Address updated"` |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| `alerts.compensationUpdated` | `"Compensation updated"` |
+| `alerts.profileUpdated` | `"Profile updated"` |
+| <a id="property-contractordashboardcontractorrolelabel"></a> `contractorRoleLabel` | `"Contractor"` |
+| <a id="property-contractordashboardtabs"></a> `tabs` | |
+| `tabs.details` | `"Details"` |
+| `tabs.documents` | `"Documents"` |
+| `tabs.pay` | `"Pay"` |
+| <a id="property-contractordashboardtabslabel"></a> `tabsLabel` | `"Contractor dashboard tabs"` |
 
 ***
 
@@ -1357,6 +1412,78 @@ Translation keys for the `Contractor.Landing` i18n namespace.
 | `steps.paymentMethod` | `"Set up your payment method"` |
 | `steps.profile` | `"Complete your profile and tax information"` |
 | <a id="property-contractorlandingstepssubtitle"></a> `stepsSubtitle` | `"Here's what you'll need to do:"` |
+
+***
+
+<a id="contractormanagementaddress"></a>
+
+### ContractorManagementAddress
+
+Translation keys for the `Contractor.Management.Address` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementaddressalerts"></a> `alerts` | |
+| `alerts.addressUpdated` | `"Address updated"` |
+| <a id="property-contractormanagementaddresseditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementaddressemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementaddressform"></a> `form` | |
+| `form.businessDescription` | `"Update {{name}}’s business address."` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.city` | `"City"` |
+| `form.homeDescription` | `"Update {{name}}’s home address."` |
+| `form.saveCta` | `"Save"` |
+| `form.state` | `"State"` |
+| `form.statePlaceholder` | `"Select state..."` |
+| `form.street1` | `"Street 1"` |
+| `form.street2` | `"Street 2"` |
+| `form.successAlert` | `"Address updated"` |
+| `form.title` | `"Edit address"` |
+| `form.validations` | |
+| `form.validations.city` | `"Please provide valid city name"` |
+| `form.validations.state` | `"Please select a state"` |
+| `form.validations.street1` | `"Street address is required"` |
+| `form.validations.zip` | `"Please provide valid zip code"` |
+| `form.validations.zipInvalid` | `"Please enter a valid ZIP code"` |
+| `form.zip` | `"Zip"` |
+| <a id="property-contractormanagementaddresstitle"></a> `title` | `"Address"` |
+
+***
+
+<a id="contractormanagementcompensation"></a>
+
+### ContractorManagementCompensation
+
+Translation keys for the `Contractor.Management.Compensation` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementcompensationalerts"></a> `alerts` | |
+| `alerts.compensationUpdated` | `"Compensation updated"` |
+| <a id="property-contractormanagementcompensationeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementcompensationemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementcompensationfixedlabel"></a> `fixedLabel` | `"Fixed"` |
+| <a id="property-contractormanagementcompensationform"></a> `form` | |
+| `form.cancelCta` | `"Cancel"` |
+| `form.description` | `"Update the contractor's compensation type and rate."` |
+| `form.fixedDescription` | `"Pay a fixed amount each pay period."` |
+| `form.hourlyDescription` | `"Pay based on hours worked."` |
+| `form.hourlyRateLabel` | `"Hourly rate"` |
+| `form.saveCta` | `"Save"` |
+| `form.successAlert` | `"Compensation updated"` |
+| `form.title` | `"Edit compensation"` |
+| `form.validations` | |
+| `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.wageTypeLabel` | `"Compensation type"` |
+| <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
+| <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
+| <a id="property-contractormanagementcompensationtitle"></a> `title` | `"Compensation"` |
+| <a id="property-contractormanagementcompensationtypelabel"></a> `typeLabel` | `"Type"` |
+| <a id="property-contractormanagementcompensationwagelabel"></a> `wageLabel` | `"Wage"` |
 
 ***
 
@@ -1414,6 +1541,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | `removeDialog.title` | `"Remove contractor?"` |
 | <a id="property-contractormanagementcontractorlistreviewcta"></a> `reviewCta` | `"Review"` |
 | <a id="property-contractormanagementcontractorliststartsbadge"></a> `startsBadge` | `"Starts {{date}}"` |
+| <a id="property-contractormanagementcontractorliststatuscolumnlabel"></a> `statusColumnLabel` | `"Status"` |
 | <a id="property-contractormanagementcontractorlisttabs"></a> `tabs` | |
 | `tabs.active` | `"Active"` |
 | `tabs.dismissed` | `"Dismissed"` |
@@ -1421,6 +1549,78 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlisttabslabel"></a> `tabsLabel` | `"Contractor status tabs"` |
 | <a id="property-contractormanagementcontractorlisttitle"></a> `title` | `"Contractors"` |
 | <a id="property-contractormanagementcontractorlistviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
+
+***
+
+<a id="contractormanagementdocuments"></a>
+
+### ContractorManagementDocuments
+
+Translation keys for the `Contractor.Management.Documents` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementdocumentsdescriptioncolumn"></a> `descriptionColumn` | `"Description"` |
+| <a id="property-contractormanagementdocumentsemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementdocumentsemptystate"></a> `emptyState` | |
+| `emptyState.title` | `"No documents yet"` |
+| <a id="property-contractormanagementdocumentslistlabel"></a> `listLabel` | `"Contractor documents"` |
+| <a id="property-contractormanagementdocumentsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractormanagementdocumentssigningstatus"></a> `signingStatus` | |
+| `signingStatus.notSigned` | `"Not signed"` |
+| `signingStatus.signed` | `"Signed"` |
+| <a id="property-contractormanagementdocumentssigningstatuscolumn"></a> `signingStatusColumn` | `"Signing status"` |
+| <a id="property-contractormanagementdocumentstitle"></a> `title` | `"Documents"` |
+| <a id="property-contractormanagementdocumentsviewcta"></a> `viewCta` | `"View"` |
+
+***
+
+<a id="contractormanagementpaymentmethod"></a>
+
+### ContractorManagementPaymentMethod
+
+Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementpaymentmethodaccounttypecolumn"></a> `accountTypeColumn` | `"Account type"` |
+| <a id="property-contractormanagementpaymentmethodaddbankaccountcta"></a> `addBankAccountCta` | `"Add bank account"` |
+| <a id="property-contractormanagementpaymentmethodalerts"></a> `alerts` | |
+| `alerts.bankAccountAdded` | `"Bank account added"` |
+| `alerts.bankAccountRemoved` | `"Bank account removed"` |
+| <a id="property-contractormanagementpaymentmethodbankaccountlistlabel"></a> `bankAccountListLabel` | `"Contractor bank account"` |
+| <a id="property-contractormanagementpaymentmethodchecklabel"></a> `checkLabel` | `"Check"` |
+| <a id="property-contractormanagementpaymentmethodeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-contractormanagementpaymentmethodform"></a> `form` | |
+| `form.accountNumberLabel` | `"Account number"` |
+| `form.accountTypeChecking` | `"Checking"` |
+| `form.accountTypeLabel` | `"Account type"` |
+| `form.accountTypeSavings` | `"Savings"` |
+| `form.cancelCta` | `"Cancel"` |
+| `form.nameLabel` | `"Account nickname"` |
+| `form.routingNumberDescription` | `"9 digits, on the bottom left of a check"` |
+| `form.routingNumberLabel` | `"Routing number"` |
+| `form.saveCta` | `"Save"` |
+| `form.title` | `"Add bank account"` |
+| `form.validations` | |
+| `form.validations.accountNumber` | `"Enter a valid account number"` |
+| `form.validations.name` | `"Account nickname is required"` |
+| `form.validations.routingNumber` | `"Enter a valid 9-digit routing number"` |
+| <a id="property-contractormanagementpaymentmethodhamburgertitle"></a> `hamburgerTitle` | `"Bank account actions"` |
+| <a id="property-contractormanagementpaymentmethodnicknamecolumn"></a> `nicknameColumn` | `"Nickname"` |
+| <a id="property-contractormanagementpaymentmethodpaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountcta"></a> `removeBankAccountCta` | `"Remove account"` |
+| <a id="property-contractormanagementpaymentmethodremovebankaccountdialog"></a> `removeBankAccountDialog` | |
+| `removeBankAccountDialog.cancelCta` | `"Cancel"` |
+| `removeBankAccountDialog.confirmCta` | `"Remove"` |
+| `removeBankAccountDialog.description` | `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` |
+| `removeBankAccountDialog.title` | `"Remove bank account"` |
+| <a id="property-contractormanagementpaymentmethodroutingnumbercolumn"></a> `routingNumberColumn` | `"Routing number"` |
+| <a id="property-contractormanagementpaymentmethodtitle"></a> `title` | `"Payment"` |
 
 ***
 
@@ -1542,6 +1742,99 @@ Translation keys for the `Contractor.PaymentMethod` i18n namespace.
 | <a id="property-contractorpaymentmethodpaymentfieldsetlegend"></a> `paymentFieldsetLegend` | `"Select payment method"` |
 | <a id="property-contractorpaymentmethodsubmittingcta"></a> `submittingCta` | `"Saving…"` |
 | <a id="property-contractorpaymentmethodtitle"></a> `title` | `"Contractor payment details"` |
+
+***
+
+<a id="contractorpaymentscreatehistoricalpayment"></a>
+
+### ContractorPaymentsCreateHistoricalPayment
+
+Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentscreatehistoricalpaymentalerts"></a> `alerts` | |
+| `alerts.contractorPaymentUpdated` | `"Pay updated for {{contractorName}}"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentamounts"></a> `amounts` | |
+| `amounts.continueButton` | `"Continue"` |
+| `amounts.heading` | `"Enter payment amounts"` |
+| `amounts.subtitle` | `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentcontractortableheaders"></a> `contractorTableHeaders` | |
+| `contractorTableHeaders.bonus` | `"Bonus"` |
+| `contractorTableHeaders.contractor` | `"Contractor"` |
+| `contractorTableHeaders.hours` | `"Hours"` |
+| `contractorTableHeaders.paymentMethod` | `"Payment method"` |
+| `contractorTableHeaders.reimbursement` | `"Reimbursement"` |
+| `contractorTableHeaders.total` | `"Total"` |
+| `contractorTableHeaders.wage` | `"Fixed amount"` |
+| `contractorTableHeaders.wageType` | `"Wage"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenteditcontractor"></a> `editContractor` | `"Edit contractor payment"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenteditcontractorpayment"></a> `editContractorPayment` | |
+| `editContractorPayment.bonusLabel` | `"Bonus"` |
+| `editContractorPayment.cancelCta` | `"Cancel"` |
+| `editContractorPayment.errors` | |
+| `editContractorPayment.errors.directDepositNotAvailable` | `"Direct Deposit is not available for contractors set up for Check payments"` |
+| `editContractorPayment.errors.unsupportedPaymentMethod` | `"This payment method is not supported. Please select Check or Direct Deposit."` |
+| `editContractorPayment.hoursAdornment` | `"hrs"` |
+| `editContractorPayment.hoursLabel` | `"Hours"` |
+| `editContractorPayment.hoursPayDescription` | `"{{rate}}/hr × hours = {{total}}"` |
+| `editContractorPayment.paymentMethodLabel` | `"Payment Method"` |
+| `editContractorPayment.paymentMethods` | |
+| `editContractorPayment.paymentMethods.check` | `"Check"` |
+| `editContractorPayment.paymentMethods.directDeposit` | `"Direct deposit"` |
+| `editContractorPayment.paymentMethods.historicalPayment` | `"Historical payment"` |
+| `editContractorPayment.reimbursementLabel` | `"Reimbursement"` |
+| `editContractorPayment.saveCta` | `"Done"` |
+| `editContractorPayment.subtitle` | `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` |
+| `editContractorPayment.title` | `"Edit contractor pay"` |
+| `editContractorPayment.wageLabel` | `"Fixed amount"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabledescription"></a> `emptyTableDescription` | `"Select at least one contractor to record a payment."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabletitle"></a> `emptyTableTitle` | `"No contractors selected"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenthoursandpaymentslabel"></a> `hoursAndPaymentsLabel` | `"Hours and payments"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentna"></a> `na` | `"N/A"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentpaymentmethods"></a> `paymentMethods` | |
+| `paymentMethods.check` | `"Check"` |
+| `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentperhour"></a> `perHour` | `"/hr"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentreview"></a> `review` | |
+| `review.bonus` | `"Bonus"` |
+| `review.contractor` | `"Contractor"` |
+| `review.contractorPayDate` | `"Contractor Pay Date"` |
+| `review.contractorPaymentsTitle` | `"Contractor Payments"` |
+| `review.editButton` | `"Edit"` |
+| `review.hours` | `"Hours"` |
+| `review.notAvailable` | `"N/A"` |
+| `review.paymentMethod` | `"Payment Method"` |
+| `review.paymentMethods` | |
+| `review.paymentMethods.check` | `"Check"` |
+| `review.paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `review.paymentMethods.historicalPayment` | `"Historical Payment"` |
+| `review.paymentSummaryTitle` | `"Payment Summary"` |
+| `review.reimbursement` | `"Reimbursement"` |
+| `review.submitButton` | `"Submit historical payment"` |
+| `review.subtitle` | `"Historical payment for {{checkDate}}"` |
+| `review.successMessage` | `"This payment has been recorded. View it from the payments list to see its full details."` |
+| `review.successTitle` | `"Historical payment recorded successfully"` |
+| `review.title` | `"Review and submit"` |
+| `review.total` | `"Total"` |
+| `review.totalAmount` | `"Total Amount"` |
+| `review.totalsLabel` | `"Totals"` |
+| `review.wage` | `"Wage"` |
+| `review.wageType` | `"Wage Type"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentselect"></a> `select` | |
+| `select.continueButton` | `"Continue"` |
+| `select.dateInFutureError` | `"You cannot issue historical payments for the future. Please choose a date in the past."` |
+| `select.dateLabel` | `"Payment date"` |
+| `select.dateTooEarlyError` | `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` |
+| `select.heading` | `"Record a historical payment"` |
+| `select.subtitle` | `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenttotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentwagetypes"></a> `wageTypes` | |
+| `wageTypes.fixed` | `"Fixed"` |
+| `wageTypes.hourly` | `"Hourly"` |
 
 ***
 
@@ -1671,6 +1964,43 @@ Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace.
 | `wireDetailsBanner.startWireTransferCta` | `"Start your wire transfer"` |
 | `wireDetailsBanner.title` | `"To make payment, wire funds by {{time}} on {{date}}"` |
 | `wireDetailsBanner.titleFallback` | `"Wire transfer details required"` |
+
+***
+
+<a id="contractorpaymentshistoricalpaymentsummary"></a>
+
+### ContractorPaymentsHistoricalPaymentSummary
+
+Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentshistoricalpaymentsummarybonus"></a> `bonus` | `"Bonus"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractor"></a> `contractor` | `"Contractor"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractorpaydate"></a> `contractorPayDate` | `"Contractor Pay Date"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractorpaymentstitle"></a> `contractorPaymentsTitle` | `"Contractor Payments"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarydonecta"></a> `doneCta` | `"Done"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummaryhours"></a> `hours` | `"Hours"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarynotavailable"></a> `notAvailable` | `"N/A"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentmethod"></a> `paymentMethod` | `"Payment Method"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentmethods"></a> `paymentMethods` | |
+| `paymentMethods.check` | `"Check"` |
+| `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentsummarytitle"></a> `paymentSummaryTitle` | `"Payment Summary"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummaryreimbursement"></a> `reimbursement` | `"Reimbursement"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccessmessage_one"></a> `successMessage_one` | `"{{count}} contractor payment has been recorded."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccessmessage_other"></a> `successMessage_other` | `"{{count}} contractor payments have been recorded."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccesstitle"></a> `successTitle` | `"Historical payment recorded successfully"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysummarysubtitle"></a> `summarySubtitle` | `"Historical payment for {{checkDate}}"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysummarytitle"></a> `summaryTitle` | `"Payment summary"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotal"></a> `total` | `"Total"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotalamount"></a> `totalAmount` | `"Total Amount"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarywage"></a> `wage` | `"Wage"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarywagetype"></a> `wageType` | `"Wage Type"` |
 
 ***
 
@@ -1810,6 +2140,7 @@ Translation keys for the `Contractor.Payments.PaymentSummary` i18n namespace.
 | <a id="property-contractorpaymentspaymentsummarypaymentmethods"></a> `paymentMethods` | |
 | `paymentMethods.check` | `"Check"` |
 | `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
 | <a id="property-contractorpaymentspaymentsummarypaymentsummarytitle"></a> `paymentSummaryTitle` | `"Payment Summary"` |
 | <a id="property-contractorpaymentspaymentsummaryreimbursement"></a> `reimbursement` | `"Reimbursement"` |
 | <a id="property-contractorpaymentspaymentsummarysuccessmessage_one"></a> `successMessage_one` | `"{{count}} contractor payment has been successfully scheduled."` |
@@ -1894,6 +2225,26 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | <a id="property-contractorprofilew9editwarning"></a> `w9EditWarning` | |
 | `w9EditWarning.body` | `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` |
 | `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
+
+***
+
+<a id="contractorselectcontractors"></a>
+
+### ContractorSelectContractors
+
+Translation keys for the `Contractor.SelectContractors` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorselectcontractorsemptystate"></a> `emptyState` | `"No eligible contractors found."` |
+| <a id="property-contractorselectcontractorsnamecolumn"></a> `nameColumn` | `"Name"` |
+| <a id="property-contractorselectcontractorssearchlabel"></a> `searchLabel` | `"Search by name"` |
+| <a id="property-contractorselectcontractorssearchplaceholder"></a> `searchPlaceholder` | `"Search by name"` |
+| <a id="property-contractorselectcontractorstablelabel"></a> `tableLabel` | `"Contractors"` |
+| <a id="property-contractorselectcontractorswagecolumn"></a> `wageColumn` | `"Wage"` |
+| <a id="property-contractorselectcontractorswagehourly"></a> `wageHourly` | `"Hourly · {{rate}}/hr"` |
 
 ***
 
@@ -3117,7 +3468,6 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
-| <a id="property-employeemanagementemployeelistrehirecta"></a> `rehireCta` | `"Rehire employee"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |
@@ -4010,7 +4360,6 @@ Translation keys for the `Payroll.Common` i18n namespace.
 | `status.processing` |
 | `status.readyToSubmit` |
 | `status.submitted` |
-| `status.unprocessed` |
 | `status.waitingForWireIn` |
 
 ***
@@ -4492,6 +4841,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `tableColumns.reimbursements` | `"Reimbursements"` |
 | `tableColumns.timeOff` | `"Time off"` |
 | `tableColumns.totalPay` | `"Total pay"` |
+| <a id="property-payrollpayrollconfigurationunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
 
@@ -5167,20 +5517,29 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanytimeofftimeoffpolicydetails"></a> `Company.TimeOff.TimeOffPolicyDetails` | [`CompanyTimeOffTimeOffPolicyDetails`](#companytimeofftimeoffpolicydetails) |
 | <a id="property-resourcescompanytimeofftimeoffrequests"></a> `Company.TimeOff.TimeOffRequests` | [`CompanyTimeOffTimeOffRequests`](#companytimeofftimeoffrequests) |
 | <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
+| <a id="property-resourcescontractorbankaccountfields"></a> `Contractor.BankAccountFields` | [`ContractorBankAccountFields`](#contractorbankaccountfields) |
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
+| <a id="property-resourcescontractordashboard"></a> `Contractor.Dashboard` | [`ContractorDashboard`](#contractordashboard) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |
+| <a id="property-resourcescontractormanagementcompensation"></a> `Contractor.Management.Compensation` | [`ContractorManagementCompensation`](#contractormanagementcompensation) |
+| <a id="property-resourcescontractormanagementdocuments"></a> `Contractor.Management.Documents` | [`ContractorManagementDocuments`](#contractormanagementdocuments) |
+| <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
 | <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
+| <a id="property-resourcescontractorpaymentscreatehistoricalpayment"></a> `Contractor.Payments.CreateHistoricalPayment` | [`ContractorPaymentsCreateHistoricalPayment`](#contractorpaymentscreatehistoricalpayment) |
 | <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
+| <a id="property-resourcescontractorpaymentshistoricalpaymentsummary"></a> `Contractor.Payments.HistoricalPaymentSummary` | [`ContractorPaymentsHistoricalPaymentSummary`](#contractorpaymentshistoricalpaymentsummary) |
 | <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
 | <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorselectcontractors"></a> `Contractor.SelectContractors` | [`ContractorSelectContractors`](#contractorselectcontractors) |
 | <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |
 | <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |
 | <a id="property-resourcesemployeebankaccount"></a> `Employee.BankAccount` | [`EmployeeBankAccount`](#employeebankaccount) |

@@ -1,0 +1,16 @@
+.root {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+}
+
+.searchContainer {
+  width: 100%;
+}
+
+@container (min-width: 40rem) {
+  .searchContainer {
+    max-width: toRem(320);
+  }
+}

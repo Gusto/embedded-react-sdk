@@ -12,9 +12,18 @@ import { InternalError } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
-import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
+
+/**
+ * Signature of a loading indicator component — a React component that optionally receives `children`.
+ * Supply one to `GustoProvider` or an individual component's `LoaderComponent` prop to override the
+ * SDK's default loading indicator.
+ *
+ * @public
+ * @page blocks
+ */
+export type LoaderComponentType = ({ children }: { children?: ReactNode }) => JSX.Element
 
 /**
  * Props common to all SDK feature components, including children, an optional className, default form values, and an i18n resource dictionary override.
@@ -66,7 +75,7 @@ export interface BaseComponentInterface<
    * Custom loading indicator rendered while the component's async data is fetching.
    * Overrides the indicator configured on `GustoProvider` for this component instance only.
    */
-  LoaderComponent?: ({ children }: { children?: ReactNode }) => JSX.Element
+  LoaderComponent?: LoaderComponentType
   /**
    * Callback invoked each time the component emits an event — user interactions, successful API
    * responses, step transitions, or errors. Receives the event type constant and an optional
@@ -150,8 +159,11 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         FallbackComponent={FallbackComponent}
         onErrorBoundaryError={onErrorBoundaryError}
         componentName={componentName}
+        LoaderComponent={LoaderComponent}
       >
-        <BaseLayout error={error}>{children}</BaseLayout>
+        <BaseLayout error={error} LoaderComponent={LoaderComponent}>
+          {children}
+        </BaseLayout>
       </BaseBoundaries>
     </BaseContext.Provider>
   )
@@ -162,6 +174,12 @@ export interface BaseLayoutProps {
   children?: ReactNode
   error?: SDKError | SDKError[] | null
   isLoading?: boolean
+  /**
+   * Loading indicator rendered while `isLoading` is true and no errors are present.
+   * Overrides the indicator resolved from `LoadingIndicatorContext` for this instance only;
+   * falls back to that context value when omitted.
+   */
+  LoaderComponent?: LoaderComponentType
 }
 
 function SingleErrorContent({ error }: { error: SDKError }) {
@@ -243,8 +261,9 @@ function MultipleErrorsContent({ errors }: { errors: SDKError[] }) {
  * @returns A React element with the SDK's standard error rendering and loading behavior wrapped around `children`.
  * @internal
  */
-export const BaseLayout = ({ children, error, isLoading }: BaseLayoutProps) => {
-  const { LoadingIndicator } = useLoadingIndicator()
+export const BaseLayout = ({ children, error, isLoading, LoaderComponent }: BaseLayoutProps) => {
+  const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
+  const LoadingIndicator = LoaderComponent ?? LoadingIndicatorFromContext
 
   const errors = Array.isArray(error) ? error : error ? [error] : []
   const hasErrors = errors.length > 0
@@ -265,7 +284,7 @@ export const BaseLayout = ({ children, error, isLoading }: BaseLayoutProps) => {
 }
 
 interface LoaderWithMetricsProps {
-  LoaderComponent: LoadingIndicatorContextProps['LoadingIndicator']
+  LoaderComponent: LoaderComponentType
   observability: ReturnType<typeof useObservability>['observability']
   componentName?: string
 }
@@ -300,12 +319,18 @@ const LoaderWithMetrics = ({
   return <LoaderComponent />
 }
 
-function SuspenseFallback({ componentName }: { componentName?: string }) {
+function SuspenseFallback({
+  componentName,
+  LoaderComponent,
+}: {
+  componentName?: string
+  LoaderComponent?: LoaderComponentType
+}) {
   const { LoadingIndicator } = useLoadingIndicator()
   const { observability } = useObservability()
   return (
     <LoaderWithMetrics
-      LoaderComponent={LoadingIndicator}
+      LoaderComponent={LoaderComponent ?? LoadingIndicator}
       observability={observability}
       componentName={componentName}
     />
@@ -318,6 +343,12 @@ export interface BaseBoundariesProps {
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   onErrorBoundaryError?: (error: unknown, info: ErrorInfo) => void
   componentName?: string
+  /**
+   * Loading indicator rendered as the Suspense fallback while children suspend.
+   * Overrides the indicator resolved from `LoadingIndicatorContext` for this instance only;
+   * falls back to that context value when omitted.
+   */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -337,6 +368,7 @@ export const BaseBoundaries = ({
   FallbackComponent = InternalError,
   onErrorBoundaryError,
   componentName,
+  LoaderComponent,
 }: BaseBoundariesProps) => {
   return (
     <QueryErrorResetBoundary>
@@ -346,7 +378,11 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense fallback={<SuspenseFallback componentName={componentName} />}>
+          <Suspense
+            fallback={
+              <SuspenseFallback componentName={componentName} LoaderComponent={LoaderComponent} />
+            }
+          >
             {children}
           </Suspense>
         </ErrorBoundary>

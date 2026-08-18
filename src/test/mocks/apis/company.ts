@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { API_BASE_URL } from '@/test/constants'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 export const getCompany = http.get(`${API_BASE_URL}/v1/companies/:company_id`, ({ params }) =>
   HttpResponse.json({
@@ -106,6 +107,14 @@ export const getIndustrySelection = http.get(
         sic_codes: ['7371'],
       },
     }),
+)
+
+export const getPaymentConfigs = http.get(
+  `${API_BASE_URL}/v1/companies/:company_uuid/payment_configs`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_uuid-payment_configs')
+    return HttpResponse.json(responseFixture)
+  },
 )
 
 export const updateIndustrySelection = http.put(

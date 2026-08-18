@@ -65,3 +65,9 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
   - [Off-Cycle Payroll (Bonus & Correction)](docs/workflows-overview/off-cycle-payroll.md)
   - [Dismissal Payroll](docs/workflows-overview/dismissal-payroll.md)
   - [Transition Payroll](docs/workflows-overview/transition-payroll.md)
+
+## License
+
+Licensed under the Apache License 2.0 — see [LICENSE](LICENSE). Use of the Gusto Embedded Payroll API and related Gusto services is governed separately; see [DISCLAIMER.md](DISCLAIMER.md).
+
+For the terms that apply to contributions, see [CONTRIBUTING.md](CONTRIBUTING.md).

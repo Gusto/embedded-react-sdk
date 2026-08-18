@@ -39,6 +39,7 @@
     "deletev",
     "patchv",
     "easyops",
+    "employeemanagement",
     "FLSA",
     "frontmatter",
     "FSLA",
@@ -56,11 +57,13 @@
     "reflectionname",
     "reparent",
     "requiredness",
+    "selfee",
     "subcomponent",
     "subcomponents",
     "summarising",
     "themable",
     "themself",
+    "worktree",
     "worktrees",
     "zenpayroll"
   ]

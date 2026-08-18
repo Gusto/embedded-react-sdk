@@ -9,6 +9,7 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link StateTaxesCard}.
@@ -20,6 +21,8 @@ export interface StateTaxesCardProps {
   employeeId: string
   /** Event handler fired when the Edit button is clicked. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -39,15 +42,18 @@ export interface StateTaxesCardProps {
  * @param props - The component props.
  * @public
  */
-export function StateTaxesCard(props: StateTaxesCardProps) {
+export function StateTaxesCard({ LoaderComponent, ...props }: StateTaxesCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.StateTaxes">
-      <StateTaxesCardContent {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.StateTaxes"
+      LoaderComponent={LoaderComponent}
+    >
+      <StateTaxesCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function StateTaxesCardContent({ employeeId, onEvent }: StateTaxesCardProps) {
+function StateTaxesCardContent({ employeeId, onEvent, LoaderComponent }: StateTaxesCardProps) {
   useI18n('Employee.Management.StateTaxes')
   const { t } = useTranslation('Employee.Management.StateTaxes')
   const { t: tCommon } = useTranslation('common')
@@ -104,7 +110,7 @@ function StateTaxesCardContent({ employeeId, onEvent }: StateTaxesCardProps) {
   }
 
   return (
-    <BaseLayout error={summary.errorHandling.errors}>
+    <BaseLayout error={summary.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         header={
           <Components.BoxHeader

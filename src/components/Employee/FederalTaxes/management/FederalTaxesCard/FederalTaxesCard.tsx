@@ -8,6 +8,7 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link FederalTaxesCard}.
@@ -19,6 +20,8 @@ export interface FederalTaxesCardProps {
   employeeId: string
   /** Callback invoked when the card emits an event. See the events table on {@link FederalTaxesCard} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -32,13 +35,16 @@ export interface FederalTaxesCardProps {
  */
 export function FederalTaxesCard(props: FederalTaxesCardProps) {
   return (
-    <BaseBoundaries componentName="Employee.Management.FederalTaxes">
+    <BaseBoundaries
+      componentName="Employee.Management.FederalTaxes"
+      LoaderComponent={props.LoaderComponent}
+    >
       <FederalTaxesCardContent {...props} />
     </BaseBoundaries>
   )
 }
 
-function FederalTaxesCardContent({ employeeId, onEvent }: FederalTaxesCardProps) {
+function FederalTaxesCardContent({ employeeId, onEvent, LoaderComponent }: FederalTaxesCardProps) {
   useI18n('Employee.Management.FederalTaxes')
   const { t } = useTranslation('Employee.Management.FederalTaxes')
   const Components = useComponentContext()
@@ -102,7 +108,7 @@ function FederalTaxesCardContent({ employeeId, onEvent }: FederalTaxesCardProps)
     : []
 
   return (
-    <BaseLayout error={summary.errorHandling.errors}>
+    <BaseLayout error={summary.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         header={
           <Components.BoxHeader

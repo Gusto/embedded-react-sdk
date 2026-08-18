@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { UseContractorListResult, ContractorWithActions } from '../shared/useContractorList'
 import type { ContractorTab } from './ManagementContractorList'
-import { DataView, EmptyData, useDataView, Flex } from '@/components/Common'
+import { DataView, EmptyData, useDataView, Flex, VisuallyHidden } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
@@ -121,7 +121,7 @@ export function ManagementContractorListView({
         },
         {
           key: 'status',
-          title: '',
+          title: <VisuallyHidden>{t('statusColumnLabel')}</VisuallyHidden>,
           render: (contractor: ContractorWithActions) => {
             if (contractor.upcomingEmployment?.startDate) {
               return (

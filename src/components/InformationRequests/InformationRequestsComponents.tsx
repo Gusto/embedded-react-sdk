@@ -21,13 +21,15 @@ export interface InformationRequestsContextInterface extends FlowContextInterfac
 
 /** @internal */
 export function InformationRequestFormContextual() {
-  const { companyId, selectedRequestId, onEvent } = useFlow<InformationRequestsContextInterface>()
+  const { companyId, selectedRequestId, onEvent, LoaderComponent } =
+    useFlow<InformationRequestsContextInterface>()
 
   return (
     <InformationRequestForm
       companyId={companyId}
       requestId={ensureRequired(selectedRequestId)}
       onEvent={onEvent}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

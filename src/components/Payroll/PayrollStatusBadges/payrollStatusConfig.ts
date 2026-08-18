@@ -5,7 +5,6 @@ import { normalizeToDate, getHoursUntil, getDaysUntil } from '@/helpers/dateForm
 /** @internal */
 export type PayrollStatusTranslationKey =
   | 'processed'
-  | 'unprocessed'
   | 'calculating'
   | 'readyToSubmit'
   | 'processing'
@@ -254,7 +253,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       const daysDiff = getDaysUntil(payroll.payrollDeadline)
       if (hoursDiff === null || daysDiff === null) return false
 
-      return hoursDiff > 0 && hoursDiff >= 24 && Math.ceil(daysDiff) <= 30
+      return hoursDiff > 0 && hoursDiff >= 24 && Math.ceil(daysDiff) <= 14
     },
   },
   {
@@ -279,13 +278,5 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'pending',
     },
     condition: payroll => !!payroll.processed,
-  },
-  {
-    name: 'unprocessed',
-    badge: {
-      variant: 'info',
-      translationKey: 'unprocessed',
-    },
-    condition: payroll => !payroll.processed && !payroll.processingRequest?.status,
   },
 ]

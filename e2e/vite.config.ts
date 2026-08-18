@@ -33,6 +33,7 @@ export default defineConfig({
         target: gwsFlowsHost,
         changeOrigin: true,
         secure: false,
+        headers: { 'X-Gusto-Client': process.env.CI ? 'sdk-ci' : 'sdk-local' },
       },
     },
   },

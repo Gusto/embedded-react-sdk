@@ -3,7 +3,7 @@ import type { EntityIds } from './entity-config'
 
 export type { EntityIds }
 
-const STORAGE_KEY = 'sdk-app-entity-ids'
+export const STORAGE_KEY = 'sdk-app-entity-ids'
 const STORAGE_ENV_COMPANY_KEY = 'sdk-app-env-company-id'
 
 function getEnvDefaults(): EntityIds {
@@ -14,6 +14,7 @@ function getEnvDefaults(): EntityIds {
     payrollId: import.meta.env.VITE_PAYROLL_ID || '',
     requestId: import.meta.env.VITE_REQUEST_ID || '',
     formId: import.meta.env.VITE_FORM_ID || '',
+    paymentGroupId: import.meta.env.VITE_PAYMENT_GROUP_ID || '',
   }
 }
 
@@ -60,6 +61,7 @@ export function useEntities() {
       payrollId: stored.payrollId || defaults.payrollId,
       requestId: stored.requestId || defaults.requestId,
       formId: stored.formId || defaults.formId,
+      paymentGroupId: stored.paymentGroupId || defaults.paymentGroupId,
     }
   })
 
@@ -98,6 +100,9 @@ export function useEntities() {
               ? data.payrollId || prev.payrollId
               : prev.payrollId || data.payrollId || '',
             formId: overwrite ? data.formId || prev.formId : prev.formId || data.formId || '',
+            paymentGroupId: overwrite
+              ? data.paymentGroupId || prev.paymentGroupId
+              : prev.paymentGroupId || data.paymentGroupId || '',
           }))
         }
       } catch {

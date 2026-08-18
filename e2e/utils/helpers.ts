@@ -1,5 +1,7 @@
 import { randomInt } from 'node:crypto'
 import type { Locator, Page } from '@playwright/test'
+import { a11yViolationTracker } from './a11yViolationTracker'
+import { getCallerLabel } from './callerInfo'
 
 export function generateUniqueSSN(): string {
   const area = randomInt(1, 666)
@@ -99,34 +101,78 @@ interface WaitForLoadingOptions {
 }
 
 /**
- * Wait for the SDK's top-level Suspense fallback (`<Loading>` region with
- * `aria-label` = `common:status.loading` = "Loading component...") to detach.
+ * Wait for the SDK's top-level Suspense fallback (`<Loading>` — `role="status"`
+ * with `aria-label` = `common:status.loading` = "Loading component...") to
+ * detach.
  *
  * Two call shapes:
  *
  *   await waitForLoadingComplete(page, 60_000)
  *   await waitForLoadingComplete(page, { timeout: 60_000, anchor: heading })
  *
- * The two-arg form waits only for the Suspense region to detach. The options
+ * The two-arg form waits only for the Suspense fallback to detach. The options
  * form additionally waits for `anchor` to be visible — use it whenever the
  * caller's *next* step is `expect(landmark).toBeVisible()`, so the wait and
  * the assertion share one budget instead of two and a stuck page fails on the
  * landmark, not on a generic timeout.
  *
- * If the loading region never detaches within `timeout`, this function
+ * If the loading indicator never detaches within `timeout`, this function
  * throws — a stuck Suspense fallback is a real bug and downstream `expect`
  * calls produce more misleading errors if it's silenced. Always waits on
- * `.first()` so a page with multiple Suspense regions doesn't deadlock the
+ * `.first()` so a page with multiple Suspense fallbacks doesn't deadlock the
  * helper.
+ *
+ * Also axe-checks the settled screen via `a11yViolationTracker`, labeled
+ * with the calling function (or file:line for an inline test-body callback)
+ * -- this is called at nearly every point a test expects the screen to have
+ * changed, so it's the main source of a11y coverage on intermediate screens
+ * a test navigates through but never ends on.
  */
 export async function waitForLoadingComplete(
   page: Page,
   timeoutOrOptions: number | WaitForLoadingOptions = 30_000,
 ): Promise<void> {
+  // Captured synchronously, before this function's own await below -- V8 loses
+  // the caller's identity once *this* frame has already resumed from an
+  // await of its own, even though the caller's own prior awaits don't matter.
+  // See getCallerLabel's doc comment.
+  const callerLabel = getCallerLabel()
+
   const { timeout = 30_000, anchor } =
     typeof timeoutOrOptions === 'number' ? { timeout: timeoutOrOptions } : timeoutOrOptions
 
-  const suspenseFallback = page.getByRole('region', { name: /^loading/i }).first()
+  await waitForSuspenseDetach(page, timeout, anchor)
+  await a11yViolationTracker.check(page, callerLabel)
+}
+
+/**
+ * Waits for React to have rendered *something* into `<main>`. Guards the
+ * loading-indicator wait below: `.waitFor({ state: 'detached' })` on a
+ * locator that never matched anything resolves immediately, so right after
+ * navigation -- before React has even called `createRoot().render()`, which
+ * can lag behind `domcontentloaded` under Vite's unbundled dev-mode ESM
+ * graph -- that wait (and an axe check right after it) would race ahead of
+ * the app mounting at all, not just ahead of loading finishing. Throws like
+ * the rest of this file if nothing mounts within `timeout`: an SDK flow that
+ * never renders anything is a real bug, not something to wait out silently.
+ */
+async function waitForMainMounted(page: Page, timeout: number): Promise<void> {
+  await page.locator('main > *').first().waitFor({ state: 'attached', timeout })
+}
+
+/** Shared by waitForLoadingComplete and the page.goto wrapper in localTestFixture.ts. */
+export async function waitForSuspenseDetach(
+  page: Page,
+  timeout: number,
+  anchor?: Locator,
+): Promise<void> {
+  await waitForMainMounted(page, timeout)
+
+  // The SDK's Loading component (src/components/Common/Loading/Loading.tsx)
+  // renders role="status", not role="region" -- this used to look for
+  // "region", which never matches anything, so this wait resolved instantly
+  // regardless of whether a loading indicator was actually on screen.
+  const suspenseFallback = page.getByRole('status', { name: /^loading/i }).first()
   const detach = suspenseFallback.waitFor({ state: 'detached', timeout })
 
   if (anchor) {
@@ -186,8 +232,8 @@ export async function waitForContentOrLoading(
       return
     }
 
-    const loadingRegion = page.getByRole('region', { name: /loading/i })
-    const isLoading = await loadingRegion.isVisible().catch(() => false)
+    const loadingIndicator = page.getByRole('status', { name: /loading/i })
+    const isLoading = await loadingIndicator.isVisible().catch(() => false)
 
     if (!isLoading) {
       await contentLocator.waitFor({ timeout: 5000 }).catch(() => {})

@@ -647,7 +647,7 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">
+              <Heading as="h3" styledAs="h4">
                 {payrollCategory === PayrollCategory.Dismissal
                   ? t('timeOffTitleDismissal')
                   : t('timeOffTitle')}
@@ -666,7 +666,9 @@ export const PayrollEditEmployeePresentation = ({
           {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
               <Flex flexDirection="column" gap={4}>
-                <Heading as="h4">{t('finalPayoutTitle')}</Heading>
+                <Heading as="h3" styledAs="h4">
+                  {t('finalPayoutTitle')}
+                </Heading>
                 <Text variant="supporting">{t('finalPayoutDescription')}</Text>
               </Flex>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
@@ -682,7 +684,9 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {additionalEarnings.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('additionalEarningsTitle')}</Heading>
+              <Heading as="h3" styledAs="h4">
+                {t('additionalEarningsTitle')}
+              </Heading>
               <Grid
                 gridTemplateColumns={{ base: '1fr', small: [320, 320], large: [320, 320, 320] }}
                 gap={20}
@@ -703,7 +707,9 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {showLegacyReimbursementField && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('reimbursementTitle')}</Heading>
+              <Heading as="h3" styledAs="h4">
+                {t('reimbursementTitle')}
+              </Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 <TextInputField
                   type="number"
@@ -718,7 +724,9 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {withReimbursements && usesItemizedReimbursements && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('reimbursementTitle')}</Heading>
+              <Heading as="h3" styledAs="h4">
+                {t('reimbursementTitle')}
+              </Heading>
               {!(visibleReimbursementRows.length === 0 && isAddingReimbursement) && (
                 <DataView label={t('reimbursementsTableLabel')} {...reimbursementDataViewProps} />
               )}
@@ -772,7 +780,9 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {hasDirectDepositSetup && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('paymentMethodTitle')}</Heading>
+              <Heading as="h3" styledAs="h4">
+                {t('paymentMethodTitle')}
+              </Heading>
               <RadioGroupField
                 name="paymentMethod"
                 isRequired

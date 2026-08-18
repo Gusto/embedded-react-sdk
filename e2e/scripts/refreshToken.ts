@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test'
 import { writeFileSync, readFileSync, existsSync } from 'fs'
 import { resolve } from 'path'
+import { CI_HEADERS } from '../utils/ciHeaders'
 
 const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 const GWS_FLOWS_BASE = process.env.E2E_GWS_FLOWS_HOST || DEFAULT_GWS_FLOWS_HOST
@@ -140,6 +141,7 @@ async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promis
       try {
         const companyResponse = await fetch(`${GWS_FLOWS_BASE}/fe_sdk/${flowToken}/v1/companies`, {
           signal: AbortSignal.timeout(10000),
+          headers: CI_HEADERS,
         })
         if (companyResponse.ok) {
           const companies = await companyResponse.json()
@@ -228,7 +230,7 @@ async function testToken(flowToken: string, companyId: string): Promise<boolean>
   try {
     const response = await fetch(
       `${GWS_FLOWS_BASE}/fe_sdk/${flowToken}/v1/companies/${companyId}/locations`,
-      { signal: AbortSignal.timeout(5000) },
+      { signal: AbortSignal.timeout(5000), headers: CI_HEADERS },
     )
     return response.ok
   } catch {

@@ -116,7 +116,7 @@ export function PayrollLandingTabsContextual() {
   ]
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex flexDirection="column" gap={32} alignItems="stretch">
       {showPayrollCancelledAlert && (
         <Alert
           status="success"

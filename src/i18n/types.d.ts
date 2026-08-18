@@ -38,20 +38,29 @@ export interface Resources {
   'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
   'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
   'Contractor.Address': Translations.ContractorAddress
+  'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
   'Contractor.ContractorList': Translations.ContractorContractorList
+  'Contractor.Dashboard': Translations.ContractorDashboard
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   'Contractor.Landing': Translations.ContractorLanding
+  'Contractor.Management.Address': Translations.ContractorManagementAddress
+  'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+  'Contractor.Management.Documents': Translations.ContractorManagementDocuments
+  'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
+  'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+  'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
   'Contractor.Profile': Translations.ContractorProfile
+  'Contractor.SelectContractors': Translations.ContractorSelectContractors
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
   'Contractor.Submit': Translations.ContractorSubmit
   'Employee.BankAccount': Translations.EmployeeBankAccount
@@ -691,6 +700,8 @@ export namespace Translations {
       name: string
       /** @defaultValue `"Pay frequency is required"` */
       frequency: string
+      /** @defaultValue `"Please select the pay days for the month"` */
+      frequencyOptions: string
       /** @defaultValue `"First pay date is required"` */
       firstPayDate: string
       /** @defaultValue `"First pay period end date is required"` */
@@ -811,6 +822,8 @@ export namespace Translations {
       effectiveDatePlaceholder: string
       /** @defaultValue `"Effective date"` */
       effectiveDateColumnLabel: string
+      /** @defaultValue `"Status"` */
+      statusColumnLabel: string
       /** @defaultValue `"Current"` */
       currentBadge: string
       /** @defaultValue `"Scheduled"` */
@@ -1012,6 +1025,8 @@ export namespace Translations {
   export interface CompanyTimeOffEmployeeTable {
     /** @defaultValue `"Name"` */
     name: string
+    /** @defaultValue `"Unknown employee"` */
+    unknownEmployeeFallback: string
     /** @defaultValue `"Job title"` */
     jobTitle: string
     /** @defaultValue `"Department"` */
@@ -1791,6 +1806,37 @@ export namespace Translations {
       zipInvalid: string
     }
   }
+  /** Translation keys for the `Contractor.BankAccountFields` i18n namespace. */
+  export interface ContractorBankAccountFields {
+    /** @defaultValue `"Account nickname"` */
+    nameLabel: string
+    /** @defaultValue `"Routing number"` */
+    routingNumberLabel: string
+    /** @defaultValue `"9 digits, on the bottom left of a check"` */
+    routingNumberDescription: string
+    /** @defaultValue `"Account number"` */
+    accountNumberLabel: string
+    /** @defaultValue `"Account type"` */
+    accountTypeLabel: string
+    /** @defaultValue `"Checking"` */
+    accountTypeChecking: string
+    /** @defaultValue `"Savings"` */
+    accountTypeSavings: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    validations: {
+      /** @defaultValue `"Account nickname is required"` */
+      accountName: string
+      /** @defaultValue `"Enter a valid 9-digit routing number"` */
+      routingNumber: string
+      /** @defaultValue `"Enter a valid account number"` */
+      accountNumber: string
+      /** @defaultValue `"Enter a valid account number"` */
+      accountNumberFormat: string
+    }
+  }
   /** Translation keys for the `Contractor.ContractorList` i18n namespace. */
   export interface ContractorContractorList {
     /** @defaultValue `"Add a contractor"` */
@@ -1832,6 +1878,33 @@ export namespace Translations {
       confirmCta: string
       /** @defaultValue `"Cancel"` */
       cancelCta: string
+    }
+  }
+  /** Translation keys for the `Contractor.Dashboard` i18n namespace. */
+  export interface ContractorDashboard {
+    /** @defaultValue `"Contractor"` */
+    contractorRoleLabel: string
+    /** @defaultValue `"Contractor dashboard tabs"` */
+    tabsLabel: string
+    tabs: {
+      /** @defaultValue `"Details"` */
+      details: string
+      /** @defaultValue `"Pay"` */
+      pay: string
+      /** @defaultValue `"Documents"` */
+      documents: string
+    }
+    alerts: {
+      /** @defaultValue `"Profile updated"` */
+      profileUpdated: string
+      /** @defaultValue `"Address updated"` */
+      addressUpdated: string
+      /** @defaultValue `"Bank account added"` */
+      bankAccountAdded: string
+      /** @defaultValue `"Bank account removed"` */
+      bankAccountRemoved: string
+      /** @defaultValue `"Compensation updated"` */
+      compensationUpdated: string
     }
   }
   /** Translation keys for the `Contractor.DocumentsList` i18n namespace. */
@@ -1885,6 +1958,202 @@ export namespace Translations {
     getStartedCta: string
     /** @defaultValue `"there"` */
     fallbackName: string
+  }
+  /** Translation keys for the `Contractor.Management.Address` i18n namespace. */
+  export interface ContractorManagementAddress {
+    /** @defaultValue `"Address"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Address updated"` */
+      addressUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Edit address"` */
+      title: string
+      /** @defaultValue `"Update {{name}}’s business address."` */
+      businessDescription: string
+      /** @defaultValue `"Update {{name}}’s home address."` */
+      homeDescription: string
+      /** @defaultValue `"Street 1"` */
+      street1: string
+      /** @defaultValue `"Street 2"` */
+      street2: string
+      /** @defaultValue `"City"` */
+      city: string
+      /** @defaultValue `"State"` */
+      state: string
+      /** @defaultValue `"Select state..."` */
+      statePlaceholder: string
+      /** @defaultValue `"Zip"` */
+      zip: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Address updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"Street address is required"` */
+        street1: string
+        /** @defaultValue `"Please provide valid city name"` */
+        city: string
+        /** @defaultValue `"Please select a state"` */
+        state: string
+        /** @defaultValue `"Please provide valid zip code"` */
+        zip: string
+        /** @defaultValue `"Please enter a valid ZIP code"` */
+        zipInvalid: string
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Compensation` i18n namespace. */
+  export interface ContractorManagementCompensation {
+    /** @defaultValue `"Compensation"` */
+    title: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Type"` */
+    typeLabel: string
+    /** @defaultValue `"Wage"` */
+    wageLabel: string
+    /** @defaultValue `"Fixed"` */
+    fixedLabel: string
+    /** @defaultValue `"Hourly"` */
+    hourlyLabel: string
+    /** @defaultValue `"${{rate}}/hr"` */
+    hourlyRateValue: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    alerts: {
+      /** @defaultValue `"Compensation updated"` */
+      compensationUpdated: string
+    }
+    form: {
+      /** @defaultValue `"Edit compensation"` */
+      title: string
+      /** @defaultValue `"Update the contractor's compensation type and rate."` */
+      description: string
+      /** @defaultValue `"Compensation type"` */
+      wageTypeLabel: string
+      /** @defaultValue `"Pay a fixed amount each pay period."` */
+      fixedDescription: string
+      /** @defaultValue `"Pay based on hours worked."` */
+      hourlyDescription: string
+      /** @defaultValue `"Hourly rate"` */
+      hourlyRateLabel: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      /** @defaultValue `"Compensation updated"` */
+      successAlert: string
+      validations: {
+        /** @defaultValue `"Enter a valid hourly rate"` */
+        hourlyRate: string
+      }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Documents` i18n namespace. */
+  export interface ContractorManagementDocuments {
+    /** @defaultValue `"Documents"` */
+    title: string
+    /** @defaultValue `"Contractor documents"` */
+    listLabel: string
+    /** @defaultValue `"Name"` */
+    nameColumn: string
+    /** @defaultValue `"Description"` */
+    descriptionColumn: string
+    /** @defaultValue `"Signing status"` */
+    signingStatusColumn: string
+    /** @defaultValue `"View"` */
+    viewCta: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    signingStatus: {
+      /** @defaultValue `"Signed"` */
+      signed: string
+      /** @defaultValue `"Not signed"` */
+      notSigned: string
+    }
+    emptyState: {
+      /** @defaultValue `"No documents yet"` */
+      title: string
+    }
+  }
+  /** Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace. */
+  export interface ContractorManagementPaymentMethod {
+    /** @defaultValue `"Payment"` */
+    title: string
+    /** @defaultValue `"Add bank account"` */
+    addBankAccountCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Remove account"` */
+    removeBankAccountCta: string
+    /** @defaultValue `"Bank account actions"` */
+    hamburgerTitle: string
+    /** @defaultValue `"Contractor bank account"` */
+    bankAccountListLabel: string
+    /** @defaultValue `"Nickname"` */
+    nicknameColumn: string
+    /** @defaultValue `"Routing number"` */
+    routingNumberColumn: string
+    /** @defaultValue `"Account type"` */
+    accountTypeColumn: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodLabel: string
+    /** @defaultValue `"Check"` */
+    checkLabel: string
+    removeBankAccountDialog: {
+      /** @defaultValue `"Remove bank account"` */
+      title: string
+      /** @defaultValue `"Are you sure you want to remove the bank account {{account}}? The contractor's payment method will revert to Check."` */
+      description: string
+      /** @defaultValue `"Remove"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+    }
+    alerts: {
+      /** @defaultValue `"Bank account added"` */
+      bankAccountAdded: string
+      /** @defaultValue `"Bank account removed"` */
+      bankAccountRemoved: string
+    }
+    form: {
+      /** @defaultValue `"Add bank account"` */
+      title: string
+      /** @defaultValue `"Account nickname"` */
+      nameLabel: string
+      /** @defaultValue `"Routing number"` */
+      routingNumberLabel: string
+      /** @defaultValue `"9 digits, on the bottom left of a check"` */
+      routingNumberDescription: string
+      /** @defaultValue `"Account number"` */
+      accountNumberLabel: string
+      /** @defaultValue `"Account type"` */
+      accountTypeLabel: string
+      /** @defaultValue `"Checking"` */
+      accountTypeChecking: string
+      /** @defaultValue `"Savings"` */
+      accountTypeSavings: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Save"` */
+      saveCta: string
+      validations: {
+        /** @defaultValue `"Account nickname is required"` */
+        name: string
+        /** @defaultValue `"Enter a valid 9-digit routing number"` */
+        routingNumber: string
+        /** @defaultValue `"Enter a valid account number"` */
+        accountNumber: string
+      }
+    }
   }
   /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */
   export interface ContractorManagementProfile {
@@ -1983,6 +2252,8 @@ export namespace Translations {
     rateLabel: string
     /** @defaultValue `"Onboarding status"` */
     onboardingStatusLabel: string
+    /** @defaultValue `"Status"` */
+    statusColumnLabel: string
     /** @defaultValue `"Dismissal date"` */
     dismissalDateLabel: string
     /** @defaultValue `"Hourly — {{rate}}/hr"` */
@@ -2139,6 +2410,169 @@ export namespace Translations {
         /** @defaultValue `"Please enter valid account number"` */
         accountNumber: string
       }
+    }
+  }
+  /** Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n namespace. */
+  export interface ContractorPaymentsCreateHistoricalPayment {
+    select: {
+      /** @defaultValue `"Record a historical payment"` */
+      heading: string
+      /** @defaultValue `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` */
+      subtitle: string
+      /** @defaultValue `"Payment date"` */
+      dateLabel: string
+      /** @defaultValue `"You cannot issue historical payments for the future. Please choose a date in the past."` */
+      dateInFutureError: string
+      /** @defaultValue `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` */
+      dateTooEarlyError: string
+      /** @defaultValue `"Continue"` */
+      continueButton: string
+    }
+    amounts: {
+      /** @defaultValue `"Enter payment amounts"` */
+      heading: string
+      /** @defaultValue `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` */
+      subtitle: string
+      /** @defaultValue `"Continue"` */
+      continueButton: string
+    }
+    /** @defaultValue `"Hours and payments"` */
+    hoursAndPaymentsLabel: string
+    contractorTableHeaders: {
+      /** @defaultValue `"Contractor"` */
+      contractor: string
+      /** @defaultValue `"Wage"` */
+      wageType: string
+      /** @defaultValue `"Payment method"` */
+      paymentMethod: string
+      /** @defaultValue `"Hours"` */
+      hours: string
+      /** @defaultValue `"Fixed amount"` */
+      wage: string
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+      /** @defaultValue `"Total"` */
+      total: string
+    }
+    /** @defaultValue `"No contractors selected"` */
+    emptyTableTitle: string
+    /** @defaultValue `"Select at least one contractor to record a payment."` */
+    emptyTableDescription: string
+    /** @defaultValue `"N/A"` */
+    na: string
+    /** @defaultValue `"Totals"` */
+    totalsLabel: string
+    /** @defaultValue `"Edit contractor payment"` */
+    editContractor: string
+    /** @defaultValue `"/hr"` */
+    perHour: string
+    wageTypes: {
+      /** @defaultValue `"Fixed"` */
+      fixed: string
+      /** @defaultValue `"Hourly"` */
+      hourly: string
+    }
+    paymentMethods: {
+      /** @defaultValue `"Direct Deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
+    }
+    alerts: {
+      /** @defaultValue `"Pay updated for {{contractorName}}"` */
+      contractorPaymentUpdated: string
+    }
+    editContractorPayment: {
+      /** @defaultValue `"Edit contractor pay"` */
+      title: string
+      /** @defaultValue `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` */
+      subtitle: string
+      /** @defaultValue `"Hours"` */
+      hoursLabel: string
+      /** @defaultValue `"hrs"` */
+      hoursAdornment: string
+      /** @defaultValue `"{{rate}}/hr × hours = {{total}}"` */
+      hoursPayDescription: string
+      /** @defaultValue `"Fixed amount"` */
+      wageLabel: string
+      /** @defaultValue `"Bonus"` */
+      bonusLabel: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursementLabel: string
+      /** @defaultValue `"Payment Method"` */
+      paymentMethodLabel: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Done"` */
+      saveCta: string
+      paymentMethods: {
+        /** @defaultValue `"Check"` */
+        check: string
+        /** @defaultValue `"Direct deposit"` */
+        directDeposit: string
+        /** @defaultValue `"Historical payment"` */
+        historicalPayment: string
+      }
+      errors: {
+        /** @defaultValue `"Direct Deposit is not available for contractors set up for Check payments"` */
+        directDepositNotAvailable: string
+        /** @defaultValue `"This payment method is not supported. Please select Check or Direct Deposit."` */
+        unsupportedPaymentMethod: string
+      }
+    }
+    review: {
+      /** @defaultValue `"Review and submit"` */
+      title: string
+      /** @defaultValue `"Historical payment for {{checkDate}}"` */
+      subtitle: string
+      /** @defaultValue `"Edit"` */
+      editButton: string
+      /** @defaultValue `"Submit historical payment"` */
+      submitButton: string
+      /** @defaultValue `"Historical payment recorded successfully"` */
+      successTitle: string
+      /** @defaultValue `"This payment has been recorded. View it from the payments list to see its full details."` */
+      successMessage: string
+      /** @defaultValue `"Payment Summary"` */
+      paymentSummaryTitle: string
+      /** @defaultValue `"Total Amount"` */
+      totalAmount: string
+      /** @defaultValue `"Contractor Pay Date"` */
+      contractorPayDate: string
+      /** @defaultValue `"Contractor Payments"` */
+      contractorPaymentsTitle: string
+      /** @defaultValue `"Contractor"` */
+      contractor: string
+      /** @defaultValue `"Wage Type"` */
+      wageType: string
+      /** @defaultValue `"Payment Method"` */
+      paymentMethod: string
+      paymentMethods: {
+        /** @defaultValue `"Direct Deposit"` */
+        directDeposit: string
+        /** @defaultValue `"Check"` */
+        check: string
+        /** @defaultValue `"Historical Payment"` */
+        historicalPayment: string
+      }
+      /** @defaultValue `"Hours"` */
+      hours: string
+      /** @defaultValue `"Wage"` */
+      wage: string
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+      /** @defaultValue `"Total"` */
+      total: string
+      /** @defaultValue `"Totals"` */
+      totalsLabel: string
+      /** @defaultValue `"N/A"` */
+      notAvailable: string
     }
   }
   /** Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace. */
@@ -2376,6 +2810,57 @@ export namespace Translations {
       }
     }
   }
+  /** Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace. */
+  export interface ContractorPaymentsHistoricalPaymentSummary {
+    /** @defaultValue `"Historical payment recorded successfully"` */
+    successTitle: string
+    /** @defaultValue `"{{count}} contractor payment has been recorded."` */
+    successMessage_one: string
+    /** @defaultValue `"{{count}} contractor payments have been recorded."` */
+    successMessage_other: string
+    /** @defaultValue `"Payment summary"` */
+    summaryTitle: string
+    /** @defaultValue `"Historical payment for {{checkDate}}"` */
+    summarySubtitle: string
+    /** @defaultValue `"Done"` */
+    doneCta: string
+    /** @defaultValue `"Payment Summary"` */
+    paymentSummaryTitle: string
+    /** @defaultValue `"Total Amount"` */
+    totalAmount: string
+    /** @defaultValue `"Contractor Pay Date"` */
+    contractorPayDate: string
+    /** @defaultValue `"Contractor Payments"` */
+    contractorPaymentsTitle: string
+    /** @defaultValue `"Contractor"` */
+    contractor: string
+    /** @defaultValue `"Wage Type"` */
+    wageType: string
+    /** @defaultValue `"Payment Method"` */
+    paymentMethod: string
+    paymentMethods: {
+      /** @defaultValue `"Direct Deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
+    }
+    /** @defaultValue `"Hours"` */
+    hours: string
+    /** @defaultValue `"Wage"` */
+    wage: string
+    /** @defaultValue `"Bonus"` */
+    bonus: string
+    /** @defaultValue `"Reimbursement"` */
+    reimbursement: string
+    /** @defaultValue `"Total"` */
+    total: string
+    /** @defaultValue `"Totals"` */
+    totalsLabel: string
+    /** @defaultValue `"N/A"` */
+    notAvailable: string
+  }
   /** Translation keys for the `Contractor.Payments.PaymentHistory` i18n namespace. */
   export interface ContractorPaymentsPaymentHistory {
     /** @defaultValue `"Contractor payment history"` */
@@ -2515,6 +3000,8 @@ export namespace Translations {
       directDeposit: string
       /** @defaultValue `"Check"` */
       check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
     }
     /** @defaultValue `"Hours"` */
     hours: string
@@ -2706,6 +3193,23 @@ export namespace Translations {
       /** @defaultValue `"Saving…"` */
       updating: string
     }
+  }
+  /** Translation keys for the `Contractor.SelectContractors` i18n namespace. */
+  export interface ContractorSelectContractors {
+    /** @defaultValue `"Name"` */
+    nameColumn: string
+    /** @defaultValue `"Wage"` */
+    wageColumn: string
+    /** @defaultValue `"Hourly · {{rate}}/hr"` */
+    wageHourly: string
+    /** @defaultValue `"Search by name"` */
+    searchLabel: string
+    /** @defaultValue `"Search by name"` */
+    searchPlaceholder: string
+    /** @defaultValue `"Contractors"` */
+    tableLabel: string
+    /** @defaultValue `"No eligible contractors found."` */
+    emptyState: string
   }
   /** Translation keys for the `Contractor.SignatureForm` i18n namespace. */
   export interface ContractorSignatureForm {
@@ -5149,8 +5653,6 @@ export namespace Translations {
     dismissCta: string
     /** @defaultValue `"Cancel onboarding"` */
     cancelCta: string
-    /** @defaultValue `"Rehire employee"` */
-    rehireCta: string
     /** @defaultValue `"Employee actions menu"` */
     hamburgerTitle: string
     /** @defaultValue `"List of employees"` */
@@ -5847,8 +6349,6 @@ export namespace Translations {
     status: {
       /** @defaultValue `"Processed"` */
       processed: string
-      /** @defaultValue `"Unprocessed"` */
-      unprocessed: string
       /** @defaultValue `"Calculating..."` */
       calculating: string
       /** @defaultValue `"Ready to submit"` */
@@ -6497,6 +6997,8 @@ export namespace Translations {
     }
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
+    /** @defaultValue `"Unknown employee"` */
+    unknownEmployeeFallback: string
     editMenu: {
       /** @defaultValue `"Edit"` */
       edit: string

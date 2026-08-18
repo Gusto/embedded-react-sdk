@@ -4,6 +4,7 @@ import { CompensationEditJobForm } from '../CompensationEditJobForm/Compensation
 import { CompensationEditPendingJobForm } from '../CompensationEditPendingJobForm/CompensationEditPendingJobForm'
 import { BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { type EventType } from '@/shared/constants'
 
@@ -24,6 +25,8 @@ export interface CompensationEditFormProps extends CommonComponentInterface<'Emp
   jobId: string
   /** Callback invoked when the form emits an event. See the events table on {@link CompensationEditForm} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -48,12 +51,13 @@ export function CompensationEditForm({
   jobId,
   onEvent,
   dictionary,
+  LoaderComponent,
 }: CompensationEditFormProps) {
   const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId }, { enabled: !!employeeId })
 
   if (jobsQuery.isLoading || !jobsQuery.data) {
     const errorHandling = composeErrorHandler([jobsQuery])
-    return <BaseLayout isLoading error={errorHandling.errors} />
+    return <BaseLayout isLoading error={errorHandling.errors} LoaderComponent={LoaderComponent} />
   }
 
   const job = jobsQuery.data.jobs?.find(j => j.uuid === jobId)
@@ -73,6 +77,7 @@ export function CompensationEditForm({
         isPrimaryJob={job?.primary ?? false}
         onEvent={onEvent}
         dictionary={dictionary}
+        LoaderComponent={LoaderComponent}
       />
     )
   }
@@ -83,6 +88,7 @@ export function CompensationEditForm({
       jobId={jobId}
       onEvent={onEvent}
       dictionary={dictionary}
+      LoaderComponent={LoaderComponent}
     />
   )
 }

@@ -668,7 +668,7 @@ export const PayrollOverviewPresentation = ({
 
                 return <GenericBlocker key={blockerType} blocker={blocker} />
               })}
-            <Heading as="h3">
+            <Heading as="h2" styledAs="h3">
               {isWireFunds
                 ? t('payrollSummaryTitleWire')
                 : isFourDayDirectDeposit

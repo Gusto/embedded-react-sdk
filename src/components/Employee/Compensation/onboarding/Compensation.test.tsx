@@ -502,6 +502,46 @@ describe('Compensation', () => {
       })
     })
 
+    // Regression test for SDK-1169: after leaving and returning to a still-mounted
+    // Compensation component, "Add new job"/"Edit" silently stopped navigating. Root
+    // cause: `done` was modeled as a robot3 final state (no transitions out), so a host
+    // that doesn't unmount Compensation once `employee/compensation/done` fires was
+    // left with a jobs list whose controls could never navigate again. The fix removes
+    // the terminal state entirely — Flow re-emits the DONE event to the parent
+    // regardless of whether the local machine transitions, so a host that keeps this
+    // component mounted past completion keeps a fully working jobs list instead.
+    it('SDK-1169: keeps Add new job/Edit working after DONE fires, if the host fails to unmount', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      })
+
+      const continueButton = screen.getByRole('button', { name: 'Continue' })
+      await user.click(continueButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE, undefined)
+      })
+
+      // The host never unmounted <Compensation>. Edit must still work after DONE fires.
+      const cards = screen.getAllByTestId('data-card')
+      const nonPrimaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('An additional job'),
+      )!
+      await user.click(within(nonPrimaryJobCard).getByRole('button', { name: 'Job actions' }))
+      await user.click(screen.getByRole('menuitem', { name: 'Edit' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Edit job')).toBeInTheDocument()
+      })
+    })
+
     it('should not show delete option for the primary job', async () => {
       const user = userEvent.setup()
 

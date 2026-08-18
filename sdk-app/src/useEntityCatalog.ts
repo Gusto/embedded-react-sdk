@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   type EntityOption,
   type RawContractor,
+  type RawContractorPaymentGroup,
   type RawEmployee,
   type RawForm,
   type RawInformationRequest,
@@ -11,6 +12,7 @@ import {
   formatForm,
   formatInformationRequestType,
   formatPayPeriod,
+  formatPaymentGroup,
 } from './entityFormatters'
 
 export interface EntityCatalog {
@@ -19,6 +21,7 @@ export interface EntityCatalog {
   payrolls: EntityOption[]
   informationRequests: EntityOption[]
   forms: EntityOption[]
+  paymentGroups: EntityOption[]
   isLoading: boolean
 }
 
@@ -28,6 +31,7 @@ const EMPTY_CATALOG: EntityCatalog = {
   payrolls: [],
   informationRequests: [],
   forms: [],
+  paymentGroups: [],
   isLoading: false,
 }
 
@@ -71,13 +75,23 @@ export function useEntityCatalog(companyId: string): EntityCatalog {
         end_date: toIso(endDate),
         per: '100',
       })
-      const [employees, contractors, payrolls, informationRequests, forms] = await Promise.all([
-        fetchList<RawEmployee>(`${base}/employees`, controller.signal),
-        fetchList<RawContractor>(`${base}/contractors`, controller.signal),
-        fetchList<RawPayroll>(`${base}/payrolls?${payrollsQuery.toString()}`, controller.signal),
-        fetchList<RawInformationRequest>(`${base}/information_requests`, controller.signal),
-        fetchList<RawForm>(`${base}/forms`, controller.signal),
-      ])
+      const paymentGroupsQuery = new URLSearchParams({
+        start_date: toIso(startDate),
+        end_date: toIso(endDate),
+        per: '100',
+      })
+      const [employees, contractors, payrolls, informationRequests, forms, paymentGroups] =
+        await Promise.all([
+          fetchList<RawEmployee>(`${base}/employees`, controller.signal),
+          fetchList<RawContractor>(`${base}/contractors`, controller.signal),
+          fetchList<RawPayroll>(`${base}/payrolls?${payrollsQuery.toString()}`, controller.signal),
+          fetchList<RawInformationRequest>(`${base}/information_requests`, controller.signal),
+          fetchList<RawForm>(`${base}/forms`, controller.signal),
+          fetchList<RawContractorPaymentGroup>(
+            `${base}/contractor_payment_groups?${paymentGroupsQuery.toString()}`,
+            controller.signal,
+          ),
+        ])
 
       if (controller.signal.aborted) return
 
@@ -124,6 +138,19 @@ export function useEntityCatalog(companyId: string): EntityCatalog {
             value: f.uuid as string,
             primary: formatForm(f),
             secondary: f.uuid as string,
+          })),
+        paymentGroups: paymentGroups
+          .filter(g => !!g.uuid)
+          .map(g => ({
+            value: g.uuid as string,
+            primary: formatPaymentGroup(g),
+            secondary: g.uuid as string,
+            ...(g.status && {
+              badge: {
+                label: g.status,
+                tone: (g.status === 'Funded' ? 'processed' : 'unprocessed') as const,
+              },
+            }),
           })),
         isLoading: false,
       })

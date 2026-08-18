@@ -8,6 +8,7 @@ import { firstLastName } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { componentEvents, CONTRACTOR_TYPE, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { LoaderComponentType } from '@/components/Base'
 
 /**
  * Props for {@link ProfileCard}.
@@ -19,6 +20,8 @@ export interface ProfileCardProps {
   contractorId: string
   /** Event handler fired when the user requests to edit the profile. */
   onEvent: OnEventType<EventType, unknown>
+  /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
+  LoaderComponent?: LoaderComponentType
 }
 
 /**
@@ -39,15 +42,15 @@ export interface ProfileCardProps {
  * @returns The basic-details profile card.
  * @public
  */
-export function ProfileCard(props: ProfileCardProps) {
+export function ProfileCard({ LoaderComponent, ...props }: ProfileCardProps) {
   return (
-    <BaseBoundaries componentName="Contractor.Management.Profile">
-      <ProfileCardContent {...props} />
+    <BaseBoundaries componentName="Contractor.Management.Profile" LoaderComponent={LoaderComponent}>
+      <ProfileCardContent LoaderComponent={LoaderComponent} {...props} />
     </BaseBoundaries>
   )
 }
 
-function ProfileCardContent({ contractorId, onEvent }: ProfileCardProps) {
+function ProfileCardContent({ contractorId, onEvent, LoaderComponent }: ProfileCardProps) {
   useI18n('Contractor.Management.Profile')
   const { t } = useTranslation('Contractor.Management.Profile')
   const Components = useComponentContext()
@@ -92,7 +95,7 @@ function ProfileCardContent({ contractorId, onEvent }: ProfileCardProps) {
   }
 
   return (
-    <BaseLayout error={profile.errorHandling.errors}>
+    <BaseLayout error={profile.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         header={
           <Components.BoxHeader

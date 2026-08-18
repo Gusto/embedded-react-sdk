@@ -1,5 +1,79 @@
 # Changelog
 
+## [0.55.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.54.1...v0.55.0) (2026-08-13)
+
+### Features & Enhancements
+
+- Add optional `signatoryId` prop to `Company.OnboardingFlow`, forwarded to the document-signing step. When set and matching the company's current signatory, the SDK pre-populates form fields and enables document signing. ([#2561](https://github.com/Gusto/embedded-react-sdk/issues/2561))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`release-it`, `@testing-library/jest-dom`)
+
+## [0.54.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.54.0...v0.54.1) (2026-08-13)
+
+- drop Cursor cloud agent step from publish workflow ([#2530](https://github.com/Gusto/embedded-react-sdk/issues/2530)) ([9fe07f1](https://github.com/Gusto/embedded-react-sdk/commit/9fe07f1c9517f85cd45238e8e5fa6cef48309588))
+
+### Features & Enhancements
+
+- **SDK-1128:** finish historical contractor payments end-to-end ([#2532](https://github.com/Gusto/embedded-react-sdk/issues/2532)) ([0893408](https://github.com/Gusto/embedded-react-sdk/commit/0893408c1191ea02d5d881a2f537434568208753))
+- **SDK-484:** enforce accessibility testing in CI ([#2505](https://github.com/Gusto/embedded-react-sdk/issues/2505)) ([26f7e13](https://github.com/Gusto/embedded-react-sdk/commit/26f7e13e04e16316f57e0fe37d939a807363c7ef)), references [AxeBuilder#include](https://github.com/AxeBuilder/issues/include)
+
+### Fixes
+
+- contain flow-step i18n suspense within each component's boundary ([#2554](https://github.com/Gusto/embedded-react-sdk/issues/2554)) ([d5ee962](https://github.com/Gusto/embedded-react-sdk/commit/d5ee96231d0fd0f4955dcc44f96cc1b5e09dd529)), references [#426](https://github.com/Gusto/embedded-react-sdk/issues/426)
+- require frequency option for twice-per-month pay schedules ([#2542](https://github.com/Gusto/embedded-react-sdk/issues/2542)) ([a539722](https://github.com/Gusto/embedded-react-sdk/commit/a5397224e0b6417caa3838c30f9bb6af402bcf5d))
+- **SDK-484:** accessibility fixes surfaced by the axe testing gate ([#2521](https://github.com/Gusto/embedded-react-sdk/issues/2521)) ([487ff7e](https://github.com/Gusto/embedded-react-sdk/commit/487ff7e1781826ff50f0b6a00d5c8df5753df29b))
+
+### Chores & Maintenance
+
+- bump @hookform/resolvers from 5.5.7 to 5.6.0 ([#2518](https://github.com/Gusto/embedded-react-sdk/issues/2518)) ([a63add5](https://github.com/Gusto/embedded-react-sdk/commit/a63add5a416d0cb1f9df4bf4aa16af0cfaf315ef))
+- bump @hookform/resolvers from 5.6.0 to 5.7.1 ([#2529](https://github.com/Gusto/embedded-react-sdk/issues/2529)) ([99c01fc](https://github.com/Gusto/embedded-react-sdk/commit/99c01fc77a7d62e73035da65a6e6855f9fe8d079))
+- bump @storybook/addon-a11y from 10.5.5 to 10.5.7 ([#2547](https://github.com/Gusto/embedded-react-sdk/issues/2547)) ([b5afec6](https://github.com/Gusto/embedded-react-sdk/commit/b5afec6030a666743d44c82759f4f832b019e038))
+- bump @storybook/addon-docs from 10.5.5 to 10.5.7 ([#2544](https://github.com/Gusto/embedded-react-sdk/issues/2544)) ([98527b9](https://github.com/Gusto/embedded-react-sdk/commit/98527b93d7662dc74db509e4680cb30f1c159d06))
+- bump @storybook/addon-onboarding from 10.5.5 to 10.5.6 ([#2537](https://github.com/Gusto/embedded-react-sdk/issues/2537)) ([755a37f](https://github.com/Gusto/embedded-react-sdk/commit/755a37fe6aa768097915670766b5c1286e4b3c6d))
+- bump @storybook/addon-onboarding from 10.5.6 to 10.5.7 ([#2548](https://github.com/Gusto/embedded-react-sdk/issues/2548)) ([7fba225](https://github.com/Gusto/embedded-react-sdk/commit/7fba225394c2c8005eb4e47958fee6219d4ee868))
+- bump @storybook/react-vite from 10.5.5 to 10.5.7 ([#2551](https://github.com/Gusto/embedded-react-sdk/issues/2551)) ([8870831](https://github.com/Gusto/embedded-react-sdk/commit/88708315d9b6b97c775e73bf198a3eda1add42bd))
+- bump @testing-library/user-event from 14.6.1 to 14.6.3 ([#2535](https://github.com/Gusto/embedded-react-sdk/issues/2535)) ([76e7d11](https://github.com/Gusto/embedded-react-sdk/commit/76e7d11835c6cc20713eafb09090526e9b88b7fd))
+- bump @typescript-eslint/parser from 8.65.0 to 8.66.0 ([#2543](https://github.com/Gusto/embedded-react-sdk/issues/2543)) ([95751a0](https://github.com/Gusto/embedded-react-sdk/commit/95751a04db73d3ba4f18d39281170684b17993cc))
+- bump @typescript-eslint/rule-tester from 8.65.0 to 8.66.0 ([#2536](https://github.com/Gusto/embedded-react-sdk/issues/2536)) ([9614a32](https://github.com/Gusto/embedded-react-sdk/commit/9614a32e4d0396b1d450adf68f011b604e1745b3))
+- bump axe-core from 4.12.1 to 4.13.0 ([#2550](https://github.com/Gusto/embedded-react-sdk/issues/2550)) ([2561442](https://github.com/Gusto/embedded-react-sdk/commit/25614426646bebfae2507fc0fbc6c968a5da56b1))
+- bump dompurify from 3.4.12 to 3.4.13 in the npm_and_yarn group across 1 directory ([#2539](https://github.com/Gusto/embedded-react-sdk/issues/2539)) ([6bb146e](https://github.com/Gusto/embedded-react-sdk/commit/6bb146e14c0b679cd634ea84131ba40b30894a75))
+- bump eslint-plugin-storybook from 10.5.5 to 10.5.7 ([#2549](https://github.com/Gusto/embedded-react-sdk/issues/2549)) ([f626d60](https://github.com/Gusto/embedded-react-sdk/commit/f626d6098b1d228e04e42dc199d5be0e918cf653))
+- bump fast-uri from 3.1.4 to 3.1.5 in the npm_and_yarn group across 1 directory ([#2533](https://github.com/Gusto/embedded-react-sdk/issues/2533)) ([c5cb667](https://github.com/Gusto/embedded-react-sdk/commit/c5cb6676c916bc742605300c3e41bac5ff0d96b3))
+- bump globals from 17.8.0 to 17.9.0 ([#2528](https://github.com/Gusto/embedded-react-sdk/issues/2528)) ([4ca919b](https://github.com/Gusto/embedded-react-sdk/commit/4ca919bf85cf1c459c78c0b475065a2fc451a9aa))
+- bump react-hook-form from 7.84.0 to 7.85.0 ([#2553](https://github.com/Gusto/embedded-react-sdk/issues/2553)) ([9d78921](https://github.com/Gusto/embedded-react-sdk/commit/9d789215dfbe6d4d8a4768f3332b160aa846f1c3))
+- bump the npm_and_yarn group across 1 directory with 2 updates ([#2534](https://github.com/Gusto/embedded-react-sdk/issues/2534)) ([7a3f00e](https://github.com/Gusto/embedded-react-sdk/commit/7a3f00ef48a9c56cfceaeafc8aea69f288328d44))
+- bump the npm_and_yarn group across 1 directory with 2 updates ([#2541](https://github.com/Gusto/embedded-react-sdk/issues/2541)) ([b8c7f3f](https://github.com/Gusto/embedded-react-sdk/commit/b8c7f3fe9e7e2fcbb5dcec4a2be1cab207272ec3))
+- bump tsx from 4.23.1 to 4.23.5 ([#2527](https://github.com/Gusto/embedded-react-sdk/issues/2527)) ([0ac287c](https://github.com/Gusto/embedded-react-sdk/commit/0ac287ca4fd2c14371b2bcc9ed3a68504b2777da))
+- bump tsx from 4.23.5 to 4.23.11 ([#2546](https://github.com/Gusto/embedded-react-sdk/issues/2546)) ([1361d05](https://github.com/Gusto/embedded-react-sdk/commit/1361d0577194f18163d85fa74736bd41246c747e))
+- bump typescript-eslint from 8.65.0 to 8.66.0 ([#2545](https://github.com/Gusto/embedded-react-sdk/issues/2545)) ([153745b](https://github.com/Gusto/embedded-react-sdk/commit/153745b83a2dff373ec1c0039f61d46e897fde44))
+
+## [0.54.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.53.0...v0.54.0) (2026-08-06)
+
+### Features & Enhancements
+
+- Added contractor management components under the `ContractorManagement` namespace, each with a read-only card and an edit form: `ContractorManagement.Profile`, `ContractorManagement.Address`, `ContractorManagement.PaymentMethod`, `ContractorManagement.Compensation`, and `ContractorManagement.DocumentsCard`. ([#2469](https://github.com/Gusto/embedded-react-sdk/issues/2469), [#2470](https://github.com/Gusto/embedded-react-sdk/issues/2470), [#2474](https://github.com/Gusto/embedded-react-sdk/issues/2474), [#2475](https://github.com/Gusto/embedded-react-sdk/issues/2475), [#2476](https://github.com/Gusto/embedded-react-sdk/issues/2476))
+- Added a contractor dashboard — `ContractorManagement.Dashboard` and the orchestrated `ContractorManagement.DashboardFlow` — providing a tabbed overview that ties the contractor management surfaces together. ([#2477](https://github.com/Gusto/embedded-react-sdk/issues/2477))
+- Added components for recording historical (off-platform) contractor payments: `ContractorManagement.HistoricalPaymentContractors` for selecting which contractors to include, and `ContractorManagement.HistoricalPaymentAmounts` for entering their amounts. ([#2500](https://github.com/Gusto/embedded-react-sdk/issues/2500), [#2511](https://github.com/Gusto/embedded-react-sdk/issues/2511))
+- Hook-based components now honor a custom `LoaderComponent`, so your loading UI renders consistently across them. ([#2493](https://github.com/Gusto/embedded-react-sdk/issues/2493))
+
+### Fixes
+
+- Onboarding blocks (`Compensation`, `Deductions`, and `DocumentSigner`) no longer become unresponsive after their step-completion event fires. Previously, once a block signaled "done" it entered a terminal state, so its "Edit" and "Add another" actions silently stopped working until you navigated away from the block and back. ([#2522](https://github.com/Gusto/embedded-react-sdk/issues/2522))
+- Fixed the W-9 TIN section copy in contractor onboarding to correctly reflect whether the contractor is an individual or a business. ([#2479](https://github.com/Gusto/embedded-react-sdk/issues/2479))
+- `PayrollOverview` no longer throws when its `calculatedAt` value is momentarily stale right after a payroll is calculated. ([#2501](https://github.com/Gusto/embedded-react-sdk/issues/2501))
+- Payroll landing and list views now stretch their columns to fill the available width instead of leaving unused horizontal space. ([#2523](https://github.com/Gusto/embedded-react-sdk/issues/2523))
+- The `EmployeeList` row actions menu is now hidden for dismissed employees. ([#2480](https://github.com/Gusto/embedded-react-sdk/issues/2480))
+- Company locations queries are now cached, avoiding a refetch on every mount. ([#2471](https://github.com/Gusto/embedded-react-sdk/issues/2471))
+- Removed the "unprocessed" payroll status badge. ([#2426](https://github.com/Gusto/embedded-react-sdk/issues/2426))
+
+### Chores & Maintenance
+
+- Clarified the project license as Apache 2.0. ([#2519](https://github.com/Gusto/embedded-react-sdk/issues/2519))
+- Bump runtime dependencies (`react-hook-form`, `react-router-dom`, `@hookform/resolvers`, `@internationalized/date`).
+- Bump dev and build dependencies (`storybook` and its addons, `@playwright/test`, `release-it`, `@release-it/conventional-changelog`, `@vitejs/plugin-react-swc`, `vite-plugin-checker`, `lint-staged`, `@testing-library/jest-dom`, `jest-axe`, `@types/react`, `@types/react-dom`, `postcss`, `webpack-dev-server`, and related tooling).
+
 ## [0.53.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.52.2...v0.53.0) (2026-07-24)
 
 ### ⚠ Breaking Changes

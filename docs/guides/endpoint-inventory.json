@@ -2179,6 +2179,125 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.DashboardFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.Profile": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.Address": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-address"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/address",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-address"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.PaymentMethod": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.Compensation": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorManagement.DocumentsCard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
+        }
+      ],
+      "variables": [
+        "contractorUuid",
+        "documentUuid"
+      ]
+    },
     "ContractorManagement.PaymentsList": {
       "endpoints": [
         {
@@ -2228,6 +2347,47 @@
       "variables": [
         "companyId",
         "companyUuid"
+      ]
+    },
+    "ContractorManagement.CreateHistoricalPayment": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/contractor_payment_groups",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-contractor_payment_groups"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/contractor_payment_groups/preview",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-contractor_payment_groups-preview"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid"
+      ]
+    },
+    "ContractorManagement.HistoricalPaymentSummary": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payment_groups-contractor_payment_group_id"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorPaymentGroupUuid"
       ]
     },
     "ContractorManagement.PaymentHistory": {
@@ -2322,6 +2482,15 @@
       "blocks": [
         "ContractorManagement.CreatePayment",
         "ContractorManagement.PaymentSummary"
+      ]
+    },
+    "ContractorManagement.DashboardFlow": {
+      "blocks": [
+        "ContractorManagement.Address",
+        "ContractorManagement.Compensation",
+        "ContractorManagement.DocumentsCard",
+        "ContractorManagement.PaymentMethod",
+        "ContractorManagement.Profile"
       ]
     },
     "ContractorManagement.PaymentFlow": {
@@ -2586,6 +2755,11 @@
           "method": "POST",
           "path": "/v1/contractors/:contractorUuid/bank_accounts",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method"
         }
       ],
       "variables": [
@@ -2621,6 +2795,23 @@
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid/documents",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "useContractorPayForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [

@@ -1,6 +1,7 @@
 import { beforeAll, afterEach, afterAll, vi, beforeEach } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import { expect } from 'vitest'
+import { cleanup } from '@testing-library/react'
 import { toHaveNoViolations } from 'jest-axe'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { server } from './mocks/server'
@@ -51,6 +52,16 @@ afterEach(() => {
   // Remove any handlers you may have added
   // in individual tests (runtime handlers).
   server.resetHandlers()
+})
+
+afterEach(async () => {
+  if (isBrowserEnv) {
+    try {
+      await _expectNoAxeViolations(document.body, { isIntegrationTest: true })
+    } finally {
+      cleanup()
+    }
+  }
 })
 
 afterAll(() => {

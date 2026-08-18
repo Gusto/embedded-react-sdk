@@ -10,6 +10,7 @@
   "nameLabel": "Contractor name",
   "rateLabel": "Rate",
   "onboardingStatusLabel": "Onboarding status",
+  "statusColumnLabel": "Status",
   "dismissalDateLabel": "Dismissal date",
   "rateHourly": "Hourly — {{rate}}/hr",
   "startsBadge": "Starts {{date}}",

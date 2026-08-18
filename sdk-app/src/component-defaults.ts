@@ -8,7 +8,7 @@
  * Values can be static or use factory functions (evaluated at render time).
  */
 
-type PropValue = string | number | boolean | null
+type PropValue = string | number | boolean | string[] | null
 type PropValueOrFactory = PropValue | (() => PropValue)
 
 export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrFactory>> = {

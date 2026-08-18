@@ -38,8 +38,6 @@ export interface OnboardingOverviewProps extends BaseComponentInterface<'Company
  * @public
  */
 export function OnboardingOverview(props: OnboardingOverviewProps) {
-  useI18n('Company.OnboardingOverview')
-  useComponentDictionary('Company.OnboardingOverview', props.dictionary)
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -47,7 +45,9 @@ export function OnboardingOverview(props: OnboardingOverviewProps) {
   )
 }
 
-const Root = ({ companyId, className, children }: OnboardingOverviewProps) => {
+const Root = ({ companyId, className, children, dictionary }: OnboardingOverviewProps) => {
+  useI18n('Company.OnboardingOverview')
+  useComponentDictionary('Company.OnboardingOverview', dictionary)
   const { onEvent } = useBase()
 
   const { data } = useCompaniesGetOnboardingStatusSuspense({ companyUuid: companyId })
