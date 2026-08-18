@@ -128,21 +128,11 @@ export function PayScheduleAssignmentReview({
         </Components.Heading>
         <Components.Text variant="supporting">
           {hasChanges
-            ? 'Review the names and dates below before confirming your changes.'
+            ? 'When you change an employee’s pay schedule, there may be a gap between their last day on the old schedule and their first day on the new schedule. A transition payroll lets you pay employees for any workdays that fall during this gap.'
             : 'If you intended to make changes, please go back and make them.'}
         </Components.Text>
       </Flex>
-      {hasChanges && (
-        <Flex flexDirection="column" gap={8} alignItems="stretch">
-          <Components.Text variant="supporting" size="sm">
-            <strong>Transition period</strong>: when you change an employee&rsquo;s pay schedule,
-            there may be a gap between their last day on the old schedule and their first day on the
-            new schedule. A transition payroll lets you pay employees for any workdays that fall
-            during this gap.
-          </Components.Text>
-          <DataView label="Pay schedule assignment changes" {...dataViewProps} />
-        </Flex>
-      )}
+      {hasChanges && <DataView label="Pay schedule assignment changes" {...dataViewProps} />}
       <ActionsLayout>
         <Components.Button variant="secondary" onClick={onBack}>
           Back
