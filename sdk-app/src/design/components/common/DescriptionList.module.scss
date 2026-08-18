@@ -1,0 +1,36 @@
+.root {
+  width: 100%;
+
+  .item:not(:last-child) {
+    margin-bottom: toRem(16);
+  }
+
+  dd {
+    margin-inline-start: 0;
+  }
+
+  .itemWithAction {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: toRem(16);
+  }
+
+  .itemWithAction dt,
+  .itemWithAction dd {
+    grid-column: 1;
+  }
+
+  .itemAction {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    flex-shrink: 0;
+  }
+}
+
+.withSeparators .item:not(:last-child) {
+  padding-bottom: toRem(16);
+  margin-bottom: toRem(16);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+}
