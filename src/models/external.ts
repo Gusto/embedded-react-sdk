@@ -189,6 +189,7 @@ export { GarnishmentType } from '@gusto/embedded-api/models/components/garnishme
 export type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 export type { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
 export { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
+export { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument'
 /** `ChristmasDay` entity from the Gusto Embedded API. */
 export type { ChristmasDay } from '@gusto/embedded-api/models/components/holidaypaypolicy'
 /** `ColumbusDay` entity from the Gusto Embedded API. */
@@ -383,6 +384,8 @@ export type {
 export { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
 export type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
 export type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+export type { PrintablePayrollChecksBody } from '@gusto/embedded-api/models/components/printablepayrollchecksbody'
+export { PrintingFormat } from '@gusto/embedded-api/models/components/printablepayrollchecksbody'
 export type { RecoveryCase } from '@gusto/embedded-api/models/components/recoverycase'
 export { RecoveryCaseStatus } from '@gusto/embedded-api/models/components/recoverycase'
 /** `IdentityVerificationStatus` entity from the Gusto Embedded API. */
