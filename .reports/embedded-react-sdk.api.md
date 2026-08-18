@@ -3135,6 +3135,8 @@ export interface GustoBaseProviderProps {
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
+    // @alpha
+    unstableFeatures?: UnstableFeatures;
 }
 
 // @public
@@ -5796,6 +5798,10 @@ interface UnlimitedPolicyDetails {
 
 // @public
 export interface UnorderedListProps extends BaseListProps {
+}
+
+// @alpha
+export interface UnstableFeatures {
 }
 
 // @public
