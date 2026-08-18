@@ -8,6 +8,11 @@ export interface SelectContractorsProps {
   companyId: string
   /** Called with the currently selected contractor ids whenever the selection changes. */
   onSelectionChange: (selectedIds: string[]) => void
+  /**
+   * Seeds selection state on mount. Pass the caller's own previously-selected ids to survive
+   * this component unmounting and remounting (e.g. behind a "Back" button).
+   */
+  initialSelectedIds?: Iterable<string>
   /** Overrides the default empty-state title shown when no contractors match. */
   emptyStateTitle?: string
   /** Overrides the default empty-state description shown when no contractors match. */
@@ -25,10 +30,11 @@ export interface SelectContractorsProps {
 export function SelectContractors({
   companyId,
   onSelectionChange,
+  initialSelectedIds,
   emptyStateTitle,
   emptyStateDescription,
 }: SelectContractorsProps) {
-  const result = useSelectContractors(companyId)
+  const result = useSelectContractors(companyId, initialSelectedIds)
 
   const selectedIdsKey = result.isLoading ? null : [...result.selectedIds].sort().join(',')
 

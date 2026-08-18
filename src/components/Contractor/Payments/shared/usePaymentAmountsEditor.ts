@@ -12,16 +12,26 @@ import {
 } from './SetPaymentAmounts/EditContractorPaymentFormSchema'
 
 /** @internal */
+export type VirtualContractorPayment = ContractorPayments & { isTouched: boolean }
+
+/** @internal */
 export interface UsePaymentAmountsEditorParams {
   contractors: Contractor[]
   allowedPaymentMethods: ContractorPaymentMethod[]
+  /**
+   * Payments to seed state with instead of the zeroed default, keyed by `contractorUuid`.
+   * Contractors without a matching entry still get the zeroed default. Pass the previous
+   * `virtualContractorPayments` here to survive this hook's owner unmounting and remounting
+   * (e.g. a "Back" button that swaps the amounts screen out for another screen and back).
+   */
+  preservedContractorPayments?: VirtualContractorPayment[]
   onEditOpen?: () => void
   onEditSave?: (data: EditContractorPaymentFormValues) => void
 }
 
 /** @internal */
 export interface UsePaymentAmountsEditorReturn {
-  virtualContractorPayments: (ContractorPayments & { isTouched: boolean })[]
+  virtualContractorPayments: VirtualContractorPayment[]
   totals: { wage: number; bonus: number; reimbursement: number; total: number }
   editModal: {
     isOpen: boolean
@@ -45,14 +55,22 @@ function sanitizePaymentMethod(
 export function usePaymentAmountsEditor({
   contractors,
   allowedPaymentMethods,
+  preservedContractorPayments,
   onEditOpen,
   onEditSave,
 }: UsePaymentAmountsEditorParams): UsePaymentAmountsEditorReturn {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
-    () =>
-      contractors.map(contractor => ({
+  const [virtualContractorPayments, setVirtualContractorPayments] = useState<
+    VirtualContractorPayment[]
+  >(() =>
+    contractors.map(contractor => {
+      const preserved = preservedContractorPayments?.find(
+        payment => payment.contractorUuid === contractor.uuid,
+      )
+      if (preserved) return preserved
+
+      return {
         contractorUuid: contractor.uuid,
         paymentMethod: sanitizePaymentMethod(
           contractor.paymentMethod ?? 'Direct Deposit',
@@ -63,12 +81,9 @@ export function usePaymentAmountsEditor({
         bonus: '0',
         reimbursement: '0',
         isTouched: false,
-      })),
-    [contractors, allowedPaymentMethods],
+      }
+    }),
   )
-
-  const [virtualContractorPayments, setVirtualContractorPayments] =
-    useState(initialContractorPayments)
 
   const totals = useMemo(
     () =>
