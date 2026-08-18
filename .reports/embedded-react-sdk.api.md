@@ -129,6 +129,7 @@ import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment';
+import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument';
 import { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HolidayPayPolicyEmployees } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -247,6 +248,8 @@ import { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedu
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { PrintablePayrollChecksBody } from '@gusto/embedded-api/models/components/printablepayrollchecksbody';
+import { PrintingFormat } from '@gusto/embedded-api/models/components/printablepayrollchecksbody';
 import { QueryClient } from '@tanstack/react-query';
 import { Questions } from '@gusto/embedded-api/models/components/employeestatetaxesrequest';
 import { RateType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
@@ -537,6 +540,7 @@ declare namespace APIModels {
         Garnishment,
         GarnishmentChildSupport,
         PaymentPeriod,
+        GeneratedDocumentStatus,
         ChristmasDay,
         ColumbusDay,
         HolidayPayPolicyEmployees,
@@ -656,6 +660,8 @@ declare namespace APIModels {
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
         PayScheduleShow,
+        PrintablePayrollChecksBody,
+        PrintingFormat,
         RecoveryCase,
         RecoveryCaseStatus,
         IdentityVerificationStatus,
@@ -1293,6 +1299,13 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
+    readonly PRINT_CHECKS_START: "payroll/printChecks/start";
+    readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
+    readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
+    readonly PRINT_CHECKS_GENERATE_FAILED: "payroll/printChecks/generate/failed";
+    readonly PRINT_CHECKS_RETRY: "payroll/printChecks/retry";
+    readonly PRINT_CHECKS_CANCEL: "payroll/printChecks/cancel";
+    readonly PRINT_CHECKS_CLOSE: "payroll/printChecks/close";
     readonly RECOVERY_CASE_RESOLVE: "recoveryCase/resolve";
     readonly RECOVERY_CASE_RESUBMIT: "recoveryCase/resubmit";
     readonly RECOVERY_CASE_RESUBMIT_CANCEL: "recoveryCase/resubmit/cancel";
@@ -4222,6 +4235,8 @@ declare namespace Payroll {
         PayrollBlockerListProps,
         RecoveryCases,
         RecoveryCasesProps,
+        PrintChecks,
+        PrintChecksProps,
         OffCyclePayPeriodDateFormData,
         OffCyclePayrollDateType,
         OffCycleCreation,
@@ -4572,6 +4587,16 @@ export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignE
 
 // @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
+
+// @public
+function PrintChecks(input: PrintChecksProps): JSX;
+
+// @public
+interface PrintChecksProps extends Omit<BaseComponentInterface<never>, 'onEvent'> {
+    companyId: string;
+    onEvent?: BaseComponentInterface['onEvent'];
+    payrollId: string;
+}
 
 // @public
 function Profile(input: ProfileProps): JSX;
@@ -4992,6 +5017,14 @@ export interface Resources {
     'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
     // (undocumented)
     'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+    // (undocumented)
+    'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+    // (undocumented)
+    'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+    // (undocumented)
+    'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+    // (undocumented)
+    'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
     // (undocumented)
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)

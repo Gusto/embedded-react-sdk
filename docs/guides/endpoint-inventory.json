@@ -384,6 +384,32 @@
         "recoveryCaseUuid"
       ]
     },
+    "Payroll.PrintChecks": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/generated_documents/:documentType/:requestUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "documentType",
+        "payrollId",
+        "payrollUuid",
+        "requestUuid"
+      ]
+    },
     "Payroll.OffCycleCreation": {
       "endpoints": [
         {

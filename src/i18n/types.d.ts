@@ -7420,12 +7420,6 @@ export namespace Translations {
       directDepositDeadline: string
       /** @defaultValue `"There was an issue generating the paystub PDF. Please try again later."` */
       paystubPdfError: string
-      /** @defaultValue `"You noted {{count}} employee who should be paid by check."` */
-      checkPaymentWarning_one: string
-      /** @defaultValue `"You noted {{count}} employees who should be paid by check."` */
-      checkPaymentWarning_other: string
-      /** @defaultValue `"Employees with this payment method will need their checks delivered to them."` */
-      checkPaymentWarningDescription: string
       /** @defaultValue `"Payroll submitted"` */
       payrollProcessedTitle: string
       /** @defaultValue `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` */
