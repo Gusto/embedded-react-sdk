@@ -4,7 +4,6 @@ import type { PayScheduleType } from './PayScheduleTypeSelection'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 export interface PaySchedulesListRow {
   id: string
@@ -17,7 +16,6 @@ export interface PaySchedulesListRow {
 interface PaySchedulesListProps {
   rows: PaySchedulesListRow[]
   assignmentType?: PayScheduleType | null
-  onAdd?: () => void
   onManage?: () => void
   onEdit?: (row: PaySchedulesListRow) => void
   onEditAutoPilot?: (row: PaySchedulesListRow) => void
@@ -55,7 +53,6 @@ function assignmentModeDescription(type: PayScheduleType | null | undefined): st
 export function PaySchedulesList({
   rows,
   assignmentType,
-  onAdd,
   onManage,
   onEdit,
   onEditAutoPilot,
@@ -106,20 +103,12 @@ export function PaySchedulesList({
     emptyState: () => <EmptyState />,
   })
 
-  const headerActions = (
-    <Flex flexDirection="row" gap={8} alignItems="center">
-      {onManage ? (
-        <Components.Button variant="secondary" onClick={onManage}>
-          Manage
-        </Components.Button>
-      ) : null}
-      {onAdd ? (
-        <Components.Button variant="secondary" onClick={onAdd} icon={<PlusCircleIcon />}>
-          Add
-        </Components.Button>
-      ) : null}
-    </Flex>
-  )
+  const manageAction =
+    onManage != null ? (
+      <Components.Button variant="secondary" onClick={onManage}>
+        Manage
+      </Components.Button>
+    ) : null
 
   const singleEditAction =
     singleRow && onEdit ? (
@@ -152,7 +141,12 @@ export function PaySchedulesList({
       </Components.Text>
       <Components.Box
         withPadding={!hasMultiple}
-        header={<Components.BoxHeader title={title} action={headerActions} />}
+        header={
+          <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
+            <Components.Heading as="h3">{title}</Components.Heading>
+            {manageAction}
+          </Flex>
+        }
       >
         {hasMultiple ? (
           <DataView label="Pay schedules" isWithinBox {...dataViewProps} />

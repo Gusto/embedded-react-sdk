@@ -113,7 +113,6 @@ function ListInteractiveStory({
       <PaySchedulesList
         rows={rows}
         assignmentType={assignmentType}
-        onAdd={() => {}}
         onManage={() => {}}
         onEdit={() => {}}
         onEditAutoPilot={row => {
@@ -417,7 +416,7 @@ export const components: PrototypeComponent[] = [
     slug: 'pay-schedules-list',
     name: 'Pay schedules list',
     description:
-      'Landing block: DataView (multiple) / DescriptionList (single) / empty state, with "Manage" and "Add" header actions and an assignment-mode prose line.',
+      'Landing block: DataView (multiple) / DescriptionList (single) / empty state, with a "Manage" header action and an assignment-mode prose line.',
     configurations: [
       {
         slug: 'multiple-hourly-salaried',
@@ -455,7 +454,8 @@ export const components: PrototypeComponent[] = [
       {
         slug: 'empty',
         name: 'Empty',
-        description: 'No schedules configured yet — empty state with visible Manage + Add.',
+        description:
+          'No schedules configured yet — empty state with the Manage action still available.',
         render: () => <ListInteractiveStory initial={[]} assignmentType={null} />,
       },
     ],
@@ -529,7 +529,7 @@ export const components: PrototypeComponent[] = [
     slug: 'assignment',
     name: 'Assignment',
     description:
-      'Per-type UI for assigning employees or departments to schedules. Includes an "Add new pay schedule" affordance.',
+      'Per-type UI for assigning employees or departments to schedules. Each type places its own "Add pay schedule" affordance appropriately (below the field, in the box header, or at the bottom of the list).',
     configurations: [
       {
         slug: 'single',
@@ -548,7 +548,8 @@ export const components: PrototypeComponent[] = [
       {
         slug: 'by-employee',
         name: 'By employee',
-        description: 'Table with per-employee schedule select, showing Department + Type columns.',
+        description:
+          'Table with per-employee schedule select — Employee column shows name + department; Type column shows compensation type.',
         render: () => <AssignmentStory assignmentType={PayScheduleAssignmentBodyType.ByEmployee} />,
       },
       {

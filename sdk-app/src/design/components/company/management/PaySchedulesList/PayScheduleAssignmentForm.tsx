@@ -79,12 +79,15 @@ export function PayScheduleAssignmentForm({
     data: employees,
     columns: [
       {
-        title: 'Name',
-        render: (employee: Employee) => `${employee.firstName} ${employee.lastName}`,
-      },
-      {
-        title: 'Department',
-        render: (employee: Employee) => departmentLabel(employee, departmentsByUuid),
+        title: 'Employee',
+        render: (employee: Employee) => (
+          <>
+            {`${employee.firstName} ${employee.lastName}`}
+            <Components.Text variant="supporting" size="sm">
+              {departmentLabel(employee, departmentsByUuid)}
+            </Components.Text>
+          </>
+        ),
       },
       {
         title: 'Type',
@@ -109,21 +112,30 @@ export function PayScheduleAssignmentForm({
     ],
   })
 
+  const addScheduleButton = (
+    <Components.Button variant="secondary" onClick={onCreateNew} icon={<PlusCircleIcon />}>
+      Add pay schedule
+    </Components.Button>
+  )
+
   const renderBody = () => {
     switch (assignmentType) {
       case PayScheduleAssignmentBodyType.Single:
         return (
-          <Components.Select
-            label="Pay schedule"
-            description="The pay schedule to use for all employees."
-            isRequired
-            placeholder="Select..."
-            options={payScheduleOptions}
-            value={draft.defaultPayScheduleUuid ?? ''}
-            onChange={value => {
-              onDraftChange({ defaultPayScheduleUuid: value })
-            }}
-          />
+          <Flex flexDirection="column" gap={16} alignItems="flex-start">
+            <Components.Select
+              label="Pay schedule"
+              description="The pay schedule to use for all employees."
+              isRequired
+              placeholder="Select..."
+              options={payScheduleOptions}
+              value={draft.defaultPayScheduleUuid ?? ''}
+              onChange={value => {
+                onDraftChange({ defaultPayScheduleUuid: value })
+              }}
+            />
+            {addScheduleButton}
+          </Flex>
         )
       case PayScheduleAssignmentBodyType.HourlySalaried:
         return (
@@ -150,10 +162,27 @@ export function PayScheduleAssignmentForm({
                 onDraftChange({ salariedPayScheduleUuid: value })
               }}
             />
+            <Flex justifyContent="flex-start">{addScheduleButton}</Flex>
           </Flex>
         )
       case PayScheduleAssignmentBodyType.ByEmployee:
-        return <DataView label="Employee pay schedule assignments" {...employeeTableProps} />
+        return (
+          <Components.Box
+            withPadding={false}
+            header={
+              <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
+                <Components.Heading as="h3">Employees</Components.Heading>
+                {addScheduleButton}
+              </Flex>
+            }
+          >
+            <DataView
+              label="Employee pay schedule assignments"
+              isWithinBox
+              {...employeeTableProps}
+            />
+          </Components.Box>
+        )
       case PayScheduleAssignmentBodyType.ByDepartment:
         return (
           <Flex flexDirection="column" gap={20} alignItems="stretch">
@@ -181,6 +210,7 @@ export function PayScheduleAssignmentForm({
                 onDraftChange({ defaultPayScheduleUuid: value })
               }}
             />
+            <Flex justifyContent="flex-start">{addScheduleButton}</Flex>
           </Flex>
         )
       default:
@@ -190,12 +220,7 @@ export function PayScheduleAssignmentForm({
 
   return (
     <Flex flexDirection="column" gap={24} alignItems="stretch">
-      <Flex flexDirection="row" justifyContent="space-between" alignItems="flex-start">
-        <Components.Heading as="h2">Assign employees</Components.Heading>
-        <Components.Button variant="secondary" onClick={onCreateNew} icon={<PlusCircleIcon />}>
-          Add new pay schedule
-        </Components.Button>
-      </Flex>
+      <Components.Heading as="h2">Assign employees</Components.Heading>
       {renderBody()}
       <ActionsLayout>
         <Components.Button variant="secondary" onClick={onBack}>

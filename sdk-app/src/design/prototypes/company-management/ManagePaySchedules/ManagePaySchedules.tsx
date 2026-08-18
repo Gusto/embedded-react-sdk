@@ -607,9 +607,6 @@ function Root({ companyId }: ManagePaySchedulesProps) {
       <PaySchedulesList
         rows={rows}
         assignmentType={assignment?.type}
-        onAdd={() => {
-          setView({ name: 'form', returnContext: 'list' })
-        }}
         onManage={startTypeSelection}
         onEdit={(row: PaySchedulesListRow) => {
           setView({ name: 'form', payScheduleId: row.id, returnContext: 'list' })
