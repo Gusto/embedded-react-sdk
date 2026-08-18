@@ -29,6 +29,10 @@ import {
   DesignSystemContext,
   useDesignSystemState,
 } from './ThemePanel'
+import {
+  UnstableFeaturesPanelContext,
+  useUnstableFeaturesPanelState,
+} from './UnstableFeaturesPanelContext'
 import { RightPanelShell } from './RightPanelShell'
 import { CommentsProvider, CommentLayer, CommentControls } from './design/comments'
 import { useComments } from './design/comments/CommentsContext'
@@ -103,6 +107,7 @@ export function App() {
   const themePanel = useThemePanel()
   const themeEditorState = useThemeEditorState()
   const designSystemState = useDesignSystemState()
+  const unstableFeaturesState = useUnstableFeaturesPanelState()
   const { chromeId, setChromeId } = useDemoChrome()
   const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
   const mainRef = useRef<HTMLElement>(null)
@@ -301,6 +306,8 @@ export function App() {
           onDeleteManualSave={manual.deleteSave}
           chromeId={chromeId}
           onChromeIdChange={setChromeId}
+          unstableFeatures={unstableFeaturesState.unstableFeatures}
+          onUnstableFeatureChange={unstableFeaturesState.setUnstableFeature}
         />
       )}
     </>
@@ -367,44 +374,46 @@ export function App() {
     <ThemeModeProvider value={themeMode}>
       <ThemeEditorContext.Provider value={themeEditorState}>
         <DesignSystemContext.Provider value={designSystemState}>
-          <CurrentComponentProvider>
-            <CommentsProvider>
-              <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-                {bodyEl}
-                {chromeHidden && panelsOpen && (
-                  <RightPanelShell floating>{panelsContent}</RightPanelShell>
-                )}
-                {chromeHidden && (
-                  <button
-                    type="button"
-                    className="chrome-restore-pill"
-                    onClick={showChrome}
-                    aria-label="Show chrome"
-                  >
-                    <span className="chrome-restore-pill-key">\</span> Show chrome
-                  </button>
-                )}
-                <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-                <CommandPalette
-                  isOpen={commandPalette.isOpen}
-                  onClose={commandPalette.close}
-                  entries={paletteEntries}
-                />
-                {!isManual && demoManager.tokenStatus === 'expired' && (
-                  <TokenExpiredOverlay
-                    onRefresh={demoManager.refreshToken}
-                    isRefreshing={demoManager.isCreatingDemo}
-                    error={demoManager.demoError}
+          <UnstableFeaturesPanelContext.Provider value={unstableFeaturesState}>
+            <CurrentComponentProvider>
+              <CommentsProvider>
+                <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
+                  {bodyEl}
+                  {chromeHidden && panelsOpen && (
+                    <RightPanelShell floating>{panelsContent}</RightPanelShell>
+                  )}
+                  {chromeHidden && (
+                    <button
+                      type="button"
+                      className="chrome-restore-pill"
+                      onClick={showChrome}
+                      aria-label="Show chrome"
+                    >
+                      <span className="chrome-restore-pill-key">\</span> Show chrome
+                    </button>
+                  )}
+                  <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+                  <CommandPalette
+                    isOpen={commandPalette.isOpen}
+                    onClose={commandPalette.close}
+                    entries={paletteEntries}
                   />
-                )}
-                <CommentControls />
-                <ViewportSwitcher
-                  breakpoint={viewport.breakpoint}
-                  onChange={viewport.setBreakpoint}
-                />
-              </div>
-            </CommentsProvider>
-          </CurrentComponentProvider>
+                  {!isManual && demoManager.tokenStatus === 'expired' && (
+                    <TokenExpiredOverlay
+                      onRefresh={demoManager.refreshToken}
+                      isRefreshing={demoManager.isCreatingDemo}
+                      error={demoManager.demoError}
+                    />
+                  )}
+                  <CommentControls />
+                  <ViewportSwitcher
+                    breakpoint={viewport.breakpoint}
+                    onChange={viewport.setBreakpoint}
+                  />
+                </div>
+              </CommentsProvider>
+            </CurrentComponentProvider>
+          </UnstableFeaturesPanelContext.Provider>
         </DesignSystemContext.Provider>
       </ThemeEditorContext.Provider>
     </ThemeModeProvider>

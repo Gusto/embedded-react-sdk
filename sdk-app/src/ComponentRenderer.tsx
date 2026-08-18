@@ -14,6 +14,7 @@ import { useResolvedTheme } from './useThemeModeContext'
 import { darkTheme } from './darkTheme'
 import { useThemeEditor } from './ThemePanel/ThemeEditorContext'
 import { useDesignSystem } from './ThemePanel/DesignSystemContext'
+import { useUnstableFeaturesPanel } from './UnstableFeaturesPanelContext'
 import { nativeComponents } from './ThemePanel/adapters/nativeAdapter'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
@@ -150,6 +151,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
   const { themeOverrides } = useThemeEditor()
   const { designSystem } = useDesignSystem()
   const resolvedComponents = designSystem === 'native' ? nativeComponents : undefined
+  const { unstableFeatures } = useUnstableFeaturesPanel()
   const resolvedSDKTheme = useMemo(() => {
     const base = resolvedTheme === 'dark' ? darkTheme : undefined
     const hasOverrides = Object.keys(themeOverrides).length > 0
@@ -304,6 +306,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
                 config={{ baseUrl: `${window.location.origin}/api/` }}
                 theme={resolvedSDKTheme}
                 components={resolvedComponents}
+                unstableFeatures={unstableFeatures}
                 key={providerKey}
               >
                 <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
