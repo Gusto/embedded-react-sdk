@@ -386,6 +386,118 @@ describe('useContractorDetailsForm', () => {
     })
   })
 
+  describe('switching contractor type', () => {
+    it('clears individual-only fields when switching from Individual to Business', async () => {
+      const { result } = renderForm({
+        companyId: 'company-1',
+        defaultValues: {
+          type: ContractorType.Individual,
+          firstName: 'Jane',
+          lastName: '123',
+          middleInitial: 'Q',
+          ssn: '123-45-6789',
+        },
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const ready = result.current
+      assertReady(ready)
+
+      const { formMethods } = ready.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('type', ContractorType.Business)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('firstName')).toBe('')
+        expect(formMethods.getValues('lastName')).toBe('')
+        expect(formMethods.getValues('middleInitial')).toBe('')
+        expect(formMethods.getValues('ssn')).toBe('')
+      })
+    })
+
+    it('submits successfully after switching to Business despite a previously invalid last name', async () => {
+      let body: Record<string, unknown> | null = null
+      const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          { uuid: 'new-uuid', type: 'Business', is_active: true },
+          { status: 201 },
+        )
+      })
+      server.use(handleCreateContractor(createResolver))
+
+      const { result } = renderForm({
+        companyId: 'company-1',
+        defaultValues: {
+          type: ContractorType.Individual,
+          wageType: WageType.Fixed,
+          firstName: 'Jane',
+          lastName: '123',
+        },
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const ready = result.current
+      assertReady(ready)
+
+      const { formMethods } = ready.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('type', ContractorType.Business)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('lastName')).toBe('')
+      })
+
+      act(() => {
+        formMethods.setValue('businessName', 'Acme LLC')
+      })
+
+      let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+      await act(async () => {
+        submitResult = await ready.actions.onSubmit()
+      })
+
+      expect(createResolver).toHaveBeenCalledTimes(1)
+      expect(submitResult).toMatchObject({ mode: 'create' })
+      expect(body).toMatchObject({ type: 'Business', business_name: 'Acme LLC' })
+    })
+
+    it('clears business-only fields when switching from Business to Individual', async () => {
+      const { result } = renderForm({
+        companyId: 'company-1',
+        defaultValues: {
+          type: ContractorType.Business,
+          businessName: 'Acme LLC',
+          ein: '12-3456789',
+        },
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const ready = result.current
+      assertReady(ready)
+
+      const { formMethods } = ready.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('type', ContractorType.Individual)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('businessName')).toBe('')
+        expect(formMethods.getValues('ein')).toBe('')
+      })
+    })
+  })
+
   describe('update mode', () => {
     const existingContractor = {
       uuid: 'contractor_id',
