@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { Flex } from '@/components/Common'
 
 export interface AutoPilotDialogProps {
   isOpen: boolean
@@ -36,11 +37,13 @@ export function AutoPilotDialog({
       primaryActionLabel="Save"
       closeActionLabel="Cancel"
     >
-      <Components.Text>
-        AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay
-        deadline and funds are debited on your pay deadline.
-      </Components.Text>
-      <Components.Switch label="Enable AutoPilot" value={nextEnabled} onChange={setNextEnabled} />
+      <Flex flexDirection="column" gap={16}>
+        <Components.Text>
+          AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay
+          deadline and funds are debited on your pay deadline.
+        </Components.Text>
+        <Components.Switch label="Enable AutoPilot" value={nextEnabled} onChange={setNextEnabled} />
+      </Flex>
     </Components.Dialog>
   )
 }
