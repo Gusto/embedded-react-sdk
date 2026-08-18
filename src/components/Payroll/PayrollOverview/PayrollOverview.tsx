@@ -20,6 +20,7 @@ import {
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { canCancelPayroll } from '../helpers'
+import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
@@ -109,6 +110,13 @@ const findWireInRequestUuid = (
  * | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
  * | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
  * | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+ * | `payroll/printChecks/start` | User opened the print-checks modal from the embedded print-checks banner | — |
+ * | `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+ * | `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+ * | `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+ * | `payroll/printChecks/retry` | User retried after a failed check generation | — |
+ * | `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+ * | `payroll/printChecks/close` | User closed the print-checks failure or summary screen | — |
  *
  * @param props - See {@link PayrollOverviewProps}.
  * @returns The payroll overview surface.
@@ -193,6 +201,10 @@ const Root = ({
       wireInId={wireInId}
       onEvent={handleWireEvent}
     />
+  )
+
+  const printChecksBanner = (
+    <PrintChecks companyId={companyId} payrollId={payrollId} onEvent={onEvent} />
   )
 
   useEffect(() => {
@@ -435,6 +447,7 @@ const Root = ({
         setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
       }}
       wireInConfirmationRequest={wireInConfirmationRequest}
+      printChecksBanner={printChecksBanner}
       withReimbursements={withReimbursements}
       paymentSpeed={paymentSpeed}
       pagination={pagination}
