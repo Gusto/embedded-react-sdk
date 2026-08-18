@@ -129,6 +129,7 @@ export interface Resources {
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
   'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
   'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
   'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
@@ -7687,6 +7688,33 @@ export namespace Translations {
     retryCta: string
     /** @defaultValue `"Close"` */
     closeCta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksForm` i18n namespace. */
+  export interface PayrollPrintChecksForm {
+    /** @defaultValue `"Choose check stock"` */
+    modalTitle: string
+    /** @defaultValue `"Custom check stock"` */
+    customStockLabel: string
+    /** @defaultValue `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` */
+    customStockDescription: string
+    /** @defaultValue `"Blank check stock"` */
+    blankStockLabel: string
+    /** @defaultValue `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` */
+    blankStockDescription: string
+    /** @defaultValue `"Check number starts with"` */
+    startingCheckNumberLabel: string
+    /** @defaultValue `"This will be the first check number, all other checks will follow sequentially."` */
+    startingCheckNumberDescription: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"View checks"` */
+    submitCta: string
+    /** @defaultValue `"Generating..."` */
+    submitCtaLoading: string
+    validations: {
+      /** @defaultValue `"Enter a valid check number"` */
+      startingCheckNumber: string
+    }
   }
   /** Translation keys for the `Payroll.PrintChecksSummary` i18n namespace. */
   export interface PayrollPrintChecksSummary {
