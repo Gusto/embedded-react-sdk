@@ -3036,6 +3036,39 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/garnishment.
 
 ***
 
+<a id="generateddocumentstatus"></a>
+
+## GeneratedDocumentStatus
+
+> `const` **GeneratedDocumentStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/generateddocument.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/generateddocument.ts#L15)
+
+Current status of the Generated Document
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-generateddocumentstatusfailed"></a> `Failed` | `"failed"` |
+| <a id="property-generateddocumentstatuspending"></a> `Pending` | `"pending"` |
+| <a id="property-generateddocumentstatusstarted"></a> `Started` | `"started"` |
+| <a id="property-generateddocumentstatussucceeded"></a> `Succeeded` | `"succeeded"` |
+
+***
+
+<a id="generateddocumentstatus-1"></a>
+
+## GeneratedDocumentStatus
+
+> **GeneratedDocumentStatus** = `ClosedEnum`\<*typeof* [`GeneratedDocumentStatus`](#generateddocumentstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/generateddocument.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/generateddocument.ts#L15)
+
+Current status of the Generated Document
+
+***
+
 <a id="holidaypaypolicy"></a>
 
 ## HolidayPayPolicy
@@ -6025,6 +6058,56 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/holidaypaypo
 | <a id="property-presidentsdaydate"></a> `date?` | `string` |
 | <a id="property-presidentsdayname"></a> `name?` | `string` |
 | <a id="property-presidentsdayselected"></a> `selected?` | `boolean` |
+
+***
+
+<a id="printablepayrollchecksbody"></a>
+
+## PrintablePayrollChecksBody
+
+> **PrintablePayrollChecksBody** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/printablepayrollchecksbody.ts:24](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/printablepayrollchecksbody.ts#L24)
+
+Request body for generating printable payroll checks.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-printablepayrollchecksbodyprintingformat"></a> `printingFormat` | [`PrintingFormat`](#printingformat-1) | The type of check stock being printed. Check the "Types of check stock" section in this [link](https://support.gusto.com/article/999877761000000/Pay-your-team-by-check) for more info on check types |
+| <a id="property-printablepayrollchecksbodystartingchecknumber"></a> `startingCheckNumber?` | `number` | The starting check number we will start generating checks from. Use to override the sequence that will be used to generate check numbers. |
+
+***
+
+<a id="printingformat"></a>
+
+## PrintingFormat
+
+> `const` **PrintingFormat**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/printablepayrollchecksbody.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/printablepayrollchecksbody.ts#L12)
+
+The type of check stock being printed. Check the "Types of check stock" section in this [link](https://support.gusto.com/article/999877761000000/Pay-your-team-by-check) for more info on check types
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-printingformatbottom"></a> `Bottom` | `"bottom"` |
+| <a id="property-printingformattop"></a> `Top` | `"top"` |
+
+***
+
+<a id="printingformat-1"></a>
+
+## PrintingFormat
+
+> **PrintingFormat** = `ClosedEnum`\<*typeof* [`PrintingFormat`](#printingformat)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/printablepayrollchecksbody.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.1.0/gusto_embedded_v_2026_06_15/src/models/components/printablepayrollchecksbody.ts#L12)
+
+The type of check stock being printed. Check the "Types of check stock" section in this [link](https://support.gusto.com/article/999877761000000/Pay-your-team-by-check) for more info on check types
 
 ***
 
