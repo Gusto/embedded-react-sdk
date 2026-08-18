@@ -304,6 +304,13 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `PAYROLL_WIRE_INSTRUCTIONS_DONE` | `"payroll/wire/instructions/done"` |
 | `PAYROLL_WIRE_INSTRUCTIONS_SELECT` | `"payroll/wire/instructions/select"` |
 | `PAYROLL_WIRE_START_TRANSFER` | `"payroll/wire/startTransfer"` |
+| `PRINT_CHECKS_CANCEL` | `"payroll/printChecks/cancel"` |
+| `PRINT_CHECKS_CLOSE` | `"payroll/printChecks/close"` |
+| `PRINT_CHECKS_GENERATE_FAILED` | `"payroll/printChecks/generate/failed"` |
+| `PRINT_CHECKS_GENERATE_START` | `"payroll/printChecks/generate/start"` |
+| `PRINT_CHECKS_GENERATE_SUCCEEDED` | `"payroll/printChecks/generate/succeeded"` |
+| `PRINT_CHECKS_RETRY` | `"payroll/printChecks/retry"` |
+| `PRINT_CHECKS_START` | `"payroll/printChecks/start"` |
 | `RECOVERY_CASE_RESOLVE` | `"recoveryCase/resolve"` |
 | `RECOVERY_CASE_RESUBMIT` | `"recoveryCase/resubmit"` |
 | `RECOVERY_CASE_RESUBMIT_CANCEL` | `"recoveryCase/resubmit/cancel"` |
@@ -327,9 +334,6 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `RUN_PAYROLL_GROSS_UP_CALCULATED` | `"runPayroll/grossUp/calculated"` |
 | `RUN_PAYROLL_GROSS_UP_SELECTED` | `"runPayroll/grossUp/selected"` |
 | `RUN_PAYROLL_PDF_PAYSTUB_VIEWED` | `"runPayroll/pdfPaystub/viewed"` |
-| `RUN_PAYROLL_PRINT_CHECKS_FAILED` | `"runPayroll/printChecks/failed"` |
-| `RUN_PAYROLL_PRINT_CHECKS_GENERATED` | `"runPayroll/printChecks/generated"` |
-| `RUN_PAYROLL_PRINT_CHECKS_REQUESTED` | `"runPayroll/printChecks/requested"` |
 | `RUN_PAYROLL_PROCESSED` | `"runPayroll/processed"` |
 | `RUN_PAYROLL_PROCESSING_FAILED` | `"runPayroll/processingFailed"` |
 | `RUN_PAYROLL_RECEIPT_GET` | `"runPayroll/receipt/get"` |

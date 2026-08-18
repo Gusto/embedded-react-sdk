@@ -1299,6 +1299,13 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
+    readonly PRINT_CHECKS_START: "payroll/printChecks/start";
+    readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
+    readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
+    readonly PRINT_CHECKS_GENERATE_FAILED: "payroll/printChecks/generate/failed";
+    readonly PRINT_CHECKS_RETRY: "payroll/printChecks/retry";
+    readonly PRINT_CHECKS_CANCEL: "payroll/printChecks/cancel";
+    readonly PRINT_CHECKS_CLOSE: "payroll/printChecks/close";
     readonly RECOVERY_CASE_RESOLVE: "recoveryCase/resolve";
     readonly RECOVERY_CASE_RESUBMIT: "recoveryCase/resubmit";
     readonly RECOVERY_CASE_RESUBMIT_CANCEL: "recoveryCase/resubmit/cancel";
@@ -1344,9 +1351,6 @@ export const componentEvents: {
     readonly PAYROLL_EXIT_FLOW: "payroll/saveAndExit";
     readonly RUN_PAYROLL_GROSS_UP_SELECTED: "runPayroll/grossUp/selected";
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
-    readonly RUN_PAYROLL_PRINT_CHECKS_REQUESTED: "runPayroll/printChecks/requested";
-    readonly RUN_PAYROLL_PRINT_CHECKS_GENERATED: "runPayroll/printChecks/generated";
-    readonly RUN_PAYROLL_PRINT_CHECKS_FAILED: "runPayroll/printChecks/failed";
     readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
     readonly CONTRACTOR_SELF_ONBOARDING_DONE: "contractor/selfOnboarding/done";
     readonly CONTRACTOR_SELF_ONBOARDING_CANCELLED: "contractor/selfOnboarding/cancelled";
@@ -4221,6 +4225,8 @@ declare namespace Payroll {
         PayrollBlockerListProps,
         RecoveryCases,
         RecoveryCasesProps,
+        PrintChecks,
+        PrintChecksProps,
         OffCyclePayPeriodDateFormData,
         OffCyclePayrollDateType,
         OffCycleCreation,
@@ -4571,6 +4577,16 @@ export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignE
 
 // @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
+
+// @public
+function PrintChecks(input: PrintChecksProps): JSX;
+
+// @public
+interface PrintChecksProps extends Omit<BaseComponentInterface<never>, 'onEvent'> {
+    companyId: string;
+    onEvent?: BaseComponentInterface['onEvent'];
+    payrollId: string;
+}
 
 // @public
 function Profile(input: ProfileProps): JSX;
@@ -4992,7 +5008,13 @@ export interface Resources {
     // (undocumented)
     'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
     // (undocumented)
-    'Payroll.PrintChecksModal': Translations.PayrollPrintChecksModal
+    'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+    // (undocumented)
+    'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+    // (undocumented)
+    'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+    // (undocumented)
+    'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
     // (undocumented)
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)

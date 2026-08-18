@@ -665,9 +665,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
-| `runPayroll/printChecks/requested` | User submitted the print-checks modal | Generate printable checks response |
-| `runPayroll/printChecks/generated` | Printable checks finished generating | Generated document |
-| `runPayroll/printChecks/failed` | The print-checks request was rejected or generation failed | Generated document, when generation had started |
+| `payroll/printChecks/start` | User opened the print-checks modal from the embedded print-checks banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed check generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the print-checks failure or summary screen | — |
 
 <br />
 
@@ -680,9 +684,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
-| GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
 | GET | [`/v1/payrolls/:payrollId/employees/:employeeId/pay_stub`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payrolls-payroll_uuid-employees-employee_uuid-pay_stub) |
-| POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
 | GET | [`/v1/wire_in_requests/:wireInRequestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-wire_in_requests-wire_in_request_uuid) |
 
 ***
@@ -731,6 +733,55 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/payrolls/:payrollUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payment-receipts-payrolls-payroll_uuid) |
+
+***
+
+<a id="printchecks"></a>
+
+## PrintChecks
+
+Displays a banner prompting the user to print checks for employees paid by check on a
+processed payroll, and walks them through choosing check stock and generating the check PDF.
+
+<br />
+
+### PrintChecksProps
+
+<a id="printchecksprops"></a>
+
+Props for [PrintChecks](#printchecks).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company that owns the payroll. |
+| `payrollId` | `string` | Identifier of the payroll to generate printable checks for. |
+| `onEvent?` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `payroll/printChecks/start` | User opened the print-checks modal from the banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the failure or summary screen | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
+| POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
 
 ***
 
