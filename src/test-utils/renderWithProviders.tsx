@@ -5,6 +5,7 @@ import { render } from '@testing-library/react'
 import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
 
 // Initialize i18next for testing
 const i18n = i18next.createInstance()
@@ -30,10 +31,14 @@ void i18n.use(initReactI18next).init({
  * - LocaleProvider: Provides locale settings
  * - I18nextProvider: Provides translation functions
  */
-export const renderWithProviders = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) => {
+export const renderWithProviders = (
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'> & { unstableFeatures?: UnstableFeatures },
+) => {
+  const { unstableFeatures, ...renderOptions } = options ?? {}
   const TestProvider = ({ children }: { children: React.ReactNode }) => (
-    <GustoTestProvider>{children}</GustoTestProvider>
+    <GustoTestProvider unstableFeatures={unstableFeatures}>{children}</GustoTestProvider>
   )
 
-  return render(ui, { wrapper: TestProvider, ...options })
+  return render(ui, { wrapper: TestProvider, ...renderOptions })
 }
