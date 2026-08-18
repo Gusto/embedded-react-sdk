@@ -55,6 +55,12 @@ function isHourlyEmployee(employee: Employee): boolean {
   return flsa === FlsaStatus.NONEXEMPT
 }
 
+// In hourly_salaried mode AutoPilot is governed via the Salaried schedule, so
+// the action is suppressed on the Hourly row (mirrors GWS manage_pay_schedules).
+function canEditAutoPilotFor(classification: CompensationRow['classification']): boolean {
+  return classification === 'Salaried'
+}
+
 export function toListData({
   schedules,
   assignment,
@@ -86,14 +92,14 @@ export function toListData({
         classification: 'Salaried',
         ...scheduleFields(salariedSched),
         employeeCount: salariedCount,
-        canEditAutoPilot: true,
+        canEditAutoPilot: canEditAutoPilotFor('Salaried'),
       },
       {
         id: 'hourly',
         classification: 'Hourly',
         ...scheduleFields(hourlySched),
         employeeCount: hourlyCount,
-        canEditAutoPilot: false,
+        canEditAutoPilot: canEditAutoPilotFor('Hourly'),
       },
     ]
     return { type: 'compensation', rows }
