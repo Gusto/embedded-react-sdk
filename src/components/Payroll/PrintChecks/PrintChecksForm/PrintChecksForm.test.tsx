@@ -17,6 +17,7 @@ import { FlowContext } from '@/components/Flow/useFlow'
 describe('PrintChecksForm', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
+  let anchorClickSpy: ReturnType<typeof vi.spyOn>
 
   const flowContextValue = {
     component: null,
@@ -33,6 +34,9 @@ describe('PrintChecksForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // The download is triggered via a synthetic anchor click rather than a real navigation —
+    // jsdom throws "Not implemented: navigation" if this isn't stubbed.
+    anchorClickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
   })
 
   it('omits starting_check_number from the request body for custom check stock', async () => {
@@ -176,6 +180,38 @@ describe('PrintChecksForm', () => {
         documentUrl: 'https://example.com/checks.pdf',
       })
     })
+    await waitFor(() => {
+      expect(anchorClickSpy).toHaveBeenCalledTimes(1)
+    })
+    expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('href', 'https://example.com/checks.pdf')
+  })
+
+  it('does not open any window or navigate anywhere when generation succeeds', async () => {
+    const openSpy = vi.spyOn(window, 'open')
+    server.use(
+      handlePayrollsGeneratePrintableChecks(() =>
+        HttpResponse.json(createPayrollCheck(), { status: 200 }),
+      ),
+    )
+    server.use(
+      handleGeneratedDocumentsGet(() =>
+        HttpResponse.json(
+          createGeneratedDocument({
+            status: 'succeeded',
+            document_urls: ['https://example.com/checks.pdf'],
+          }),
+        ),
+      ),
+    )
+
+    renderForm()
+
+    await user.click(await screen.findByRole('button', { name: 'View checks' }))
+
+    await waitFor(() => {
+      expect(anchorClickSpy).toHaveBeenCalledTimes(1)
+    })
+    expect(openSpy).not.toHaveBeenCalled()
   })
 
   it('fires PRINT_CHECKS_GENERATE_FAILED when the poll reports failure', async () => {

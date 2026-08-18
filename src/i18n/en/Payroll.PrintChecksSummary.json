@@ -1,6 +1,6 @@
 {
   "succeededTitle": "Your checks are ready",
-  "succeededDescription": "They should have opened in a new tab.",
+  "succeededDescription": "The download should have started automatically. If not, use the link below.",
   "viewChecksCta": "View checks",
   "closeCta": "Close"
 }
