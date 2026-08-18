@@ -9,12 +9,6 @@
   "cancelCta": "Cancel",
   "submitCta": "View checks",
   "submitCtaLoading": "Generating...",
-  "succeededTitle": "Your checks are ready",
-  "succeededDescription": "They should have opened in a new tab.",
-  "viewChecksCta": "View checks",
-  "closeCta": "Close",
-  "failedTitle": "We couldn't generate your checks",
-  "retryCta": "Try again",
   "validations": {
     "startingCheckNumber": "Enter a valid check number"
   }

@@ -20,7 +20,7 @@ import {
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { canCancelPayroll } from '../helpers'
-import { PrintChecksModal } from '../PrintChecksModal/PrintChecksModal'
+import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
@@ -110,9 +110,13 @@ const findWireInRequestUuid = (
  * | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
  * | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
  * | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
- * | `runPayroll/printChecks/requested` | User submitted the print-checks modal | Generate printable checks response |
- * | `runPayroll/printChecks/generated` | Printable checks finished generating | Generated document |
- * | `runPayroll/printChecks/failed` | The print-checks request was rejected or generation failed | Generated document, when generation had started |
+ * | `payroll/printChecks/start` | User opened the print-checks modal from the embedded print-checks banner | — |
+ * | `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+ * | `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+ * | `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+ * | `payroll/printChecks/retry` | User retried after a failed check generation | — |
+ * | `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+ * | `payroll/printChecks/close` | User closed the print-checks failure or summary screen | — |
  *
  * @param props - See {@link PayrollOverviewProps}.
  * @returns The payroll overview surface.
@@ -141,7 +145,6 @@ const Root = ({
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
   const [hasSubmittedInSession, setHasSubmittedInSession] = useState(false)
-  const [isPrintChecksOpen, setIsPrintChecksOpen] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
@@ -198,6 +201,10 @@ const Root = ({
       wireInId={wireInId}
       onEvent={handleWireEvent}
     />
+  )
+
+  const printChecksBanner = (
+    <PrintChecks companyId={companyId} payrollId={payrollId} onEvent={onEvent} />
   )
 
   useEffect(() => {
@@ -418,43 +425,32 @@ const Root = ({
   }
 
   return (
-    <>
-      <PayrollOverviewPresentation
-        onEdit={onEdit}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        onPayrollReceipt={onPayrollReceipt}
-        onPaystubDownload={onPaystubDownload}
-        status={isPending || hasSubmittedInSession ? PayrollOverviewStatus.Submitting : status}
-        isProcessed={
-          payrollData.processed === true ||
-          payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
-        }
-        canCancel={canCancelPayroll(payrollData)}
-        onPrintChecksOpen={() => {
-          setIsPrintChecksOpen(true)
-        }}
-        payrollData={payrollData}
-        bankAccount={bankAccount}
-        taxes={taxes}
-        alerts={internalAlerts}
-        submissionBlockers={submissionBlockers}
-        selectedUnblockOptions={selectedUnblockOptions}
-        onUnblockOptionChange={(blockerType, value) => {
-          setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
-        }}
-        wireInConfirmationRequest={wireInConfirmationRequest}
-        withReimbursements={withReimbursements}
-        paymentSpeed={paymentSpeed}
-        pagination={pagination}
-      />
-      <PrintChecksModal
-        isOpen={isPrintChecksOpen}
-        onClose={() => {
-          setIsPrintChecksOpen(false)
-        }}
-        payrollUuid={payrollId}
-      />
-    </>
+    <PayrollOverviewPresentation
+      onEdit={onEdit}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      onPayrollReceipt={onPayrollReceipt}
+      onPaystubDownload={onPaystubDownload}
+      status={isPending || hasSubmittedInSession ? PayrollOverviewStatus.Submitting : status}
+      isProcessed={
+        payrollData.processed === true ||
+        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+      }
+      canCancel={canCancelPayroll(payrollData)}
+      payrollData={payrollData}
+      bankAccount={bankAccount}
+      taxes={taxes}
+      alerts={internalAlerts}
+      submissionBlockers={submissionBlockers}
+      selectedUnblockOptions={selectedUnblockOptions}
+      onUnblockOptionChange={(blockerType, value) => {
+        setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
+      }}
+      wireInConfirmationRequest={wireInConfirmationRequest}
+      printChecksBanner={printChecksBanner}
+      withReimbursements={withReimbursements}
+      paymentSpeed={paymentSpeed}
+      pagination={pagination}
+    />
   )
 }

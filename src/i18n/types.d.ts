@@ -127,7 +127,10 @@ export interface Resources {
   'Payroll.PayrollList': Translations.PayrollPayrollList
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
-  'Payroll.PrintChecksModal': Translations.PayrollPrintChecksModal
+  'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+  'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+  'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
   'Payroll.Transition': Translations.PayrollTransition
@@ -7417,14 +7420,6 @@ export namespace Translations {
       directDepositDeadline: string
       /** @defaultValue `"There was an issue generating the paystub PDF. Please try again later."` */
       paystubPdfError: string
-      /** @defaultValue `"You noted {{count}} employee that should be paid by check."` */
-      checkPaymentWarning_one: string
-      /** @defaultValue `"You noted {{count}} employees that should be paid by check."` */
-      checkPaymentWarning_other: string
-      /** @defaultValue `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` */
-      checkPaymentWarningDescription: string
-      /** @defaultValue `"View and print checks"` */
-      printChecksCta: string
       /** @defaultValue `"Payroll submitted"` */
       payrollProcessedTitle: string
       /** @defaultValue `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` */
@@ -7668,8 +7663,28 @@ export namespace Translations {
       totalEmployees_other: string
     }
   }
-  /** Translation keys for the `Payroll.PrintChecksModal` i18n namespace. */
-  export interface PayrollPrintChecksModal {
+  /** Translation keys for the `Payroll.PrintChecksBanner` i18n namespace. */
+  export interface PayrollPrintChecksBanner {
+    /** @defaultValue `"You noted {{count}} employee that should be paid by check."` */
+    title_one: string
+    /** @defaultValue `"You noted {{count}} employees that should be paid by check."` */
+    title_other: string
+    /** @defaultValue `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` */
+    description: string
+    /** @defaultValue `"View and print checks"` */
+    cta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksFailure` i18n namespace. */
+  export interface PayrollPrintChecksFailure {
+    /** @defaultValue `"We couldn't generate your checks"` */
+    failedTitle: string
+    /** @defaultValue `"Try again"` */
+    retryCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksForm` i18n namespace. */
+  export interface PayrollPrintChecksForm {
     /** @defaultValue `"Choose check stock"` */
     modalTitle: string
     /** @defaultValue `"Custom check stock"` */
@@ -7690,6 +7705,13 @@ export namespace Translations {
     submitCta: string
     /** @defaultValue `"Generating..."` */
     submitCtaLoading: string
+    validations: {
+      /** @defaultValue `"Enter a valid check number"` */
+      startingCheckNumber: string
+    }
+  }
+  /** Translation keys for the `Payroll.PrintChecksSummary` i18n namespace. */
+  export interface PayrollPrintChecksSummary {
     /** @defaultValue `"Your checks are ready"` */
     succeededTitle: string
     /** @defaultValue `"They should have opened in a new tab."` */
@@ -7698,14 +7720,6 @@ export namespace Translations {
     viewChecksCta: string
     /** @defaultValue `"Close"` */
     closeCta: string
-    /** @defaultValue `"We couldn't generate your checks"` */
-    failedTitle: string
-    /** @defaultValue `"Try again"` */
-    retryCta: string
-    validations: {
-      /** @defaultValue `"Enter a valid check number"` */
-      startingCheckNumber: string
-    }
   }
   /** Translation keys for the `Payroll.RecoveryCasesList` i18n namespace. */
   export interface PayrollRecoveryCasesList {

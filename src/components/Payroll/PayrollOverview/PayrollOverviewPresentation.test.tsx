@@ -101,7 +101,6 @@ const defaultProps = {
   onCancel: vi.fn(),
   onPayrollReceipt: vi.fn(),
   onPaystubDownload: vi.fn(),
-  onPrintChecksOpen: vi.fn(),
 }
 
 describe('PayrollOverviewPresentation', () => {

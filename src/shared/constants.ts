@@ -411,9 +411,6 @@ export const runPayrollEvents = {
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
   RUN_PAYROLL_GROSS_UP_SELECTED: 'runPayroll/grossUp/selected',
   RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',
-  RUN_PAYROLL_PRINT_CHECKS_REQUESTED: 'runPayroll/printChecks/requested',
-  RUN_PAYROLL_PRINT_CHECKS_GENERATED: 'runPayroll/printChecks/generated',
-  RUN_PAYROLL_PRINT_CHECKS_FAILED: 'runPayroll/printChecks/failed',
 } as const
 
 /**
@@ -467,6 +464,26 @@ export const recoveryCasesEvents = {
   RECOVERY_CASE_RESUBMIT: 'recoveryCase/resubmit',
   RECOVERY_CASE_RESUBMIT_CANCEL: 'recoveryCase/resubmit/cancel',
   RECOVERY_CASE_RESUBMIT_DONE: 'recoveryCase/resubmit/done',
+} as const
+
+/**
+ * Event keys emitted by the print-checks component.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of the print-checks component and compare against the
+ * value of an entry on this object.
+ *
+ * @public
+ */
+export const printChecksEvents = {
+  PRINT_CHECKS_START: 'payroll/printChecks/start',
+  PRINT_CHECKS_GENERATE_START: 'payroll/printChecks/generate/start',
+  PRINT_CHECKS_GENERATE_SUCCEEDED: 'payroll/printChecks/generate/succeeded',
+  PRINT_CHECKS_GENERATE_FAILED: 'payroll/printChecks/generate/failed',
+  PRINT_CHECKS_RETRY: 'payroll/printChecks/retry',
+  PRINT_CHECKS_CANCEL: 'payroll/printChecks/cancel',
+  PRINT_CHECKS_CLOSE: 'payroll/printChecks/close',
 } as const
 
 /**
@@ -570,6 +587,7 @@ export const componentEvents = {
   ...payrollWireEvents,
   ...informationRequestEvents,
   ...recoveryCasesEvents,
+  ...printChecksEvents,
   ...contractorPaymentEvents,
   ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,

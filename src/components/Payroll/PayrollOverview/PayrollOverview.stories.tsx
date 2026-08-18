@@ -27,7 +27,6 @@ const submissionBlockers = [
 export const PayrollOverviewStory = () => {
   return (
     <PayrollOverviewPresentation
-      onPrintChecksOpen={fn().mockName('printChecksOpen')}
       onEdit={fn().mockName('edit')}
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
@@ -1113,7 +1112,6 @@ export const PayrollOverviewStory = () => {
 export const PayrollOverviewWithWireFunds = () => {
   return (
     <PayrollOverviewPresentation
-      onPrintChecksOpen={fn().mockName('printChecksOpen')}
       onEdit={fn().mockName('edit')}
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
@@ -1175,7 +1173,6 @@ export const PayrollOverviewWithWireFunds = () => {
 export const PayrollOverviewWith4DayDirectDeposit = () => {
   return (
     <PayrollOverviewPresentation
-      onPrintChecksOpen={fn().mockName('printChecksOpen')}
       onEdit={fn().mockName('edit')}
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
@@ -1244,7 +1241,6 @@ export const PayrollOverviewWith4DayDirectDeposit = () => {
 export const WithSkippedEmployee = () => {
   return (
     <PayrollOverviewPresentation
-      onPrintChecksOpen={fn().mockName('printChecksOpen')}
       onEdit={fn().mockName('edit')}
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Federal Income Tax': { employee: 100, employer: 200 } }}
@@ -1442,7 +1438,6 @@ const checkPaymentPayrollData = {
 export const WithCheckPaymentEmployeeUnprocessed = () => {
   return (
     <PayrollOverviewPresentation
-      onPrintChecksOpen={fn().mockName('printChecksOpen')}
       onEdit={fn().mockName('edit')}
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Federal Income Tax': { employee: 80, employer: 160 } }}
@@ -1459,7 +1454,6 @@ export const WithCheckPaymentEmployeeUnprocessed = () => {
 export const WithCheckPaymentEmployeeProcessed = () => {
   return (
     <PayrollOverviewPresentation
-      onPrintChecksOpen={fn().mockName('printChecksOpen')}
       onEdit={fn().mockName('edit')}
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Federal Income Tax': { employee: 80, employer: 160 } }}
