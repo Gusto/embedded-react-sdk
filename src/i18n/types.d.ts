@@ -7714,7 +7714,7 @@ export namespace Translations {
   export interface PayrollPrintChecksSummary {
     /** @defaultValue `"Your checks are ready"` */
     succeededTitle: string
-    /** @defaultValue `"They should have opened in a new tab."` */
+    /** @defaultValue `"The download should have started automatically. If not, use the link below."` */
     succeededDescription: string
     /** @defaultValue `"View checks"` */
     viewChecksCta: string

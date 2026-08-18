@@ -5300,7 +5300,7 @@ Translation keys for the `Payroll.PrintChecksSummary` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollprintcheckssummaryclosecta"></a> `closeCta` | `"Close"` |
-| <a id="property-payrollprintcheckssummarysucceededdescription"></a> `succeededDescription` | `"They should have opened in a new tab."` |
+| <a id="property-payrollprintcheckssummarysucceededdescription"></a> `succeededDescription` | `"The download should have started automatically. If not, use the link below."` |
 | <a id="property-payrollprintcheckssummarysucceededtitle"></a> `succeededTitle` | `"Your checks are ready"` |
 | <a id="property-payrollprintcheckssummaryviewcheckscta"></a> `viewChecksCta` | `"View checks"` |
 
