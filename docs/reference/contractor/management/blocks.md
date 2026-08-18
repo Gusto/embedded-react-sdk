@@ -709,6 +709,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/payments/create` | User chooses to create a new payment | — |
+| `contractor/historicalPayments/create` | User chooses to record a historical payment | — |
 | `contractor/payments/view` | User selects a payment group to view | `{ paymentId: string }` |
 | `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | — |
 

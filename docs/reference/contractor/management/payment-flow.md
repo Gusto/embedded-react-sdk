@@ -30,6 +30,8 @@ The typical step sequence when composing the blocks manually:
 
 Composes the contractor payment blocks into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
 
+The payments list also surfaces a "Record a historical payment" entry point into `HistoricalPaymentFlow` when the `historicalPayments` UnstableFeatures \| unstable feature is enabled on [GustoProvider](../../providers.md#gustoprovider).
+
 Events emitted by the blocks bubble up through the single `onEvent` handler.
 
 ## Example
@@ -71,6 +73,9 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `contractor/payments/cancel` | Fired when a payment is cancelled | `{ paymentId: string }` |
 | `contractor/payments/exit` | Fired when the user completes the payment flow | `{ uuid?: string | null }` |
 | `contractor/payments/rfi/respond` | Fired when the user clicks to respond to a pending information request | — |
+| `contractor/historicalPayments/create` | Fired when the user chooses to record a historical payment (requires the `historicalPayments` unstable feature) | — |
+| `contractor/historicalPayments/created` | Fired when a historical payment group is successfully created | The created `ContractorPaymentGroup` |
+| `contractor/historicalPayments/exit` | Fired when the user completes the historical-payment flow | — |
 | `payroll/wire/form/done` | Fired when wire transfer details are submitted | `{ wireInRequest: WireInRequest, confirmationAlert: { title: string, content?: string } }` |
 | `informationRequest/form/done` | Fired when the information-requests flow completes | — |
 | `informationRequest/form/cancel` | Fired when the information-requests flow is cancelled | — |
@@ -83,6 +88,8 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+| CreateHistoricalPayment | |
+| HistoricalPaymentSummary | |
 | [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [InformationRequests.InformationRequestsFlow](../../company/information-requests/information-requests-flow.md) | Hub for viewing and responding to outstanding information requests from Gusto. |
