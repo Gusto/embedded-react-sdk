@@ -307,15 +307,46 @@ describe('CreateHistoricalPayment', () => {
     )
   })
 
-  it('returns to the amounts grid without losing entered amounts when Edit is clicked', async () => {
+  it('returns to the amounts grid without losing entered amounts when Back is clicked', async () => {
     const { onEvent } = renderScreen([hourlyContractor])
 
     await enterHoursAndContinue(user)
-    await user.click(await screen.findByRole('button', { name: 'Edit' }))
+    await user.click(await screen.findByRole('button', { name: 'Back' }))
 
     expect(screen.getByRole('heading', { name: 'Enter payment amounts' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT)
+  })
+
+  it('returns to contractor selection without losing the selected date or contractors when Back is clicked on the amounts screen', async () => {
+    renderScreen([hourlyContractor])
+
+    await selectContractorAndContinue(user)
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(screen.getByRole('heading', { name: 'Record a historical payment' })).toBeInTheDocument()
+    const group = screen.getByRole('group', { name: new RegExp(DATE_LABEL, 'i') })
+    expect(within(group).getByRole('spinbutton', { name: /^month/i })).toHaveValue(7)
+    expect(screen.getAllByRole('checkbox')[1]).toBeChecked()
+  })
+
+  it('preserves entered amounts when returning to the amounts screen after Back to contractor selection', async () => {
+    renderScreen([hourlyContractor])
+
+    await selectContractorAndContinue(user)
+    await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
+    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await screen.findByRole('heading', { name: 'Enter payment amounts' })
+    expect(screen.getByRole('row', { name: /Ada Lovelace/ })).toHaveTextContent('10.0')
   })
 
   it('creates the payment group on submit and emits created with the payment group response', async () => {
@@ -335,7 +366,7 @@ describe('CreateHistoricalPayment', () => {
     )
   })
 
-  it('replaces the Edit and Submit buttons with a success message after submission', async () => {
+  it('replaces the Back and Submit buttons with a success message after submission', async () => {
     renderScreen([hourlyContractor])
 
     await enterHoursAndContinue(user)
@@ -344,7 +375,7 @@ describe('CreateHistoricalPayment', () => {
     await waitFor(() => {
       expect(screen.getByText('Historical payment recorded successfully')).toBeInTheDocument()
     })
-    expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: 'Submit historical payment' }),
     ).not.toBeInTheDocument()

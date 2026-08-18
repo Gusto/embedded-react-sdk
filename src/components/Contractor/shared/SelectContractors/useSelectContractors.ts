@@ -78,11 +78,20 @@ export type UseSelectContractorsResult = HookLoadingResult | UseSelectContractor
  * all pages, not just the current page slice — "select all" means every
  * matching contractor, including ones scrolled off-screen.
  *
+ * `initialSelectedIds` seeds selection state and is only read on mount. Pass the caller's own
+ * previously-selected ids here to survive an unmount/remount (e.g. a "Back" button that swaps
+ * this component out for another screen and back).
+ *
  * @internal
  */
-export function useSelectContractors(companyId: string): UseSelectContractorsResult {
+export function useSelectContractors(
+  companyId: string,
+  initialSelectedIds?: Iterable<string>,
+): UseSelectContractorsResult {
   const gustoClient = useGustoEmbeddedContext()
-  const [rawSelectedIds, setRawSelectedIds] = useState<Set<string>>(() => new Set())
+  const [rawSelectedIds, setRawSelectedIds] = useState<Set<string>>(
+    () => new Set(initialSelectedIds),
+  )
 
   const firstPageQuery = useContractorsList({
     companyUuid: companyId,

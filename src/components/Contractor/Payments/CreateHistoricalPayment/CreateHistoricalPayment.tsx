@@ -6,7 +6,10 @@ import type { PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as Co
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { usePaymentAmountsEditor } from '../shared/usePaymentAmountsEditor'
+import {
+  usePaymentAmountsEditor,
+  type VirtualContractorPayment,
+} from '../shared/usePaymentAmountsEditor'
 import { SetPaymentAmounts } from '../shared/SetPaymentAmounts'
 import { PaymentSummaryBlock } from '../shared/PaymentSummaryBlock'
 import { getHistoricalPaymentCheckDateBounds } from '../shared/historicalPaymentDateBounds'
@@ -22,6 +25,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents } from '@/shared/constants'
 import { SelectContractors } from '@/components/Contractor/shared/SelectContractors/SelectContractors'
+import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 const ALLOWED_PAYMENT_METHODS: ContractorPaymentMethod[] = ['Historical Payment']
 
@@ -46,10 +50,12 @@ export interface CreateHistoricalPaymentProps extends BaseComponentInterface<'Co
  * Continue on the contractor-selection step is disabled until the paid date is valid and at least
  * one contractor is selected. Continue on the amounts step is disabled until at least one selected
  * contractor has a payment total greater than zero, and swaps the amounts grid for an in-place
- * review (mirroring `CreatePayment`'s preview step); Edit returns to the grid without losing
+ * review (mirroring `CreatePayment`'s preview step); Back returns to the grid without losing
  * entered amounts, and Submit creates the contractor payment group. Once creation succeeds, the
- * Edit and Submit buttons are replaced with a success message, since the creation token has been
+ * Back and Submit buttons are replaced with a success message, since the creation token has been
  * consumed and the host is expected to navigate away (e.g. to `HistoricalPaymentSummary`).
+ * The amounts step also has its own Back button, returning to contractor selection without losing
+ * the selected paid date, contractors, or any amounts already entered.
  *
  * @events
  * | Event | Description | Data |
@@ -88,6 +94,9 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
   const [checkDate, setCheckDate] = useState<Date | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [selection, setSelection] = useState<ContractorSelection | null>(null)
+  const [savedContractorPayments, setSavedContractorPayments] = useState<
+    VirtualContractorPayment[] | undefined
+  >(undefined)
 
   let dateError: string | null = null
   if (checkDate !== null && checkDate > maxDate) {
@@ -127,7 +136,11 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
           errorMessage={dateError ?? undefined}
         />
 
-        <SelectContractors companyId={companyId} onSelectionChange={setSelectedIds} />
+        <SelectContractors
+          companyId={companyId}
+          onSelectionChange={setSelectedIds}
+          initialSelectedIds={selectedIds}
+        />
 
         <ActionsLayout>
           <Button onClick={handleContinue} variant="primary" isDisabled={!canContinue}>
@@ -144,6 +157,11 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
       contractorIds={selection.contractorIds}
       checkDate={selection.checkDate}
       onEvent={onEvent}
+      preservedContractorPayments={savedContractorPayments}
+      onBack={payments => {
+        setSavedContractorPayments(payments)
+        setSelection(null)
+      }}
     />
   )
 }
@@ -153,9 +171,18 @@ interface AmountsAndReviewProps {
   contractorIds: string[]
   checkDate: string
   onEvent: CreateHistoricalPaymentProps['onEvent']
+  preservedContractorPayments?: VirtualContractorPayment[]
+  onBack: (payments: VirtualContractorPayment[]) => void
 }
 
-function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: AmountsAndReviewProps) {
+function AmountsAndReview({
+  companyId,
+  contractorIds,
+  checkDate,
+  onEvent,
+  preservedContractorPayments,
+  onBack,
+}: AmountsAndReviewProps) {
   const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')
   const { Heading, Text, Button, Alert } = useComponentContext()
   const { baseSubmitHandler } = useBase()
@@ -171,6 +198,7 @@ function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: Amou
   const { virtualContractorPayments, totals, editModal } = usePaymentAmountsEditor({
     contractors,
     allowedPaymentMethods: ALLOWED_PAYMENT_METHODS,
+    preservedContractorPayments,
     onEditOpen: () => {
       onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EDIT)
     },
@@ -249,6 +277,8 @@ function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: Amou
   if (previewData) {
     return (
       <Flex flexDirection="column" gap={32}>
+        {!isCreated && <BackButton onClick={handleBackToEdit} />}
+
         <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
           <Flex flexDirection="column" gap={4}>
             <Heading as="h2">{t('review.title')}</Heading>
@@ -259,14 +289,9 @@ function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: Amou
             </Text>
           </Flex>
           {!isCreated && (
-            <Flex justifyContent="flex-end" gap={16}>
-              <Button onClick={handleBackToEdit} variant="secondary">
-                {t('review.editButton')}
-              </Button>
-              <Button onClick={handleSubmit} variant="primary" isLoading={isCreating}>
-                {t('review.submitButton')}
-              </Button>
-            </Flex>
+            <Button onClick={handleSubmit} variant="primary" isLoading={isCreating}>
+              {t('review.submitButton')}
+            </Button>
           )}
         </Flex>
 
@@ -288,6 +313,12 @@ function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: Amou
 
   return (
     <Flex flexDirection="column" gap={32}>
+      <BackButton
+        onClick={() => {
+          onBack(virtualContractorPayments)
+        }}
+      />
+
       <Flex justifyContent="flex-end" gap={16}>
         <Flex flexDirection="column" gap={4}>
           <Heading as="h2">{t('amounts.heading')}</Heading>
@@ -314,5 +345,16 @@ function AmountsAndReview({ companyId, contractorIds, checkDate, onEvent }: Amou
         dictionary={paymentAmountsDictionary}
       />
     </Flex>
+  )
+}
+
+function BackButton({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')
+  const { Button } = useComponentContext()
+
+  return (
+    <Button variant="secondary" icon={<CaretLeftIcon aria-hidden="true" />} onClick={onClick}>
+      {t('backButton')}
+    </Button>
   )
 }

@@ -1892,6 +1892,8 @@ declare namespace ContractorManagement {
         PaymentFlowProps,
         CreatePaymentFlow,
         CreatePaymentFlowProps,
+        HistoricalPaymentFlow,
+        HistoricalPaymentFlowProps,
         ViewPaymentFlow,
         ViewPaymentFlowProps,
         PaymentsList,
@@ -3241,6 +3243,14 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 
 // @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
+
+// @alpha
+function HistoricalPaymentFlow(props: HistoricalPaymentFlowProps): JSX;
+
+// @alpha
+interface HistoricalPaymentFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
 
 // @alpha
 function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps): JSX;
