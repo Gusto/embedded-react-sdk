@@ -467,6 +467,26 @@ export const recoveryCasesEvents = {
 } as const
 
 /**
+ * Event keys emitted by the print-checks component.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of the print-checks component and compare against the
+ * value of an entry on this object.
+ *
+ * @public
+ */
+export const printChecksEvents = {
+  PRINT_CHECKS_START: 'payroll/printChecks/start',
+  PRINT_CHECKS_GENERATE_START: 'payroll/printChecks/generate/start',
+  PRINT_CHECKS_GENERATE_SUCCEEDED: 'payroll/printChecks/generate/succeeded',
+  PRINT_CHECKS_GENERATE_FAILED: 'payroll/printChecks/generate/failed',
+  PRINT_CHECKS_RETRY: 'payroll/printChecks/retry',
+  PRINT_CHECKS_CANCEL: 'payroll/printChecks/cancel',
+  PRINT_CHECKS_CLOSE: 'payroll/printChecks/close',
+} as const
+
+/**
  * Event keys emitted by off-cycle payroll and transition components.
  *
  * @remarks
@@ -567,6 +587,7 @@ export const componentEvents = {
   ...payrollWireEvents,
   ...informationRequestEvents,
   ...recoveryCasesEvents,
+  ...printChecksEvents,
   ...contractorPaymentEvents,
   ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,

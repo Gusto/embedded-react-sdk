@@ -127,6 +127,8 @@ export interface Resources {
   'Payroll.PayrollList': Translations.PayrollPayrollList
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
   'Payroll.Transition': Translations.PayrollTransition
@@ -7664,6 +7666,26 @@ export namespace Translations {
       /** @defaultValue `"{{count}} employees in this payroll"` */
       totalEmployees_other: string
     }
+  }
+  /** Translation keys for the `Payroll.PrintChecksFailure` i18n namespace. */
+  export interface PayrollPrintChecksFailure {
+    /** @defaultValue `"We couldn't generate your checks"` */
+    failedTitle: string
+    /** @defaultValue `"Try again"` */
+    retryCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksSummary` i18n namespace. */
+  export interface PayrollPrintChecksSummary {
+    /** @defaultValue `"Your checks are ready"` */
+    succeededTitle: string
+    /** @defaultValue `"The download should have started automatically. If not, use the link below."` */
+    succeededDescription: string
+    /** @defaultValue `"View checks"` */
+    viewChecksCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
   }
   /** Translation keys for the `Payroll.RecoveryCasesList` i18n namespace. */
   export interface PayrollRecoveryCasesList {
