@@ -127,6 +127,7 @@ export interface Resources {
   'Payroll.PayrollList': Translations.PayrollPayrollList
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
   'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
   'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
@@ -7666,6 +7667,17 @@ export namespace Translations {
       /** @defaultValue `"{{count}} employees in this payroll"` */
       totalEmployees_other: string
     }
+  }
+  /** Translation keys for the `Payroll.PrintChecksBanner` i18n namespace. */
+  export interface PayrollPrintChecksBanner {
+    /** @defaultValue `"You noted {{count}} employee that should be paid by check."` */
+    title_one: string
+    /** @defaultValue `"You noted {{count}} employees that should be paid by check."` */
+    title_other: string
+    /** @defaultValue `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` */
+    description: string
+    /** @defaultValue `"View and print checks"` */
+    cta: string
   }
   /** Translation keys for the `Payroll.PrintChecksFailure` i18n namespace. */
   export interface PayrollPrintChecksFailure {
