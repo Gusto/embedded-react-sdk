@@ -43,7 +43,7 @@ export function QuestionInput({
     case 'radio':
       return <RadioInput {...props} />
     case 'text':
-    case 'account_number': //TODO: temporary - need special handling for account numbers
+    case 'account_number':
       return <TextInput {...props} />
     case 'select':
       return <SelectInput {...props} />
@@ -105,6 +105,7 @@ export function TextInput({
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
   const mask = requirement?.metadata?.mask ?? null
+  const prefix = requirement?.metadata?.prefix ?? undefined
   const transform = useMaskedTransform(mask)
 
   if (!key) return null
@@ -120,6 +121,7 @@ export function TextInput({
       transform={mask ? transform : undefined}
       placeholder={mask ? mask : undefined}
       type={type}
+      adornmentStart={prefix}
       adornmentEnd={isPercent ? '%' : undefined}
     />
   )
