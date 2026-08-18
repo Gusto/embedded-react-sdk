@@ -302,8 +302,22 @@ function Root({ companyId }: ManagePaySchedulesProps) {
 
   const schedules = useMemo(() => schedulesData.payScheduleShowResponse ?? [], [schedulesData])
   const assignment: PayScheduleAssignment | undefined = assignmentsData.payScheduleAssignment
-  const departments = useMemo(() => departmentsData?.departmentList ?? [], [departmentsData])
   const employees = useMemo(() => employeesData?.showEmployees ?? [], [employeesData])
+  // Some demo scopes return no departments even when employees carry a department. Merge
+  // any employee-borne department (uuid + title) into the resolved list so the ByDepartment
+  // path stays available.
+  const departments = useMemo(() => {
+    const byUuid = new Map<string, { uuid: string; title?: string }>()
+    for (const d of departmentsData?.departmentList ?? []) {
+      if (d.uuid) byUuid.set(d.uuid, { uuid: d.uuid, title: d.title ?? undefined })
+    }
+    for (const e of employees) {
+      const uuid = (e as unknown as { departmentUuid?: string }).departmentUuid
+      const title = (e as unknown as { department?: string }).department
+      if (uuid && !byUuid.has(uuid)) byUuid.set(uuid, { uuid, title: title ?? undefined })
+    }
+    return Array.from(byUuid.values())
+  }, [departmentsData, employees])
   const assignableEmployees = useMemo(
     () =>
       employees.filter(e =>
