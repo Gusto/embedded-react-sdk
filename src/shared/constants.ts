@@ -317,6 +317,7 @@ export const contractorPaymentEvents = {
  * @public
  */
 export const contractorHistoricalPaymentEvents = {
+  CONTRACTOR_HISTORICAL_PAYMENT_CREATE: 'contractor/historicalPayments/create',
   CONTRACTOR_HISTORICAL_PAYMENT_EDIT: 'contractor/historicalPayments/edit',
   CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: 'contractor/historicalPayments/update',
   CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: 'contractor/historicalPayments/preview',
