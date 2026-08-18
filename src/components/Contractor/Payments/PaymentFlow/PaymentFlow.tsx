@@ -15,6 +15,8 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @remarks
  * Composes the contractor payment blocks into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
  *
+ * The payments list also surfaces a "Record a historical payment" entry point into `HistoricalPaymentFlow` when the `historicalPayments` {@link UnstableFeatures | unstable feature} is enabled on {@link GustoProvider}.
+ *
  * Events emitted by the blocks bubble up through the single `onEvent` handler.
  *
  * @events
@@ -27,6 +29,9 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `contractor/payments/cancel` | Fired when a payment is cancelled | `{ paymentId: string }` |
  * | `contractor/payments/exit` | Fired when the user completes the payment flow | `{ uuid?: string | null }` |
  * | `contractor/payments/rfi/respond` | Fired when the user clicks to respond to a pending information request | — |
+ * | `contractor/historicalPayments/create` | Fired when the user chooses to record a historical payment (requires the `historicalPayments` unstable feature) | — |
+ * | `contractor/historicalPayments/created` | Fired when a historical payment group is successfully created | The created `ContractorPaymentGroup` |
+ * | `contractor/historicalPayments/exit` | Fired when the user completes the historical-payment flow | — |
  * | `payroll/wire/form/done` | Fired when wire transfer details are submitted | `{ wireInRequest: WireInRequest, confirmationAlert: { title: string, content?: string } }` |
  * | `informationRequest/form/done` | Fired when the information-requests flow completes | — |
  * | `informationRequest/form/cancel` | Fired when the information-requests flow is cancelled | — |
@@ -36,6 +41,8 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * - {@link PaymentsList}
  * - {@link CreatePayment}
  * - {@link PaymentSummary}
+ * - {@link CreateHistoricalPayment}
+ * - {@link HistoricalPaymentSummary}
  * - {@link PaymentHistory}
  * - {@link PaymentStatement}
  * - {@link InformationRequests.InformationRequestsFlow | InformationRequestsFlow}

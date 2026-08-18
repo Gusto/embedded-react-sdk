@@ -40,6 +40,7 @@ export interface PaymentsListInternalProps extends PaymentsListProps {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/create` | User chooses to create a new payment | — |
+ * | `contractor/historicalPayments/create` | User chooses to record a historical payment | — |
  * | `contractor/payments/view` | User selects a payment group to view | `{ paymentId: string }` |
  * | `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | — |
  *
@@ -152,6 +153,10 @@ const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListInternalPr
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
   }
 
+  const onCreateHistoricalPayment = () => {
+    onEvent(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATE)
+  }
+
   const handleDateRangeChange = (numberOfMonths: number) => {
     setNumberOfMonths(numberOfMonths)
   }
@@ -169,6 +174,7 @@ const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListInternalPr
       contractorPayments={contractorPayments}
       numberOfMonths={numberOfMonths}
       onCreatePayment={onCreatePayment}
+      onCreateHistoricalPayment={onCreateHistoricalPayment}
       onDateRangeChange={handleDateRangeChange}
       onViewPayment={onViewPayment}
       alerts={allAlerts}

@@ -12,11 +12,13 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { ConfirmWireDetails } from '@/components/Payroll/ConfirmWireDetails'
 import type { EventType } from '@/shared/constants'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { useUnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
 
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
   contractorPayments: ContractorPaymentGroupWithBlockers[]
   onCreatePayment: () => void
+  onCreateHistoricalPayment: () => void
   onDateRangeChange: (numberOfMonths: number) => void
   onViewPayment: (paymentId: string) => void
   alerts?: InternalAlert[]
@@ -31,6 +33,7 @@ export const PaymentsListPresentation = ({
   contractorPayments,
   numberOfMonths,
   onCreatePayment,
+  onCreateHistoricalPayment,
   onDateRangeChange,
   onViewPayment,
   alerts = [],
@@ -39,11 +42,12 @@ export const PaymentsListPresentation = ({
   onEvent,
   paginationProps,
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Heading, Select, ButtonIcon, Alert } = useComponentContext()
+  const { Box, Button, Heading, Text, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
   const { formatLongWithYear } = useDateFormatter()
+  const { historicalPayments } = useUnstableFeatures()
 
   const dateRangeOptions = [
     { value: '3', label: t('dateRanges.last3Months') },
@@ -174,6 +178,24 @@ export const PaymentsListPresentation = ({
       </Flex>
 
       <DataView label={t('subtitle')} {...dataViewProps} />
+
+      {historicalPayments && (
+        <div className={styles.historicalPaymentCta}>
+          <Box
+            header={
+              <Flex flexDirection="column" gap={4}>
+                <Text weight="semibold">{t('historicalPaymentCta.title')}</Text>
+                <Text variant="supporting">{t('historicalPaymentCta.description')}</Text>
+              </Flex>
+            }
+            footer={
+              <Button variant="secondary" onClick={onCreateHistoricalPayment}>
+                {t('historicalPaymentCta.button')}
+              </Button>
+            }
+          />
+        </div>
+      )}
     </Flex>
   )
 }
