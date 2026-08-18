@@ -139,6 +139,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.PayrollList': ['companyId'],
   'Payroll.PayrollOverview': ['companyId', 'payrollId'],
   'Payroll.PayrollReceipts': ['payrollId'],
+  'Payroll.PrintChecks': ['companyId', 'payrollId'],
   'Payroll.RecoveryCases': ['companyId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
