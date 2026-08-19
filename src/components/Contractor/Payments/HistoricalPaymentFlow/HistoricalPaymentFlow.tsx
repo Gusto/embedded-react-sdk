@@ -9,6 +9,7 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { useRequiredUnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
 
 const EMPTY_BREADCRUMBS: FlowBreadcrumb[] = []
 
@@ -83,6 +84,8 @@ export function HistoricalPaymentFlow(props: HistoricalPaymentFlowProps) {
  * @internal
  */
 export function HistoricalPaymentInternalFlow(props: HistoricalPaymentInternalFlowProps) {
+  useRequiredUnstableFeatures('historicalPayments')
+
   // Remount and reset all state if companyId ever changes
   return <HistoricalPaymentFlowMachine key={props.companyId} {...props} />
 }

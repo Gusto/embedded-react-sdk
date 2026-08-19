@@ -13,7 +13,10 @@ import { createContext, useContext } from 'react'
  *
  * @alpha
  */
-export interface UnstableFeatures {}
+export interface UnstableFeatures {
+  /** Enables recording past payments to contractors within the `ContractorManagement` flows. */
+  historicalPayments?: boolean
+}
 
 /**
  * React context backing {@link useUnstableFeatures}.

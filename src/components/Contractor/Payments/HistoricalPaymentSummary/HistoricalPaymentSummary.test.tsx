@@ -61,6 +61,7 @@ const renderScreen = (onEvent = vi.fn()) => {
       paymentGroupId={PAYMENT_GROUP_ID}
       onEvent={onEvent}
     />,
+    { unstableFeatures: { historicalPayments: true } },
   )
   return { onEvent }
 }
