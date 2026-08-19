@@ -10,6 +10,10 @@ export interface WithUnstableFeatureProps {
 /**
  * Renders `children` only when `feature` is enabled in {@link UnstableFeatures}.
  *
+ * @remarks
+ * `null` is a silent no-op, not an error — this gates new UX inside an already-released
+ * component, so the flag being off must leave that component's public behavior unchanged.
+ *
  * @param props - See {@link WithUnstableFeatureProps}.
  * @returns `children` when the flag is enabled, otherwise `null`.
  * @internal

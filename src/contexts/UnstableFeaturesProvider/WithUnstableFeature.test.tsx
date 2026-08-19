@@ -17,7 +17,9 @@ interface TestFlags extends Partial<UnstableFeatures> {
   exampleFlag?: boolean
 }
 
-const asTestFeatures = (flags: TestFlags): UnstableFeatures => flags as unknown as UnstableFeatures
+const asTestFeatures = (flags: TestFlags): UnstableFeatures => flags
+
+// keyof UnstableFeatures is `never` while the interface is empty, so this cast is unavoidable.
 const asTestFeatureKey = (key: keyof TestFlags): keyof UnstableFeatures =>
   key as unknown as keyof UnstableFeatures
 
