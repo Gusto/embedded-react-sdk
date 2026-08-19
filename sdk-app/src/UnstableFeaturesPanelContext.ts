@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { UNSTABLE_FEATURES_VALUES } from './generated-registry-data'
-import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
+import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 export const UNSTABLE_FEATURE_KEYS = Object.keys(
   UNSTABLE_FEATURES_VALUES,

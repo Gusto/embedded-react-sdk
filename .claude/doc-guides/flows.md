@@ -18,7 +18,7 @@ Flows are thin orchestrators. They compose independently-consumable blocks and s
 
 The flow's `@events` block must aggregate events from all child blocks — a partner consuming the flow sees one unified event surface. List every event the flow can emit, even if it originates in a child block.
 
-**Exception: alpha / unstable-feature-gated children.** If a child block only mounts behind an `@alpha` release tag or a `useRequiredUnstableFeatures`/`WithUnstableFeature` check, omit its events from a `@public` flow's `@events` table (and don't mention the block by name in `@remarks` either). A `@public` doc describes the stable surface — listing an event a partner can't actually trigger without an undocumented opt-in prop is misleading, not merely incomplete. The alpha child documents its own events on its own (excluded) doc page; re-surfacing them on the stable parent defeats that exclusion.
+**Exception: alpha / unstable-feature-gated children.** If a child block only mounts behind an `@alpha` release tag or a `useUnstableFeature`/`WithUnstableFeature` check, omit its events from a `@public` flow's `@events` table (and don't mention the block by name in `@remarks` either). A `@public` doc describes the stable surface — listing an event a partner can't actually trigger without an undocumented opt-in prop is misleading, not merely incomplete. The alpha child documents its own events on its own (excluded) doc page; re-surfacing them on the stable parent defeats that exclusion.
 
 ## @components tag
 
