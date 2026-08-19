@@ -884,7 +884,7 @@ export function DemoSettingsPanel({
               <label key={key} className={styles.checkboxField}>
                 <input
                   type="checkbox"
-                   
+
                   checked={unstableFeatures[key] ?? false}
                   onChange={e => {
                     onUnstableFeatureChange(key, e.target.checked)
