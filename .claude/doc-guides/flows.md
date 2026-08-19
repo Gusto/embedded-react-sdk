@@ -18,6 +18,8 @@ Flows are thin orchestrators. They compose independently-consumable blocks and s
 
 The flow's `@events` block must aggregate events from all child blocks — a partner consuming the flow sees one unified event surface. List every event the flow can emit, even if it originates in a child block.
 
+**Exception: alpha / unstable-feature-gated children.** If a child block only mounts behind an `@alpha` release tag or a `useRequiredUnstableFeatures`/`WithUnstableFeature` check, omit its events from a `@public` flow's `@events` table (and don't mention the block by name in `@remarks` either). A `@public` doc describes the stable surface — listing an event a partner can't actually trigger without an undocumented opt-in prop is misleading, not merely incomplete. The alpha child documents its own events on its own (excluded) doc page; re-surfacing them on the stable parent defeats that exclusion.
+
 ## @components tag
 
 Flows are the primary user of the `@components` block tag — it documents the blocks the flow composes and renders a "Sub-components" table on the generated reference page. One `{@link Name} - description` per line, listing each block (and any hook) the flow orchestrates:
@@ -33,6 +35,7 @@ Place `@components` after `@events` and before `@param`/`@returns` (the `tsdoc-s
 **Correctness rules — get these wrong and the table is misleading:**
 
 - **List what the machine actually renders.** Trace the `*Components.tsx` return statements. Do not list an umbrella name that is itself a standalone `<Flow>` the machine never directly mounts.
+- **Omit alpha / unstable-feature-gated spokes.** Same rule as the events table above — if a spoke only mounts behind an `@alpha` tag or an unstable-feature check, leave it out of `@components` on the `@public` parent.
 - **Wrapper flows collapse.** If the flow composes another separately-documented flow as a step (e.g. `OnboardingExecutionFlow`), list just that sub-flow as one entry — not its internal steps. The sub-flow's own `@components` owns its children.
 - **Cross-namespace nodes need the namespace.** `{@link EmployeeOnboarding.OnboardingExecutionFlow}`, not just `{@link OnboardingExecutionFlow}`.
 - **The diagram and `@components` must agree.** If the GUIDE.md diagram collapses a sub-flow to one node, the `@components` list must match.
