@@ -1761,6 +1761,7 @@ Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n name
 | `amounts.continueButton` | `"Continue"` |
 | `amounts.heading` | `"Enter payment amounts"` |
 | `amounts.subtitle` | `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentbackbutton"></a> `backButton` | `"Back"` |
 | <a id="property-contractorpaymentscreatehistoricalpaymentcontractortableheaders"></a> `contractorTableHeaders` | |
 | `contractorTableHeaders.bonus` | `"Bonus"` |
 | `contractorTableHeaders.contractor` | `"Contractor"` |
@@ -1804,7 +1805,6 @@ Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n name
 | `review.contractor` | `"Contractor"` |
 | `review.contractorPayDate` | `"Contractor Pay Date"` |
 | `review.contractorPaymentsTitle` | `"Contractor Payments"` |
-| `review.editButton` | `"Edit"` |
 | `review.hours` | `"Hours"` |
 | `review.notAvailable` | `"N/A"` |
 | `review.paymentMethod` | `"Payment Method"` |

@@ -1,4 +1,5 @@
 {
+  "backButton": "Back",
   "select": {
     "heading": "Record a historical payment",
     "subtitle": "Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid.",
@@ -66,7 +67,6 @@
   "review": {
     "title": "Review and submit",
     "subtitle": "Historical payment for {{checkDate}}",
-    "editButton": "Edit",
     "submitButton": "Submit historical payment",
     "successTitle": "Historical payment recorded successfully",
     "successMessage": "This payment has been recorded. View it from the payments list to see its full details.",

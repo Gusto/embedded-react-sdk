@@ -1892,6 +1892,8 @@ declare namespace ContractorManagement {
         PaymentFlowProps,
         CreatePaymentFlow,
         CreatePaymentFlowProps,
+        HistoricalPaymentFlow,
+        HistoricalPaymentFlowProps,
         ViewPaymentFlow,
         ViewPaymentFlowProps,
         PaymentsList,
@@ -3135,6 +3137,8 @@ export interface GustoBaseProviderProps {
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
+    // @alpha
+    unstableFeatures?: UnstableFeatures;
 }
 
 // @public
@@ -3241,6 +3245,14 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 
 // @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
+
+// @alpha
+function HistoricalPaymentFlow(props: HistoricalPaymentFlowProps): JSX;
+
+// @alpha
+interface HistoricalPaymentFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
 
 // @alpha
 function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps): JSX;
@@ -5796,6 +5808,10 @@ interface UnlimitedPolicyDetails {
 
 // @public
 export interface UnorderedListProps extends BaseListProps {
+}
+
+// @alpha
+export interface UnstableFeatures {
 }
 
 // @public

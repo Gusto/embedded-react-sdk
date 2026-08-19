@@ -2493,6 +2493,12 @@
         "ContractorManagement.Profile"
       ]
     },
+    "ContractorManagement.HistoricalPaymentFlow": {
+      "blocks": [
+        "ContractorManagement.CreateHistoricalPayment",
+        "ContractorManagement.HistoricalPaymentSummary"
+      ]
+    },
     "ContractorManagement.PaymentFlow": {
       "blocks": [
         "ContractorManagement.CreatePaymentFlow",

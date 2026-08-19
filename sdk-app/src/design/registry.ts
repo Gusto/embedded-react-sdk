@@ -22,6 +22,24 @@ export const categorizedRegistry: CategorizedRegistry = {
   ],
   Companies: [
     {
+      name: 'Manage Pay Schedules',
+      path: '/design/manage-pay-schedules',
+      description:
+        'Multi-schedule pay schedule management block — table with per-row Edit / AutoPilot / Manage employees, an Add CTA, and an AutoPilot toggle dialog.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/manage-pay-schedules',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/manage-pay-schedules/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+    {
       name: 'State Taxes with Future Rates',
       path: '/design/state-taxes-with-future-rates',
       description:
@@ -38,6 +56,18 @@ export const categorizedRegistry: CategorizedRegistry = {
           description: 'Browse individual components and configurations with mock data.',
         },
       ],
+    },
+    {
+      name: 'Tax Filings',
+      path: '/design/tax-filings',
+      description:
+        'View tax filing status for a company — filter, sort, and drill into individual filings.',
+    },
+    {
+      name: 'Agent Payments',
+      path: '/design/agent-payments',
+      description:
+        'View agency tax payments for a company — filter, sort, and drill into tax-liability detail.',
     },
   ],
   Contractors: [
