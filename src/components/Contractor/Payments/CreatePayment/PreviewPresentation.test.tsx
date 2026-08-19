@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { PreviewPresentation } from './PreviewPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { buildContractorIndividual } from '@/test/factories/contractor'
+import { getCellByColumnHeader } from '@/test-utils/tableQueries'
+import { assertDefined } from '@/test-utils/assertions'
 
 const contractors = [
   buildContractorIndividual({
@@ -48,10 +50,28 @@ const renderScreen = () =>
   )
 
 describe('PreviewPresentation', () => {
-  it('shows the row and footer total as wageTotal + reimbursement', async () => {
+  it('shows the group total, the row total, and the footer total as wageTotal + reimbursement', async () => {
     renderScreen()
 
-    // Appears three times: the group's own totals.amount, the contractor's row, and the footer.
-    expect(await screen.findAllByText('$260.00')).toHaveLength(3)
+    const summaryTable = await screen.findByRole('grid', { name: 'Payment Summary' })
+    const contractorPaymentsTable = screen.getByRole('grid', { name: 'What your company pays' })
+
+    const summaryRow = within(summaryTable).getAllByRole('row')[1]
+    assertDefined(summaryRow)
+    expect(getCellByColumnHeader(summaryTable, summaryRow, 'Total amount')).toHaveTextContent(
+      '$260.00',
+    )
+
+    const contractorRow = within(contractorPaymentsTable).getByRole('row', {
+      name: 'Contractor Test',
+    })
+    expect(
+      getCellByColumnHeader(contractorPaymentsTable, contractorRow, 'Total'),
+    ).toHaveTextContent('$260.00')
+
+    const footerRow = within(contractorPaymentsTable).getByRole('row', { name: 'Totals' })
+    expect(getCellByColumnHeader(contractorPaymentsTable, footerRow, 'Total')).toHaveTextContent(
+      '$260.00',
+    )
   })
 })

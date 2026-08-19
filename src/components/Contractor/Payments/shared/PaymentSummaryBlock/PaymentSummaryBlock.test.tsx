@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import {
   PaymentSummaryBlock,
   type PaymentSummaryBlockDictionary,
@@ -7,6 +7,8 @@ import {
 } from './PaymentSummaryBlock'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { buildContractorIndividual } from '@/test/factories/contractor'
+import { getCellByColumnHeader } from '@/test-utils/tableQueries'
+import { assertDefined } from '@/test-utils/assertions'
 
 const dictionary: PaymentSummaryBlockDictionary = {
   paymentSummaryTitle: 'Payment summary',
@@ -65,7 +67,7 @@ const contractorPaymentGroup: PaymentSummaryBlockGroup = {
 }
 
 describe('PaymentSummaryBlock', () => {
-  it('computes the hourly wage column from hours x rate rather than the raw wage field', () => {
+  it('computes the hourly wage column from hours x rate rather than the raw wage field', async () => {
     renderWithProviders(
       <PaymentSummaryBlock
         contractorPaymentGroup={contractorPaymentGroup}
@@ -74,11 +76,24 @@ describe('PaymentSummaryBlock', () => {
       />,
     )
 
-    // Appears twice: the contractor's row and the single-contractor footer total.
-    expect(screen.getAllByText('$180.00')).toHaveLength(2)
+    const contractorPaymentsTable = await screen.findByRole('grid', {
+      name: dictionary.contractorPaymentsTitle,
+    })
+
+    const contractorRow = within(contractorPaymentsTable).getByRole('row', {
+      name: 'Contractor Test',
+    })
+    expect(
+      getCellByColumnHeader(contractorPaymentsTable, contractorRow, 'Fixed amount'),
+    ).toHaveTextContent('$180.00')
+
+    const footerRow = within(contractorPaymentsTable).getByRole('row', { name: 'Totals' })
+    expect(
+      getCellByColumnHeader(contractorPaymentsTable, footerRow, 'Fixed amount'),
+    ).toHaveTextContent('$180.00')
   })
 
-  it('includes reimbursement in the per-row and footer total', () => {
+  it('includes reimbursement in the group total, per-row total, and footer total', async () => {
     renderWithProviders(
       <PaymentSummaryBlock
         contractorPaymentGroup={contractorPaymentGroup}
@@ -87,6 +102,27 @@ describe('PaymentSummaryBlock', () => {
       />,
     )
 
-    expect(screen.getAllByText('$260.00').length).toBeGreaterThanOrEqual(2)
+    const summaryTable = await screen.findByRole('grid', { name: dictionary.paymentSummaryTitle })
+    const contractorPaymentsTable = screen.getByRole('grid', {
+      name: dictionary.contractorPaymentsTitle,
+    })
+
+    const summaryRow = within(summaryTable).getAllByRole('row')[1]
+    assertDefined(summaryRow)
+    expect(getCellByColumnHeader(summaryTable, summaryRow, 'Total amount')).toHaveTextContent(
+      '$260.00',
+    )
+
+    const contractorRow = within(contractorPaymentsTable).getByRole('row', {
+      name: 'Contractor Test',
+    })
+    expect(
+      getCellByColumnHeader(contractorPaymentsTable, contractorRow, 'Total'),
+    ).toHaveTextContent('$260.00')
+
+    const footerRow = within(contractorPaymentsTable).getByRole('row', { name: 'Totals' })
+    expect(getCellByColumnHeader(contractorPaymentsTable, footerRow, 'Total')).toHaveTextContent(
+      '$260.00',
+    )
   })
 })

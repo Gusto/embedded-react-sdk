@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 import { PaymentHistoryPresentation } from './PaymentHistoryPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { buildContractorIndividual } from '@/test/factories/contractor'
+import { getCellByColumnHeader } from '@/test-utils/tableQueries'
 
 const contractors = [
   buildContractorIndividual({
@@ -53,6 +54,8 @@ describe('PaymentHistoryPresentation', () => {
   it('shows the total as wageTotal + reimbursement, without double-counting bonus', async () => {
     renderScreen()
 
-    expect(await screen.findByText('$260.00')).toBeInTheDocument()
+    const table = await screen.findByTestId('data-table')
+    const row = within(table).getByRole('row', { name: 'Contractor Test' })
+    expect(getCellByColumnHeader(table, row, 'Total')).toHaveTextContent('$260.00')
   })
 })

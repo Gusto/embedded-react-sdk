@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
 import { PaymentStatementPresentation } from './PaymentStatementPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { buildContractorIndividual } from '@/test/factories/contractor'
+import { getCellByColumnHeader } from '@/test-utils/tableQueries'
 
 const contractor = buildContractorIndividual({
   uuid: 'contractor-1',
@@ -38,6 +39,8 @@ describe('PaymentStatementPresentation', () => {
       />,
     )
 
-    expect(await screen.findByText('$260.00')).toBeInTheDocument()
+    const table = await screen.findByTestId('data-table')
+    const row = within(table).getByRole('row', { name: 'Direct Deposit' })
+    expect(getCellByColumnHeader(table, row, 'Amount')).toHaveTextContent('$260.00')
   })
 })
