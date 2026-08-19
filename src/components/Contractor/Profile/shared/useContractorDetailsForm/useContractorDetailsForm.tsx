@@ -379,6 +379,7 @@ export function useContractorDetailsForm({
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
     resetOptions: { keepDirtyValues: true },
+    shouldUnregister: true,
   })
 
   const [watchedType, watchedWageType, watchedSelfOnboarding, watchedFileNewHireReport] = useWatch({

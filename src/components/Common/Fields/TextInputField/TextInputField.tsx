@@ -23,7 +23,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   onBlur,
   inputRef,
   FieldComponent,
-  shouldUnregister,
   ...textInputProps
 }: TextInputFieldProps) => {
   const Components = useComponentContext()
@@ -39,7 +38,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
     description,
     onBlur,
     inputRef,
-    shouldUnregister,
   })
 
   const RenderComponent = FieldComponent ?? Components.TextInput

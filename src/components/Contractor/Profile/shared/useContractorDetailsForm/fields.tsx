@@ -168,7 +168,7 @@ export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameVal
 
 /** @internal */
 export function FirstNameField(props: FirstNameFieldProps) {
-  return <TextInputHookField {...props} name="firstName" shouldUnregister />
+  return <TextInputHookField {...props} name="firstName" />
 }
 
 /**
@@ -180,7 +180,7 @@ export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameVali
 
 /** @internal */
 export function LastNameField(props: LastNameFieldProps) {
-  return <TextInputHookField {...props} name="lastName" shouldUnregister />
+  return <TextInputHookField {...props} name="lastName" />
 }
 
 /**
@@ -192,7 +192,7 @@ export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<Req
 
 /** @internal */
 export function MiddleInitialField(props: MiddleInitialFieldProps) {
-  return <TextInputHookField {...props} name="middleInitial" shouldUnregister />
+  return <TextInputHookField {...props} name="middleInitial" />
 }
 
 /**
@@ -204,7 +204,7 @@ export type BusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<Requ
 
 /** @internal */
 export function BusinessNameField(props: BusinessNameFieldProps) {
-  return <TextInputHookField {...props} name="businessName" shouldUnregister />
+  return <TextInputHookField {...props} name="businessName" />
 }
 
 /**
@@ -227,7 +227,6 @@ export function SsnField(props: SsnFieldProps) {
       name="ssn"
       transform={normalizeSSN}
       placeholder={placeholderSSN}
-      shouldUnregister
     />
   )
 }
@@ -252,7 +251,6 @@ export function EinField(props: EinFieldProps) {
       name="ein"
       transform={normalizeEin}
       placeholder={placeholderEin}
-      shouldUnregister
     />
   )
 }
