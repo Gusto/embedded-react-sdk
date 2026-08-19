@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, test, expect } from 'vitest'
 import { WithUnstableFeature } from './WithUnstableFeature'
-import { UnstableFeaturesContext, type UnstableFeatures } from './useUnstableFeatures'
+import { UnstableFeaturesContext, type UnstableFeatures } from './useUnstableFeature'
 
 /**
  * `UnstableFeatures` may have no active flags at any given time (and its real flags change as

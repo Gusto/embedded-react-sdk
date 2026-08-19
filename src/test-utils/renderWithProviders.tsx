@@ -5,7 +5,7 @@ import { render } from '@testing-library/react'
 import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
+import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 // Initialize i18next for testing
 const i18n = i18next.createInstance()
