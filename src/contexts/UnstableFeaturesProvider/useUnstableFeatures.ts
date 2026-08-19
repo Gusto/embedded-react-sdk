@@ -41,11 +41,11 @@ export const useUnstableFeatures = (): UnstableFeatures => useContext(UnstableFe
  * integration mistake, not a runtime state, the same as {@link useComponentContext} throwing when
  * called outside a `ComponentsProvider`.
  *
- * @param features - The {@link UnstableFeatures} flags the calling component requires.
+ * @param features - The {@link UnstableFeatures} flags the calling component requires, as individual arguments.
  * @throws When any flag in `features` is not enabled.
  * @internal
  */
-export function useRequiredUnstableFeatures(features: (keyof UnstableFeatures)[]): void {
+export function useRequiredUnstableFeatures(...features: (keyof UnstableFeatures)[]): void {
   const unstableFeatures = useUnstableFeatures()
   const missing = features.filter(feature => !unstableFeatures[feature])
 

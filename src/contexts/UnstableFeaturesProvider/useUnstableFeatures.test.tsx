@@ -108,7 +108,7 @@ describe('useRequiredUnstableFeatures', () => {
     expect(() =>
       renderHook(
         () => {
-          useRequiredUnstableFeatures([EXAMPLE_FLAG])
+          useRequiredUnstableFeatures(EXAMPLE_FLAG)
         },
         {
           wrapper: ({ children }) => (
@@ -125,7 +125,7 @@ describe('useRequiredUnstableFeatures', () => {
     expect(() =>
       renderHook(
         () => {
-          useRequiredUnstableFeatures([EXAMPLE_FLAG])
+          useRequiredUnstableFeatures(EXAMPLE_FLAG)
         },
         {
           wrapper: ({ children }) => (
@@ -141,7 +141,7 @@ describe('useRequiredUnstableFeatures', () => {
   test('throws naming the flag when no provider is present', () => {
     expect(() => {
       renderHook(() => {
-        useRequiredUnstableFeatures([EXAMPLE_FLAG])
+        useRequiredUnstableFeatures(EXAMPLE_FLAG)
       })
     }).toThrow('exampleFlag')
   })
@@ -150,7 +150,7 @@ describe('useRequiredUnstableFeatures', () => {
     expect(() =>
       renderHook(
         () => {
-          useRequiredUnstableFeatures([EXAMPLE_FLAG, OTHER_FLAG])
+          useRequiredUnstableFeatures(EXAMPLE_FLAG, OTHER_FLAG)
         },
         {
           wrapper: ({ children }) => (
