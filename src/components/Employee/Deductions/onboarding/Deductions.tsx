@@ -1,10 +1,10 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import {
   DeductionsListContextual,
   type DeductionsContextInterface,
 } from './deductionsContextualComponents'
 import { deductionsMachine } from './stateMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'

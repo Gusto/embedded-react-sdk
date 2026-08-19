@@ -1,7 +1,7 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { PaymentMethodContextInterface } from './PaymentMethodComponents'
 import { CardContextual, PaymentMethodEditFormContextual } from './PaymentMethodComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 

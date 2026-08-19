@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { createMachine } from 'robot3'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import {
@@ -12,6 +11,7 @@ import {
   payrollExecutionMachine,
   getPayrollExecutionBreadcrumbsNodes,
 } from './payrollExecutionMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'

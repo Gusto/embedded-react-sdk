@@ -1,11 +1,10 @@
 import { Suspense } from 'react'
-import { useMachine } from 'react-robot'
-import { type Machine, type SendFunction } from 'robot3'
 import type { OnEventType } from '../Base/useBase'
 import { Flex } from '../Common/Flex'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
 import { FlowHeader } from './FlowHeader'
+import { useMachine, type Machine } from '@/lib/state-machine'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import { type EventType } from '@/shared/constants'
 
@@ -35,16 +34,15 @@ type FlowProps<M extends Machine> = {
 }
 
 /**
- * Drives a robot3 state machine that orchestrates a multi-step SDK flow, rendering the active
+ * Drives a state machine that orchestrates a multi-step SDK flow, rendering the active
  * step component inside a {@link FlowContext} provider with optional header chrome above it.
  *
  * @remarks
- * Re-emits every event produced by the state machine (or the active child machine, when one is
- * nested) to the upstream `onEvent` callback, so the consuming flow component (e.g. `PayrollFlow`,
- * `OnboardingFlow`) can forward them to partner code. The set of event types is defined by the
- * machine itself rather than a fixed catalogue.
+ * Re-emits every event to the upstream `onEvent` callback, so the consuming flow component
+ * (e.g. `PayrollFlow`, `OnboardingFlow`) can forward them to partner code. The set of event
+ * types is defined by the machine itself rather than a fixed catalogue.
  *
- * @typeParam M - The robot3 {@link Machine} type whose context extends {@link FlowContextInterface}.
+ * @typeParam M - The {@link Machine} type whose context extends {@link FlowContextInterface}.
  * @param props - Component props: the `machine` instance to run and an `onEvent` handler that
  *   receives every event the machine emits.
  * @returns A React element rendering the machine's current `component` inside the flow context,
@@ -55,21 +53,13 @@ export const Flow = <M extends Machine<object, FlowContextInterface>>({
   onEvent,
   machine,
 }: FlowProps<M>) => {
-  const [current, send, service] = useMachine(machine, {
+  const [current, send] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
   })
 
   function handleEvent(type: EventType, data: unknown): void {
-    const event = { type, payload: data }
-    const sendFn = send as SendFunction<string>
-    //When dealing with nested state machine, correct machine needs to recieve an event
-    if (service.child) {
-      ;(service.child.send as SendFunction<string>)(event)
-    } else {
-      sendFn(event)
-    }
-    // Pass event upstream - onEvent can be optional on Flow component
+    send({ type, payload: data })
     onEvent(type, data)
   }
 

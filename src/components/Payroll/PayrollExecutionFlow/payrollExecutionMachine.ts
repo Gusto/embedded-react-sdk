@@ -1,4 +1,3 @@
-import { transition, reduce, state, guard } from 'robot3'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
@@ -9,6 +8,7 @@ import {
   PayrollBlockerContextual,
   type PayrollFlowContextInterface,
 } from '../PayrollFlow/PayrollFlowComponents'
+import { transition, reduce, state, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import {

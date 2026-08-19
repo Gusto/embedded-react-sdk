@@ -1,4 +1,3 @@
-import { transition, reduce, state, guard } from 'robot3'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import {
   AddressContextual,
@@ -10,6 +9,7 @@ import {
   SubmitContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
+import { transition, reduce, state, guard } from '@/lib/state-machine'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'

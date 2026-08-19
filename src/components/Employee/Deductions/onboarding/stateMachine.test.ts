@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { deductionsMachine } from './stateMachine'
 import type { DeductionsContextInterface } from './deductionsContextualComponents'
 import { componentEvents } from '@/shared/constants'
@@ -23,7 +23,7 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
 }
 
 describe('deductionsMachine', () => {
-  // Regression test for SDK-1169: `done` used to be a robot3 final state (no
+  // Regression test for SDK-1169: `done` used to be a final state (no
   // transitions out) reached from `list` on EMPLOYEE_DEDUCTION_DONE. A host that kept
   // this component mounted past that signal was left with a deductions list whose
   // Add/Edit controls could never fire another transition. EMPLOYEE_DEDUCTION_DONE now

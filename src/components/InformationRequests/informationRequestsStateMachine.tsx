@@ -1,6 +1,6 @@
-import { state, transition, reduce } from 'robot3'
 import type { InformationRequestsContextInterface } from './InformationRequestsComponents'
 import { InformationRequestFormContextual } from './InformationRequestsComponents'
+import { state, transition, reduce } from '@/lib/state-machine'
 import { informationRequestEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

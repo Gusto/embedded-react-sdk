@@ -1,10 +1,10 @@
-import { transition, reduce, state, guard } from 'robot3'
 import {
   FederalTaxesContextual,
   StateTaxesContextual,
   DeductionsContextual,
   type OnboardingContextInterface,
 } from './OnboardingExecutionFlowComponents'
+import { transition, reduce, state, guard } from '@/lib/state-machine'
 import {
   componentEvents,
   EmployeeSelfOnboardingStatuses,

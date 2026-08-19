@@ -1,4 +1,3 @@
-import { transition, reduce, state, guard } from 'robot3'
 import {
   PolicyListContextual,
   SelectPolicyTypeContextual,
@@ -17,6 +16,7 @@ import {
   type AddEmployeesSource,
 } from './TimeOffFlowComponents'
 import type { TimeOffPolicyType } from './timeOffPolicyTypes'
+import { transition, reduce, state, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 

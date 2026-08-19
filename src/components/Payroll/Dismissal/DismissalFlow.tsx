@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { createMachine } from 'robot3'
 import { dismissalMachine, dismissalBreadcrumbsNodes } from './dismissalStateMachine'
 import {
   DismissalPayPeriodSelectionContextual,
@@ -7,6 +6,7 @@ import {
   type DismissalFlowContextInterface,
   type DismissalFlowProps,
 } from './DismissalFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent } from '@/components/Base/Base'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'

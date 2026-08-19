@@ -555,7 +555,7 @@ export const timeOffEvents = {
  * ```
  */
 export const componentEvents = {
-  ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
+  ROBOT_MACHINE_DONE: 'done',
   ERROR: 'ERROR',
   CANCEL: 'CANCEL',
   BREADCRUMB_NAVIGATE: 'breadcrumb/navigate',

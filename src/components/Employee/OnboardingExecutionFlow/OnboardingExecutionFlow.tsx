@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import {
   onboardingExecutionMachine,
@@ -9,6 +8,7 @@ import {
   type OnboardingContextInterface,
   type OnboardingDefaultValues,
 } from './OnboardingExecutionFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType, EmployeeOnboardingStatus } from '@/shared/constants'

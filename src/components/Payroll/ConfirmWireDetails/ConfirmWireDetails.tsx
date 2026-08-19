@@ -1,5 +1,3 @@
-import { createMachine } from 'robot3'
-import { useMachine } from 'react-robot'
 import { Suspense, useMemo, useRef, useState } from 'react'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
@@ -11,6 +9,7 @@ import styles from './ConfirmWireDetails.module.scss'
 import { BaseComponent, BaseBoundaries } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
+import { createMachine, useMachine } from '@/lib/state-machine'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 
 /**

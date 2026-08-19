@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { dashboardStateMachine } from './dashboardStateMachine'
 import { DashboardViewContextual, type DashboardContextInterface } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'

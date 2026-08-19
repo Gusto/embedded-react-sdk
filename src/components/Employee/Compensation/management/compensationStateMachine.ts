@@ -1,4 +1,3 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { CompensationContextInterface } from './CompensationComponents'
 import {
@@ -7,6 +6,7 @@ import {
   CompensationAddJobFormContextual,
   CompensationAddAnotherJobFormContextual,
 } from './CompensationComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

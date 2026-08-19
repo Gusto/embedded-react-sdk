@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { terminationMachine, terminationBreadcrumbNodes } from './terminationStateMachine'
 import type {
@@ -6,6 +5,7 @@ import type {
   TerminationFlowContextInterface,
 } from './TerminationFlowComponents'
 import { TerminateEmployeeContextual } from './TerminationFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 

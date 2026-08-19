@@ -1,7 +1,7 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { HomeAddressContextInterface } from './HomeAddressComponents'
 import { CardContextual, HomeAddressEditFormContextual } from './HomeAddressComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 

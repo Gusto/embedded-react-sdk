@@ -504,7 +504,7 @@ describe('Compensation', () => {
 
     // Regression test for SDK-1169: after leaving and returning to a still-mounted
     // Compensation component, "Add new job"/"Edit" silently stopped navigating. Root
-    // cause: `done` was modeled as a robot3 final state (no transitions out), so a host
+    // cause: `done` was modeled as a final state (no transitions out), so a host
     // that doesn't unmount Compensation once `employee/compensation/done` fires was
     // left with a jobs list whose controls could never navigate again. The fix removes
     // the terminal state entirely — Flow re-emits the DONE event to the parent

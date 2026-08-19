@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { employeeListStateMachine } from './employeeListStateMachine'
 import {
@@ -6,6 +5,7 @@ import {
   type EmployeeListFlowContextInterface,
   type EmployeeListFlowProps,
 } from './EmployeeListFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 
 /**
