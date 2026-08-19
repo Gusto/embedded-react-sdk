@@ -311,6 +311,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `REVIEW_PAYROLL` | `"payroll/review"` |
 | `ROBOT_MACHINE_DONE` | `"done"` |
 | `RUN_OFF_CYCLE_PAYROLL` | `"runPayroll/offCycle/start"` |
+| `RUN_PAYROLL_ALREADY_PROCESSED` | `"runPayroll/alreadyProcessed"` |
 | `RUN_PAYROLL_BACK` | `"runPayroll/back"` |
 | `RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED` | `"runPayroll/blocker/resolutionAttempted"` |
 | `RUN_PAYROLL_BLOCKERS_DETECTED` | `"runPayroll/blockers/detected"` |

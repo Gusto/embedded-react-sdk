@@ -1309,6 +1309,7 @@ export const componentEvents: {
     readonly PAYROLL_WIRE_FORM_CANCEL: "payroll/wire/form/cancel";
     readonly RUN_PAYROLL_BACK: "runPayroll/back";
     readonly RUN_PAYROLL_CALCULATED: "runPayroll/calculated";
+    readonly RUN_PAYROLL_ALREADY_PROCESSED: "runPayroll/alreadyProcessed";
     readonly RUN_PAYROLL_CANCELLED: "runPayroll/cancelled";
     readonly RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: "runPayroll/cancelled/alertDismissed";
     readonly RUN_PAYROLL_EDIT: "runPayroll/edit";

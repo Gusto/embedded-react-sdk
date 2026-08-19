@@ -448,7 +448,7 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 
 ### PayScheduleField
 
-> **PayScheduleField** = `"frequency"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customName"` \| `"customTwicePerMonth"`
+> **PayScheduleField** = `"frequency"` \| `"customName"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customTwicePerMonth"`
 
 Union of field names managed by the pay schedule form.
 
