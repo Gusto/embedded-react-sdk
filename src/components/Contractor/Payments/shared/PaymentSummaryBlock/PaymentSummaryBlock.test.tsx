@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
-import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import {
   PaymentSummaryBlock,
   type PaymentSummaryBlockDictionary,
   type PaymentSummaryBlockGroup,
 } from './PaymentSummaryBlock'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { buildContractorIndividual } from '@/test/factories/contractor'
 
 const dictionary: PaymentSummaryBlockDictionary = {
   paymentSummaryTitle: 'Payment summary',
@@ -33,18 +33,13 @@ const dictionary: PaymentSummaryBlockDictionary = {
   notAvailable: 'N/A',
 }
 
-const contractors: Contractor[] = [
-  {
+const contractors = [
+  buildContractorIndividual({
     uuid: 'contractor-1',
-    firstName: 'Ada',
-    lastName: 'Lovelace',
-    type: 'Individual',
     wageType: 'Hourly',
     hourlyRate: '18.00',
     paymentMethod: 'Direct Deposit',
-    isActive: true,
-    onboardingStatus: 'onboarding_completed',
-  },
+  }),
 ]
 
 // Hourly contractor: $18/hr x 10hrs + $50 bonus + $30 reimbursement.
