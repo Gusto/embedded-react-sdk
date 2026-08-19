@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -381,8 +381,6 @@ export function useContractorDetailsForm({
     resetOptions: { keepDirtyValues: true },
   })
 
-  const { resetField, setValue } = formMethods
-
   const [watchedType, watchedWageType, watchedSelfOnboarding, watchedFileNewHireReport] = useWatch({
     control: formMethods.control,
     name: ['type', 'wageType', 'selfOnboarding', 'fileNewHireReport'],
@@ -390,43 +388,14 @@ export function useContractorDetailsForm({
 
   // Render-gating: a field shows when it applies to the current selection. The
   // schema mirrors this via `getExcludedContractorFields` so off-screen fields
-  // never trip a phantom required error.
+  // never trip a phantom required error. `FirstNameField`/`LastNameField`/
+  // `MiddleInitialField`/`BusinessNameField`/`SsnField`/`EinField` additionally
+  // set `shouldUnregister` so a field also drops its stale value once it
+  // unmounts here, rather than leaving it to fail the field's base validator
+  // (`NAME_REGEX`, SSN/EIN `refine`) unseen on a later submit.
   const isIndividual = watchedType === ContractorType.Individual
   const isBusiness = watchedType === ContractorType.Business
   const isHourly = watchedWageType === WageType.Hourly
-
-  // A field that becomes inapplicable after a type switch (e.g. `lastName`
-  // when moving to Business) is only hidden, not cleared — its stale value
-  // stays in RHF state and can still fail the field's base validator
-  // (`NAME_REGEX`, SSN/EIN `refine`) on submit even though the user can no
-  // longer see or fix it. `resetField` clears the other type's fields'
-  // error/dirty/touched state; the paired `setValue` guarantees the value is
-  // cleared too, since `resetField` is a no-op once the field's Field
-  // component has unmounted (mirrors `useSplitPaymentsForm.tsx`'s
-  // resetField+setValue pairing). The ref guards against firing on mount or
-  // when `values: resolvedDefaults` reloads async contractor data in update
-  // mode, either of which would otherwise clobber freshly loaded defaults.
-  const previousTypeRef = useRef(watchedType)
-  useEffect(() => {
-    if (previousTypeRef.current !== watchedType) {
-      if (watchedType === ContractorType.Business) {
-        resetField('firstName')
-        setValue('firstName', '')
-        resetField('lastName')
-        setValue('lastName', '')
-        resetField('middleInitial')
-        setValue('middleInitial', '')
-        resetField('ssn')
-        setValue('ssn', '')
-      } else {
-        resetField('businessName')
-        setValue('businessName', '')
-        resetField('ein')
-        setValue('ein', '')
-      }
-      previousTypeRef.current = watchedType
-    }
-  }, [watchedType, resetField, setValue])
 
   const createContractorMutation = useContractorsCreateMutation()
   const updateContractorMutation = useContractorsUpdateMutation()

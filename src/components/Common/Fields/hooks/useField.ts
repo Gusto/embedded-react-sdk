@@ -21,6 +21,15 @@ export interface UseFieldProps<TValue = string, TRef = HTMLInputElement> {
   transform?: Transform<TValue>
   description?: React.ReactNode
   inputRef?: Ref<TRef>
+  /**
+   * Forces this field to drop its value when its input unmounts, instead of
+   * RHF's default of retaining it. Unlike the form-wide `shouldUnregister`
+   * option on `useForm`, a per-field override doesn't fall back to the live
+   * `values`/`defaultValues` option on remount — only to RHF's internal
+   * `_defaultValues`, which `unregister()` actually clears. Internal-only;
+   * not exposed on any public field props.
+   */
+  shouldUnregister?: boolean
 }
 
 const processDescription = (description: React.ReactNode): React.ReactNode => {
@@ -47,6 +56,7 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
   transform,
   description,
   inputRef,
+  shouldUnregister,
 }: UseFieldProps<TValue, TRef>) {
   // useFormContext returns null outside FormProvider at runtime despite its non-null type signature
   const formContext = useFormContext() as ReturnType<typeof useFormContext> | null
@@ -64,6 +74,7 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
       ...rules,
     },
     defaultValue,
+    shouldUnregister,
   })
 
   const { value } = field

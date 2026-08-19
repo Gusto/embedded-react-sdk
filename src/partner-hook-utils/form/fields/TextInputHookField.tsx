@@ -35,6 +35,19 @@ export interface TextInputHookFieldProps<
 }
 
 /**
+ * Internal-only extra accepted by {@link TextInputHookField} beyond its public
+ * props — deliberately not part of {@link TextInputHookFieldProps} so it isn't
+ * exposed as a partner-facing knob. Set by specific hook-owned field wrappers
+ * (e.g. `useContractorDetailsForm`'s name/tax-ID fields) that need a field to
+ * drop its value on unmount rather than retain it.
+ *
+ * @internal
+ */
+interface TextInputHookFieldInternalProps {
+  shouldUnregister?: boolean
+}
+
+/**
  * Text input field connected to a partner form hook result via `useHookFieldResolution`.
  *
  * @typeParam TErrorCode - Required validation error code keys mapped via `validationMessages`.
@@ -55,7 +68,8 @@ export function TextInputHookField<
   transform,
   placeholder,
   FieldComponent,
-}: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode>) {
+  shouldUnregister,
+}: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode> & TextInputHookFieldInternalProps) {
   const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
@@ -76,6 +90,7 @@ export function TextInputHookField<
       transform={transform}
       placeholder={placeholder}
       FieldComponent={FieldComponent}
+      shouldUnregister={shouldUnregister}
     />,
   )
 }
