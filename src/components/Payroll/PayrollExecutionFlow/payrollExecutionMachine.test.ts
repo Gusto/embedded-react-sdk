@@ -93,6 +93,24 @@ describe('payrollExecutionMachine', () => {
       expect(service.context.alerts?.[0]?.alertKey).toBe('progressSaved')
     })
 
+    it('transitions to overview on RUN_PAYROLL_ALREADY_PROCESSED', () => {
+      const service = createService()
+      const alert = {
+        type: 'error' as const,
+        title: 'This payroll is already processed.',
+        alertKey: 'alreadyProcessed' as const,
+      }
+
+      send(service, componentEvents.RUN_PAYROLL_ALREADY_PROCESSED, {
+        payrollId: 'payroll-123',
+        alert,
+      })
+
+      expect(service.machine.current).toBe('overview')
+      expect(service.context.alerts).toHaveLength(1)
+      expect(service.context.alerts?.[0]).toMatchObject(alert)
+    })
+
     it('transitions to editEmployee on RUN_PAYROLL_EMPLOYEE_EDIT', () => {
       const service = createService()
 
