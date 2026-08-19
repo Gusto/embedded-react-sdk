@@ -4,6 +4,7 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import { useMemo } from 'react'
 import type { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/contractorpaymentreceipt'
 import { getContractorDisplayName } from '../../shared/helpers'
+import { getContractorPaymentTotalAmount } from '../shared/paymentAmounts'
 import styles from './PaymentStatementPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
@@ -47,7 +48,6 @@ export const PaymentStatementPresentation = ({
   const hourlyRate = Number(payment.hourlyRate || 0)
   const bonus = Number(payment.bonus || 0)
   const reimbursement = Number(payment.reimbursement || 0)
-  const wageTotal = Number(payment.wageTotal || 0)
 
   const shouldShowReceipt = Boolean(
     paymentReceipt && payment.status === 'Funded' && payment.paymentMethod === 'Direct Deposit',
@@ -78,7 +78,7 @@ export const PaymentStatementPresentation = ({
     const rows: PaymentStatementRow[] = [
       {
         label: payment.paymentMethod || '',
-        amount: currencyFormatter(wageTotal),
+        amount: currencyFormatter(getContractorPaymentTotalAmount(payment)),
       },
     ]
 
@@ -108,18 +108,7 @@ export const PaymentStatementPresentation = ({
     })
 
     return rows
-  }, [
-    payment.paymentMethod,
-    wageTotal,
-    isHourly,
-    hours,
-    hourlyRate,
-    bonus,
-    reimbursement,
-    t,
-    currencyFormatter,
-    payment.wage,
-  ])
+  }, [payment, isHourly, hours, hourlyRate, bonus, reimbursement, t, currencyFormatter])
 
   return (
     <Flex flexDirection="column" gap={32}>

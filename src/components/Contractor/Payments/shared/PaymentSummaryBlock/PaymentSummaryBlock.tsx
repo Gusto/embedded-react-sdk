@@ -2,6 +2,11 @@ import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { getContractorDisplayName } from '../../../shared/helpers'
+import {
+  getContractorPaymentWageAmount,
+  getContractorPaymentTotalAmount,
+  type ContractorPaymentAmountFields,
+} from '../paymentAmounts'
 import { DataView, Flex } from '@/components/Common'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -16,16 +21,9 @@ const ZERO_HOURS_DISPLAY = '0.000'
  *
  * @internal
  */
-export interface PaymentSummaryBlockContractorPayment {
+export interface PaymentSummaryBlockContractorPayment extends ContractorPaymentAmountFields {
   contractorUuid?: string
-  wageType?: string
-  hourlyRate?: string
   paymentMethod?: string
-  hours?: string
-  wage?: string
-  bonus?: string
-  reimbursement?: string
-  wageTotal?: string
 }
 
 /**
@@ -126,10 +124,10 @@ export const PaymentSummaryBlock = ({
   const totals = useMemo(() => {
     return contractorPayments.reduce(
       (acc, contractorPayment) => {
-        acc.wageAmount += Number(contractorPayment.wage || '0')
+        acc.wageAmount += getContractorPaymentWageAmount(contractorPayment)
         acc.bonusAmount += Number(contractorPayment.bonus || '0')
         acc.reimbursementAmount += Number(contractorPayment.reimbursement || '0')
-        acc.totalAmount += Number(contractorPayment.wageTotal || '0')
+        acc.totalAmount += getContractorPaymentTotalAmount(contractorPayment)
         return acc
       },
       { wageAmount: 0, bonusAmount: 0, reimbursementAmount: 0, totalAmount: 0 },
@@ -201,7 +199,8 @@ export const PaymentSummaryBlock = ({
             {
               title: dictionary.wage,
               justify: 'end',
-              render: contractorPayment => currencyFormatter(Number(contractorPayment.wage || '0')),
+              render: contractorPayment =>
+                currencyFormatter(getContractorPaymentWageAmount(contractorPayment)),
             },
             {
               title: dictionary.bonus,
@@ -219,7 +218,7 @@ export const PaymentSummaryBlock = ({
               title: dictionary.total,
               justify: 'end',
               render: contractorPayment =>
-                currencyFormatter(Number(contractorPayment.wageTotal || '0')),
+                currencyFormatter(getContractorPaymentTotalAmount(contractorPayment)),
             },
           ]}
           data={contractorPayments}
