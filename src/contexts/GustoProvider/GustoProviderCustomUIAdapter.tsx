@@ -11,7 +11,7 @@ import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingInd
 import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
 import { UnstableFeaturesProvider } from '../UnstableFeaturesProvider/UnstableFeaturesProvider'
-import type { UnstableFeatures } from '../UnstableFeaturesProvider/useUnstableFeatures'
+import type { UnstableFeatures } from '../UnstableFeaturesProvider/useUnstableFeature'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'

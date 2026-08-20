@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
-import { UnstableFeaturesContext, type UnstableFeatures } from './useUnstableFeatures'
+import { UnstableFeaturesContext, type UnstableFeatures } from './useUnstableFeature'
 
 /** @internal */
 export interface UnstableFeaturesProviderProps {
@@ -13,12 +13,10 @@ export interface UnstableFeaturesProviderProps {
  *
  * @remarks
  * Composed by `GustoProvider` so the `unstableFeatures` prop flows down to any SDK Flow or Block
- * that checks {@link useUnstableFeatures} before rendering alpha functionality. Partners typically
- * pass an inline literal that gets a new identity on every render of their app, so the context
- * value is keyed on its sorted, serialized content (same approach as `useApplicableFieldErrors` in
- * `SDKFormProvider`) rather than the `value` object's identity — the returned reference only
- * changes when a flag's value actually changes, and adding a new flag to {@link UnstableFeatures}
- * needs no update here.
+ * that checks {@link useUnstableFeature} before rendering alpha functionality. The context
+ * value is keyed on its sorted, serialized content rather than the `value` object's identity —
+ * the returned reference only changes when a flag's value actually changes, and adding a new flag to
+ * {@link UnstableFeatures} needs no update here.
  *
  * @param props - See {@link UnstableFeaturesProviderProps}.
  * @returns A React subtree with the unstable-features context applied.
