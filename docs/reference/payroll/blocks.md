@@ -343,7 +343,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/employee/skip` | An employee is skipped or unskipped for this payroll | `{ employeeId }` |
 | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
 | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
-| `runPayroll/alreadyProcessed` | The payroll turns out to already be processed while configuring it | `{ payrollId, alert }` |
+| `runPayroll/alreadyProcessed` | The payroll turns out to already be processed while configuring it | `{ payrollId, alert, payPeriod }` |
 | `runPayroll/processingFailed` | Payroll calculation fails or times out | — |
 | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
 | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
