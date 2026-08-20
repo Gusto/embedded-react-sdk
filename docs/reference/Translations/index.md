@@ -4803,6 +4803,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrollconfigurationalerts"></a> `alerts` | |
+| `alerts.alreadyProcessed` | `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.employeeUpdated` | |
