@@ -36,6 +36,7 @@ type PayrollEventPayloads = {
   [componentEvents.RUN_PAYROLL_ALREADY_PROCESSED]: {
     payrollId: string
     alert?: PayrollFlowAlert
+    payPeriod?: PayrollPayPeriodType
   }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
@@ -157,12 +158,14 @@ const alreadyProcessedTransition = transition(
         typeof componentEvents.RUN_PAYROLL_ALREADY_PROCESSED
       >,
     ): PayrollFlowContextInterface => {
+      const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
       return {
         ...updateBreadcrumbs('overview', ctx, {
-          startDate: ctx.payPeriod?.startDate ?? '',
-          endDate: ctx.payPeriod?.endDate ?? '',
+          startDate: payPeriod?.startDate ?? '',
+          endDate: payPeriod?.endDate ?? '',
         }),
         component: PayrollOverviewContextual,
+        payPeriod,
         alerts: ev.payload.alert
           ? [
               ...(ctx.alerts ?? []).filter(a => a.alertKey !== 'alreadyProcessed'),
