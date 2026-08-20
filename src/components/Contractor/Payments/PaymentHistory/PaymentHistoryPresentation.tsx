@@ -3,6 +3,7 @@ import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/componen
 import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { getContractorDisplayName } from '../../shared/helpers'
+import { getContractorPaymentTotalAmount } from '../shared/paymentAmounts'
 import styles from './PaymentHistoryPresentation.module.scss'
 import { DataView, Flex, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -115,9 +116,9 @@ export const PaymentHistoryPresentation = ({
                 {
                   title: t('tableHeaders.total'),
                   justify: 'end',
-                  render: ({ wageTotal, reimbursement, bonus }) =>
-                    wageTotal
-                      ? currencyFormatter(Number(wageTotal) + Number(reimbursement) + Number(bonus))
+                  render: contractorPayment =>
+                    contractorPayment.wageTotal
+                      ? currencyFormatter(getContractorPaymentTotalAmount(contractorPayment))
                       : '–',
                 },
               ]}

@@ -1275,6 +1275,7 @@ export const componentEvents: {
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATE: "contractor/historicalPayments/create";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_EDIT: "contractor/historicalPayments/edit";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: "contractor/historicalPayments/update";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: "contractor/historicalPayments/preview";
@@ -3144,6 +3145,8 @@ export interface GustoBaseProviderProps {
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
+    // @alpha
+    unstableFeatures?: UnstableFeatures;
 }
 
 // @public
@@ -5817,6 +5820,11 @@ interface UnlimitedPolicyDetails {
 
 // @public
 export interface UnorderedListProps extends BaseListProps {
+}
+
+// @alpha
+export interface UnstableFeatures {
+    historicalPayments?: boolean;
 }
 
 // @public

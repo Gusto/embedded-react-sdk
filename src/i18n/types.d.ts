@@ -3076,6 +3076,14 @@ export namespace Translations {
       /** @defaultValue `"Last 12 months"` */
       last12Months: string
     }
+    historicalPaymentCta: {
+      /** @defaultValue `"Record a historical payment"` */
+      title: string
+      /** @defaultValue `"Add a contractor payment that was made outside of Gusto to keep your records complete."` */
+      description: string
+      /** @defaultValue `"Record a historical payment"` */
+      button: string
+    }
   }
   /** Translation keys for the `Contractor.Profile` i18n namespace. */
   export interface ContractorProfile {
