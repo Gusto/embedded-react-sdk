@@ -753,14 +753,16 @@ export const getAdditionalEarningsCompensations = ({
 }
 
 /**
- * Returns whether any non-excluded employee compensation uses Direct Deposit.
+ * Returns whether the payroll may include direct-deposit employees.
  *
  * @remarks
- * When the input is empty or every compensation is excluded, returns `true` so callers don't gate UI on an
- * empty set.
+ * Returns `true` unless every active (non-excluded) compensation is explicitly
+ * `'Check'` or `'Historical'`. When `paymentMethod` is `null` or `undefined`
+ * (common before a payroll is fully calculated), the employee is treated as a
+ * potential direct-deposit recipient so the deadline banner stays visible.
  *
  * @param employeeCompensations - The employee compensations to inspect.
- * @returns `true` when at least one active compensation pays via Direct Deposit, or when the list is empty.
+ * @returns `false` only when every active compensation is explicitly non-DD.
  * @internal
  */
 export const hasDirectDepositEmployees = (
@@ -769,7 +771,9 @@ export const hasDirectDepositEmployees = (
   if (!employeeCompensations || employeeCompensations.length === 0) return true
   const activeCompensations = employeeCompensations.filter(comp => !comp.excluded)
   if (activeCompensations.length === 0) return true
-  return activeCompensations.some(comp => comp.paymentMethod === 'Direct Deposit')
+  return activeCompensations.some(
+    comp => comp.paymentMethod !== 'Check' && comp.paymentMethod !== 'Historical',
+  )
 }
 
 /**
