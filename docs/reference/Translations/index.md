@@ -5238,6 +5238,39 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 
 ***
 
+<a id="payrollprintchecksfailure"></a>
+
+### PayrollPrintChecksFailure
+
+Translation keys for the `Payroll.PrintChecksFailure` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintchecksfailureclosecta"></a> `closeCta` | `"Close"` |
+| <a id="property-payrollprintchecksfailurefailedtitle"></a> `failedTitle` | `"We couldn't generate your checks"` |
+| <a id="property-payrollprintchecksfailureretrycta"></a> `retryCta` | `"Try again"` |
+
+***
+
+<a id="payrollprintcheckssummary"></a>
+
+### PayrollPrintChecksSummary
+
+Translation keys for the `Payroll.PrintChecksSummary` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintcheckssummaryclosecta"></a> `closeCta` | `"Close"` |
+| <a id="property-payrollprintcheckssummarysucceededdescription"></a> `succeededDescription` | `"The download should have started automatically. If not, use the link below."` |
+| <a id="property-payrollprintcheckssummarysucceededtitle"></a> `succeededTitle` | `"Your checks are ready"` |
+| <a id="property-payrollprintcheckssummaryviewcheckscta"></a> `viewChecksCta` | `"View checks"` |
+
+***
+
 <a id="payrollrecoverycaseslist"></a>
 
 ### PayrollRecoveryCasesList
@@ -5610,6 +5643,8 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
 | <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
 | <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
+| <a id="property-resourcespayrollprintchecksfailure"></a> `Payroll.PrintChecksFailure` | [`PayrollPrintChecksFailure`](#payrollprintchecksfailure) |
+| <a id="property-resourcespayrollprintcheckssummary"></a> `Payroll.PrintChecksSummary` | [`PayrollPrintChecksSummary`](#payrollprintcheckssummary) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |

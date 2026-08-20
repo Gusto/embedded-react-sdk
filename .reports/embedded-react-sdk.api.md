@@ -1294,6 +1294,13 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
+    readonly PRINT_CHECKS_START: "payroll/printChecks/start";
+    readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
+    readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
+    readonly PRINT_CHECKS_GENERATE_FAILED: "payroll/printChecks/generate/failed";
+    readonly PRINT_CHECKS_RETRY: "payroll/printChecks/retry";
+    readonly PRINT_CHECKS_CANCEL: "payroll/printChecks/cancel";
+    readonly PRINT_CHECKS_CLOSE: "payroll/printChecks/close";
     readonly RECOVERY_CASE_RESOLVE: "recoveryCase/resolve";
     readonly RECOVERY_CASE_RESUBMIT: "recoveryCase/resubmit";
     readonly RECOVERY_CASE_RESUBMIT_CANCEL: "recoveryCase/resubmit/cancel";
@@ -4995,6 +5002,10 @@ export interface Resources {
     'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
     // (undocumented)
     'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+    // (undocumented)
+    'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+    // (undocumented)
+    'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
     // (undocumented)
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)
