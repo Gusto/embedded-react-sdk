@@ -155,6 +155,7 @@ const Root = ({
       include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
       page: currentPage,
       per: itemsPerPage,
+      sortBy: 'last_name:asc,first_name:asc',
     },
     {
       refetchInterval: isPolling ? 5_000 : false,
