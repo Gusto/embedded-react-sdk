@@ -5218,7 +5218,7 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptsexitflowcta"></a> `exitFlowCta` | `"Exit"` |
 | <a id="property-payrollpayrollreceiptsreceipt"></a> `receipt` | |
 | `receipt.address` | `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` |
-| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` |
+| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` |
 | `receipt.debitDate` | `"Debit date"` |
 | `receipt.detailsLabel` | `"Receipt Details"` |
 | `receipt.disclaimer` | `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` |
