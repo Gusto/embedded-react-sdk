@@ -81,6 +81,7 @@ const renderScreen = (onEvent = vi.fn()) => {
   )
   const { rerender } = renderWithProviders(
     <HistoricalPaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />,
+    { unstableFeatures: { historicalPayments: true } },
   )
   return { onEvent, rerender }
 }
@@ -170,6 +171,7 @@ describe('HistoricalPaymentFlow', () => {
     )
     const { rerender } = renderWithProviders(
       <HistoricalPaymentFlow companyId={COMPANY_ID} onEvent={vi.fn()} />,
+      { unstableFeatures: { historicalPayments: true } },
     )
 
     await waitFor(() => {

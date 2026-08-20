@@ -9,3 +9,4 @@ export type { ComponentsContextType } from './ComponentAdapter/useComponentConte
 export * from './ComponentAdapter/componentAdapterTypes'
 export type { GustoSDKTheme, GustoSDKThemeColors } from '@/contexts/ThemeProvider/theme'
 export { useNonce } from './NonceProvider'
+export type { UnstableFeatures } from './UnstableFeaturesProvider/useUnstableFeature'

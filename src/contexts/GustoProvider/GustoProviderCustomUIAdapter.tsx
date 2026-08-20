@@ -10,6 +10,8 @@ import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
 import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
+import { UnstableFeaturesProvider } from '../UnstableFeaturesProvider/UnstableFeaturesProvider'
+import type { UnstableFeatures } from '../UnstableFeaturesProvider/useUnstableFeature'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -69,6 +71,11 @@ export interface GustoBaseProviderProps {
   components: ComponentsContextType
   /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
   LoaderComponent?: ({ children }: { children?: ReactNode }) => JSX.Element
+  /**
+   * Opt-in flags for alpha SDK functionality. See {@link UnstableFeatures}.
+   * @alpha
+   */
+  unstableFeatures?: UnstableFeatures
 }
 
 /**
@@ -109,6 +116,7 @@ export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapter
     components,
     LoaderComponent,
     queryClient,
+    unstableFeatures,
   } = props
 
   if (dictionary) {
@@ -166,7 +174,9 @@ export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapter
                       hooks={config.hooks}
                       queryClient={queryClient}
                     >
-                      {children}
+                      <UnstableFeaturesProvider value={unstableFeatures}>
+                        {children}
+                      </UnstableFeaturesProvider>
                     </ApiProvider>
                   </I18nextProvider>
                 </LocaleProvider>

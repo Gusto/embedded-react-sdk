@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { http, HttpResponse } from 'msw'
@@ -238,6 +238,83 @@ describe('PaymentFlow', () => {
     )
   })
 
+  it('records a historical payment via HistoricalPaymentFlow, lands on the summary, then exits to the payments list', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    vi.setSystemTime(new Date('2026-07-27T12:00:00-07:00'))
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    const onEvent = vi.fn()
+    server.use(
+      handleGetContractorsList(() =>
+        HttpResponse.json([hourlyContractor], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        }),
+      ),
+    )
+
+    renderWithProviders(<PaymentFlow companyId={COMPANY_ID} onEvent={onEvent} />, {
+      unstableFeatures: { historicalPayments: true },
+    })
+
+    await user.click(await screen.findByRole('button', { name: 'Record a historical payment' }))
+    await screen.findByRole('heading', { name: 'Record a historical payment' })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATE,
+      undefined,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    })
+    const group = screen.getByRole('group', { name: /Payment date/i })
+    await user.type(within(group).getByRole('spinbutton', { name: /^month/i }), '07')
+    await user.type(within(group).getByRole('spinbutton', { name: /^day/i }), '15')
+    await user.type(within(group).getByRole('spinbutton', { name: /^year/i }), '2026')
+    const checkboxes = screen.getAllByRole('checkbox')
+    await user.click(checkboxes[1] as Element)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await screen.findByRole('heading', { name: 'Enter payment amounts' })
+    await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
+    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await screen.findByRole('heading', { name: 'Review and submit' })
+    await user.click(screen.getByRole('button', { name: 'Submit historical payment' }))
+
+    await screen.findByRole('heading', { name: 'Payment summary' })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
+      expect.objectContaining({ uuid: 'new-payment-group-uuid' }),
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+
+    await screen.findByRole('heading', { name: 'Contractor payments' })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EXIT,
+      undefined,
+    )
+
+    vi.useRealTimers()
+  })
+
+  it('does not show the historical-payment CTA when the historicalPayments unstable feature is disabled', async () => {
+    renderWithProviders(<PaymentFlow companyId={COMPANY_ID} onEvent={vi.fn()} />)
+
+    await screen.findByRole('heading', { name: 'Contractor payments' })
+    expect(
+      screen.queryByRole('button', { name: 'Record a historical payment' }),
+    ).not.toBeInTheDocument()
+  })
+
   it('enters the information-requests flow and cancels back to the payments list', async () => {
     const user = userEvent.setup()
     const onEvent = vi.fn()
@@ -305,5 +382,28 @@ describe('PaymentFlow', () => {
     await user.click(screen.getByRole('button', { name: 'force parent re-render' }))
 
     expect(screen.getByRole('heading', { name: 'Contractor payment history' })).toBeInTheDocument()
+  })
+
+  it("does not reset the historical-payment flow's current step when the partner app re-renders its own tree mid-flow", async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    server.use(
+      handleGetContractorsList(() =>
+        HttpResponse.json([hourlyContractor], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        }),
+      ),
+    )
+
+    renderWithProviders(<PaymentFlowHost onEvent={onEvent} />, {
+      unstableFeatures: { historicalPayments: true },
+    })
+
+    await user.click(await screen.findByRole('button', { name: 'Record a historical payment' }))
+    await screen.findByRole('heading', { name: 'Record a historical payment' })
+
+    await user.click(screen.getByRole('button', { name: 'force parent re-render' }))
+
+    expect(screen.getByRole('heading', { name: 'Record a historical payment' })).toBeInTheDocument()
   })
 })

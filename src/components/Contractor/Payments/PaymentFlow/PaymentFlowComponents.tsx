@@ -1,6 +1,7 @@
 import { PaymentsListInternal } from '../PaymentsList/PaymentsList'
 import { CreatePaymentInternalFlow } from '../CreatePaymentFlow/CreatePaymentFlow'
 import { ViewPaymentInternalFlow } from '../ViewPaymentFlow/ViewPaymentFlow'
+import { HistoricalPaymentInternalFlow } from '../HistoricalPaymentFlow/HistoricalPaymentFlow'
 import type { InternalAlert } from '../types'
 import { InformationRequestsFlow } from '@/components/InformationRequests'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -61,6 +62,20 @@ export function ViewPaymentFlowContextual() {
   return (
     <ViewPaymentInternalFlow
       paymentId={ensureRequired(currentPaymentId)}
+      onEvent={onEvent}
+      prefixBreadcrumbs={prefixBreadcrumbs}
+    />
+  )
+}
+
+/** @internal */
+export function HistoricalPaymentFlowContextual() {
+  const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  const prefixBreadcrumbs = useLandingPrefixBreadcrumbs()
+
+  return (
+    <HistoricalPaymentInternalFlow
+      companyId={ensureRequired(companyId)}
       onEvent={onEvent}
       prefixBreadcrumbs={prefixBreadcrumbs}
     />
