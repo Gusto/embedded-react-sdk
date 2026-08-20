@@ -2068,6 +2068,10 @@ Translation keys for the `Contractor.Payments.PaymentsList` i18n namespace.
 | `dateRanges.last12Months` | `"Last 12 months"` |
 | `dateRanges.last3Months` | `"Last 3 months"` |
 | `dateRanges.last6Months` | `"Last 6 months"` |
+| <a id="property-contractorpaymentspaymentslisthistoricalpaymentcta"></a> `historicalPaymentCta` | |
+| `historicalPaymentCta.button` | `"Record a historical payment"` |
+| `historicalPaymentCta.description` | `"Add a contractor payment that was made outside of Gusto to keep your records complete."` |
+| `historicalPaymentCta.title` | `"Record a historical payment"` |
 | <a id="property-contractorpaymentspaymentslistnopaymentsdescription"></a> `noPaymentsDescription` | `"No contractor payments have been created yet. Create your first payment to get started."` |
 | <a id="property-contractorpaymentspaymentslistnopaymentsfound"></a> `noPaymentsFound` | `"No payments found"` |
 | <a id="property-contractorpaymentspaymentslistpaymentdatecolumnlabel"></a> `paymentDateColumnLabel` | `"Payment date"` |

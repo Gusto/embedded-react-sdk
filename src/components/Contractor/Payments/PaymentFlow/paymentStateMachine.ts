@@ -2,6 +2,7 @@ import { reduce, state, transition } from 'robot3'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import {
   CreatePaymentFlowContextual,
+  HistoricalPaymentFlowContextual,
   InformationRequestsContextual,
   PaymentListContextual,
   type PaymentFlowContextInterface,
@@ -16,6 +17,8 @@ import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBrea
 type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATE]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_EXIT]: { uuid?: string | null }
+  [componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATE]: undefined
+  [componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EXIT]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
   [componentEvents.CONTRACTOR_PAYMENT_CANCEL]: { paymentId: string }
   [componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND]: undefined
@@ -38,9 +41,10 @@ type EventPayloads = {
  * Hub-level breadcrumb nodes for {@link PaymentFlow}.
  *
  * @remarks
- * Only `landing` is defined here — the `createPayment` and `history` spokes own and render their
- * own breadcrumb trails (via `CreatePaymentFlow`/`ViewPaymentFlow`), prefixed with this `landing`
- * item so the trail reads continuously across the hub/spoke boundary.
+ * Only `landing` is defined here — the `createPayment`, `historicalPayment`, and `history` spokes
+ * own and render their own breadcrumb trails (via `CreatePaymentFlow`/`HistoricalPaymentFlow`/
+ * `ViewPaymentFlow`), prefixed with this `landing` item so the trail reads continuously across the
+ * hub/spoke boundary.
  *
  * @internal
  */
@@ -66,11 +70,11 @@ const breadcrumbNavigateTransition =
  * Hub machine for {@link PaymentFlow}.
  *
  * @remarks
- * `createPayment` and `history` each stay active for the full lifetime of their respective spoke
- * (`CreatePaymentFlow`, `ViewPaymentFlow`) rather than tracking the spoke's internal screen. The
- * spoke's own machine drives its internal steps and breadcrumb trail; events it can't handle
- * locally (e.g. the `landing` breadcrumb, or a terminal exit/cancel event) bubble up here to
- * transition the hub back to `landing`.
+ * `createPayment`, `historicalPayment`, and `history` each stay active for the full lifetime of
+ * their respective spoke (`CreatePaymentFlow`, `HistoricalPaymentFlow`, `ViewPaymentFlow`) rather
+ * than tracking the spoke's internal screen. The spoke's own machine drives its internal steps and
+ * breadcrumb trail; events it can't handle locally (e.g. the `landing` breadcrumb, or a terminal
+ * exit/cancel event) bubble up here to transition the hub back to `landing`.
  *
  * @internal
  */
@@ -83,6 +87,17 @@ export const paymentMachine = {
         return {
           ...ctx,
           component: CreatePaymentFlowContextual,
+          alerts: undefined,
+        }
+      }),
+    ),
+    transition(
+      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATE,
+      'historicalPayment',
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...ctx,
+          component: HistoricalPaymentFlowContextual,
           alerts: undefined,
         }
       }),
@@ -139,6 +154,20 @@ export const paymentMachine = {
   createPayment: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_PAYMENT_EXIT,
+      'landing',
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: PaymentListContextual,
+          alerts: undefined,
+        }
+      }),
+    ),
+    breadcrumbNavigateTransition('landing'),
+  ),
+  historicalPayment: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EXIT,
       'landing',
       reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
         return {
