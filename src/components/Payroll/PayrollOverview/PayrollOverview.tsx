@@ -178,9 +178,10 @@ const Root = ({
     {
       refetchInterval: isPolling ? 5_000 : false,
       placeholderData: keepPreviousData,
-      // Always refetch on mount so a partner QueryClient with a non-zero `staleTime`
-      // can't serve a stale pre-calculation snapshot without refetching. SDK-1018.
       refetchOnMount: 'always',
+      // Discard the cache entry the moment this component unmounts so re-navigation
+      // never serves a stale pre-calculation snapshot (calculatedAt: null). SDK-1018.
+      gcTime: 0,
     },
   )
   const payrollData = data?.payrollShow
