@@ -5238,6 +5238,23 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 
 ***
 
+<a id="payrollprintchecksbanner"></a>
+
+### PayrollPrintChecksBanner
+
+Translation keys for the `Payroll.PrintChecksBanner` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintchecksbannercta"></a> `cta` | `"View and print checks"` |
+| <a id="property-payrollprintchecksbannerdescription"></a> `description` | `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` |
+| <a id="property-payrollprintchecksbannertitle_one"></a> `title_one` | `"You noted {{count}} employee that should be paid by check."` |
+| <a id="property-payrollprintchecksbannertitle_other"></a> `title_other` | `"You noted {{count}} employees that should be paid by check."` |
+
+***
+
 <a id="payrollprintchecksfailure"></a>
 
 ### PayrollPrintChecksFailure
@@ -5643,6 +5660,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
 | <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
 | <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
+| <a id="property-resourcespayrollprintchecksbanner"></a> `Payroll.PrintChecksBanner` | [`PayrollPrintChecksBanner`](#payrollprintchecksbanner) |
 | <a id="property-resourcespayrollprintchecksfailure"></a> `Payroll.PrintChecksFailure` | [`PayrollPrintChecksFailure`](#payrollprintchecksfailure) |
 | <a id="property-resourcespayrollprintcheckssummary"></a> `Payroll.PrintChecksSummary` | [`PayrollPrintChecksSummary`](#payrollprintcheckssummary) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |

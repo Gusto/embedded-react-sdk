@@ -5003,6 +5003,8 @@ export interface Resources {
     // (undocumented)
     'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
     // (undocumented)
+    'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+    // (undocumented)
     'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
     // (undocumented)
     'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
