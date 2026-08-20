@@ -1,5 +1,4 @@
 import { usePayrollsGetReceiptSuspense } from '@gusto/embedded-api/react-query/payrollsGetReceipt'
-import { useMemo } from 'react'
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -49,21 +48,23 @@ const Root = ({ payrollId, dictionary, withReimbursements = true }: PayrollRecei
   const { data } = usePayrollsGetReceiptSuspense({
     payrollUuid: payrollId,
   })
-  const payrollData = data.payrollReceipt!
+  const payrollData = data.payrollReceipt
 
-  const sortedPayrollData = useMemo(() => {
-    if (!payrollData.employeeCompensations) return payrollData
-    const sorted = [...payrollData.employeeCompensations].sort((a, b) => {
-      const lastNameCmp = (a.employeeLastName ?? '').localeCompare(b.employeeLastName ?? '')
-      if (lastNameCmp !== 0) return lastNameCmp
-      return (a.employeeFirstName ?? '').localeCompare(b.employeeFirstName ?? '')
-    })
-    return { ...payrollData, employeeCompensations: sorted }
-  }, [payrollData])
+  if (!payrollData) {
+    return null
+  }
+
+  const sortedEmployeeCompensations = payrollData.employeeCompensations
+    ? [...payrollData.employeeCompensations].sort((a, b) => {
+        const lastNameCmp = (a.employeeLastName ?? '').localeCompare(b.employeeLastName ?? '')
+        if (lastNameCmp !== 0) return lastNameCmp
+        return (a.employeeFirstName ?? '').localeCompare(b.employeeFirstName ?? '')
+      })
+    : undefined
 
   return (
     <PayrollReceiptsPresentation
-      receiptData={sortedPayrollData}
+      receiptData={{ ...payrollData, employeeCompensations: sortedEmployeeCompensations }}
       withReimbursements={withReimbursements}
     />
   )
