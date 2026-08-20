@@ -100,7 +100,7 @@ export const PayrollListPresentation = ({
   const dateFormatter = useDateFormatter()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
-  const isDesktop = breakpoints.includes('large')
+  const isTableLayout = breakpoints.includes('small')
 
   const todayAtMidnight = useMemo(() => {
     const todayDateString = formatDateToStringDate(new Date())
@@ -269,7 +269,7 @@ export const PayrollListPresentation = ({
         </Flex>
 
         <DataView
-          breakAt="large"
+          breakAt="small"
           pagination={pagination}
           emptyState={() =>
             dateRangeFilter.isModified ? (
@@ -326,7 +326,7 @@ export const PayrollListPresentation = ({
                 return <PayrollStatusBadges payroll={payroll} wireInRequest={wireInRequest} />
               },
             },
-            ...(!isDesktop
+            ...(!isTableLayout
               ? [
                   {
                     title: '',
@@ -350,7 +350,7 @@ export const PayrollListPresentation = ({
             const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
             const isProcessingDeletePayroll = deletingPayrollId === payrollUuid
 
-            const button = isDesktop ? renderActionButton(payroll) : null
+            const button = isTableLayout ? renderActionButton(payroll) : null
 
             if (processed) {
               return (
