@@ -1,11 +1,11 @@
+import { useContext } from 'react'
 import { render, renderHook, screen } from '@testing-library/react'
 import { describe, test, expect } from 'vitest'
 import {
   UnstableFeaturesContext,
-  useUnstableFeatures,
-  useRequiredUnstableFeatures,
+  useUnstableFeature,
   type UnstableFeatures,
-} from './useUnstableFeatures'
+} from './useUnstableFeature'
 import { UnstableFeaturesProvider } from './UnstableFeaturesProvider'
 
 /**
@@ -20,7 +20,6 @@ import { UnstableFeaturesProvider } from './UnstableFeaturesProvider'
  */
 interface TestFlags extends Partial<UnstableFeatures> {
   exampleFlag?: boolean
-  otherFlag?: boolean
 }
 
 const asTestFeatures = (flags: TestFlags): UnstableFeatures => flags as unknown as UnstableFeatures
@@ -28,21 +27,20 @@ const asTestFeatureKey = (key: keyof TestFlags): keyof UnstableFeatures =>
   key as unknown as keyof UnstableFeatures
 
 const EXAMPLE_FLAG = asTestFeatureKey('exampleFlag')
-const OTHER_FLAG = asTestFeatureKey('otherFlag')
 
 function FlagsProbe() {
-  const flags = useUnstableFeatures()
+  const flags = useContext(UnstableFeaturesContext)
   return <div data-testid="flags">{JSON.stringify(flags)}</div>
 }
 
-describe('useUnstableFeatures', () => {
-  test('returns an empty object when no provider is present', () => {
-    const { result } = renderHook(() => useUnstableFeatures())
+describe('UnstableFeaturesContext', () => {
+  test('defaults to an empty object when no provider is present', () => {
+    const { result } = renderHook(() => useContext(UnstableFeaturesContext))
     expect(result.current).toEqual({})
   })
 
   test('returns the value supplied by UnstableFeaturesContext.Provider', () => {
-    const { result } = renderHook(() => useUnstableFeatures(), {
+    const { result } = renderHook(() => useContext(UnstableFeaturesContext), {
       wrapper: ({ children }) => (
         <UnstableFeaturesContext.Provider value={asTestFeatures({ exampleFlag: true })}>
           {children}
@@ -53,14 +51,14 @@ describe('useUnstableFeatures', () => {
   })
 
   test('UnstableFeaturesProvider defaults to an empty object when value is omitted', () => {
-    const { result } = renderHook(() => useUnstableFeatures(), {
+    const { result } = renderHook(() => useContext(UnstableFeaturesContext), {
       wrapper: ({ children }) => <UnstableFeaturesProvider>{children}</UnstableFeaturesProvider>,
     })
     expect(result.current).toEqual({})
   })
 
   test('UnstableFeaturesProvider passes through the supplied value', () => {
-    const { result } = renderHook(() => useUnstableFeatures(), {
+    const { result } = renderHook(() => useContext(UnstableFeaturesContext), {
       wrapper: ({ children }) => (
         <UnstableFeaturesProvider value={asTestFeatures({ exampleFlag: true })}>
           {children}
@@ -71,7 +69,7 @@ describe('useUnstableFeatures', () => {
   })
 
   test('UnstableFeaturesProvider keeps a stable context value when the caller passes a new object with the same flags', () => {
-    const { result, rerender } = renderHook(() => useUnstableFeatures(), {
+    const { result, rerender } = renderHook(() => useContext(UnstableFeaturesContext), {
       wrapper: ({ children }) => (
         <UnstableFeaturesProvider value={asTestFeatures({ exampleFlag: true })}>
           {children}
@@ -103,12 +101,28 @@ describe('useUnstableFeatures', () => {
   })
 })
 
-describe('useRequiredUnstableFeatures', () => {
-  test('does not throw when every required flag is enabled', () => {
+describe('useUnstableFeature', () => {
+  test('returns true when the flag is enabled', () => {
+    const { result } = renderHook(() => useUnstableFeature(EXAMPLE_FLAG), {
+      wrapper: ({ children }) => (
+        <UnstableFeaturesContext.Provider value={asTestFeatures({ exampleFlag: true })}>
+          {children}
+        </UnstableFeaturesContext.Provider>
+      ),
+    })
+    expect(result.current).toBe(true)
+  })
+
+  test('returns false when the flag is disabled or no provider is present', () => {
+    const { result } = renderHook(() => useUnstableFeature(EXAMPLE_FLAG))
+    expect(result.current).toBe(false)
+  })
+
+  test('does not throw when throwIfDisabled is set and the flag is enabled', () => {
     expect(() =>
       renderHook(
         () => {
-          useRequiredUnstableFeatures(EXAMPLE_FLAG)
+          useUnstableFeature(EXAMPLE_FLAG, { throwIfDisabled: true })
         },
         {
           wrapper: ({ children }) => (
@@ -121,11 +135,11 @@ describe('useRequiredUnstableFeatures', () => {
     ).not.toThrow()
   })
 
-  test('throws naming the flag when it is disabled', () => {
+  test('throws naming the flag when throwIfDisabled is set and the flag is disabled', () => {
     expect(() =>
       renderHook(
         () => {
-          useRequiredUnstableFeatures(EXAMPLE_FLAG)
+          useUnstableFeature(EXAMPLE_FLAG, { throwIfDisabled: true })
         },
         {
           wrapper: ({ children }) => (
@@ -138,28 +152,11 @@ describe('useRequiredUnstableFeatures', () => {
     ).toThrow('exampleFlag')
   })
 
-  test('throws naming the flag when no provider is present', () => {
+  test('throws naming the flag when throwIfDisabled is set and no provider is present', () => {
     expect(() => {
       renderHook(() => {
-        useRequiredUnstableFeatures(EXAMPLE_FLAG)
+        useUnstableFeature(EXAMPLE_FLAG, { throwIfDisabled: true })
       })
     }).toThrow('exampleFlag')
-  })
-
-  test('throws naming every missing flag when multiple are required', () => {
-    expect(() =>
-      renderHook(
-        () => {
-          useRequiredUnstableFeatures(EXAMPLE_FLAG, OTHER_FLAG)
-        },
-        {
-          wrapper: ({ children }) => (
-            <UnstableFeaturesContext.Provider value={asTestFeatures({ exampleFlag: true })}>
-              {children}
-            </UnstableFeaturesContext.Provider>
-          ),
-        },
-      ),
-    ).toThrow('otherFlag')
   })
 })

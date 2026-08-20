@@ -9,7 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
-import { useRequiredUnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 /**
  * Props for {@link HistoricalPaymentSummary}.
@@ -49,7 +49,7 @@ export function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps) {
 }
 
 function Root({ paymentGroupId, companyId, dictionary, onEvent }: HistoricalPaymentSummaryProps) {
-  useRequiredUnstableFeatures('historicalPayments')
+  useUnstableFeature('historicalPayments', { throwIfDisabled: true })
   useI18n('Contractor.Payments.HistoricalPaymentSummary')
   useComponentDictionary('Contractor.Payments.HistoricalPaymentSummary', dictionary)
   const { t } = useTranslation('Contractor.Payments.HistoricalPaymentSummary')

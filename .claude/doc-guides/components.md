@@ -14,7 +14,7 @@ Every exported React component must have an `@events` block listing every `onEve
 
 **Finding events:** The `tsdoc-stub` tool emits an `EVENTS:` section when it detects `onEvent` calls — use those entries directly. Without the stub, grep for `onEvent(` in the component file and its direct children. For the Data column, use plain text or `—` when the event carries no data.
 
-**Exception: alpha / unstable-feature-gated events.** If an event only fires from a code path gated behind an `@alpha` release tag or a `useRequiredUnstableFeatures`/`WithUnstableFeature` check (e.g. a CTA that only renders once a partner opts in via `GustoProvider`'s `unstableFeatures` prop), omit it from a `@public` component's `@events` table. Listing it would document a capability a partner can't actually reach without an undocumented opt-in.
+**Exception: alpha / unstable-feature-gated events.** If an event only fires from a code path gated behind an `@alpha` release tag or a `useUnstableFeature`/`WithUnstableFeature` check (e.g. a CTA that only renders once a partner opts in via `GustoProvider`'s `unstableFeatures` prop), omit it from a `@public` component's `@events` table. Listing it would document a capability a partner can't actually reach without an undocumented opt-in.
 
 ## @example
 

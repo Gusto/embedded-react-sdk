@@ -17,7 +17,7 @@ import type { AppMode, ManualConfig, ManualConfigSaves } from './useManualConfig
 import { demoChromes } from './demoChromes/registry'
 import { UNSTABLE_FEATURE_KEYS } from './UnstableFeaturesPanelContext'
 import styles from './DemoSettingsPanel.module.scss'
-import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
+import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 interface DemoSettingsPanelProps {
   onClose: () => void
@@ -884,7 +884,7 @@ export function DemoSettingsPanel({
               <label key={key} className={styles.checkboxField}>
                 <input
                   type="checkbox"
-                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- unstableFeatures[key] is `never` when UnstableFeatures has no active flags
+
                   checked={unstableFeatures[key] ?? false}
                   onChange={e => {
                     onUnstableFeatureChange(key, e.target.checked)

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useUnstableFeatures, type UnstableFeatures } from './useUnstableFeatures'
+import { useUnstableFeature, type UnstableFeatures } from './useUnstableFeature'
 
 /** @internal */
 export interface WithUnstableFeatureProps {
@@ -19,6 +19,6 @@ export interface WithUnstableFeatureProps {
  * @internal
  */
 export function WithUnstableFeature({ feature, children }: WithUnstableFeatureProps) {
-  const unstableFeatures = useUnstableFeatures()
-  return unstableFeatures[feature] ? children : null
+  const isEnabled = useUnstableFeature(feature)
+  return isEnabled ? children : null
 }

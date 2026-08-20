@@ -165,7 +165,7 @@ export default [
    */
   {
     files: [
-      'src/contexts/UnstableFeaturesProvider/useUnstableFeatures.ts',
+      'src/contexts/UnstableFeaturesProvider/useUnstableFeature.ts',
       'src/contexts/UnstableFeaturesProvider/WithUnstableFeature.tsx',
     ],
     rules: {
