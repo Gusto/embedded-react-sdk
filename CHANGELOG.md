@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.55.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.0...v0.55.1) (2026-08-20)
+
+### Features & Enhancements
+
+- Add an opt-in `unstableFeatures` prop to `GustoProvider` for enabling alpha SDK functionality ahead of general availability ([#2583](https://github.com/Gusto/embedded-react-sdk/issues/2583))
+- Add alpha support for recording historical contractor payments in `PaymentsFlow`, available via `unstableFeatures={{ historicalPayments: true }}` ([#2589](https://github.com/Gusto/embedded-react-sdk/issues/2589), [#2552](https://github.com/Gusto/embedded-react-sdk/issues/2552))
+
+### Fixes
+
+- Fix `AccountNumber` input to render the `metadata.prefix` value as an input adornment ([#2569](https://github.com/Gusto/embedded-react-sdk/issues/2569))
+- Fix incorrect contractor payment totals ([#2596](https://github.com/Gusto/embedded-react-sdk/issues/2596))
+- Fix select item selected-state styling to use the correct theme token ([#2582](https://github.com/Gusto/embedded-react-sdk/issues/2582))
+- Remove duplicate `compensationRateFormats` translation key ([#2571](https://github.com/Gusto/embedded-react-sdk/issues/2571))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@axe-core/playwright`, `@commitlint/cli`, `@commitlint/config-conventional`, `@hookform/resolvers`, `@storybook/*`, `@testing-library/user-event`, `@typescript-eslint/*`, `eslint-plugin-storybook`, `globals`, `mermaid`, `react-error-boundary`, `sass-embedded`, `tsx`, `typescript-eslint`)
+
 ## [0.55.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.54.1...v0.55.0) (2026-08-13)
 
 ### Features & Enhancements

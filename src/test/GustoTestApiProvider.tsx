@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { GustoProvider } from '@/contexts'
 import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
-import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeatures'
+import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { API_BASE_URL } from '@/test/constants'
 
 interface GustoTestProviderProps {
