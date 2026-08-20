@@ -7617,7 +7617,7 @@ export namespace Translations {
       employeeCount_other: string
       /** @defaultValue `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` */
       disclaimer: string
-      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` */
+      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` */
       companyInfo: string
       /** @defaultValue `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` */
       address: string

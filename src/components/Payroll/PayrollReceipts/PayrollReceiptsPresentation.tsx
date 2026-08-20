@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import type {
   PayrollReceipt,
@@ -26,7 +26,7 @@ export const PayrollReceiptsPresentation = ({
   withReimbursements = true,
 }: PayrollReceiptsPresentationProps) => {
   const Components = useComponentContext()
-  const { Heading, Text } = Components
+  const { Heading, Text, Link } = Components
   useI18n('Payroll.PayrollReceipts')
   const { t } = useTranslation('Payroll.PayrollReceipts')
 
@@ -146,7 +146,13 @@ export const PayrollReceiptsPresentation = ({
             variant="supporting"
             className={classNames(styles.companyInfo, isMobile && styles.textMobile)}
           >
-            {receiptData.license}
+            <Trans
+              i18nKey="receipt.companyInfo"
+              t={t}
+              components={{
+                licensesLink: <Link href={receiptData.licenseUri || ''} target="_blank" />,
+              }}
+            />
           </Text>
 
           <Text
