@@ -302,6 +302,63 @@ describe('PayrollConfiguration', () => {
       expect(screen.queryByRole('button', { name: /calculate/i })).not.toBeInTheDocument()
     })
 
+    it('returns to the configuration table after cancelling', async () => {
+      const user = userEvent.setup()
+      let isCancelled = false
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          async ({ request }) => {
+            if (!isCancelled) {
+              return HttpResponse.json(
+                {
+                  errors: [
+                    {
+                      error_key: 'base',
+                      category: 'invalid_operation',
+                      message: 'This payroll has already been processed.',
+                    },
+                  ],
+                },
+                { status: 422 },
+              )
+            }
+            const body = (await request.json()) as { employee_uuids?: string[] } | null
+            const employeeUuids = body?.employee_uuids
+            const filteredCompensations = employeeUuids?.length
+              ? allCompensations.filter(comp => employeeUuids.includes(comp.employee_uuid))
+              : allCompensations
+            return HttpResponse.json({
+              ...mockPayrollData,
+              employee_compensations: filteredCompensations,
+            })
+          },
+        ),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`, () => {
+          isCancelled = true
+          return HttpResponse.json({ success: true })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /cancel payroll/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/any changes you have made/i)).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /yes, cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('button', { name: /cancel payroll/i })).not.toBeInTheDocument()
+    })
+
     it('emits runPayroll/alreadyProcessed once', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 

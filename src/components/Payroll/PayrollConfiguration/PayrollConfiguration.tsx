@@ -22,7 +22,7 @@ import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, type EventType } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -160,7 +160,11 @@ const Root = ({
   const hasFiredAlreadyProcessedRef = useRef(false)
 
   useEffect(() => {
-    if (!isAlreadyProcessed || hasFiredAlreadyProcessedRef.current) return
+    if (!isAlreadyProcessed) {
+      hasFiredAlreadyProcessedRef.current = false
+      return
+    }
+    if (hasFiredAlreadyProcessedRef.current) return
     hasFiredAlreadyProcessedRef.current = true
     onEvent(componentEvents.RUN_PAYROLL_ALREADY_PROCESSED, {
       payrollId,
@@ -490,11 +494,20 @@ const Root = ({
   })()
 
   if (isAlreadyProcessed) {
+    const onAlreadyProcessedOverviewEvent = (type: EventType, data?: unknown) => {
+      if (type === componentEvents.RUN_PAYROLL_CANCELLED) {
+        // Cancelling un-processes the payroll, making it editable again — re-run prepare so
+        // this component drops back into the configuration table for the same payrollId.
+        void refetch()
+      }
+      onEvent(type, data)
+    }
+
     return (
       <PayrollOverview
         companyId={companyId}
         payrollId={payrollId}
-        onEvent={onEvent}
+        onEvent={onAlreadyProcessedOverviewEvent}
         withReimbursements={withReimbursements}
         alerts={[alreadyProcessedAlert]}
       />
