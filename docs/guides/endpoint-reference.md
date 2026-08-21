@@ -366,7 +366,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
 | **ContractorManagement.DashboardFlow** | ContractorManagement.Address, ContractorManagement.Compensation, ContractorManagement.DocumentsCard, ContractorManagement.PaymentMethod, ContractorManagement.Profile |
 | **ContractorManagement.HistoricalPaymentFlow** | ContractorManagement.CreateHistoricalPayment, ContractorManagement.HistoricalPaymentSummary |
-| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePaymentFlow, ContractorManagement.PaymentsList, ContractorManagement.ViewPaymentFlow, InformationRequests.InformationRequestsFlow |
+| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePaymentFlow, ContractorManagement.HistoricalPaymentFlow, ContractorManagement.PaymentsList, ContractorManagement.ViewPaymentFlow, InformationRequests.InformationRequestsFlow |
 | **ContractorManagement.ViewPaymentFlow** | ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
 | **ContractorOnboarding.SelfOnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorProfile, ContractorOnboarding.DocumentSigner, ContractorOnboarding.Landing, ContractorOnboarding.OnboardingSummary, ContractorOnboarding.PaymentMethod |

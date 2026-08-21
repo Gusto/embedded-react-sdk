@@ -306,6 +306,12 @@ Handles the configuration phase of payroll processing, allowing users to review 
 
 ### Remarks
 
+If the payroll turns out to already be processed (e.g. another actor submitted it while this
+screen was open), this component emits `runPayroll/alreadyProcessed` and then renders
+[PayrollOverview](#payrolloverview) in its place — the read-only breakdown with the gated "Cancel payroll"
+action — instead of the configuration table. Events from that delegated view (e.g.
+`runPayroll/cancelled`) are emitted through this component's own `onEvent`.
+
 Emits the following events:
 
 <br />
@@ -337,6 +343,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/employee/skip` | An employee is skipped or unskipped for this payroll | `{ employeeId }` |
 | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
 | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
+| `runPayroll/alreadyProcessed` | The payroll turns out to already be processed while configuring it | `{ payrollId, alert, payPeriod }` |
 | `runPayroll/processingFailed` | Payroll calculation fails or times out | — |
 | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
 | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |

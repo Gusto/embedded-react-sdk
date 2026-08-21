@@ -97,6 +97,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
 | `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT` | `"contractor/historicalPayments/backToEdit"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_CREATE` | `"contractor/historicalPayments/create"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_CREATED` | `"contractor/historicalPayments/created"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_EDIT` | `"contractor/historicalPayments/edit"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_EXIT` | `"contractor/historicalPayments/exit"` |
@@ -318,6 +319,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `REVIEW_PAYROLL` | `"payroll/review"` |
 | `ROBOT_MACHINE_DONE` | `"done"` |
 | `RUN_OFF_CYCLE_PAYROLL` | `"runPayroll/offCycle/start"` |
+| `RUN_PAYROLL_ALREADY_PROCESSED` | `"runPayroll/alreadyProcessed"` |
 | `RUN_PAYROLL_BACK` | `"runPayroll/back"` |
 | `RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED` | `"runPayroll/blocker/resolutionAttempted"` |
 | `RUN_PAYROLL_BLOCKERS_DETECTED` | `"runPayroll/blockers/detected"` |

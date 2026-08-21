@@ -3078,6 +3078,14 @@ export namespace Translations {
       /** @defaultValue `"Last 12 months"` */
       last12Months: string
     }
+    historicalPaymentCta: {
+      /** @defaultValue `"Record a historical payment"` */
+      title: string
+      /** @defaultValue `"Add a contractor payment that was made outside of Gusto to keep your records complete."` */
+      description: string
+      /** @defaultValue `"Record a historical payment"` */
+      button: string
+    }
   }
   /** Translation keys for the `Contractor.Profile` i18n namespace. */
   export interface ContractorProfile {
@@ -7014,6 +7022,8 @@ export namespace Translations {
       setNetEarnings: string
     }
     alerts: {
+      /** @defaultValue `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` */
+      alreadyProcessed: string
       /** @defaultValue `"Your progress has been saved"` */
       progressSaved: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
@@ -7613,7 +7623,7 @@ export namespace Translations {
       employeeCount_other: string
       /** @defaultValue `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` */
       disclaimer: string
-      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` */
+      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` */
       companyInfo: string
       /** @defaultValue `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` */
       address: string

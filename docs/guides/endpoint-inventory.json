@@ -2528,6 +2528,7 @@
     "ContractorManagement.PaymentFlow": {
       "blocks": [
         "ContractorManagement.CreatePaymentFlow",
+        "ContractorManagement.HistoricalPaymentFlow",
         "ContractorManagement.PaymentsList",
         "ContractorManagement.ViewPaymentFlow",
         "InformationRequests.InformationRequestsFlow"

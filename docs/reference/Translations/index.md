@@ -2068,6 +2068,10 @@ Translation keys for the `Contractor.Payments.PaymentsList` i18n namespace.
 | `dateRanges.last12Months` | `"Last 12 months"` |
 | `dateRanges.last3Months` | `"Last 3 months"` |
 | `dateRanges.last6Months` | `"Last 6 months"` |
+| <a id="property-contractorpaymentspaymentslisthistoricalpaymentcta"></a> `historicalPaymentCta` | |
+| `historicalPaymentCta.button` | `"Record a historical payment"` |
+| `historicalPaymentCta.description` | `"Add a contractor payment that was made outside of Gusto to keep your records complete."` |
+| `historicalPaymentCta.title` | `"Record a historical payment"` |
 | <a id="property-contractorpaymentspaymentslistnopaymentsdescription"></a> `noPaymentsDescription` | `"No contractor payments have been created yet. Create your first payment to get started."` |
 | <a id="property-contractorpaymentspaymentslistnopaymentsfound"></a> `noPaymentsFound` | `"No payments found"` |
 | <a id="property-contractorpaymentspaymentslistpaymentdatecolumnlabel"></a> `paymentDateColumnLabel` | `"Payment date"` |
@@ -4799,6 +4803,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrollconfigurationalerts"></a> `alerts` | |
+| `alerts.alreadyProcessed` | `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.employeeUpdated` | |
@@ -5213,7 +5218,7 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptsexitflowcta"></a> `exitFlowCta` | `"Exit"` |
 | <a id="property-payrollpayrollreceiptsreceipt"></a> `receipt` | |
 | `receipt.address` | `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` |
-| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` |
+| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` |
 | `receipt.debitDate` | `"Debit date"` |
 | `receipt.detailsLabel` | `"Receipt Details"` |
 | `receipt.disclaimer` | `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` |

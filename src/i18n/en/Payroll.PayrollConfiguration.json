@@ -27,6 +27,7 @@
     "setNetEarnings": "Set employee net earnings"
   },
   "alerts": {
+    "alreadyProcessed": "This payroll is already processed. If you'd like to make changes, please cancel and re-run it.",
     "progressSaved": "Your progress has been saved",
     "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
     "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",

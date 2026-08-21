@@ -79,6 +79,15 @@
   }
 }
 
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
 .btn {
   padding: 0.5rem 0.875rem;
   border: 0.0625rem solid var(--color-border);
