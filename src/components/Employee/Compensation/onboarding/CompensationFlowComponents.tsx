@@ -5,6 +5,7 @@ import type { CompensationDefaultValues } from './Compensation'
 import { JobsList } from './JobsList'
 import { EditCompensation } from './EditCompensation'
 import type { OnEventType } from '@/components/Base/useBase'
+import { BaseBoundaries } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
@@ -39,6 +40,14 @@ export function JobsListContextual() {
 
 /** @internal */
 export function InitialEditCompensationContextual() {
+  return (
+    <BaseBoundaries componentName="Employee.Compensation">
+      <InitialEditCompensationContextualRoot />
+    </BaseBoundaries>
+  )
+}
+
+function InitialEditCompensationContextualRoot() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
   useI18n('Employee.Compensation')
@@ -71,6 +80,14 @@ export function InitialEditCompensationContextual() {
 
 /** @internal */
 export function EditCompensationContextual() {
+  return (
+    <BaseBoundaries componentName="Employee.Compensation">
+      <EditCompensationContextualRoot />
+    </BaseBoundaries>
+  )
+}
+
+function EditCompensationContextualRoot() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
   useI18n('Employee.Compensation')

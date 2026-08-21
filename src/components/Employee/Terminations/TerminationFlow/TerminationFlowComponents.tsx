@@ -5,6 +5,7 @@ import { TerminationSummary } from '../TerminationSummary/TerminationSummary'
 import type { PayrollOption } from '../types'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import { PayrollLanding } from '@/components/Payroll/PayrollLanding/PayrollLanding'
+import { BaseBoundaries } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -50,6 +51,14 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function TerminateEmployeeContextual() {
+  return (
+    <BaseBoundaries componentName="Employee.Terminations.TerminationFlow">
+      <TerminateEmployeeContextualRoot />
+    </BaseBoundaries>
+  )
+}
+
+function TerminateEmployeeContextualRoot() {
   const { companyId, employeeId, onEvent, alerts } = useFlow<TerminationFlowContextInterface>()
   const { Alert } = useComponentContext()
   useI18n('Employee.Terminations.TerminationFlow')
@@ -72,6 +81,14 @@ export function TerminateEmployeeContextual() {
 
 /** @internal */
 export function TerminationSummaryContextual() {
+  return (
+    <BaseBoundaries componentName="Employee.Terminations.TerminationFlow">
+      <TerminationSummaryContextualRoot />
+    </BaseBoundaries>
+  )
+}
+
+function TerminationSummaryContextualRoot() {
   const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
     useFlow<TerminationFlowContextInterface>()
   useI18n('Employee.Terminations.TerminationFlow')
