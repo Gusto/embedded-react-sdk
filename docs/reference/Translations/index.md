@@ -5074,9 +5074,6 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
-| `alerts.checkPaymentWarning_one` | `"You noted {{count}} employee who should be paid by check."` |
-| `alerts.checkPaymentWarning_other` | `"You noted {{count}} employees who should be paid by check."` |
-| `alerts.checkPaymentWarningDescription` | `"Employees with this payment method will need their checks delivered to them."` |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |

@@ -311,3 +311,61 @@ describe('PayrollOverview calculatedAt guard', () => {
     expect(screen.queryByText(/Review payroll/i)).toBeNull()
   })
 })
+
+describe('PayrollOverview print checks modal', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = {
+      ...basePayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-check-1',
+          firstName: 'Isaiah',
+          lastName: 'Berlin',
+          excluded: false,
+          version: 'v1',
+          grossPay: '4000',
+          netPay: '3200',
+          checkAmount: '3200',
+          paymentMethod: 'Check',
+          memo: null,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          taxes: [],
+          benefits: [],
+          deductions: [],
+        },
+      ],
+    }
+    mockIsFetching = false
+  })
+
+  it('hides the View and print checks button until the payroll is processed', async () => {
+    mockPayrollData = { ...mockPayrollData, processed: false }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByText(/noted 1 employee/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'View and print checks' })).toBeNull()
+  })
+
+  it('opens the print checks modal from the alert once the payroll is processed', async () => {
+    const user = userEvent.setup()
+    mockPayrollData = {
+      ...mockPayrollData,
+      processed: true,
+      processingRequest: { status: 'submit_success', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
+
+    expect(await screen.findByText('Choose check stock')).toBeInTheDocument()
+  })
+})
