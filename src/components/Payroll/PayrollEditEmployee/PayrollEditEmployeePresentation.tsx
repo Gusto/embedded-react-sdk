@@ -61,12 +61,24 @@ interface PayrollEditEmployeeProps {
   hasDirectDepositSetup?: boolean
 }
 
-const ReimbursementFormSchema = z.object({
-  uuid: z.string().nullable().optional(),
-  description: z.string(),
-  amount: z.string(),
-  recurring: z.boolean().optional(),
-})
+const ReimbursementFormSchema = z
+  .object({
+    uuid: z.string().nullable().optional(),
+    description: z.string(),
+    amount: z.string(),
+    recurring: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.uuid && parseFloat(data.amount || '0') === 0) return
+    const parsed = parseFloat(data.amount.trim() || '0')
+    if (Number.isNaN(parsed) || parsed <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Enter an amount greater than $0',
+        path: ['amount'],
+      })
+    }
+  })
 
 const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
@@ -200,7 +212,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
+  const { Button, ButtonIcon, Heading, Text } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -404,29 +416,30 @@ export const PayrollEditEmployeePresentation = ({
     .filter(row => parseFloat(row.amount || '0') !== 0)
 
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
-  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
-  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+  const pendingIndex = isAddingReimbursement ? reimbursementFields.length - 1 : -1
 
-  const resetReimbursementDraft = () => {
-    setIsAddingReimbursement(false)
-    setDraftReimbursementDescription('')
-    setDraftReimbursementAmount('')
+  const handleAddReimbursement = () => {
+    appendReimbursement({ uuid: null, description: '', amount: '', recurring: false })
+    setIsAddingReimbursement(true)
   }
 
-  const handleSaveReimbursementDraft = () => {
-    const trimmedAmount = draftReimbursementAmount.trim()
-    const parsedAmount = parseFloat(trimmedAmount || '0')
-    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      return
-    }
+  const resetReimbursementDraft = () => {
+    removeReimbursement(reimbursementFields.length - 1)
+    setIsAddingReimbursement(false)
+  }
 
-    appendReimbursement({
+  const handleSaveReimbursementDraft = async () => {
+    const valid = await formHandlers.trigger(`reimbursements.${pendingIndex}`)
+    if (!valid) return
+
+    const values = formHandlers.getValues(`reimbursements.${pendingIndex}`)
+    updateReimbursement(pendingIndex, {
       uuid: null,
-      description: draftReimbursementDescription.trim(),
-      amount: parsedAmount.toFixed(2),
+      description: (values.description || '').trim(),
+      amount: parseFloat(values.amount.trim()).toFixed(2),
       recurring: false,
     })
-    resetReimbursementDraft()
+    setIsAddingReimbursement(false)
   }
 
   const reimbursementDataViewProps = useDataView<VisibleReimbursementRow>({
@@ -468,9 +481,7 @@ export const PayrollEditEmployeePresentation = ({
       <EmptyData title={t('reimbursementEmptyTitle')}>
         <Button
           variant="secondary"
-          onClick={() => {
-            setIsAddingReimbursement(true)
-          }}
+          onClick={handleAddReimbursement}
           icon={<PlusCircleIcon aria-hidden />}
         >
           {t('addReimbursementCta')}
@@ -554,8 +565,11 @@ export const PayrollEditEmployeePresentation = ({
   })
 
   const onSubmit = (data: PayrollEditEmployeeFormValues) => {
+    const submissionData = isAddingReimbursement
+      ? { ...data, reimbursements: data.reimbursements.slice(0, -1) }
+      : data
     const updatedCompensation = buildCompensationFromFormData(
-      data,
+      submissionData,
       employeeCompensation,
       timeOff,
       primaryJob?.uuid,
@@ -733,22 +747,18 @@ export const PayrollEditEmployeePresentation = ({
               {isAddingReimbursement ? (
                 <Flex flexDirection="column" gap={12}>
                   <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                    <TextInput
-                      name="newReimbursementDescription"
+                    <TextInputField
+                      name={`reimbursements.${pendingIndex}.description`}
                       label={t('reimbursementDescriptionLabel')}
                       placeholder={t('reimbursementDescriptionPlaceholder')}
-                      value={draftReimbursementDescription}
-                      onChange={setDraftReimbursementDescription}
                     />
-                    <TextInput
-                      name="newReimbursementAmount"
+                    <TextInputField
+                      name={`reimbursements.${pendingIndex}.amount`}
                       type="number"
                       min={0}
                       adornmentStart="$"
                       isRequired
                       label={t('reimbursementAmountLabel')}
-                      value={draftReimbursementAmount}
-                      onChange={setDraftReimbursementAmount}
                     />
                   </Grid>
                   <Flex gap={12}>
@@ -765,9 +775,7 @@ export const PayrollEditEmployeePresentation = ({
                   <div>
                     <Button
                       variant="secondary"
-                      onClick={() => {
-                        setIsAddingReimbursement(true)
-                      }}
+                      onClick={handleAddReimbursement}
                       title={t('addReimbursementLink')}
                       icon={<PlusCircleIcon aria-hidden />}
                     >

@@ -1508,6 +1508,36 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
     })
 
+    it('shows a validation error when saving a reimbursement with a negative amount', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '-10')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      expect(await screen.findByText('Enter an amount greater than $0')).toBeInTheDocument()
+    })
+
+    it('shows a validation error when saving a reimbursement with a zero amount', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '0')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      expect(await screen.findByText('Enter an amount greater than $0')).toBeInTheDocument()
+    })
+
     it('soft-deletes an existing reimbursement on Remove (keeps uuid, sets amount to 0)', async () => {
       const onSave = vi.fn()
       const user = userEvent.setup()
