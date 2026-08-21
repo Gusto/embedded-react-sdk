@@ -1109,6 +1109,100 @@ export const PayrollOverviewStory = () => {
   )
 }
 
+export const PayrollOverviewReadOnly = () => {
+  return (
+    <PayrollOverviewPresentation
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
+      taxes={{ 'Federal Income Tax': { employee: 100, employer: 200 } }}
+      isProcessed={false}
+      canEdit={false}
+      status={PayrollOverviewStatus.Viewing}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
+      payrollData={{
+        payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
+        checkDate: '2025-09-26',
+        processed: false,
+        processedDate: null,
+        calculatedAt: new Date('2025-09-15T16:25:07.000Z'),
+        uuid: 'payroll-uuid',
+        payrollUuid: 'payroll-uuid',
+        companyUuid: 'company-uuid',
+        offCycle: false,
+        external: false,
+        payPeriod: {
+          startDate: '2025-09-12',
+          endDate: '2025-09-18',
+          payScheduleUuid: 'schedule-uuid',
+        },
+        totals: {
+          companyDebit: '5000.00',
+          netPayDebit: '4000.00',
+          taxDebit: '1000.00',
+          reimbursementDebit: '0.00',
+          childSupportDebit: '0.00',
+          reimbursements: '0.00',
+          netPay: '4000.00',
+          grossPay: '5000.00',
+          employeeBonuses: '0.00',
+          employeeCommissions: '0.00',
+          employeeCashTips: '0.00',
+          employeePaycheckTips: '0.00',
+          additionalEarnings: '0.00',
+          ownersDraw: '0.00',
+          checkAmount: '0.00',
+          employerTaxes: '500.00',
+          employeeTaxes: '500.00',
+          benefits: '0.00',
+          employeeBenefitsDeductions: '0.00',
+          imputedPay: '0.00',
+          deferredPayrollTaxes: '0.00',
+          otherDeductions: '0.00',
+        },
+        companyTaxes: [],
+        createdAt: new Date('2025-09-15T16:19:04.000Z'),
+        submissionBlockers: [],
+        processingRequest: { status: 'calculate_success', errors: [] },
+        partnerOwnedDisbursement: false,
+        employeeCompensations: [
+          {
+            employeeUuid: 'emp-active',
+            firstName: 'Isaiah',
+            lastName: 'Berlin',
+            excluded: false,
+            version: 'v1',
+            grossPay: '5000',
+            netPay: '4000',
+            checkAmount: '4000',
+            paymentMethod: 'Direct Deposit',
+            memo: null,
+            fixedCompensations: [],
+            hourlyCompensations: [
+              {
+                name: 'Regular Hours',
+                hours: '40.000',
+                amount: '5000.0',
+                jobUuid: 'job-1',
+                compensationMultiplier: 1,
+                flsaStatus: 'Nonexempt',
+              },
+            ],
+            paidTimeOff: [],
+            taxes: [
+              { name: 'Federal Income Tax', employer: false, amount: '100' },
+              { name: 'Federal Income Tax', employer: true, amount: '200' },
+            ],
+            benefits: [],
+            deductions: [],
+          },
+        ],
+      }}
+    />
+  )
+}
+
 export const PayrollOverviewWithWireFunds = () => {
   return (
     <PayrollOverviewPresentation
