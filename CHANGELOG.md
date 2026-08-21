@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.55.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.1...v0.55.2) (2026-08-21)
+
+### Features & Enhancements
+
+- Add `PrintChecks` component for generating and printing payroll checks, embedded in `PayrollOverview` with a banner prompt and full form/summary/failure screens ([#2584](https://github.com/Gusto/embedded-react-sdk/issues/2584), [#2585](https://github.com/Gusto/embedded-react-sdk/issues/2585), [#2586](https://github.com/Gusto/embedded-react-sdk/issues/2586), [#2587](https://github.com/Gusto/embedded-react-sdk/issues/2587), [#2588](https://github.com/Gusto/embedded-react-sdk/issues/2588))
+- Add `withOffcyclePayroll` prop to control off-cycle payroll CTA visibility in `PayrollLanding` ([#2612](https://github.com/Gusto/embedded-react-sdk/issues/2612))
+- Make license text in payroll receipts a clickable link ([#2606](https://github.com/Gusto/embedded-react-sdk/issues/2606))
+
+### Fixes
+
+- Fix form validation incorrectly running base validators on dynamically excluded fields ([#2602](https://github.com/Gusto/embedded-react-sdk/issues/2602))
+- Show an already-processed banner and cancel-only overview in `PayrollConfiguration` when the payroll has already been processed ([#2605](https://github.com/Gusto/embedded-react-sdk/issues/2605))
+- Sort payroll employee lists alphabetically by last name ([#2607](https://github.com/Gusto/embedded-react-sdk/issues/2607))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@hookform/resolvers`)
+
 ## [0.55.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.0...v0.55.1) (2026-08-20)
 
 ### Features & Enhancements
