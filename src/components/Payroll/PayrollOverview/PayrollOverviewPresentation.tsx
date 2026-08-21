@@ -32,7 +32,6 @@ import {
   compensationTypeLabels,
   FlsaStatus,
   PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
-  PAYMENT_METHODS,
 } from '@/shared/constants'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
@@ -48,6 +47,7 @@ interface PayrollOverviewProps {
   submissionBlockers?: PayrollSubmissionBlockerType[]
   selectedUnblockOptions?: Record<string, string>
   wireInConfirmationRequest?: React.ReactNode
+  printChecksBanner?: React.ReactNode
   pagination?: PaginationControlProps
   onEdit: () => void
   onSubmit: () => void
@@ -87,6 +87,7 @@ export const PayrollOverviewPresentation = ({
   selectedUnblockOptions = {},
   onUnblockOptionChange,
   wireInConfirmationRequest,
+  printChecksBanner,
   withReimbursements = true,
   paymentSpeed,
   pagination,
@@ -212,12 +213,6 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
-  const checkPaymentsCount =
-    payrollData.employeeCompensations?.reduce(
-      (acc, comp) =>
-        !comp.excluded && comp.paymentMethod === PAYMENT_METHODS.check ? acc + 1 : acc,
-      0,
-    ) ?? 0
   const companyPaysColumns: Array<{
     key: string
     title: string
@@ -780,14 +775,7 @@ export const PayrollOverviewPresentation = ({
                 data={[{}]}
               />
             )}
-            {checkPaymentsCount > 0 && (
-              <Alert
-                status="warning"
-                label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
-              >
-                {t('alerts.checkPaymentWarningDescription')}
-              </Alert>
-            )}
+            {printChecksBanner}
             <Tabs
               onSelectionChange={setSelectedTab}
               selectedId={selectedTab}

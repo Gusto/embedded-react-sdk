@@ -510,6 +510,7 @@ Props for [PayrollLanding](#payrolllanding).
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component that replaces the default wire details confirmation UI. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollLanding`](../Translations/index.md#payrollpayrolllanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `showPayrollCancelledAlert?` | `boolean` | When `true`, displays a dismissible success alert indicating a payroll was cancelled. |
+| `withOffcyclePayroll?` | `boolean` | Whether to show the off-cycle payroll call-to-action. Defaults to `true`. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
@@ -590,6 +591,7 @@ Props for [PayrollList](#payrolllist).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `withOffcyclePayroll?` | `boolean` | Whether to show the off-cycle payroll call-to-action. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
@@ -672,6 +674,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+| `payroll/printChecks/start` | User opened the print-checks modal from the embedded print-checks banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed check generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the print-checks failure or summary screen | — |
 
 <br />
 
