@@ -187,13 +187,16 @@ const buildCompensationFromFormData = (
   updatedCompensation.fixedCompensations = updatedFixedCompensations
 
   if (usesItemizedReimbursements) {
-    updatedCompensation.reimbursements = formData.reimbursements.map(reimbursement => ({
-      amount: reimbursement.amount,
-      description:
-        reimbursement.description.trim() === '' ? null : reimbursement.description.trim(),
-      uuid: reimbursement.uuid ?? null,
-      recurring: reimbursement.recurring,
-    }))
+    updatedCompensation.reimbursements = formData.reimbursements.map(reimbursement => {
+      const parsedAmount = parseFloat(reimbursement.amount || '0')
+      return {
+        amount: parsedAmount === 0 ? '0' : parsedAmount.toFixed(2),
+        description:
+          reimbursement.description.trim() === '' ? null : reimbursement.description.trim(),
+        uuid: reimbursement.uuid ?? null,
+        recurring: reimbursement.recurring,
+      }
+    })
   } else {
     // Off-cycle: ensure no itemized array leaks through. The container also strips this defensively.
     updatedCompensation.reimbursements = []
@@ -441,14 +444,7 @@ export const PayrollEditEmployeePresentation = ({
   const handleSaveReimbursementDraft = async () => {
     const valid = await formHandlers.trigger(`reimbursements.${pendingIndex}`)
     if (!valid) return
-
-    const values = formHandlers.getValues(`reimbursements.${pendingIndex}`)
-    updateReimbursement(pendingIndex, {
-      uuid: null,
-      description: (values.description || '').trim(),
-      amount: parseFloat(values.amount.trim()).toFixed(2),
-      recurring: false,
-    })
+    updateReimbursement(pendingIndex, formHandlers.getValues(`reimbursements.${pendingIndex}`))
     setIsAddingReimbursement(false)
   }
 
