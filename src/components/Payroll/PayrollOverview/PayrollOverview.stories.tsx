@@ -1357,3 +1357,112 @@ export const WithSkippedEmployee = () => {
     />
   )
 }
+
+const checkPaymentPayrollData = {
+  payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
+  checkDate: '2025-09-26',
+  processedDate: null,
+  calculatedAt: new Date('2025-09-15T16:25:07.000Z'),
+  uuid: 'payroll-uuid',
+  payrollUuid: 'payroll-uuid',
+  companyUuid: 'company-uuid',
+  offCycle: false,
+  external: false,
+  payPeriod: {
+    startDate: '2025-09-12',
+    endDate: '2025-09-18',
+    payScheduleUuid: 'schedule-uuid',
+  },
+  totals: {
+    companyDebit: '5000.00',
+    netPayDebit: '4000.00',
+    taxDebit: '1000.00',
+    reimbursementDebit: '0.00',
+    childSupportDebit: '0.00',
+    reimbursements: '0.00',
+    netPay: '4000.00',
+    grossPay: '5000.00',
+    employeeBonuses: '0.00',
+    employeeCommissions: '0.00',
+    employeeCashTips: '0.00',
+    employeePaycheckTips: '0.00',
+    additionalEarnings: '0.00',
+    ownersDraw: '0.00',
+    checkAmount: '1000.00',
+    employerTaxes: '500.00',
+    employeeTaxes: '500.00',
+    benefits: '0.00',
+    employeeBenefitsDeductions: '0.00',
+    imputedPay: '0.00',
+    deferredPayrollTaxes: '0.00',
+    otherDeductions: '0.00',
+  },
+  companyTaxes: [],
+  createdAt: new Date('2025-09-15T16:19:04.000Z'),
+  submissionBlockers: [],
+  partnerOwnedDisbursement: false,
+  employeeCompensations: [
+    {
+      employeeUuid: 'emp-check-1',
+      firstName: 'Isaiah',
+      lastName: 'Berlin',
+      excluded: false,
+      version: 'v1',
+      grossPay: '4000',
+      netPay: '3200',
+      checkAmount: '3200',
+      paymentMethod: 'Check' as const,
+      memo: null,
+      fixedCompensations: [],
+      hourlyCompensations: [
+        {
+          name: 'Regular Hours',
+          hours: '40.000',
+          amount: '4000.0',
+          jobUuid: 'job-1',
+          compensationMultiplier: 1,
+          flsaStatus: 'Nonexempt',
+        },
+      ],
+      paidTimeOff: [],
+      taxes: [
+        { name: 'Federal Income Tax', employer: false, amount: '80' },
+        { name: 'Federal Income Tax', employer: true, amount: '160' },
+      ],
+      benefits: [],
+      deductions: [],
+    },
+  ],
+}
+
+export const WithCheckPaymentEmployeeUnprocessed = () => {
+  return (
+    <PayrollOverviewPresentation
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
+      taxes={{ 'Federal Income Tax': { employee: 80, employer: 160 } }}
+      isProcessed={false}
+      status={PayrollOverviewStatus.Viewing}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
+      payrollData={{ ...checkPaymentPayrollData, processed: false }}
+    />
+  )
+}
+
+export const WithCheckPaymentEmployeeProcessed = () => {
+  return (
+    <PayrollOverviewPresentation
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
+      taxes={{ 'Federal Income Tax': { employee: 80, employer: 160 } }}
+      isProcessed
+      status={PayrollOverviewStatus.Viewing}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
+      payrollData={{ ...checkPaymentPayrollData, processed: true }}
+    />
+  )
+}

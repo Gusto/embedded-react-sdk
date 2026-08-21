@@ -672,6 +672,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+| `payroll/printChecks/start` | User opened the print-checks modal from the embedded print-checks banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed check generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the print-checks failure or summary screen | — |
 
 <br />
 
