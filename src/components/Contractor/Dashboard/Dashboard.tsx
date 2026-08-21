@@ -14,11 +14,7 @@ import { firstLastName } from '@/helpers/formattedStrings'
 /** @public */
 export type DashboardTab = 'details' | 'pay' | 'documents'
 
-/**
- * Key identifying which success alert to surface above the dashboard tabs.
- *
- * @public
- */
+/** @internal */
 export type DashboardSuccessAlert =
   | 'profileUpdated'
   | 'addressUpdated'

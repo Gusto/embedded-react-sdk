@@ -15,11 +15,7 @@ import { firstLastName } from '@/helpers/formattedStrings'
 /** @public */
 export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
-/**
- * Key identifying which success alert to surface above the dashboard tabs.
- *
- * @public
- */
+/** @internal */
 export type DashboardSuccessAlert =
   | 'bankAccountAdded'
   | 'bankAccountDeleted'
