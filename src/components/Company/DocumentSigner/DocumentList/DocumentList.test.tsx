@@ -107,6 +107,90 @@ describe('DocumentList', () => {
     })
   })
 
+  describe('form description overrides', () => {
+    beforeEach(() => {
+      server.use(
+        handleGetAllSignatories(() => HttpResponse.json([])),
+        handleGetAllCompanyForms(() =>
+          HttpResponse.json([
+            {
+              uuid: 'form-8655',
+              title: 'Form 8655: Reporting Agent Authorization',
+              name: 'US_8655',
+              description:
+                'Form 8655 authorizes us to pay and file federal payroll taxes on your behalf.',
+              requires_signing: true,
+            },
+            {
+              uuid: 'form-unknown',
+              title: 'Some Unrecognized Form',
+              name: 'some_unrecognized_form',
+              description: 'This description comes straight from the API.',
+              requires_signing: false,
+            },
+          ]),
+        ),
+      )
+    })
+
+    it('renders the API-provided description for a known form name with no override', async () => {
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={() => {}} />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Form 8655 authorizes us to pay and file federal payroll taxes on your behalf.',
+          ),
+        ).toBeInTheDocument()
+      })
+    })
+
+    it('renders the API-provided description for a form name outside the known catalog', async () => {
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={() => {}} />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('This description comes straight from the API.'),
+        ).toBeInTheDocument()
+      })
+    })
+
+    // Registers a partner dictionary override on the shared i18next instance, which persists
+    // for the rest of this file's test run — keep this the last test in the describe block so
+    // it doesn't bleed into the "no override" assertions above.
+    it('renders the dictionary override when one is provided for a known form name', async () => {
+      renderWithProviders(
+        <DocumentList
+          companyId="company-123"
+          onEvent={() => {}}
+          dictionary={{
+            en: {
+              forms: {
+                US_8655: {
+                  description:
+                    'Form 8655 authorizes Gusto to pay and file federal payroll taxes on your behalf.',
+                },
+              },
+            },
+          }}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Form 8655 authorizes Gusto to pay and file federal payroll taxes on your behalf.',
+          ),
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.queryByText(
+          'Form 8655 authorizes us to pay and file federal payroll taxes on your behalf.',
+        ),
+      ).not.toBeInTheDocument()
+    })
+  })
+
   describe('when user is not the signatory', () => {
     beforeEach(() => {
       server.use(
