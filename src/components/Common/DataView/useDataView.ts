@@ -10,12 +10,14 @@ type DataViewColumn<T> =
       title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      wrap?: boolean
     }
   | {
       key?: string
       title: string | React.ReactNode
       render: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      wrap?: boolean
     }
 
 type FooterKeys<T> = keyof T | string

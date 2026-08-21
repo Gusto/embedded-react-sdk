@@ -1,9 +1,13 @@
 .root {
   width: 100%;
+  overflow-x: auto;
+  background: var(--g-colorBody);
+  border: 1px solid var(--g-colorBorderSecondary);
+  border-radius: toRem(12);
+  box-shadow: var(--g-shadowResting);
 
   :global(.react-aria-Table) {
     background: var(--g-colorBody);
-    border: 1px solid var(--g-colorBorderSecondary);
     outline: none;
     border-spacing: 0;
     min-height: 100px;
@@ -11,9 +15,7 @@
     width: 100%;
     word-break: break-word;
     forced-color-adjust: none;
-    border-radius: toRem(12);
     border-collapse: separate;
-    box-shadow: var(--g-shadowResting);
 
     &[data-focus-visible] {
       outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -27,14 +29,6 @@
         background-color: var(--g-colorBodyAccent);
         color: var(--g-colorBodySubContent);
         border-bottom: 1px solid var(--g-colorBorderSecondary);
-
-        &:first-child {
-          border-top-left-radius: toRem(12);
-        }
-
-        &:last-child {
-          border-top-right-radius: toRem(12);
-        }
       }
 
       //Produces spacing between header and body
@@ -101,6 +95,12 @@
       text-align: left;
       outline: none;
       word-break: normal;
+      white-space: nowrap;
+
+      &[data-wrap] {
+        white-space: normal;
+        max-width: toRem(320);
+      }
 
       &[data-focus-visible] {
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -129,12 +129,12 @@
     }
 
     :global(.react-aria-Column) {
-      padding-left: toRem(16);
-      padding-right: toRem(16);
+      padding-left: toRem(40);
+      padding-right: toRem(40);
       height: toRem(40);
     }
     :global(.react-aria-Cell) {
-      padding: toRem(14) toRem(16);
+      padding: toRem(14) toRem(40);
       transform: translateZ(0);
       border-bottom: 1px solid var(--g-colorBorderSecondary);
       vertical-align: middle;
@@ -151,14 +151,6 @@
 
     :global(.react-aria-Row[data-footer='true'] .react-aria-Cell) {
       background-color: var(--g-colorBodyAccent);
-
-      &:first-child {
-        border-bottom-left-radius: toRem(12);
-      }
-
-      &:last-child {
-        border-bottom-right-radius: toRem(12);
-      }
     }
 
     /* join selected items if :has selector is supported */
@@ -176,33 +168,13 @@
   }
 
   &[data-within-box] {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+
     :global(.react-aria-Table) {
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
       background: transparent;
-
-      :global(.react-aria-TableHeader) {
-        th {
-          &:first-child {
-            border-top-left-radius: 0;
-          }
-
-          &:last-child {
-            border-top-right-radius: 0;
-          }
-        }
-      }
-
-      :global(.react-aria-Row[data-footer='true'] .react-aria-Cell) {
-        &:first-child {
-          border-bottom-left-radius: 0;
-        }
-
-        &:last-child {
-          border-bottom-right-radius: 0;
-        }
-      }
     }
   }
 }

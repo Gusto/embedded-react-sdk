@@ -349,3 +349,78 @@ export const WithinBox = () => {
 
   return <Table aria-label="Table within a box" headers={headers} rows={rows} isWithinBox />
 }
+
+export const HorizontalScroll = () => {
+  const { Table } = useComponentContext()
+
+  const columnKeys = [
+    'ID',
+    'First name',
+    'Last name',
+    'Email',
+    'Department',
+    'Job title',
+    'Location',
+    'Start date',
+    'Manager',
+    'Status',
+  ]
+
+  const headers: TableData[] = columnKeys.map(key => ({
+    key: `${key}-header`,
+    content: key,
+  }))
+
+  const people = [
+    [
+      '1',
+      'John',
+      'Doe',
+      'john@example.com',
+      'Engineering',
+      'Staff Engineer',
+      'San Francisco, CA',
+      '2021-03-15',
+      'Jane Smith',
+      'Active',
+    ],
+    [
+      '2',
+      'Jane',
+      'Smith',
+      'jane@example.com',
+      'Engineering',
+      'Engineering Manager',
+      'New York, NY',
+      '2019-07-01',
+      'Bob Johnson',
+      'Active',
+    ],
+    [
+      '3',
+      'Bob',
+      'Johnson',
+      'bob@example.com',
+      'Design',
+      'Principal Designer',
+      'Remote',
+      '2020-11-20',
+      'Jane Smith',
+      'On leave',
+    ],
+  ]
+
+  const rows: TableRow[] = people.map((person, rowIndex) => ({
+    key: `row-${rowIndex}`,
+    data: person.map((value, colIndex) => ({
+      key: `cell-${rowIndex}-${colIndex}`,
+      content: value,
+    })),
+  }))
+
+  return (
+    <div style={{ maxWidth: '600px' }}>
+      <Table aria-label="Employees" headers={headers} rows={rows} />
+    </div>
+  )
+}

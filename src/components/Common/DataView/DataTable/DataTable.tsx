@@ -108,6 +108,7 @@ export const DataTable = <T,>({
     ...columns.map((column, index) => ({
       key: typeof column.key === 'string' ? column.key : `header-${index}`,
       content: withJustify(column.title, column.justify),
+      wrap: column.wrap,
     })),
     ...(itemMenu
       ? [
@@ -167,6 +168,7 @@ export const DataTable = <T,>({
         return {
           key: typeof column.key === 'string' ? column.key : `cell-${colIndex}`,
           content: withJustify(getCellContent(item, column), column.justify),
+          wrap: column.wrap,
         }
       }),
       ...(itemMenu
