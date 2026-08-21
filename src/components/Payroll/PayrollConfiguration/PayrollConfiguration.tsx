@@ -15,12 +15,14 @@ import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { hasDirectDepositEmployees } from '../helpers'
 import { GrossUpModal } from '../GrossUpModal'
+import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
+import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, type EventType } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -58,6 +60,12 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll.
  *
  * @remarks
+ * If the payroll turns out to already be processed (e.g. another actor submitted it while this
+ * screen was open), this component emits `runPayroll/alreadyProcessed` and then renders
+ * {@link PayrollOverview} in its place — the read-only breakdown with the gated "Cancel payroll"
+ * action — instead of the configuration table. Events from that delegated view (e.g.
+ * `runPayroll/cancelled`) are emitted through this component's own `onEvent`.
+ *
  * Emits the following events:
  *
  * @events
@@ -67,6 +75,7 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * | `runPayroll/employee/skip` | An employee is skipped or unskipped for this payroll | `{ employeeId }` |
  * | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
  * | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
+ * | `runPayroll/alreadyProcessed` | The payroll turns out to already be processed while configuring it | `{ payrollId, alert, payPeriod }` |
  * | `runPayroll/processingFailed` | Payroll calculation fails or times out | — |
  * | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
  * | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
@@ -130,6 +139,7 @@ const Root = ({
     payrollCategory,
     pagination,
     isLoading,
+    isAlreadyProcessed,
     refetch,
   } = usePayrollConfigurationData({
     companyId,
@@ -137,6 +147,37 @@ const Root = ({
     isCalculating: isPolling || isCalculatingPayroll,
     excludedEmployeeUuids,
   })
+
+  const alreadyProcessedAlert: PayrollFlowAlert = useMemo(
+    () => ({
+      type: 'error',
+      title: t('alerts.alreadyProcessed'),
+      alertKey: 'alreadyProcessed',
+    }),
+    [t],
+  )
+
+  const hasFiredAlreadyProcessedRef = useRef(false)
+
+  useEffect(() => {
+    if (!isAlreadyProcessed) {
+      hasFiredAlreadyProcessedRef.current = false
+      return
+    }
+    if (hasFiredAlreadyProcessedRef.current) return
+    hasFiredAlreadyProcessedRef.current = true
+    onEvent(componentEvents.RUN_PAYROLL_ALREADY_PROCESSED, {
+      payrollId,
+      alert: alreadyProcessedAlert,
+      payPeriod: payrollData.payrollShow?.payPeriod,
+    })
+  }, [
+    isAlreadyProcessed,
+    onEvent,
+    payrollId,
+    alreadyProcessedAlert,
+    payrollData.payrollShow?.payPeriod,
+  ])
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
@@ -458,6 +499,27 @@ const Root = ({
 
     return undefined
   })()
+
+  if (isAlreadyProcessed) {
+    const onAlreadyProcessedOverviewEvent = (type: EventType, data?: unknown) => {
+      if (type === componentEvents.RUN_PAYROLL_CANCELLED) {
+        // Cancelling un-processes the payroll, making it editable again — re-run prepare so
+        // this component drops back into the configuration table for the same payrollId.
+        void refetch()
+      }
+      onEvent(type, data)
+    }
+
+    return (
+      <PayrollOverview
+        companyId={companyId}
+        payrollId={payrollId}
+        onEvent={onAlreadyProcessedOverviewEvent}
+        withReimbursements={withReimbursements}
+        alerts={[alreadyProcessedAlert]}
+      />
+    )
+  }
 
   return (
     <>

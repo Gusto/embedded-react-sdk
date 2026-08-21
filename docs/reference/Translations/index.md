@@ -594,6 +594,7 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `validations.firstPayDayOfTheMonth` | `"First pay day of the month is required"` |
 | `validations.firstPayPeriodEndDate` | `"First pay period end date is required"` |
 | `validations.frequency` | `"Pay frequency is required"` |
+| `validations.frequencyOptions` | `"Please select the pay days for the month"` |
 | `validations.lastPayDayOfTheMonth` | `"Last pay day of the month is required"` |
 | `validations.name` | `"Pay schedule name is required"` |
 
@@ -1744,6 +1745,99 @@ Translation keys for the `Contractor.PaymentMethod` i18n namespace.
 
 ***
 
+<a id="contractorpaymentscreatehistoricalpayment"></a>
+
+### ContractorPaymentsCreateHistoricalPayment
+
+Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorpaymentscreatehistoricalpaymentalerts"></a> `alerts` | |
+| `alerts.contractorPaymentUpdated` | `"Pay updated for {{contractorName}}"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentamounts"></a> `amounts` | |
+| `amounts.continueButton` | `"Continue"` |
+| `amounts.heading` | `"Enter payment amounts"` |
+| `amounts.subtitle` | `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentbackbutton"></a> `backButton` | `"Back"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentcontractortableheaders"></a> `contractorTableHeaders` | |
+| `contractorTableHeaders.bonus` | `"Bonus"` |
+| `contractorTableHeaders.contractor` | `"Contractor"` |
+| `contractorTableHeaders.hours` | `"Hours"` |
+| `contractorTableHeaders.paymentMethod` | `"Payment method"` |
+| `contractorTableHeaders.reimbursement` | `"Reimbursement"` |
+| `contractorTableHeaders.total` | `"Total"` |
+| `contractorTableHeaders.wage` | `"Fixed amount"` |
+| `contractorTableHeaders.wageType` | `"Wage"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenteditcontractor"></a> `editContractor` | `"Edit contractor payment"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenteditcontractorpayment"></a> `editContractorPayment` | |
+| `editContractorPayment.bonusLabel` | `"Bonus"` |
+| `editContractorPayment.cancelCta` | `"Cancel"` |
+| `editContractorPayment.errors` | |
+| `editContractorPayment.errors.directDepositNotAvailable` | `"Direct Deposit is not available for contractors set up for Check payments"` |
+| `editContractorPayment.errors.unsupportedPaymentMethod` | `"This payment method is not supported. Please select Check or Direct Deposit."` |
+| `editContractorPayment.hoursAdornment` | `"hrs"` |
+| `editContractorPayment.hoursLabel` | `"Hours"` |
+| `editContractorPayment.hoursPayDescription` | `"{{rate}}/hr × hours = {{total}}"` |
+| `editContractorPayment.paymentMethodLabel` | `"Payment Method"` |
+| `editContractorPayment.paymentMethods` | |
+| `editContractorPayment.paymentMethods.check` | `"Check"` |
+| `editContractorPayment.paymentMethods.directDeposit` | `"Direct deposit"` |
+| `editContractorPayment.paymentMethods.historicalPayment` | `"Historical payment"` |
+| `editContractorPayment.reimbursementLabel` | `"Reimbursement"` |
+| `editContractorPayment.saveCta` | `"Done"` |
+| `editContractorPayment.subtitle` | `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` |
+| `editContractorPayment.title` | `"Edit contractor pay"` |
+| `editContractorPayment.wageLabel` | `"Fixed amount"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabledescription"></a> `emptyTableDescription` | `"Select at least one contractor to record a payment."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentemptytabletitle"></a> `emptyTableTitle` | `"No contractors selected"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenthoursandpaymentslabel"></a> `hoursAndPaymentsLabel` | `"Hours and payments"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentna"></a> `na` | `"N/A"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentpaymentmethods"></a> `paymentMethods` | |
+| `paymentMethods.check` | `"Check"` |
+| `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentperhour"></a> `perHour` | `"/hr"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentreview"></a> `review` | |
+| `review.bonus` | `"Bonus"` |
+| `review.contractor` | `"Contractor"` |
+| `review.contractorPayDate` | `"Contractor Pay Date"` |
+| `review.contractorPaymentsTitle` | `"Contractor Payments"` |
+| `review.hours` | `"Hours"` |
+| `review.notAvailable` | `"N/A"` |
+| `review.paymentMethod` | `"Payment Method"` |
+| `review.paymentMethods` | |
+| `review.paymentMethods.check` | `"Check"` |
+| `review.paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `review.paymentMethods.historicalPayment` | `"Historical Payment"` |
+| `review.paymentSummaryTitle` | `"Payment Summary"` |
+| `review.reimbursement` | `"Reimbursement"` |
+| `review.submitButton` | `"Submit historical payment"` |
+| `review.subtitle` | `"Historical payment for {{checkDate}}"` |
+| `review.successMessage` | `"This payment has been recorded. View it from the payments list to see its full details."` |
+| `review.successTitle` | `"Historical payment recorded successfully"` |
+| `review.title` | `"Review and submit"` |
+| `review.total` | `"Total"` |
+| `review.totalAmount` | `"Total Amount"` |
+| `review.totalsLabel` | `"Totals"` |
+| `review.wage` | `"Wage"` |
+| `review.wageType` | `"Wage Type"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentselect"></a> `select` | |
+| `select.continueButton` | `"Continue"` |
+| `select.dateInFutureError` | `"You cannot issue historical payments for the future. Please choose a date in the past."` |
+| `select.dateLabel` | `"Payment date"` |
+| `select.dateTooEarlyError` | `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` |
+| `select.heading` | `"Record a historical payment"` |
+| `select.subtitle` | `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` |
+| <a id="property-contractorpaymentscreatehistoricalpaymenttotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentscreatehistoricalpaymentwagetypes"></a> `wageTypes` | |
+| `wageTypes.fixed` | `"Fixed"` |
+| `wageTypes.hourly` | `"Hourly"` |
+
+***
+
 <a id="contractorpaymentscreatepayment"></a>
 
 ### ContractorPaymentsCreatePayment
@@ -1873,82 +1967,40 @@ Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace.
 
 ***
 
-<a id="contractorpaymentshistoricalpaymentamounts"></a>
+<a id="contractorpaymentshistoricalpaymentsummary"></a>
 
-### ContractorPaymentsHistoricalPaymentAmounts
+### ContractorPaymentsHistoricalPaymentSummary
 
-Translation keys for the `Contractor.Payments.HistoricalPaymentAmounts` i18n namespace.
+Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace.
 
 #### Properties
 
 | Property | Default value |
 | ------ | ------ |
-| <a id="property-contractorpaymentshistoricalpaymentamountsalerts"></a> `alerts` | |
-| `alerts.contractorPaymentUpdated` | `"Pay updated for {{contractorName}}"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountscontinuebutton"></a> `continueButton` | `"Continue"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountscontractortableheaders"></a> `contractorTableHeaders` | |
-| `contractorTableHeaders.bonus` | `"Bonus"` |
-| `contractorTableHeaders.contractor` | `"Contractor"` |
-| `contractorTableHeaders.hours` | `"Hours"` |
-| `contractorTableHeaders.paymentMethod` | `"Payment method"` |
-| `contractorTableHeaders.reimbursement` | `"Reimbursement"` |
-| `contractorTableHeaders.total` | `"Total"` |
-| `contractorTableHeaders.wage` | `"Fixed amount"` |
-| `contractorTableHeaders.wageType` | `"Wage"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountseditcontractor"></a> `editContractor` | `"Edit contractor payment"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountseditcontractorpayment"></a> `editContractorPayment` | |
-| `editContractorPayment.bonusLabel` | `"Bonus"` |
-| `editContractorPayment.cancelCta` | `"Cancel"` |
-| `editContractorPayment.errors` | |
-| `editContractorPayment.errors.directDepositNotAvailable` | `"Direct Deposit is not available for contractors set up for Check payments"` |
-| `editContractorPayment.errors.unsupportedPaymentMethod` | `"This payment method is not supported. Please select Check or Direct Deposit."` |
-| `editContractorPayment.hoursAdornment` | `"hrs"` |
-| `editContractorPayment.hoursLabel` | `"Hours"` |
-| `editContractorPayment.hoursPayDescription` | `"{{rate}}/hr × hours = {{total}}"` |
-| `editContractorPayment.paymentMethodLabel` | `"Payment Method"` |
-| `editContractorPayment.paymentMethods` | |
-| `editContractorPayment.paymentMethods.check` | `"Check"` |
-| `editContractorPayment.paymentMethods.directDeposit` | `"Direct deposit"` |
-| `editContractorPayment.paymentMethods.historicalPayment` | `"Historical payment"` |
-| `editContractorPayment.reimbursementLabel` | `"Reimbursement"` |
-| `editContractorPayment.saveCta` | `"Done"` |
-| `editContractorPayment.subtitle` | `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` |
-| `editContractorPayment.title` | `"Edit contractor pay"` |
-| `editContractorPayment.wageLabel` | `"Fixed amount"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountsemptytabledescription"></a> `emptyTableDescription` | `"Go back and select at least one contractor."` |
-| <a id="property-contractorpaymentshistoricalpaymentamountsemptytabletitle"></a> `emptyTableTitle` | `"No contractors selected"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountsheading"></a> `heading` | `"Enter payment amounts"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountshoursandpaymentslabel"></a> `hoursAndPaymentsLabel` | `"Hours and payments"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountsna"></a> `na` | `"N/A"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountspaymentmethods"></a> `paymentMethods` | |
+| <a id="property-contractorpaymentshistoricalpaymentsummarybonus"></a> `bonus` | `"Bonus"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractor"></a> `contractor` | `"Contractor"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractorpaydate"></a> `contractorPayDate` | `"Contractor Pay Date"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarycontractorpaymentstitle"></a> `contractorPaymentsTitle` | `"Contractor Payments"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarydonecta"></a> `doneCta` | `"Done"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummaryhours"></a> `hours` | `"Hours"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarynotavailable"></a> `notAvailable` | `"N/A"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentmethod"></a> `paymentMethod` | `"Payment Method"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentmethods"></a> `paymentMethods` | |
 | `paymentMethods.check` | `"Check"` |
 | `paymentMethods.directDeposit` | `"Direct Deposit"` |
 | `paymentMethods.historicalPayment` | `"Historical Payment"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountsperhour"></a> `perHour` | `"/hr"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountssubtitle"></a> `subtitle` | `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` |
-| <a id="property-contractorpaymentshistoricalpaymentamountstotalslabel"></a> `totalsLabel` | `"Totals"` |
-| <a id="property-contractorpaymentshistoricalpaymentamountswagetypes"></a> `wageTypes` | |
-| `wageTypes.fixed` | `"Fixed"` |
-| `wageTypes.hourly` | `"Hourly"` |
-
-***
-
-<a id="contractorpaymentshistoricalpaymentcontractors"></a>
-
-### ContractorPaymentsHistoricalPaymentContractors
-
-Translation keys for the `Contractor.Payments.HistoricalPaymentContractors` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-contractorpaymentshistoricalpaymentcontractorscontinuebutton"></a> `continueButton` | `"Continue"` |
-| <a id="property-contractorpaymentshistoricalpaymentcontractorsdateinfutureerror"></a> `dateInFutureError` | `"You cannot issue historical payments for the future. Please choose a date in the past."` |
-| <a id="property-contractorpaymentshistoricalpaymentcontractorsdatelabel"></a> `dateLabel` | `"Payment date"` |
-| <a id="property-contractorpaymentshistoricalpaymentcontractorsdatetooearlyerror"></a> `dateTooEarlyError` | `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` |
-| <a id="property-contractorpaymentshistoricalpaymentcontractorsheading"></a> `heading` | `"Record a historical payment"` |
-| <a id="property-contractorpaymentshistoricalpaymentcontractorssubtitle"></a> `subtitle` | `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarypaymentsummarytitle"></a> `paymentSummaryTitle` | `"Payment Summary"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummaryreimbursement"></a> `reimbursement` | `"Reimbursement"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccessmessage_one"></a> `successMessage_one` | `"{{count}} contractor payment has been recorded."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccessmessage_other"></a> `successMessage_other` | `"{{count}} contractor payments have been recorded."` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysuccesstitle"></a> `successTitle` | `"Historical payment recorded successfully"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysummarysubtitle"></a> `summarySubtitle` | `"Historical payment for {{checkDate}}"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarysummarytitle"></a> `summaryTitle` | `"Payment summary"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotal"></a> `total` | `"Total"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotalamount"></a> `totalAmount` | `"Total Amount"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarytotalslabel"></a> `totalsLabel` | `"Totals"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarywage"></a> `wage` | `"Wage"` |
+| <a id="property-contractorpaymentshistoricalpaymentsummarywagetype"></a> `wageType` | `"Wage Type"` |
 
 ***
 
@@ -2016,6 +2068,10 @@ Translation keys for the `Contractor.Payments.PaymentsList` i18n namespace.
 | `dateRanges.last12Months` | `"Last 12 months"` |
 | `dateRanges.last3Months` | `"Last 3 months"` |
 | `dateRanges.last6Months` | `"Last 6 months"` |
+| <a id="property-contractorpaymentspaymentslisthistoricalpaymentcta"></a> `historicalPaymentCta` | |
+| `historicalPaymentCta.button` | `"Record a historical payment"` |
+| `historicalPaymentCta.description` | `"Add a contractor payment that was made outside of Gusto to keep your records complete."` |
+| `historicalPaymentCta.title` | `"Record a historical payment"` |
 | <a id="property-contractorpaymentspaymentslistnopaymentsdescription"></a> `noPaymentsDescription` | `"No contractor payments have been created yet. Create your first payment to get started."` |
 | <a id="property-contractorpaymentspaymentslistnopaymentsfound"></a> `noPaymentsFound` | `"No payments found"` |
 | <a id="property-contractorpaymentspaymentslistpaymentdatecolumnlabel"></a> `paymentDateColumnLabel` | `"Payment date"` |
@@ -2088,6 +2144,7 @@ Translation keys for the `Contractor.Payments.PaymentSummary` i18n namespace.
 | <a id="property-contractorpaymentspaymentsummarypaymentmethods"></a> `paymentMethods` | |
 | `paymentMethods.check` | `"Check"` |
 | `paymentMethods.directDeposit` | `"Direct Deposit"` |
+| `paymentMethods.historicalPayment` | `"Historical Payment"` |
 | <a id="property-contractorpaymentspaymentsummarypaymentsummarytitle"></a> `paymentSummaryTitle` | `"Payment Summary"` |
 | <a id="property-contractorpaymentspaymentsummaryreimbursement"></a> `reimbursement` | `"Reimbursement"` |
 | <a id="property-contractorpaymentspaymentsummarysuccessmessage_one"></a> `successMessage_one` | `"{{count}} contractor payment has been successfully scheduled."` |
@@ -4746,6 +4803,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrollconfigurationalerts"></a> `alerts` | |
+| `alerts.alreadyProcessed` | `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.employeeUpdated` | |
@@ -5160,7 +5218,7 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptsexitflowcta"></a> `exitFlowCta` | `"Exit"` |
 | <a id="property-payrollpayrollreceiptsreceipt"></a> `receipt` | |
 | `receipt.address` | `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` |
-| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` |
+| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` |
 | `receipt.debitDate` | `"Debit date"` |
 | `receipt.detailsLabel` | `"Receipt Details"` |
 | `receipt.disclaimer` | `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` |
@@ -5178,6 +5236,81 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptstax"></a> `tax` | |
 | `tax.amount` | `"Amount"` |
 | `tax.name` | `"Tax Type"` |
+
+***
+
+<a id="payrollprintchecksbanner"></a>
+
+### PayrollPrintChecksBanner
+
+Translation keys for the `Payroll.PrintChecksBanner` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintchecksbannercta"></a> `cta` | `"View and print checks"` |
+| <a id="property-payrollprintchecksbannerdescription"></a> `description` | `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` |
+| <a id="property-payrollprintchecksbannertitle_one"></a> `title_one` | `"You noted {{count}} employee that should be paid by check."` |
+| <a id="property-payrollprintchecksbannertitle_other"></a> `title_other` | `"You noted {{count}} employees that should be paid by check."` |
+
+***
+
+<a id="payrollprintchecksfailure"></a>
+
+### PayrollPrintChecksFailure
+
+Translation keys for the `Payroll.PrintChecksFailure` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintchecksfailureclosecta"></a> `closeCta` | `"Close"` |
+| <a id="property-payrollprintchecksfailurefailedtitle"></a> `failedTitle` | `"We couldn't generate your checks"` |
+| <a id="property-payrollprintchecksfailureretrycta"></a> `retryCta` | `"Try again"` |
+
+***
+
+<a id="payrollprintchecksform"></a>
+
+### PayrollPrintChecksForm
+
+Translation keys for the `Payroll.PrintChecksForm` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintchecksformblankstockdescription"></a> `blankStockDescription` | `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` |
+| <a id="property-payrollprintchecksformblankstocklabel"></a> `blankStockLabel` | `"Blank check stock"` |
+| <a id="property-payrollprintchecksformcancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-payrollprintchecksformcustomstockdescription"></a> `customStockDescription` | `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` |
+| <a id="property-payrollprintchecksformcustomstocklabel"></a> `customStockLabel` | `"Custom check stock"` |
+| <a id="property-payrollprintchecksformmodaltitle"></a> `modalTitle` | `"Choose check stock"` |
+| <a id="property-payrollprintchecksformstartingchecknumberdescription"></a> `startingCheckNumberDescription` | `"This will be the first check number, all other checks will follow sequentially."` |
+| <a id="property-payrollprintchecksformstartingchecknumberlabel"></a> `startingCheckNumberLabel` | `"Check number starts with"` |
+| <a id="property-payrollprintchecksformsubmitcta"></a> `submitCta` | `"View checks"` |
+| <a id="property-payrollprintchecksformsubmitctaloading"></a> `submitCtaLoading` | `"Generating..."` |
+| <a id="property-payrollprintchecksformvalidations"></a> `validations` | |
+| `validations.startingCheckNumber` | `"Enter a valid check number"` |
+
+***
+
+<a id="payrollprintcheckssummary"></a>
+
+### PayrollPrintChecksSummary
+
+Translation keys for the `Payroll.PrintChecksSummary` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrollprintcheckssummaryclosecta"></a> `closeCta` | `"Close"` |
+| <a id="property-payrollprintcheckssummarysucceededdescription"></a> `succeededDescription` | `"The download should have started automatically. If not, use the link below."` |
+| <a id="property-payrollprintcheckssummarysucceededtitle"></a> `succeededTitle` | `"Your checks are ready"` |
+| <a id="property-payrollprintcheckssummaryviewcheckscta"></a> `viewChecksCta` | `"View checks"` |
 
 ***
 
@@ -5478,9 +5611,9 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
 | <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
 | <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
+| <a id="property-resourcescontractorpaymentscreatehistoricalpayment"></a> `Contractor.Payments.CreateHistoricalPayment` | [`ContractorPaymentsCreateHistoricalPayment`](#contractorpaymentscreatehistoricalpayment) |
 | <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
-| <a id="property-resourcescontractorpaymentshistoricalpaymentamounts"></a> `Contractor.Payments.HistoricalPaymentAmounts` | [`ContractorPaymentsHistoricalPaymentAmounts`](#contractorpaymentshistoricalpaymentamounts) |
-| <a id="property-resourcescontractorpaymentshistoricalpaymentcontractors"></a> `Contractor.Payments.HistoricalPaymentContractors` | [`ContractorPaymentsHistoricalPaymentContractors`](#contractorpaymentshistoricalpaymentcontractors) |
+| <a id="property-resourcescontractorpaymentshistoricalpaymentsummary"></a> `Contractor.Payments.HistoricalPaymentSummary` | [`ContractorPaymentsHistoricalPaymentSummary`](#contractorpaymentshistoricalpaymentsummary) |
 | <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
 | <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
@@ -5553,6 +5686,10 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
 | <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
 | <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
+| <a id="property-resourcespayrollprintchecksbanner"></a> `Payroll.PrintChecksBanner` | [`PayrollPrintChecksBanner`](#payrollprintchecksbanner) |
+| <a id="property-resourcespayrollprintchecksfailure"></a> `Payroll.PrintChecksFailure` | [`PayrollPrintChecksFailure`](#payrollprintchecksfailure) |
+| <a id="property-resourcespayrollprintchecksform"></a> `Payroll.PrintChecksForm` | [`PayrollPrintChecksForm`](#payrollprintchecksform) |
+| <a id="property-resourcespayrollprintcheckssummary"></a> `Payroll.PrintChecksSummary` | [`PayrollPrintChecksSummary`](#payrollprintcheckssummary) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |

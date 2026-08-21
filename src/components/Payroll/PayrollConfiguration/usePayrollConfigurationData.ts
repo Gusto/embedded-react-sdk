@@ -5,6 +5,7 @@ import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedules
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
 import { employeesGet } from '@gusto/embedded-api/funcs/employeesGet'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
@@ -29,12 +30,19 @@ interface UsePayrollConfigurationDataReturn {
   payrollCategory: PayrollCategory
   pagination: PaginationControlProps
   isLoading: boolean
+  isAlreadyProcessed: boolean
   refetch: () => Promise<void>
 }
 
 /** @internal */
 export const PREPARE_QUERY_KEY = 'payroll-prepare'
 const FIVE_MINUTES = 5 * 60 * 1000
+const PREPARE_MAX_ATTEMPTS = 3
+
+const isAlreadyProcessedError = (error: unknown): boolean => {
+  if (!(error instanceof UnprocessableEntityError)) return false
+  return error.errors.some(e => e.category === 'invalid_operation')
+}
 
 /** @internal */
 export function usePayrollConfigurationData({
@@ -87,6 +95,7 @@ export function usePayrollConfigurationData({
 
   const {
     data: prepareData,
+    error: prepareError,
     isLoading: isPrepareLoading,
     isFetching: isPrepareFetching,
   } = useQuery({
@@ -114,7 +123,13 @@ export function usePayrollConfigurationData({
     enabled: employeeUuids.length > 0 && !isCalculating,
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
+    // An "already processed" prepare failure is terminal — retrying it wastes time. Other
+    // errors (network blips, etc.) still get the standard retry treatment.
+    retry: (failureCount, error) =>
+      !isAlreadyProcessedError(error) && failureCount < PREPARE_MAX_ATTEMPTS,
   })
+
+  const isAlreadyProcessed = isAlreadyProcessedError(prepareError)
 
   useEffect(() => {
     return () => {
@@ -221,6 +236,7 @@ export function usePayrollConfigurationData({
     payrollCategory: derivePayrollCategory(prepareData ?? {}),
     pagination,
     isLoading,
+    isAlreadyProcessed,
     refetch: handleRefetch,
   }
 }

@@ -229,7 +229,18 @@ export function buildFormSchema<
   }
 
   const hasSuperRefine = dynamicRequired.length > 0 || options.superRefine
-  let schema: z.ZodType = z.object(shape)
+  const objectSchema = z.object(shape)
+
+  let schema: z.ZodType = excludeFieldsFn
+    ? z.preprocess((val: unknown) => {
+        if (typeof val !== 'object' || val === null) return val
+        const data = { ...(val as Record<string, unknown>) }
+        for (const key of excludeFieldsFn(data as FormDataFromValidators<T>, mode)) {
+          data[key as string] = undefined
+        }
+        return data
+      }, objectSchema)
+    : objectSchema
 
   if (hasSuperRefine) {
     schema = (schema as z.ZodObject).superRefine(

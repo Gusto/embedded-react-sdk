@@ -76,14 +76,18 @@ export function ViewPaymentFlow(props: ViewPaymentFlowProps) {
  *
  * @internal
  */
-export function ViewPaymentInternalFlow({
+export function ViewPaymentInternalFlow(props: ViewPaymentInternalFlowProps) {
+  // Remount and reset all state if paymentId ever changes
+  return <ViewPaymentFlowMachine key={props.paymentId} {...props} />
+}
+
+function ViewPaymentFlowMachine({
   paymentId,
   onEvent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
 }: ViewPaymentInternalFlowProps) {
-  // Built once via a lazy useState initializer, not useMemo -- see CreatePaymentFlow.tsx for why:
-  // a useMemo keyed on `prefixBreadcrumbs` doesn't guarantee the machine's identity survives a
-  // re-render triggered by a bubbled `onEvent` call.
+  // Built once via a lazy useState initializer. If the paymentId ever changes,
+  // remount the entire component to reset all state, not just the state machine.
   const [viewPaymentFlow] = useState(() => {
     const baseBreadcrumbs = buildBreadcrumbs(viewPaymentBreadcrumbsNodes)
     const breadcrumbs = Object.fromEntries(

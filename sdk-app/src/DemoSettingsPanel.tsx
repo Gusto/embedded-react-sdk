@@ -15,7 +15,9 @@ import type { EntityCatalog } from './useEntityCatalog'
 import type { EntityOption } from './entityFormatters'
 import type { AppMode, ManualConfig, ManualConfigSaves } from './useManualConfig'
 import { demoChromes } from './demoChromes/registry'
+import { UNSTABLE_FEATURE_KEYS } from './UnstableFeaturesPanelContext'
 import styles from './DemoSettingsPanel.module.scss'
+import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 interface DemoSettingsPanelProps {
   onClose: () => void
@@ -38,6 +40,8 @@ interface DemoSettingsPanelProps {
   onDeleteManualSave: (name: string) => void
   chromeId: string
   onChromeIdChange: (next: string) => void
+  unstableFeatures: UnstableFeatures
+  onUnstableFeatureChange: (key: keyof UnstableFeatures, enabled: boolean) => void
 }
 
 const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolean }[] = [
@@ -354,6 +358,8 @@ export function DemoSettingsPanel({
   onDeleteManualSave,
   chromeId,
   onChromeIdChange,
+  unstableFeatures,
+  onUnstableFeatureChange,
 }: DemoSettingsPanelProps) {
   const currentDemoType = import.meta.env.VITE_DEMO_TYPE || 'react_sdk_demo_company_onboarded'
   const [selectedDemoType, setSelectedDemoType] = useState(currentDemoType)
@@ -391,7 +397,8 @@ export function DemoSettingsPanel({
     entities.contractorId !== confirmedSnapshot.current.contractorId ||
     entities.payrollId !== confirmedSnapshot.current.payrollId ||
     entities.requestId !== confirmedSnapshot.current.requestId ||
-    entities.formId !== confirmedSnapshot.current.formId
+    entities.formId !== confirmedSnapshot.current.formId ||
+    entities.paymentGroupId !== confirmedSnapshot.current.paymentGroupId
 
   const displayEnv = env === 'localzp' ? 'local' : env
 
@@ -825,6 +832,31 @@ export function DemoSettingsPanel({
               }
             />
 
+            <EntityCombobox
+              label="Payment Group"
+              value={entities.paymentGroupId}
+              options={entityCatalog.paymentGroups}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a payment group id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('paymentGroupId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.paymentGroupId} ariaLabel="Copy payment group ID" />
+                  <InspectIdButton
+                    label="Payment Group"
+                    request={buildEntityInspectRequest(
+                      'paymentGroupId',
+                      entities.paymentGroupId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
+            />
+
             <div className={styles.actions}>
               {hasChanges && (
                 <button
@@ -842,6 +874,25 @@ export function DemoSettingsPanel({
                 Restore Default IDs
               </button>
             </div>
+          </div>
+        )}
+
+        {UNSTABLE_FEATURE_KEYS.length > 0 && (
+          <div className={styles.section}>
+            <h3>Unstable Features</h3>
+            {UNSTABLE_FEATURE_KEYS.map(key => (
+              <label key={key} className={styles.checkboxField}>
+                <input
+                  type="checkbox"
+
+                  checked={unstableFeatures[key] ?? false}
+                  onChange={e => {
+                    onUnstableFeatureChange(key, e.target.checked)
+                  }}
+                />
+                {key}
+              </label>
+            ))}
           </div>
         )}
 

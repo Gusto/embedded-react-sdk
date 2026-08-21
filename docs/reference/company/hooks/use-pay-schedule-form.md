@@ -97,7 +97,7 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 | `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
 | `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Returns
 
@@ -265,7 +265,10 @@ Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only avail
 
 ```tsx
 {form.Fields.CustomTwicePerMonth && (
-  <form.Fields.CustomTwicePerMonth label="Custom twice per month" />
+  <form.Fields.CustomTwicePerMonth
+    label="Custom twice per month"
+    validationMessages={{ REQUIRED: '…' }}
+  />
 )}
 ```
 
@@ -273,7 +276,7 @@ Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only avail
 
 #### CustomTwicePerMonthFieldProps
 
-> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<`never`, `string`\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../hooks.md#radiogrouphookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation), `string`\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwicePerMonth` component.
 
@@ -282,6 +285,7 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwic
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
@@ -444,7 +448,7 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 
 ### PayScheduleField
 
-> **PayScheduleField** = `"frequency"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customName"` \| `"customTwicePerMonth"`
+> **PayScheduleField** = `"frequency"` \| `"customName"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customTwicePerMonth"`
 
 Union of field names managed by the pay schedule form.
 

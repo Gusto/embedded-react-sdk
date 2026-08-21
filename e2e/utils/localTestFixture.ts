@@ -3,6 +3,9 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import type { ScenarioContext } from '../scenario/context'
 import { createValidationErrorCollector } from './validationErrorCollector'
+import { a11yViolationTracker } from './a11yViolationTracker'
+import { waitForSuspenseDetach } from './helpers'
+import { expectNoAxeViolations } from './a11y'
 
 interface E2EState {
   flowToken: string
@@ -188,6 +191,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
     // so we fail the test if any such error fires during its lifetime. See
     // `validationErrorCollector` for the detection contract and tests.
     const validationErrors = createValidationErrorCollector(page)
+    a11yViolationTracker.reset()
 
     const originalGoto = page.goto.bind(page)
 
@@ -244,7 +248,16 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
       }
 
       const newUrl = `${parsedUrl.pathname}?${params.toString()}`
-      return originalGoto(newUrl, options)
+      const response = await originalGoto(newUrl, options)
+
+      // Covers the landing screen of every test, including ones that never
+      // call waitForLoadingComplete or end on a state reachable any other
+      // way. Tolerant of pages with no loading region at all -- see
+      // waitForSuspenseDetach.
+      await waitForSuspenseDetach(page, 30_000)
+      await a11yViolationTracker.check(page, 'page load')
+
+      return response
     }
 
     await use(page)
@@ -267,6 +280,40 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
             `attachment for the full text.\n\n${detail}`,
         )
       }
+    }
+
+    // Catches a11y violations on intermediate screens the test navigated
+    // through but never ended on -- collected by page.goto (above) and every
+    // waitForLoadingComplete call during the test body. See
+    // a11yViolationTracker for how these are gathered and deduped.
+    const trackedViolations = a11yViolationTracker.getViolations()
+    if (
+      trackedViolations.length > 0 &&
+      (testInfo.status === 'passed' || testInfo.status === undefined)
+    ) {
+      const detail = a11yViolationTracker.format()
+      await testInfo.attach('a11y-intermediate-violations.txt', {
+        body: detail,
+        contentType: 'text/plain',
+      })
+      throw new Error(
+        `Detected ${trackedViolations.length} accessibility violation(s) on intermediate ` +
+          `screen(s) during this test (not just the final page state). See the ` +
+          `a11y-intermediate-violations.txt attachment for details.\n\n${detail}`,
+      )
+    }
+
+    // Automatic a11y check on the final page state, mirroring the vitest-side
+    // global afterEach gate (src/test/setup.ts). Every spec using this fixture
+    // gets this for free — no per-test expectNoAxeViolations call needed.
+    // Skipped for tests that never reached a real page (test.skip before
+    // page.goto) or that already failed for another reason, so this doesn't
+    // pile unrelated a11y noise onto an existing failure.
+    if (
+      (testInfo.status === 'passed' || testInfo.status === undefined) &&
+      page.url() !== 'about:blank'
+    ) {
+      await expectNoAxeViolations(page)
     }
   },
 })

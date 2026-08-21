@@ -28,17 +28,21 @@ export type {
 export { DocumentsCard, type DocumentsCardProps } from '../Documents/management'
 export { PaymentFlow, type PaymentFlowProps } from '../Payments/PaymentFlow'
 export { CreatePaymentFlow, type CreatePaymentFlowProps } from '../Payments/CreatePaymentFlow'
+export {
+  HistoricalPaymentFlow,
+  type HistoricalPaymentFlowProps,
+} from '../Payments/HistoricalPaymentFlow'
 export { ViewPaymentFlow, type ViewPaymentFlowProps } from '../Payments/ViewPaymentFlow'
 export { PaymentsList, type PaymentsListProps } from '../Payments/PaymentsList/PaymentsList'
 export { CreatePayment, type CreatePaymentProps } from '../Payments/CreatePayment/CreatePayment'
 export {
-  HistoricalPaymentContractors,
-  type HistoricalPaymentContractorsProps,
-} from '../Payments/HistoricalPaymentContractors'
+  CreateHistoricalPayment,
+  type CreateHistoricalPaymentProps,
+} from '../Payments/CreateHistoricalPayment'
 export {
-  HistoricalPaymentAmounts,
-  type HistoricalPaymentAmountsProps,
-} from '../Payments/HistoricalPaymentAmounts'
+  HistoricalPaymentSummary,
+  type HistoricalPaymentSummaryProps,
+} from '../Payments/HistoricalPaymentSummary'
 export { PaymentHistory, type PaymentHistoryProps } from '../Payments/PaymentHistory/PaymentHistory'
 export { PaymentSummary, type PaymentSummaryProps } from '../Payments/PaymentSummary'
 export {

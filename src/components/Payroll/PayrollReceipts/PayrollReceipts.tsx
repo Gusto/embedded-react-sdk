@@ -48,11 +48,23 @@ const Root = ({ payrollId, dictionary, withReimbursements = true }: PayrollRecei
   const { data } = usePayrollsGetReceiptSuspense({
     payrollUuid: payrollId,
   })
-  const payrollData = data.payrollReceipt!
+  const payrollData = data.payrollReceipt
+
+  if (!payrollData) {
+    return null
+  }
+
+  const sortedEmployeeCompensations = payrollData.employeeCompensations
+    ? [...payrollData.employeeCompensations].sort((a, b) => {
+        const lastNameCmp = (a.employeeLastName ?? '').localeCompare(b.employeeLastName ?? '')
+        if (lastNameCmp !== 0) return lastNameCmp
+        return (a.employeeFirstName ?? '').localeCompare(b.employeeFirstName ?? '')
+      })
+    : undefined
 
   return (
     <PayrollReceiptsPresentation
-      receiptData={payrollData}
+      receiptData={{ ...payrollData, employeeCompensations: sortedEmployeeCompensations }}
       withReimbursements={withReimbursements}
     />
   )

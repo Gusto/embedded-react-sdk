@@ -1,0 +1,93 @@
+{
+  "backButton": "Back",
+  "select": {
+    "heading": "Record a historical payment",
+    "subtitle": "Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid.",
+    "dateLabel": "Payment date",
+    "dateInFutureError": "You cannot issue historical payments for the future. Please choose a date in the past.",
+    "dateTooEarlyError": "You cannot create a payment in {{year}}. Please select a {{allowedYear}} date.",
+    "continueButton": "Continue"
+  },
+  "amounts": {
+    "heading": "Enter payment amounts",
+    "subtitle": "Enter the hours or wage paid to each contractor along with any bonuses and reimbursements.",
+    "continueButton": "Continue"
+  },
+  "hoursAndPaymentsLabel": "Hours and payments",
+  "contractorTableHeaders": {
+    "contractor": "Contractor",
+    "wageType": "Wage",
+    "paymentMethod": "Payment method",
+    "hours": "Hours",
+    "wage": "Fixed amount",
+    "bonus": "Bonus",
+    "reimbursement": "Reimbursement",
+    "total": "Total"
+  },
+  "emptyTableTitle": "No contractors selected",
+  "emptyTableDescription": "Select at least one contractor to record a payment.",
+  "na": "N/A",
+  "totalsLabel": "Totals",
+  "editContractor": "Edit contractor payment",
+  "perHour": "/hr",
+  "wageTypes": {
+    "fixed": "Fixed",
+    "hourly": "Hourly"
+  },
+  "paymentMethods": {
+    "directDeposit": "Direct Deposit",
+    "check": "Check",
+    "historicalPayment": "Historical Payment"
+  },
+  "alerts": {
+    "contractorPaymentUpdated": "Pay updated for {{contractorName}}"
+  },
+  "editContractorPayment": {
+    "title": "Edit contractor pay",
+    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change.",
+    "hoursLabel": "Hours",
+    "hoursAdornment": "hrs",
+    "hoursPayDescription": "{{rate}}/hr × hours = {{total}}",
+    "wageLabel": "Fixed amount",
+    "bonusLabel": "Bonus",
+    "reimbursementLabel": "Reimbursement",
+    "paymentMethodLabel": "Payment Method",
+    "cancelCta": "Cancel",
+    "saveCta": "Done",
+    "paymentMethods": {
+      "check": "Check",
+      "directDeposit": "Direct deposit",
+      "historicalPayment": "Historical payment"
+    },
+    "errors": {
+      "directDepositNotAvailable": "Direct Deposit is not available for contractors set up for Check payments",
+      "unsupportedPaymentMethod": "This payment method is not supported. Please select Check or Direct Deposit."
+    }
+  },
+  "review": {
+    "title": "Review and submit",
+    "subtitle": "Historical payment for {{checkDate}}",
+    "submitButton": "Submit historical payment",
+    "successTitle": "Historical payment recorded successfully",
+    "successMessage": "This payment has been recorded. View it from the payments list to see its full details.",
+    "paymentSummaryTitle": "Payment Summary",
+    "totalAmount": "Total Amount",
+    "contractorPayDate": "Contractor Pay Date",
+    "contractorPaymentsTitle": "Contractor Payments",
+    "contractor": "Contractor",
+    "wageType": "Wage Type",
+    "paymentMethod": "Payment Method",
+    "paymentMethods": {
+      "directDeposit": "Direct Deposit",
+      "check": "Check",
+      "historicalPayment": "Historical Payment"
+    },
+    "hours": "Hours",
+    "wage": "Wage",
+    "bonus": "Bonus",
+    "reimbursement": "Reimbursement",
+    "total": "Total",
+    "totalsLabel": "Totals",
+    "notAvailable": "N/A"
+  }
+}

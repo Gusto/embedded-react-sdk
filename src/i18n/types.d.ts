@@ -52,9 +52,9 @@ export interface Resources {
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
+  'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
-  'Contractor.Payments.HistoricalPaymentAmounts': Translations.ContractorPaymentsHistoricalPaymentAmounts
-  'Contractor.Payments.HistoricalPaymentContractors': Translations.ContractorPaymentsHistoricalPaymentContractors
+  'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
@@ -127,6 +127,10 @@ export interface Resources {
   'Payroll.PayrollList': Translations.PayrollPayrollList
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+  'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+  'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
   'Payroll.Transition': Translations.PayrollTransition
@@ -700,6 +704,8 @@ export namespace Translations {
       name: string
       /** @defaultValue `"Pay frequency is required"` */
       frequency: string
+      /** @defaultValue `"Please select the pay days for the month"` */
+      frequencyOptions: string
       /** @defaultValue `"First pay date is required"` */
       firstPayDate: string
       /** @defaultValue `"First pay period end date is required"` */
@@ -2410,6 +2416,169 @@ export namespace Translations {
       }
     }
   }
+  /** Translation keys for the `Contractor.Payments.CreateHistoricalPayment` i18n namespace. */
+  export interface ContractorPaymentsCreateHistoricalPayment {
+    /** @defaultValue `"Back"` */
+    backButton: string
+    select: {
+      /** @defaultValue `"Record a historical payment"` */
+      heading: string
+      /** @defaultValue `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` */
+      subtitle: string
+      /** @defaultValue `"Payment date"` */
+      dateLabel: string
+      /** @defaultValue `"You cannot issue historical payments for the future. Please choose a date in the past."` */
+      dateInFutureError: string
+      /** @defaultValue `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` */
+      dateTooEarlyError: string
+      /** @defaultValue `"Continue"` */
+      continueButton: string
+    }
+    amounts: {
+      /** @defaultValue `"Enter payment amounts"` */
+      heading: string
+      /** @defaultValue `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` */
+      subtitle: string
+      /** @defaultValue `"Continue"` */
+      continueButton: string
+    }
+    /** @defaultValue `"Hours and payments"` */
+    hoursAndPaymentsLabel: string
+    contractorTableHeaders: {
+      /** @defaultValue `"Contractor"` */
+      contractor: string
+      /** @defaultValue `"Wage"` */
+      wageType: string
+      /** @defaultValue `"Payment method"` */
+      paymentMethod: string
+      /** @defaultValue `"Hours"` */
+      hours: string
+      /** @defaultValue `"Fixed amount"` */
+      wage: string
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+      /** @defaultValue `"Total"` */
+      total: string
+    }
+    /** @defaultValue `"No contractors selected"` */
+    emptyTableTitle: string
+    /** @defaultValue `"Select at least one contractor to record a payment."` */
+    emptyTableDescription: string
+    /** @defaultValue `"N/A"` */
+    na: string
+    /** @defaultValue `"Totals"` */
+    totalsLabel: string
+    /** @defaultValue `"Edit contractor payment"` */
+    editContractor: string
+    /** @defaultValue `"/hr"` */
+    perHour: string
+    wageTypes: {
+      /** @defaultValue `"Fixed"` */
+      fixed: string
+      /** @defaultValue `"Hourly"` */
+      hourly: string
+    }
+    paymentMethods: {
+      /** @defaultValue `"Direct Deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
+    }
+    alerts: {
+      /** @defaultValue `"Pay updated for {{contractorName}}"` */
+      contractorPaymentUpdated: string
+    }
+    editContractorPayment: {
+      /** @defaultValue `"Edit contractor pay"` */
+      title: string
+      /** @defaultValue `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` */
+      subtitle: string
+      /** @defaultValue `"Hours"` */
+      hoursLabel: string
+      /** @defaultValue `"hrs"` */
+      hoursAdornment: string
+      /** @defaultValue `"{{rate}}/hr × hours = {{total}}"` */
+      hoursPayDescription: string
+      /** @defaultValue `"Fixed amount"` */
+      wageLabel: string
+      /** @defaultValue `"Bonus"` */
+      bonusLabel: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursementLabel: string
+      /** @defaultValue `"Payment Method"` */
+      paymentMethodLabel: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
+      /** @defaultValue `"Done"` */
+      saveCta: string
+      paymentMethods: {
+        /** @defaultValue `"Check"` */
+        check: string
+        /** @defaultValue `"Direct deposit"` */
+        directDeposit: string
+        /** @defaultValue `"Historical payment"` */
+        historicalPayment: string
+      }
+      errors: {
+        /** @defaultValue `"Direct Deposit is not available for contractors set up for Check payments"` */
+        directDepositNotAvailable: string
+        /** @defaultValue `"This payment method is not supported. Please select Check or Direct Deposit."` */
+        unsupportedPaymentMethod: string
+      }
+    }
+    review: {
+      /** @defaultValue `"Review and submit"` */
+      title: string
+      /** @defaultValue `"Historical payment for {{checkDate}}"` */
+      subtitle: string
+      /** @defaultValue `"Submit historical payment"` */
+      submitButton: string
+      /** @defaultValue `"Historical payment recorded successfully"` */
+      successTitle: string
+      /** @defaultValue `"This payment has been recorded. View it from the payments list to see its full details."` */
+      successMessage: string
+      /** @defaultValue `"Payment Summary"` */
+      paymentSummaryTitle: string
+      /** @defaultValue `"Total Amount"` */
+      totalAmount: string
+      /** @defaultValue `"Contractor Pay Date"` */
+      contractorPayDate: string
+      /** @defaultValue `"Contractor Payments"` */
+      contractorPaymentsTitle: string
+      /** @defaultValue `"Contractor"` */
+      contractor: string
+      /** @defaultValue `"Wage Type"` */
+      wageType: string
+      /** @defaultValue `"Payment Method"` */
+      paymentMethod: string
+      paymentMethods: {
+        /** @defaultValue `"Direct Deposit"` */
+        directDeposit: string
+        /** @defaultValue `"Check"` */
+        check: string
+        /** @defaultValue `"Historical Payment"` */
+        historicalPayment: string
+      }
+      /** @defaultValue `"Hours"` */
+      hours: string
+      /** @defaultValue `"Wage"` */
+      wage: string
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+      /** @defaultValue `"Total"` */
+      total: string
+      /** @defaultValue `"Totals"` */
+      totalsLabel: string
+      /** @defaultValue `"N/A"` */
+      notAvailable: string
+    }
+  }
   /** Translation keys for the `Contractor.Payments.CreatePayment` i18n namespace. */
   export interface ContractorPaymentsCreatePayment {
     /** @defaultValue `"Pay contractors"` */
@@ -2645,52 +2814,34 @@ export namespace Translations {
       }
     }
   }
-  /** Translation keys for the `Contractor.Payments.HistoricalPaymentAmounts` i18n namespace. */
-  export interface ContractorPaymentsHistoricalPaymentAmounts {
-    /** @defaultValue `"Enter payment amounts"` */
-    heading: string
-    /** @defaultValue `"Enter the hours or wage paid to each contractor along with any bonuses and reimbursements."` */
-    subtitle: string
-    /** @defaultValue `"Continue"` */
-    continueButton: string
-    /** @defaultValue `"Hours and payments"` */
-    hoursAndPaymentsLabel: string
-    contractorTableHeaders: {
-      /** @defaultValue `"Contractor"` */
-      contractor: string
-      /** @defaultValue `"Wage"` */
-      wageType: string
-      /** @defaultValue `"Payment method"` */
-      paymentMethod: string
-      /** @defaultValue `"Hours"` */
-      hours: string
-      /** @defaultValue `"Fixed amount"` */
-      wage: string
-      /** @defaultValue `"Bonus"` */
-      bonus: string
-      /** @defaultValue `"Reimbursement"` */
-      reimbursement: string
-      /** @defaultValue `"Total"` */
-      total: string
-    }
-    /** @defaultValue `"No contractors selected"` */
-    emptyTableTitle: string
-    /** @defaultValue `"Go back and select at least one contractor."` */
-    emptyTableDescription: string
-    /** @defaultValue `"N/A"` */
-    na: string
-    /** @defaultValue `"Totals"` */
-    totalsLabel: string
-    /** @defaultValue `"Edit contractor payment"` */
-    editContractor: string
-    /** @defaultValue `"/hr"` */
-    perHour: string
-    wageTypes: {
-      /** @defaultValue `"Fixed"` */
-      fixed: string
-      /** @defaultValue `"Hourly"` */
-      hourly: string
-    }
+  /** Translation keys for the `Contractor.Payments.HistoricalPaymentSummary` i18n namespace. */
+  export interface ContractorPaymentsHistoricalPaymentSummary {
+    /** @defaultValue `"Historical payment recorded successfully"` */
+    successTitle: string
+    /** @defaultValue `"{{count}} contractor payment has been recorded."` */
+    successMessage_one: string
+    /** @defaultValue `"{{count}} contractor payments have been recorded."` */
+    successMessage_other: string
+    /** @defaultValue `"Payment summary"` */
+    summaryTitle: string
+    /** @defaultValue `"Historical payment for {{checkDate}}"` */
+    summarySubtitle: string
+    /** @defaultValue `"Done"` */
+    doneCta: string
+    /** @defaultValue `"Payment Summary"` */
+    paymentSummaryTitle: string
+    /** @defaultValue `"Total Amount"` */
+    totalAmount: string
+    /** @defaultValue `"Contractor Pay Date"` */
+    contractorPayDate: string
+    /** @defaultValue `"Contractor Payments"` */
+    contractorPaymentsTitle: string
+    /** @defaultValue `"Contractor"` */
+    contractor: string
+    /** @defaultValue `"Wage Type"` */
+    wageType: string
+    /** @defaultValue `"Payment Method"` */
+    paymentMethod: string
     paymentMethods: {
       /** @defaultValue `"Direct Deposit"` */
       directDeposit: string
@@ -2699,63 +2850,20 @@ export namespace Translations {
       /** @defaultValue `"Historical Payment"` */
       historicalPayment: string
     }
-    alerts: {
-      /** @defaultValue `"Pay updated for {{contractorName}}"` */
-      contractorPaymentUpdated: string
-    }
-    editContractorPayment: {
-      /** @defaultValue `"Edit contractor pay"` */
-      title: string
-      /** @defaultValue `"Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change."` */
-      subtitle: string
-      /** @defaultValue `"Hours"` */
-      hoursLabel: string
-      /** @defaultValue `"hrs"` */
-      hoursAdornment: string
-      /** @defaultValue `"{{rate}}/hr × hours = {{total}}"` */
-      hoursPayDescription: string
-      /** @defaultValue `"Fixed amount"` */
-      wageLabel: string
-      /** @defaultValue `"Bonus"` */
-      bonusLabel: string
-      /** @defaultValue `"Reimbursement"` */
-      reimbursementLabel: string
-      /** @defaultValue `"Payment Method"` */
-      paymentMethodLabel: string
-      /** @defaultValue `"Cancel"` */
-      cancelCta: string
-      /** @defaultValue `"Done"` */
-      saveCta: string
-      paymentMethods: {
-        /** @defaultValue `"Check"` */
-        check: string
-        /** @defaultValue `"Direct deposit"` */
-        directDeposit: string
-        /** @defaultValue `"Historical payment"` */
-        historicalPayment: string
-      }
-      errors: {
-        /** @defaultValue `"Direct Deposit is not available for contractors set up for Check payments"` */
-        directDepositNotAvailable: string
-        /** @defaultValue `"This payment method is not supported. Please select Check or Direct Deposit."` */
-        unsupportedPaymentMethod: string
-      }
-    }
-  }
-  /** Translation keys for the `Contractor.Payments.HistoricalPaymentContractors` i18n namespace. */
-  export interface ContractorPaymentsHistoricalPaymentContractors {
-    /** @defaultValue `"Record a historical payment"` */
-    heading: string
-    /** @defaultValue `"Log a contractor payment that already happened outside Gusto. Pick a paid date and the contractors you paid."` */
-    subtitle: string
-    /** @defaultValue `"Payment date"` */
-    dateLabel: string
-    /** @defaultValue `"You cannot issue historical payments for the future. Please choose a date in the past."` */
-    dateInFutureError: string
-    /** @defaultValue `"You cannot create a payment in {{year}}. Please select a {{allowedYear}} date."` */
-    dateTooEarlyError: string
-    /** @defaultValue `"Continue"` */
-    continueButton: string
+    /** @defaultValue `"Hours"` */
+    hours: string
+    /** @defaultValue `"Wage"` */
+    wage: string
+    /** @defaultValue `"Bonus"` */
+    bonus: string
+    /** @defaultValue `"Reimbursement"` */
+    reimbursement: string
+    /** @defaultValue `"Total"` */
+    total: string
+    /** @defaultValue `"Totals"` */
+    totalsLabel: string
+    /** @defaultValue `"N/A"` */
+    notAvailable: string
   }
   /** Translation keys for the `Contractor.Payments.PaymentHistory` i18n namespace. */
   export interface ContractorPaymentsPaymentHistory {
@@ -2896,6 +3004,8 @@ export namespace Translations {
       directDeposit: string
       /** @defaultValue `"Check"` */
       check: string
+      /** @defaultValue `"Historical Payment"` */
+      historicalPayment: string
     }
     /** @defaultValue `"Hours"` */
     hours: string
@@ -2967,6 +3077,14 @@ export namespace Translations {
       last6Months: string
       /** @defaultValue `"Last 12 months"` */
       last12Months: string
+    }
+    historicalPaymentCta: {
+      /** @defaultValue `"Record a historical payment"` */
+      title: string
+      /** @defaultValue `"Add a contractor payment that was made outside of Gusto to keep your records complete."` */
+      description: string
+      /** @defaultValue `"Record a historical payment"` */
+      button: string
     }
   }
   /** Translation keys for the `Contractor.Profile` i18n namespace. */
@@ -6904,6 +7022,8 @@ export namespace Translations {
       setNetEarnings: string
     }
     alerts: {
+      /** @defaultValue `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` */
+      alreadyProcessed: string
       /** @defaultValue `"Your progress has been saved"` */
       progressSaved: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
@@ -7503,7 +7623,7 @@ export namespace Translations {
       employeeCount_other: string
       /** @defaultValue `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` */
       disclaimer: string
-      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` */
+      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` */
       companyInfo: string
       /** @defaultValue `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` */
       address: string
@@ -7558,6 +7678,64 @@ export namespace Translations {
       /** @defaultValue `"{{count}} employees in this payroll"` */
       totalEmployees_other: string
     }
+  }
+  /** Translation keys for the `Payroll.PrintChecksBanner` i18n namespace. */
+  export interface PayrollPrintChecksBanner {
+    /** @defaultValue `"You noted {{count}} employee that should be paid by check."` */
+    title_one: string
+    /** @defaultValue `"You noted {{count}} employees that should be paid by check."` */
+    title_other: string
+    /** @defaultValue `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` */
+    description: string
+    /** @defaultValue `"View and print checks"` */
+    cta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksFailure` i18n namespace. */
+  export interface PayrollPrintChecksFailure {
+    /** @defaultValue `"We couldn't generate your checks"` */
+    failedTitle: string
+    /** @defaultValue `"Try again"` */
+    retryCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksForm` i18n namespace. */
+  export interface PayrollPrintChecksForm {
+    /** @defaultValue `"Choose check stock"` */
+    modalTitle: string
+    /** @defaultValue `"Custom check stock"` */
+    customStockLabel: string
+    /** @defaultValue `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` */
+    customStockDescription: string
+    /** @defaultValue `"Blank check stock"` */
+    blankStockLabel: string
+    /** @defaultValue `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` */
+    blankStockDescription: string
+    /** @defaultValue `"Check number starts with"` */
+    startingCheckNumberLabel: string
+    /** @defaultValue `"This will be the first check number, all other checks will follow sequentially."` */
+    startingCheckNumberDescription: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"View checks"` */
+    submitCta: string
+    /** @defaultValue `"Generating..."` */
+    submitCtaLoading: string
+    validations: {
+      /** @defaultValue `"Enter a valid check number"` */
+      startingCheckNumber: string
+    }
+  }
+  /** Translation keys for the `Payroll.PrintChecksSummary` i18n namespace. */
+  export interface PayrollPrintChecksSummary {
+    /** @defaultValue `"Your checks are ready"` */
+    succeededTitle: string
+    /** @defaultValue `"The download should have started automatically. If not, use the link below."` */
+    succeededDescription: string
+    /** @defaultValue `"View checks"` */
+    viewChecksCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
   }
   /** Translation keys for the `Payroll.RecoveryCasesList` i18n namespace. */
   export interface PayrollRecoveryCasesList {

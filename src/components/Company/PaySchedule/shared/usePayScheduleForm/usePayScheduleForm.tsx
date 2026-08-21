@@ -175,7 +175,12 @@ function deriveCustomTwicePerMonth(
 ): string {
   if (frequency !== 'Twice per month') return ''
   if (day1 === 15 && day2 === 31) return '1st15th'
-  return 'custom'
+  // Only pre-select 'custom' when there are real day values to represent (e.g.
+  // editing an existing custom schedule). With no day basis, leave the radio
+  // unselected so its required validation prompts an explicit choice rather
+  // than silently forcing empty day1/day2 fields into a required state.
+  if (day1 != null && day2 != null) return 'custom'
+  return ''
 }
 
 /** @internal */

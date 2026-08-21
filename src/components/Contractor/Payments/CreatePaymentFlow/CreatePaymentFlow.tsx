@@ -76,16 +76,18 @@ export function CreatePaymentFlow(props: CreatePaymentFlowProps) {
  *
  * @internal
  */
-export function CreatePaymentInternalFlow({
+export function CreatePaymentInternalFlow(props: CreatePaymentInternalFlowProps) {
+  // Remount and reset all state if companyId ever changes
+  return <CreatePaymentFlowMachine key={props.companyId} {...props} />
+}
+
+function CreatePaymentFlowMachine({
   companyId,
   onEvent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
 }: CreatePaymentInternalFlowProps) {
-  // Built once via a lazy useState initializer, not useMemo: the machine's identity must survive
-  // re-renders no matter what, and useMemo is only a performance hint React may discard, not an
-  // identity guarantee. A useMemo keyed on `prefixBreadcrumbs` previously recreated this machine
-  // (and reset in-flight state) whenever the parent app re-rendered in response to a bubbled
-  // `onEvent` call, since an inline array literal upstream gets a new reference every render.
+  // Built once via a lazy useState initializer. If the companyId ever changes,
+  // remount the entire component to reset all state, not just the state machine.
   const [createPaymentFlow] = useState(() => {
     const baseBreadcrumbs = buildBreadcrumbs(createPaymentBreadcrumbsNodes)
     const breadcrumbs = Object.fromEntries(

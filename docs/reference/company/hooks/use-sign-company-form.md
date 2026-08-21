@@ -97,7 +97,7 @@ Props for [useSignCompanyForm](#usesigncompanyform).
 | `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
 | `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
+| `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
 
 ## Returns
 

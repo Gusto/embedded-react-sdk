@@ -159,6 +159,21 @@ export default [
     },
   },
   /**
+   * `UnstableFeatures` is empty whenever no alpha flag is currently active — inline eslint-disable
+   * comments for these rules would get auto-stripped by `--fix` the moment a flag is added, then
+   * need to be re-added by hand the next time the interface empties out again.
+   */
+  {
+    files: [
+      'src/contexts/UnstableFeaturesProvider/useUnstableFeature.ts',
+      'src/contexts/UnstableFeaturesProvider/WithUnstableFeature.tsx',
+    ],
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+    },
+  },
+  /**
    * Keep the pinned API version in one place. `use-embedded-api-alias` routes
    * every import through the version-agnostic `@gusto/embedded-api` alias;
    * `no-literal-api-query-namespace` steers hardcoded dated query-key namespace
