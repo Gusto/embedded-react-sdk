@@ -35,13 +35,13 @@ export function OffCycleReasonSelection(props: OffCycleReasonSelectionProps) {
   )
 }
 
-function Root({ dictionary }: OffCycleReasonSelectionProps) {
+function Root({ dictionary, defaultReason }: OffCycleReasonSelectionProps) {
   useComponentDictionary('Payroll.OffCycleReasonSelection', dictionary)
   useI18n('Payroll.OffCycleReasonSelection')
 
   const { onEvent } = useBase()
   const methods = useForm<{ reason: OffCycleReason | '' }>({
-    defaultValues: { reason: '' },
+    defaultValues: { reason: defaultReason ?? '' },
   })
 
   const handleReasonChange = useCallback(

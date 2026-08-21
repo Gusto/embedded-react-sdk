@@ -56,6 +56,17 @@ describe('OffCycleReasonSelection', () => {
         expect(radio).not.toBeChecked()
       })
     })
+
+    it('pre-selects the option matching defaultReason', async () => {
+      renderWithProviders(<OffCycleReasonSelection {...defaultProps} defaultReason="bonus" />)
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText('Bonus')).toBeChecked()
+      expect(screen.getByLabelText('Correction payment')).not.toBeChecked()
+    })
   })
 
   describe('selection behavior', () => {
