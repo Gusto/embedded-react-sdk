@@ -54,22 +54,25 @@ describe('PreviewPresentation', () => {
     renderScreen()
 
     const summaryTable = await screen.findByRole('grid', { name: 'Payment Summary' })
-    const contractorPaymentsTable = screen.getByRole('grid', { name: 'What your company pays' })
+    const contractorPaymentsTable = await screen.findByRole('grid', {
+      name: 'What your company pays',
+    })
 
-    const summaryRow = within(summaryTable).getAllByRole('row')[1]
+    const summaryRows = await within(summaryTable).findAllByRole('row')
+    const summaryRow = summaryRows[1]
     assertDefined(summaryRow)
     expect(getCellByColumnHeader(summaryTable, summaryRow, 'Total amount')).toHaveTextContent(
       '$260.00',
     )
 
-    const contractorRow = within(contractorPaymentsTable).getByRole('row', {
+    const contractorRow = await within(contractorPaymentsTable).findByRole('row', {
       name: 'Contractor Test',
     })
     expect(
       getCellByColumnHeader(contractorPaymentsTable, contractorRow, 'Total'),
     ).toHaveTextContent('$260.00')
 
-    const footerRow = within(contractorPaymentsTable).getByRole('row', { name: 'Totals' })
+    const footerRow = await within(contractorPaymentsTable).findByRole('row', { name: 'Totals' })
     expect(getCellByColumnHeader(contractorPaymentsTable, footerRow, 'Total')).toHaveTextContent(
       '$260.00',
     )
