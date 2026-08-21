@@ -19,7 +19,7 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
-import { canCancelPayroll, hasDirectDepositEmployees } from '../helpers'
+import { canCancelPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -433,26 +433,20 @@ const Root = ({
     )
       return undefined
 
-    const allCompensations = payrollData.employeeCompensations
-    if (
-      allCompensations &&
-      allCompensations.length > 0 &&
-      hasDirectDepositEmployees(allCompensations) &&
-      payrollData.checkDate &&
-      payrollData.payrollDeadline
-    ) {
+    if (payrollData.checkDate && payrollData.payrollDeadline) {
       return {
         type: 'info' as const,
         title: t('alerts.directDepositDeadline', {
           payDate: dateFormatter.formatShortWithWeekday(payrollData.checkDate),
           ...dateFormatter.formatWithTime(payrollData.payrollDeadline),
         }),
+        content: t('alerts.directDepositDeadlineText'),
       }
     }
     return undefined
   })()
 
-  const combinedAlerts = [...(deadlineAlert ? [deadlineAlert] : []), ...internalAlerts]
+  const combinedAlerts = [...internalAlerts, ...(deadlineAlert ? [deadlineAlert] : [])]
 
   return (
     <PayrollOverviewPresentation
