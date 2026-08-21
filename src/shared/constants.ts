@@ -317,6 +317,7 @@ export const contractorPaymentEvents = {
  * @public
  */
 export const contractorHistoricalPaymentEvents = {
+  CONTRACTOR_HISTORICAL_PAYMENT_CREATE: 'contractor/historicalPayments/create',
   CONTRACTOR_HISTORICAL_PAYMENT_EDIT: 'contractor/historicalPayments/edit',
   CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: 'contractor/historicalPayments/update',
   CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: 'contractor/historicalPayments/preview',
@@ -382,6 +383,7 @@ export const payScheduleEvents = {
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
+  RUN_PAYROLL_ALREADY_PROCESSED: 'runPayroll/alreadyProcessed',
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: 'runPayroll/cancelled/alertDismissed',
   RUN_PAYROLL_EDIT: 'runPayroll/edit',

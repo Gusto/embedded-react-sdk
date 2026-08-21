@@ -393,6 +393,28 @@ describe('buildFormSchema', () => {
       const asBusiness = schema.safeParse({ kind: 'business', firstName: '', businessName: '' })
       expect(getErrorFields(asBusiness)).not.toContain('firstName')
     })
+
+    it('gates base validators (not just the required check) on the excluded field', () => {
+      // businessName carries a regex validator. A stale invalid value left
+      // behind after switching to 'individual' must not block submission.
+      const validators = {
+        kind: z.enum(['individual', 'business']),
+        businessName: z.string().regex(/^[A-Za-z ]+$/),
+      }
+
+      const [schema] = buildFormSchema(validators, {
+        mode: 'create',
+        excludeFields: (data: { kind: 'individual' | 'business' }) =>
+          data.kind === 'individual' ? (['businessName'] as const).slice() : [],
+      })
+
+      const excluded = schema.safeParse({ kind: 'individual', businessName: '123 invalid' })
+      expect(excluded.success).toBe(true)
+
+      const included = schema.safeParse({ kind: 'business', businessName: '123 invalid' })
+      expect(included.success).toBe(false)
+      expect(getErrorFields(included)).toContain('businessName')
+    })
   })
 
   describe('function rules (predicates)', () => {
