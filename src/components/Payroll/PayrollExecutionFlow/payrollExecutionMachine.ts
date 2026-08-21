@@ -33,6 +33,11 @@ type PayrollEventPayloads = {
     alert?: PayrollFlowAlert
     payPeriod?: PayrollPayPeriodType
   }
+  [componentEvents.RUN_PAYROLL_ALREADY_PROCESSED]: {
+    payrollId: string
+    alert?: PayrollFlowAlert
+    payPeriod?: PayrollPayPeriodType
+  }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PayrollFlowContextInterface) => PayrollFlowContextInterface
@@ -131,6 +136,40 @@ const calculatedTransition = transition(
           ? [
               ...(ctx.alerts ?? []).filter(a => a.alertKey !== 'progressSaved'),
               { ...ev.payload.alert, alertKey: 'progressSaved' as const },
+            ]
+          : ctx.alerts,
+        ctaConfig: {
+          labelKey: 'exitFlowCta',
+          namespace: 'Payroll.PayrollOverview',
+        },
+      }
+    },
+  ),
+)
+
+const alreadyProcessedTransition = transition(
+  componentEvents.RUN_PAYROLL_ALREADY_PROCESSED,
+  'overview',
+  reduce(
+    (
+      ctx: PayrollFlowContextInterface,
+      ev: MachineEventType<
+        PayrollEventPayloads,
+        typeof componentEvents.RUN_PAYROLL_ALREADY_PROCESSED
+      >,
+    ): PayrollFlowContextInterface => {
+      const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
+      return {
+        ...updateBreadcrumbs('overview', ctx, {
+          startDate: payPeriod?.startDate ?? '',
+          endDate: payPeriod?.endDate ?? '',
+        }),
+        component: PayrollOverviewContextual,
+        payPeriod,
+        alerts: ev.payload.alert
+          ? [
+              ...(ctx.alerts ?? []).filter(a => a.alertKey !== 'alreadyProcessed'),
+              { ...ev.payload.alert, alertKey: 'alreadyProcessed' as const },
             ]
           : ctx.alerts,
         ctaConfig: {
@@ -263,6 +302,7 @@ export const payrollExecutionMachine = {
   configuration: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),
     calculatedTransition,
+    alreadyProcessedTransition,
     employeeEditTransition,
     blockersViewAllTransition,
   ),

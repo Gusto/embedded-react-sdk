@@ -127,6 +127,10 @@ export interface Resources {
   'Payroll.PayrollList': Translations.PayrollPayrollList
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+  'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+  'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
   'Payroll.Transition': Translations.PayrollTransition
@@ -3073,6 +3077,14 @@ export namespace Translations {
       last6Months: string
       /** @defaultValue `"Last 12 months"` */
       last12Months: string
+    }
+    historicalPaymentCta: {
+      /** @defaultValue `"Record a historical payment"` */
+      title: string
+      /** @defaultValue `"Add a contractor payment that was made outside of Gusto to keep your records complete."` */
+      description: string
+      /** @defaultValue `"Record a historical payment"` */
+      button: string
     }
   }
   /** Translation keys for the `Contractor.Profile` i18n namespace. */
@@ -7010,6 +7022,8 @@ export namespace Translations {
       setNetEarnings: string
     }
     alerts: {
+      /** @defaultValue `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` */
+      alreadyProcessed: string
       /** @defaultValue `"Your progress has been saved"` */
       progressSaved: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
@@ -7609,7 +7623,7 @@ export namespace Translations {
       employeeCount_other: string
       /** @defaultValue `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` */
       disclaimer: string
-      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` */
+      /** @defaultValue `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` */
       companyInfo: string
       /** @defaultValue `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` */
       address: string
@@ -7664,6 +7678,64 @@ export namespace Translations {
       /** @defaultValue `"{{count}} employees in this payroll"` */
       totalEmployees_other: string
     }
+  }
+  /** Translation keys for the `Payroll.PrintChecksBanner` i18n namespace. */
+  export interface PayrollPrintChecksBanner {
+    /** @defaultValue `"You noted {{count}} employee that should be paid by check."` */
+    title_one: string
+    /** @defaultValue `"You noted {{count}} employees that should be paid by check."` */
+    title_other: string
+    /** @defaultValue `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` */
+    description: string
+    /** @defaultValue `"View and print checks"` */
+    cta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksFailure` i18n namespace. */
+  export interface PayrollPrintChecksFailure {
+    /** @defaultValue `"We couldn't generate your checks"` */
+    failedTitle: string
+    /** @defaultValue `"Try again"` */
+    retryCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
+  }
+  /** Translation keys for the `Payroll.PrintChecksForm` i18n namespace. */
+  export interface PayrollPrintChecksForm {
+    /** @defaultValue `"Choose check stock"` */
+    modalTitle: string
+    /** @defaultValue `"Custom check stock"` */
+    customStockLabel: string
+    /** @defaultValue `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` */
+    customStockDescription: string
+    /** @defaultValue `"Blank check stock"` */
+    blankStockLabel: string
+    /** @defaultValue `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` */
+    blankStockDescription: string
+    /** @defaultValue `"Check number starts with"` */
+    startingCheckNumberLabel: string
+    /** @defaultValue `"This will be the first check number, all other checks will follow sequentially."` */
+    startingCheckNumberDescription: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"View checks"` */
+    submitCta: string
+    /** @defaultValue `"Generating..."` */
+    submitCtaLoading: string
+    validations: {
+      /** @defaultValue `"Enter a valid check number"` */
+      startingCheckNumber: string
+    }
+  }
+  /** Translation keys for the `Payroll.PrintChecksSummary` i18n namespace. */
+  export interface PayrollPrintChecksSummary {
+    /** @defaultValue `"Your checks are ready"` */
+    succeededTitle: string
+    /** @defaultValue `"The download should have started automatically. If not, use the link below."` */
+    succeededDescription: string
+    /** @defaultValue `"View checks"` */
+    viewChecksCta: string
+    /** @defaultValue `"Close"` */
+    closeCta: string
   }
   /** Translation keys for the `Payroll.RecoveryCasesList` i18n namespace. */
   export interface PayrollRecoveryCasesList {

@@ -100,7 +100,9 @@ const renderScreen = (contractors: Array<Record<string, unknown>>, onEvent = vi.
     handlePreviewContractorPaymentGroup(previewResolver),
     handleCreateContractorPaymentGroup(createResolver),
   )
-  renderWithProviders(<CreateHistoricalPayment companyId={COMPANY_ID} onEvent={onEvent} />)
+  renderWithProviders(<CreateHistoricalPayment companyId={COMPANY_ID} onEvent={onEvent} />, {
+    unstableFeatures: { historicalPayments: true },
+  })
   return { onEvent }
 }
 

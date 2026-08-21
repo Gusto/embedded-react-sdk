@@ -6,6 +6,7 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import { getContractorDisplayName } from '../../shared/helpers'
+import { getContractorPaymentTotalAmount } from '../shared/paymentAmounts'
 import { FastAchSubmissionBlockerBanner } from './FastAchSubmissionBlockerBanner'
 import { GenericBlocker } from './GenericBlocker'
 import { DataView, Flex } from '@/components/Common'
@@ -62,7 +63,7 @@ export const PreviewPresentation = ({
           acc.wageAmount += Number(contractor.wage || '0')
           acc.bonusAmount += Number(contractor.bonus || '0')
           acc.reimbursementAmount += Number(contractor.reimbursement || '0')
-          acc.totalAmount += Number(contractor.wageTotal || '0')
+          acc.totalAmount += getContractorPaymentTotalAmount(contractor)
           return acc
         },
         { wageAmount: 0, bonusAmount: 0, reimbursementAmount: 0, totalAmount: 0 },
@@ -222,7 +223,7 @@ export const PreviewPresentation = ({
             title: t('contractorTableHeaders.total'),
             justify: 'end',
             render: contractorPayment =>
-              currencyFormatter(Number(contractorPayment.wageTotal || '0')),
+              currencyFormatter(getContractorPaymentTotalAmount(contractorPayment)),
           },
         ]}
         data={contractorPayments}

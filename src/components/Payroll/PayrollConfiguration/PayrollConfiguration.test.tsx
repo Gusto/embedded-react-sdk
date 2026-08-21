@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { PayrollConfiguration } from './PayrollConfiguration'
 import { server } from '@/test/mocks/server'
+import { getCompanyBankAccounts } from '@/test/mocks/apis/company_bank_accounts'
+import { getPaymentConfigs } from '@/test/mocks/apis/company'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -231,6 +233,142 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('already processed payroll', () => {
+    const alreadyProcessedResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(
+        {
+          errors: [
+            {
+              error_key: 'base',
+              category: 'invalid_operation',
+              message:
+                'This payroll has already been processed. Its data cannot be updated or altered.',
+            },
+          ],
+        },
+        { status: 422 },
+      ),
+    )
+
+    beforeEach(() => {
+      alreadyProcessedResolver.mockClear()
+      currentPayrollData = {
+        ...mockPayrollData,
+        processed: true,
+        payroll_deadline: '2027-01-01T17:00:00-08:00',
+        employee_compensations: allEmployees.map(emp => ({
+          ...createCompensation(emp.uuid),
+          first_name: emp.first_name,
+          last_name: emp.last_name,
+        })),
+      }
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          alreadyProcessedResolver,
+        ),
+        getCompanyBankAccounts,
+        getPaymentConfigs,
+      )
+    })
+
+    it('does not retry the terminal already-processed error', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            "This payroll is already processed. If you'd like to make changes, please cancel and re-run it.",
+          ),
+        ).toBeInTheDocument()
+      })
+      expect(alreadyProcessedResolver).toHaveBeenCalledTimes(1)
+    })
+
+    it('delegates to the read-only payroll overview with a cancel action', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            "This payroll is already processed. If you'd like to make changes, please cancel and re-run it.",
+          ),
+        ).toBeInTheDocument()
+      })
+      expect(screen.getByRole('button', { name: /cancel payroll/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /calculate/i })).not.toBeInTheDocument()
+    })
+
+    it('returns to the configuration table after cancelling', async () => {
+      const user = userEvent.setup()
+      let isCancelled = false
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          async ({ request }) => {
+            if (!isCancelled) {
+              return HttpResponse.json(
+                {
+                  errors: [
+                    {
+                      error_key: 'base',
+                      category: 'invalid_operation',
+                      message: 'This payroll has already been processed.',
+                    },
+                  ],
+                },
+                { status: 422 },
+              )
+            }
+            const body = (await request.json()) as { employee_uuids?: string[] } | null
+            const employeeUuids = body?.employee_uuids
+            const filteredCompensations = employeeUuids?.length
+              ? allCompensations.filter(comp => employeeUuids.includes(comp.employee_uuid))
+              : allCompensations
+            return HttpResponse.json({
+              ...mockPayrollData,
+              employee_compensations: filteredCompensations,
+            })
+          },
+        ),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`, () => {
+          isCancelled = true
+          return HttpResponse.json({ success: true })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /cancel payroll/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/any changes you have made/i)).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /yes, cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('button', { name: /cancel payroll/i })).not.toBeInTheDocument()
+    })
+
+    it('emits runPayroll/alreadyProcessed once', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/alreadyProcessed',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+      expect(onEvent).toHaveBeenCalledTimes(1)
     })
   })
 

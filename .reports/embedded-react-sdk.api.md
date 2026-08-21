@@ -129,6 +129,7 @@ import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment';
+import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument';
 import { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HolidayPayPolicyEmployees } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -247,6 +248,8 @@ import { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedu
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { PrintablePayrollChecksBody } from '@gusto/embedded-api/models/components/printablepayrollchecksbody';
+import { PrintingFormat } from '@gusto/embedded-api/models/components/printablepayrollchecksbody';
 import { QueryClient } from '@tanstack/react-query';
 import { Questions } from '@gusto/embedded-api/models/components/employeestatetaxesrequest';
 import { RateType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
@@ -537,6 +540,7 @@ declare namespace APIModels {
         Garnishment,
         GarnishmentChildSupport,
         PaymentPeriod,
+        GeneratedDocumentStatus,
         ChristmasDay,
         ColumbusDay,
         HolidayPayPolicyEmployees,
@@ -656,6 +660,8 @@ declare namespace APIModels {
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
         PayScheduleShow,
+        PrintablePayrollChecksBody,
+        PrintingFormat,
         RecoveryCase,
         RecoveryCaseStatus,
         IdentityVerificationStatus,
@@ -1275,6 +1281,7 @@ export const componentEvents: {
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
+    readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATE: "contractor/historicalPayments/create";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_EDIT: "contractor/historicalPayments/edit";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: "contractor/historicalPayments/update";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: "contractor/historicalPayments/preview";
@@ -1293,6 +1300,13 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
+    readonly PRINT_CHECKS_START: "payroll/printChecks/start";
+    readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
+    readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
+    readonly PRINT_CHECKS_GENERATE_FAILED: "payroll/printChecks/generate/failed";
+    readonly PRINT_CHECKS_RETRY: "payroll/printChecks/retry";
+    readonly PRINT_CHECKS_CANCEL: "payroll/printChecks/cancel";
+    readonly PRINT_CHECKS_CLOSE: "payroll/printChecks/close";
     readonly RECOVERY_CASE_RESOLVE: "recoveryCase/resolve";
     readonly RECOVERY_CASE_RESUBMIT: "recoveryCase/resubmit";
     readonly RECOVERY_CASE_RESUBMIT_CANCEL: "recoveryCase/resubmit/cancel";
@@ -1309,6 +1323,7 @@ export const componentEvents: {
     readonly PAYROLL_WIRE_FORM_CANCEL: "payroll/wire/form/cancel";
     readonly RUN_PAYROLL_BACK: "runPayroll/back";
     readonly RUN_PAYROLL_CALCULATED: "runPayroll/calculated";
+    readonly RUN_PAYROLL_ALREADY_PROCESSED: "runPayroll/alreadyProcessed";
     readonly RUN_PAYROLL_CANCELLED: "runPayroll/cancelled";
     readonly RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: "runPayroll/cancelled/alertDismissed";
     readonly RUN_PAYROLL_EDIT: "runPayroll/edit";
@@ -4995,6 +5010,14 @@ export interface Resources {
     // (undocumented)
     'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
     // (undocumented)
+    'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+    // (undocumented)
+    'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+    // (undocumented)
+    'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+    // (undocumented)
+    'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
+    // (undocumented)
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)
     'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
@@ -5812,6 +5835,7 @@ export interface UnorderedListProps extends BaseListProps {
 
 // @alpha
 export interface UnstableFeatures {
+    historicalPayments?: boolean;
 }
 
 // @public

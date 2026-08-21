@@ -65,6 +65,7 @@ Props for PayrollExecutionFlow.
 | ----- | ----------- | ---- |
 | `runPayroll/edit` | Fired when user chooses to edit payroll | — |
 | `runPayroll/calculated` | Fired when payroll calculation completes | `{ payrollUuid, payPeriod?, alert? }` |
+| `runPayroll/alreadyProcessed` | Fired when the payroll turns out to already be processed while configuring it; the flow moves to the review screen | `{ payrollId, alert?, payPeriod? }` |
 | `runPayroll/employee/edit` | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }` |
 | `runPayroll/employee/saved` | Fired when employee edits are saved | — |
 | `runPayroll/employee/cancelled` | Fired when employee edits are cancelled | — |

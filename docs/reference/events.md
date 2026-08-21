@@ -97,6 +97,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
 | `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT` | `"contractor/historicalPayments/backToEdit"` |
+| `CONTRACTOR_HISTORICAL_PAYMENT_CREATE` | `"contractor/historicalPayments/create"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_CREATED` | `"contractor/historicalPayments/created"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_EDIT` | `"contractor/historicalPayments/edit"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_EXIT` | `"contractor/historicalPayments/exit"` |
@@ -304,6 +305,13 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `PAYROLL_WIRE_INSTRUCTIONS_DONE` | `"payroll/wire/instructions/done"` |
 | `PAYROLL_WIRE_INSTRUCTIONS_SELECT` | `"payroll/wire/instructions/select"` |
 | `PAYROLL_WIRE_START_TRANSFER` | `"payroll/wire/startTransfer"` |
+| `PRINT_CHECKS_CANCEL` | `"payroll/printChecks/cancel"` |
+| `PRINT_CHECKS_CLOSE` | `"payroll/printChecks/close"` |
+| `PRINT_CHECKS_GENERATE_FAILED` | `"payroll/printChecks/generate/failed"` |
+| `PRINT_CHECKS_GENERATE_START` | `"payroll/printChecks/generate/start"` |
+| `PRINT_CHECKS_GENERATE_SUCCEEDED` | `"payroll/printChecks/generate/succeeded"` |
+| `PRINT_CHECKS_RETRY` | `"payroll/printChecks/retry"` |
+| `PRINT_CHECKS_START` | `"payroll/printChecks/start"` |
 | `RECOVERY_CASE_RESOLVE` | `"recoveryCase/resolve"` |
 | `RECOVERY_CASE_RESUBMIT` | `"recoveryCase/resubmit"` |
 | `RECOVERY_CASE_RESUBMIT_CANCEL` | `"recoveryCase/resubmit/cancel"` |
@@ -311,6 +319,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `REVIEW_PAYROLL` | `"payroll/review"` |
 | `ROBOT_MACHINE_DONE` | `"done"` |
 | `RUN_OFF_CYCLE_PAYROLL` | `"runPayroll/offCycle/start"` |
+| `RUN_PAYROLL_ALREADY_PROCESSED` | `"runPayroll/alreadyProcessed"` |
 | `RUN_PAYROLL_BACK` | `"runPayroll/back"` |
 | `RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED` | `"runPayroll/blocker/resolutionAttempted"` |
 | `RUN_PAYROLL_BLOCKERS_DETECTED` | `"runPayroll/blockers/detected"` |

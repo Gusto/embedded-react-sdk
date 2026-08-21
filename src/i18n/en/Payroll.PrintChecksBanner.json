@@ -1,0 +1,6 @@
+{
+  "title_one": "You noted {{count}} employee that should be paid by check.",
+  "title_other": "You noted {{count}} employees that should be paid by check.",
+  "description": "Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks.",
+  "cta": "View and print checks"
+}

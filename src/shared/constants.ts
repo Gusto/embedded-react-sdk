@@ -317,6 +317,7 @@ export const contractorPaymentEvents = {
  * @public
  */
 export const contractorHistoricalPaymentEvents = {
+  CONTRACTOR_HISTORICAL_PAYMENT_CREATE: 'contractor/historicalPayments/create',
   CONTRACTOR_HISTORICAL_PAYMENT_EDIT: 'contractor/historicalPayments/edit',
   CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: 'contractor/historicalPayments/update',
   CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: 'contractor/historicalPayments/preview',
@@ -382,6 +383,7 @@ export const payScheduleEvents = {
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
+  RUN_PAYROLL_ALREADY_PROCESSED: 'runPayroll/alreadyProcessed',
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: 'runPayroll/cancelled/alertDismissed',
   RUN_PAYROLL_EDIT: 'runPayroll/edit',
@@ -464,6 +466,26 @@ export const recoveryCasesEvents = {
   RECOVERY_CASE_RESUBMIT: 'recoveryCase/resubmit',
   RECOVERY_CASE_RESUBMIT_CANCEL: 'recoveryCase/resubmit/cancel',
   RECOVERY_CASE_RESUBMIT_DONE: 'recoveryCase/resubmit/done',
+} as const
+
+/**
+ * Event keys emitted by the print-checks component.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of the print-checks component and compare against the
+ * value of an entry on this object.
+ *
+ * @public
+ */
+export const printChecksEvents = {
+  PRINT_CHECKS_START: 'payroll/printChecks/start',
+  PRINT_CHECKS_GENERATE_START: 'payroll/printChecks/generate/start',
+  PRINT_CHECKS_GENERATE_SUCCEEDED: 'payroll/printChecks/generate/succeeded',
+  PRINT_CHECKS_GENERATE_FAILED: 'payroll/printChecks/generate/failed',
+  PRINT_CHECKS_RETRY: 'payroll/printChecks/retry',
+  PRINT_CHECKS_CANCEL: 'payroll/printChecks/cancel',
+  PRINT_CHECKS_CLOSE: 'payroll/printChecks/close',
 } as const
 
 /**
@@ -567,6 +589,7 @@ export const componentEvents = {
   ...payrollWireEvents,
   ...informationRequestEvents,
   ...recoveryCasesEvents,
+  ...printChecksEvents,
   ...contractorPaymentEvents,
   ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,

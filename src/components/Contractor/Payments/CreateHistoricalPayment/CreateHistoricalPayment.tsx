@@ -26,6 +26,7 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents } from '@/shared/constants'
 import { SelectContractors } from '@/components/Contractor/shared/SelectContractors/SelectContractors'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 const ALLOWED_PAYMENT_METHODS: ContractorPaymentMethod[] = ['Historical Payment']
 
@@ -85,6 +86,7 @@ interface ContractorSelection {
 }
 
 function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) {
+  useUnstableFeature('historicalPayments', { throwIfDisabled: true })
   useI18n('Contractor.Payments.CreateHistoricalPayment')
   useComponentDictionary('Contractor.Payments.CreateHistoricalPayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreateHistoricalPayment')

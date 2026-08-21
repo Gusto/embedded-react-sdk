@@ -27,5 +27,10 @@
     "last3Months": "Last 3 months",
     "last6Months": "Last 6 months",
     "last12Months": "Last 12 months"
+  },
+  "historicalPaymentCta": {
+    "title": "Record a historical payment",
+    "description": "Add a contractor payment that was made outside of Gusto to keep your records complete.",
+    "button": "Record a historical payment"
   }
 }
