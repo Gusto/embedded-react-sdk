@@ -25,6 +25,8 @@ export interface WageTypeGroup {
   label: string
   /** Optional supporting text shown beneath the label. */
   description?: string
+  /** Optional supporting text shown beneath the derived "taxed as" value, explaining how this wage type category is taxed. */
+  taxedAsDescription?: string
 }
 
 /** @internal */

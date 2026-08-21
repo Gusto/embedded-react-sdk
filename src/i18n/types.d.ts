@@ -6855,6 +6855,8 @@ export namespace Translations {
     continueCta: string
     /** @defaultValue `"Include all employees in this payroll"` */
     includeAllEmployeesLabel: string
+    /** @defaultValue `"Note: Off-cycle payrolls are meant to supplement the standard payroll schedule, not replace it. Since payroll taxes depend on wages, hours worked, <bold>and pay frequency,</bold> exclusively using off-cycle payrolls to pay your team can lead to taxes being omitted."` */
+    taxWithholdingDisclaimer: string
     errors: {
       /** @defaultValue `"Off-cycle payroll was created but no payroll ID was returned"` */
       missingPayrollId: string
@@ -6961,16 +6963,22 @@ export namespace Translations {
         label: string
         /** @defaultValue `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` */
         description: string
+        /** @defaultValue `"Federal and state income taxes are withheld using the standard tax tables for this pay frequency."` */
+        taxedAsDescription: string
       }
       supplemental: {
         /** @defaultValue `"Supplemental wages, bonus wages, commission"` */
         label: string
         /** @defaultValue `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` */
         description: string
+        /** @defaultValue `"Taxed either at the IRS's flat 22% supplemental rate or under your regular pay schedule, depending on the rate you select above."` */
+        taxedAsDescription: string
       }
       reimbursement: {
         /** @defaultValue `"Reimbursements"` */
         label: string
+        /** @defaultValue `"Reimbursements for business expenses aren't taxable wages, so no federal or state income tax is withheld."` */
+        taxedAsDescription: string
       }
     }
     modal: {

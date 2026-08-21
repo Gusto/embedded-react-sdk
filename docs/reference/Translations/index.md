@@ -4678,6 +4678,7 @@ Translation keys for the `Payroll.OffCycleCreation` i18n namespace.
 | <a id="property-payrolloffcyclecreationpagetitle"></a> `pageTitle` | `"New Off-Cycle Payroll"` |
 | <a id="property-payrolloffcyclecreationpayperiodsectiondescription"></a> `payPeriodSectionDescription` | `"Enter a work period to show on your employees' pay stubs."` |
 | <a id="property-payrolloffcyclecreationpayperiodsectiontitle"></a> `payPeriodSectionTitle` | `"Pay period and payment date"` |
+| <a id="property-payrolloffcyclecreationtaxwithholdingdisclaimer"></a> `taxWithholdingDisclaimer` | `"Note: Off-cycle payrolls are meant to supplement the standard payroll schedule, not replace it. Since payroll taxes depend on wages, hours worked, <bold>and pay frequency,</bold> exclusively using off-cycle payrolls to pay your team can lead to taxes being omitted."` |
 
 ***
 
@@ -4799,11 +4800,14 @@ Translation keys for the `Payroll.OffCycleTaxWithholding` i18n namespace.
 | `wageTypeGroups.regular` | |
 | `wageTypeGroups.regular.description` | `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` |
 | `wageTypeGroups.regular.label` | `"Regular hours, regular wages, and tips"` |
+| `wageTypeGroups.regular.taxedAsDescription` | `"Federal and state income taxes are withheld using the standard tax tables for this pay frequency."` |
 | `wageTypeGroups.reimbursement` | |
 | `wageTypeGroups.reimbursement.label` | `"Reimbursements"` |
+| `wageTypeGroups.reimbursement.taxedAsDescription` | `"Reimbursements for business expenses aren't taxable wages, so no federal or state income tax is withheld."` |
 | `wageTypeGroups.supplemental` | |
 | `wageTypeGroups.supplemental.description` | `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` |
 | `wageTypeGroups.supplemental.label` | `"Supplemental wages, bonus wages, commission"` |
+| `wageTypeGroups.supplemental.taxedAsDescription` | `"Taxed either at the IRS's flat 22% supplemental rate or under your regular pay schedule, depending on the rate you select above."` |
 
 ***
 

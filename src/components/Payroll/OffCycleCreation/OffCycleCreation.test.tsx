@@ -402,6 +402,23 @@ describe('OffCycleCreation', () => {
       expect(screen.getByText('Regular hours, regular wages, and tips')).toBeInTheDocument()
       expect(screen.getByText('Supplemental wages, bonus wages, commission')).toBeInTheDocument()
       expect(screen.getByText('Reimbursements')).toBeInTheDocument()
+      expect(screen.getByText(/standard tax tables for this pay frequency/i)).toBeInTheDocument()
+      expect(screen.getByText(/aren't taxable wages/i)).toBeInTheDocument()
+    })
+
+    it('renders the off-cycle tax withholding disclaimer', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(
+        screen.getByText(
+          /off-cycle payrolls are meant to supplement the standard payroll schedule/i,
+        ),
+      ).toBeInTheDocument()
+      expect(screen.getByText('and pay frequency,')).toBeInTheDocument()
     })
 
     it('opens the modal when Edit is clicked', async () => {
