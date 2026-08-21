@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
 import type { CompensationDefaultValues } from './Compensation'
@@ -40,7 +39,6 @@ export function JobsListContextual() {
 export function InitialEditCompensationContextual() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
-  const { t } = useTranslation('Employee.Compensation')
 
   const handleEvent: OnEventType<EventType, unknown> = (event, data) => {
     onEvent(event, data)
@@ -59,8 +57,6 @@ export function InitialEditCompensationContextual() {
       employeeId={ensureRequired(employeeId)}
       startDate={ensureRequired(startDate)}
       currentJobId={currentJobId}
-      title={t('title')}
-      submitCtaLabel={t('submitCta')}
       partnerDefaultValues={partnerDefaultValues}
       onEvent={handleEvent}
     />
@@ -71,7 +67,6 @@ export function InitialEditCompensationContextual() {
 export function EditCompensationContextual() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
-  const { t } = useTranslation('Employee.Compensation')
 
   const handleEvent: OnEventType<EventType, unknown> = (event, data) => {
     onEvent(event, data)
@@ -85,8 +80,7 @@ export function EditCompensationContextual() {
       employeeId={ensureRequired(employeeId)}
       startDate={ensureRequired(startDate)}
       currentJobId={currentJobId}
-      title={currentJobId ? t('editTitle') : t('addTitle')}
-      submitCtaLabel={t('saveNewJobCta')}
+      mode="edit"
       onCancel={() => {
         onEvent(componentEvents.EMPLOYEE_COMPENSATION_CANCEL)
       }}

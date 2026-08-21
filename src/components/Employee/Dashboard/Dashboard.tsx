@@ -15,19 +15,52 @@ import { firstLastName } from '@/helpers/formattedStrings'
 /** @public */
 export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
+/**
+ * Key identifying which success alert to surface above the dashboard tabs.
+ *
+ * @public
+ */
+export type DashboardSuccessAlert =
+  | 'bankAccountAdded'
+  | 'bankAccountDeleted'
+  | 'splitUpdated'
+  | 'deductionAdded'
+  | 'deductionUpdated'
+  | 'deductionDeleted'
+  | 'jobAdded'
+  | 'profileUpdated'
+  | 'federalTaxesUpdated'
+  | 'stateTaxesUpdated'
+
 /** @public */
 export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
   /** The associated employee identifier. */
   employeeId: string
   /** The currently active tab. Defaults to `'basicDetails'` when uncontrolled. */
   selectedTab?: DashboardTab
+  /** When set, a success alert with the corresponding translated label is rendered above the dashboard tabs. */
+  successAlert?: DashboardSuccessAlert
 }
+
+const alertKeys = {
+  bankAccountAdded: 'alerts.bankAccountAdded',
+  bankAccountDeleted: 'alerts.bankAccountDeleted',
+  splitUpdated: 'alerts.splitUpdated',
+  deductionAdded: 'alerts.deductionAdded',
+  deductionUpdated: 'alerts.deductionUpdated',
+  deductionDeleted: 'alerts.deductionDeleted',
+  jobAdded: 'alerts.jobAdded',
+  profileUpdated: 'alerts.profileUpdated',
+  federalTaxesUpdated: 'alerts.federalTaxesUpdated',
+  stateTaxesUpdated: 'alerts.stateTaxesUpdated',
+} as const satisfies Record<DashboardSuccessAlert, string>
 
 function DashboardRoot({
   employeeId,
   dictionary,
   onEvent,
   selectedTab: controlledTab,
+  successAlert,
   LoaderComponent,
 }: DashboardProps) {
   useI18n('Employee.Dashboard')
@@ -62,6 +95,16 @@ function DashboardRoot({
 
   return (
     <Flex flexDirection="column" gap={32}>
+      {successAlert && (
+        <Components.Alert
+          status="success"
+          label={t(alertKeys[successAlert])}
+          onDismiss={() => {
+            onEvent(componentEvents.EMPLOYEE_DISMISS, null)
+          }}
+          disableScrollIntoView
+        />
+      )}
       <Suspense fallback={null}>
         <DashboardHeader employeeId={employeeId} />
       </Suspense>

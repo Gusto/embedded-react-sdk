@@ -1,5 +1,4 @@
-import { useTranslation } from 'react-i18next'
-import { Dashboard, type DashboardTab } from './Dashboard'
+import { Dashboard, type DashboardTab, type DashboardSuccessAlert } from './Dashboard'
 import { HomeAddressEditForm } from '@/components/Employee/HomeAddress/management/HomeAddressEditForm'
 import { WorkAddressEditForm } from '@/components/Employee/WorkAddress/management/WorkAddressEditForm'
 import { FederalTaxesEditForm } from '@/components/Employee/FederalTaxes/management/FederalTaxesEditForm'
@@ -13,22 +12,7 @@ import { CompensationEditForm } from '@/components/Employee/Compensation/managem
 import { CompensationAddAnotherJobForm } from '@/components/Employee/Compensation/management/CompensationAddAnotherJobForm/CompensationAddAnotherJobForm'
 import { CompensationAddJobForm } from '@/components/Employee/Compensation/management/CompensationAddJobForm/CompensationAddJobForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import { componentEvents } from '@/shared/constants'
-
-/** @internal */
-type DashboardSuccessAlert =
-  | 'bankAccountAdded'
-  | 'bankAccountDeleted'
-  | 'splitUpdated'
-  | 'deductionAdded'
-  | 'deductionUpdated'
-  | 'deductionDeleted'
-  | 'jobAdded'
-  | 'profileUpdated'
-  | 'federalTaxesUpdated'
-  | 'stateTaxesUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -50,41 +34,15 @@ export interface DashboardContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DashboardViewContextual() {
-  const { t } = useTranslation('Employee.Dashboard')
   const { employeeId, onEvent, successAlert, selectedTab } = useFlow<DashboardContextInterface>()
-  const Components = useComponentContext()
-
-  const alertLabels: Record<DashboardSuccessAlert, string> = {
-    bankAccountAdded: t('alerts.bankAccountAdded'),
-    bankAccountDeleted: t('alerts.bankAccountDeleted'),
-    splitUpdated: t('alerts.splitUpdated'),
-    deductionAdded: t('alerts.deductionAdded'),
-    deductionUpdated: t('alerts.deductionUpdated'),
-    deductionDeleted: t('alerts.deductionDeleted'),
-    jobAdded: t('alerts.jobAdded'),
-    profileUpdated: t('alerts.profileUpdated'),
-    federalTaxesUpdated: t('alerts.federalTaxesUpdated'),
-    stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
-  }
 
   return (
-    <>
-      {successAlert && (
-        <Components.Alert
-          status="success"
-          label={alertLabels[successAlert]}
-          onDismiss={() => {
-            onEvent(componentEvents.EMPLOYEE_DISMISS, null)
-          }}
-          disableScrollIntoView
-        />
-      )}
-      <Dashboard
-        employeeId={ensureRequired(employeeId)}
-        onEvent={onEvent}
-        selectedTab={selectedTab}
-      />
-    </>
+    <Dashboard
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      selectedTab={selectedTab}
+      successAlert={successAlert ?? undefined}
+    />
   )
 }
 

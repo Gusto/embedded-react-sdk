@@ -1,21 +1,10 @@
-import { useTranslation } from 'react-i18next'
-import { Dashboard, type DashboardTab } from './Dashboard'
+import { Dashboard, type DashboardTab, type DashboardSuccessAlert } from './Dashboard'
 import { ProfileEditForm } from '@/components/Contractor/Profile/management/ProfileEditForm'
 import { AddressEditForm } from '@/components/Contractor/Address/management/AddressEditForm'
 import { PaymentMethodEditForm } from '@/components/Contractor/PaymentMethod/management/PaymentMethodEditForm'
 import { CompensationEditForm } from '@/components/Contractor/Compensation/management/CompensationEditForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import { componentEvents } from '@/shared/constants'
-
-/** @internal */
-type DashboardSuccessAlert =
-  | 'profileUpdated'
-  | 'addressUpdated'
-  | 'bankAccountAdded'
-  | 'bankAccountRemoved'
-  | 'compensationUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -30,36 +19,15 @@ export interface DashboardContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DashboardViewContextual() {
-  const { t } = useTranslation('Contractor.Dashboard')
   const { contractorId, onEvent, successAlert, selectedTab } = useFlow<DashboardContextInterface>()
-  const Components = useComponentContext()
-
-  const alertLabels: Record<DashboardSuccessAlert, string> = {
-    profileUpdated: t('alerts.profileUpdated'),
-    addressUpdated: t('alerts.addressUpdated'),
-    bankAccountAdded: t('alerts.bankAccountAdded'),
-    bankAccountRemoved: t('alerts.bankAccountRemoved'),
-    compensationUpdated: t('alerts.compensationUpdated'),
-  }
 
   return (
-    <>
-      {successAlert && (
-        <Components.Alert
-          status="success"
-          label={alertLabels[successAlert]}
-          onDismiss={() => {
-            onEvent(componentEvents.CONTRACTOR_DASHBOARD_ALERT_DISMISSED, null)
-          }}
-          disableScrollIntoView
-        />
-      )}
-      <Dashboard
-        contractorId={ensureRequired(contractorId)}
-        onEvent={onEvent}
-        selectedTab={selectedTab}
-      />
-    </>
+    <Dashboard
+      contractorId={ensureRequired(contractorId)}
+      onEvent={onEvent}
+      selectedTab={selectedTab}
+      successAlert={successAlert ?? undefined}
+    />
   )
 }
 
