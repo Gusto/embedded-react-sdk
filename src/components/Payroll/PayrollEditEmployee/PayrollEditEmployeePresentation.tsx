@@ -61,7 +61,7 @@ interface PayrollEditEmployeeProps {
   hasDirectDepositSetup?: boolean
 }
 
-function createPayrollEditEmployeeFormSchema(t: (key: string) => string) {
+function createPayrollEditEmployeeFormSchema(amountRequiredMessage: string) {
   const reimbursementSchema = z
     .object({
       uuid: z.string().nullable().optional(),
@@ -75,7 +75,7 @@ function createPayrollEditEmployeeFormSchema(t: (key: string) => string) {
       if (Number.isNaN(parsed) || parsed <= 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: t('reimbursementAmountRequired'),
+          message: amountRequiredMessage,
           path: ['amount'],
         })
       }
@@ -385,11 +385,11 @@ export const PayrollEditEmployeePresentation = ({
       PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
   }
 
-  const translateValidation = (key: string): string =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    t(key as any) as string
-
-  const schema = useMemo(() => createPayrollEditEmployeeFormSchema(translateValidation), [t])
+  const amountRequiredMessage = t('reimbursementAmountRequired')
+  const schema = useMemo(
+    () => createPayrollEditEmployeeFormSchema(amountRequiredMessage),
+    [amountRequiredMessage],
+  )
 
   const formHandlers = useForm<PayrollEditEmployeeFormValues>({
     resolver: zodResolver(schema),
