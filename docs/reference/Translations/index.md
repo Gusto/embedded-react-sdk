@@ -4803,7 +4803,6 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrollconfigurationalerts"></a> `alerts` | |
-| `alerts.alreadyProcessed` | `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.employeeUpdated` | |
@@ -5074,7 +5073,11 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
-| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` |
+| `alerts.checkPaymentWarning_one` | `"You noted {{count}} employee who should be paid by check."` |
+| `alerts.checkPaymentWarning_other` | `"You noted {{count}} employees who should be paid by check."` |
+| `alerts.checkPaymentWarningDescription` | `"Employees with this payment method will need their checks delivered to them."` |
+| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
+| `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
@@ -5215,7 +5218,7 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptsexitflowcta"></a> `exitFlowCta` | `"Exit"` |
 | <a id="property-payrollpayrollreceiptsreceipt"></a> `receipt` | |
 | `receipt.address` | `"525 20th St, San Francisco, CA 94107 | 415-777-8888"` |
-| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>."` |
+| `receipt.companyInfo` | `"Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page."` |
 | `receipt.debitDate` | `"Debit date"` |
 | `receipt.detailsLabel` | `"Receipt Details"` |
 | `receipt.disclaimer` | `"These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform."` |
@@ -5233,81 +5236,6 @@ Translation keys for the `Payroll.PayrollReceipts` i18n namespace.
 | <a id="property-payrollpayrollreceiptstax"></a> `tax` | |
 | `tax.amount` | `"Amount"` |
 | `tax.name` | `"Tax Type"` |
-
-***
-
-<a id="payrollprintchecksbanner"></a>
-
-### PayrollPrintChecksBanner
-
-Translation keys for the `Payroll.PrintChecksBanner` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrollprintchecksbannercta"></a> `cta` | `"View and print checks"` |
-| <a id="property-payrollprintchecksbannerdescription"></a> `description` | `"Employees with this payment method will need their checks delivered to them. If you aren't using your own checks, you can view and print checks."` |
-| <a id="property-payrollprintchecksbannertitle_one"></a> `title_one` | `"You noted {{count}} employee that should be paid by check."` |
-| <a id="property-payrollprintchecksbannertitle_other"></a> `title_other` | `"You noted {{count}} employees that should be paid by check."` |
-
-***
-
-<a id="payrollprintchecksfailure"></a>
-
-### PayrollPrintChecksFailure
-
-Translation keys for the `Payroll.PrintChecksFailure` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrollprintchecksfailureclosecta"></a> `closeCta` | `"Close"` |
-| <a id="property-payrollprintchecksfailurefailedtitle"></a> `failedTitle` | `"We couldn't generate your checks"` |
-| <a id="property-payrollprintchecksfailureretrycta"></a> `retryCta` | `"Try again"` |
-
-***
-
-<a id="payrollprintchecksform"></a>
-
-### PayrollPrintChecksForm
-
-Translation keys for the `Payroll.PrintChecksForm` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrollprintchecksformblankstockdescription"></a> `blankStockDescription` | `"Use this check stock if you have blank check stock and need us to populate your company and bank information. The physical check will always be on the bottom of the check PDF."` |
-| <a id="property-payrollprintchecksformblankstocklabel"></a> `blankStockLabel` | `"Blank check stock"` |
-| <a id="property-payrollprintchecksformcancelcta"></a> `cancelCta` | `"Cancel"` |
-| <a id="property-payrollprintchecksformcustomstockdescription"></a> `customStockDescription` | `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` |
-| <a id="property-payrollprintchecksformcustomstocklabel"></a> `customStockLabel` | `"Custom check stock"` |
-| <a id="property-payrollprintchecksformmodaltitle"></a> `modalTitle` | `"Choose check stock"` |
-| <a id="property-payrollprintchecksformstartingchecknumberdescription"></a> `startingCheckNumberDescription` | `"This will be the first check number, all other checks will follow sequentially."` |
-| <a id="property-payrollprintchecksformstartingchecknumberlabel"></a> `startingCheckNumberLabel` | `"Check number starts with"` |
-| <a id="property-payrollprintchecksformsubmitcta"></a> `submitCta` | `"View checks"` |
-| <a id="property-payrollprintchecksformsubmitctaloading"></a> `submitCtaLoading` | `"Generating..."` |
-| <a id="property-payrollprintchecksformvalidations"></a> `validations` | |
-| `validations.startingCheckNumber` | `"Enter a valid check number"` |
-
-***
-
-<a id="payrollprintcheckssummary"></a>
-
-### PayrollPrintChecksSummary
-
-Translation keys for the `Payroll.PrintChecksSummary` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrollprintcheckssummaryclosecta"></a> `closeCta` | `"Close"` |
-| <a id="property-payrollprintcheckssummarysucceededdescription"></a> `succeededDescription` | `"The download should have started automatically. If not, use the link below."` |
-| <a id="property-payrollprintcheckssummarysucceededtitle"></a> `succeededTitle` | `"Your checks are ready"` |
-| <a id="property-payrollprintcheckssummaryviewcheckscta"></a> `viewChecksCta` | `"View checks"` |
 
 ***
 
@@ -5683,10 +5611,6 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
 | <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
 | <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
-| <a id="property-resourcespayrollprintchecksbanner"></a> `Payroll.PrintChecksBanner` | [`PayrollPrintChecksBanner`](#payrollprintchecksbanner) |
-| <a id="property-resourcespayrollprintchecksfailure"></a> `Payroll.PrintChecksFailure` | [`PayrollPrintChecksFailure`](#payrollprintchecksfailure) |
-| <a id="property-resourcespayrollprintchecksform"></a> `Payroll.PrintChecksForm` | [`PayrollPrintChecksForm`](#payrollprintchecksform) |
-| <a id="property-resourcespayrollprintcheckssummary"></a> `Payroll.PrintChecksSummary` | [`PayrollPrintChecksSummary`](#payrollprintcheckssummary) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
