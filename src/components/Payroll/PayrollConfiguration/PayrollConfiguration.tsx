@@ -479,7 +479,7 @@ const Root = ({
 
     const { payrollShow } = payrollData
 
-    if (payrollShow) {
+    if (payrollShow?.checkDate && payrollShow.payrollDeadline) {
       return {
         label: t('alerts.directDepositDeadline', {
           payDate: dateFormatter.formatShortWithWeekday(payrollShow.checkDate),
