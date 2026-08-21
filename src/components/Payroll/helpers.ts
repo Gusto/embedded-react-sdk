@@ -753,30 +753,6 @@ export const getAdditionalEarningsCompensations = ({
 }
 
 /**
- * Returns whether the payroll may include direct-deposit employees.
- *
- * @remarks
- * Returns `true` unless every active (non-excluded) compensation is explicitly
- * `'Check'` or `'Historical'`. When `paymentMethod` is `null` or `undefined`
- * (common before a payroll is fully calculated), the employee is treated as a
- * potential direct-deposit recipient so the deadline banner stays visible.
- *
- * @param employeeCompensations - The employee compensations to inspect.
- * @returns `false` only when every active compensation is explicitly non-DD.
- * @internal
- */
-export const hasDirectDepositEmployees = (
-  employeeCompensations?: Array<{ paymentMethod?: string | null; excluded?: boolean }>,
-): boolean => {
-  if (!employeeCompensations || employeeCompensations.length === 0) return true
-  const activeCompensations = employeeCompensations.filter(comp => !comp.excluded)
-  if (activeCompensations.length === 0) return true
-  return activeCompensations.some(
-    comp => comp.paymentMethod !== 'Check' && comp.paymentMethod !== 'Historical',
-  )
-}
-
-/**
  * Sums gross pay, employer taxes, reimbursements, and benefits from a payroll's totals.
  *
  * @param payrollData - The payroll whose totals to sum.
