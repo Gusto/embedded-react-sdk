@@ -32,6 +32,8 @@ import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilte
 export interface PayrollListBlockProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
+  /** Whether to show the off-cycle payroll call-to-action. Defaults to `true`. */
+  withOffcyclePayroll?: boolean
 }
 
 /**
@@ -83,7 +85,7 @@ const getDefaultEndDate = (): Date => {
   return date
 }
 
-const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
+const Root = ({ companyId, onEvent, withOffcyclePayroll = true }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
@@ -227,6 +229,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       wireInRequests={wireInRequests}
       dateRangeFilter={dateRangeFilter}
       hasUnprocessedTransitions={hasUnprocessedTransitions}
+      withOffcyclePayroll={withOffcyclePayroll}
     />
   )
 }

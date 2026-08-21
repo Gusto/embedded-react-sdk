@@ -62,6 +62,7 @@ export const PayrollFlow = ({
   companyId,
   onEvent,
   withReimbursements = true,
+  withOffcyclePayroll = true,
   ConfirmWireDetailsComponent,
 }: PayrollFlowProps) => {
   const payrollFlow = useMemo(
@@ -79,10 +80,11 @@ export const PayrollFlow = ({
             cta: SaveAndExitCta,
           },
           withReimbursements,
+          withOffcyclePayroll,
           ConfirmWireDetailsComponent,
         }),
       ),
-    [companyId, withReimbursements, ConfirmWireDetailsComponent],
+    [companyId, withReimbursements, withOffcyclePayroll, ConfirmWireDetailsComponent],
   )
 
   return <Flow machine={payrollFlow} onEvent={onEvent} />

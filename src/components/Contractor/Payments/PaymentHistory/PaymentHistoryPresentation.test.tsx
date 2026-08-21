@@ -55,7 +55,7 @@ describe('PaymentHistoryPresentation', () => {
     renderScreen()
 
     const table = await screen.findByTestId('data-table')
-    const row = within(table).getByRole('row', { name: 'Contractor Test' })
+    const row = await within(table).findByRole('row', { name: 'Contractor Test' })
     expect(getCellByColumnHeader(table, row, 'Total')).toHaveTextContent('$260.00')
   })
 })

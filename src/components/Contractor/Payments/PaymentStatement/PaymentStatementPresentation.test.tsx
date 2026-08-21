@@ -40,7 +40,7 @@ describe('PaymentStatementPresentation', () => {
     )
 
     const table = await screen.findByTestId('data-table')
-    const row = within(table).getByRole('row', { name: 'Direct Deposit' })
+    const row = await within(table).findByRole('row', { name: 'Direct Deposit' })
     expect(getCellByColumnHeader(table, row, 'Amount')).toHaveTextContent('$260.00')
   })
 })
