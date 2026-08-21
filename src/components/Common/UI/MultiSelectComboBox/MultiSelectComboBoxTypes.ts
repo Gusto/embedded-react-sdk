@@ -16,6 +16,10 @@ export interface MultiSelectComboBoxOption {
    * Value of the option that will be passed to onChange
    */
   value: string
+  /**
+   * Optional secondary text rendered beneath the label in the option list
+   */
+  description?: string
 }
 
 /**
