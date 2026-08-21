@@ -23,6 +23,8 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
   companyId: string
   /** Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. */
   withReimbursements?: boolean
+  /** Whether to show the off-cycle payroll call-to-action. Defaults to `true`. */
+  withOffcyclePayroll?: boolean
   /** Custom component that replaces the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   /** When `true`, displays a dismissible success alert indicating a payroll was cancelled. */
@@ -75,6 +77,7 @@ function PayrollLandingFlow({
   onEvent,
   dictionary,
   withReimbursements = true,
+  withOffcyclePayroll = true,
   ConfirmWireDetailsComponent,
   showPayrollCancelledAlert,
 }: PayrollLandingFlowProps) {
@@ -91,6 +94,7 @@ function PayrollLandingFlow({
           companyId,
           selectedTab: 'run-payroll',
           withReimbursements,
+          withOffcyclePayroll,
           ConfirmWireDetailsComponent,
           header: {
             type: 'breadcrumbs' as const,
@@ -99,7 +103,13 @@ function PayrollLandingFlow({
           showPayrollCancelledAlert,
         }),
       ),
-    [companyId, withReimbursements, ConfirmWireDetailsComponent, showPayrollCancelledAlert],
+    [
+      companyId,
+      withReimbursements,
+      withOffcyclePayroll,
+      ConfirmWireDetailsComponent,
+      showPayrollCancelledAlert,
+    ],
   )
 
   return <Flow onEvent={onEvent} machine={machine} />

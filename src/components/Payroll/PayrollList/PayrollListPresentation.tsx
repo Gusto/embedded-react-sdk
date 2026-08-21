@@ -71,6 +71,7 @@ interface PayrollListPresentationProps {
   wireInRequests: WireInRequest[]
   dateRangeFilter: UseDateRangeFilterResult
   hasUnprocessedTransitions?: boolean
+  withOffcyclePayroll?: boolean
 }
 
 /** @internal */
@@ -93,6 +94,7 @@ export const PayrollListPresentation = ({
   wireInRequests,
   dateRangeFilter,
   hasUnprocessedTransitions = false,
+  withOffcyclePayroll = true,
 }: PayrollListPresentationProps) => {
   const { Box, BoxHeader, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -461,21 +463,23 @@ export const PayrollListPresentation = ({
         >
           {t('deletePayrollDialog.body')}
         </Dialog>
-        <div className={styles.offCycleCta}>
-          <Box
-            header={
-              <BoxHeader
-                title={t('offCycleCta.title')}
-                description={t('offCycleCta.description')}
-              />
-            }
-            footer={
-              <Button variant="secondary" onClick={onRunOffCyclePayroll}>
-                {t('offCycleCta.button')}
-              </Button>
-            }
-          />
-        </div>
+        {withOffcyclePayroll && (
+          <div className={styles.offCycleCta}>
+            <Box
+              header={
+                <BoxHeader
+                  title={t('offCycleCta.title')}
+                  description={t('offCycleCta.description')}
+                />
+              }
+              footer={
+                <Button variant="secondary" onClick={onRunOffCyclePayroll}>
+                  {t('offCycleCta.button')}
+                </Button>
+              }
+            />
+          </div>
+        )}
       </Flex>
     </div>
   )
