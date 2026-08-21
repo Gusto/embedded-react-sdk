@@ -35,6 +35,7 @@
   "addReimbursementCta": "Add one-time reimbursement",
   "addReimbursementLink": "Add one-time reimbursement",
   "saveReimbursementCta": "Save reimbursement",
+  "reimbursementAmountRequired": "Enter an amount greater than $0",
   "cancelReimbursementCta": "Cancel reimbursement",
   "removeReimbursementLabel": "Remove {{description}} reimbursement",
   "recurringReimbursementLabel": "{{description}} (recurring reimbursement)",

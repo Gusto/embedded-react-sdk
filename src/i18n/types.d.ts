@@ -7440,6 +7440,8 @@ export namespace Translations {
     addReimbursementLink: string
     /** @defaultValue `"Save reimbursement"` */
     saveReimbursementCta: string
+    /** @defaultValue `"Enter an amount greater than $0"` */
+    reimbursementAmountRequired: string
     /** @defaultValue `"Cancel reimbursement"` */
     cancelReimbursementCta: string
     /** @defaultValue `"Remove {{description}} reimbursement"` */

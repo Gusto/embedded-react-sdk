@@ -61,36 +61,40 @@ interface PayrollEditEmployeeProps {
   hasDirectDepositSetup?: boolean
 }
 
-const ReimbursementFormSchema = z
-  .object({
-    uuid: z.string().nullable().optional(),
-    description: z.string(),
-    amount: z.string(),
-    recurring: z.boolean().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.uuid && parseFloat(data.amount || '0') === 0) return
-    const parsed = parseFloat(data.amount.trim() || '0')
-    if (Number.isNaN(parsed) || parsed <= 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Enter an amount greater than $0',
-        path: ['amount'],
-      })
-    }
-  })
+function createPayrollEditEmployeeFormSchema(t: (key: string) => string) {
+  const reimbursementSchema = z
+    .object({
+      uuid: z.string().nullable().optional(),
+      description: z.string(),
+      amount: z.string(),
+      recurring: z.boolean().optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.uuid && parseFloat(data.amount || '0') === 0) return
+      const parsed = parseFloat(data.amount.trim() || '0')
+      if (Number.isNaN(parsed) || parsed <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t('reimbursementAmountRequired'),
+          path: ['amount'],
+        })
+      }
+    })
 
-const PayrollEditEmployeeFormSchema = z.object({
-  hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
-  timeOffCompensations: z.record(z.string(), z.string().optional()),
-  finalPayoutCompensations: z.record(z.string(), z.string().optional()),
-  fixedCompensations: z.record(z.string(), z.string().optional()),
-  reimbursements: z.array(ReimbursementFormSchema),
-  paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
-})
+  return z.object({
+    hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
+    timeOffCompensations: z.record(z.string(), z.string().optional()),
+    finalPayoutCompensations: z.record(z.string(), z.string().optional()),
+    fixedCompensations: z.record(z.string(), z.string().optional()),
+    reimbursements: z.array(reimbursementSchema),
+    paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
+  })
+}
 
 /** @internal */
-export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
+export type PayrollEditEmployeeFormValues = z.infer<
+  ReturnType<typeof createPayrollEditEmployeeFormSchema>
+>
 
 const buildCompensationFromFormData = (
   formData: PayrollEditEmployeeFormValues,
@@ -381,8 +385,14 @@ export const PayrollEditEmployeePresentation = ({
       PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
   }
 
+  const translateValidation = (key: string): string =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    t(key as any) as string
+
+  const schema = useMemo(() => createPayrollEditEmployeeFormSchema(translateValidation), [t])
+
   const formHandlers = useForm<PayrollEditEmployeeFormValues>({
-    resolver: zodResolver(PayrollEditEmployeeFormSchema),
+    resolver: zodResolver(schema),
     defaultValues,
   })
 
