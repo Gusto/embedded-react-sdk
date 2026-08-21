@@ -4322,6 +4322,7 @@ type PayrollFlowAlert = {
 interface PayrollFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
+    withOffcyclePayroll?: boolean;
     withReimbursements?: boolean;
 }
 
@@ -4341,6 +4342,7 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     showPayrollCancelledAlert?: boolean;
+    withOffcyclePayroll?: boolean;
     withReimbursements?: boolean;
 }
 
@@ -4350,6 +4352,7 @@ function PayrollList(props: PayrollListBlockProps): JSX;
 // @public
 interface PayrollListBlockProps extends BaseComponentInterface<never> {
     companyId: string;
+    withOffcyclePayroll?: boolean;
 }
 
 // @public
