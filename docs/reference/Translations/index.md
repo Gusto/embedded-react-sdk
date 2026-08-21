@@ -5048,6 +5048,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeeregularhourstitle"></a> `regularHoursTitle` | `"Regular hours"` |
 | <a id="property-payrollpayrolleditemployeereimbursementamountcolumn"></a> `reimbursementAmountColumn` | `"Amount"` |
 | <a id="property-payrollpayrolleditemployeereimbursementamountlabel"></a> `reimbursementAmountLabel` | `"Amount"` |
+| <a id="property-payrollpayrolleditemployeereimbursementamountrequired"></a> `reimbursementAmountRequired` | `"Enter an amount greater than $0"` |
 | <a id="property-payrollpayrolleditemployeereimbursementdescriptioncolumn"></a> `reimbursementDescriptionColumn` | `"Description"` |
 | <a id="property-payrollpayrolleditemployeereimbursementdescriptionlabel"></a> `reimbursementDescriptionLabel` | `"Description"` |
 | <a id="property-payrollpayrolleditemployeereimbursementdescriptionplaceholder"></a> `reimbursementDescriptionPlaceholder` | `"e.g., Office supplies"` |
