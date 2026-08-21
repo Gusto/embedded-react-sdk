@@ -357,6 +357,149 @@ Translation keys for the `Company.DocumentList` i18n namespace.
 | <a id="property-companydocumentlistdocumentlisttitle"></a> `documentListTitle` | `"Documents"` |
 | <a id="property-companydocumentlistemptytabletitle"></a> `emptyTableTitle` | `"No documents found"` |
 | <a id="property-companydocumentlistformcolumnlabel"></a> `formColumnLabel` | `"Form"` |
+| <a id="property-companydocumentlistforms"></a> `forms` | |
+| `forms.ACH_Reversal` | |
+| `forms.ACH_Reversal.description` | `""` |
+| `forms.amended_package` | |
+| `forms.amended_package.description` | `""` |
+| `forms.Benefits Annotated QWR` | |
+| `forms.Benefits Annotated QWR.description` | `""` |
+| `forms.BENEFITS_ANNOTATED_CA_DE-9C` | |
+| `forms.BENEFITS_ANNOTATED_CA_DE-9C.description` | `""` |
+| `forms.CA_DE-9` | |
+| `forms.CA_DE-9.description` | `""` |
+| `forms.CA_DE-9ADJ` | |
+| `forms.CA_DE-9ADJ.description` | `""` |
+| `forms.CA_DE-9C` | |
+| `forms.CA_DE-9C.description` | `""` |
+| `forms.co_employee_refund_instructions` | |
+| `forms.co_employee_refund_instructions.description` | `""` |
+| `forms.company_direct_deposit` | |
+| `forms.company_direct_deposit.description` | `""` |
+| `forms.DC_DOES_UC30` | |
+| `forms.DC_DOES_UC30.description` | `""` |
+| `forms.FL_RT-6` | |
+| `forms.FL_RT-6.description` | `""` |
+| `forms.IL_DOR_941` | |
+| `forms.IL_DOR_941.description` | `""` |
+| `forms.IL_DOR_941X` | |
+| `forms.IL_DOR_941X.description` | `""` |
+| `forms.IL_UI-340` | |
+| `forms.IL_UI-340.description` | `""` |
+| `forms.IL_UI-40C` | |
+| `forms.IL_UI-40C.description` | `""` |
+| `forms.Incomplete Benefits Annotated QWR` | |
+| `forms.Incomplete Benefits Annotated QWR.description` | `""` |
+| `forms.ky_unemployment` | |
+| `forms.ky_unemployment.description` | `""` |
+| `forms.ky_unemployment_amendment` | |
+| `forms.ky_unemployment_amendment.description` | `""` |
+| `forms.MA_941` | |
+| `forms.MA_941.description` | `""` |
+| `forms.ma_unemployment` | |
+| `forms.ma_unemployment.description` | `""` |
+| `forms.md_unemployment` | |
+| `forms.md_unemployment.description` | `""` |
+| `forms.md_unemployment_amendment` | |
+| `forms.md_unemployment_amendment.description` | `""` |
+| `forms.mt_tax_coupon` | |
+| `forms.mt_tax_coupon.description` | `""` |
+| `forms.NY_MTA-305` | |
+| `forms.NY_MTA-305.description` | `""` |
+| `forms.NY_MTA-305c` | |
+| `forms.NY_MTA-305c.description` | `""` |
+| `forms.NY_NYS-45` | |
+| `forms.NY_NYS-45.description` | `""` |
+| `forms.NY_NYS-45-X` | |
+| `forms.NY_NYS-45-X.description` | `""` |
+| `forms.NY_TR-2000` | |
+| `forms.NY_TR-2000.description` | `""` |
+| `forms.NY_TR-579-WT` | |
+| `forms.NY_TR-579-WT.description` | `""` |
+| `forms.OHIO_IT-3` | |
+| `forms.OHIO_IT-3.description` | `""` |
+| `forms.OHIO_IT-3c` | |
+| `forms.OHIO_IT-3c.description` | `""` |
+| `forms.OHIO_IT-501` | |
+| `forms.OHIO_IT-501.description` | `""` |
+| `forms.OHIO_IT-941` | |
+| `forms.OHIO_IT-941.description` | `""` |
+| `forms.OHIO_IT-941c` | |
+| `forms.OHIO_IT-941c.description` | `""` |
+| `forms.OHIO_SD-101` | |
+| `forms.OHIO_SD-101.description` | `""` |
+| `forms.OHIO_SD-141` | |
+| `forms.OHIO_SD-141.description` | `""` |
+| `forms.OHIO_SD-141c` | |
+| `forms.OHIO_SD-141c.description` | `""` |
+| `forms.OHIO_SUTA` | |
+| `forms.OHIO_SUTA.description` | `""` |
+| `forms.OHIO_SUTA_CORRECTION` | |
+| `forms.OHIO_SUTA_CORRECTION.description` | `""` |
+| `forms.quarterly_package` | |
+| `forms.quarterly_package.description` | `""` |
+| `forms.sc_unemployment` | |
+| `forms.sc_unemployment.description` | `""` |
+| `forms.SYMMETRY_PAYROLL_FORM` | |
+| `forms.SYMMETRY_PAYROLL_FORM.description` | `""` |
+| `forms.TEXAS_SUTA` | |
+| `forms.TEXAS_SUTA.description` | `""` |
+| `forms.TEXAS_SUTA_AMENDMENT` | |
+| `forms.TEXAS_SUTA_AMENDMENT.description` | `""` |
+| `forms.US_1099` | |
+| `forms.US_1099.description` | `""` |
+| `forms.US_1099 (Corrected)` | |
+| `forms.US_1099 (Corrected).description` | `""` |
+| `forms.US_1099_Employer_Printable_Copy` | |
+| `forms.US_1099_Employer_Printable_Copy.description` | `""` |
+| `forms.US_8655` | |
+| `forms.US_8655.description` | `""` |
+| `forms.US_8655_MODIFIED` | |
+| `forms.US_8655_MODIFIED.description` | `""` |
+| `forms.US_8821` | |
+| `forms.US_8821.description` | `""` |
+| `forms.US_8974` | |
+| `forms.US_8974.description` | `""` |
+| `forms.US_940` | |
+| `forms.US_940.description` | `""` |
+| `forms.US_940c` | |
+| `forms.US_940c.description` | `""` |
+| `forms.US_941` | |
+| `forms.US_941.description` | `""` |
+| `forms.US_941_SCHEDULE_B` | |
+| `forms.US_941_SCHEDULE_B.description` | `""` |
+| `forms.US_941X` | |
+| `forms.US_941X.description` | `""` |
+| `forms.US_944` | |
+| `forms.US_944.description` | `""` |
+| `forms.US_944X` | |
+| `forms.US_944X.description` | `""` |
+| `forms.US_Company_W-2` | |
+| `forms.US_Company_W-2.description` | `""` |
+| `forms.US_Company_W-2 (Corrected)` | |
+| `forms.US_Company_W-2 (Corrected).description` | `""` |
+| `forms.US_Company_W-2_Cover_Sheet` | |
+| `forms.US_Company_W-2_Cover_Sheet.description` | `""` |
+| `forms.US_W-2` | |
+| `forms.US_W-2.description` | `""` |
+| `forms.US_W-2_Employer_Copy` | |
+| `forms.US_W-2_Employer_Copy.description` | `""` |
+| `forms.US_W-2c` | |
+| `forms.US_W-2c.description` | `""` |
+| `forms.US_W-3` | |
+| `forms.US_W-3.description` | `""` |
+| `forms.US_W2_Employer_Printable_Copy` | |
+| `forms.US_W2_Employer_Printable_Copy.description` | `""` |
+| `forms.vt_unemployment` | |
+| `forms.vt_unemployment.description` | `""` |
+| `forms.WA_EMS-5208` | |
+| `forms.WA_EMS-5208.description` | `""` |
+| `forms.WA_EMS-5208D` | |
+| `forms.WA_EMS-5208D.description` | `""` |
+| `forms.WA_LNI` | |
+| `forms.WA_LNI.description` | `""` |
+| `forms.WA_LNI_AMENDMENT` | |
+| `forms.WA_LNI_AMENDMENT.description` | `""` |
 | <a id="property-companydocumentlistnosignatorydescription"></a> `noSignatoryDescription` | `"A signatory has not yet been assigned"` |
 | <a id="property-companydocumentlistnotsigned"></a> `notSigned` | `"Not signed"` |
 | <a id="property-companydocumentlistothersignatorydescription"></a> `otherSignatoryDescription` | `"Your signatory is {{signatory}}, {{title}}."` |
@@ -2819,6 +2962,17 @@ Translation keys for the `Employee.DocumentSigner` i18n namespace.
 | <a id="property-employeedocumentsignerdownloadprompt"></a> `downloadPrompt` | `"{{description}} You may also <downloadLink>download this document</downloadLink>."` |
 | <a id="property-employeedocumentsigneremptytabletitle"></a> `emptyTableTitle` | `"No documents found"` |
 | <a id="property-employeedocumentsignerformcolumnlabel"></a> `formColumnLabel` | `"Form"` |
+| <a id="property-employeedocumentsignerforms"></a> `forms` | |
+| `forms.employee_direct_deposit` | |
+| `forms.employee_direct_deposit.description` | `""` |
+| `forms.Or_Portland_Multnomah` | |
+| `forms.Or_Portland_Multnomah.description` | `""` |
+| `forms.or_w4` | |
+| `forms.or_w4.description` | `""` |
+| `forms.US_I-9` | |
+| `forms.US_I-9.description` | `""` |
+| `forms.US_W-4` | |
+| `forms.US_W-4.description` | `""` |
 | <a id="property-employeedocumentsignernotsigned"></a> `notSigned` | `"Not signed"` |
 | <a id="property-employeedocumentsignersignaturefielddescription"></a> `signatureFieldDescription` | `"Type your full, legal name."` |
 | <a id="property-employeedocumentsignersignaturefielderror"></a> `signatureFieldError` | `"Signature is required"` |
@@ -5074,7 +5228,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
-| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` |
+| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
+| `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |

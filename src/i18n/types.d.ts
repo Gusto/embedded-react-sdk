@@ -374,6 +374,292 @@ export namespace Translations {
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
     continueCta: string
+    forms: {
+      US_8655: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_8655_MODIFIED: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_8821: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_8974: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_940: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_940c: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_941: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_941_SCHEDULE_B: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_941X: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_944: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_944X: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ACH_Reversal: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      amended_package: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'CA_DE-9': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'CA_DE-9ADJ': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'CA_DE-9C': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'BENEFITS_ANNOTATED_CA_DE-9C': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      co_employee_refund_instructions: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      company_direct_deposit: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_Company_W-2': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_Company_W-2 (Corrected)': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_Company_W-2_Cover_Sheet': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      DC_DOES_UC30: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'FL_RT-6': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      IL_DOR_941: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      IL_DOR_941X: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'IL_UI-340': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'IL_UI-40C': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ky_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ky_unemployment_amendment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      MA_941: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ma_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      md_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      md_unemployment_amendment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      mt_tax_coupon: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_MTA-305': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_MTA-305c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_NYS-45': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_NYS-45-X': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_TR-2000': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_TR-579-WT': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-3': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-3c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-501': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-941': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-941c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_SD-101': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_SD-141': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_SD-141c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      OHIO_SUTA: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      OHIO_SUTA_CORRECTION: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      quarterly_package: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'Benefits Annotated QWR': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'Incomplete Benefits Annotated QWR': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      sc_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      TEXAS_SUTA: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      TEXAS_SUTA_AMENDMENT: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      vt_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-2': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-2_Employer_Copy': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_W2_Employer_Printable_Copy: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-2c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-3': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      WA_LNI: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      WA_LNI_AMENDMENT: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'WA_EMS-5208': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'WA_EMS-5208D': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_1099: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_1099 (Corrected)': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_1099_Employer_Printable_Copy: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      SYMMETRY_PAYROLL_FORM: {
+        /** @defaultValue `""` */
+        description: string
+      }
+    }
   }
   /** Translation keys for the `Company.FederalTaxes` i18n namespace. */
   export interface CompanyFederalTaxes {
@@ -4150,6 +4436,28 @@ export namespace Translations {
     viewDocumentCta: string
     /** @defaultValue `"Please review the document. When you're finished, sign below."` */
     downloadAndReviewInstructions: string
+    forms: {
+      employee_direct_deposit: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_I-9': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-4': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      or_w4: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      Or_Portland_Multnomah: {
+        /** @defaultValue `""` */
+        description: string
+      }
+    }
   }
   /** Translation keys for the `Employee.EmployeeDocuments` i18n namespace. */
   export interface EmployeeEmployeeDocuments {
@@ -7426,8 +7734,10 @@ export namespace Translations {
     alerts: {
       /** @defaultValue `"Payroll is not calculated"` */
       payrollNotCalculated: string
-      /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` */
+      /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
       directDepositDeadline: string
+      /** @defaultValue `"Make sure to submit before the deadline to ensure timely payments."` */
+      directDepositDeadlineText: string
       /** @defaultValue `"There was an issue generating the paystub PDF. Please try again later."` */
       paystubPdfError: string
       /** @defaultValue `"Payroll submitted"` */

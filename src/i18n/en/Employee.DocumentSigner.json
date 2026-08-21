@@ -19,5 +19,12 @@
   "backCta": "Back",
   "signFormCta": "Sign form",
   "viewDocumentCta": "View document",
-  "downloadAndReviewInstructions": "Please review the document. When you're finished, sign below."
+  "downloadAndReviewInstructions": "Please review the document. When you're finished, sign below.",
+  "forms": {
+    "employee_direct_deposit": { "description": "" },
+    "US_I-9": { "description": "" },
+    "US_W-4": { "description": "" },
+    "or_w4": { "description": "" },
+    "Or_Portland_Multnomah": { "description": "" }
+  }
 }

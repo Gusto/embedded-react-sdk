@@ -204,8 +204,8 @@ describe('PayrollConfiguration', () => {
           const employeeUuids = body?.employee_uuids
 
           if (employeeUuids && employeeUuids.length > 0) {
-            const filteredCompensations = allCompensations.filter(comp =>
-              employeeUuids.includes(comp.employee_uuid),
+            const filteredCompensations = currentPayrollData.employee_compensations.filter(
+              (comp: { employee_uuid: string }) => employeeUuids.includes(comp.employee_uuid),
             )
             return HttpResponse.json({
               ...currentPayrollData,
@@ -527,8 +527,8 @@ describe('PayrollConfiguration', () => {
     })
   })
 
-  describe('direct deposit deadline banner', () => {
-    it('hides direct deposit deadline banner when all employees are paid by check', async () => {
+  describe('deadline banner', () => {
+    it('shows deadline banner regardless of payment method', async () => {
       currentPayrollData = {
         ...mockPayrollData,
         employee_compensations: allCompensations.map(comp => ({
@@ -537,18 +537,6 @@ describe('PayrollConfiguration', () => {
         })),
       }
 
-      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
-
-      expect(
-        screen.queryByText(/To pay your employees with direct deposit by/i),
-      ).not.toBeInTheDocument()
-    })
-
-    it('shows direct deposit deadline banner when at least one employee uses direct deposit', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
       await waitFor(() => {

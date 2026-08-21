@@ -425,6 +425,29 @@ const Root = ({
     })
   }
 
+  const deadlineAlert: PayrollFlowAlert | undefined = (() => {
+    if (hasSubmittedInSession || isPolling) return undefined
+    if (
+      payrollData.processed ||
+      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+    )
+      return undefined
+
+    if (payrollData.checkDate && payrollData.payrollDeadline) {
+      return {
+        type: 'info' as const,
+        title: t('alerts.directDepositDeadline', {
+          payDate: dateFormatter.formatShortWithWeekday(payrollData.checkDate),
+          ...dateFormatter.formatWithTime(payrollData.payrollDeadline),
+        }),
+        content: t('alerts.directDepositDeadlineText'),
+      }
+    }
+    return undefined
+  })()
+
+  const combinedAlerts = [...internalAlerts, ...(deadlineAlert ? [deadlineAlert] : [])]
+
   return (
     <PayrollOverviewPresentation
       onEdit={onEdit}
@@ -441,7 +464,7 @@ const Root = ({
       payrollData={payrollData}
       bankAccount={bankAccount}
       taxes={taxes}
-      alerts={internalAlerts}
+      alerts={combinedAlerts}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={selectedUnblockOptions}
       onUnblockOptionChange={(blockerType, value) => {

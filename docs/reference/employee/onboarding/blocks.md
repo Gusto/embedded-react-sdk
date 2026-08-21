@@ -176,6 +176,10 @@ Lists the employee's documents pending signature.
 Fetches the employee's forms and renders the list of documents that still
 require signing along with a continue action once everything is signed.
 
+Each form's description is rendered as returned by the API, unless the `dictionary` prop
+supplies a `forms.<name>.description` override for that form's `name` (e.g.
+`forms.employee_direct_deposit.description`).
+
 <br />
 
 ### DocumentListProps
@@ -223,6 +227,10 @@ Lists the employee's pending forms and routes through the signing UI for each
 one. When `withEmployeeI9` is `true` and the employee's I-9 has not been
 signed, the flow starts on the I-9 employment eligibility step before
 presenting the document list.
+
+Each form's description is rendered as returned by the API, unless the `dictionary` prop
+supplies a `forms.<name>.description` override for that form's `name` (e.g.
+`forms.employee_direct_deposit.description`).
 
 <br />
 

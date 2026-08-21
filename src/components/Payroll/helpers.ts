@@ -753,26 +753,6 @@ export const getAdditionalEarningsCompensations = ({
 }
 
 /**
- * Returns whether any non-excluded employee compensation uses Direct Deposit.
- *
- * @remarks
- * When the input is empty or every compensation is excluded, returns `true` so callers don't gate UI on an
- * empty set.
- *
- * @param employeeCompensations - The employee compensations to inspect.
- * @returns `true` when at least one active compensation pays via Direct Deposit, or when the list is empty.
- * @internal
- */
-export const hasDirectDepositEmployees = (
-  employeeCompensations?: Array<{ paymentMethod?: string | null; excluded?: boolean }>,
-): boolean => {
-  if (!employeeCompensations || employeeCompensations.length === 0) return true
-  const activeCompensations = employeeCompensations.filter(comp => !comp.excluded)
-  if (activeCompensations.length === 0) return true
-  return activeCompensations.some(comp => comp.paymentMethod === 'Direct Deposit')
-}
-
-/**
  * Sums gross pay, employer taxes, reimbursements, and benefits from a payroll's totals.
  *
  * @param payrollData - The payroll whose totals to sum.
