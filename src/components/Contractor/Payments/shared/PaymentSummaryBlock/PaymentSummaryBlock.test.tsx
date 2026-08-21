@@ -80,14 +80,14 @@ describe('PaymentSummaryBlock', () => {
       name: dictionary.contractorPaymentsTitle,
     })
 
-    const contractorRow = within(contractorPaymentsTable).getByRole('row', {
+    const contractorRow = await within(contractorPaymentsTable).findByRole('row', {
       name: 'Contractor Test',
     })
     expect(
       getCellByColumnHeader(contractorPaymentsTable, contractorRow, 'Fixed amount'),
     ).toHaveTextContent('$180.00')
 
-    const footerRow = within(contractorPaymentsTable).getByRole('row', { name: 'Totals' })
+    const footerRow = await within(contractorPaymentsTable).findByRole('row', { name: 'Totals' })
     expect(
       getCellByColumnHeader(contractorPaymentsTable, footerRow, 'Fixed amount'),
     ).toHaveTextContent('$180.00')
@@ -103,24 +103,25 @@ describe('PaymentSummaryBlock', () => {
     )
 
     const summaryTable = await screen.findByRole('grid', { name: dictionary.paymentSummaryTitle })
-    const contractorPaymentsTable = screen.getByRole('grid', {
+    const contractorPaymentsTable = await screen.findByRole('grid', {
       name: dictionary.contractorPaymentsTitle,
     })
 
-    const summaryRow = within(summaryTable).getAllByRole('row')[1]
+    const summaryRows = await within(summaryTable).findAllByRole('row')
+    const summaryRow = summaryRows[1]
     assertDefined(summaryRow)
     expect(getCellByColumnHeader(summaryTable, summaryRow, 'Total amount')).toHaveTextContent(
       '$260.00',
     )
 
-    const contractorRow = within(contractorPaymentsTable).getByRole('row', {
+    const contractorRow = await within(contractorPaymentsTable).findByRole('row', {
       name: 'Contractor Test',
     })
     expect(
       getCellByColumnHeader(contractorPaymentsTable, contractorRow, 'Total'),
     ).toHaveTextContent('$260.00')
 
-    const footerRow = within(contractorPaymentsTable).getByRole('row', { name: 'Totals' })
+    const footerRow = await within(contractorPaymentsTable).findByRole('row', { name: 'Totals' })
     expect(getCellByColumnHeader(contractorPaymentsTable, footerRow, 'Total')).toHaveTextContent(
       '$260.00',
     )

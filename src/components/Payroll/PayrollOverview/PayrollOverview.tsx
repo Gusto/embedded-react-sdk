@@ -154,7 +154,7 @@ const Root = ({
   const { Button, UnorderedList, Text } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
-    defaultItemsPerPage: 10,
+    defaultItemsPerPage: 25,
   })
   const { data, isFetching } = usePayrollsGet(
     {
