@@ -3844,7 +3844,7 @@ interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.OffCycle
 }
 
 // @public
-function OffCycleDeductionsSetting(input: OffCycleDeductionsSettingProps): JSX;
+function OffCycleDeductionsSetting(props: OffCycleDeductionsSettingProps): JSX;
 
 // @public
 interface OffCycleDeductionsSettingChangePayload {
