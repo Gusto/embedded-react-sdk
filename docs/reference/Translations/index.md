@@ -5228,7 +5228,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
-| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` |
+| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
+| `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
