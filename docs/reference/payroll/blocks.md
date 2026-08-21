@@ -736,6 +736,55 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="printchecks"></a>
+
+## PrintChecks
+
+Displays a banner prompting the user to print checks for employees paid by check on a
+processed payroll, and walks them through choosing check stock and generating the check PDF.
+
+<br />
+
+### PrintChecksProps
+
+<a id="printchecksprops"></a>
+
+Props for [PrintChecks](#printchecks).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company that owns the payroll. |
+| `payrollId` | `string` | Identifier of the payroll to generate printable checks for. |
+| `onEvent?` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `payroll/printChecks/start` | User opened the print-checks modal from the banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the failure or summary screen | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
+| POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
+
+***
+
 <a id="recoverycases"></a>
 
 ## RecoveryCases

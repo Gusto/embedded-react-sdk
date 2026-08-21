@@ -132,6 +132,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [Payroll.PayrollList](payroll/blocks#payrolllist) | Lists upcoming payrolls and lets users start running them. |
 | [Payroll.PayrollOverview](payroll/blocks#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
 | [Payroll.PayrollReceipts](payroll/blocks#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [Payroll.PrintChecks](payroll/blocks#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
 | [Payroll.RecoveryCases](payroll/blocks#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
 | [Payroll.TransitionCreation](payroll/blocks#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
 | [TimeOff.AddEmployeesHoliday](time-off/blocks#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |

@@ -4239,6 +4239,8 @@ declare namespace Payroll {
         PayrollBlockerListProps,
         RecoveryCases,
         RecoveryCasesProps,
+        PrintChecks,
+        PrintChecksProps,
         OffCyclePayPeriodDateFormData,
         OffCyclePayrollDateType,
         OffCycleCreation,
@@ -4589,6 +4591,16 @@ export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignE
 
 // @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
+
+// @public
+function PrintChecks(input: PrintChecksProps): JSX;
+
+// @public
+interface PrintChecksProps extends Omit<BaseComponentInterface<never>, 'onEvent'> {
+    companyId: string;
+    onEvent?: BaseComponentInterface['onEvent'];
+    payrollId: string;
+}
 
 // @public
 function Profile(input: ProfileProps): JSX;
