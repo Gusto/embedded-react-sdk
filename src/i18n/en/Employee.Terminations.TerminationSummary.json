@@ -1,4 +1,5 @@
 {
+  "cancelSuccess": "Termination has been cancelled successfully",
   "title": "Termination summary",
   "subtitle": "The termination has been submitted. Here's the timeline and what to expect.",
   "alert": {

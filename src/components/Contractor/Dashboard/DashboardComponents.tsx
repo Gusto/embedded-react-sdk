@@ -4,11 +4,9 @@ import { ProfileEditForm } from '@/components/Contractor/Profile/management/Prof
 import { AddressEditForm } from '@/components/Contractor/Address/management/AddressEditForm'
 import { PaymentMethodEditForm } from '@/components/Contractor/PaymentMethod/management/PaymentMethodEditForm'
 import { CompensationEditForm } from '@/components/Contractor/Compensation/management/CompensationEditForm'
-import { BaseBoundaries } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /** @internal */
@@ -32,15 +30,6 @@ export interface DashboardContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DashboardViewContextual() {
-  return (
-    <BaseBoundaries componentName="Contractor.Dashboard">
-      <DashboardViewContextualRoot />
-    </BaseBoundaries>
-  )
-}
-
-function DashboardViewContextualRoot() {
-  useI18n('Contractor.Dashboard')
   const { t } = useTranslation('Contractor.Dashboard')
   const { contractorId, onEvent, successAlert, selectedTab } = useFlow<DashboardContextInterface>()
   const Components = useComponentContext()

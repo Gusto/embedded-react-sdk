@@ -1,18 +1,14 @@
 import type { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
 import { TerminateEmployee } from '../TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from '../TerminationSummary/TerminationSummary'
 import type { PayrollOption } from '../types'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import { PayrollLanding } from '@/components/Payroll/PayrollLanding/PayrollLanding'
-import { BaseBoundaries } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useI18n } from '@/i18n'
-import { componentEvents, type EventType } from '@/shared/constants'
 
 /**
  * Props for {@link TerminationFlow}.
@@ -51,17 +47,8 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function TerminateEmployeeContextual() {
-  return (
-    <BaseBoundaries componentName="Employee.Terminations.TerminationFlow">
-      <TerminateEmployeeContextualRoot />
-    </BaseBoundaries>
-  )
-}
-
-function TerminateEmployeeContextualRoot() {
   const { companyId, employeeId, onEvent, alerts } = useFlow<TerminationFlowContextInterface>()
   const { Alert } = useComponentContext()
-  useI18n('Employee.Terminations.TerminationFlow')
 
   return (
     <Flex flexDirection="column" gap={8}>
@@ -81,36 +68,12 @@ function TerminateEmployeeContextualRoot() {
 
 /** @internal */
 export function TerminationSummaryContextual() {
-  return (
-    <BaseBoundaries componentName="Employee.Terminations.TerminationFlow">
-      <TerminationSummaryContextualRoot />
-    </BaseBoundaries>
-  )
-}
-
-function TerminationSummaryContextualRoot() {
   const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
     useFlow<TerminationFlowContextInterface>()
-  useI18n('Employee.Terminations.TerminationFlow')
-  const { t } = useTranslation('Employee.Terminations.TerminationFlow')
-
-  const handleEvent = (event: EventType, data?: unknown) => {
-    if (event === componentEvents.EMPLOYEE_TERMINATION_CANCELLED) {
-      onEvent(event, {
-        ...(data as object),
-        alert: {
-          type: 'success',
-          title: t('cancelSuccess'),
-        },
-      })
-      return
-    }
-    onEvent(event, data)
-  }
 
   return (
     <TerminationSummary
-      onEvent={handleEvent}
+      onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       employeeId={ensureRequired(employeeId)}
       payrollOption={payrollOption}

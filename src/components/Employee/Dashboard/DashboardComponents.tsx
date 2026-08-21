@@ -12,11 +12,9 @@ import { DeductionsEditForm } from '@/components/Employee/Deductions/management/
 import { CompensationEditForm } from '@/components/Employee/Compensation/management/CompensationEditForm/CompensationEditForm'
 import { CompensationAddAnotherJobForm } from '@/components/Employee/Compensation/management/CompensationAddAnotherJobForm/CompensationAddAnotherJobForm'
 import { CompensationAddJobForm } from '@/components/Employee/Compensation/management/CompensationAddJobForm/CompensationAddJobForm'
-import { BaseBoundaries } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /** @internal */
@@ -52,15 +50,6 @@ export interface DashboardContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function DashboardViewContextual() {
-  return (
-    <BaseBoundaries componentName="Employee.Dashboard">
-      <DashboardViewContextualRoot />
-    </BaseBoundaries>
-  )
-}
-
-function DashboardViewContextualRoot() {
-  useI18n('Employee.Dashboard')
   const { t } = useTranslation('Employee.Dashboard')
   const { employeeId, onEvent, successAlert, selectedTab } = useFlow<DashboardContextInterface>()
   const Components = useComponentContext()

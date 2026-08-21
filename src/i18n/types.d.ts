@@ -6490,6 +6490,8 @@ export namespace Translations {
   }
   /** Translation keys for the `Employee.Terminations.TerminationSummary` i18n namespace. */
   export interface EmployeeTerminationsTerminationSummary {
+    /** @defaultValue `"Termination has been cancelled successfully"` */
+    cancelSuccess: string
     /** @defaultValue `"Termination summary"` */
     title: string
     /** @defaultValue `"The termination has been submitted. Here's the timeline and what to expect."` */

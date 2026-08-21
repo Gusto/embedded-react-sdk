@@ -7,6 +7,7 @@ import {
 } from '@gusto/embedded-api/react-query/employeeEmploymentsGetTerminations'
 import { useEmployeeEmploymentsDeleteTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsDeleteTermination'
 import { invalidateAllEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
+import { useTranslation } from 'react-i18next'
 import type { PayrollOption } from '../types'
 import { TerminationSummaryPresentation } from './TerminationSummaryPresentation'
 import { normalizeToDate } from '@/helpers/dateFormatting'
@@ -89,6 +90,7 @@ const Root = ({
 }: TerminationSummaryProps) => {
   useComponentDictionary('Employee.Terminations.TerminationSummary', dictionary)
   useI18n('Employee.Terminations.TerminationSummary')
+  const { t } = useTranslation('Employee.Terminations.TerminationSummary')
 
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
@@ -151,6 +153,10 @@ const Root = ({
       onEvent(componentEvents.EMPLOYEE_TERMINATION_CANCELLED, {
         employeeId,
         termination,
+        alert: {
+          type: 'success' as const,
+          title: t('cancelSuccess'),
+        },
       })
     })
   }
