@@ -881,6 +881,43 @@ describe('useJobForm', () => {
       expect(bCall?.body).toMatchObject({ effective_date: '2099-09-01' })
     })
 
+    it('normalizes a timestamped hireDate from submit options to YYYY-MM-DD', async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      let jobPutBody: Record<string, unknown> | null = null
+      const jobPutResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        jobPutBody = (await request.json()) as Record<string, unknown>
+        return jobPutResponse('2099-09-01')
+      })
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-09-01')),
+        handleUpdateEmployeeJob(jobPutResolver),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            withHireDateField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit({ hireDate: '2099-09-01T00:00:00' })
+      })
+
+      expect(jobPutBody).toMatchObject({ hire_date: '2099-09-01' })
+
+      for (const call of compCalls) {
+        expect(call.body.effective_date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      }
+    })
+
     it('surfaces a secondary PUT failure through errorHandling and skips submitResult', async () => {
       const updateCompResolver = vi.fn<HttpResponseResolver>(({ request }) => {
         const compensationId = new URL(request.url).pathname.split('/').pop() ?? ''

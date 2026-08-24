@@ -48,6 +48,7 @@ import type {
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
+import { normalizeToISOString } from '@/helpers/dateFormatting'
 import { WA_RISK_CLASS_CODES, type WARiskClassCode } from '@/models/WA_RISK_CODES'
 
 /**
@@ -394,10 +395,13 @@ export function useJobForm({
             // override (`options.hireDate`), then to the loaded job's existing
             // value on update mode. Create mode requires a resolved value —
             // hireDate is mandatory on POST /v1/employees/:id/jobs.
-            const resolvedHireDate =
-              withHireDateField && payload.hireDate
-                ? payload.hireDate
-                : (options?.hireDate ?? currentJob?.hireDate ?? null)
+            const resolvedHireDate = (() => {
+              const raw =
+                withHireDateField && payload.hireDate
+                  ? payload.hireDate
+                  : (options?.hireDate ?? currentJob?.hireDate ?? null)
+              return raw ? normalizeToISOString(raw) || null : null
+            })()
 
             // When the title field is suppressed (steady-state edits drive
             // title through useCompensationForm), omit it from the body so
