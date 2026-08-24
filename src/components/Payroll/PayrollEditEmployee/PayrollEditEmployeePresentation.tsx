@@ -761,7 +761,11 @@ export const PayrollEditEmployeePresentation = ({
                       adornmentStart="$"
                       isRequired
                       label={t('reimbursementAmountLabel')}
-                      errorMessage={t('validations.reimbursementAmount')}
+                      errorMessage={
+                        draftForm.formState.errors.amount
+                          ? t('validations.reimbursementAmount')
+                          : undefined
+                      }
                     />
                   </Grid>
                   <Flex gap={12}>
