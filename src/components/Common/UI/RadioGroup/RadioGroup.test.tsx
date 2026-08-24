@@ -93,6 +93,28 @@ describe('RadioGroup', () => {
     expect(screen.getByText(description)).toBeInTheDocument()
   })
 
+  it('renders a plain legend with no heading role by default', () => {
+    renderWithProviders(<RadioGroup label="Test Group" options={mockOptions} />)
+
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+  })
+
+  it('nests the label in a heading of the requested level when headingLevel is set', () => {
+    renderWithProviders(
+      <RadioGroup label="Choose a reason" options={mockOptions} headingLevel="h2" />,
+    )
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Choose a reason' })).toBeInTheDocument()
+  })
+
+  it('keeps rendering a fieldset/legend when headingLevel is set', () => {
+    const { container } = renderWithProviders(
+      <RadioGroup label="Choose a reason" options={mockOptions} headingLevel="h2" />,
+    )
+
+    expect(container.querySelector('fieldset > div > legend')).toBeInTheDocument()
+  })
+
   it('sets the checked state based on value prop', () => {
     renderWithProviders(<RadioGroup label="Test Group" options={mockOptions} value="option2" />)
 
@@ -122,6 +144,10 @@ describe('RadioGroup', () => {
           isInvalid: true,
           errorMessage: 'Selection required',
         },
+      },
+      {
+        name: 'with heading level',
+        props: { label: 'Select Option', options: mockOptions, headingLevel: 'h2' as const },
       },
     ]
 
@@ -153,6 +179,10 @@ describe('RadioGroup', () => {
           isInvalid: true,
           errorMessage: 'Selection required',
         },
+      },
+      {
+        name: 'with heading level',
+        props: { label: 'Select Option', options: mockOptions, headingLevel: 'h2' as const },
       },
     ]
 

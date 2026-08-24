@@ -67,6 +67,15 @@ export interface RadioGroupProps
    * React ref for the first radio input element
    */
   inputRef?: Ref<HTMLInputElement>
+  /**
+   * Semantic heading level to nest the label in, so it's discoverable via heading-based
+   * screen reader navigation — useful when the group represents a page-level section (e.g.
+   * "Choose a reason") rather than a plain form field. The group's `fieldset`/`legend`
+   * structure is unchanged, so it keeps its native accessible name either way.
+   *
+   * @defaultValue No heading — the label renders as plain legend text.
+   */
+  headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 }
 
 /**

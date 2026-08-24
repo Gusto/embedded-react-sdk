@@ -11,3 +11,34 @@
   font-size: smaller;
   color: var(--g-inputPlaceholderColor);
 }
+
+.heading {
+  display: block;
+  font-weight: var(--g-fontWeightSemibold);
+  line-height: 1.2;
+}
+
+.h1 {
+  font-size: var(--g-fontSizeHeading1);
+  line-height: 1.125;
+}
+
+.h2 {
+  font-size: var(--g-fontSizeHeading2);
+}
+
+.h3 {
+  font-size: var(--g-fontSizeHeading3);
+}
+
+.h4 {
+  font-size: var(--g-fontSizeHeading4);
+}
+
+.h5 {
+  font-size: var(--g-fontSizeHeading5);
+}
+
+.h6 {
+  font-size: var(--g-fontSizeHeading6);
+}

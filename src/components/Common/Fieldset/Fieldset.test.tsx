@@ -25,6 +25,17 @@ describe('Fieldset', () => {
     expect(screen.getByText('Test Legend')).toBeInTheDocument()
   })
 
+  it('nests the legend in a heading when headingLevel is provided', () => {
+    renderWithProviders(
+      <Fieldset legend="Test Legend" headingLevel="h2">
+        <div>Fieldset content</div>
+      </Fieldset>,
+    )
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Test Legend' })).toBeInTheDocument()
+    expect(screen.getByRole('group')).toBeInTheDocument()
+  })
+
   it('renders description when provided', () => {
     renderWithProviders(
       <Fieldset legend="Test Legend" description="Test description">

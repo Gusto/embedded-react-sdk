@@ -102,6 +102,7 @@ export function RadioGroup(rawProps: RadioGroupProps) {
     onChange,
     className,
     inputRef,
+    headingLevel,
     ...otherProps
   } = resolvedProps
   return (
@@ -111,6 +112,7 @@ export function RadioGroup(rawProps: RadioGroupProps) {
       errorMessage={errorMessage}
       isRequired={isRequired}
       shouldVisuallyHideLegend={shouldVisuallyHideLabel}
+      headingLevel={headingLevel}
       className={classNames(styles.root, className)}
       {...otherProps}
     >

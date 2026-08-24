@@ -98,6 +98,19 @@ export const WithPreselectedValue = () => {
     />
   )
 }
+export const WithHeadingLevel = () => {
+  const { value, handleChange } = useRadioGroupState()
+  return (
+    <RadioGroup
+      label="Choose a reason"
+      options={options}
+      onChange={handleChange}
+      value={value}
+      headingLevel="h2"
+    />
+  )
+}
+
 export const WithOptionDescriptions = () => {
   const { value, handleChange } = useRadioGroupState()
   const optionsWithDescriptions = [
