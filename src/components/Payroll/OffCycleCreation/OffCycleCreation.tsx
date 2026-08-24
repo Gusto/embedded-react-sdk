@@ -112,9 +112,11 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       })
       .map(employee => {
         const fullName = [employee.firstName, employee.lastName].filter(Boolean).join(' ')
+        const primaryJob = employee.jobs?.find(job => job.primary) ?? employee.jobs?.[0]
         return {
           label: fullName,
           value: employee.uuid,
+          description: primaryJob?.title || undefined,
         }
       })
   }, [employeesData])

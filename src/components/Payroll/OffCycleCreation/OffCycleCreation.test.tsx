@@ -11,10 +11,31 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: [
-        { uuid: 'emp-1', firstName: 'John', lastName: 'Smith', department: 'Sales' },
-        { uuid: 'emp-2', firstName: 'Jane', lastName: 'Doe', department: 'Engineering' },
+        {
+          uuid: 'emp-1',
+          firstName: 'John',
+          lastName: 'Smith',
+          department: 'Sales',
+          jobs: [{ primary: true, title: 'Sales Manager' }],
+        },
+        {
+          uuid: 'emp-2',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          department: 'Engineering',
+          jobs: [
+            { primary: false, title: 'Account Manager' },
+            { primary: true, title: 'Engineering Lead' },
+          ],
+        },
         { uuid: 'emp-3', firstName: 'Alice', lastName: 'Smith', department: 'Marketing' },
-        { uuid: 'emp-4', firstName: 'Bob', lastName: 'Adams', department: 'Engineering' },
+        {
+          uuid: 'emp-4',
+          firstName: 'Bob',
+          lastName: 'Adams',
+          department: 'Engineering',
+          jobs: [{ primary: true, title: null }],
+        },
       ],
     },
     isLoading: false,
@@ -277,9 +298,49 @@ describe('OffCycleCreation', () => {
       })
 
       const options = screen.getAllByRole('option')
-      const optionLabels = options.map(option => option.textContent)
+      const optionLabels = options.map(option => option.firstElementChild?.textContent)
 
       expect(optionLabels).toEqual(['Bob Adams', 'Jane Doe', 'Alice Smith', 'John Smith'])
+    })
+
+    it("shows the employee's primary job title as the option description", async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('combobox'))
+
+      await waitFor(() => {
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Sales Manager')).toBeInTheDocument()
+      expect(screen.getByText('Engineering Lead')).toBeInTheDocument()
+      expect(screen.queryByText('Account Manager')).not.toBeInTheDocument()
+    })
+
+    it('omits the description when the employee has no job or the primary job has no title', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('combobox'))
+
+      await waitFor(() => {
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      })
+
+      const aliceOption = screen.getByRole('option', { name: 'Alice Smith' })
+      const bobOption = screen.getByRole('option', { name: 'Bob Adams' })
+
+      expect(aliceOption.firstElementChild?.textContent).toBe(aliceOption.textContent)
+      expect(bobOption.firstElementChild?.textContent).toBe(bobOption.textContent)
     })
 
     it('renders the include all employees switch defaulted to off with picker visible', async () => {

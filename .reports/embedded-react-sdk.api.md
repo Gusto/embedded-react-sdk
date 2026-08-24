@@ -3729,6 +3729,7 @@ export interface ModalProps {
 
 // @public
 export interface MultiSelectComboBoxOption {
+    description?: string;
     label: string;
     value: string;
 }

@@ -58,6 +58,26 @@ export const WithDescription = () => {
   )
 }
 
+const employeesWithJobTitles = [
+  { label: 'Lana Steiner', value: '1', description: 'Engineering Manager' },
+  { label: 'Jane Smith', value: '2', description: 'Product Designer' },
+  { label: 'John Doe', value: '3' },
+  { label: 'Alice Johnson', value: '4', description: 'Software Engineer' },
+]
+
+export const WithOptionDescriptions = () => {
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
+  return (
+    <MultiSelectComboBox
+      label="Select employees"
+      options={employeesWithJobTitles}
+      value={value ?? []}
+      onChange={handleChange}
+      placeholder="Search by name or department"
+    />
+  )
+}
+
 export const WithError = () => {
   const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
