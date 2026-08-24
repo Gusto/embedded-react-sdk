@@ -637,7 +637,8 @@ The payroll referenced by `payrollId` must already be calculated; rendering with
 uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
 wire-in funding) are surfaced inline and the submit action stays disabled until each
 blocker has a selected unblock option. While the payroll is processing, the component
-polls until success or failure and emits the corresponding event.
+polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
+the edit and cancel actions while keeping submit available.
 
 <br />
 
@@ -655,6 +656,7 @@ Props for [PayrollOverview](#payrolloverview).
 | `alerts?` | [`PayrollFlowAlert`](#payrollflowalert)[] | Alert banners to display above the payroll summary. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollOverview`](../Translations/index.md#payrollpayrolloverview)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `readOnly?` | `boolean` | Hides the edit and cancel actions, leaving submit and receipt/paystub actions available. Use for a deep link to a specific payroll where editing shouldn't be offered. Defaults to `false`. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._

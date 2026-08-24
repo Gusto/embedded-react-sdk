@@ -3,6 +3,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
+import { canCancelPayroll } from '../helpers'
 import { PayrollOverview } from './PayrollOverview'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -121,6 +122,14 @@ vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
 vi.mock('@gusto/embedded-api/funcs/payrollsGetPayStub', () => ({
   payrollsGetPayStub: vi.fn(),
 }))
+
+vi.mock('../helpers', async importOriginal => {
+  const actual = await importOriginal()
+  return {
+    ...(actual as Record<string, unknown>),
+    canCancelPayroll: vi.fn(),
+  }
+})
 
 describe('PayrollOverview polling', () => {
   const mockOnEvent = vi.fn()
@@ -367,5 +376,64 @@ describe('PayrollOverview print checks modal', () => {
     await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
 
     expect(await screen.findByText('Choose check stock')).toBeInTheDocument()
+  })
+})
+
+describe('PayrollOverview readOnly mode', () => {
+  const mockOnEvent = vi.fn()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
+    vi.mocked(canCancelPayroll).mockReturnValue(false)
+  })
+
+  it('hides Edit but keeps Submit enabled and functional on an unprocessed payroll', async () => {
+    const user = userEvent.setup()
+    mockSubmitPayroll.mockResolvedValue({ payrollUuid: 'payroll-uuid' })
+
+    renderWithProviders(
+      <PayrollOverview
+        companyId="company-uuid"
+        payrollId="payroll-uuid"
+        onEvent={mockOnEvent}
+        readOnly
+      />,
+    )
+
+    expect(await screen.findByRole('button', { name: 'Submit' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => {
+      expect(mockSubmitPayroll).toHaveBeenCalled()
+      expect(mockOnEvent).toHaveBeenCalledWith(
+        componentEvents.RUN_PAYROLL_SUBMITTED,
+        expect.anything(),
+      )
+    })
+  })
+
+  it('hides Cancel on a processed payroll even when the payroll is otherwise cancellable', async () => {
+    vi.mocked(canCancelPayroll).mockReturnValue(true)
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: true,
+      processingRequest: { status: 'submit_success', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview
+        companyId="company-uuid"
+        payrollId="payroll-uuid"
+        onEvent={mockOnEvent}
+        readOnly
+      />,
+    )
+
+    expect(await screen.findByRole('button', { name: 'View payroll receipt' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Cancel payroll' })).toBeNull()
   })
 })

@@ -4376,6 +4376,7 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     payrollId: string;
+    readOnly?: boolean;
     withReimbursements?: boolean;
 }
 
