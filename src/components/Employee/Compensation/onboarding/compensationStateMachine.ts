@@ -1,10 +1,10 @@
-import { reduce, state, transition } from 'robot3'
 import {
   EditCompensationContextual,
   JobsListContextual,
   type CompensationFlowContextInterface,
   type EventPayloads,
 } from './CompensationFlowComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
@@ -12,7 +12,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
  * `EMPLOYEE_COMPENSATION_DONE` deliberately has no transition out of `initialEditJob` or
  * `viewJobs`. `Flow` re-emits every event to the upstream `onEvent` regardless of whether the
  * local machine has a matching transition, so the parent flow still advances/unmounts this
- * component on that signal. Modeling completion as a robot3 final state instead left `component`
+ * component on that signal. Modeling completion as a final state instead left `component`
  * pointing at a step whose controls could never fire another transition — if a host doesn't
  * unmount immediately, the screen would look interactive but be permanently dead (SDK-1169).
  * Staying put means a host that keeps this component mounted past completion keeps a fully

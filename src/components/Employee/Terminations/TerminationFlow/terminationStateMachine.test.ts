@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { terminationMachine, terminationBreadcrumbNodes } from './terminationStateMachine'
 import type { TerminationFlowContextInterface } from './TerminationFlowComponents'
 import { componentEvents } from '@/shared/constants'

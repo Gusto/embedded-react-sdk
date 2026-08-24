@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createMachine, interpret, type SendFunction } from 'robot3'
+import { createMachine, interpret, type SendFunction } from '@/lib/state-machine'
 import { offCycleMachine, offCycleBreadcrumbsNodes } from './offCycleStateMachine'
 import type { OffCycleFlowContextInterface } from './OffCycleFlowComponents'
 import { componentEvents } from '@/shared/constants'

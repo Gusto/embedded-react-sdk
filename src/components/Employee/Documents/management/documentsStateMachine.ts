@@ -1,7 +1,7 @@
-import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { DocumentsContextInterface } from './DocumentsComponents'
 import { DocumentsCardContextual, DocumentManagerContextual } from './DocumentsComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

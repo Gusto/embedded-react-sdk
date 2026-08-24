@@ -1,6 +1,6 @@
-import { state, transition, reduce } from 'robot3'
 import type { RecoveryCasesContextInterface } from './RecoveryCasesComponents'
 import { RecoveryCasesResubmitContextual } from './RecoveryCasesComponents'
+import { state, transition, reduce } from '@/lib/state-machine'
 import { recoveryCasesEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { onboardingMachine } from './onboardingStateMachine'
 import type { OnboardingFlowProps } from './OnboardingFlowComponents'
@@ -6,6 +5,7 @@ import {
   OnboardingOverviewContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 
 export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './OnboardingFlowComponents'

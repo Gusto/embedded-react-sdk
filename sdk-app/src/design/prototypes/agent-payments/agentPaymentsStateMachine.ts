@@ -1,10 +1,10 @@
-import { transition, reduce, state } from 'robot3'
 import {
   AgentPaymentsListContextual,
   AgentPaymentDetailContextual,
   type AgentPaymentsFlowContextInterface,
 } from './AgentPaymentsFlowComponents'
 import { agentPaymentsEvents } from './events'
+import { transition, reduce, state } from '@/lib/state-machine'
 import type { MachineTransition } from '@/types/Helpers'
 
 const createReducer = (props: Partial<AgentPaymentsFlowContextInterface>) => {

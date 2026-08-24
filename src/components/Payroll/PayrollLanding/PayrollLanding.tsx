@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { createMachine } from 'robot3'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { payrollLandingMachine, payrollLandingBreadcrumbNodes } from './payrollLandingStateMachine'
 import {
@@ -7,6 +6,7 @@ import {
   type PayrollLandingFlowContextInterface,
   type PayrollLandingFlowProps,
 } from './PayrollLandingFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'

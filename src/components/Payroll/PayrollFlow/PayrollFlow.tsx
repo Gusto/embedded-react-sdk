@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { payrollFlowBreadcrumbsNodes, payrollFlowMachine } from './payrollStateMachine'
 import type { PayrollFlowProps } from './PayrollFlowComponents'
@@ -7,6 +6,7 @@ import {
   PayrollLandingContextual,
   type PayrollFlowContextInterface,
 } from './PayrollFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 

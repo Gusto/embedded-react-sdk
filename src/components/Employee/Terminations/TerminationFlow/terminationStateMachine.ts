@@ -1,4 +1,3 @@
-import { transition, reduce, state, guard } from 'robot3'
 import type { PayrollOption } from '../types'
 import type {
   TerminationFlowContextInterface,
@@ -10,6 +9,7 @@ import {
   DismissalFlowContextual,
   PayrollLandingContextual,
 } from './TerminationFlowComponents'
+import { transition, reduce, state, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'

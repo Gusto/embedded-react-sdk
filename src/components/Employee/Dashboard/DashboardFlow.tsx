@@ -1,7 +1,7 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { dashboardStateMachine } from './dashboardStateMachine'
 import { type DashboardContextInterface, DashboardViewContextual } from './DashboardComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 

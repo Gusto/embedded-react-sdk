@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { createMachine } from 'robot3'
 import { transitionMachine, transitionBreadcrumbsNodes } from './transitionStateMachine'
 import {
   TransitionCreationContextual,
@@ -7,6 +6,7 @@ import {
   type TransitionFlowContextInterface,
   type TransitionFlowProps,
 } from './TransitionFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 

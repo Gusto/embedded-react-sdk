@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
@@ -8,6 +7,7 @@ import {
   type DocumentSignerContextInterface,
 } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'

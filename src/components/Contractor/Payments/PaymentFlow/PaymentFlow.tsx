@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { paymentFlowBreadcrumbsNodes, paymentMachine } from './paymentStateMachine'
 import {
@@ -6,6 +5,7 @@ import {
   type PaymentFlowContextInterface,
   type PaymentFlowProps,
 } from './PaymentFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 

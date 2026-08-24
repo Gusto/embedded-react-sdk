@@ -1,10 +1,10 @@
-import { reduce, state, transition } from 'robot3'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import {
   PaymentSummaryContextual,
   type CreatePaymentFlowContextInterface,
 } from './CreatePaymentFlowComponents'
+import { reduce, state, transition } from '@/lib/state-machine'
 import { payrollWireEvents, componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'

@@ -1,4 +1,3 @@
-import { state, transition, reduce, guard } from 'robot3'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollExecutionInitialState } from '../PayrollExecutionFlow'
 import {
@@ -11,6 +10,7 @@ import {
 import { PayrollExecutionFlowContextual } from './PayrollExecutionFlowContextual'
 import { TransitionFlowContextual } from './TransitionFlowContextual'
 import { OffCycleFlowContextual } from './OffCycleFlowContextual'
+import { state, transition, reduce, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { patchBreadcrumbsHeader, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'

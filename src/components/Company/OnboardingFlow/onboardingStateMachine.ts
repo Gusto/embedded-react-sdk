@@ -1,4 +1,3 @@
-import { transition, reduce, state } from 'robot3'
 import {
   BankAccountContextual,
   DocumentSignerContextual,
@@ -11,6 +10,7 @@ import {
   StateTaxesContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'

@@ -1,4 +1,4 @@
-import { guard, reduce, transition } from 'robot3'
+import { guard, reduce, transition } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 
 type BreadcrumbNavigateEvent<TContext> = {
@@ -8,9 +8,8 @@ type BreadcrumbNavigateEvent<TContext> = {
   }
 }
 
-/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 /**
- * Builds a factory that produces robot3 transitions handling a
+ * Builds a factory that produces transitions handling a
  * `breadcrumb/navigate` event for a given target state.
  *
  * @remarks
@@ -22,11 +21,10 @@ type BreadcrumbNavigateEvent<TContext> = {
  *
  * @typeParam TContext - The state machine context shape.
  * @returns A factory `(targetState, canNavigate?) => transition` that emits a
- * guarded robot3 transition for the `breadcrumb/navigate` event.
+ * guarded transition for the `breadcrumb/navigate` event.
  * @internal
  */
 export const createBreadcrumbNavigateTransition = <TContext>() => {
-  /* eslint-enable @typescript-eslint/no-unnecessary-type-parameters */
   return (targetState: string, canNavigate?: (ctx: TContext) => boolean) =>
     transition(
       componentEvents.BREADCRUMB_NAVIGATE,

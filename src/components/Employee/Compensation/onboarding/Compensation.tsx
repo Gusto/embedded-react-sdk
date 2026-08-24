@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { createMachine } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { type Job } from '@gusto/embedded-api/models/components/job'
@@ -11,6 +10,7 @@ import {
   type CompensationFlowContextInterface,
 } from './CompensationFlowComponents'
 import { compensationStateMachine } from './compensationStateMachine'
+import { createMachine } from '@/lib/state-machine'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
 import { FlsaStatus } from '@/shared/constants'

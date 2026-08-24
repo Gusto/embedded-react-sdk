@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useState } from 'react'
 import { historicalPaymentMachine } from './historicalPaymentMachine'
 import {
@@ -6,6 +5,7 @@ import {
   type HistoricalPaymentFlowContextInterface,
   type HistoricalPaymentFlowProps,
 } from './HistoricalPaymentFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'

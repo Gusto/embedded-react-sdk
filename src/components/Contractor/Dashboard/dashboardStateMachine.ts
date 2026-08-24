@@ -1,4 +1,3 @@
-import { transition, reduce, state } from 'robot3'
 import type { DashboardTab } from './Dashboard'
 import {
   DashboardViewContextual,
@@ -8,6 +7,7 @@ import {
   CompensationEditFormContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

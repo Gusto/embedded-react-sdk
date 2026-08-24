@@ -1,9 +1,9 @@
-import { state, transition, reduce, guard } from 'robot3'
 import {
   OffCycleCreationContextual,
   OffCycleExecutionContextual,
   type OffCycleFlowContextInterface,
 } from './OffCycleFlowComponents'
+import { state, transition, reduce, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'

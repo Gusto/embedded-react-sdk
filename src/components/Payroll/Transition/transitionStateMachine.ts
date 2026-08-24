@@ -1,9 +1,9 @@
-import { state, transition, reduce, guard } from 'robot3'
 import {
   TransitionCreationContextual,
   TransitionExecutionContextual,
   type TransitionFlowContextInterface,
 } from './TransitionFlowComponents'
+import { state, transition, reduce, guard } from '@/lib/state-machine'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'

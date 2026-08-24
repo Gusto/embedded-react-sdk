@@ -1,6 +1,6 @@
-import { state, transition, reduce } from 'robot3'
 import type { LocationsContextInterface, EventPayloads } from './locationsStateMachine'
 import { LocationFormContextual, LocationsListContextual } from './locationsStateMachine'
+import { state, transition, reduce } from '@/lib/state-machine'
 import { companyEvents, componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
