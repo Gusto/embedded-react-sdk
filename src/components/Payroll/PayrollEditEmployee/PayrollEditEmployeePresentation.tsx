@@ -423,8 +423,8 @@ export const PayrollEditEmployeePresentation = ({
     defaultValues: { description: '', amount: '' },
   })
 
-  // UseFieldProps.control is typed as unparameterized Control (i.e. Control<FieldValues>),
-  // which is structurally incompatible with the narrower Control<DraftReimbursementValues>.
+  // react-hook-form's Control<T> is invariant, so Control<Narrow> won't assign to Control<FieldValues>.
+  // UseFieldProps accepts the unparameterized Control; this single-site cast bridges the gap.
   const draftControl = draftForm.control as unknown as Control
 
   const resetReimbursementDraft = () => {
