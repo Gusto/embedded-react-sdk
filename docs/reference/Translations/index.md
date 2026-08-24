@@ -5065,6 +5065,8 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | `timeOffBalance.remaining` | `"{{balance}} remaining"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
+| <a id="property-payrollpayrolleditemployeevalidations"></a> `validations` | |
+| `validations.reimbursementAmount` | `"Amount must be greater than zero"` |
 
 ***
 
