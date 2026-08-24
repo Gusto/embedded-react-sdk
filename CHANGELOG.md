@@ -16,7 +16,7 @@
 
 ### Chores & Maintenance
 
-- Bump dev dependencies (`@microsoft/api-extractor`, `@storybook/addon-a11y`)
+- Bump dev dependencies (`@microsoft/api-extractor`, `@storybook/addon-a11y`, `@vitest/coverage-v8`)
 
 ## [0.55.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.1...v0.55.2) (2026-08-21)
 
