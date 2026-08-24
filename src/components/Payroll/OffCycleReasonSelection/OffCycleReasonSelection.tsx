@@ -57,7 +57,11 @@ function Root({ dictionary }: OffCycleReasonSelectionProps) {
 
   return (
     <FormProvider {...methods}>
-      <OffCycleReasonSelectionPresentation name="reason" onChange={handleReasonChange} />
+      <OffCycleReasonSelectionPresentation
+        name="reason"
+        onChange={handleReasonChange}
+        headingLevel="h2"
+      />
     </FormProvider>
   )
 }

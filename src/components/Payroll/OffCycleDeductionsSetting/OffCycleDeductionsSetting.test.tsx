@@ -23,6 +23,18 @@ describe('OffCycleDeductionsSetting', () => {
       })
     })
 
+    it('renders the title as a level 2 heading', async () => {
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { level: 2, name: 'Deductions and contributions' }),
+        ).toBeInTheDocument()
+      })
+    })
+
     it('renders both radio options with labels', async () => {
       renderWithProviders(
         <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,

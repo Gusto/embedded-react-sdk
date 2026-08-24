@@ -64,6 +64,7 @@ export function OffCycleDeductionsSetting({
       options={options}
       value={selectedValue}
       onChange={handleChange}
+      headingLevel="h2"
     />
   )
 }

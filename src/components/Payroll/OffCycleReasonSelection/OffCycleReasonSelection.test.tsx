@@ -24,6 +24,14 @@ describe('OffCycleReasonSelection', () => {
       })
     })
 
+    it('renders the reason selection title as a level 2 heading', async () => {
+      renderWithProviders(<OffCycleReasonSelection {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 2, name: 'Reason' })).toBeInTheDocument()
+      })
+    })
+
     it('renders both radio options with labels', async () => {
       renderWithProviders(<OffCycleReasonSelection {...defaultProps} />)
 
