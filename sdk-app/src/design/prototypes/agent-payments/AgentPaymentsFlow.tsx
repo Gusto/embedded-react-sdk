@@ -1,4 +1,3 @@
-import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { agentPaymentsMachine } from './agentPaymentsStateMachine'
 import type {
@@ -6,6 +5,7 @@ import type {
   AgentPaymentsFlowContextInterface,
 } from './AgentPaymentsFlowComponents'
 import { AgentPaymentsListContextual } from './AgentPaymentsFlowComponents'
+import { createMachine } from '@/lib/state-machine'
 import { Flow } from '@/components/Flow/Flow'
 
 export const AgentPaymentsFlow = ({ companyId, onEvent }: AgentPaymentsFlowProps) => {

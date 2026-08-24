@@ -1,10 +1,10 @@
-import { state, transition, reduce } from 'robot3'
 import type { PrintChecksContextInterface } from './PrintChecksComponents'
 import {
   PrintChecksFormContextual,
   PrintChecksFailureContextual,
   PrintChecksSummaryContextual,
 } from './PrintChecksComponents'
+import { state, transition, reduce } from '@/lib/state-machine'
 import { printChecksEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 

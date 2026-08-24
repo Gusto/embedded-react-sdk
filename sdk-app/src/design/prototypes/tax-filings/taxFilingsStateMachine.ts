@@ -1,10 +1,10 @@
-import { transition, reduce, state } from 'robot3'
 import { taxFilingsEvents } from './events'
 import {
   TaxFilingsListContextual,
   TaxFilingDetailContextual,
   type TaxFilingsFlowContextInterface,
 } from './TaxFilingsFlowComponents'
+import { transition, reduce, state } from '@/lib/state-machine'
 import type { MachineTransition } from '@/types/Helpers'
 
 const createReducer = (props: Partial<TaxFilingsFlowContextInterface>) => {

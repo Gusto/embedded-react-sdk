@@ -38,12 +38,12 @@ export function transition<C = any>(
 /** @internal */
 export function state<_T = unknown>(...transitions: TransitionDefinition[]): StateDefinition {
   const transitionMap = new Map<string, TransitionDefinition[]>()
-  for (const t of transitions) {
-    const existing = transitionMap.get(t.event)
+  for (const def of transitions) {
+    const existing = transitionMap.get(def.event)
     if (existing) {
-      existing.push(t)
+      existing.push(def)
     } else {
-      transitionMap.set(t.event, [t])
+      transitionMap.set(def.event, [def])
     }
   }
   return { _tag: 'state', transitions: transitionMap }
@@ -59,7 +59,7 @@ export function createMachine<C>(
 }
 
 /** @internal */
-export type ApplyResult<C> = { current: string; context: C }
+export type TransitionResult<C> = { current: string; context: C }
 
 /** @internal */
 export function applyTransition<C>(
@@ -67,7 +67,7 @@ export function applyTransition<C>(
   currentState: string,
   context: C,
   event: SendEvent,
-): ApplyResult<C> | null {
+): TransitionResult<C> | null {
   const stateDef = states[currentState]
   if (!stateDef) {
     if (import.meta.env.DEV) {
@@ -88,16 +88,16 @@ export function applyTransition<C>(
     return null
   }
 
-  for (const t of candidates) {
-    const allGuardsPass = t.guards.every(g => g.fn(context, event))
+  for (const candidate of candidates) {
+    const allGuardsPass = candidate.guards.every(g => g.fn(context, event))
     if (!allGuardsPass) continue
 
     let nextContext = context
-    for (const r of t.reducers) {
-      nextContext = r.fn(nextContext, event) as C
+    for (const reducer of candidate.reducers) {
+      nextContext = reducer.fn(nextContext, event) as C
     }
 
-    return { current: t.target, context: nextContext }
+    return { current: candidate.target, context: nextContext }
   }
 
   if (import.meta.env.DEV) {
