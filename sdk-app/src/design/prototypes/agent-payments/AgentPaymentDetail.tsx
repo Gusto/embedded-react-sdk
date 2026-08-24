@@ -1,79 +1,32 @@
-import type { AgentPayment, AgentPaymentStatus, TaxLiabilityPaymentState } from './types'
-import { deriveAgentPaymentStatus } from './types'
+import type { TaxPayment, TaxPaymentStatus } from './types'
+import { deriveTaxPaymentScope, deriveTaxPaymentStatus, FEDERAL_JURISDICTION } from './types'
 import styles from './AgentPaymentsFlow.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 
-const STATUS_LABELS: Record<AgentPaymentStatus, string> = {
-  draft: 'Draft',
-  pending: 'Pending',
+const STATUS_LABELS: Record<TaxPaymentStatus, string> = {
   paid: 'Paid',
+  scheduled: 'Scheduled',
   overdue: 'Overdue',
-  refunded: 'Refunded',
+  refund: 'Refund / Credit',
 }
 
-const STATUS_BADGE_VARIANTS: Record<AgentPaymentStatus, 'info' | 'warning' | 'success' | 'error'> =
-  {
-    draft: 'info',
-    pending: 'warning',
-    paid: 'success',
-    overdue: 'error',
-    refunded: 'info',
-  }
-
-const LIABILITY_STATE_LABELS: Record<TaxLiabilityPaymentState, string> = {
-  paid: 'Paid',
-  pending: 'Pending',
-  refunded: 'Refunded',
-}
-
-const LIABILITY_STATE_BADGE_VARIANTS: Record<
-  TaxLiabilityPaymentState,
-  'info' | 'warning' | 'success' | 'error'
-> = {
+const STATUS_BADGE_VARIANTS: Record<TaxPaymentStatus, 'info' | 'warning' | 'success' | 'error'> = {
   paid: 'success',
-  pending: 'warning',
-  refunded: 'info',
+  scheduled: 'info',
+  overdue: 'error',
+  refund: 'info',
 }
 
 function formatUSD(amount: string): string {
-  const num = parseFloat(amount)
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(num)
+  }).format(parseFloat(amount))
 }
 
-const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
-
-function formatRelative(iso: string): string {
-  const diff = (new Date(iso).getTime() - Date.now()) / 1000
-  const abs = Math.abs(diff)
-  if (abs < 60) return rtf.format(Math.round(diff), 'second')
-  if (abs < 3600) return rtf.format(Math.round(diff / 60), 'minute')
-  if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour')
-  if (abs < 2592000) return rtf.format(Math.round(diff / 86400), 'day')
-  if (abs < 31536000) return rtf.format(Math.round(diff / 2592000), 'month')
-  return rtf.format(Math.round(diff / 31536000), 'year')
-}
-
-function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  })
-}
-
-function formatDateTimeWithRelative(iso: string): string {
-  return `${formatRelative(iso)} — ${formatDateTime(iso)}`
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', {
+function formatDate(isoDate: string): string {
+  return new Date(`${isoDate}T00:00:00`).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -86,7 +39,7 @@ function truncateUuid(uuid: string): string {
 }
 
 interface AgentPaymentDetailProps {
-  payment: AgentPayment
+  payment: TaxPayment
   onBack: () => void
 }
 
@@ -94,32 +47,31 @@ export function AgentPaymentDetail({ payment, onBack }: AgentPaymentDetailProps)
   const { Alert, Badge, Button, DescriptionList, Heading, Text, Table } = useComponentContext()
 
   const today = new Date().toISOString().slice(0, 10)
-  const status = deriveAgentPaymentStatus(payment, today)
+  const status = deriveTaxPaymentStatus(payment, today)
+  const scope = deriveTaxPaymentScope(payment)
+  const lineItems = payment.line_items ?? []
 
-  const liabilityRows = (payment.tax_liabilities ?? []).map((liability, idx) => ({
-    key: `${liability.payroll_uuid}-${idx}`,
+  const scopeLabel =
+    scope === 'federal'
+      ? 'Federal'
+      : `State${payment.jurisdiction === FEDERAL_JURISDICTION ? '' : ` · ${payment.jurisdiction}`}`
+
+  const lineItemRows = lineItems.map((lineItem, index) => ({
+    key: `${lineItem.payroll_uuid}-${index}`,
     data: [
       {
-        key: 'tax_description',
+        key: 'unique_tax_id',
         content: (
           <Text as="span" size="sm">
-            {liability.tax_description}
-          </Text>
-        ),
-      },
-      {
-        key: 'check_date',
-        content: (
-          <Text as="span" size="sm" variant="supporting">
-            {formatDate(liability.check_date)}
+            {lineItem.unique_tax_id}
           </Text>
         ),
       },
       {
         key: 'payroll_uuid',
         content: (
-          <span className={styles.payrollUuid} title={liability.payroll_uuid}>
-            {truncateUuid(liability.payroll_uuid)}
+          <span className={styles.payrollUuid} title={lineItem.payroll_uuid}>
+            {truncateUuid(lineItem.payroll_uuid)}
           </span>
         ),
       },
@@ -127,16 +79,8 @@ export function AgentPaymentDetail({ payment, onBack }: AgentPaymentDetailProps)
         key: 'amount',
         content: (
           <Text as="span" size="sm" variant="supporting">
-            {formatUSD(liability.amount)}
+            {formatUSD(lineItem.amount)}
           </Text>
-        ),
-      },
-      {
-        key: 'state',
-        content: (
-          <Badge status={LIABILITY_STATE_BADGE_VARIANTS[liability.payment_state]}>
-            {LIABILITY_STATE_LABELS[liability.payment_state]}
-          </Badge>
         ),
       },
     ],
@@ -152,18 +96,18 @@ export function AgentPaymentDetail({ payment, onBack }: AgentPaymentDetailProps)
 
       <Flex flexDirection="column" gap={4}>
         <div className={styles.detailHeader}>
-          <Heading as="h2">{payment.agent_name}</Heading>
+          <Heading as="h2">{payment.agency_name}</Heading>
           <Badge status={STATUS_BADGE_VARIANTS[status]} className={styles.statusBadgeLg}>
             {STATUS_LABELS[status]}
           </Badge>
         </div>
-        <Text variant="supporting">{payment.payment_type}</Text>
+        <Text variant="supporting">{scopeLabel}</Text>
       </Flex>
 
       {status === 'overdue' && (
         <Alert status="warning" label="Payment overdue">
           <Text size="sm">
-            This payment was due on {formatDate(payment.due_date)} and has not been paid. Please
+            This payment was due on {formatDate(payment.due_date)} and has not been sent. Please
             take action to avoid penalties.
           </Text>
         </Alert>
@@ -173,41 +117,43 @@ export function AgentPaymentDetail({ payment, onBack }: AgentPaymentDetailProps)
         layout="horizontal"
         items={[
           {
-            term: 'Payment Type',
-            description: payment.payment_type,
+            term: 'Jurisdiction',
+            description: scopeLabel,
           },
           {
-            term: 'Description',
-            description: payment.description,
+            term: 'Period',
+            description: `${formatDate(payment.period_start)} – ${formatDate(payment.period_end)}`,
           },
           {
             term: 'Due Date',
             description: formatDate(payment.due_date),
           },
           {
-            term: 'Paid',
-            description: payment.paid_at ? formatDateTimeWithRelative(payment.paid_at) : '—',
+            term: 'Payment Sent On',
+            description: payment.payment_sent_on ? formatDate(payment.payment_sent_on) : '—',
           },
           {
             term: 'Amount',
             description: formatUSD(payment.amount),
           },
+          {
+            term: 'Amount Paid',
+            description: formatUSD(payment.amount_paid),
+          },
         ]}
       />
 
-      {(payment.tax_liabilities ?? []).length > 0 && (
+      {lineItems.length > 0 && (
         <Flex flexDirection="column" gap={16}>
           <Heading as="h3">Tax Liabilities</Heading>
           <Table
             aria-label="Tax liabilities"
             headers={[
-              { key: 'tax_description', content: 'Tax Description' },
-              { key: 'check_date', content: 'Check Date' },
+              { key: 'unique_tax_id', content: 'Tax ID' },
               { key: 'payroll_uuid', content: 'Payroll' },
               { key: 'amount', content: 'Amount' },
-              { key: 'state', content: 'State' },
             ]}
-            rows={liabilityRows}
+            rows={lineItemRows}
             emptyState={
               <Text variant="supporting" size="sm">
                 No tax liabilities.
