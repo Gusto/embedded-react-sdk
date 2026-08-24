@@ -1139,6 +1139,7 @@ Renders a form field wrapping multiple `<input type="radio" />` elements with a 
 | `defaultValue?` | `string` | | Initially selected value |
 | `description?` | `ReactNode` | | Optional description text for the field |
 | `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `headingLevel?` | `"h1"` \| `"h2"` \| `"h3"` \| `"h4"` \| `"h5"` \| `"h6"` | `No heading — the label renders as plain legend text.` | Semantic heading level to nest the label in, so it's discoverable via heading-based screen reader navigation — useful when the group represents a page-level section (e.g. "Choose a reason") rather than a plain form field. The group's `fieldset`/`legend` structure is unchanged, so it keeps its native accessible name either way. |
 | `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the first radio input element |
 | `isDisabled?` | `boolean` | `false` | Disables all radio options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
