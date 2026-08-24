@@ -1,4 +1,4 @@
-import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm, useWatch, type Control } from 'react-hook-form'
 import { useMemo, useRef, useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
@@ -66,6 +66,17 @@ const ReimbursementFormSchema = z.object({
   description: z.string(),
   amount: z.string(),
   recurring: z.boolean().optional(),
+})
+
+const DraftReimbursementSchema = z.object({
+  description: z.string(),
+  amount: z.string().refine(
+    val => {
+      const num = parseFloat(val)
+      return !Number.isNaN(num) && num > 0
+    },
+    { message: 'validations.reimbursementAmount' },
+  ),
 })
 
 const PayrollEditEmployeeFormSchema = z.object({
@@ -200,7 +211,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
+  const { Button, ButtonIcon, Heading, Text } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -404,25 +415,28 @@ export const PayrollEditEmployeePresentation = ({
     .filter(row => parseFloat(row.amount || '0') !== 0)
 
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
-  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
-  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+
+  type DraftReimbursementValues = z.infer<typeof DraftReimbursementSchema>
+
+  const draftForm = useForm<DraftReimbursementValues>({
+    resolver: zodResolver(DraftReimbursementSchema),
+    defaultValues: { description: '', amount: '' },
+  })
+
+  // UseFieldProps.control is typed as unparameterized Control (i.e. Control<FieldValues>),
+  // which is structurally incompatible with the narrower Control<DraftReimbursementValues>.
+  const draftControl = draftForm.control as unknown as Control
 
   const resetReimbursementDraft = () => {
     setIsAddingReimbursement(false)
-    setDraftReimbursementDescription('')
-    setDraftReimbursementAmount('')
+    draftForm.reset()
   }
 
-  const handleSaveReimbursementDraft = () => {
-    const trimmedAmount = draftReimbursementAmount.trim()
-    const parsedAmount = parseFloat(trimmedAmount || '0')
-    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      return
-    }
-
+  const onDraftReimbursementValid = (data: DraftReimbursementValues) => {
+    const parsedAmount = parseFloat(data.amount)
     appendReimbursement({
       uuid: null,
-      description: draftReimbursementDescription.trim(),
+      description: data.description.trim(),
       amount: parsedAmount.toFixed(2),
       recurring: false,
     })
@@ -733,26 +747,25 @@ export const PayrollEditEmployeePresentation = ({
               {isAddingReimbursement ? (
                 <Flex flexDirection="column" gap={12}>
                   <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                    <TextInput
-                      name="newReimbursementDescription"
+                    <TextInputField
+                      name="description"
+                      control={draftControl}
                       label={t('reimbursementDescriptionLabel')}
                       placeholder={t('reimbursementDescriptionPlaceholder')}
-                      value={draftReimbursementDescription}
-                      onChange={setDraftReimbursementDescription}
                     />
-                    <TextInput
-                      name="newReimbursementAmount"
+                    <TextInputField
+                      name="amount"
+                      control={draftControl}
                       type="number"
                       min={0}
                       adornmentStart="$"
                       isRequired
                       label={t('reimbursementAmountLabel')}
-                      value={draftReimbursementAmount}
-                      onChange={setDraftReimbursementAmount}
+                      errorMessage={t('validations.reimbursementAmount')}
                     />
                   </Grid>
                   <Flex gap={12}>
-                    <Button onClick={handleSaveReimbursementDraft}>
+                    <Button onClick={draftForm.handleSubmit(onDraftReimbursementValid)}>
                       {t('saveReimbursementCta')}
                     </Button>
                     <Button variant="secondary" onClick={resetReimbursementDraft}>
