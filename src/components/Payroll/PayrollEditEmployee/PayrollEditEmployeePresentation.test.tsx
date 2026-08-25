@@ -1508,6 +1508,52 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
     })
 
+    it('shows a validation error when a negative amount is entered', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const descriptionInput = await screen.findByLabelText(/Description/i)
+      await user.type(descriptionInput, 'Office supplies')
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '-50')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
+    })
+
+    it('clears the validation error after entering a valid amount and saving', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '-10')
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+      })
+
+      await user.clear(amountInput)
+      await user.type(amountInput, '25')
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(screen.queryByText('Amount must be greater than zero')).not.toBeInTheDocument()
+      })
+      expect(screen.getByText('$25.00')).toBeInTheDocument()
+    })
+
     it('soft-deletes an existing reimbursement on Remove (keeps uuid, sets amount to 0)', async () => {
       const onSave = vi.fn()
       const user = userEvent.setup()

@@ -7482,6 +7482,10 @@ export namespace Translations {
       /** @defaultValue `"Check"` */
       check: string
     }
+    validations: {
+      /** @defaultValue `"Amount must be greater than zero"` */
+      reimbursementAmount: string
+    }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
   export interface PayrollPayrollFlow {
