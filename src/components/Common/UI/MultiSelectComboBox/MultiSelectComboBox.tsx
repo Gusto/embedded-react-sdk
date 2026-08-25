@@ -16,6 +16,7 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './MultiSelectComboBox.module.scss'
 import type { MultiSelectComboBoxProps } from './MultiSelectComboBoxTypes'
 import { FieldLayout } from '@/components/Common/FieldLayout'
+import { FieldDescription } from '@/components/Common/FieldDescription'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useTheme } from '@/contexts/ThemeProvider'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
@@ -79,6 +80,7 @@ export function MultiSelectComboBox({
         .map(option => ({
           label: option.label,
           value: option.value,
+          description: option.description,
         })),
     [options, selectedSet],
   )
@@ -89,7 +91,12 @@ export function MultiSelectComboBox({
   )
 
   const items = useMemo(
-    () => availableOptions.map(option => ({ name: option.label, id: option.value })),
+    () =>
+      availableOptions.map(option => ({
+        name: option.label,
+        id: option.value,
+        description: option.description,
+      })),
     [availableOptions],
   )
 
@@ -167,7 +174,16 @@ export function MultiSelectComboBox({
           >
             <Virtualizer layout={ListLayout}>
               <ListBox items={items}>
-                {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
+                {item => (
+                  <ListBoxItem key={item.id} textValue={item.name}>
+                    <div className={styles.optionLabel}>{item.name}</div>
+                    {item.description && (
+                      <FieldDescription className={styles.optionDescription}>
+                        {item.description}
+                      </FieldDescription>
+                    )}
+                  </ListBoxItem>
+                )}
               </ListBox>
             </Virtualizer>
           </Popover>

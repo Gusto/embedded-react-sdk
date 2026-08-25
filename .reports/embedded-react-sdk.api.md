@@ -3729,6 +3729,7 @@ export interface ModalProps {
 
 // @public
 export interface MultiSelectComboBoxOption {
+    description?: string;
     label: string;
     value: string;
 }
@@ -4375,6 +4376,7 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     payrollId: string;
+    readOnly?: boolean;
     withReimbursements?: boolean;
 }
 

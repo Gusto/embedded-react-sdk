@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.55.2",
+  "version": "0.55.3",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -98,10 +98,10 @@
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@eslint/js": "^9.39.5",
-    "@microsoft/api-extractor": "^7.58.12",
+    "@microsoft/api-extractor": "^7.59.0",
     "@playwright/test": "^1.62.1",
     "@release-it/conventional-changelog": "^12.0.0",
-    "@storybook/addon-a11y": "^10.5.8",
+    "@storybook/addon-a11y": "^10.5.10",
     "@storybook/addon-docs": "^10.5.8",
     "@storybook/addon-onboarding": "^10.5.8",
     "@storybook/react-vite": "^10.5.8",
@@ -120,7 +120,7 @@
     "@typescript-eslint/rule-tester": "^8.67.0",
     "@typescript-eslint/utils": "^8.64.0",
     "@vitejs/plugin-react-swc": "^4.3.3",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.11",
     "ajv": "^8.20.0",
     "axe-core": "^4.13.0",
     "cspell": "^10.0.1",
@@ -192,7 +192,7 @@
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.4.13",
-    "i18next": "^26.3.6",
+    "i18next": "^26.4.0",
     "react-aria": "^3.47.0",
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.3",

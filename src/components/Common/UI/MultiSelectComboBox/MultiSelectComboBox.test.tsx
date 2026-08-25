@@ -99,6 +99,32 @@ describe('MultiSelectComboBox', () => {
       expect(screen.getByText('Bob Williams')).toBeInTheDocument()
     })
 
+    it('shows an option description when provided', async () => {
+      const user = userEvent.setup()
+      renderComponent({
+        options: [
+          { label: 'Alice Johnson', value: '1', description: 'Software Engineer' },
+          { label: 'Bob Williams', value: '2' },
+        ],
+      })
+      const combobox = screen.getByRole('combobox')
+      await user.click(combobox)
+
+      expect(screen.getByText('Software Engineer')).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: /Alice Johnson/ })).toBeInTheDocument()
+    })
+
+    it('omits the description for an option without one', async () => {
+      const user = userEvent.setup()
+      renderComponent({
+        options: [{ label: 'Bob Williams', value: '2' }],
+      })
+      const combobox = screen.getByRole('combobox')
+      await user.click(combobox)
+
+      expect(screen.getByRole('option', { name: 'Bob Williams' })).toBeInTheDocument()
+    })
+
     it('calls onChange with the new value when an option is selected', async () => {
       const user = userEvent.setup()
       const { onChange } = renderComponent()
