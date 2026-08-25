@@ -780,6 +780,8 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | <a id="property-companystatetaxesform"></a> `form` |
 | `form.cancelCta` |
 | `form.effectiveFromLabel` |
+| `form.noEditableRequirementsDescription` |
+| `form.noEditableRequirementsTitle` |
 | `form.saveCta` |
 | `form.title` |
 | `form.validations` |
