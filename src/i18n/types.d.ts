@@ -1086,6 +1086,10 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Effective: {{date}}"` */
       effectiveFromLabel: string
+      /** @defaultValue `"No editable requirements"` */
+      noEditableRequirementsTitle: string
+      /** @defaultValue `"This state does not have any editable tax requirements."` */
+      noEditableRequirementsDescription: string
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string

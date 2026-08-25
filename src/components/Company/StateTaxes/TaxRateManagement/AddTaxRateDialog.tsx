@@ -7,6 +7,7 @@ import { buildRequirementSchema } from '../shared/buildRequirementSchema'
 import { RequirementFields } from '../shared/RequirementFields'
 import { getUniqueRhfKey } from '../shared/rhfKey'
 import { isRequirementApplicable, type StateTaxesFormValues } from '../shared/applicableIf'
+import { isRequirementSetEditable, prepareRequirements } from '../shared/prepareRequirements'
 import { stringifyRequirementValue } from '../shared/requirementValue'
 import { useTaxRateManagement, type TaxRateKeyGroup } from './context'
 import { Flex, SelectField } from '@/components/Common'
@@ -50,9 +51,14 @@ export function AddTaxRateDialog({ isOpen, state, group, onClose }: AddTaxRateDi
     [group.candidateSets],
   )
 
+  const preparedRequirements = useMemo(
+    () => prepareRequirements(templateSet?.requirements ?? []),
+    [templateSet],
+  )
+
   const { shape, defaults } = useMemo(
-    () => buildRequirementSchema(templateSet?.requirements, tForm),
-    [templateSet, tForm],
+    () => buildRequirementSchema(preparedRequirements, tForm),
+    [preparedRequirements, tForm],
   )
 
   const dynamicSchema = useMemo(
@@ -84,10 +90,8 @@ export function AddTaxRateDialog({ isOpen, state, group, onClose }: AddTaxRateDi
   const handleSubmit = methods.handleSubmit(async data => {
     if (!templateSet?.key) return
     const formValues: StateTaxesFormValues = { fields: data.fields }
-    const requirements = templateSet.requirements ?? []
-    const applicableRequirements = requirements
+    const applicableRequirements = preparedRequirements
       .map((req, index) => ({ req, index }))
-      .filter(({ req }) => req.editable !== false)
       .filter(({ req }) => isRequirementApplicable(req, 'fields', formValues))
 
     setIsSubmitting(true)
@@ -97,7 +101,9 @@ export function AddTaxRateDialog({ isOpen, state, group, onClose }: AddTaxRateDi
         data.effectiveFrom,
         applicableRequirements.map(({ req, index }) => ({
           key: req.key as string,
-          value: stringifyRequirementValue(data.fields[getUniqueRhfKey(req, index, requirements)]),
+          value: stringifyRequirementValue(
+            data.fields[getUniqueRhfKey(req, index, preparedRequirements)],
+          ),
         })),
       )
       if (success) onClose()
@@ -106,9 +112,7 @@ export function AddTaxRateDialog({ isOpen, state, group, onClose }: AddTaxRateDi
     }
   })
 
-  const hasEditableFields = (templateSet?.requirements ?? []).some(
-    requirement => requirement.editable !== false,
-  )
+  const hasEditableFields = isRequirementSetEditable(templateSet?.requirements ?? [])
 
   return (
     <Components.Dialog

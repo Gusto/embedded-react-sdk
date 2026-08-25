@@ -2,11 +2,19 @@ import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react/jsx-runtime'
 import { RequirementFields } from '../shared/RequirementFields'
 import { getUniqueRhfKey } from '../shared/rhfKey'
+import { isRequirementSetEditable } from '../shared/prepareRequirements'
 import { useStateTaxesForm } from './context'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
-/** @internal */
+/**
+ * Renders one section per requirement set, skipping sets that have nothing left to edit once
+ * non-editable requirements — and requirements resolved as never-applicable against a
+ * non-editable sibling — are dropped (mirrors gws-flows' `TaxRequirements::Edit.set_editable?`,
+ * which drops such sets from its own edit view entirely).
+ *
+ * @internal
+ */
 export function Form() {
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })
   const dateFormatter = useDateFormatter()
@@ -17,9 +25,10 @@ export function Form() {
   // A single key (e.g. "taxrates") can appear in more than one set when a future-dated set is
   // already scheduled alongside the current one — each rendered section still needs its own
   // disambiguated form path so the two sections' fields don't share state.
-  return requirementSets.map((requirementSet, index) => {
+  const sections = requirementSets.map((requirementSet, index) => {
     const { requirements, label, effectiveFrom, key } = requirementSet
     if (!key) return null
+    if (!isRequirementSetEditable(requirements ?? [])) return null
     const requirementSetPath = getUniqueRhfKey(requirementSet, index, requirementSets)
     return (
       <Fragment key={requirementSetPath}>
@@ -35,4 +44,14 @@ export function Form() {
       </Fragment>
     )
   })
+
+  if (sections.every(section => section === null)) {
+    return (
+      <Components.Alert status="info" label={t('noEditableRequirementsTitle')}>
+        {t('noEditableRequirementsDescription')}
+      </Components.Alert>
+    )
+  }
+
+  return sections
 }
