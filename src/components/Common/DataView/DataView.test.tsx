@@ -118,6 +118,53 @@ describe('DataView Component', () => {
     })
   })
 
+  test('should mark the rendered DataTable as busy when isFetching is true', async () => {
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      label: 'Test View',
+      isFetching: true,
+    })
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 650, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('grid').parentElement?.parentElement).toHaveAttribute(
+        'aria-busy',
+        'true',
+      )
+    })
+  })
+
+  test('should mark the rendered DataCards as busy when isFetching is true', async () => {
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
+
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      label: 'Test View',
+      isFetching: true,
+    })
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 300, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('data-cards')).toHaveAttribute('aria-busy', 'true')
+    })
+  })
+
   test('should render pagination controls', () => {
     renderDataView({
       data: testData,
