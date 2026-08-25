@@ -1,4 +1,4 @@
-import { FormProvider, useFieldArray, useForm, useWatch, type Control } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useMemo, useRef, useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
@@ -423,10 +423,6 @@ export const PayrollEditEmployeePresentation = ({
     defaultValues: { description: '', amount: '' },
   })
 
-  // react-hook-form's Control<T> is invariant, so Control<Narrow> won't assign to Control<FieldValues>.
-  // UseFieldProps accepts the unparameterized Control; this single-site cast bridges the gap.
-  const draftControl = draftForm.control as unknown as Control
-
   const resetReimbursementDraft = () => {
     setIsAddingReimbursement(false)
     draftForm.reset()
@@ -745,38 +741,34 @@ export const PayrollEditEmployeePresentation = ({
                 <DataView label={t('reimbursementsTableLabel')} {...reimbursementDataViewProps} />
               )}
               {isAddingReimbursement ? (
-                <Flex flexDirection="column" gap={12}>
-                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                    <TextInputField
-                      name="description"
-                      control={draftControl}
-                      label={t('reimbursementDescriptionLabel')}
-                      placeholder={t('reimbursementDescriptionPlaceholder')}
-                    />
-                    <TextInputField
-                      name="amount"
-                      control={draftControl}
-                      type="number"
-                      min={0}
-                      adornmentStart="$"
-                      isRequired
-                      label={t('reimbursementAmountLabel')}
-                      errorMessage={
-                        draftForm.formState.errors.amount
-                          ? t('validations.reimbursementAmount')
-                          : undefined
-                      }
-                    />
-                  </Grid>
-                  <Flex gap={12}>
-                    <Button onClick={draftForm.handleSubmit(onDraftReimbursementValid)}>
-                      {t('saveReimbursementCta')}
-                    </Button>
-                    <Button variant="secondary" onClick={resetReimbursementDraft}>
-                      {t('cancelReimbursementCta')}
-                    </Button>
+                <FormProvider {...draftForm}>
+                  <Flex flexDirection="column" gap={12}>
+                    <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                      <TextInputField
+                        name="description"
+                        label={t('reimbursementDescriptionLabel')}
+                        placeholder={t('reimbursementDescriptionPlaceholder')}
+                      />
+                      <TextInputField
+                        name="amount"
+                        type="number"
+                        min={0}
+                        adornmentStart="$"
+                        isRequired
+                        label={t('reimbursementAmountLabel')}
+                        errorMessage={t('validations.reimbursementAmount')}
+                      />
+                    </Grid>
+                    <Flex gap={12}>
+                      <Button onClick={draftForm.handleSubmit(onDraftReimbursementValid)}>
+                        {t('saveReimbursementCta')}
+                      </Button>
+                      <Button variant="secondary" onClick={resetReimbursementDraft}>
+                        {t('cancelReimbursementCta')}
+                      </Button>
+                    </Flex>
                   </Flex>
-                </Flex>
+                </FormProvider>
               ) : (
                 visibleReimbursementRows.length > 0 && (
                   <div>
