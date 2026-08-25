@@ -5,6 +5,7 @@
   "payPeriodSectionDescription": "Enter a work period to show on your employees' pay stubs.",
   "continueCta": "Continue",
   "includeAllEmployeesLabel": "Include all employees in this payroll",
+  "taxWithholdingDisclaimer": "Note: Off-cycle payrolls are meant to supplement the standard payroll schedule, not replace it. Since payroll taxes depend on wages, hours worked, <bold>and pay frequency,</bold> exclusively using off-cycle payrolls to pay your team can lead to taxes being omitted.",
   "errors": {
     "missingPayrollId": "Off-cycle payroll was created but no payroll ID was returned",
     "noEmployeesSelected": "At least one employee must be selected"

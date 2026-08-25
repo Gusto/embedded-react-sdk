@@ -14,16 +14,22 @@ const wageTypeGroups: WageTypeGroup[] = [
     label: 'Regular hours, regular wages, and tips',
     description:
       "These earnings should be taxed at a rate that matches your employees' regular pay schedule.",
+    taxedAsDescription:
+      'Federal and state income taxes are withheld using the standard tax tables for this pay frequency.',
   },
   {
     category: 'supplemental',
     label: 'Supplemental wages, bonus wages, commission',
     description:
       'These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes.',
+    taxedAsDescription:
+      "Taxed either at the IRS's flat 22% supplemental rate or under your regular pay schedule, depending on the rate you select above.",
   },
   {
     category: 'reimbursement',
     label: 'Reimbursements',
+    taxedAsDescription:
+      "Reimbursements for business expenses aren't taxable wages, so no federal or state income tax is withheld.",
   },
 ]
 
@@ -132,6 +138,41 @@ describe('OffCycleTaxWithholdingTable', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/not taxed/i)).toBeInTheDocument()
+    })
+  })
+
+  describe('taxed as supporting text', () => {
+    it('shows the taxedAsDescription for each group when provided', async () => {
+      renderTable({
+        withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
+        withholdingRate: 'supplemental',
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText(/standard tax tables for this pay frequency/i)).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/flat 22% supplemental rate/i)).toBeInTheDocument()
+      expect(screen.getByText(/aren't taxable wages/i)).toBeInTheDocument()
+    })
+
+    it('omits the supporting text when taxedAsDescription is not provided', async () => {
+      renderWithProviders(
+        <OffCycleTaxWithholdingTable
+          wageTypeGroups={[{ category: 'regular', label: 'Regular hours' }]}
+          config={{
+            withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
+            withholdingRate: 'regular',
+          }}
+          onEditClick={vi.fn()}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Regular hours')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
     })
   })
 })

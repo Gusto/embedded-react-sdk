@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
 import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
@@ -44,6 +44,7 @@ export function OffCycleCreationPresentation({
         const group: WageTypeGroup = {
           category,
           label: tWithholding(`wageTypeGroups.${category}.label`),
+          taxedAsDescription: tWithholding(`wageTypeGroups.${category}.taxedAsDescription`),
         }
         if (category === 'regular' || category === 'supplemental') {
           group.description = tWithholding(`wageTypeGroups.${category}.description`)
@@ -131,19 +132,28 @@ export function OffCycleCreationPresentation({
 
       <hr className={styles.divider} />
 
-      <OffCycleTaxWithholdingTable
-        wageTypeGroups={wageTypeGroups}
-        config={taxWithholdingConfig}
-        onEditClick={onTaxWithholdingEditClick}
-      />
-      {isTaxWithholdingModalOpen && (
-        <OffCycleTaxWithholdingModal
-          isOpen
-          defaultConfig={taxWithholdingConfig}
-          onDone={onTaxWithholdingModalDone}
-          onCancel={onTaxWithholdingModalCancel}
+      <Flex flexDirection="column" gap={12}>
+        <Text variant="supporting">
+          <Trans
+            t={t}
+            i18nKey="taxWithholdingDisclaimer"
+            components={{ bold: <Text as="span" weight="bold" /> }}
+          />
+        </Text>
+        <OffCycleTaxWithholdingTable
+          wageTypeGroups={wageTypeGroups}
+          config={taxWithholdingConfig}
+          onEditClick={onTaxWithholdingEditClick}
         />
-      )}
+        {isTaxWithholdingModalOpen && (
+          <OffCycleTaxWithholdingModal
+            isOpen
+            defaultConfig={taxWithholdingConfig}
+            onDone={onTaxWithholdingModalDone}
+            onCancel={onTaxWithholdingModalCancel}
+          />
+        )}
+      </Flex>
 
       <Flex justifyContent="flex-end" gap={12}>
         <Button type="submit" isLoading={isPending} isDisabled={isPending}>
