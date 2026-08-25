@@ -25,6 +25,8 @@
     "cancelCta": "Cancel",
     "title": "{{state}} tax requirements",
     "effectiveFromLabel": "Effective: {{date}}",
+    "noEditableRequirementsTitle": "No editable requirements",
+    "noEditableRequirementsDescription": "This state does not have any editable tax requirements.",
     "validations": {
       "minValue": "Minimum value is {{min}}%",
       "maxValue": "Maximum value is {{max}}%",
