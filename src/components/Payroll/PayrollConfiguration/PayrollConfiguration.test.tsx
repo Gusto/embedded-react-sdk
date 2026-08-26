@@ -364,7 +364,7 @@ describe('PayrollConfiguration', () => {
       await user.click(screen.getByRole('button', { name: /cancel payroll/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/any changes you have made/i)).toBeInTheDocument()
+        expect(screen.getByText(/your changes will be saved/i)).toBeInTheDocument()
       })
       await user.click(screen.getByRole('button', { name: /yes, cancel payroll/i }))
 

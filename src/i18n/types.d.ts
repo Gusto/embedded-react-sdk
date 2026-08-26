@@ -7561,9 +7561,9 @@ export namespace Translations {
     cancelDialog: {
       /** @defaultValue `"Cancel {{payPeriod}} payroll?"` */
       title: string
-      /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+      /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
       body: string
-      /** @defaultValue `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` */
+      /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
       deadline: string
       /** @defaultValue `"Yes, cancel payroll"` */
       primaryAction: string
@@ -7723,11 +7723,11 @@ export namespace Translations {
     cancelDialogTitle: string
     /** @defaultValue `"Cancel payroll?"` */
     cancelDialogTitleDismissal: string
-    /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+    /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
     cancelDialogDescription: string
-    /** @defaultValue `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` */
+    /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
     cancelDialogDescriptionDeadline: string
-    /** @defaultValue `" Yes, cancel payroll"` */
+    /** @defaultValue `"Yes, cancel payroll"` */
     confirmCancelCta: string
     /** @defaultValue `"No, go back"` */
     declineCancelCta: string

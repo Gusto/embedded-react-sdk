@@ -113,6 +113,14 @@ export const PayrollOverviewPresentation = ({
   )
   const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
 
+  // formatWithTime returns { time, date }, and the cancel dialog used to interpolate only
+  // `time` -- so it read "Run this payroll by 4:00 PM PDT" with no date at all (SDK-1286).
+  // Rendered as "<time> on <date>" to match how PayrollHistory shows the same deadline.
+  const cancelDeadline = (() => {
+    const { time, date } = dateFormatter.formatWithTime(payrollData.payrollDeadline)
+    return date ? `${time} on ${date}` : time
+  })()
+
   const pageSubtitle = (
     <Text>
       <Trans
@@ -807,7 +815,7 @@ export const PayrollOverviewPresentation = ({
                   {Number(payrollData.totals?.netPayDebit ?? 0) > 0 && (
                     <Text>
                       {t('cancelDialogDescriptionDeadline', {
-                        deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
+                        deadline: cancelDeadline,
                       })}
                     </Text>
                   )}
