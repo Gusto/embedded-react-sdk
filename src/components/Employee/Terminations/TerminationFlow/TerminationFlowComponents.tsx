@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TerminateEmployee } from '../TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from '../TerminationSummary/TerminationSummary'
 import type { PayrollOption } from '../types'
@@ -9,6 +10,8 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
+import { componentEvents, type EventType } from '@/shared/constants'
 
 /**
  * Props for {@link TerminationFlow}.
@@ -49,6 +52,7 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
 export function TerminateEmployeeContextual() {
   const { companyId, employeeId, onEvent, alerts } = useFlow<TerminationFlowContextInterface>()
   const { Alert } = useComponentContext()
+  useI18n('Employee.Terminations.TerminationFlow')
 
   return (
     <Flex flexDirection="column" gap={8}>
@@ -70,10 +74,26 @@ export function TerminateEmployeeContextual() {
 export function TerminationSummaryContextual() {
   const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
     useFlow<TerminationFlowContextInterface>()
+  useI18n('Employee.Terminations.TerminationFlow')
+  const { t } = useTranslation('Employee.Terminations.TerminationFlow')
+
+  const handleEvent = (event: EventType, data?: unknown) => {
+    if (event === componentEvents.EMPLOYEE_TERMINATION_CANCELLED) {
+      onEvent(event, {
+        ...(data as object),
+        alert: {
+          type: 'success',
+          title: t('cancelSuccess'),
+        },
+      })
+      return
+    }
+    onEvent(event, data)
+  }
 
   return (
     <TerminationSummary
-      onEvent={onEvent}
+      onEvent={handleEvent}
       companyId={ensureRequired(companyId)}
       employeeId={ensureRequired(employeeId)}
       payrollOption={payrollOption}

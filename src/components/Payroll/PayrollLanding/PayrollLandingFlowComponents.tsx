@@ -14,7 +14,6 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import { TransitionPayrollAlert } from '../TransitionPayrollAlert'
 import type { BaseComponentInterface } from '@/components/Base/Base'
-import { BaseBoundaries } from '@/components/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -65,14 +64,6 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
 
 /** @internal */
 export function PayrollLandingTabsContextual() {
-  return (
-    <BaseBoundaries componentName="Payroll.PayrollLanding">
-      <PayrollLandingTabsContextualRoot />
-    </BaseBoundaries>
-  )
-}
-
-function PayrollLandingTabsContextualRoot() {
   const {
     companyId,
     onEvent,
