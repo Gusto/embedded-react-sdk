@@ -66,6 +66,7 @@ export function JobsListPresentation({
       {
         key: 'rate',
         title: t('allCompensations.amountColumn'),
+        justify: 'end',
         render: (job: Job) => job.rate?.toString() || '',
       },
       {

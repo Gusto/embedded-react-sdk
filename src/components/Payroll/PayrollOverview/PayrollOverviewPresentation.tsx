@@ -218,6 +218,7 @@ export const PayrollOverviewPresentation = ({
   const companyPaysColumns: Array<{
     key: string
     title: string
+    justify?: 'start' | 'end'
     render: (item: EmployeeCompensations) => React.ReactNode
   }> = [
     {
@@ -236,6 +237,7 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
+      justify: 'end',
       render: (employeeCompensations: EmployeeCompensations) =>
         formatCurrency(Number(employeeCompensations.grossPay!)),
     },
@@ -244,6 +246,7 @@ export const PayrollOverviewPresentation = ({
           {
             key: 'reimbursements',
             title: t('tableHeaders.reimbursements'),
+            justify: 'end' as const,
             render: (employeeCompensation: EmployeeCompensations) =>
               formatCurrency(getReimbursements(employeeCompensation)),
           },
@@ -252,18 +255,21 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyTaxes(employeeCompensation)),
     },
     {
       key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyBenefits(employeeCompensation)),
     },
     {
       key: 'companyPays',
       title: t('tableHeaders.companyPays'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyCost(employeeCompensation)),
     },

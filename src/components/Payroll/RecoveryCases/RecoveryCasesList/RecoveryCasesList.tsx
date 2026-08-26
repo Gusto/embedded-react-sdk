@@ -132,6 +132,7 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
       {
         key: 'totalAmount',
         title: t('columns.totalAmount'),
+        justify: 'end',
         render: recoveryCase => (
           <Text>
             {recoveryCase.eventTotalAmount
@@ -143,6 +144,7 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
       {
         key: 'amountOutstanding',
         title: t('columns.amountOutstanding'),
+        justify: 'end',
         render: recoveryCase => (
           <Text>
             {recoveryCase.amountOutstanding

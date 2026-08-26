@@ -199,6 +199,7 @@ function PaystubsCardReady({
     {
       key: 'checkAmount',
       title: t('checkAmount'),
+      justify: 'end' as const,
       render: (payStub: EmployeePayStub) => {
         if (!payStub.netPay) return '-'
         const amount = parseFloat(payStub.netPay)
@@ -208,6 +209,7 @@ function PaystubsCardReady({
     {
       key: 'grossPay',
       title: t('grossPay'),
+      justify: 'end' as const,
       render: (payStub: EmployeePayStub) => {
         if (!payStub.grossPay) return '-'
         const amount = parseFloat(payStub.grossPay)

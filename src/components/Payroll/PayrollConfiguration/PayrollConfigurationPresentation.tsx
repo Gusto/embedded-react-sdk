@@ -216,6 +216,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.hours'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const hours = getRegularHours(item)
                       const overtimeHours = getOvertimeHours(item)
@@ -224,6 +225,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.timeOff'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const ptoHours = getTotalPtoHours(item)
                       return formatHoursDisplay(ptoHours)
@@ -231,6 +233,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.additionalEarnings'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const earnings = getAdditionalEarnings(item)
                       return formatNumberAsCurrency(earnings)
@@ -240,6 +243,7 @@ export const PayrollConfigurationPresentation = ({
                     ? [
                         {
                           title: t('tableColumns.reimbursements'),
+                          justify: 'end' as const,
                           render: (item: PayrollEmployeeCompensationsType) => {
                             const reimbursements = getReimbursements(item)
                             return formatNumberAsCurrency(reimbursements)
@@ -249,6 +253,7 @@ export const PayrollConfigurationPresentation = ({
                     : []),
                   {
                     title: t('tableColumns.totalPay'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const calculatedGrossPay = employee
