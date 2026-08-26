@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import type { CompensationDefaultValues } from '../Compensation'
 import { useJobForm } from '../../shared/useJobForm'
@@ -30,17 +29,10 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
   startDate?: string
   /** Existing job to edit. When omitted, a new job is created on submit. */
   currentJobId?: string | null
-  /** Heading text shown above the form. When omitted, a default is chosen based on `mode` and `currentJobId`. */
-  title?: string
-  /** Label for the primary submit button. When omitted, a default is chosen based on `mode`. */
-  submitCtaLabel?: string
-  /**
-   * Controls which default labels are used when `title` and `submitCtaLabel` are omitted.
-   *
-   * - `'initial'` (default) — used for the initial compensation step during onboarding.
-   * - `'edit'` — used when editing or adding a job from the management dashboard.
-   */
-  mode?: 'initial' | 'edit'
+  /** Heading text shown above the form. */
+  title: string
+  /** Label for the primary submit button. */
+  submitCtaLabel: string
   /** Optional handler invoked when the secondary cancel button is clicked. */
   onCancel?: () => void
   /** Initial values for the job title and compensation fields. */
@@ -83,9 +75,8 @@ function Root({
   employeeId,
   startDate,
   currentJobId,
-  title: titleProp,
-  submitCtaLabel: submitCtaLabelProp,
-  mode = 'initial',
+  title,
+  submitCtaLabel,
   onCancel,
   partnerDefaultValues,
   className,
@@ -93,12 +84,6 @@ function Root({
   LoaderComponent,
 }: EditCompensationProps) {
   useI18n('Employee.Compensation')
-  const { t } = useTranslation('Employee.Compensation')
-
-  const title =
-    titleProp ?? (mode === 'edit' ? (currentJobId ? t('editTitle') : t('addTitle')) : t('title'))
-  const submitCtaLabel =
-    submitCtaLabelProp ?? (mode === 'edit' ? t('saveNewJobCta') : t('submitCta'))
 
   // When startDate is provided (onboarding), hide the hire date field and derive
   // it from the prop at submit time. When absent (add-job from dashboard empty

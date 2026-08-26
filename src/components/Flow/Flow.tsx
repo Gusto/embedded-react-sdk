@@ -86,7 +86,7 @@ export const Flow = <M extends Machine<object, FlowContextInterface>>({
           <Suspense fallback={<FlowHeaderFallback />}>
             <FlowHeader />
           </Suspense>
-          {Component && <Component />}
+          <Suspense fallback={null}>{Component && <Component />}</Suspense>
         </Flex>
       </FlowContext.Provider>
     </Flex>

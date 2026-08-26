@@ -14,38 +14,19 @@ import { firstLastName } from '@/helpers/formattedStrings'
 /** @public */
 export type DashboardTab = 'details' | 'pay' | 'documents'
 
-/** @internal */
-export type DashboardSuccessAlert =
-  | 'profileUpdated'
-  | 'addressUpdated'
-  | 'bankAccountAdded'
-  | 'bankAccountRemoved'
-  | 'compensationUpdated'
-
 /** @public */
 export interface DashboardProps extends BaseComponentInterface<'Contractor.Dashboard'> {
   /** The associated contractor identifier. */
   contractorId: string
   /** The currently active tab. Defaults to `'details'` when uncontrolled. */
   selectedTab?: DashboardTab
-  /** When set, a success alert with the corresponding translated label is rendered above the dashboard tabs. */
-  successAlert?: DashboardSuccessAlert
 }
-
-const alertKeys = {
-  profileUpdated: 'alerts.profileUpdated',
-  addressUpdated: 'alerts.addressUpdated',
-  bankAccountAdded: 'alerts.bankAccountAdded',
-  bankAccountRemoved: 'alerts.bankAccountRemoved',
-  compensationUpdated: 'alerts.compensationUpdated',
-} as const satisfies Record<DashboardSuccessAlert, string>
 
 function DashboardRoot({
   contractorId,
   dictionary,
   onEvent,
   selectedTab: controlledTab,
-  successAlert,
   LoaderComponent,
 }: DashboardProps) {
   useI18n('Contractor.Dashboard')
@@ -63,16 +44,6 @@ function DashboardRoot({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      {successAlert && (
-        <Components.Alert
-          status="success"
-          label={t(alertKeys[successAlert])}
-          onDismiss={() => {
-            onEvent(componentEvents.CONTRACTOR_DASHBOARD_ALERT_DISMISSED, null)
-          }}
-          disableScrollIntoView
-        />
-      )}
       <Suspense fallback={null}>
         <DashboardHeader contractorId={contractorId} />
       </Suspense>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
 import type { CompensationDefaultValues } from './Compensation'
@@ -5,6 +6,7 @@ import { JobsList } from './JobsList'
 import { EditCompensation } from './EditCompensation'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import { useI18n } from '@/i18n'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -39,6 +41,8 @@ export function JobsListContextual() {
 export function InitialEditCompensationContextual() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
+  useI18n('Employee.Compensation')
+  const { t } = useTranslation('Employee.Compensation')
 
   const handleEvent: OnEventType<EventType, unknown> = (event, data) => {
     onEvent(event, data)
@@ -57,6 +61,8 @@ export function InitialEditCompensationContextual() {
       employeeId={ensureRequired(employeeId)}
       startDate={ensureRequired(startDate)}
       currentJobId={currentJobId}
+      title={t('title')}
+      submitCtaLabel={t('submitCta')}
       partnerDefaultValues={partnerDefaultValues}
       onEvent={handleEvent}
     />
@@ -67,6 +73,8 @@ export function InitialEditCompensationContextual() {
 export function EditCompensationContextual() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
+  useI18n('Employee.Compensation')
+  const { t } = useTranslation('Employee.Compensation')
 
   const handleEvent: OnEventType<EventType, unknown> = (event, data) => {
     onEvent(event, data)
@@ -80,7 +88,8 @@ export function EditCompensationContextual() {
       employeeId={ensureRequired(employeeId)}
       startDate={ensureRequired(startDate)}
       currentJobId={currentJobId}
-      mode="edit"
+      title={currentJobId ? t('editTitle') : t('addTitle')}
+      submitCtaLabel={t('saveNewJobCta')}
       onCancel={() => {
         onEvent(componentEvents.EMPLOYEE_COMPENSATION_CANCEL)
       }}
