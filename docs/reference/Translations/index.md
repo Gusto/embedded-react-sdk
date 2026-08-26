@@ -5072,6 +5072,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
 | <a id="property-payrollpayrolleditemployeevalidations"></a> `validations` | |
+| `validations.negativeAmount` | `"Amount cannot be negative"` |
 | `validations.reimbursementAmount` | `"Amount must be greater than zero"` |
 
 ***
