@@ -79,14 +79,35 @@ const DraftReimbursementSchema = z.object({
   ),
 })
 
-const PayrollEditEmployeeFormSchema = z.object({
-  hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
-  timeOffCompensations: z.record(z.string(), z.string().optional()),
-  finalPayoutCompensations: z.record(z.string(), z.string().optional()),
-  fixedCompensations: z.record(z.string(), z.string().optional()),
-  reimbursements: z.array(ReimbursementFormSchema),
-  paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
-})
+const PayrollEditEmployeeFormSchema = z
+  .object({
+    hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
+    timeOffCompensations: z.record(z.string(), z.string().optional()),
+    finalPayoutCompensations: z.record(z.string(), z.string().optional()),
+    fixedCompensations: z.record(z.string(), z.string().optional()),
+    reimbursements: z.array(ReimbursementFormSchema),
+    paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
+  })
+  .superRefine((data, ctx) => {
+    // A native `min={0}` only constrains the stepper: it does not stop a typed "-50", and
+    // the SDK's <form> is noValidate so the browser never enforces it either. Negative
+    // amounts therefore reached the platform and came back only as a submit-time error
+    // (SDK-1285). This covers every additional earning -- correction payment included --
+    // because they all share the fixedCompensations record.
+    Object.entries(data.fixedCompensations).forEach(([name, amount]) => {
+      if (amount === undefined || amount === '') {
+        return
+      }
+      const parsed = parseFloat(amount)
+      if (!Number.isNaN(parsed) && parsed < 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['fixedCompensations', name],
+          message: 'validations.negativeAmount',
+        })
+      }
+    })
+  })
 
 /** @internal */
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
@@ -710,6 +731,9 @@ export const PayrollEditEmployeePresentation = ({
                     isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
+                    // useField only surfaces this once react-hook-form has flagged the
+                    // field, and the schema's only rule here is the negative-amount check.
+                    errorMessage={t('validations.negativeAmount')}
                   />
                 ))}
               </Grid>
@@ -728,6 +752,7 @@ export const PayrollEditEmployeePresentation = ({
                   isRequired
                   label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
                   name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
+                  errorMessage={t('validations.negativeAmount')}
                 />
               </Grid>
             </div>

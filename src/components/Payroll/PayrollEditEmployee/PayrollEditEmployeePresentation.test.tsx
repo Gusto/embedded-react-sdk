@@ -1115,6 +1115,74 @@ describe('PayrollEditEmployeePresentation', () => {
         }),
       )
     })
+
+    // A native min={0} only constrains the stepper, and the SDK form is noValidate, so a
+    // typed negative reached the platform and only came back as a submit-time error
+    // (SDK-1285).
+    it('blocks save and flags the field when a correction amount is negative', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // Clear first: the field defaults to '0.00', and appending to that yields
+      // '0.00-50', which a number input rejects outright and blanks.
+      const correctionInput = await screen.findByLabelText('Correction payment')
+      await user.clear(correctionInput)
+      await user.type(correctionInput, '-50')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount cannot be negative')).toBeInTheDocument()
+      })
+      expect(onSave).not.toHaveBeenCalled()
+    })
+
+    it('flags a negative amount on any additional earning, not just corrections', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+      await user.type(bonusInput, '-1')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount cannot be negative')).toBeInTheDocument()
+      })
+      expect(onSave).not.toHaveBeenCalled()
+    })
+
+    it('does not flag empty or zero amounts as negative', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+
+      const commissionInput = screen.getByLabelText('Commission')
+      await user.clear(commissionInput)
+      await user.type(commissionInput, '0')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(onSave).toHaveBeenCalled()
+      })
+      expect(screen.queryByText('Amount cannot be negative')).not.toBeInTheDocument()
+    })
   })
 
   describe('Payment Method', () => {

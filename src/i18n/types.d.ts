@@ -7489,6 +7489,8 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount cannot be negative"` */
+      negativeAmount: string
     }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
