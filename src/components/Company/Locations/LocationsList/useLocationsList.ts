@@ -8,6 +8,7 @@ type LocationsListContextType = {
   totalCount: number
   currentPage: number
   itemsPerPage: PaginationItemsPerPage
+  isFetching?: boolean
   handleItemsPerPageChange: (n: PaginationItemsPerPage) => void
   handleFirstPage: () => void
   handlePreviousPage: () => void
