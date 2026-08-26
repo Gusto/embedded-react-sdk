@@ -327,6 +327,26 @@ export const DataViewSelectableWithPagination = () => {
   )
 }
 
+export const DataViewLoading = () => {
+  const dataProps = useDataView({
+    data: compensationData.slice(0, 5),
+    columns: compensationColumns,
+    isFetching: true,
+    pagination: {
+      currentPage: 2,
+      totalPages: 4,
+      itemsPerPage: 5,
+      totalCount: compensationData.length,
+      handleFirstPage: () => {},
+      handlePreviousPage: () => {},
+      handleNextPage: () => {},
+      handleLastPage: () => {},
+      handleItemsPerPageChange: () => {},
+    },
+  })
+  return <DataView label="Data View Loading" {...dataProps} />
+}
+
 export const DataViewWithFooter = () => {
   const sampleData = [
     { jobTitle: 'Software Engineer', hourlyRate: 45, hoursWorked: 40 },
