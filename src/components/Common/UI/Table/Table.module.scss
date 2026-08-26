@@ -106,13 +106,6 @@
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
         outline-offset: -2px;
       }
-      &:last-child {
-        text-align: right;
-
-        :global(.react-aria-Button) {
-          display: inline-flex;
-        }
-      }
 
       // Empty state row styling
       :global(.react-aria-Row[data-empty-state='true']) & {
