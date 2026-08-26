@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import {
-  usePayrollsListSuspense,
+  usePayrollsList,
   invalidateAllPayrollsList,
 } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
@@ -19,7 +19,7 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
-import { BaseComponent, useBase } from '@/components/Base'
+import { BaseComponent, BaseLayout, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
@@ -85,7 +85,12 @@ const getDefaultEndDate = (): Date => {
   return date
 }
 
-const Root = ({ companyId, onEvent, withOffcyclePayroll = true }: PayrollListBlockProps) => {
+const Root = ({
+  companyId,
+  onEvent,
+  withOffcyclePayroll = true,
+  LoaderComponent,
+}: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
@@ -103,22 +108,24 @@ const Root = ({ companyId, onEvent, withOffcyclePayroll = true }: PayrollListBlo
   })
   const dateFilterParams = dateRangeFilter.getApiDateParams()
 
-  const { data: payrollsData } = usePayrollsListSuspense({
-    companyId,
-    processingStatuses: [ProcessingStatuses.Unprocessed],
-    startDate: dateFilterParams.startDate,
-    endDate: dateFilterParams.endDate,
-    payrollTypes: [
-      QueryParamPayrollTypes.Regular,
-      QueryParamPayrollTypes.OffCycle,
-      QueryParamPayrollTypes.External,
-    ],
-    includeOffCycle: true,
-    page: currentPage,
-    per: itemsPerPage,
-  })
-  const payrollList = payrollsData.payrollList!
-  const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers)
+  const { data: payrollsData, isFetching } = usePayrollsList(
+    {
+      companyId,
+      processingStatuses: [ProcessingStatuses.Unprocessed],
+      startDate: dateFilterParams.startDate,
+      endDate: dateFilterParams.endDate,
+      payrollTypes: [
+        QueryParamPayrollTypes.Regular,
+        QueryParamPayrollTypes.OffCycle,
+        QueryParamPayrollTypes.External,
+      ],
+      includeOffCycle: true,
+      page: currentPage,
+      per: itemsPerPage,
+    },
+    { placeholderData: keepPreviousData, throwOnError: true },
+  )
+  const payrollList = payrollsData?.payrollList ?? []
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({
     companyId,
   })
@@ -204,6 +211,12 @@ const Root = ({ companyId, onEvent, withOffcyclePayroll = true }: PayrollListBlo
       setDeletingPayrollId(null)
     }
   }
+
+  if (!payrollsData) {
+    return <BaseLayout isLoading LoaderComponent={LoaderComponent} />
+  }
+
+  const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
 
   return (
     <PayrollListPresentation
