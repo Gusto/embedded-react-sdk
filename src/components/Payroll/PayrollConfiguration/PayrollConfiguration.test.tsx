@@ -776,6 +776,65 @@ describe('PayrollConfiguration', () => {
       })
     })
 
+    it('does not render PayrollOverview when calculation fails and prepare returns invalid_operation', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      const prepareResolver = vi.fn<HttpResponseResolver>()
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'processing_failed', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          prepareResolver.mockImplementation(async ({ request }) => {
+            const body = (await request.json()) as { employee_uuids?: string[] } | null
+            const employeeUuids = body?.employee_uuids
+
+            if (employeeUuids && employeeUuids.length > 0) {
+              const filteredCompensations = currentPayrollData.employee_compensations.filter(
+                (comp: { employee_uuid: string }) => employeeUuids.includes(comp.employee_uuid),
+              )
+              return HttpResponse.json({
+                ...currentPayrollData,
+                employee_compensations: filteredCompensations,
+              })
+            }
+
+            return HttpResponse.json(currentPayrollData)
+          }),
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const prepareCountBeforeCalculate = prepareResolver.mock.calls.length
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+
+      expect(prepareResolver.mock.calls.length).toBe(prepareCountBeforeCalculate)
+      expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/calculated', expect.anything())
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/alreadyProcessed', expect.anything())
+    })
+
     it('does not make prepare calls while polling', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       let prepareCallCount = 0

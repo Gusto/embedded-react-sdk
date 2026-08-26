@@ -108,6 +108,7 @@ const Root = ({
 
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
+  const [hasProcessingFailed, setHasProcessingFailed] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
@@ -143,7 +144,7 @@ const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
-    isCalculating: isPolling || isCalculatingPayroll,
+    isCalculating: isPolling || isCalculatingPayroll || hasProcessingFailed,
     excludedEmployeeUuids,
   })
 
@@ -318,6 +319,7 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    setHasProcessingFailed(false)
     previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
@@ -431,6 +433,7 @@ const Root = ({
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
+      setHasProcessingFailed(true)
     }
   }, [
     payrollData.payrollShow?.processingRequest?.status,
@@ -448,6 +451,7 @@ const Root = ({
     const timeoutId = setTimeout(() => {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
+      setHasProcessingFailed(true)
     }, POLLING_TIMEOUT_MS)
 
     return () => {
@@ -493,7 +497,7 @@ const Root = ({
     return undefined
   })()
 
-  if (isAlreadyProcessed) {
+  if (isAlreadyProcessed && payrollData.payrollShow?.calculatedAt) {
     const onAlreadyProcessedOverviewEvent = (type: EventType, data?: unknown) => {
       if (type === componentEvents.RUN_PAYROLL_CANCELLED) {
         // Cancelling un-processes the payroll, making it editable again — re-run prepare so
