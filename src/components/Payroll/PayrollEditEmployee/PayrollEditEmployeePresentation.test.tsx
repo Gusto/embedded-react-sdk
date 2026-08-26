@@ -1115,6 +1115,58 @@ describe('PayrollEditEmployeePresentation', () => {
         }),
       )
     })
+
+    // Clearing the field used to omit the entry entirely, so the API kept the previously
+    // saved amount: the box looked empty while the old value survived the save (SDK-1284).
+    // Clearing now behaves exactly like typing 0, as in the test above.
+    it('zeroes an existing compensation when its field is cleared', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // findBy, not getBy: the labels are translated, so a getBy here only passes when an
+      // earlier test in the file has already warmed the i18n namespace.
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+
+      const saveButton = screen.getByRole('button', { name: /save/i })
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fixedCompensations: expect.arrayContaining([
+            expect.objectContaining({ name: 'Bonus', amount: '0', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '50.00', jobUuid: 'job-1' }),
+          ]),
+        }),
+      )
+    })
+
+    it('still omits an earning type that never had a saved amount', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // 'Paycheck tips' is an available type with no saved compensation, so there is
+      // nothing to zero out and it must stay out of the payload.
+      const tipsInput = await screen.findByLabelText('Paycheck tips')
+      await user.type(tipsInput, '10')
+      await user.clear(tipsInput)
+
+      const saveButton = screen.getByRole('button', { name: /save/i })
+      await user.click(saveButton)
+
+      const saved = onSave.mock.calls[0]![0] as PayrollEmployeeCompensationsType
+      expect(saved.fixedCompensations?.map(compensation => compensation.name)).not.toContain(
+        'Paycheck Tips',
+      )
+    })
   })
 
   describe('Payment Method', () => {
