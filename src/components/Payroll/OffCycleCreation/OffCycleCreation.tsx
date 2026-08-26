@@ -232,6 +232,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
         <OffCycleCreationPresentation
           employees={employees}
           isPending={isPending}
+          minCheckDate={minCheckDate}
+          minCheckOnlyDate={today}
           taxWithholdingConfig={taxWithholdingConfig}
           isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
           onTaxWithholdingEditClick={handleTaxWithholdingEditClick}

@@ -22,6 +22,8 @@ import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/
 export function OffCycleCreationPresentation({
   employees,
   isPending,
+  minCheckDate,
+  minCheckOnlyDate,
   taxWithholdingConfig,
   isTaxWithholdingModalOpen,
   onTaxWithholdingEditClick,
@@ -89,7 +91,10 @@ export function OffCycleCreationPresentation({
           <Heading as="h3">{t('payPeriodSectionTitle')}</Heading>
           <Text variant="supporting">{t('payPeriodSectionDescription')}</Text>
         </Flex>
-        <OffCyclePayPeriodDateFormPresentation />
+        <OffCyclePayPeriodDateFormPresentation
+          minCheckDate={minCheckDate}
+          minCheckOnlyDate={minCheckOnlyDate}
+        />
       </Flex>
 
       <hr className={styles.divider} />
