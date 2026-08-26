@@ -25,7 +25,7 @@
   "cancelSelfOnboardingCta": "Cancel self-onboarding",
   "cancelDismissalCta": "Cancel dismissal",
   "cancelRehireCta": "Cancel rehire",
-  "hamburgerTitle": "Contractor actions menu",
+  "hamburgerTitle": "Actions for {{name}}",
   "contractorListLabel": "List of contractors",
   "emptyState": {
     "active": {

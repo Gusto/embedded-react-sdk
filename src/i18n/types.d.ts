@@ -2147,6 +2147,8 @@ export namespace Translations {
     deleteCta: string
     /** @defaultValue `"Cancel self-onboarding"` */
     cancelSelfOnboardingCta: string
+    /** @defaultValue `"Actions for {{name}}"` */
+    hamburgerTitle: string
     /** @defaultValue `"Add contractors to get them setup for payroll."` */
     emptyTableDescription: string
     /** @defaultValue `"You haven't added any contractors yet"` */
@@ -2576,7 +2578,7 @@ export namespace Translations {
     cancelDismissalCta: string
     /** @defaultValue `"Cancel rehire"` */
     cancelRehireCta: string
-    /** @defaultValue `"Contractor actions menu"` */
+    /** @defaultValue `"Actions for {{name}}"` */
     hamburgerTitle: string
     /** @defaultValue `"List of contractors"` */
     contractorListLabel: string
