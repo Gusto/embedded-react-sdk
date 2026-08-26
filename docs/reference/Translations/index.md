@@ -4379,7 +4379,6 @@ Translation keys for the `Employee.Terminations.TerminationSummary` i18n namespa
 | `cancelDialog.cancel` | `"No, go back"` |
 | `cancelDialog.confirm` | `"Yes, cancel termination"` |
 | `cancelDialog.title` | `"Cancel termination?"` |
-| <a id="property-employeeterminationsterminationsummarycancelsuccess"></a> `cancelSuccess` | `"Termination has been cancelled successfully"` |
 | <a id="property-employeeterminationsterminationsummarydates"></a> `dates` | |
 | `dates.dismissed` | `"You dismissed {{employeeName}}."` |
 | `dates.lastDayOfWork` | `"Last day of work"` |
