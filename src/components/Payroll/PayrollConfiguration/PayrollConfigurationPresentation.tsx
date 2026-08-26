@@ -46,7 +46,7 @@ interface PayrollConfigurationPresentationProps {
   payrollAlert?: {
     label: string
     content?: ReactNode
-    variant: 'info' | 'warning'
+    variant: 'info' | 'warning' | 'error'
   }
   isPending?: boolean
   isCalculating?: boolean

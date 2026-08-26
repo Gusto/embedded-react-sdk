@@ -7344,6 +7344,10 @@ export namespace Translations {
     alerts: {
       /** @defaultValue `"This payroll is already processed. If you'd like to make changes, please cancel and re-run it."` */
       alreadyProcessed: string
+      /** @defaultValue `"There was an error calculating payroll"` */
+      calculationFailed: string
+      /** @defaultValue `"Please review your payroll details and try again."` */
+      calculationFailedText: string
       /** @defaultValue `"Your progress has been saved"` */
       progressSaved: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */

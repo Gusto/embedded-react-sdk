@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -26,7 +25,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { SDKInternalError } from '@/types/sdkError'
-import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
 const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -108,9 +106,9 @@ const Root = ({
 
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
+  const [hasProcessingFailed, setHasProcessingFailed] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
   const gustoClient = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -143,7 +141,7 @@ const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
-    isCalculating: isPolling || isCalculatingPayroll,
+    isCalculating: isPolling || isCalculatingPayroll || hasProcessingFailed,
     excludedEmployeeUuids,
   })
 
@@ -318,11 +316,12 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    setHasProcessingFailed(false)
+    setIsCalculatingPayroll(true)
     previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
-        setIsCalculatingPayroll(true)
         try {
           const calcResult = await payrollsCalculate(gustoClient, {
             companyId,
@@ -331,10 +330,6 @@ const Root = ({
           if (!calcResult.ok) {
             throw calcResult.error
           }
-          // `payrollsCalculate` is a raw func, so it skips the global onSuccess
-          // invalidation that mutation hooks get; invalidate here so cached payroll
-          // reads (e.g. PayrollOverview's separate key) refetch fresh. SDK-1018.
-          void queryClient.invalidateQueries({ queryKey: [API_QUERY_NAMESPACE] })
           setIsPolling(true)
         } finally {
           setIsCalculatingPayroll(false)
@@ -431,6 +426,7 @@ const Root = ({
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
+      setHasProcessingFailed(true)
     }
   }, [
     payrollData.payrollShow?.processingRequest?.status,
@@ -448,6 +444,7 @@ const Root = ({
     const timeoutId = setTimeout(() => {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
+      setHasProcessingFailed(true)
     }, POLLING_TIMEOUT_MS)
 
     return () => {
@@ -456,6 +453,14 @@ const Root = ({
   }, [isPolling, onEvent])
 
   const payrollAlert = (() => {
+    if (hasProcessingFailed) {
+      return {
+        label: t('alerts.calculationFailed'),
+        content: t('alerts.calculationFailedText'),
+        variant: 'error' as const,
+      }
+    }
+
     const statusMeta = payrollData.payrollShow?.payrollStatusMeta
 
     const isLatePayroll =
@@ -493,7 +498,7 @@ const Root = ({
     return undefined
   })()
 
-  if (isAlreadyProcessed) {
+  if (isAlreadyProcessed && payrollData.payrollShow?.calculatedAt) {
     const onAlreadyProcessedOverviewEvent = (type: EventType, data?: unknown) => {
       if (type === componentEvents.RUN_PAYROLL_CANCELLED) {
         // Cancelling un-processes the payroll, making it editable again — re-run prepare so

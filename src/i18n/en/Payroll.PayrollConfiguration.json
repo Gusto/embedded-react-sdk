@@ -28,6 +28,8 @@
   },
   "alerts": {
     "alreadyProcessed": "This payroll is already processed. If you'd like to make changes, please cancel and re-run it.",
+    "calculationFailed": "There was an error calculating payroll",
+    "calculationFailedText": "Please review your payroll details and try again.",
     "progressSaved": "Your progress has been saved",
     "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
     "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",
