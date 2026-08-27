@@ -21,74 +21,9 @@ interface SubmissionAlertState {
   alerts: SubmissionAlert[]
 }
 
-/**
- * Props for {@link InformationRequestsFlow}.
- *
- * @public
- */
-export interface InformationRequestsFlowProps extends Omit<
-  BaseComponentInterface<'InformationRequests'>,
-  'onEvent'
-> {
-  /** The associated company identifier. */
-  companyId: string
-  /**
-   * When `true` (default), the submission success alert is rendered at the top of this component.
-   * Set to `false` when embedding in a parent that renders the alert elsewhere.
-   */
-  withAlert?: boolean
-  /** Callback invoked when the flow or its blocks emit an event. */
-  onEvent?: BaseComponentInterface['onEvent']
-}
-
 const ALERT_TYPE = 'informationRequestResponded' as const
 
-/**
- * Hub for viewing and responding to outstanding information requests from Gusto.
- *
- * @remarks
- * Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
- * On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
- *
- * Information requests can also block payroll processing; in that case they are surfaced inline within
- * `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
- *
- * @events
- * | Event | Description | Data |
- * | ----- | ----------- | ---- |
- * | `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
- * | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
- * | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
- *
- * Each piece is also exported as a standalone block (see the Blocks
- * table) for composing a custom workflow when this orchestration is the wrong
- * fit. See the
- * {@link https://sdk.gusto.com/docs/guides/integration-guide/composition | Composition guide}
- * for how to recompose these blocks into your own flow.
- *
- * @components
- * - {@link InformationRequestList}
- * - {@link InformationRequestForm}
- *
- * @param props - See {@link InformationRequestsFlowProps}.
- * @returns The information requests flow surface.
- * @public
- *
- * @example
- * ```tsx title="App.tsx"
- * import { InformationRequests } from '@gusto/embedded-react-sdk'
- *
- * function MyApp() {
- *   return (
- *     <InformationRequests.InformationRequestsFlow
- *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
- *       onEvent={() => {}}
- *     />
- *   )
- * }
- * ```
- */
-export function InformationRequestsFlow({
+function InformationRequestsFlowRoot({
   companyId,
   dictionary,
   withAlert = true,
@@ -205,5 +140,86 @@ export function InformationRequestsFlow({
         </Modal>
       </Flex>
     </FlowContext.Provider>
+  )
+}
+
+/**
+ * Props for {@link InformationRequestsFlow}.
+ *
+ * @public
+ */
+export interface InformationRequestsFlowProps extends Omit<
+  BaseComponentInterface<'InformationRequests'>,
+  'onEvent'
+> {
+  /** The associated company identifier. */
+  companyId: string
+  /**
+   * When `true` (default), the submission success alert is rendered at the top of this component.
+   * Set to `false` when embedding in a parent that renders the alert elsewhere.
+   */
+  withAlert?: boolean
+  /** Callback invoked when the flow or its blocks emit an event. */
+  onEvent?: BaseComponentInterface['onEvent']
+}
+
+/**
+ * Hub for viewing and responding to outstanding information requests from Gusto.
+ *
+ * @remarks
+ * Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
+ * On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
+ *
+ * Information requests can also block payroll processing; in that case they are surfaced inline within
+ * `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
+ *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
+ * | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
+ * | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
+ *
+ * Each piece is also exported as a standalone block (see the Blocks
+ * table) for composing a custom workflow when this orchestration is the wrong
+ * fit. See the
+ * {@link https://sdk.gusto.com/docs/guides/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
+ *
+ * @components
+ * - {@link InformationRequestList}
+ * - {@link InformationRequestForm}
+ *
+ * @param props - See {@link InformationRequestsFlowProps}.
+ * @returns The information requests flow surface.
+ * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { InformationRequests } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <InformationRequests.InformationRequestsFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
+export function InformationRequestsFlow({
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: InformationRequestsFlowProps) {
+  return (
+    <BaseBoundaries
+      componentName="InformationRequests"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <InformationRequestsFlowRoot LoaderComponent={LoaderComponent} {...props} />
+    </BaseBoundaries>
   )
 }
