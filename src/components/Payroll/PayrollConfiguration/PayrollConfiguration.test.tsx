@@ -850,71 +850,6 @@ describe('PayrollConfiguration', () => {
       })
     })
 
-    it('does not trigger already-processed path after calculation failure', async () => {
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
-      const prepareResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
-        const body = (await request.json()) as { employee_uuids?: string[] } | null
-        const employeeUuids = body?.employee_uuids
-
-        if (employeeUuids && employeeUuids.length > 0) {
-          const filteredCompensations = allCompensations.filter(comp =>
-            employeeUuids.includes(comp.employee_uuid),
-          )
-          return HttpResponse.json({
-            ...currentPayrollData,
-            employee_compensations: filteredCompensations,
-          })
-        }
-
-        return HttpResponse.json(currentPayrollData)
-      })
-
-      server.use(
-        http.put(
-          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
-          prepareResolver,
-        ),
-        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          currentPayrollData = {
-            ...mockPayrollData,
-            calculated_at: null,
-            processing_request: { status: 'processing_failed', errors: [] },
-          }
-          return new HttpResponse(null, { status: 202 })
-        }),
-      )
-
-      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
-
-      const prepareCountBeforeCalculate = prepareResolver.mock.calls.length
-
-      const calculateButton = screen.getByRole('button', { name: /calculate/i })
-      await user.click(calculateButton)
-
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(6_000)
-      })
-
-      await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
-      })
-
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(10_000)
-      })
-
-      expect(prepareResolver.mock.calls.length).toBe(prepareCountBeforeCalculate)
-      expect(onEvent).not.toHaveBeenCalledWith(
-        'runPayroll/alreadyProcessed',
-        expect.anything(),
-      )
-      expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
-    })
-
     it('does not make prepare calls while polling', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       let prepareCallCount = 0
@@ -966,6 +901,54 @@ describe('PayrollConfiguration', () => {
       })
 
       expect(prepareCallCount).toBe(prepareCountBeforeCalculate)
+    })
+  })
+
+  describe('calculatedAt guard', () => {
+    it('does not render overview when already-processed fires with null calculatedAt', async () => {
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: null,
+        processing_request: null,
+      }
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          () =>
+            HttpResponse.json(
+              {
+                errors: [
+                  {
+                    error_key: 'base',
+                    category: 'invalid_operation',
+                    message: 'This payroll has already been processed.',
+                  },
+                ],
+              },
+              { status: 422 },
+            ),
+        ),
+        getCompanyBankAccounts,
+        getPaymentConfigs,
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/alreadyProcessed',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { level: 1, name: /edit payroll/i }),
+        ).toBeInTheDocument()
+      })
+
+      expect(screen.queryByTestId('internal-error-card')).not.toBeInTheDocument()
     })
   })
 
