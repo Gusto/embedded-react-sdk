@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
@@ -29,9 +28,6 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { SDKInternalError } from '@/types/sdkError'
 import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
-
-const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
-  processingRequest?.status === PayrollProcessingRequestStatus.Calculating
 
 
 /**
