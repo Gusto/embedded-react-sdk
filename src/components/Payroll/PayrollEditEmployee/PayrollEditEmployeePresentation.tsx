@@ -79,35 +79,24 @@ const DraftReimbursementSchema = z.object({
   ),
 })
 
-const PayrollEditEmployeeFormSchema = z
-  .object({
-    hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
-    timeOffCompensations: z.record(z.string(), z.string().optional()),
-    finalPayoutCompensations: z.record(z.string(), z.string().optional()),
-    fixedCompensations: z.record(z.string(), z.string().optional()),
-    reimbursements: z.array(ReimbursementFormSchema),
-    paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
-  })
-  .superRefine((data, ctx) => {
-    // A native `min={0}` only constrains the stepper: it does not stop a typed "-50", and
-    // the SDK's <form> is noValidate so the browser never enforces it either. Negative
-    // amounts therefore reached the platform and came back only as a submit-time error
-    // (SDK-1285). This covers every additional earning -- correction payment included --
-    // because they all share the fixedCompensations record.
-    Object.entries(data.fixedCompensations).forEach(([name, amount]) => {
-      if (amount === undefined || amount === '') {
-        return
-      }
-      const parsed = parseFloat(amount)
-      if (!Number.isNaN(parsed) && parsed < 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['fixedCompensations', name],
-          message: 'validations.negativeAmount',
-        })
-      }
-    })
-  })
+// A native `min={0}` only constrains the stepper: it does not stop a typed "-50", and the
+// SDK's <form> is noValidate so the browser never enforces it either. Negative amounts
+// therefore reached the platform and came back only as a submit-time error (SDK-1285).
+// Applied via z.record below, this covers every additional earning -- correction payment
+// included -- because they all share the fixedCompensations record.
+const nonNegativeAmountSchema = z
+  .string()
+  .optional()
+  .refine(val => !val || parseFloat(val) >= 0, { message: 'validations.negativeAmount' })
+
+const PayrollEditEmployeeFormSchema = z.object({
+  hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
+  timeOffCompensations: z.record(z.string(), z.string().optional()),
+  finalPayoutCompensations: z.record(z.string(), z.string().optional()),
+  fixedCompensations: z.record(z.string(), nonNegativeAmountSchema),
+  reimbursements: z.array(ReimbursementFormSchema),
+  paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
+})
 
 /** @internal */
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
