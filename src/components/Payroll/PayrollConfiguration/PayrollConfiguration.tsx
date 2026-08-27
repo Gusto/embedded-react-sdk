@@ -144,16 +144,13 @@ const Root = ({
     companyId,
     payrollId,
     isCalculating: isPolling || isCalculatingPayroll,
-    // Prepare is only valid for a fresh, uncalculated draft. Keep it off if the server says the
-    // payroll is already calculated or mid-process (covers direct loads + multi-tab), or if a
-    // calculation was started here (covers the same-tab transition race). SDK-1231.
+    // Prepare must re-fire on a fresh mount (e.g. Edit from overview reopens a calculated
+    // payroll), so we do NOT gate on `calculatedAt`. We only block prepare from re-firing on
+    // the SAME mount that kicked off a calculation (the transition race), and while the server
+    // is actively calculating (covers multi-tab). SDK-1231.
     disablePrepare:
       hasStartedCalculationRef.current ||
-      isCalculatingStatus(payrollData.payrollShow?.processingRequest) ||
-      isCalculatedStatus(
-        payrollData.payrollShow?.processingRequest,
-        payrollData.payrollShow?.calculatedAt,
-      ),
+      isCalculatingStatus(payrollData.payrollShow?.processingRequest),
     excludedEmployeeUuids,
   })
 
