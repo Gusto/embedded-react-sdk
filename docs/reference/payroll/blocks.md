@@ -308,8 +308,9 @@ Handles the configuration phase of payroll processing, allowing users to review 
 
 If the payroll turns out to already be processed (e.g. another actor submitted it while this
 screen was open), this component emits `runPayroll/alreadyProcessed` and renders a
-static error alert. When used inside the payroll execution flow the state machine transitions
-to the overview step; standalone consumers see the alert as a fallback.
+an info alert with "View payroll" and "Cancel payroll" actions. When used inside the payroll
+execution flow the state machine transitions to the overview step; standalone consumers see
+the alert as a fallback.
 
 Emits the following events:
 
@@ -343,6 +344,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
 | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
 | `runPayroll/alreadyProcessed` | The payroll turns out to already be processed while configuring it | `{ payrollId, alert, payPeriod }` |
+| `runPayroll/cancelled` | The payroll was cancelled from the already-processed alert | Cancel payroll response |
 | `runPayroll/processingFailed` | Payroll calculation fails or times out | — |
 | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
 | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
@@ -359,6 +361,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/calculate`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-calculate) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
 | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
 | GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |

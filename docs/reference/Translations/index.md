@@ -4977,6 +4977,8 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `alerts.skippedEmployees` | |
 | `alerts.skippedEmployees.employeeAddressNotVerified` | `"Employee address not verified"` |
 | `alerts.skippedEmployees.label` | `"Skipped Employees"` |
+| <a id="property-payrollpayrollconfigurationalreadyprocessedcancelcta"></a> `alreadyProcessedCancelCta` | `"Cancel payroll"` |
+| <a id="property-payrollpayrollconfigurationalreadyprocessedviewcta"></a> `alreadyProcessedViewCta` | `"View payroll"` |
 | <a id="property-payrollpayrollconfigurationbreadcrumblabel"></a> `breadcrumbLabel` | `"Edit Payroll for {{startDate}} - {{endDate}}"` |
 | <a id="property-payrollpayrollconfigurationbreadcrumblabeldismissal"></a> `breadcrumbLabelDismissal` | `"Edit Dismissal Payroll"` |
 | <a id="property-payrollpayrollconfigurationcalculatepayroll"></a> `calculatePayroll` | `"Calculate and review"` |
@@ -4984,6 +4986,10 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | <a id="property-payrollpayrollconfigurationcalculatingdescription"></a> `calculatingDescription` | `"This may take a minute or two. You can navigate away while this happens."` |
 | <a id="property-payrollpayrollconfigurationcalculatingpayroll"></a> `calculatingPayroll` | `"Calculating payroll..."` |
 | <a id="property-payrollpayrollconfigurationcalculatingtitle"></a> `calculatingTitle` | `"Calculating payroll..."` |
+| <a id="property-payrollpayrollconfigurationcanceldialogconfirmcta"></a> `cancelDialogConfirmCta` | `"Yes, cancel payroll"` |
+| <a id="property-payrollpayrollconfigurationcanceldialogdeclinecta"></a> `cancelDialogDeclineCta` | `"No, go back"` |
+| <a id="property-payrollpayrollconfigurationcanceldialogdescription"></a> `cancelDialogDescription` | `"Any changes you have made to this payroll will be saved."` |
+| <a id="property-payrollpayrollconfigurationcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{startDate}} - {{endDate}} payroll?"` |
 | <a id="property-payrollpayrollconfigurationdescription"></a> `description` | `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` |
 | <a id="property-payrollpayrollconfigurationdescriptiondismissal"></a> `descriptionDismissal` | `"{{payrollType}} payroll"` |
 | <a id="property-payrollpayrollconfigurationeditmenu"></a> `editMenu` | |

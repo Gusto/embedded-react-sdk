@@ -75,6 +75,11 @@
         },
         {
           "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel"
+        },
+        {
+          "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare"
         },
