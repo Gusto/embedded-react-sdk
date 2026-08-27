@@ -17,6 +17,7 @@
   "declineCancelCta": "No, go back",
   "payrollReceiptCta": "View payroll receipt",
   "downloadPaystubLabel": "Download paystub pdf",
+  "downloadLoadingMessage": "Generating paystub…",
   "loadingTitle": "Submitting payroll...",
   "loadingDescription": "This may take a minute or two. You can navigate away while this happens.",
   "dataLoadingTitle": "Loading payroll...",
