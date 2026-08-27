@@ -47,6 +47,21 @@ describe('toHistoryRows', () => {
     ])
     expect(rows[0]!.values).toEqual({ rate: '0.05' })
   })
+
+  // SDK-1115: TaxRequirement.key isn't guaranteed unique within one set (same root cause as
+  // StateTaxesForm's same-key TaxRequirementSet bug). Without disambiguation, the second
+  // requirement's value would silently overwrite the first's in the same row.
+  it('disambiguates requirements sharing a key instead of one overwriting the other', () => {
+    const rows = toHistoryRows([
+      set({
+        requirements: [
+          { key: 'rate', label: 'Rate A', value: '0.05', editable: true },
+          { key: 'rate', label: 'Rate B', value: '0.07', editable: true },
+        ],
+      }),
+    ])
+    expect(rows[0]!.values).toEqual({ rate: '0.05', 'rate--dup1': '0.07' })
+  })
 })
 
 describe('extractRequirementColumns', () => {
@@ -68,6 +83,21 @@ describe('extractRequirementColumns', () => {
     expect(columns).toEqual([
       { key: 'a', label: 'A' },
       { key: 'b', label: 'B' },
+    ])
+  })
+
+  it('returns a distinct column per requirement sharing a key, instead of deduping them together', () => {
+    const columns = extractRequirementColumns([
+      set({
+        requirements: [
+          { key: 'rate', label: 'Rate A', editable: true },
+          { key: 'rate', label: 'Rate B', editable: true },
+        ],
+      }),
+    ])
+    expect(columns).toEqual([
+      { key: 'rate', label: 'Rate A' },
+      { key: 'rate--dup1', label: 'Rate B' },
     ])
   })
 })

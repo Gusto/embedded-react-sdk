@@ -145,6 +145,7 @@ export const PayrollHistoryPresentation = ({
       <DataView
         label={t('dataView.label')}
         pagination={pagination}
+        isFetching={pagination.isFetching}
         emptyState={() =>
           dateRangeFilter.isModified ? (
             <EmptyData

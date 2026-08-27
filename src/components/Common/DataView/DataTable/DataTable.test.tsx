@@ -196,6 +196,22 @@ describe('DataTable Component', () => {
     })
   })
 
+  describe('isFetching', () => {
+    test('marks the table region as busy and dims it while fetching', () => {
+      renderTable({ isFetching: true })
+      const wrapper = screen.getByRole('grid').parentElement?.parentElement
+      expect(wrapper).toHaveAttribute('aria-busy', 'true')
+      expect(wrapper?.className).toMatch(/isFetching/)
+    })
+
+    test('does not mark the table region as busy when not fetching', () => {
+      renderTable()
+      const wrapper = screen.getByRole('grid').parentElement?.parentElement
+      expect(wrapper).toHaveAttribute('aria-busy', 'false')
+      expect(wrapper?.className).not.toMatch(/isFetching/)
+    })
+  })
+
   describe('column justify', () => {
     test('wraps header and cell content in a flex-end container when justify is end', () => {
       renderTable({
