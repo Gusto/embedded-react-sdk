@@ -4973,6 +4973,9 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `alerts.payrollDeadline.message` | `"To pay your employees with direct deposit by the check date, you'll need to run payroll by the deadline."` |
 | `alerts.payrollLate` | `"Your original pay date was {{initialCheckDate}}"` |
 | `alerts.payrollLateText` | `"Run payroll before {{time}} on {{date}} to pay your employees on {{newCheckDate}}."` |
+| `alerts.processingFailed` | |
+| `alerts.processingFailed.label` | `"Payroll calculation failed"` |
+| `alerts.processingFailed.message` | `"Something went wrong while calculating this payroll. Please review the details below and try again."` |
 | `alerts.progressSaved` | `"Your progress has been saved"` |
 | `alerts.skippedEmployees` | |
 | `alerts.skippedEmployees.employeeAddressNotVerified` | `"Employee address not verified"` |
