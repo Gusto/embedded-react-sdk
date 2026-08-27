@@ -498,7 +498,7 @@ const Root = ({
   })()
 
   if (isAlreadyProcessed) {
-    return <Alert status="error" label={t('alerts.alreadyProcessed')} />
+    return <Alert status="info" label={t('alerts.alreadyProcessed')} />
   }
 
   return (
