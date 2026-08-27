@@ -776,6 +776,70 @@ describe('PayrollConfiguration', () => {
       })
     })
 
+    it('still detects an already-successful calculation after the component remounts mid-poll', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      const { rerender } = renderWithProviders(<PayrollConfiguration key="a" {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      // Flush the immediate refetch that `invalidateQueries` triggers on click --
+      // in the real bug, this is what usually catches a fast backend. Here it still
+      // only sees `calculating`, so the component is left genuinely polling.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0)
+      })
+
+      // The backend finishes calculating in the background -- e.g. between poll
+      // ticks -- but nothing has re-fetched yet, so the currently-mounted instance
+      // doesn't know about it.
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: new Date().toISOString(),
+        processing_request: { status: 'calculate_success', errors: [] },
+      }
+
+      // Simulate the component subtree being torn down and recreated right now
+      // (e.g. by a Suspense re-throw or an error boundary reset) -- before the next
+      // 5s poll ever gets a chance to observe the transition itself. `rerender`
+      // keeps the same QueryClient/provider tree, so this isolates the remount
+      // itself as the cause: the fresh instance's very first fetch already returns
+      // the successful state, but its local `isPolling`/`previousCalculatedAtRef`
+      // start over at their initial values.
+      rerender(<PayrollConfiguration key="b" {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      // Completion detection must not depend on having personally witnessed the
+      // `calculating` state first -- a fresh instance that only ever observes the
+      // already-successful response still has to notice and report it.
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
+    })
+
     it('does not make prepare calls while polling', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       let prepareCallCount = 0
