@@ -107,8 +107,10 @@ const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
-  // Local latch: once a calculation is kicked off from this screen, prepare must never re-fire
-  // for the rest of this mount, even after `isCalculating` flips back to false. SDK-1231.
+  // Remembers that a calculation was started on this mount. It stays true after `isPolling` and
+  // `isCalculatingPayroll` clear on success, which is the one render where prepare would otherwise
+  // re-enable and wipe the fresh `calculatedAt`. A fresh Edit mount resets it, so prepare still
+  // runs to reopen a calculated payroll. SDK-1231.
   const hasStartedCalculationRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
 
@@ -143,12 +145,14 @@ const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
-    isCalculating: isPolling || isCalculatingPayroll,
-    // Prepare must re-fire on a fresh mount (e.g. Edit from overview reopens a calculated
-    // payroll), so we do NOT gate on `calculatedAt`. We only block prepare from re-firing on
-    // the SAME mount that kicked off a calculation (the transition race), and while the server
-    // is actively calculating (covers multi-tab). SDK-1231.
+    // Suppress prepare whenever a calculation is in play: locally kicked off (isCalculatingPayroll),
+    // being polled (isPolling), already started on this mount so it stays suppressed through the
+    // handoff to overview (hasStartedCalculationRef), or in progress on the server from another tab
+    // (isCalculatingStatus). We deliberately do NOT gate on `calculatedAt`, so prepare still
+    // re-fires on a fresh Edit mount to reopen the payroll. SDK-1231.
     disablePrepare:
+      isPolling ||
+      isCalculatingPayroll ||
       hasStartedCalculationRef.current ||
       isCalculatingStatus(payrollData.payrollShow?.processingRequest),
     excludedEmployeeUuids,

@@ -18,12 +18,11 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 interface UsePayrollConfigurationDataParams {
   companyId: string
   payrollId: string
-  isCalculating?: boolean
   /**
-   * Latches prepare OFF for good once a calculation has been started, is in progress, or has
-   * completed. Unlike `isCalculating` (which flips back to false when polling ends), this stays
-   * true through the config to overview transition so a re-enabled prepare cannot re-fire and
-   * wipe the server-side `calculatedAt`. See SDK-1231.
+   * When true, the prepare query is disabled and any in-flight prepare is cancelled. The caller
+   * owns every reason prepare should be suppressed (an in-progress calculation, the same-mount
+   * post-calculation transition, an actively-calculating server state) so this hook keeps a
+   * single, unambiguous gate. See SDK-1231.
    */
   disablePrepare?: boolean
   excludedEmployeeUuids?: string[]
@@ -55,7 +54,6 @@ const isAlreadyProcessedError = (error: unknown): boolean => {
 export function usePayrollConfigurationData({
   companyId,
   payrollId,
-  isCalculating = false,
   disablePrepare = false,
   excludedEmployeeUuids = [],
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
@@ -128,7 +126,7 @@ export function usePayrollConfigurationData({
 
       return result.value.payrollPrepared
     },
-    enabled: employeeUuids.length > 0 && !isCalculating && !disablePrepare,
+    enabled: employeeUuids.length > 0 && !disablePrepare,
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
     // An "already processed" prepare failure is terminal — retrying it wastes time. Other
@@ -148,12 +146,12 @@ export function usePayrollConfigurationData({
   }, [queryClient, payrollId])
 
   useEffect(() => {
-    if (isCalculating) {
+    if (disablePrepare) {
       void queryClient.cancelQueries({
         queryKey: [PREPARE_QUERY_KEY, payrollId],
       })
     }
-  }, [isCalculating, queryClient, payrollId])
+  }, [disablePrepare, queryClient, payrollId])
 
   const excludedUuidsKey = useMemo(() => missingExcludedUuids.join(','), [missingExcludedUuids])
 
@@ -173,7 +171,7 @@ export function usePayrollConfigurationData({
         .map(result => result.value.employee)
         .filter((e): e is Employee => e != null)
     },
-    enabled: missingExcludedUuids.length > 0 && !isCalculating,
+    enabled: missingExcludedUuids.length > 0 && !disablePrepare,
     staleTime: FIVE_MINUTES,
   })
 
