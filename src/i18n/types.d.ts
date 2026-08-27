@@ -7737,6 +7737,8 @@ export namespace Translations {
     payrollReceiptCta: string
     /** @defaultValue `"Download paystub pdf"` */
     downloadPaystubLabel: string
+    /** @defaultValue `"Generating paystub…"` */
+    downloadLoadingMessage: string
     /** @defaultValue `"Submitting payroll..."` */
     loadingTitle: string
     /** @defaultValue `"This may take a minute or two. You can navigate away while this happens."` */

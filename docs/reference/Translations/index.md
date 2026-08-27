@@ -5274,6 +5274,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `dataViews.taxesTable` | `"Taxes breakdown"` |
 | <a id="property-payrollpayrolloverviewdeclinecancelcta"></a> `declineCancelCta` | `"No, go back"` |
 | <a id="property-payrollpayrolloverviewdirectdepositlabel"></a> `directDepositLabel` | `"Direct deposits"` |
+| <a id="property-payrollpayrolloverviewdownloadloadingmessage"></a> `downloadLoadingMessage` | `"Generating paystub…"` |
 | <a id="property-payrollpayrolloverviewdownloadpaystublabel"></a> `downloadPaystubLabel` | `"Download paystub pdf"` |
 | <a id="property-payrollpayrollovervieweditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-payrollpayrolloverviewexitflowcta"></a> `exitFlowCta` | `"Save and exit"` |
