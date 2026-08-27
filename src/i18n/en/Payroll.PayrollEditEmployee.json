@@ -55,6 +55,7 @@
     "check": "Check"
   },
   "validations": {
-    "reimbursementAmount": "Amount must be greater than zero"
+    "reimbursementAmount": "Amount must be greater than zero",
+    "negativeAmount": "Amount cannot be negative"
   }
 }
