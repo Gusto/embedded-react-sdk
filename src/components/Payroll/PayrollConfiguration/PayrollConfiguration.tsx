@@ -24,6 +24,7 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { SDKInternalError } from '@/types/sdkError'
 import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
@@ -59,8 +60,9 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  *
  * @remarks
  * If the payroll turns out to already be processed (e.g. another actor submitted it while this
- * screen was open), this component emits `runPayroll/alreadyProcessed` and returns `null` so
- * the parent flow's state machine can transition to the overview step.
+ * screen was open), this component emits `runPayroll/alreadyProcessed` and renders a
+ * static error alert. When used inside the payroll execution flow the state machine transitions
+ * to the overview step; standalone consumers see the alert as a fallback.
  *
  * Emits the following events:
  *
@@ -100,6 +102,7 @@ const Root = ({
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
+  const { Alert } = useComponentContext()
   const { baseSubmitHandler } = useBase()
   const dateFormatter = useDateFormatter()
 
@@ -495,7 +498,7 @@ const Root = ({
   })()
 
   if (isAlreadyProcessed) {
-    return null
+    return <Alert status="error" label={t('alerts.alreadyProcessed')} />
   }
 
   return (

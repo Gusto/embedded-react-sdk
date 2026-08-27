@@ -302,6 +302,19 @@ describe('PayrollConfiguration', () => {
       expect(alreadyProcessedResolver).toHaveBeenCalledTimes(1)
     })
 
+    it('renders an error alert instead of the configuration table', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            "This payroll is already processed. If you'd like to make changes, please cancel and re-run it.",
+          ),
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('button', { name: /calculate/i })).not.toBeInTheDocument()
+    })
+
     it('emits runPayroll/alreadyProcessed once', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
