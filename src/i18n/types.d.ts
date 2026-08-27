@@ -7354,6 +7354,12 @@ export namespace Translations {
       payrollLate: string
       /** @defaultValue `"Run payroll before {{time}} on {{date}} to pay your employees on {{newCheckDate}}."` */
       payrollLateText: string
+      processingFailed: {
+        /** @defaultValue `"Payroll calculation failed"` */
+        label: string
+        /** @defaultValue `"Something went wrong while calculating this payroll. Please review the details below and try again."` */
+        message: string
+      }
       payrollDeadline: {
         /** @defaultValue `"Payroll Deadline"` */
         label: string

@@ -33,6 +33,10 @@
     "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",
     "payrollLate": "Your original pay date was {{initialCheckDate}}",
     "payrollLateText": "Run payroll before {{time}} on {{date}} to pay your employees on {{newCheckDate}}.",
+    "processingFailed": {
+      "label": "Payroll calculation failed",
+      "message": "Something went wrong while calculating this payroll. Please review the details below and try again."
+    },
     "payrollDeadline": {
       "label": "Payroll Deadline",
       "message": "To pay your employees with direct deposit by the check date, you'll need to run payroll by the deadline."

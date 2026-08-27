@@ -671,6 +671,13 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
       })
+
+      expect(screen.getByText('Payroll calculation failed')).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          'Something went wrong while calculating this payroll. Please review the details below and try again.',
+        ),
+      ).toBeInTheDocument()
     })
 
     it('fires RUN_PAYROLL_PROCESSING_FAILED on polling timeout', async () => {

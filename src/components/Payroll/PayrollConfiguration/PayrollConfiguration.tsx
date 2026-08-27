@@ -62,10 +62,14 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  *
  * @remarks
  * If the payroll turns out to already be processed (e.g. another actor submitted it while this
- * screen was open), this component emits `runPayroll/alreadyProcessed` and renders a
- * an info alert with "View payroll" and "Cancel payroll" actions. When used inside the payroll
+ * screen was open), this component emits `runPayroll/alreadyProcessed` and renders an info
+ * alert with "View payroll" and "Cancel payroll" actions. When used inside the payroll
  * execution flow the state machine transitions to the overview step; standalone consumers see
  * the alert as a fallback.
+ *
+ * If payroll calculation fails or times out, an error alert is shown above the configuration
+ * table so the user can review and retry. The prepare query stays suppressed until the next
+ * calculation attempt, preventing a false-positive "already processed" state.
  *
  * Emits the following events:
  *
@@ -492,6 +496,14 @@ const Root = ({
   }, [isPolling, onEvent])
 
   const payrollAlert = (() => {
+    if (hasProcessingFailed) {
+      return {
+        label: t('alerts.processingFailed.label'),
+        content: t('alerts.processingFailed.message'),
+        variant: 'error' as const,
+      }
+    }
+
     const statusMeta = payrollData.payrollShow?.payrollStatusMeta
 
     const isLatePayroll =
