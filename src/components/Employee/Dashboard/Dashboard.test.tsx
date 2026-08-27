@@ -192,10 +192,11 @@ describe('Dashboard', () => {
   it('renders dashboard and loads employee data', async () => {
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
-
-    expect(screen.getByText('Home address')).toBeInTheDocument()
-    expect(screen.getByText('Work address')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeInTheDocument()
+      expect(screen.getByText('Home address')).toBeInTheDocument()
+      expect(screen.getByText('Work address')).toBeInTheDocument()
+    })
   })
 
   it('displays employee basic details', async () => {
