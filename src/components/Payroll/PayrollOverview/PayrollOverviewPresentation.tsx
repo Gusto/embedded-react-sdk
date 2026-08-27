@@ -58,6 +58,7 @@ interface PayrollOverviewProps {
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
   paymentSpeed?: PaymentSpeed
+  downloadingEmployeeIds?: ReadonlySet<string>
 }
 
 const getPayrollOverviewTitle = (
@@ -93,6 +94,7 @@ export const PayrollOverviewPresentation = ({
   withReimbursements = true,
   paymentSpeed,
   pagination,
+  downloadingEmployeeIds = new Set<string>(),
 }: PayrollOverviewProps) => {
   const { Alert, Badge, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -280,21 +282,27 @@ export const PayrollOverviewPresentation = ({
     companyPaysColumns.push({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
-      render: (employeeCompensations: EmployeeCompensations) => (
-        <Flex justifyContent="flex-end">
-          <ButtonIcon
-            aria-label={t('downloadPaystubLabel')}
-            variant="tertiary"
-            onClick={() => {
-              if (employeeCompensations.employeeUuid) {
-                onPaystubDownload(employeeCompensations.employeeUuid)
-              }
-            }}
-          >
-            <DownloadIcon />
-          </ButtonIcon>
-        </Flex>
-      ),
+      render: (employeeCompensations: EmployeeCompensations) => {
+        const isDownloading =
+          !!employeeCompensations.employeeUuid &&
+          downloadingEmployeeIds.has(employeeCompensations.employeeUuid)
+        return (
+          <Flex justifyContent="flex-end">
+            <ButtonIcon
+              aria-label={t('downloadPaystubLabel')}
+              variant="tertiary"
+              isLoading={isDownloading}
+              onClick={() => {
+                if (employeeCompensations.employeeUuid) {
+                  onPaystubDownload(employeeCompensations.employeeUuid)
+                }
+              }}
+            >
+              <DownloadIcon />
+            </ButtonIcon>
+          </Flex>
+        )
+      },
     })
   }
   const tabs = [
@@ -309,19 +317,25 @@ export const PayrollOverviewPresentation = ({
           pagination={pagination}
           itemMenu={
             isProcessed && !isDesktop
-              ? (employeeCompensations: EmployeeCompensations) => (
-                  <ButtonIcon
-                    aria-label={t('downloadPaystubLabel')}
-                    variant="tertiary"
-                    onClick={() => {
-                      if (employeeCompensations.employeeUuid) {
-                        onPaystubDownload(employeeCompensations.employeeUuid)
-                      }
-                    }}
-                  >
-                    <DownloadIcon />
-                  </ButtonIcon>
-                )
+              ? (employeeCompensations: EmployeeCompensations) => {
+                  const isDownloading =
+                    !!employeeCompensations.employeeUuid &&
+                    downloadingEmployeeIds.has(employeeCompensations.employeeUuid)
+                  return (
+                    <ButtonIcon
+                      aria-label={t('downloadPaystubLabel')}
+                      variant="tertiary"
+                      isLoading={isDownloading}
+                      onClick={() => {
+                        if (employeeCompensations.employeeUuid) {
+                          onPaystubDownload(employeeCompensations.employeeUuid)
+                        }
+                      }}
+                    >
+                      <DownloadIcon />
+                    </ButtonIcon>
+                  )
+                }
               : undefined
           }
           footer={() => ({

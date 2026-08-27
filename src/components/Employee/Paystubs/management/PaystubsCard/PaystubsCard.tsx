@@ -10,6 +10,7 @@ import { DataView, EmptyData, useDataView, Loading } from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useNonce } from '@/contexts/NonceProvider'
+import { openPdfInNewTab } from '@/helpers/openPdfInNewTab'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import {
   usePaymentMethodList,
@@ -124,31 +125,7 @@ function PaystubsCardReady({
         payrollUuid,
       })
 
-      // Omit `noopener` — it makes window.open return null in modern browsers,
-      // which would leave us unable to navigate the new tab to the blob URL.
-      const newWindow = window.open('', '_blank')
-      const loadingMessage = t('downloadLoadingMessage')
-      if (newWindow) {
-        // Avoid the user staring at about:blank while we fetch the PDF. The
-        // navigation to the Blob URL below replaces this document.
-        const doc = newWindow.document
-        doc.title = loadingMessage
-        const style = doc.createElement('style')
-        if (nonce) style.nonce = nonce
-        style.textContent =
-          'body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;' +
-          'justify-content:center;height:100vh;margin:0;color:#444;gap:12px}' +
-          '.spinner{width:20px;height:20px;border:2px solid #ccc;border-top-color:#444;' +
-          'border-radius:50%;animation:spin .8s linear infinite}' +
-          '@keyframes spin{to{transform:rotate(360deg)}}'
-        doc.head.appendChild(style)
-        const spinner = doc.createElement('div')
-        spinner.className = 'spinner'
-        spinner.setAttribute('aria-hidden', 'true')
-        const label = doc.createElement('span')
-        label.textContent = loadingMessage
-        doc.body.replaceChildren(spinner, label)
-      }
+      const tab = openPdfInNewTab({ loadingMessage: t('downloadLoadingMessage'), nonce })
       setDownloadingPayrollUuids(prev => {
         const next = new Set(prev)
         next.add(payrollUuid)
@@ -157,26 +134,16 @@ function PaystubsCardReady({
       try {
         const result = await paystubsList.actions.downloadPayStub(payrollUuid)
         if (!result) {
-          if (newWindow) newWindow.close()
+          tab.close()
           return
         }
-        const url = URL.createObjectURL(result.data)
-        if (newWindow) {
-          // Revoke after the new tab has loaded the blob; revoking synchronously
-          // would race the navigation and leave the tab blank.
-          newWindow.addEventListener('load', () => {
-            URL.revokeObjectURL(url)
-          })
-          newWindow.location.href = url
-        } else {
-          URL.revokeObjectURL(url)
-        }
+        tab.navigate(result.data)
         onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED, {
           employeeId,
           payrollUuid,
         })
       } catch (err) {
-        if (newWindow) newWindow.close()
+        tab.close()
         showBoundary(err instanceof Error ? err : new Error(String(err)))
       } finally {
         setDownloadingPayrollUuids(prev => {
