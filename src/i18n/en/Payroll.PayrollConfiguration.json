@@ -45,6 +45,12 @@
       "label": "{{employeeName}} updated successfully"
     }
   },
+  "alreadyProcessedViewCta": "View payroll",
+  "alreadyProcessedCancelCta": "Cancel payroll",
+  "cancelDialogTitle": "Cancel {{startDate}} - {{endDate}} payroll?",
+  "cancelDialogDescription": "Any changes you have made to this payroll will be saved.",
+  "cancelDialogConfirmCta": "Yes, cancel payroll",
+  "cancelDialogDeclineCta": "No, go back",
   "loadingTitle": "Preparing payroll...",
   "loadingDescription": "This may take a minute or two. You can navigate away while this happens.",
   "calculatingTitle": "Calculating payroll...",

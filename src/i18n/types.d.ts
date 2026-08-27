@@ -7371,6 +7371,18 @@ export namespace Translations {
         label: string
       }
     }
+    /** @defaultValue `"View payroll"` */
+    alreadyProcessedViewCta: string
+    /** @defaultValue `"Cancel payroll"` */
+    alreadyProcessedCancelCta: string
+    /** @defaultValue `"Cancel {{startDate}} - {{endDate}} payroll?"` */
+    cancelDialogTitle: string
+    /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+    cancelDialogDescription: string
+    /** @defaultValue `"Yes, cancel payroll"` */
+    cancelDialogConfirmCta: string
+    /** @defaultValue `"No, go back"` */
+    cancelDialogDeclineCta: string
     /** @defaultValue `"Preparing payroll..."` */
     loadingTitle: string
     /** @defaultValue `"This may take a minute or two. You can navigate away while this happens."` */

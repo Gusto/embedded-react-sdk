@@ -302,7 +302,7 @@ describe('PayrollConfiguration', () => {
       expect(alreadyProcessedResolver).toHaveBeenCalledTimes(1)
     })
 
-    it('renders an error alert instead of the configuration table', async () => {
+    it('renders an info alert with view and cancel actions', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
       await waitFor(() => {
@@ -312,6 +312,8 @@ describe('PayrollConfiguration', () => {
           ),
         ).toBeInTheDocument()
       })
+      expect(screen.getByRole('button', { name: /view payroll/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /cancel payroll/i })).toBeInTheDocument()
       expect(screen.queryByRole('button', { name: /calculate/i })).not.toBeInTheDocument()
     })
 
@@ -331,6 +333,55 @@ describe('PayrollConfiguration', () => {
         ).toBeInTheDocument()
       })
       expect(screen.queryByTestId('internal-error-card')).not.toBeInTheDocument()
+    })
+
+    it('re-emits runPayroll/alreadyProcessed when view payroll is clicked', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /view payroll/i })).toBeInTheDocument()
+      })
+
+      onEvent.mockClear()
+      await user.click(screen.getByRole('button', { name: /view payroll/i }))
+
+      expect(onEvent).toHaveBeenCalledWith(
+        'runPayroll/alreadyProcessed',
+        expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+      )
+    })
+
+    it('opens a confirmation dialog and cancels the payroll', async () => {
+      const user = userEvent.setup()
+      const cancelResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({ success: true }),
+      )
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`,
+          cancelResolver,
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /cancel payroll/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/any changes you have made/i)).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /yes, cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(cancelResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(onEvent).toHaveBeenCalledWith('runPayroll/cancelled', expect.anything())
     })
 
     it('emits runPayroll/alreadyProcessed once', async () => {

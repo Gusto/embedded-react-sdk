@@ -8,11 +8,13 @@ import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/compo
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api/react-query/payrollsCalculateGrossUp'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { canCancelPayroll } from '../helpers'
 import { GrossUpModal } from '../GrossUpModal'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
@@ -61,8 +63,9 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * @remarks
  * If the payroll turns out to already be processed (e.g. another actor submitted it while this
  * screen was open), this component emits `runPayroll/alreadyProcessed` and renders a
- * static error alert. When used inside the payroll execution flow the state machine transitions
- * to the overview step; standalone consumers see the alert as a fallback.
+ * an info alert with "View payroll" and "Cancel payroll" actions. When used inside the payroll
+ * execution flow the state machine transitions to the overview step; standalone consumers see
+ * the alert as a fallback.
  *
  * Emits the following events:
  *
@@ -74,6 +77,7 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
  * | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
  * | `runPayroll/alreadyProcessed` | The payroll turns out to already be processed while configuring it | `{ payrollId, alert, payPeriod }` |
+ * | `runPayroll/cancelled` | The payroll was cancelled from the already-processed alert | Cancel payroll response |
  * | `runPayroll/processingFailed` | Payroll calculation fails or times out | — |
  * | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
  * | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
@@ -102,7 +106,7 @@ const Root = ({
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
-  const { Alert } = useComponentContext()
+  const { Alert, Button, Dialog, Text } = useComponentContext()
   const { baseSubmitHandler } = useBase()
   const dateFormatter = useDateFormatter()
 
@@ -180,6 +184,34 @@ const Root = ({
   ])
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
+
+  const { mutateAsync: cancelPayroll } = usePayrollsCancelMutation()
+
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
+  const [isCancelling, setIsCancelling] = useState(false)
+
+  const onCancelPayroll = async () => {
+    setIsCancelling(true)
+    await baseSubmitHandler(null, async () => {
+      try {
+        const result = await cancelPayroll({
+          request: { companyId, payrollId },
+        })
+        onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
+      } catch (error) {
+        setIsCancelling(false)
+        throw error
+      }
+    })
+  }
+
+  const onViewPayroll = () => {
+    onEvent(componentEvents.RUN_PAYROLL_ALREADY_PROCESSED, {
+      payrollId,
+      alert: alreadyProcessedAlert,
+      payPeriod: payrollData.payrollShow?.payPeriod,
+    })
+  }
 
   const { mutateAsync: calculateGrossUpMutation } = usePayrollsCalculateGrossUpMutation()
 
@@ -498,7 +530,49 @@ const Root = ({
   })()
 
   if (isAlreadyProcessed) {
-    return <Alert status="info" label={t('alerts.alreadyProcessed')} />
+    const showCancel = canCancelPayroll(payrollData.payrollShow!)
+
+    return (
+      <>
+        <Alert
+          status="info"
+          label={t('alerts.alreadyProcessed')}
+          action={
+            <>
+              <Button variant="secondary" onClick={onViewPayroll} isDisabled={isCancelling}>
+                {t('alreadyProcessedViewCta')}
+              </Button>
+              {showCancel && (
+                <Button
+                  variant="error"
+                  onClick={() => { setIsCancelDialogOpen(true) }}
+                  isDisabled={isCancelling}
+                >
+                  {t('alreadyProcessedCancelCta')}
+                </Button>
+              )}
+            </>
+          }
+        />
+        {isCancelDialogOpen && (
+          <Dialog
+            isOpen={isCancelDialogOpen}
+            onClose={() => { setIsCancelDialogOpen(false) }}
+            onPrimaryActionClick={onCancelPayroll}
+            shouldCloseOnBackdropClick={true}
+            primaryActionLabel={t('cancelDialogConfirmCta')}
+            isDestructive={true}
+            closeActionLabel={t('cancelDialogDeclineCta')}
+            title={t('cancelDialogTitle', {
+              startDate: dateFormatter.formatLong(payrollData.payrollShow?.payPeriod?.startDate),
+              endDate: dateFormatter.formatLongWithYear(payrollData.payrollShow?.payPeriod?.endDate),
+            })}
+          >
+            <Text>{t('cancelDialogDescription')}</Text>
+          </Dialog>
+        )}
+      </>
+    )
   }
 
   return (
