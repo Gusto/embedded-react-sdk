@@ -307,8 +307,9 @@ Handles the configuration phase of payroll processing, allowing users to review 
 ### Remarks
 
 If the payroll turns out to already be processed (e.g. another actor submitted it while this
-screen was open), this component emits `runPayroll/alreadyProcessed` and returns `null` so
-the parent flow's state machine can transition to the overview step.
+screen was open), this component emits `runPayroll/alreadyProcessed` and renders a
+static error alert. When used inside the payroll execution flow the state machine transitions
+to the overview step; standalone consumers see the alert as a fallback.
 
 Emits the following events:
 
