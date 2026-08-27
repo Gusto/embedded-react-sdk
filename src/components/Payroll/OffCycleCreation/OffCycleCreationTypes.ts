@@ -41,6 +41,10 @@ export interface OffCycleCreationPresentationProps {
   employees: MultiSelectComboBoxOption[]
   /** Whether the off-cycle create mutation is in flight. */
   isPending?: boolean
+  /** Earliest selectable payment date for direct deposit (today plus the ACH lead time). */
+  minCheckDate: Date
+  /** Earliest selectable payment date when the payroll is check-only (today). */
+  minCheckOnlyDate: Date
   /** Current tax withholding configuration shown in the table. */
   taxWithholdingConfig: OffCycleTaxWithholdingConfig
   /** Whether the tax withholding edit modal is open. */

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
@@ -129,6 +129,61 @@ describe('OffCycleCreation', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
       })
+    })
+  })
+
+  // The payment date carried no minDate, so the ACH lead-time rule existed only as a
+  // submit-time error while legacy gws-flows disables invalid dates in the picker
+  // (SDK-1274). System time is pinned because the bound is derived from today.
+  describe('payment date minimum', () => {
+    // Wed Sep 2 2026 + 2 business days (the mocked paymentSpeedDays) = Fri Sep 4 2026.
+    const TODAY = new Date(2026, 8, 2)
+
+    beforeEach(() => {
+      vi.useFakeTimers({ shouldAdvanceTime: true })
+      vi.setSystemTime(TODAY)
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    const openPaymentDateCalendar = async (user: ReturnType<typeof userEvent.setup>) => {
+      const group = await waitFor(() => screen.getByRole('group', { name: 'Payment date' }))
+      await user.click(within(group).getByRole('button'))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+      return screen.getAllByRole('gridcell')
+    }
+
+    const cellFor = (cells: HTMLElement[], day: string) =>
+      cells.find(cell => cell.textContent.trim() === day)
+
+    it('disables dates before the ACH lead time', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      renderComponent()
+
+      const cells = await openPaymentDateCalendar(user)
+
+      expect(cellFor(cells, '3')).toHaveAttribute('aria-disabled', 'true')
+      expect(cellFor(cells, '4')).not.toHaveAttribute('aria-disabled')
+    })
+
+    it('relaxes the minimum to today when check-only is selected', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      renderComponent()
+
+      const checkOnly = await waitFor(() =>
+        screen.getByRole('checkbox', { name: /check-only payroll/i }),
+      )
+      await user.click(checkOnly)
+
+      const cells = await openPaymentDateCalendar(user)
+
+      // Today becomes selectable; the day before it stays out of range.
+      expect(cellFor(cells, '2')).not.toHaveAttribute('aria-disabled')
+      expect(cellFor(cells, '1')).toHaveAttribute('aria-disabled', 'true')
     })
   })
 
