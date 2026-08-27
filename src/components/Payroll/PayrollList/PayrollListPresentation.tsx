@@ -273,6 +273,7 @@ export const PayrollListPresentation = ({
         <DataView
           breakAt="large"
           pagination={pagination}
+          isFetching={pagination?.isFetching}
           emptyState={() =>
             dateRangeFilter.isModified ? (
               <EmptyData

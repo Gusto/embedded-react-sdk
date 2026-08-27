@@ -55,7 +55,7 @@ export function usePayrollConfigurationData({
   const queryClient = useQueryClient()
 
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
-    defaultItemsPerPage: 10,
+    defaultItemsPerPage: 25,
   })
   const [displayedEmployees, setDisplayedEmployees] = useState<Employee[]>([])
   const [isDataInSync, setIsDataInSync] = useState(false)

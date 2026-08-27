@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.55.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.2...v0.55.3) (2026-08-24)
+
+### Features & Enhancements
+
+- Add a `readOnly` prop to `PayrollOverview` to hide the edit and cancel actions while keeping submit and receipt/paystub actions available, for read-only payroll review deep links ([#2616](https://github.com/Gusto/embedded-react-sdk/issues/2616))
+- Increase the default pagination page size from 10 to 25 in `PayrollConfiguration` and `PayrollOverview` employee tables ([#2614](https://github.com/Gusto/embedded-react-sdk/issues/2614))
+- Add partner dictionary overrides for form descriptions ([#2613](https://github.com/Gusto/embedded-react-sdk/issues/2613))
+- Show employee job titles in the off-cycle payroll employee picker ([#2617](https://github.com/Gusto/embedded-react-sdk/issues/2617))
+
+### Fixes
+
+- Always show the payroll deadline banner, regardless of payment method ([#2611](https://github.com/Gusto/embedded-react-sdk/issues/2611))
+- Fix a validation error when updating an employee's hire date while a secondary job has a future-dated effective date ([#2628](https://github.com/Gusto/embedded-react-sdk/issues/2628))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@microsoft/api-extractor`, `@storybook/addon-a11y`, `@vitest/coverage-v8`)
+
 ## [0.55.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.1...v0.55.2) (2026-08-21)
 
 ### Features & Enhancements

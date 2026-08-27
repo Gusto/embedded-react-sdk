@@ -145,6 +145,14 @@
   }
 }
 
+.optionLabel {
+  line-height: var(--g-fontLineHeightRegular);
+}
+
+.optionDescription {
+  margin-top: toRem(2);
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;

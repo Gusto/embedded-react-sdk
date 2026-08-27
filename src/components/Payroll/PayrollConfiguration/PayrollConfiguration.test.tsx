@@ -65,11 +65,26 @@ const page1Employees = [
   createEmployee('emp-8', 'Henry', 'Harris'),
   createEmployee('emp-9', 'Ivy', 'Irving'),
   createEmployee('emp-10', 'Jack', 'Johnson'),
+  createEmployee('emp-11', 'Karen', 'Kent'),
+  createEmployee('emp-12', 'Larry', 'Lane'),
+  createEmployee('emp-13', 'Mary', 'Mason'),
+  createEmployee('emp-14', 'Nick', 'Nash'),
+  createEmployee('emp-15', 'Olivia', 'Owens'),
+  createEmployee('emp-16', 'Paul', 'Palmer'),
+  createEmployee('emp-17', 'Quinn', 'Quill'),
+  createEmployee('emp-18', 'Rachel', 'Reed'),
+  createEmployee('emp-19', 'Sam', 'Stone'),
+  createEmployee('emp-20', 'Tina', 'Tucker'),
+  createEmployee('emp-21', 'Uma', 'Underwood'),
+  createEmployee('emp-22', 'Victor', 'Vance'),
+  createEmployee('emp-23', 'Wendy', 'Walsh'),
+  createEmployee('emp-24', 'Xander', 'Xu'),
+  createEmployee('emp-25', 'Yara', 'Young'),
 ]
 
 const page2Employees = [
-  createEmployee('emp-11', 'Kate', 'King'),
-  createEmployee('emp-12', 'Leo', 'Lewis'),
+  createEmployee('emp-26', 'Kate', 'King'),
+  createEmployee('emp-27', 'Leo', 'Lewis'),
 ]
 
 const allEmployees = [...page1Employees, ...page2Employees]
@@ -189,8 +204,8 @@ describe('PayrollConfiguration', () => {
           const employeeUuids = body?.employee_uuids
 
           if (employeeUuids && employeeUuids.length > 0) {
-            const filteredCompensations = allCompensations.filter(comp =>
-              employeeUuids.includes(comp.employee_uuid),
+            const filteredCompensations = currentPayrollData.employee_compensations.filter(
+              (comp: { employee_uuid: string }) => employeeUuids.includes(comp.employee_uuid),
             )
             return HttpResponse.json({
               ...currentPayrollData,
@@ -392,7 +407,7 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
       })
-      expect(screen.getByText('Jack Johnson')).toBeInTheDocument()
+      expect(screen.getByText('Yara Young')).toBeInTheDocument()
       expect(screen.queryByText('Kate King')).not.toBeInTheDocument()
 
       const nextButton = screen.getByTestId('pagination-next')
@@ -438,7 +453,7 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
       })
-      expect(screen.getByText('Jack Johnson')).toBeInTheDocument()
+      expect(screen.getByText('Yara Young')).toBeInTheDocument()
 
       const nextButton = screen.getByTestId('pagination-next')
       await user.click(nextButton)
@@ -448,7 +463,7 @@ describe('PayrollConfiguration', () => {
       })
       expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
       expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
-      expect(screen.queryByText('Jack Johnson')).not.toBeInTheDocument()
+      expect(screen.queryByText('Yara Young')).not.toBeInTheDocument()
     })
   })
 
@@ -512,8 +527,8 @@ describe('PayrollConfiguration', () => {
     })
   })
 
-  describe('direct deposit deadline banner', () => {
-    it('hides direct deposit deadline banner when all employees are paid by check', async () => {
+  describe('deadline banner', () => {
+    it('shows deadline banner regardless of payment method', async () => {
       currentPayrollData = {
         ...mockPayrollData,
         employee_compensations: allCompensations.map(comp => ({
@@ -522,18 +537,6 @@ describe('PayrollConfiguration', () => {
         })),
       }
 
-      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
-
-      expect(
-        screen.queryByText(/To pay your employees with direct deposit by/i),
-      ).not.toBeInTheDocument()
-    })
-
-    it('shows direct deposit deadline banner when at least one employee uses direct deposit', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
       await waitFor(() => {

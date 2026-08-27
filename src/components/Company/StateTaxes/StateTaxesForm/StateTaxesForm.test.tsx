@@ -378,4 +378,190 @@ describe('StateTaxesForm', () => {
       )
     })
   })
+
+  // SDK-1142: gws-flows resolves applicable_if against a non-editable sibling's fetched value
+  // before rendering (TaxRequirements::Edit.prepare_requirements) instead of leaving it to be
+  // resolved against live, editable form state — which a non-editable sibling never joins.
+  describe('Requirement gated on a non-editable sibling', () => {
+    function mockRequirementSet(requirements: Record<string, unknown>[]) {
+      setupApiTestMocks()
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json({
+            company_uuid: 'company-123',
+            state: 'CA',
+            requirement_sets: [
+              {
+                state: 'CA',
+                key: 'setA',
+                label: 'Set A',
+                effective_from: null,
+                requirements,
+              },
+            ],
+          }),
+        ),
+      )
+    }
+
+    it('always shows the dependent field when the non-editable gate already satisfies the constraint', async () => {
+      mockRequirementSet([
+        {
+          key: 'gate',
+          applicable_if: [],
+          label: 'Gate',
+          value: 'v2',
+          metadata: { type: 'text' },
+          editable: false,
+        },
+        {
+          key: 'dependent',
+          applicable_if: [{ key: 'gate', value: 'v2' }],
+          label: 'Dependent Field',
+          value: null,
+          metadata: { type: 'text' },
+          editable: true,
+        },
+      ])
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CA" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      expect(await screen.findByLabelText(/Dependent Field/i)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Gate$/i)).toBeNull()
+    })
+
+    it('never shows the dependent field when the non-editable gate does not satisfy the constraint', async () => {
+      mockRequirementSet([
+        {
+          key: 'gate',
+          applicable_if: [],
+          label: 'Gate',
+          value: 'other',
+          metadata: { type: 'text' },
+          editable: false,
+        },
+        {
+          key: 'dependent',
+          applicable_if: [{ key: 'gate', value: 'v2' }],
+          label: 'Dependent Field',
+          value: null,
+          metadata: { type: 'text' },
+          editable: true,
+        },
+      ])
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CA" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Save/i })).toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText(/Dependent Field/i)).toBeNull()
+    })
+  })
+
+  // SDK-1142: gws-flows' edit page drops a requirement set entirely when nothing in it survives
+  // applicable_if/editable resolution (TaxRequirements::Edit.set_editable?), rather than rendering
+  // an orphaned section heading over an empty field list.
+  describe('Fully non-editable requirement sets', () => {
+    it('hides the section heading for a set with nothing editable, while other sections still render', async () => {
+      setupApiTestMocks()
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json({
+            company_uuid: 'company-123',
+            state: 'CA',
+            requirement_sets: [
+              {
+                state: 'CA',
+                key: 'registrations',
+                label: 'Registrations',
+                effective_from: null,
+                requirements: [
+                  {
+                    key: 'reg1',
+                    applicable_if: [],
+                    label: 'Registration Field',
+                    value: null,
+                    metadata: { type: 'text' },
+                    editable: true,
+                  },
+                ],
+              },
+              {
+                state: 'CA',
+                key: 'nonEditableSet',
+                label: 'Non Editable Section',
+                effective_from: null,
+                requirements: [
+                  {
+                    key: 'ne1',
+                    applicable_if: [],
+                    label: 'Non Editable Field',
+                    value: 'x',
+                    metadata: { type: 'text' },
+                    editable: false,
+                  },
+                ],
+              },
+            ],
+          }),
+        ),
+      )
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CA" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      expect(await screen.findByLabelText(/Registration Field/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Non Editable Section/i)).toBeNull()
+    })
+
+    it('shows an empty-state message and a working Cancel action when no set has anything editable', async () => {
+      setupApiTestMocks()
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json({
+            company_uuid: 'company-123',
+            state: 'CA',
+            requirement_sets: [
+              {
+                state: 'CA',
+                key: 'nonEditableSet',
+                label: 'Non Editable Section',
+                effective_from: null,
+                requirements: [
+                  {
+                    key: 'ne1',
+                    applicable_if: [],
+                    label: 'Non Editable Field',
+                    value: 'x',
+                    metadata: { type: 'text' },
+                    editable: false,
+                  },
+                ],
+              },
+            ],
+          }),
+        ),
+      )
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CA" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      expect(await screen.findByText(/No editable requirements/i)).toBeInTheDocument()
+
+      const cancelButton = screen.getByRole('button', { name: /Cancel/i })
+      await user.click(cancelButton)
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+    })
+  })
 })

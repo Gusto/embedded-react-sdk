@@ -17,7 +17,8 @@
   gap: toRem(4);
 }
 
-.wageTypeCell {
+.wageTypeCell,
+.taxedAsCell {
   display: flex;
   flex-direction: column;
   gap: toRem(2);

@@ -665,5 +665,14 @@ describe('PayrollOverviewPresentation', () => {
       expect(await screen.findByRole('button', { name: /^Edit$/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
     })
+
+    it('hides Edit but keeps Submit when canEdit is false on an unprocessed payroll', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={false} canEdit={false} />,
+      )
+
+      expect(await screen.findByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^Edit$/i })).not.toBeInTheDocument()
+    })
   })
 })

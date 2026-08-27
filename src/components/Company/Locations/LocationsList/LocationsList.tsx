@@ -1,10 +1,11 @@
-import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
+import { keepPreviousData } from '@tanstack/react-query'
+import { useLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
 import { LocationsListProvider } from './useLocationsList'
 import { useI18n } from '@/i18n'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
+import { BaseComponent, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
@@ -45,15 +46,16 @@ export function LocationsList(props: LocationsListProps) {
   )
 }
 
-function Root({ companyId, className, children }: LocationsListProps) {
+function Root({ companyId, className, children, LoaderComponent }: LocationsListProps) {
   useI18n('Company.Locations')
   const { onEvent } = useBase()
 
   const { getPaginationProps } = usePagination()
 
-  const {
-    data: { companyLocationsList, httpMeta },
-  } = useLocationsGetSuspense({ companyId })
+  const { data, isFetching } = useLocationsGet(
+    { companyId },
+    { placeholderData: keepPreviousData, throwOnError: true },
+  )
 
   const handleContinue = () => {
     onEvent(companyEvents.COMPANY_LOCATION_DONE)
@@ -65,11 +67,17 @@ function Root({ companyId, className, children }: LocationsListProps) {
     onEvent(companyEvents.COMPANY_LOCATION_EDIT, { uuid })
   }
 
+  if (!data) {
+    return <BaseLayout isLoading LoaderComponent={LoaderComponent} />
+  }
+
+  const { companyLocationsList, httpMeta } = data
+
   return (
     <section className={className}>
       <LocationsListProvider
         value={{
-          ...getPaginationProps(httpMeta.response.headers),
+          ...getPaginationProps(httpMeta.response.headers, isFetching),
           locationList: companyLocationsList ?? [],
           handleAddLocation,
           handleEditLocation,

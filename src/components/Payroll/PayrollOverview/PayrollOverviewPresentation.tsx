@@ -43,6 +43,7 @@ interface PayrollOverviewProps {
   status?: PayrollOverviewStatus
   isProcessed: boolean
   canCancel?: boolean
+  canEdit?: boolean
   alerts?: PayrollFlowAlert[]
   submissionBlockers?: PayrollSubmissionBlockerType[]
   selectedUnblockOptions?: Record<string, string>
@@ -82,6 +83,7 @@ export const PayrollOverviewPresentation = ({
   status = PayrollOverviewStatus.Viewing,
   isProcessed,
   canCancel = false,
+  canEdit = true,
   alerts = [],
   submissionBlockers = [],
   selectedUnblockOptions = {},
@@ -582,9 +584,11 @@ export const PayrollOverviewPresentation = ({
     </>
   ) : (
     <>
-      <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
-        {t('editCta')}
-      </Button>
+      {canEdit && (
+        <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
+          {t('editCta')}
+        </Button>
+      )}
       <Button
         onClick={onSubmit}
         isDisabled={

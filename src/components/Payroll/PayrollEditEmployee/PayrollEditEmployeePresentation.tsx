@@ -68,6 +68,17 @@ const ReimbursementFormSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
+const DraftReimbursementSchema = z.object({
+  description: z.string(),
+  amount: z.string().refine(
+    val => {
+      const num = parseFloat(val)
+      return !Number.isNaN(num) && num > 0
+    },
+    { message: 'validations.reimbursementAmount' },
+  ),
+})
+
 const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
@@ -200,7 +211,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
+  const { Button, ButtonIcon, Heading, Text } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -404,25 +415,24 @@ export const PayrollEditEmployeePresentation = ({
     .filter(row => parseFloat(row.amount || '0') !== 0)
 
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
-  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
-  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+
+  type DraftReimbursementValues = z.infer<typeof DraftReimbursementSchema>
+
+  const draftForm = useForm<DraftReimbursementValues>({
+    resolver: zodResolver(DraftReimbursementSchema),
+    defaultValues: { description: '', amount: '' },
+  })
 
   const resetReimbursementDraft = () => {
     setIsAddingReimbursement(false)
-    setDraftReimbursementDescription('')
-    setDraftReimbursementAmount('')
+    draftForm.reset()
   }
 
-  const handleSaveReimbursementDraft = () => {
-    const trimmedAmount = draftReimbursementAmount.trim()
-    const parsedAmount = parseFloat(trimmedAmount || '0')
-    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      return
-    }
-
+  const onDraftReimbursementValid = (data: DraftReimbursementValues) => {
+    const parsedAmount = parseFloat(data.amount)
     appendReimbursement({
       uuid: null,
-      description: draftReimbursementDescription.trim(),
+      description: data.description.trim(),
       amount: parsedAmount.toFixed(2),
       recurring: false,
     })
@@ -731,35 +741,34 @@ export const PayrollEditEmployeePresentation = ({
                 <DataView label={t('reimbursementsTableLabel')} {...reimbursementDataViewProps} />
               )}
               {isAddingReimbursement ? (
-                <Flex flexDirection="column" gap={12}>
-                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                    <TextInput
-                      name="newReimbursementDescription"
-                      label={t('reimbursementDescriptionLabel')}
-                      placeholder={t('reimbursementDescriptionPlaceholder')}
-                      value={draftReimbursementDescription}
-                      onChange={setDraftReimbursementDescription}
-                    />
-                    <TextInput
-                      name="newReimbursementAmount"
-                      type="number"
-                      min={0}
-                      adornmentStart="$"
-                      isRequired
-                      label={t('reimbursementAmountLabel')}
-                      value={draftReimbursementAmount}
-                      onChange={setDraftReimbursementAmount}
-                    />
-                  </Grid>
-                  <Flex gap={12}>
-                    <Button onClick={handleSaveReimbursementDraft}>
-                      {t('saveReimbursementCta')}
-                    </Button>
-                    <Button variant="secondary" onClick={resetReimbursementDraft}>
-                      {t('cancelReimbursementCta')}
-                    </Button>
+                <FormProvider {...draftForm}>
+                  <Flex flexDirection="column" gap={12}>
+                    <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                      <TextInputField
+                        name="description"
+                        label={t('reimbursementDescriptionLabel')}
+                        placeholder={t('reimbursementDescriptionPlaceholder')}
+                      />
+                      <TextInputField
+                        name="amount"
+                        type="number"
+                        min={0}
+                        adornmentStart="$"
+                        isRequired
+                        label={t('reimbursementAmountLabel')}
+                        errorMessage={t('validations.reimbursementAmount')}
+                      />
+                    </Grid>
+                    <Flex gap={12}>
+                      <Button onClick={draftForm.handleSubmit(onDraftReimbursementValid)}>
+                        {t('saveReimbursementCta')}
+                      </Button>
+                      <Button variant="secondary" onClick={resetReimbursementDraft}>
+                        {t('cancelReimbursementCta')}
+                      </Button>
+                    </Flex>
                   </Flex>
-                </Flex>
+                </FormProvider>
               ) : (
                 visibleReimbursementRows.length > 0 && (
                   <div>

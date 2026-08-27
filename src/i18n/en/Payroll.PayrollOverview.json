@@ -26,7 +26,8 @@
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
-    "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}",
+    "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
+    "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",
     "paystubPdfError": "There was an issue generating the paystub PDF. Please try again later.",
     "payrollProcessedTitle": "Payroll submitted",
     "payrollProcessedMessage": "{{amount}} will be debited on {{date}}. Make sure you have these funds available.",

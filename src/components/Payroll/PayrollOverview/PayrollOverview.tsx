@@ -57,6 +57,12 @@ export interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.Pa
   withReimbursements?: boolean
   /** Custom component to replace the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  /**
+   * Hides the edit and cancel actions, leaving submit and receipt/paystub actions available.
+   * Use for a deep link to a specific payroll where editing shouldn't be offered. Defaults to
+   * `false`.
+   */
+  readOnly?: boolean
 }
 
 const findUnresolvedBlockersWithOptions = (
@@ -96,7 +102,8 @@ const findWireInRequestUuid = (
  * uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
  * wire-in funding) are surfaced inline and the submit action stays disabled until each
  * blocker has a selected unblock option. While the payroll is processing, the component
- * polls until success or failure and emits the corresponding event.
+ * polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
+ * the edit and cancel actions while keeping submit available.
  *
  * @events
  * | Event | Description | Data |
@@ -138,6 +145,7 @@ const Root = ({
   alerts,
   withReimbursements = true,
   ConfirmWireDetailsComponent = ConfirmWireDetails,
+  readOnly = false,
 }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
@@ -154,7 +162,7 @@ const Root = ({
   const { Button, UnorderedList, Text } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
-    defaultItemsPerPage: 10,
+    defaultItemsPerPage: 25,
   })
   const { data, isFetching } = usePayrollsGet(
     {
@@ -283,9 +291,11 @@ const Root = ({
           content: (
             <Flex flexDirection="column" gap={16}>
               <UnorderedList items={renderErrorList(payrollData.processingRequest.errors ?? [])} />
-              <Button variant="secondary" onClick={onEdit}>
-                {t('alerts.payrollProcessingFailedCtaLabel')}
-              </Button>
+              {!readOnly && (
+                <Button variant="secondary" onClick={onEdit}>
+                  {t('alerts.payrollProcessingFailedCtaLabel')}
+                </Button>
+              )}
             </Flex>
           ),
         },
@@ -305,6 +315,7 @@ const Root = ({
     payrollData?.totals?.companyDebit,
     payrollData?.payrollStatusMeta?.expectedDebitTime,
     payrollData?.payrollDeadline,
+    readOnly,
   ])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
@@ -425,6 +436,29 @@ const Root = ({
     })
   }
 
+  const deadlineAlert: PayrollFlowAlert | undefined = (() => {
+    if (hasSubmittedInSession || isPolling) return undefined
+    if (
+      payrollData.processed ||
+      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+    )
+      return undefined
+
+    if (payrollData.checkDate && payrollData.payrollDeadline) {
+      return {
+        type: 'info' as const,
+        title: t('alerts.directDepositDeadline', {
+          payDate: dateFormatter.formatShortWithWeekday(payrollData.checkDate),
+          ...dateFormatter.formatWithTime(payrollData.payrollDeadline),
+        }),
+        content: t('alerts.directDepositDeadlineText'),
+      }
+    }
+    return undefined
+  })()
+
+  const combinedAlerts = [...internalAlerts, ...(deadlineAlert ? [deadlineAlert] : [])]
+
   return (
     <PayrollOverviewPresentation
       onEdit={onEdit}
@@ -437,11 +471,12 @@ const Root = ({
         payrollData.processed === true ||
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
       }
-      canCancel={canCancelPayroll(payrollData)}
+      canCancel={canCancelPayroll(payrollData) && !readOnly}
+      canEdit={!readOnly}
       payrollData={payrollData}
       bankAccount={bankAccount}
       taxes={taxes}
-      alerts={internalAlerts}
+      alerts={combinedAlerts}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={selectedUnblockOptions}
       onUnblockOptionChange={(blockerType, value) => {

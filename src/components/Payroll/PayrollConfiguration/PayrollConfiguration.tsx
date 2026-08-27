@@ -13,7 +13,6 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
-import { hasDirectDepositEmployees } from '../helpers'
 import { GrossUpModal } from '../GrossUpModal'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
@@ -479,14 +478,8 @@ const Root = ({
     }
 
     const { payrollShow } = payrollData
-    const allCompensations = payrollShow?.employeeCompensations
 
-    if (
-      payrollShow &&
-      allCompensations &&
-      allCompensations.length > 0 &&
-      hasDirectDepositEmployees(allCompensations)
-    ) {
+    if (payrollShow?.checkDate && payrollShow.payrollDeadline) {
       return {
         label: t('alerts.directDepositDeadline', {
           payDate: dateFormatter.formatShortWithWeekday(payrollShow.checkDate),
