@@ -33,13 +33,6 @@ import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
 
-const isCalculatedStatus = (
-  processingRequest?: PayrollProcessingRequest | null,
-  calculatedAt?: Date | null,
-) =>
-  calculatedAt != null &&
-  (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
-    processingRequest == null)
 
 /**
  * Props for {@link PayrollConfiguration}.
@@ -117,7 +110,6 @@ const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
   const [hasProcessingFailed, setHasProcessingFailed] = useState(false)
-  const previousCalculatedAtRef = useRef<number | null>(null)
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
 
@@ -356,7 +348,6 @@ const Root = ({
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
     setHasProcessingFailed(false)
-    previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
@@ -439,17 +430,15 @@ const Root = ({
   }
 
   useEffect(() => {
-    if (isCalculatingStatus(payrollData.payrollShow?.processingRequest) && !isPolling) {
-      previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
+    const status = payrollData.payrollShow?.processingRequest?.status
+
+    if (status === PayrollProcessingRequestStatus.Calculating && !isPolling) {
       setIsPolling(true)
     }
-    const currentCalculatedAt = payrollData.payrollShow?.calculatedAt
-    const isNewCalculation = currentCalculatedAt?.getTime() !== previousCalculatedAtRef.current
-    if (
-      isPolling &&
-      isNewCalculation &&
-      isCalculatedStatus(payrollData.payrollShow?.processingRequest, currentCalculatedAt)
-    ) {
+
+    if (!isPolling) return
+
+    if (status === PayrollProcessingRequestStatus.CalculateSuccess) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
         alert: {
@@ -462,23 +451,13 @@ const Root = ({
       setPayrollBlockers([])
       setIsPolling(false)
     }
-    if (
-      isPolling &&
-      payrollData.payrollShow?.processingRequest?.status ===
-        PayrollProcessingRequestStatus.ProcessingFailed
-    ) {
+
+    if (status === PayrollProcessingRequestStatus.ProcessingFailed) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
       setHasProcessingFailed(true)
     }
-  }, [
-    payrollData.payrollShow?.processingRequest?.status,
-    payrollData.payrollShow?.calculatedAt,
-    isPolling,
-    onEvent,
-    t,
-    payrollId,
-  ])
+  }, [payrollData.payrollShow?.processingRequest?.status, isPolling, onEvent, t, payrollId])
 
   useEffect(() => {
     if (!isPolling) return

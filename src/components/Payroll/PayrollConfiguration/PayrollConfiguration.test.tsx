@@ -606,7 +606,7 @@ describe('PayrollConfiguration', () => {
       })
     })
 
-    it('fires RUN_PAYROLL_CALCULATED when calculatedAt is set with null processingRequest', async () => {
+    it('continues polling when processingRequest is null (waits for explicit status)', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
       server.use(
@@ -633,12 +633,7 @@ describe('PayrollConfiguration', () => {
         await vi.advanceTimersByTimeAsync(6_000)
       })
 
-      await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(
-          'runPayroll/calculated',
-          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
-        )
-      })
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/calculated', expect.anything())
     })
 
     it('fires RUN_PAYROLL_PROCESSING_FAILED when polling detects processing_failed', async () => {
@@ -712,7 +707,7 @@ describe('PayrollConfiguration', () => {
       })
     })
 
-    it('continues polling when calculate_success but calculatedAt is null (SDK-595)', async () => {
+    it('fires RUN_PAYROLL_CALCULATED when calculate_success even if calculatedAt is null', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
       server.use(
@@ -739,7 +734,10 @@ describe('PayrollConfiguration', () => {
         await vi.advanceTimersByTimeAsync(6_000)
       })
 
-      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/calculated', expect.anything())
+      expect(onEvent).toHaveBeenCalledWith(
+        'runPayroll/calculated',
+        expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+      )
     })
 
     it('does not fire RUN_PAYROLL_CALCULATED with stale data when re-calculating a previously calculated payroll', async () => {
