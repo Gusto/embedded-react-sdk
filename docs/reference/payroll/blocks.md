@@ -307,10 +307,8 @@ Handles the configuration phase of payroll processing, allowing users to review 
 ### Remarks
 
 If the payroll turns out to already be processed (e.g. another actor submitted it while this
-screen was open), this component emits `runPayroll/alreadyProcessed` and then renders
-[PayrollOverview](#payrolloverview) in its place — the read-only breakdown with the gated "Cancel payroll"
-action — instead of the configuration table. Events from that delegated view (e.g.
-`runPayroll/cancelled`) are emitted through this component's own `onEvent`.
+screen was open), this component emits `runPayroll/alreadyProcessed` and returns `null` so
+the parent flow's state machine can transition to the overview step.
 
 Emits the following events:
 
