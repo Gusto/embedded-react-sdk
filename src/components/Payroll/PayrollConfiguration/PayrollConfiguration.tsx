@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -26,7 +25,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { SDKInternalError } from '@/types/sdkError'
-import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
 const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -109,8 +107,10 @@ const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
+  // Local latch: once a calculation is kicked off from this screen, prepare must never re-fire
+  // for the rest of this mount, even after `isCalculating` flips back to false. SDK-1231.
+  const hasStartedCalculationRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -144,6 +144,16 @@ const Root = ({
     companyId,
     payrollId,
     isCalculating: isPolling || isCalculatingPayroll,
+    // Prepare is only valid for a fresh, uncalculated draft. Keep it off if the server says the
+    // payroll is already calculated or mid-process (covers direct loads + multi-tab), or if a
+    // calculation was started here (covers the same-tab transition race). SDK-1231.
+    disablePrepare:
+      hasStartedCalculationRef.current ||
+      isCalculatingStatus(payrollData.payrollShow?.processingRequest) ||
+      isCalculatedStatus(
+        payrollData.payrollShow?.processingRequest,
+        payrollData.payrollShow?.calculatedAt,
+      ),
     excludedEmployeeUuids,
   })
 
@@ -318,6 +328,7 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    hasStartedCalculationRef.current = true
     previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
@@ -331,10 +342,6 @@ const Root = ({
           if (!calcResult.ok) {
             throw calcResult.error
           }
-          // `payrollsCalculate` is a raw func, so it skips the global onSuccess
-          // invalidation that mutation hooks get; invalidate here so cached payroll
-          // reads (e.g. PayrollOverview's separate key) refetch fresh. SDK-1018.
-          void queryClient.invalidateQueries({ queryKey: [API_QUERY_NAMESPACE] })
           setIsPolling(true)
         } finally {
           setIsCalculatingPayroll(false)

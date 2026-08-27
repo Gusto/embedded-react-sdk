@@ -19,6 +19,13 @@ interface UsePayrollConfigurationDataParams {
   companyId: string
   payrollId: string
   isCalculating?: boolean
+  /**
+   * Latches prepare OFF for good once a calculation has been started, is in progress, or has
+   * completed. Unlike `isCalculating` (which flips back to false when polling ends), this stays
+   * true through the config to overview transition so a re-enabled prepare cannot re-fire and
+   * wipe the server-side `calculatedAt`. See SDK-1231.
+   */
+  disablePrepare?: boolean
   excludedEmployeeUuids?: string[]
 }
 
@@ -49,6 +56,7 @@ export function usePayrollConfigurationData({
   companyId,
   payrollId,
   isCalculating = false,
+  disablePrepare = false,
   excludedEmployeeUuids = [],
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
   const gustoClient = useGustoEmbeddedContext()
@@ -120,7 +128,7 @@ export function usePayrollConfigurationData({
 
       return result.value.payrollPrepared
     },
-    enabled: employeeUuids.length > 0 && !isCalculating,
+    enabled: employeeUuids.length > 0 && !isCalculating && !disablePrepare,
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
     // An "already processed" prepare failure is terminal — retrying it wastes time. Other
