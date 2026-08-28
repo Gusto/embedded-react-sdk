@@ -140,6 +140,11 @@ const Root = ({
     hasSeenCalculatingRef.current = true
   }
 
+  // Show the calculating loader continuously from calc start through the handoff to overview. The
+  // ref stays true after `isPolling` clears on success, so a tab with no prepared rows (e.g. a
+  // second tab) shows the loader instead of flashing an empty table before it navigates. SDK-1231.
+  const isCalculatingActive = isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current
+
   const {
     employeeDetails,
     employeeCompensations,
@@ -547,8 +552,8 @@ const Root = ({
         payrollCategory={payrollCategory}
         alerts={alerts}
         payrollAlert={payrollAlert}
-        isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}
-        isCalculating={isCalculatingPayroll || isPolling}
+        isPending={isCalculatingActive || isLoading || isUpdatingPayroll}
+        isCalculating={isCalculatingActive}
         payrollBlockers={payrollBlockers}
         pagination={pagination}
         withReimbursements={withReimbursements}
