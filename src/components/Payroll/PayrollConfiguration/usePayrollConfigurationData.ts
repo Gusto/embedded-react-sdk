@@ -18,12 +18,7 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 interface UsePayrollConfigurationDataParams {
   companyId: string
   payrollId: string
-  /**
-   * When true, the prepare query is disabled and any in-flight prepare is cancelled. The caller
-   * owns every reason prepare should be suppressed (an in-progress calculation, the same-mount
-   * post-calculation transition, an actively-calculating server state) so this hook keeps a
-   * single, unambiguous gate. See SDK-1231.
-   */
+  /** When true, don't call prepare and cancel any prepare already running. */
   disablePrepare?: boolean
   excludedEmployeeUuids?: string[]
 }

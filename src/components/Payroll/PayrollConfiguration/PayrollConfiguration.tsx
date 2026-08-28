@@ -107,12 +107,8 @@ const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
-  // Trips true the moment this mount ever observes a "calculating" payroll, whether from clicking
-  // Calculate here or from another tab that started one. It stays true for the rest of the mount,
-  // which keeps prepare suppressed through the calculating -> calculated transition so the re-fired
-  // prepare can't wipe the fresh `calculatedAt`. A fresh mount that never sees "calculating" (e.g.
-  // Edit on an already-calculated payroll) leaves it false, so prepare still runs to reopen the
-  // payroll. See SDK-1231.
+  // True once we've seen this payroll calculating (here or in another tab). Calling prepare while
+  // that's true would wipe the result, so we use this to keep prepare off.
   const hasSeenCalculatingRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
 
@@ -134,15 +130,13 @@ const Root = ({
     [payrollData.payrollShow?.employeeCompensations],
   )
 
-  // Latch the guard the instant we see a calculating payroll, from any source, so it survives the
-  // calculating -> calculated transition within this mount. SDK-1231.
+  // Remember once we've seen it calculating.
   if (isCalculatingStatus(payrollData.payrollShow?.processingRequest)) {
     hasSeenCalculatingRef.current = true
   }
 
-  // Show the calculating loader continuously from calc start through the handoff to overview. The
-  // ref stays true after `isPolling` clears on success, so a tab with no prepared rows (e.g. a
-  // second tab) shows the loader instead of flashing an empty table before it navigates. SDK-1231.
+  // Show the loading state the whole time we're calculating, so a second tab shows the loader
+  // instead of a blank table until it moves to the overview.
   const isCalculatingActive = isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current
 
   const {
@@ -158,11 +152,8 @@ const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
-    // Suppress prepare while a calculation is running locally (isCalculatingPayroll), being polled
-    // (isPolling), or once this mount has seen a calculating payroll from any source
-    // (hasSeenCalculatingRef, which stays true through the handoff to overview). We deliberately do
-    // NOT gate on `calculatedAt`, so prepare still runs on a fresh Edit mount that never saw the
-    // payroll calculating, reopening it for editing. SDK-1231.
+    // Don't prepare while calculating, or once we've seen it calculate. If the payroll was already
+    // calculated when we opened (e.g. clicking Edit), we do prepare so it can be edited.
     disablePrepare: isPolling || isCalculatingPayroll || hasSeenCalculatingRef.current,
     excludedEmployeeUuids,
   })
@@ -338,8 +329,7 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
-    // Trip the guard immediately, before the server reports "calculating", so a prepare can't slip
-    // in during that latency window and cancel the calculation we just kicked off. SDK-1231.
+    // Mark it right away so prepare can't run and cancel the calculation we just started.
     hasSeenCalculatingRef.current = true
     previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
@@ -450,7 +440,7 @@ const Root = ({
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
-      // Calculation failed, so release the guard and let prepare run again on retry. SDK-1231.
+      // Calculation failed, so let prepare run again on retry.
       hasSeenCalculatingRef.current = false
     }
   }, [
@@ -469,7 +459,7 @@ const Root = ({
     const timeoutId = setTimeout(() => {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
-      // Timed out waiting on the calculation; release the guard so prepare can run again. SDK-1231.
+      // Timed out waiting on the calculation, so let prepare run again.
       hasSeenCalculatingRef.current = false
     }, POLLING_TIMEOUT_MS)
 
