@@ -71,11 +71,8 @@ function InformationRequestsFlowRoot({
 
   const CurrentComponent = current.context.component
   const Footer = CurrentComponent?.Footer || undefined
-  // Modal visibility is derived from the state machine — when the machine
-  // is in the `form` state, `component` is non-null and the modal opens.
-  // This eliminates the class of bugs where a separate `isModalOpen` flag
-  // drifts out of sync with the machine (e.g. closing via backdrop/Escape
-  // without sending a state-machine event).
+  // Derived from the machine, not separate state, so it can't drift out of sync
+  // when the modal is dismissed without a state-machine event (e.g. Escape).
   const isModalOpen = CurrentComponent !== null
 
   function handleEvent(type: EventType, data?: unknown) {
@@ -86,10 +83,6 @@ function InformationRequestsFlowRoot({
     }
 
     onEvent(type, data)
-  }
-
-  const handleCloseModal = () => {
-    handleEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL)
   }
 
   return (
@@ -119,7 +112,9 @@ function InformationRequestsFlowRoot({
         </Suspense>
         <Modal
           isOpen={isModalOpen}
-          onClose={handleCloseModal}
+          onClose={() => {
+            handleEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL)
+          }}
           footer={
             Footer && (
               <BaseBoundaries LoaderComponent={LoaderComponent}>
