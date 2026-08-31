@@ -32,6 +32,7 @@ import {
   RegularRateOfPayPrototype,
   RegularRateOfPayStates,
 } from './design/prototypes/regular-rate-of-pay'
+import { RropApiVerificationPrototype } from './design/prototypes/rrop-api-verification'
 import {
   CreateHistoricalPaymentPrototype,
   CreateHistoricalPaymentStates,
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
                 ],
               },
             ],
+          },
+          {
+            path: 'rrop-api-verification',
+            element: <RropApiVerificationPrototype />,
           },
           {
             path: 'regular-rate-of-pay',

@@ -1,0 +1,235 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 4rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid #e2e5ea;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sectionIntro {
+  font-size: 0.85rem;
+  color: #5a6472;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.stepCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #eceef2;
+  border-radius: 0.6rem;
+  background: #fafbfc;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.stepHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stepTitle {
+  font-weight: 600;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepDescription {
+  font-size: 0.8rem;
+  color: #6b7280;
+  line-height: 1.45;
+}
+
+.stepActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pill_idle {
+  background: #eceef2;
+  color: #6b7280;
+}
+
+.pill_running {
+  background: #fef6e0;
+  color: #94690f;
+}
+
+.pill_success {
+  background: #e2f5ea;
+  color: #1b7a45;
+}
+
+.pill_error {
+  background: #fde6e6;
+  color: #b3261e;
+}
+
+.field {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  align-items: baseline;
+}
+
+.fieldLabel {
+  color: #6b7280;
+  min-width: 12rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+}
+
+.fieldValue {
+  font-weight: 600;
+  color: #1f2933;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  word-break: break-word;
+}
+
+.jsonBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.jsonToggle {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #3b5bdb;
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.jsonPre {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  background: #1f2430;
+  color: #d5dae3;
+  border-radius: 0.4rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  overflow: auto;
+  max-height: 22rem;
+}
+
+.zodPanel {
+  border: 1px solid #f3b7b3;
+  background: #fdeceb;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.zodPanelTitle {
+  font-weight: 700;
+  color: #b3261e;
+  font-size: 0.85rem;
+}
+
+.zodPanelMessage {
+  font-size: 0.8rem;
+  color: #7f2018;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  word-break: break-word;
+}
+
+.zodIssueList {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.78rem;
+  color: #7f2018;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  code {
+    background: #f7d7d4;
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+  }
+}
+
+.apiPanel {
+  border: 1px solid #d7ceb0;
+  background: #fbf6e6;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.apiPanelTitle {
+  font-weight: 700;
+  color: #94690f;
+  font-size: 0.85rem;
+}
+
+.apiPanelMessage {
+  font-size: 0.8rem;
+  color: #6b4d0a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  word-break: break-word;
+}
+
+.inlineControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 12rem;
+}

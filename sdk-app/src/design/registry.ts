@@ -165,6 +165,12 @@ export const categorizedRegistry: CategorizedRegistry = {
   ],
   Payroll: [
     {
+      name: 'RRoP API Verification',
+      path: '/design/rrop-api-verification',
+      description:
+        'Live harness that runs the Regular Rate of Pay endpoints (earning types, pay schedules, payrolls) through the generated embedded-api hooks and flags any zod response type mismatches.',
+    },
+    {
       name: 'Regular rate of pay',
       path: '/design/regular-rate-of-pay',
       description:
