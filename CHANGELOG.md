@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.55.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.4...v0.55.5) (2026-08-31)
+
+### Fixes
+
+- Fix `InformationRequests` modal visibility so it is driven by the component's state machine ([#2662](https://github.com/Gusto/embedded-react-sdk/issues/2662))
+
 ## [0.55.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.3...v0.55.4) (2026-08-31)
 
 ### Features & Enhancements
