@@ -815,13 +815,12 @@ describe('PayrollConfiguration', () => {
         processing_request: { status: 'calculate_success', errors: [] },
       }
 
-      // Simulate the component subtree being torn down and recreated right now
-      // (e.g. by a Suspense re-throw or an error boundary reset) -- before the next
-      // 5s poll ever gets a chance to observe the transition itself. `rerender`
-      // keeps the same QueryClient/provider tree, so this isolates the remount
-      // itself as the cause: the fresh instance's very first fetch already returns
-      // the successful state, but its local `isPolling`/`previousCalculatedAtRef`
-      // start over at their initial values.
+      // Simulate the component subtree being torn down and recreated right now (e.g. by a
+      // Suspense re-throw or an error boundary reset) -- before the next 5s poll ever gets a
+      // chance to observe the transition itself. `rerender` keeps the same QueryClient/
+      // provider tree, so this isolates the remount itself as the cause: the fresh instance's
+      // very first fetch already returns the successful state, but its local `isPolling` and
+      // `previousCalculatedAtRef` start over at their initial values.
       rerender(<PayrollConfiguration key="b" {...defaultProps} />)
 
       await waitFor(() => {
@@ -830,7 +829,8 @@ describe('PayrollConfiguration', () => {
 
       // Completion detection must not depend on having personally witnessed the
       // `calculating` state first -- a fresh instance that only ever observes the
-      // already-successful response still has to notice and report it.
+      // already-successful response still has to notice and report it immediately, without
+      // waiting for another poll tick.
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
           'runPayroll/calculated',
@@ -838,6 +838,15 @@ describe('PayrollConfiguration', () => {
         )
       })
       expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
+
+      // Detecting completion without local history must not turn into re-firing on every
+      // subsequent render once the check is no longer purely `isPolling`-gated.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(15_000)
+      })
+      expect(onEvent.mock.calls.filter(([type]) => type === 'runPayroll/calculated')).toHaveLength(
+        1,
+      )
     })
 
     it('does not make prepare calls while polling', async () => {
