@@ -18,7 +18,8 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 interface UsePayrollConfigurationDataParams {
   companyId: string
   payrollId: string
-  isCalculating?: boolean
+  /** When true, don't call prepare and cancel any prepare already running. */
+  disablePrepare?: boolean
   excludedEmployeeUuids?: string[]
 }
 
@@ -48,7 +49,7 @@ const isAlreadyProcessedError = (error: unknown): boolean => {
 export function usePayrollConfigurationData({
   companyId,
   payrollId,
-  isCalculating = false,
+  disablePrepare = false,
   excludedEmployeeUuids = [],
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
   const gustoClient = useGustoEmbeddedContext()
@@ -120,7 +121,7 @@ export function usePayrollConfigurationData({
 
       return result.value.payrollPrepared
     },
-    enabled: employeeUuids.length > 0 && !isCalculating,
+    enabled: employeeUuids.length > 0 && !disablePrepare,
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
     // An "already processed" prepare failure is terminal — retrying it wastes time. Other
@@ -140,12 +141,12 @@ export function usePayrollConfigurationData({
   }, [queryClient, payrollId])
 
   useEffect(() => {
-    if (isCalculating) {
+    if (disablePrepare) {
       void queryClient.cancelQueries({
         queryKey: [PREPARE_QUERY_KEY, payrollId],
       })
     }
-  }, [isCalculating, queryClient, payrollId])
+  }, [disablePrepare, queryClient, payrollId])
 
   const excludedUuidsKey = useMemo(() => missingExcludedUuids.join(','), [missingExcludedUuids])
 
@@ -165,7 +166,7 @@ export function usePayrollConfigurationData({
         .map(result => result.value.employee)
         .filter((e): e is Employee => e != null)
     },
-    enabled: missingExcludedUuids.length > 0 && !isCalculating,
+    enabled: missingExcludedUuids.length > 0 && !disablePrepare,
     staleTime: FIVE_MINUTES,
   })
 
