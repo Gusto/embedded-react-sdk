@@ -107,8 +107,9 @@ const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
-  // True once we've seen this payroll calculating (here or in another tab). Calling prepare while
-  // that's true would wipe the result, so we use this to keep prepare off.
+  // True once this screen has read a "calculating" status for the payroll, whether we started that
+  // calc or someone else did. Calling prepare after that would wipe the result, so we use this to
+  // keep prepare off.
   const hasSeenCalculatingRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
 
