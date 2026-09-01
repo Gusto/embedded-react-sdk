@@ -77,7 +77,7 @@
     "e2e:serve": "vite --config e2e/vite.config.ts",
     "e2e:setup": "npx tsx e2e/scripts/runGlobalSetup.ts",
     "e2e:refresh-token": "npx tsx e2e/scripts/refreshToken.ts",
-    "scenarios:types": "json2ts e2e/scenarios/schema/scenario.schema.json -o e2e/scenarios/schema/scenario.types.ts",
+    "scenarios:types": "json2ts e2e/scenarios/schema/scenario.schema.json -o e2e/scenarios/schema/scenario.types.ts && prettier --write e2e/scenarios/schema/scenario.types.ts --log-level warn",
     "scenarios:validate": "node e2e/scenarios/scripts/validate.mjs",
     "e2e:scenarios:prewarm": "npx tsx e2e/scenario/scripts.ts prewarm",
     "test:scenarios": "vitest run --config vitest.scenario.config.ts",
@@ -139,7 +139,7 @@
     "jest-axe": "^11.0.0",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
-    "json-schema-to-typescript": "^15.0.4",
+    "json-schema-to-typescript": "^16.0.0",
     "lint-staged": "^17.3.0",
     "markdownlint-cli2": "^0.23.2",
     "msw": "^2.15.0",
@@ -177,6 +177,9 @@
   "overrides": {
     "esbuild": "^0.28.1",
     "js-yaml": "^4.2.0",
+    "json-schema-to-typescript": {
+      "js-yaml": "^5.2.3"
+    },
     "uuid": "^11.1.1",
     "@babel/core": "^7.29.6",
     "markdown-it": "^14.2.0",
