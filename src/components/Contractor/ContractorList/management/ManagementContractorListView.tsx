@@ -223,7 +223,10 @@ export function ManagementContractorListView({
                   : t('continueCta')}
               </Components.Button>
             )}
-            <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
+            <HamburgerMenu
+              items={menuItems}
+              triggerLabel={t('hamburgerTitle', { name: contractorDisplayName(contractor) })}
+            />
           </Flex>
         )
       }
@@ -280,7 +283,12 @@ export function ManagementContractorListView({
         })
       }
 
-      return <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
+      return (
+        <HamburgerMenu
+          items={menuItems}
+          triggerLabel={t('hamburgerTitle', { name: contractorDisplayName(contractor) })}
+        />
+      )
     },
     isFetching,
     pagination,

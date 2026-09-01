@@ -1477,6 +1477,7 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | <a id="property-contractorcontractorlisteditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-contractorcontractorlistemptytabledescription"></a> `emptyTableDescription` | `"Add contractors to get them setup for payroll."` |
 | <a id="property-contractorcontractorlistemptytabletitle"></a> `emptyTableTitle` | `"You haven't added any contractors yet"` |
+| <a id="property-contractorcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Actions for {{name}}"` |
 | <a id="property-contractorcontractorlistlistheaders"></a> `listHeaders` | |
 | `listHeaders.name` | `"Name"` |
 | `listHeaders.status` | `"Status"` |
@@ -1671,7 +1672,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | `emptyState.onboarding` | |
 | `emptyState.onboarding.description` | `"Contractors currently being onboarded will appear here"` |
 | `emptyState.onboarding.title` | `"There are no contractors onboarding"` |
-| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Contractor actions menu"` |
+| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Actions for {{name}}"` |
 | <a id="property-contractormanagementcontractorlistlastdaybadge"></a> `lastDayBadge` | `"Last day {{date}}"` |
 | <a id="property-contractormanagementcontractorlistnamelabel"></a> `nameLabel` | `"Contractor name"` |
 | <a id="property-contractormanagementcontractorlistonboardingstatuslabel"></a> `onboardingStatusLabel` | `"Onboarding status"` |

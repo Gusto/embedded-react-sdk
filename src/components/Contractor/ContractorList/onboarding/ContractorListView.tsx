@@ -101,7 +101,12 @@ export function ContractorListView({
         })
       }
 
-      return <HamburgerMenu items={menuItems} />
+      return (
+        <HamburgerMenu
+          triggerLabel={t('hamburgerTitle', { name: contractorDisplayName(contractor) })}
+          items={menuItems}
+        />
+      )
     },
     isFetching,
     pagination,

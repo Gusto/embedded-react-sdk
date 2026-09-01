@@ -92,7 +92,7 @@ describe('ManagementContractorList — Active tab', () => {
     renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={onEvent} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Dismiss contractor' }))
 
     expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DISMISS, {
@@ -120,7 +120,7 @@ describe('ManagementContractorList — Active tab', () => {
     renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={onEvent} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Cancel dismissal' }))
 
     expect(await screen.findByRole('dialog')).toBeTruthy()
@@ -142,7 +142,7 @@ describe('ManagementContractorList — Active tab', () => {
     renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={onEvent} />)
 
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'View details' }))
 
     expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_VIEW, {
@@ -170,7 +170,7 @@ describe('ManagementContractorList — Onboarding tab', () => {
     await screen.findByText('Ada Lovelace')
 
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     expect(await screen.findByRole('menuitem', { name: 'Remove' })).toBeInTheDocument()
   })
 
@@ -204,7 +204,7 @@ describe('ManagementContractorList — Onboarding tab', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'Onboarding' }))
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Remove' }))
 
     expect(deleteResolver).not.toHaveBeenCalled()
@@ -257,7 +257,7 @@ describe('ManagementContractorList — Dismissed tab', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'Dismissed' }))
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Rehire contractor' }))
 
     expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_REHIRE, {
@@ -287,7 +287,7 @@ describe('ManagementContractorList — Dismissed tab', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'Dismissed' }))
     await screen.findByText('Ada Lovelace')
-    await user.click(screen.getByRole('button', { name: 'Contractor actions menu' }))
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Cancel rehire' }))
 
     expect(await screen.findByRole('dialog')).toBeTruthy()
