@@ -8354,6 +8354,8 @@ export namespace Translations {
       ensureRequired: string
     }
     icons: {
+      /** @defaultValue `"Completed step"` */
+      completedStep: string
       /** @defaultValue `"Show options"` */
       selectArrow: string
       /** @defaultValue `"Show calendar"` */
