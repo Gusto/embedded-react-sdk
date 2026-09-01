@@ -23,6 +23,7 @@ import { BeforeCreateRequestHook } from '@gusto/embedded-api/hooks/types';
 import { BeforeRequestContext } from '@gusto/embedded-api/hooks/types';
 import { BeforeRequestHook } from '@gusto/embedded-api/hooks/types';
 import { Blockers } from '@gusto/embedded-api/models/components/employeeonboardingstatus';
+import { Breakdowns } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { ButtonHTMLAttributes } from 'react';
 import { ChildSupportDataKey } from '@gusto/embedded-api/models/components/childsupportdata';
 import { ChristmasDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
@@ -164,6 +165,7 @@ import { Options } from '@gusto/embedded-api/models/components/taxrequirementmet
 import { OverrideType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Pages } from '@gusto/embedded-api/models/components/document';
 import { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff';
+import { PayAdjustments } from '@gusto/embedded-api/models/components/payrollshow';
 import { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount';
 import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs';
@@ -186,6 +188,7 @@ import { PayrollCreditBlockerUnblockOptionWaitForReverseWire } from '@gusto/embe
 import { PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata } from '@gusto/embedded-api/models/components/payrollcreditblockerunblockoptionwaitforreversewire';
 import { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypeAmountType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeBreakdowns } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypeCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypeOverrideType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -205,9 +208,11 @@ import { PayrollReceiptTotals } from '@gusto/embedded-api/models/components/payr
 import { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowAmountType } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowBenefits } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollShowBreakdowns } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowCustomWithholdings } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowDeductions } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowEmployeeCompensationsAmountType } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollShowEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowEmployeeCompensationsCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowEmployeeCompensationsOverrideType } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowFederal } from '@gusto/embedded-api/models/components/payrollshow';
@@ -225,10 +230,12 @@ import { PayrollTaxesType } from '@gusto/embedded-api/models/components/payrollt
 import { PayrollTotalsType } from '@gusto/embedded-api/models/components/payrolltotalstype';
 import { PayrollType } from '@gusto/embedded-api/models/components/payperiod';
 import { PayrollUpdateAmountType } from '@gusto/embedded-api/models/components/payrollupdate';
+import { PayrollUpdateBreakdowns } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateCustomWithholdings } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateDeductions } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensationsAmountType } from '@gusto/embedded-api/models/components/payrollupdate';
+import { PayrollUpdateEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensationsCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensationsOverrideType } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateFederal } from '@gusto/embedded-api/models/components/payrollupdate';
@@ -245,6 +252,7 @@ import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
 import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod';
 import { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow';
+import { PayScheduleWorkweekStartDay } from '@gusto/embedded-api/models/components/payscheduleshow';
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
@@ -299,8 +307,10 @@ import { VerificationStatus } from '@gusto/embedded-api/models/components/compan
 import { VerificationType } from '@gusto/embedded-api/models/components/companybankaccount';
 import { VeteransDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { WageType as WageType_2 } from '@gusto/embedded-api/models/components/contractorpaymentforgrouppreview';
+import { WarningObject } from '@gusto/embedded-api/models/components/warningobject';
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
+import { Workweeks } from '@gusto/embedded-api/models/components/payrollshow';
 
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
@@ -586,10 +596,12 @@ declare namespace APIModels {
         PayrollCreditBlockerUnblockOptionSubmitWire,
         PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata,
         PayrollCreditBlockerUnblockOptionWaitForReverseWire,
+        Breakdowns,
         Deductions,
         FixedCompensations,
         HourlyCompensations,
         PayrollEmployeeCompensationsType,
+        PayrollEmployeeCompensationsTypeBreakdowns,
         PayrollEmployeeCompensationsTypePaidTimeOff,
         PayrollEmployeeCompensationsTypePaymentMethod,
         Reimbursements,
@@ -615,10 +627,13 @@ declare namespace APIModels {
         PayrollReceiptPaymentMethod,
         EmployeeCompensations,
         OffCycleReasonType,
+        PayAdjustments,
         Payroll_2 as Payroll,
         PayrollShow,
         PayrollShowBenefits,
+        PayrollShowBreakdowns,
         PayrollShowDeductions,
+        PayrollShowEmployeeCompensationsBreakdowns,
         PayrollShowFixedCompensations,
         PayrollShowHourlyCompensations,
         PayrollShowPaidTimeOff,
@@ -627,6 +642,7 @@ declare namespace APIModels {
         PayrollShowState,
         PayrollShowTaxes,
         PayrollWithholdingPayPeriodType,
+        Workweeks,
         PayrollPrepared,
         PayrollShowCustomWithholdings,
         PayrollShowFederal,
@@ -640,7 +656,9 @@ declare namespace APIModels {
         PayrollSubmissionBlockerTypeStatus,
         PayrollTaxesType,
         PayrollTotalsType,
+        PayrollUpdateBreakdowns,
         PayrollUpdateEmployeeCompensations,
+        PayrollUpdateEmployeeCompensationsBreakdowns,
         PayrollUpdatePaidTimeOff,
         PayrollUpdateReimbursements,
         PayrollUpdateState,
@@ -659,6 +677,7 @@ declare namespace APIModels {
         PayScheduleAutoPayrollEnablementBlockerMetadata,
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
+        PayScheduleWorkweekStartDay,
         PayScheduleShow,
         PrintablePayrollChecksBody,
         PrintingFormat,
@@ -688,6 +707,7 @@ declare namespace APIModels {
         AccrualMethod,
         TimeOffPolicyRequestPolicyType,
         UnprocessedTerminationPayPeriod,
+        WarningObject,
         WireInRequest,
         PaymentType,
         WireInRequestStatus
