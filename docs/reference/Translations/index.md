@@ -58,6 +58,7 @@ Translation keys for the `common` i18n namespace.
 | `fileInput.uploadInstructions` | `"<clickToUpload>Click to upload</clickToUpload> or drag and drop"` |
 | <a id="property-commonicons"></a> `icons` | |
 | `icons.calendarArrow` | `"Show calendar"` |
+| `icons.completedStep` | `"Completed step"` |
 | `icons.nextMonth` | `"Show next month"` |
 | `icons.paginationFirst` | `"Navigate to first page"` |
 | `icons.paginationLast` | `"Navigate to last page"` |
