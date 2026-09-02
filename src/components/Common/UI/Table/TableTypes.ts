@@ -15,6 +15,15 @@ export interface TableData {
    * Content to be displayed in the table cell
    */
   content: ReactNode
+  /**
+   * When true, the cell allows its content to wrap onto multiple lines within a
+   * bounded width instead of staying on a single line. Use for columns holding
+   * long free-form text (descriptions, notes, messages); otherwise cells hug
+   * their content and the table scrolls horizontally.
+   *
+   * @defaultValue `false`
+   */
+  wrap?: boolean
 }
 
 /**

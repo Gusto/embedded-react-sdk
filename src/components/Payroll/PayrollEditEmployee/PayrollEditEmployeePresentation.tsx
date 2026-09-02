@@ -455,6 +455,7 @@ export const PayrollEditEmployeePresentation = ({
       {
         key: 'description',
         title: t('reimbursementDescriptionColumn'),
+        wrap: true,
         render: row => row.description.trim() || t('reimbursementUnnamedFallback'),
       },
       {

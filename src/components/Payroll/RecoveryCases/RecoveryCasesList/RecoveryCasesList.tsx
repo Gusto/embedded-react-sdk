@@ -154,6 +154,7 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
       {
         key: 'latestErrorCode',
         title: t('columns.latestErrorCode'),
+        wrap: true,
         render: recoveryCase => <ErrorCodeCell errorCode={recoveryCase.latestErrorCode} />,
       },
       {
