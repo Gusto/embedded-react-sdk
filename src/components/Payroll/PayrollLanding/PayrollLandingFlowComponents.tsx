@@ -136,7 +136,15 @@ export function PayrollLandingTabsContextual() {
         />
       )}
       {hasActiveWireInRequests && (
-        <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
+        // ConfirmWireDetails fetches its own data behind a nested Suspense boundary, which would
+        // flash a second loading indicator after the landing has already painted. Suppress that
+        // inner loader so the wire banner just appears once its data resolves, avoiding a double
+        // loading state. Rendered standalone (outside the landing) it still shows its own loader.
+        <ConfirmWireDetailsComponent
+          companyId={ensureRequired(companyId)}
+          onEvent={onEvent}
+          LoaderComponent={() => <></>}
+        />
       )}
       <TransitionPayrollAlert companyId={ensureRequired(companyId)} onEvent={onEvent} />
       <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockers} />

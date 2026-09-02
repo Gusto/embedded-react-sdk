@@ -56,7 +56,7 @@ export function ConfirmWireDetails({ onEvent, ...props }: ConfirmWireDetailsProp
   )
 }
 
-function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
+function Root({ companyId, wireInId, onEvent, LoaderComponent }: ConfirmWireDetailsProps) {
   const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)
@@ -137,6 +137,7 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
         onStartWireTransfer={handleStartWireTransfer}
         onEvent={onEvent}
         confirmationAlert={current.context.confirmationAlert}
+        LoaderComponent={LoaderComponent}
       />
       <Modal
         isOpen={isModalOpen}

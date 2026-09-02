@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
+import type {
+  ConfirmWireDetailsComponentType,
+  ConfirmWireDetailsProps,
+} from '../ConfirmWireDetails/types'
 import { PayrollLanding } from './PayrollLanding'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -135,6 +139,33 @@ describe('PayrollLanding', () => {
       await waitFor(() => {
         expect(screen.getByText(/wire transfer details required/i)).toBeInTheDocument()
       })
+    })
+
+    it('suppresses the wire details loader to avoid a second loading indicator', async () => {
+      server.use(handleGetWireInRequests(() => HttpResponse.json([createWireInRequest()])))
+
+      // Capture the props the landing passes to the wire component. It should hand it a no-op
+      // LoaderComponent so its nested Suspense boundary does not flash a second loading indicator
+      // after the landing has already painted (the double loading state this guards against).
+      const receivedProps: ConfirmWireDetailsProps[] = []
+      const StubWireDetails: ConfirmWireDetailsComponentType = props => {
+        receivedProps.push(props)
+        return <div>wire details stub</div>
+      }
+
+      renderWithProviders(
+        <PayrollLanding {...defaultProps} ConfirmWireDetailsComponent={StubWireDetails} />,
+      )
+
+      expect(await screen.findByText('wire details stub')).toBeInTheDocument()
+
+      const { LoaderComponent } = receivedProps[0]!
+      expect(LoaderComponent).toBeDefined()
+
+      // The supplied loader renders no loading indicator, so the wire boundary stays quiet.
+      const WireLoader = LoaderComponent!
+      const { container } = renderWithProviders(<WireLoader />)
+      expect(within(container).queryByRole('status')).toBeNull()
     })
   })
 
