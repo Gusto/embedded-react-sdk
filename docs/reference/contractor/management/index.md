@@ -22,6 +22,7 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 | Component | Description |
 | --------- | ----------- |
+| [ContractorListFlow](contractor-list-flow.md) | Hub for viewing and managing a company's contractors, including onboarding new ones. |
 | [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single contractor's details, pay, and documents. |
 | [PaymentFlow](payment-flow.md) | Hub for creating and managing contractor payments for a company. |
 

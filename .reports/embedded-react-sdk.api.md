@@ -1377,6 +1377,7 @@ export const componentEvents: {
     readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly CONTRACTOR_VIEW: "contractor/view";
+    readonly CONTRACTOR_RETURN_TO_LIST: "contractor/returnToList";
     readonly CONTRACTOR_DISMISS: "contractor/dismiss";
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
@@ -1862,6 +1863,14 @@ export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProp
 function ContractorList(input: ContractorListProps): JSX;
 
 // @public
+const ContractorListFlow: (input: ContractorListFlowProps) => JSX;
+
+// @public
+interface ContractorListFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
+
+// @public
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
     companyId: string;
     successMessage?: string;
@@ -1872,6 +1881,8 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        ContractorListFlow,
+        ContractorListFlowProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,

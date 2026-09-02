@@ -363,6 +363,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Flow | Blocks included |
 | --- | --- |
+| **ContractorManagement.ContractorListFlow** | ContractorManagement.ContractorList, ContractorManagement.DashboardFlow, ContractorOnboarding.OnboardingFlow |
 | **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
 | **ContractorManagement.DashboardFlow** | ContractorManagement.Address, ContractorManagement.Compensation, ContractorManagement.DocumentsCard, ContractorManagement.PaymentMethod, ContractorManagement.Profile |
 | **ContractorManagement.HistoricalPaymentFlow** | ContractorManagement.CreateHistoricalPayment, ContractorManagement.HistoricalPaymentSummary |

@@ -1644,6 +1644,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-contractormanagementcontractorlistaddcontractorcta"></a> `addContractorCta` | `"Add contractor"` |
+| <a id="property-contractormanagementcontractorlistbacktolistcta"></a> `backToListCta` | `"Back to contractors"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissalcta"></a> `cancelDismissalCta` | `"Cancel dismissal"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissaldialog"></a> `cancelDismissalDialog` | |
 | `cancelDismissalDialog.cancelCta` | `"No, go back"` |
