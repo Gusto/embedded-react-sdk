@@ -53,7 +53,7 @@ const Root = ({
     employeeUuids: memoizedEmployeeId,
   })
 
-  const employee = employeeData.employee!
+  const employee = employeeData.employee
 
   const onSave = () => {
     // TODO: Once the save mutation is wired up, emit the updated payroll returned by the update
@@ -68,7 +68,7 @@ const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
   }
 
-  if (isLoading) {
+  if (isLoading || !employee) {
     return <LoadingIndicator />
   }
 
