@@ -356,6 +356,25 @@ const isSalaried = (compensation: Compensation): boolean => {
   return compensation.flsaStatus === 'Exempt' || compensation.flsaStatus === 'Salaried Nonexempt'
 }
 
+/**
+ * Whether an FLSA status is eligible for regular-rate-of-pay overtime.
+ *
+ * @remarks
+ * Only the nonexempt family (`Nonexempt`, `Salaried Nonexempt`,
+ * `Commission Only Nonexempt`) earns overtime premiums, so only those statuses
+ * warrant per-workweek breakdowns. `Exempt`, `Owner`, and
+ * `Commission Only Exempt` are never overtime-eligible. An unknown status
+ * returns `false` (treat as flat, never show meaningless workweek columns).
+ *
+ * @param flsaStatus - The employee's FLSA status, e.g. from `hourlyCompensations[].flsaStatus`.
+ * @returns `true` only for the three nonexempt statuses.
+ * @internal
+ */
+export const isOvertimeEligibleFlsaStatus = (flsaStatus: string | undefined): boolean =>
+  flsaStatus === FlsaStatus.NONEXEMPT ||
+  flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
+  flsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT
+
 const getTotalTipCompensations = (fixedCompensations: PayrollShowFixedCompensations[]): number => {
   if (!fixedCompensations.length) return 0
 
