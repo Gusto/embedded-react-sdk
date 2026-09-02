@@ -320,6 +320,25 @@ export const PayrollEditEmployeePresentation = ({
     }
   }
 
+  const resolveDefaultPaymentMethod = () => {
+    const preparedPaymentMethod = employeeCompensation?.paymentMethod
+
+    if (!preparedPaymentMethod) {
+      return hasDirectDepositSetup
+        ? PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
+        : PayrollEmployeeCompensationsTypePaymentMethod.Check
+    }
+
+    if (
+      !hasDirectDepositSetup &&
+      preparedPaymentMethod === PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
+    ) {
+      return PayrollEmployeeCompensationsTypePaymentMethod.Check
+    }
+
+    return preparedPaymentMethod
+  }
+
   const defaultValues = {
     hourlyCompensations: (() => {
       const hourlyCompensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
@@ -385,9 +404,7 @@ export const PayrollEditEmployeePresentation = ({
       recurring: reimbursement.recurring ?? false,
     })),
 
-    paymentMethod:
-      employeeCompensation?.paymentMethod ||
-      PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
+    paymentMethod: resolveDefaultPaymentMethod(),
   }
 
   const formHandlers = useForm<PayrollEditEmployeeFormValues>({

@@ -1463,6 +1463,58 @@ describe('PayrollEditEmployeePresentation', () => {
         }),
       )
     })
+
+    it('submits Check when no payment method is prepared and the employee has no direct deposit', async () => {
+      const compensationWithoutPaymentMethod = {
+        ...mockEmployeeCompensation,
+        paymentMethod: undefined,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithoutPaymentMethod}
+        />,
+      )
+
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            paymentMethod: PaymentMethods.Check,
+          }),
+        )
+      })
+    })
+
+    it('submits Check when Direct Deposit is prepared but the employee has no direct deposit', async () => {
+      const compensationWithDirectDeposit = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.DirectDeposit,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithDirectDeposit}
+        />,
+      )
+
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            paymentMethod: PaymentMethods.Check,
+          }),
+        )
+      })
+    })
   })
 
   describe('Itemized Reimbursements', () => {
