@@ -83,6 +83,9 @@ import { DocumentSignedFields } from '@gusto/embedded-api/models/components/docu
 import { DocumentSignedPages } from '@gusto/embedded-api/models/components/documentsigned';
 import { DocumentSignedRecipientType } from '@gusto/embedded-api/models/components/documentsigned';
 import { DocumentType as DocumentType_2 } from '@gusto/embedded-api/models/components/i9authorization';
+import { EarningType } from '@gusto/embedded-api/models/components/earningtype';
+import { EarningTypeCategory } from '@gusto/embedded-api/models/components/earningtype';
+import { EarningTypeList } from '@gusto/embedded-api/models/components/earningtypelist';
 import { EinVerification } from '@gusto/embedded-api/models/components/federaltaxdetails';
 import { Employee } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress';
@@ -506,6 +509,9 @@ declare namespace APIModels {
         DocumentSignedFields,
         DocumentSignedPages,
         DocumentSignedRecipientType,
+        EarningType,
+        EarningTypeCategory,
+        EarningTypeList,
         CurrentEmploymentStatus,
         EmployeeOnboardingStatus1,
         Employee,

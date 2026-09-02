@@ -1915,6 +1915,101 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/i9authorizat
 
 ***
 
+<a id="earningtype"></a>
+
+## EarningType
+
+> **EarningType** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/earningtype.ts:48](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/earningtype.ts#L48)
+
+The representation of an earning type in Gusto.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-earningtypeuuid"></a> `uuid` | `string` | The ID of the earning type. |
+| <a id="property-earningtypeactive"></a> `active?` | `boolean` | Whether the earning type is active. |
+| <a id="property-earningtypecategory"></a> `category?` | [`EarningTypeCategory`](#earningtypecategory-1) | The earning type category. Only present when the company has access to **Remarks** categorized custom bonus earning types. |
+| <a id="property-earningtypeincludedinovertimepay"></a> `includedInOvertimePay?` | `boolean` | Whether earnings of this type are included when calculating an employee's **Remarks** regular rate of pay for overtime purposes. Only settable when `category` is `Other`. |
+| <a id="property-earningtypename"></a> `name?` | `string` | The name of the earning type. |
+
+***
+
+<a id="earningtypecategory"></a>
+
+## EarningTypeCategory
+
+> `const` **EarningTypeCategory**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/earningtype.ts:18](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/earningtype.ts#L18)
+
+The earning type category. Only present when the company has access to
+
+### Remarks
+
+categorized custom bonus earning types.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-earningtypecategorybenefitcontributions"></a> `BenefitContributions` | `"BenefitContributions"` |
+| <a id="property-earningtypecategorycashtips"></a> `CashTips` | `"CashTips"` |
+| <a id="property-earningtypecategorycommission"></a> `Commission` | `"Commission"` |
+| <a id="property-earningtypecategorycorrectionpayment"></a> `CorrectionPayment` | `"CorrectionPayment"` |
+| <a id="property-earningtypecategorydiscretionarybonus"></a> `DiscretionaryBonus` | `"DiscretionaryBonus"` |
+| <a id="property-earningtypecategoryminimumwageadjustment"></a> `MinimumWageAdjustment` | `"MinimumWageAdjustment"` |
+| <a id="property-earningtypecategoryministerhousing"></a> `MinisterHousing` | `"MinisterHousing"` |
+| <a id="property-earningtypecategorynondiscretionarybonus"></a> `NonDiscretionaryBonus` | `"NonDiscretionaryBonus"` |
+| <a id="property-earningtypecategorynontaxabledisability"></a> `NonTaxableDisability` | `"NonTaxableDisability"` |
+| <a id="property-earningtypecategoryoncallpay"></a> `OnCallPay` | `"OnCallPay"` |
+| <a id="property-earningtypecategoryother"></a> `Other` | `"Other"` |
+| <a id="property-earningtypecategoryothernontaxable"></a> `OtherNonTaxable` | `"OtherNonTaxable"` |
+| <a id="property-earningtypecategoryotherregularincome"></a> `OtherRegularIncome` | `"OtherRegularIncome"` |
+| <a id="property-earningtypecategoryownersdraw"></a> `OwnersDraw` | `"OwnersDraw"` |
+| <a id="property-earningtypecategorypaychecktips"></a> `PaycheckTips` | `"PaycheckTips"` |
+| <a id="property-earningtypecategoryservicecharges"></a> `ServiceCharges` | `"ServiceCharges"` |
+| <a id="property-earningtypecategoryseverancepay"></a> `SeverancePay` | `"SeverancePay"` |
+
+***
+
+<a id="earningtypecategory-1"></a>
+
+## EarningTypeCategory
+
+> **EarningTypeCategory** = `ClosedEnum`\<*typeof* [`EarningTypeCategory`](#earningtypecategory)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/earningtype.ts:18](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/earningtype.ts#L18)
+
+The earning type category. Only present when the company has access to
+
+### Remarks
+
+categorized custom bonus earning types.
+
+***
+
+<a id="earningtypelist"></a>
+
+## EarningTypeList
+
+> **EarningTypeList** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/earningtypelist.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/earningtypelist.ts#L14)
+
+Lists of default and custom earning types for a company.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-earningtypelistcustom"></a> `custom?` | [`EarningType`](#earningtype)[] | The custom earning types for the company. |
+| <a id="property-earningtypelistdefault"></a> `default?` | [`EarningType`](#earningtype)[] | The default earning types for the company. |
+
+***
+
 <a id="einverification"></a>
 
 ## EinVerification
