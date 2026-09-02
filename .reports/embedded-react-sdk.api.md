@@ -5064,6 +5064,8 @@ export interface Resources {
     'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
     // (undocumented)
     'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+    // @internal (undocumented)
+    'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
     // (undocumented)
     'Payroll.WireInstructions': Translations.PayrollWireInstructions
     // (undocumented)
@@ -5873,6 +5875,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     historicalPayments?: boolean;
+    payrollRegularRateOfPay?: boolean;
 }
 
 // @public
