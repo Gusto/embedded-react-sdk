@@ -17,127 +17,249 @@ declare module 'i18next' {
  * @group Utility types
  */
 export interface Resources {
+  /** */
   'Company.Addresses': Translations.CompanyAddresses
+  /** */
   'Company.AssignSignatory': Translations.CompanyAssignSignatory
+  /** */
   'Company.BankAccount': Translations.CompanyBankAccount
+  /** */
   'Company.DocumentList': Translations.CompanyDocumentList
+  /** */
   'Company.FederalTaxes': Translations.CompanyFederalTaxes
+  /** */
   'Company.Industry': Translations.CompanyIndustry
+  /** */
   'Company.Locations': Translations.CompanyLocations
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
+  /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
+  /** */
   'Company.SignatureForm': Translations.CompanySignatureForm
+  /** */
   'Company.StateTaxes': Translations.CompanyStateTaxes
+  /** */
   'Company.TimeOff.CreateTimeOffPolicy': Translations.CompanyTimeOffCreateTimeOffPolicy
+  /** */
   'Company.TimeOff.EmployeeTable': Translations.CompanyTimeOffEmployeeTable
+  /** */
   'Company.TimeOff.HolidayPolicy': Translations.CompanyTimeOffHolidayPolicy
+  /** */
   'Company.TimeOff.PolicyDetail': Translations.CompanyTimeOffPolicyDetail
+  /** */
   'Company.TimeOff.SelectEmployees': Translations.CompanyTimeOffSelectEmployees
+  /** */
   'Company.TimeOff.SelectPolicyType': Translations.CompanyTimeOffSelectPolicyType
+  /** */
   'Company.TimeOff.TimeOffPolicies': Translations.CompanyTimeOffTimeOffPolicies
+  /** */
   'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
+  /** */
   'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
+  /** */
   'Contractor.Address': Translations.ContractorAddress
+  /** */
   'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
+  /** */
   'Contractor.ContractorList': Translations.ContractorContractorList
+  /** */
   'Contractor.Dashboard': Translations.ContractorDashboard
+  /** */
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
+  /** */
   'Contractor.Landing': Translations.ContractorLanding
+  /** */
   'Contractor.Management.Address': Translations.ContractorManagementAddress
+  /** */
   'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+  /** */
   'Contractor.Management.Documents': Translations.ContractorManagementDocuments
+  /** */
   'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
+  /** */
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
+  /** */
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
+  /** */
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
+  /** */
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
+  /** */
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
+  /** */
   'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
+  /** */
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+  /** */
   'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
+  /** */
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
+  /** */
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
+  /** */
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
+  /** */
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
+  /** */
   'Contractor.Profile': Translations.ContractorProfile
+  /** */
   'Contractor.SelectContractors': Translations.ContractorSelectContractors
+  /** */
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
+  /** */
   'Contractor.Submit': Translations.ContractorSubmit
+  /** */
   'Employee.BankAccount': Translations.EmployeeBankAccount
+  /** */
   'Employee.BankFormBody': Translations.EmployeeBankFormBody
+  /** */
   'Employee.Compensation': Translations.EmployeeCompensation
+  /** */
   'Employee.Dashboard': Translations.EmployeeDashboard
+  /** */
   'Employee.Deductions': Translations.EmployeeDeductions
+  /** */
   'Employee.DeductionsForm': Translations.EmployeeDeductionsForm
+  /** */
   'Employee.DocumentManager': Translations.EmployeeDocumentManager
+  /** */
   'Employee.DocumentSigner': Translations.EmployeeDocumentSigner
+  /** */
   'Employee.EmployeeDocuments': Translations.EmployeeEmployeeDocuments
+  /** */
   'Employee.EmployeeList': Translations.EmployeeEmployeeList
+  /** */
   'Employee.EmploymentEligibility': Translations.EmployeeEmploymentEligibility
+  /** */
   'Employee.FederalTaxes': Translations.EmployeeFederalTaxes
+  /** */
   'Employee.FederalTaxesView': Translations.EmployeeFederalTaxesView
+  /** */
   'Employee.HomeAddress': Translations.EmployeeHomeAddress
+  /** */
   'Employee.I9SignatureForm': Translations.EmployeeI9SignatureForm
+  /** */
   'Employee.Landing': Translations.EmployeeLanding
+  /** */
   'Employee.Management.Compensation': Translations.EmployeeManagementCompensation
+  /** */
   'Employee.Management.Deductions': Translations.EmployeeManagementDeductions
+  /** */
   'Employee.Management.Documents': Translations.EmployeeManagementDocuments
+  /** */
   'Employee.Management.FederalTaxes': Translations.EmployeeManagementFederalTaxes
+  /** */
   'Employee.Management.HomeAddress': Translations.EmployeeManagementHomeAddress
+  /** */
   'Employee.Management.PaymentMethod': Translations.EmployeeManagementPaymentMethod
+  /** */
   'Employee.Management.PaymentMethodBankForm': Translations.EmployeeManagementPaymentMethodBankForm
+  /** */
   'Employee.Management.PaymentMethodSplitForm': Translations.EmployeeManagementPaymentMethodSplitForm
+  /** */
   'Employee.Management.Paystubs': Translations.EmployeeManagementPaystubs
+  /** */
   'Employee.Management.Profile': Translations.EmployeeManagementProfile
+  /** */
   'Employee.Management.StateTaxes': Translations.EmployeeManagementStateTaxes
+  /** */
   'Employee.Management.WorkAddress': Translations.EmployeeManagementWorkAddress
+  /** */
   'Employee.ManagementEmployeeList': Translations.EmployeeManagementEmployeeList
+  /** */
   'Employee.OnboardingSummary': Translations.EmployeeOnboardingSummary
+  /** */
   'Employee.PaySchedules': Translations.EmployeePaySchedules
+  /** */
   'Employee.PaymentMethod': Translations.EmployeePaymentMethod
+  /** */
   'Employee.Profile': Translations.EmployeeProfile
+  /** */
   'Employee.SplitPaycheck': Translations.EmployeeSplitPaycheck
+  /** */
   'Employee.SplitPaymentsFormBody': Translations.EmployeeSplitPaymentsFormBody
+  /** */
   'Employee.StateTaxes': Translations.EmployeeStateTaxes
+  /** */
   'Employee.StateTaxesView': Translations.EmployeeStateTaxesView
+  /** */
   'Employee.Terminations.TerminateEmployee': Translations.EmployeeTerminationsTerminateEmployee
+  /** */
   'Employee.Terminations.TerminationFlow': Translations.EmployeeTerminationsTerminationFlow
+  /** */
   'Employee.Terminations.TerminationSummary': Translations.EmployeeTerminationsTerminationSummary
+  /** */
   'InformationRequests.InformationRequestForm': Translations.InformationRequestsInformationRequestForm
+  /** */
   'InformationRequests.InformationRequestList': Translations.InformationRequestsInformationRequestList
+  /** */
   InformationRequests: Translations.InformationRequests
+  /** */
   'Payroll.Common': Translations.PayrollCommon
+  /** */
   'Payroll.ConfirmWireDetailsBanner': Translations.PayrollConfirmWireDetailsBanner
+  /** */
   'Payroll.ConfirmWireDetailsForm': Translations.PayrollConfirmWireDetailsForm
+  /** */
   'Payroll.Dismissal': Translations.PayrollDismissal
+  /** */
   'Payroll.EmployeeSelection': Translations.PayrollEmployeeSelection
+  /** */
   'Payroll.GrossUpModal': Translations.PayrollGrossUpModal
+  /** */
   'Payroll.OffCycle': Translations.PayrollOffCycle
+  /** */
   'Payroll.OffCycleCreation': Translations.PayrollOffCycleCreation
+  /** */
   'Payroll.OffCycleDeductionsSetting': Translations.PayrollOffCycleDeductionsSetting
+  /** */
   'Payroll.OffCyclePayPeriodDateForm': Translations.PayrollOffCyclePayPeriodDateForm
+  /** */
   'Payroll.OffCycleReasonSelection': Translations.PayrollOffCycleReasonSelection
+  /** */
   'Payroll.OffCycleTaxWithholding': Translations.PayrollOffCycleTaxWithholding
+  /** */
   'Payroll.PayrollBlocker': Translations.PayrollPayrollBlocker
+  /** */
   'Payroll.PayrollConfiguration': Translations.PayrollPayrollConfiguration
+  /** */
   'Payroll.PayrollEditEmployee': Translations.PayrollPayrollEditEmployee
+  /** */
   'Payroll.PayrollFlow': Translations.PayrollPayrollFlow
+  /** */
   'Payroll.PayrollHistory': Translations.PayrollPayrollHistory
+  /** */
   'Payroll.PayrollLanding': Translations.PayrollPayrollLanding
+  /** */
   'Payroll.PayrollList': Translations.PayrollPayrollList
+  /** */
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
+  /** */
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  /** */
   'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+  /** */
   'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  /** */
   'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+  /** */
   'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
+  /** */
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
+  /** */
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+  /** */
   'Payroll.Transition': Translations.PayrollTransition
+  /** */
   'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
+  /** */
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+  /** @internal */
   'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
+  /** */
   'Payroll.WireInstructions': Translations.PayrollWireInstructions
+  /** */
   common: Translations.common
 }
 
@@ -8251,7 +8373,7 @@ export namespace Translations {
       cancelCta: string
     }
   }
-  /** Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace. */
+  /** Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace. @internal */
   export interface PayrollUNSTABLE_PayrollEditEmployee {
     /** @defaultValue `"Edit payroll for {{employeeName}}"` */
     pageTitle: string

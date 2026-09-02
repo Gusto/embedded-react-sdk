@@ -5628,73 +5628,6 @@ Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace.
 
 ***
 
-<a id="payrollunstable_payrolleditemployee"></a>
-
-### PayrollUNSTABLE\_PayrollEditEmployee
-
-Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrollunstable_payrolleditemployeeadditionalearningstitle"></a> `additionalEarningsTitle` | `"Additional earnings"` |
-| <a id="property-payrollunstable_payrolleditemployeeaddreimbursementcta"></a> `addReimbursementCta` | `"Add one-time reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeeaddreimbursementlink"></a> `addReimbursementLink` | `"Add one-time reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeebreadcrumblabel"></a> `breadcrumbLabel` | `"{{firstName}} {{lastName}}"` |
-| <a id="property-payrollunstable_payrolleditemployeecancelcta"></a> `cancelCta` | `"Cancel"` |
-| <a id="property-payrollunstable_payrolleditemployeecancelreimbursementcta"></a> `cancelReimbursementCta` | `"Cancel reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeecompensationnames"></a> `compensationNames` | |
-| `compensationNames.doubleOvertime` | `"Double overtime"` |
-| `compensationNames.overtime` | `"Overtime"` |
-| `compensationNames.regularHours` | `"Regular Hours"` |
-| <a id="property-payrollunstable_payrolleditemployeefinalpayoutdescription"></a> `finalPayoutDescription` | `"Enter the unused hours to pay out on the final paycheck. This is separate from time off hours used during the pay period."` |
-| <a id="property-payrollunstable_payrolleditemployeefinalpayouttitle"></a> `finalPayoutTitle` | `"Unused time off payout"` |
-| <a id="property-payrollunstable_payrolleditemployeefixedcompensationnames"></a> `fixedCompensationNames` | |
-| `fixedCompensationNames.bonus` | `"Bonus"` |
-| `fixedCompensationNames.cashTips` | `"Cash tips"` |
-| `fixedCompensationNames.commission` | `"Commission"` |
-| `fixedCompensationNames.correctionPayment` | `"Correction payment"` |
-| `fixedCompensationNames.paycheckTips` | `"Paycheck tips"` |
-| `fixedCompensationNames.reimbursement` | `"Reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeegrosspaylabel"></a> `grossPayLabel` | `"Gross pay (excluding reimbursements)"` |
-| <a id="property-payrollunstable_payrolleditemployeegrosspaylabelmobile"></a> `grossPayLabelMobile` | `"Gross pay: {{grossPay}} (excluding reimbursements)"` |
-| <a id="property-payrollunstable_payrolleditemployeehoursunit"></a> `hoursUnit` | `"Hours"` |
-| <a id="property-payrollunstable_payrolleditemployeepagetitle"></a> `pageTitle` | `"Edit payroll for {{employeeName}}"` |
-| <a id="property-payrollunstable_payrolleditemployeepaymentmethoddescription"></a> `paymentMethodDescription` | `"Changing the default payment method will only apply to this payroll."` |
-| <a id="property-payrollunstable_payrolleditemployeepaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
-| <a id="property-payrollunstable_payrolleditemployeepaymentmethodoptions"></a> `paymentMethodOptions` | |
-| `paymentMethodOptions.check` | `"Check"` |
-| `paymentMethodOptions.directDeposit` | `"Direct deposit"` |
-| <a id="property-payrollunstable_payrolleditemployeepaymentmethodtitle"></a> `paymentMethodTitle` | `"Payment"` |
-| <a id="property-payrollunstable_payrolleditemployeerecurringreimbursementlabel"></a> `recurringReimbursementLabel` | `"{{description}} (recurring reimbursement)"` |
-| <a id="property-payrollunstable_payrolleditemployeerecurringreimbursementtooltip"></a> `recurringReimbursementTooltip` | `"Recurring reimbursements are managed outside of payroll."` |
-| <a id="property-payrollunstable_payrolleditemployeeregularhourstitle"></a> `regularHoursTitle` | `"Regular hours"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementamountcolumn"></a> `reimbursementAmountColumn` | `"Amount"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementamountlabel"></a> `reimbursementAmountLabel` | `"Amount"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementdescriptioncolumn"></a> `reimbursementDescriptionColumn` | `"Description"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementdescriptionlabel"></a> `reimbursementDescriptionLabel` | `"Description"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementdescriptionplaceholder"></a> `reimbursementDescriptionPlaceholder` | `"e.g., Office supplies"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementemptytitle"></a> `reimbursementEmptyTitle` | `"No reimbursements"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementstablelabel"></a> `reimbursementsTableLabel` | `"Reimbursements"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementtitle"></a> `reimbursementTitle` | `"Reimbursements"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementtypecolumn"></a> `reimbursementTypeColumn` | `"Type"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementtypeonetime"></a> `reimbursementTypeOneTime` | `"One-time"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementtyperecurring"></a> `reimbursementTypeRecurring` | `"Recurring"` |
-| <a id="property-payrollunstable_payrolleditemployeereimbursementunnamedfallback"></a> `reimbursementUnnamedFallback` | `"Reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeeremovereimbursementlabel"></a> `removeReimbursementLabel` | `"Remove {{description}} reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeesavecta"></a> `saveCta` | `"Save"` |
-| <a id="property-payrollunstable_payrolleditemployeesavereimbursementcta"></a> `saveReimbursementCta` | `"Save reimbursement"` |
-| <a id="property-payrollunstable_payrolleditemployeetimeoffbalance"></a> `timeOffBalance` | |
-| `timeOffBalance.remaining` | `"{{balance}} remaining"` |
-| <a id="property-payrollunstable_payrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
-| <a id="property-payrollunstable_payrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
-| <a id="property-payrollunstable_payrolleditemployeevalidations"></a> `validations` | |
-| `validations.negativeAmount` | `"Amount cannot be negative"` |
-| `validations.reimbursementAmount` | `"Amount must be greater than zero"` |
-
-***
-
 <a id="payrollwireinstructions"></a>
 
 ### PayrollWireInstructions
@@ -5925,7 +5858,6 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
 | <a id="property-resourcespayrolltransitioncreation"></a> `Payroll.TransitionCreation` | [`PayrollTransitionCreation`](#payrolltransitioncreation) |
 | <a id="property-resourcespayrolltransitionpayrollalert"></a> `Payroll.TransitionPayrollAlert` | [`PayrollTransitionPayrollAlert`](#payrolltransitionpayrollalert) |
-| <a id="property-resourcespayrollunstable_payrolleditemployee"></a> `Payroll.UNSTABLE_PayrollEditEmployee` | [`PayrollUNSTABLE_PayrollEditEmployee`](#payrollunstable_payrolleditemployee) |
 | <a id="property-resourcespayrollwireinstructions"></a> `Payroll.WireInstructions` | [`PayrollWireInstructions`](#payrollwireinstructions) |
 
 ***
