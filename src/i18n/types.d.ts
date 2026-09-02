@@ -136,6 +136,7 @@ export interface Resources {
   'Payroll.Transition': Translations.PayrollTransition
   'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+  'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
   'Payroll.WireInstructions': Translations.PayrollWireInstructions
   common: Translations.common
 }
@@ -8248,6 +8249,117 @@ export namespace Translations {
       confirmCta: string
       /** @defaultValue `"Cancel"` */
       cancelCta: string
+    }
+  }
+  /** Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace. */
+  export interface PayrollUNSTABLE_PayrollEditEmployee {
+    /** @defaultValue `"Edit payroll for {{employeeName}}"` */
+    pageTitle: string
+    /** @defaultValue `"{{firstName}} {{lastName}}"` */
+    breadcrumbLabel: string
+    /** @defaultValue `"Gross pay (excluding reimbursements)"` */
+    grossPayLabel: string
+    /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
+    grossPayLabelMobile: string
+    /** @defaultValue `"Regular hours"` */
+    regularHoursTitle: string
+    /** @defaultValue `"Hours"` */
+    hoursUnit: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    compensationNames: {
+      /** @defaultValue `"Regular Hours"` */
+      regularHours: string
+      /** @defaultValue `"Overtime"` */
+      overtime: string
+      /** @defaultValue `"Double overtime"` */
+      doubleOvertime: string
+    }
+    /** @defaultValue `"Time off"` */
+    timeOffTitle: string
+    /** @defaultValue `"Time off hours used this pay period"` */
+    timeOffTitleDismissal: string
+    /** @defaultValue `"Unused time off payout"` */
+    finalPayoutTitle: string
+    /** @defaultValue `"Enter the unused hours to pay out on the final paycheck. This is separate from time off hours used during the pay period."` */
+    finalPayoutDescription: string
+    timeOffBalance: {
+      /** @defaultValue `"{{balance}} remaining"` */
+      remaining: string
+    }
+    /** @defaultValue `"Additional earnings"` */
+    additionalEarningsTitle: string
+    /** @defaultValue `"Reimbursements"` */
+    reimbursementTitle: string
+    /** @defaultValue `"Description"` */
+    reimbursementDescriptionLabel: string
+    /** @defaultValue `"e.g., Office supplies"` */
+    reimbursementDescriptionPlaceholder: string
+    /** @defaultValue `"Amount"` */
+    reimbursementAmountLabel: string
+    /** @defaultValue `"Reimbursement"` */
+    reimbursementUnnamedFallback: string
+    /** @defaultValue `"Reimbursements"` */
+    reimbursementsTableLabel: string
+    /** @defaultValue `"Description"` */
+    reimbursementDescriptionColumn: string
+    /** @defaultValue `"Amount"` */
+    reimbursementAmountColumn: string
+    /** @defaultValue `"Type"` */
+    reimbursementTypeColumn: string
+    /** @defaultValue `"Recurring"` */
+    reimbursementTypeRecurring: string
+    /** @defaultValue `"One-time"` */
+    reimbursementTypeOneTime: string
+    /** @defaultValue `"No reimbursements"` */
+    reimbursementEmptyTitle: string
+    /** @defaultValue `"Add one-time reimbursement"` */
+    addReimbursementCta: string
+    /** @defaultValue `"Add one-time reimbursement"` */
+    addReimbursementLink: string
+    /** @defaultValue `"Save reimbursement"` */
+    saveReimbursementCta: string
+    /** @defaultValue `"Cancel reimbursement"` */
+    cancelReimbursementCta: string
+    /** @defaultValue `"Remove {{description}} reimbursement"` */
+    removeReimbursementLabel: string
+    /** @defaultValue `"{{description}} (recurring reimbursement)"` */
+    recurringReimbursementLabel: string
+    /** @defaultValue `"Recurring reimbursements are managed outside of payroll."` */
+    recurringReimbursementTooltip: string
+    fixedCompensationNames: {
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Paycheck tips"` */
+      paycheckTips: string
+      /** @defaultValue `"Correction payment"` */
+      correctionPayment: string
+      /** @defaultValue `"Commission"` */
+      commission: string
+      /** @defaultValue `"Cash tips"` */
+      cashTips: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+    }
+    /** @defaultValue `"Payment"` */
+    paymentMethodTitle: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodLabel: string
+    /** @defaultValue `"Changing the default payment method will only apply to this payroll."` */
+    paymentMethodDescription: string
+    paymentMethodOptions: {
+      /** @defaultValue `"Direct deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+    }
+    validations: {
+      /** @defaultValue `"Amount must be greater than zero"` */
+      reimbursementAmount: string
+      /** @defaultValue `"Amount cannot be negative"` */
+      negativeAmount: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
