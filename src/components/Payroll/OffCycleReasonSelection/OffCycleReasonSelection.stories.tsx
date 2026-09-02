@@ -1,5 +1,7 @@
+import { fn } from 'storybook/test'
 import { FormWrapper } from '../../../../.storybook/helpers/FormWrapper'
 import { OffCycleReasonSelectionPresentation } from './OffCycleReasonSelectionPresentation'
+import { OffCycleReasonSelection } from './OffCycleReasonSelection'
 import { useI18n } from '@/i18n'
 
 function I18nLoader({ children }: { children: React.ReactNode }) {
@@ -49,3 +51,7 @@ CorrectionSelected.decorators = [
     </I18nLoader>
   ),
 ]
+
+export const WithDefaultReason = () => (
+  <OffCycleReasonSelection companyId="mock-company-id" onEvent={fn()} defaultReason="bonus" />
+)

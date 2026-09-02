@@ -70,4 +70,6 @@ export interface SelectReasonPayload {
 export interface OffCycleReasonSelectionProps extends BaseComponentInterface<'Payroll.OffCycleReasonSelection'> {
   /** The associated company identifier. */
   companyId: string
+  /** Pre-selected reason rendered when the form mounts. Leave unset to render with no option selected. */
+  defaultReason?: OffCycleReason
 }

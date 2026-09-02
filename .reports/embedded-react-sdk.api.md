@@ -3915,6 +3915,7 @@ function OffCycleReasonSelection(props: OffCycleReasonSelectionProps): JSX;
 // @public
 interface OffCycleReasonSelectionProps extends BaseComponentInterface<'Payroll.OffCycleReasonSelection'> {
     companyId: string;
+    defaultReason?: OffCycleReason;
 }
 
 // @public
