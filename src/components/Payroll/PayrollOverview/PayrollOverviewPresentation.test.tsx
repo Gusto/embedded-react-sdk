@@ -9,6 +9,7 @@ import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/co
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const mockPayrollData: PayrollShow = {
   payrollDeadline: new Date('2025-08-11'),
@@ -104,6 +105,70 @@ const defaultProps = {
 }
 
 describe('PayrollOverviewPresentation', () => {
+  describe('base layout', () => {
+    beforeEach(() => {
+      mockUseContainerBreakpoints.mockReturnValue(['base'])
+    })
+
+    it('keeps the heading before enabled Edit and Submit actions in a shrink-safe row', async () => {
+      const user = userEvent.setup()
+      const onEdit = vi.fn()
+      const onSubmit = vi.fn()
+
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} onEdit={onEdit} onSubmit={onSubmit} />,
+      )
+
+      const heading = await screen.findByRole('heading', { level: 1, name: /Review payroll/i })
+      const editButton = screen.getByRole('button', { name: /^Edit$/i })
+      const submitButton = screen.getByRole('button', { name: /^Submit$/i })
+      const actionGrid = editButton.parentElement
+
+      expect(heading.compareDocumentPosition(editButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      )
+      expect(submitButton.parentElement).toBe(actionGrid)
+      expect(actionGrid?.style.getPropertyValue('--g-grid-template-columns-base')).toBe(
+        'minmax(0, 1fr) minmax(0, 1fr)',
+      )
+      expect(editButton).toBeEnabled()
+      expect(submitButton).toBeEnabled()
+
+      await user.click(editButton)
+      await user.click(submitButton)
+
+      expect(onEdit).toHaveBeenCalledTimes(1)
+      expect(onSubmit).toHaveBeenCalledTimes(1)
+    })
+
+    it('keeps Submit visible and disabled while a blocker has no selected resolution', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[mockFastAchBlocker]}
+          onUnblockOptionChange={vi.fn()}
+        />,
+      )
+
+      expect(await screen.findByRole('button', { name: /^Submit$/i })).toBeDisabled()
+    })
+
+    it('keeps processed payroll actions stacked in a single-column grid', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={true} canCancel={true} />,
+      )
+
+      const receiptButton = await screen.findByRole('button', {
+        name: /^View payroll receipt$/i,
+      })
+      const cancelButton = screen.getByRole('button', { name: /^Cancel payroll$/i })
+      const actionGrid = receiptButton.parentElement
+
+      expect(cancelButton.parentElement).toBe(actionGrid)
+      expect(actionGrid?.style.getPropertyValue('--g-grid-template-columns-base')).toBe('1fr')
+    })
+  })
+
   it('renders without fast ACH blocker', async () => {
     renderWithProviders(<PayrollOverviewPresentation {...defaultProps} />)
 

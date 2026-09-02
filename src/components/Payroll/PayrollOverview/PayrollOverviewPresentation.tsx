@@ -637,7 +637,10 @@ export const PayrollOverviewPresentation = ({
           )}
         </Flex>
         {!isDesktop && (
-          <Grid gridTemplateColumns="1fr" gap={8}>
+          <Grid
+            gridTemplateColumns={isProcessed ? '1fr' : ['minmax(0, 1fr)', 'minmax(0, 1fr)']}
+            gap={8}
+          >
             {actions}
           </Grid>
         )}
