@@ -509,7 +509,10 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.payment'),
               render: (employeeCompensations: EmployeeCompensations) =>
-                formatCurrency(Number(employeeCompensations.netPay ?? 0)),
+                formatCurrency(
+                  Number(employeeCompensations.netPay ?? 0) +
+                    getReimbursements(employeeCompensations),
+                ),
             },
           ]}
           data={payrollData.employeeCompensations!}
