@@ -474,7 +474,7 @@ Shape of the values managed by the deduction form.
 
 ### DeductionFormErrorCode
 
-> **DeductionFormErrorCode** = `"REQUIRED"` \| `"NEGATIVE_AMOUNT"`
+> **DeductionFormErrorCode** = `"NEGATIVE_AMOUNT"` \| `"REQUIRED"`
 
 Union of validation error code strings emitted by the deduction form schema.
 
