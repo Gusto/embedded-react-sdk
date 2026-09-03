@@ -5,6 +5,7 @@ import {
   PayrollEditEmployeeErrorCodes,
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_METHOD_VALUES,
+  reimbursementDraftSchema,
   type PayrollEditEmployeeFormData,
 } from './payrollEditEmployeeSchema'
 
@@ -15,6 +16,7 @@ const baseFormData: PayrollEditEmployeeFormData = {
   timeOff: {},
   finalPayout: {},
   reimbursements: [],
+  reimbursementDraft: { description: '', amount: '' },
 }
 
 describe('createPayrollEditEmployeeSchema', () => {
@@ -100,14 +102,32 @@ describe('createPayrollEditEmployeeSchema', () => {
     expect(result.success).toBe(false)
   })
 
-  it('rejects a negative reimbursement amount', () => {
+  it('treats committed reimbursement rows as presentational passthrough (no amount validation)', () => {
     const result = schema.safeParse({
       ...baseFormData,
       reimbursements: [{ uuid: 'r-1', description: 'Travel', amount: '-25', recurring: false }],
     })
 
-    expect(result.success).toBe(false)
-    expect(result.error?.issues[0]?.message).toBe(PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT)
+    expect(result.success).toBe(true)
+  })
+})
+
+describe('reimbursementDraftSchema', () => {
+  it('accepts a positive amount', () => {
+    const result = reimbursementDraftSchema.safeParse({ description: 'Travel', amount: '25' })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a zero, negative, or blank amount with the REIMBURSEMENT_AMOUNT code', () => {
+    for (const amount of ['0', '-25', '']) {
+      const result = reimbursementDraftSchema.safeParse({ description: 'Travel', amount })
+
+      expect(result.success).toBe(false)
+      expect(result.error?.issues[0]?.message).toBe(
+        PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
+      )
+    }
   })
 })
 

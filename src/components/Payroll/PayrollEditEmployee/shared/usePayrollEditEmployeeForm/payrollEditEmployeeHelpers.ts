@@ -257,6 +257,7 @@ export function derivePayrollEditEmployeeDefaults(
     timeOff,
     finalPayout,
     reimbursements,
+    reimbursementDraft: { description: '', amount: '' },
     paymentMethod: resolvePaymentMethod(employeeCompensation?.paymentMethod, hasDirectDepositSetup),
   }
 }

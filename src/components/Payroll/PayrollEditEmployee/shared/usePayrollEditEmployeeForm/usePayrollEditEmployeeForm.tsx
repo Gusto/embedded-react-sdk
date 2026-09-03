@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
@@ -17,6 +17,8 @@ import {
   createPayrollEditEmployeeSchema,
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_METHOD_VALUES,
+  PayrollEditEmployeeErrorCodes,
+  reimbursementDraftSchema,
   type PayrollEditEmployeeFormData,
   type PayrollEditEmployeeFormOutputs,
 } from './payrollEditEmployeeSchema'
@@ -27,9 +29,15 @@ import {
   normalizeWorkweeks,
   resolveEditableFixedCompensations,
 } from './payrollEditEmployeeHelpers'
-import { createPayrollEditEmployeeFields, type PayrollEditEmployeeFields } from './fields'
+import {
+  createPayrollEditEmployeeFields,
+  createReimbursementDraftFields,
+  type PayrollEditEmployeeFields,
+  type ReimbursementDraftFields,
+  type ReimbursementRow,
+} from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { derivePayrollCategory } from '@/components/Payroll/payrollTypes'
+import { derivePayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
 import { isOvertimeEligibleFlsaStatus } from '@/components/Payroll/helpers'
 import { retryAsync } from '@/helpers/retryAsync'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -67,6 +75,13 @@ export interface UsePayrollEditEmployeeFormProps {
   companyId: string
   /** The associated payroll identifier. */
   payrollId: string
+  /**
+   * Whether to expose reimbursement controls (`form.Fields.reimbursements`,
+   * `actions.addReimbursement`/`removeReimbursement`, `form.reimbursements`).
+   * Defaults to `true`. Controls are omitted for off-cycle payrolls regardless,
+   * since those write reimbursements via the legacy fixed-compensation path.
+   */
+  withReimbursements?: boolean
   /** When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
   /** Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. */
@@ -115,6 +130,13 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     isOvertimeEligible: boolean
     /** Whether the employee has a direct-deposit bank account set up. */
     hasDirectDepositSetup: boolean
+    /**
+     * Committed reimbursement rows to render in a table, present only when
+     * reimbursement controls are exposed. Seeded from the employee's existing
+     * reimbursements and appended to as drafts are saved. Remove a row via
+     * `actions.removeReimbursement(row.index)`.
+     */
+    reimbursements?: ReimbursementRow[]
   }
   /** Submission status. `mode` is always `'update'` since the payroll already exists. */
   status: { isPending: boolean; mode: 'update' }
@@ -122,6 +144,23 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
   actions: {
     /** Validates and submits the form, resolving to the updated prepared payroll on success or `undefined` when validation blocked the submit. */
     onSubmit: () => Promise<HookSubmitResult<PayrollPrepared> | undefined>
+    /** Reveals the draft reimbursement row. Present only when reimbursement controls are exposed. */
+    beginAddReimbursement?: () => void
+    /** Validates the draft and commits it to the reimbursement list, or flags the draft amount if invalid. Present only when reimbursement controls are exposed. */
+    saveReimbursement?: () => void
+    /** Discards the draft reimbursement row. Present only when reimbursement controls are exposed. */
+    cancelReimbursement?: () => void
+    /** Removes the committed reimbursement row at `index` (zeroing existing rows so the update clears them). Present only when reimbursement controls are exposed. */
+    removeReimbursement?: (index: number) => void
+  }
+  /** Form internals plus the reimbursement draft state. */
+  form: BaseFormHookReady<
+    PayrollEditEmployeeFieldsMetadata,
+    PayrollEditEmployeeFormData,
+    PayrollEditEmployeeFields
+  >['form'] & {
+    /** Draft reimbursement state, present only when reimbursement controls are exposed. */
+    reimbursementDraft?: { isAdding: boolean }
   }
 }
 
@@ -155,6 +194,7 @@ export function usePayrollEditEmployeeForm({
   employeeId,
   companyId,
   payrollId,
+  withReimbursements = true,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UsePayrollEditEmployeeFormProps): UsePayrollEditEmployeeFormResult {
@@ -295,6 +335,93 @@ export function usePayrollEditEmployeeForm({
     },
   )
 
+  // Off-cycle payrolls write reimbursements via the legacy fixed-compensation path
+  // (the itemized array is rejected server-side), so itemized reimbursement controls
+  // are exposed only for regular payrolls and only when the partner opts in.
+  const usesItemizedReimbursements = !isOffCyclePayroll(payrollCategory)
+  const showReimbursements = withReimbursements && usesItemizedReimbursements
+
+  const {
+    fields: reimbursementArrayFields,
+    append: appendReimbursement,
+    remove: removeReimbursementRow,
+    update: updateReimbursementRow,
+  } = useFieldArray({
+    control: formMethods.control,
+    name: 'reimbursements',
+  })
+
+  const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
+
+  const reimbursementDraftFields = useMemo<ReimbursementDraftFields>(
+    () => createReimbursementDraftFields(),
+    [],
+  )
+
+  // Committed rows for the consumer's table. A removed existing row (one with a
+  // uuid) is zeroed rather than dropped so the update still clears it server-side;
+  // those zero-amount rows are filtered out of the visible list but remain in the
+  // form array for submit.
+  const reimbursementRows = useMemo<ReimbursementRow[]>(
+    () =>
+      reimbursementArrayFields
+        .map((field, index) => ({
+          key: field.id,
+          index,
+          uuid: field.uuid ?? undefined,
+          description: field.description,
+          amount: field.amount,
+          recurring: field.recurring ?? false,
+        }))
+        .filter(row => parseFloat(row.amount || '0') !== 0),
+    [reimbursementArrayFields],
+  )
+
+  const beginAddReimbursement = useCallback(() => {
+    setIsAddingReimbursement(true)
+  }, [])
+
+  const cancelReimbursement = useCallback(() => {
+    formMethods.setValue('reimbursementDraft', { description: '', amount: '' })
+    formMethods.clearErrors('reimbursementDraft')
+    setIsAddingReimbursement(false)
+  }, [formMethods])
+
+  const saveReimbursement = useCallback(() => {
+    const draft = formMethods.getValues('reimbursementDraft')
+    const result = reimbursementDraftSchema.safeParse(draft)
+    if (!result.success) {
+      // The error code is a fallback; the field renders the consumer-supplied
+      // `errorMessage` prop when present (see useField), so the copy is theirs to set.
+      formMethods.setError('reimbursementDraft.amount', {
+        message: PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
+      })
+      return
+    }
+    appendReimbursement({
+      uuid: null,
+      description: result.data.description.trim(),
+      amount: parseFloat(result.data.amount).toFixed(2),
+      recurring: false,
+    })
+    formMethods.setValue('reimbursementDraft', { description: '', amount: '' })
+    formMethods.clearErrors('reimbursementDraft')
+    setIsAddingReimbursement(false)
+  }, [appendReimbursement, formMethods])
+
+  const removeReimbursement = useCallback(
+    (index: number) => {
+      const field = reimbursementArrayFields[index]
+      if (!field) return
+      if (field.uuid) {
+        updateReimbursementRow(index, { ...field, amount: '0' })
+      } else {
+        removeReimbursementRow(index)
+      }
+    },
+    [reimbursementArrayFields, removeReimbursementRow, updateReimbursementRow],
+  )
+
   const fields = useMemo(
     () =>
       createPayrollEditEmployeeFields({
@@ -403,15 +530,30 @@ export function usePayrollEditEmployeeForm({
       isMultipleWorkweeks: workweeks.length > 1,
       isOvertimeEligible,
       hasDirectDepositSetup,
+      ...(showReimbursements ? { reimbursements: reimbursementRows } : {}),
     },
     status: { isPending, mode: 'update' as const },
-    actions: { onSubmit },
+    actions: {
+      onSubmit,
+      ...(showReimbursements
+        ? {
+            beginAddReimbursement,
+            saveReimbursement,
+            cancelReimbursement,
+            removeReimbursement,
+          }
+        : {}),
+    },
     errorHandling,
     form: {
-      Fields: fields,
+      Fields: {
+        ...fields,
+        reimbursementDraft: showReimbursements ? reimbursementDraftFields : undefined,
+      },
       fieldsMetadata,
       hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
+      ...(showReimbursements ? { reimbursementDraft: { isAdding: isAddingReimbursement } } : {}),
     },
   }
 }

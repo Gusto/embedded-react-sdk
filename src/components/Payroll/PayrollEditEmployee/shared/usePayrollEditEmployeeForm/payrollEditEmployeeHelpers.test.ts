@@ -24,6 +24,7 @@ const emptyFormData: PayrollEditEmployeeFormData = {
   timeOff: {},
   finalPayout: {},
   reimbursements: [],
+  reimbursementDraft: { description: '', amount: '' },
 }
 
 describe('normalizeWorkweeks', () => {
