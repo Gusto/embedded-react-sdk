@@ -8383,14 +8383,26 @@ export namespace Translations {
     grossPayLabel: string
     /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
     grossPayLabelMobile: string
-    /** @defaultValue `"Regular hours"` */
+    /** @defaultValue `"Regular and overtime hours"` */
     regularHoursTitle: string
+    /** @defaultValue `"Regular hours"` */
+    regularHoursTitleWithoutOvertime: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */
     saveCta: string
     /** @defaultValue `"Cancel"` */
     cancelCta: string
+    /** @defaultValue `"Hour type"` */
+    hourTypeColumn: string
+    /** @defaultValue `"Type"` */
+    typeColumn: string
+    /** @defaultValue `"Amount"` */
+    amountColumn: string
+    /** @defaultValue `"Hours"` */
+    hoursColumn: string
+    /** @defaultValue `"Other"` */
+    otherTitle: string
     compensationNames: {
       /** @defaultValue `"Regular Hours"` */
       regularHours: string
