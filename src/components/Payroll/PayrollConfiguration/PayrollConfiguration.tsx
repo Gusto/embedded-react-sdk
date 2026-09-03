@@ -346,6 +346,12 @@ const Root = ({
             throw calcResult.error
           }
           setIsPolling(true)
+        } catch (error) {
+          // Calculate itself failed before polling ever started (e.g. a 409 conflict), so let
+          // prepare run again on retry -- otherwise hasSeenCalculatingRef stays stuck true forever
+          // with no RUN_PAYROLL_CALCULATED/RUN_PAYROLL_PROCESSING_FAILED event ever firing.
+          hasSeenCalculatingRef.current = false
+          throw error
         } finally {
           setIsCalculatingPayroll(false)
         }
