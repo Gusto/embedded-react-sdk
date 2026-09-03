@@ -21,6 +21,12 @@ const mockEmployees = [
   { label: 'John Doe', value: 'uuid-3' },
 ]
 
+// Fixed rather than derived from today so the stories render deterministically.
+const mockDateBounds = {
+  minCheckDate: new Date(2026, 8, 4),
+  minCheckOnlyDate: new Date(2026, 8, 2),
+}
+
 const defaultFormValues = {
   reason: 'bonus',
   isCheckOnly: false,
@@ -72,12 +78,24 @@ export default {
 
 export const Default = () => {
   const taxWithholding = useTaxWithholdingState()
-  return <OffCycleCreationPresentation employees={mockEmployees} {...taxWithholding} />
+  return (
+    <OffCycleCreationPresentation
+      employees={mockEmployees}
+      {...mockDateBounds}
+      {...taxWithholding}
+    />
+  )
 }
 
 export const CorrectionSelected = () => {
   const taxWithholding = useTaxWithholdingState('regular')
-  return <OffCycleCreationPresentation employees={mockEmployees} {...taxWithholding} />
+  return (
+    <OffCycleCreationPresentation
+      employees={mockEmployees}
+      {...mockDateBounds}
+      {...taxWithholding}
+    />
+  )
 }
 CorrectionSelected.decorators = [
   (Story: React.ComponentType) => (
@@ -91,7 +109,13 @@ CorrectionSelected.decorators = [
 
 export const CheckOnlyMode = () => {
   const taxWithholding = useTaxWithholdingState()
-  return <OffCycleCreationPresentation employees={mockEmployees} {...taxWithholding} />
+  return (
+    <OffCycleCreationPresentation
+      employees={mockEmployees}
+      {...mockDateBounds}
+      {...taxWithholding}
+    />
+  )
 }
 CheckOnlyMode.decorators = [
   (Story: React.ComponentType) => (

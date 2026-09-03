@@ -289,23 +289,7 @@ describe('PayrollOverview calculatedAt guard', () => {
     mockIsFetching = false
   })
 
-  it('shows the loading state instead of throwing when a not-yet-fresh snapshot has a null calculatedAt while a refetch is in flight', async () => {
-    mockPayrollData = {
-      ...basePayrollData,
-      calculatedAt: null,
-    }
-    mockIsFetching = true
-
-    renderWithProviders(
-      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
-    )
-
-    expect(await screen.findByText(/Loading payroll/i)).toBeInTheDocument()
-    expect(screen.queryByTestId('internal-error-card')).toBeNull()
-    expect(screen.queryByText(/Review payroll/i)).toBeNull()
-  })
-
-  it('throws to the error boundary once the fetch has settled on a genuinely uncalculated payroll', async () => {
+  it('throws to the error boundary on a genuinely uncalculated payroll', async () => {
     mockPayrollData = {
       ...basePayrollData,
       calculatedAt: null,

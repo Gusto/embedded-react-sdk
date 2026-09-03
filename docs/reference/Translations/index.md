@@ -1477,6 +1477,7 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | <a id="property-contractorcontractorlisteditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-contractorcontractorlistemptytabledescription"></a> `emptyTableDescription` | `"Add contractors to get them setup for payroll."` |
 | <a id="property-contractorcontractorlistemptytabletitle"></a> `emptyTableTitle` | `"You haven't added any contractors yet"` |
+| <a id="property-contractorcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Actions for {{name}}"` |
 | <a id="property-contractorcontractorlistlistheaders"></a> `listHeaders` | |
 | `listHeaders.name` | `"Name"` |
 | `listHeaders.status` | `"Status"` |
@@ -1671,7 +1672,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | `emptyState.onboarding` | |
 | `emptyState.onboarding.description` | `"Contractors currently being onboarded will appear here"` |
 | `emptyState.onboarding.title` | `"There are no contractors onboarding"` |
-| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Contractor actions menu"` |
+| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Actions for {{name}}"` |
 | <a id="property-contractormanagementcontractorlistlastdaybadge"></a> `lastDayBadge` | `"Last day {{date}}"` |
 | <a id="property-contractormanagementcontractorlistnamelabel"></a> `nameLabel` | `"Contractor name"` |
 | <a id="property-contractormanagementcontractorlistonboardingstatuslabel"></a> `onboardingStatusLabel` | `"Onboarding status"` |
@@ -5072,6 +5073,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
 | <a id="property-payrollpayrolleditemployeevalidations"></a> `validations` | |
+| `validations.negativeAmount` | `"Amount cannot be negative"` |
 | `validations.reimbursementAmount` | `"Amount must be greater than zero"` |
 
 ***
@@ -5273,6 +5275,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `dataViews.taxesTable` | `"Taxes breakdown"` |
 | <a id="property-payrollpayrolloverviewdeclinecancelcta"></a> `declineCancelCta` | `"No, go back"` |
 | <a id="property-payrollpayrolloverviewdirectdepositlabel"></a> `directDepositLabel` | `"Direct deposits"` |
+| <a id="property-payrollpayrolloverviewdownloadloadingmessage"></a> `downloadLoadingMessage` | `"Generating paystub…"` |
 | <a id="property-payrollpayrolloverviewdownloadpaystublabel"></a> `downloadPaystubLabel` | `"Download paystub pdf"` |
 | <a id="property-payrollpayrollovervieweditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-payrollpayrolloverviewexitflowcta"></a> `exitFlowCta` | `"Save and exit"` |

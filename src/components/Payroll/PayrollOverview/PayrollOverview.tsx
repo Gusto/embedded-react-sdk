@@ -34,6 +34,8 @@ import {
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
+import { openPdfInNewTab } from '@/helpers/openPdfInNewTab'
+import { useNonce } from '@/contexts/NonceProvider'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -176,9 +178,6 @@ const Root = ({
     {
       refetchInterval: isPolling ? 5_000 : false,
       placeholderData: keepPreviousData,
-      // Always refetch on mount so a partner QueryClient with a non-zero `staleTime`
-      // can't serve a stale pre-calculation snapshot without refetching. SDK-1018.
-      refetchOnMount: 'always',
     },
   )
   const payrollData = data?.payrollShow
@@ -330,17 +329,17 @@ const Root = ({
   const { mutateAsync: cancelPayroll } = usePayrollsCancelMutation()
 
   const gustoEmbedded = useGustoEmbeddedContext()
+  const nonce = useNonce()
+
+  const [downloadingEmployeeIds, setDownloadingEmployeeIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  )
 
   if (!payrollData) {
     return <PayrollLoading title={t('dataLoadingTitle')} />
   }
 
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
-    // A stale snapshot can be served with a null `calculatedAt` while its refetch is
-    // in flight; treat that as loading and only throw once the fetch settles. SDK-1018.
-    if (isFetching) {
-      return <PayrollLoading title={t('dataLoadingTitle')} />
-    }
     throw new Error(t('alerts.payrollNotCalculated'))
   }
 
@@ -385,30 +384,31 @@ const Root = ({
   }
 
   const onPaystubDownload = async (employeeId: string) => {
-    // Open a blank window *synchronously* with the click
-    const newWindow = window.open('', '_blank')
-
+    const tab = openPdfInNewTab({ loadingMessage: t('downloadLoadingMessage'), nonce })
+    setDownloadingEmployeeIds(prev => {
+      const next = new Set(prev)
+      next.add(employeeId)
+      return next
+    })
     try {
-      // Fetch the PDF from your API
       const response = await payrollsGetPayStub(gustoEmbedded, { payrollId, employeeId })
       if (!response.value?.responseStream) {
+        tab.close()
         throw new Error(t('alerts.paystubPdfError'))
       }
       const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
-
-      const url = URL.createObjectURL(pdfBlob)
-
-      // Load the PDF into the new window
-      if (newWindow) {
-        newWindow.location.href = url
-      }
+      tab.navigate(pdfBlob)
       onEvent(componentEvents.RUN_PAYROLL_PDF_PAYSTUB_VIEWED, { employeeId })
-      URL.revokeObjectURL(url) // Clean up the URL object after use
     } catch (err) {
-      if (newWindow) {
-        newWindow.close()
-      }
+      tab.close()
       showBoundary(err instanceof Error ? err : new Error(String(err)))
+    } finally {
+      setDownloadingEmployeeIds(prev => {
+        if (!prev.has(employeeId)) return prev
+        const next = new Set(prev)
+        next.delete(employeeId)
+        return next
+      })
     }
   }
   const onSubmit = async () => {
@@ -487,6 +487,7 @@ const Root = ({
       withReimbursements={withReimbursements}
       paymentSpeed={paymentSpeed}
       pagination={pagination}
+      downloadingEmployeeIds={downloadingEmployeeIds}
     />
   )
 }

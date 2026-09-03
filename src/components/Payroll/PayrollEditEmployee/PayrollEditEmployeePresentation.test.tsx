@@ -1167,6 +1167,74 @@ describe('PayrollEditEmployeePresentation', () => {
         'Paycheck Tips',
       )
     })
+
+    // A native min={0} only constrains the stepper, and the SDK form is noValidate, so a
+    // typed negative reached the platform and only came back as a submit-time error
+    // (SDK-1285).
+    it('blocks save and flags the field when a correction amount is negative', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // Clear first: the field defaults to '0.00', and appending to that yields
+      // '0.00-50', which a number input rejects outright and blanks.
+      const correctionInput = await screen.findByLabelText('Correction payment')
+      await user.clear(correctionInput)
+      await user.type(correctionInput, '-50')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount cannot be negative')).toBeInTheDocument()
+      })
+      expect(onSave).not.toHaveBeenCalled()
+    })
+
+    it('flags a negative amount on any additional earning, not just corrections', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+      await user.type(bonusInput, '-1')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount cannot be negative')).toBeInTheDocument()
+      })
+      expect(onSave).not.toHaveBeenCalled()
+    })
+
+    it('does not flag empty or zero amounts as negative', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+
+      const commissionInput = screen.getByLabelText('Commission')
+      await user.clear(commissionInput)
+      await user.type(commissionInput, '0')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(onSave).toHaveBeenCalled()
+      })
+      expect(screen.queryByText('Amount cannot be negative')).not.toBeInTheDocument()
+    })
   })
 
   describe('Payment Method', () => {
@@ -1446,6 +1514,58 @@ describe('PayrollEditEmployeePresentation', () => {
           paymentMethod: PaymentMethods.Check,
         }),
       )
+    })
+
+    it('submits Check when no payment method is prepared and the employee has no direct deposit', async () => {
+      const compensationWithoutPaymentMethod = {
+        ...mockEmployeeCompensation,
+        paymentMethod: undefined,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithoutPaymentMethod}
+        />,
+      )
+
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            paymentMethod: PaymentMethods.Check,
+          }),
+        )
+      })
+    })
+
+    it('submits Check when Direct Deposit is prepared but the employee has no direct deposit', async () => {
+      const compensationWithDirectDeposit = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.DirectDeposit,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithDirectDeposit}
+        />,
+      )
+
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            paymentMethod: PaymentMethods.Check,
+          }),
+        )
+      })
     })
   })
 
