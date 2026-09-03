@@ -217,10 +217,9 @@ export interface CreatePayrollEditEmployeeFieldsOptions {
   employeeCompensation: PayrollEmployeeCompensationsType | undefined
   /**
    * Fixed compensations to render, already merged with blank placeholders for
-   * every company earning type. Defaults to the prepared compensation's own fixed
-   * compensations when omitted.
+   * every company earning type (see `resolveEditableFixedCompensations`).
    */
-  fixedCompensations?: NonNullable<PayrollEmployeeCompensationsType['fixedCompensations']>
+  fixedCompensations: NonNullable<PayrollEmployeeCompensationsType['fixedCompensations']>
   workweeks: NormalizedWorkweek[]
   payrollCategory: PayrollCategory
   hasDirectDepositSetup: boolean
@@ -290,7 +289,7 @@ function buildBreakdownSection(
  */
 export function createPayrollEditEmployeeFields({
   employeeCompensation,
-  fixedCompensations: fixedCompensationsOption,
+  fixedCompensations,
   workweeks,
   payrollCategory,
   hasDirectDepositSetup,
@@ -299,8 +298,6 @@ export function createPayrollEditEmployeeFields({
   jobTitlesByUuid,
 }: CreatePayrollEditEmployeeFieldsOptions): PayrollEditEmployeeFields {
   const hourlyCompensations = employeeCompensation?.hourlyCompensations ?? []
-  const fixedCompensations =
-    fixedCompensationsOption ?? employeeCompensation?.fixedCompensations ?? []
   const overtimeAffecting = fixedCompensations.filter(
     compensation => compensation.name != null && overtimeEarningNames.has(compensation.name),
   )
