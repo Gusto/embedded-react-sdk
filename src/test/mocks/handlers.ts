@@ -29,6 +29,7 @@ import I9AuthorizationHandlers from './apis/i9_authorization'
 import EmployeeFormHandlers from './apis/employee_forms'
 import RecoveryCasesHandlers from './apis/recovery_cases'
 import TerminationHandlers from './apis/terminations'
+import CompanySuspensionHandlers from './apis/company_suspensions'
 import {
   getCompany,
   getCompanyOnboardingStatus,
@@ -82,4 +83,5 @@ export const handlers = [
   ...RecoveryCasesHandlers,
   ...TerminationHandlers,
   ...TimeOffPoliciesHandlers,
+  ...CompanySuspensionHandlers,
 ]
