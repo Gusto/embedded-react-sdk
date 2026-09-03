@@ -65,5 +65,9 @@ export const contractorListStateMachine = {
   // 'list'-targeting transition inside these states (cancel, submit-done) resolves against
   // this machine's own `list` state above, since state names resolve against whichever
   // machine they end up spread into.
-  ...createContractorOnboardingSteps(ContractorListContextual),
+  //
+  // waitForExplicitSubmitDone: true because this list (unlike OnboardingFlow's own) has no
+  // success-banner mechanism — without it, an admin completing onboarding would be swept back
+  // to the list the instant they click Submit, with no confirmation at all.
+  ...createContractorOnboardingSteps(ContractorListContextual, { waitForExplicitSubmitDone: true }),
 }

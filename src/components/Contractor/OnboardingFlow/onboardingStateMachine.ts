@@ -23,7 +23,10 @@ type EventPayloads = {
     onboardingStatus?: Contractor['onboardingStatus']
     selfOnboarding: boolean
   }
-  [componentEvents.CONTRACTOR_SUBMIT_DONE]: { message?: string }
+  [componentEvents.CONTRACTOR_SUBMIT_DONE]: {
+    message?: string
+    onboardingStatus?: Contractor['onboardingStatus']
+  }
 }
 
 // The new hire report belongs to the contractor's initial onboarding pass only.
@@ -154,9 +157,24 @@ export const contractorUpdateTransition = transition(
  * whichever machine they're mixed into, so `returnToListComponent` is the only piece that
  * varies per host.
  *
+ * `ContractorSubmit`'s admin (non-self-onboarding) submit button fires `contractor/submit/done`
+ * twice in quick succession for the same completion: once immediately after the mutation
+ * succeeds (`{ message }`, no `onboardingStatus`), and again if the admin then clicks the
+ * "Done" CTA on the `SubmitDone` confirmation screen it renders once the onboarding-status
+ * query refetches as completed (`{ onboardingStatus, message }`). The self-onboarding invite
+ * path has no such confirmation screen and only ever fires once, immediately. By default (used
+ * by {@link OnboardingFlow}, which shows a success banner on its own list on return) both fires
+ * transition straight to `list` — matching its long-standing behavior. Pass
+ * `waitForExplicitSubmitDone: true` (used by `ContractorListFlow`, whose list has no such
+ * banner) to hold on the first, bare-message fire so the admin actually sees `SubmitDone` and
+ * must click its "Done" CTA before returning to `list`.
+ *
  * @internal
  */
-export const createContractorOnboardingSteps = (returnToListComponent: React.ComponentType) => ({
+export const createContractorOnboardingSteps = (
+  returnToListComponent: React.ComponentType,
+  { waitForExplicitSubmitDone = false }: { waitForExplicitSubmitDone?: boolean } = {},
+) => ({
   profile: state<MachineTransition>(
     cancelTransition(returnToListComponent),
     transition(
@@ -313,6 +331,16 @@ export const createContractorOnboardingSteps = (returnToListComponent: React.Com
           }
         },
       ),
+      ...(waitForExplicitSubmitDone
+        ? [
+            guard(
+              (
+                ctx: OnboardingFlowContextInterface,
+                ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_SUBMIT_DONE>,
+              ) => ctx.selfOnboarding === true || ev.payload.onboardingStatus !== undefined,
+            ),
+          ]
+        : []),
     ),
   ),
 })
