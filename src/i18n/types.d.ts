@@ -7033,8 +7033,6 @@ export namespace Translations {
       checkDateRequired: string
       /** @defaultValue `"End date must be on or after start date"` */
       endDateAfterStart: string
-      /** @defaultValue `"Start date cannot be in the future for correction payrolls"` */
-      startDateNotFuture: string
       /** @defaultValue `"Payment date must be at least {{count}} business day from today for direct deposit"` */
       checkDateAchLeadTime_one: string
       /** @defaultValue `"Payment date must be at least {{count}} business days from today for direct deposit"` */
