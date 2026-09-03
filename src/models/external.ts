@@ -114,6 +114,9 @@ export type { DocumentSignedFields } from '@gusto/embedded-api/models/components
 /** `DocumentSignedPages` entity from the Gusto Embedded API. */
 export type { DocumentSignedPages } from '@gusto/embedded-api/models/components/documentsigned'
 export { DocumentSignedRecipientType } from '@gusto/embedded-api/models/components/documentsigned'
+export type { EarningType } from '@gusto/embedded-api/models/components/earningtype'
+export { EarningTypeCategory } from '@gusto/embedded-api/models/components/earningtype'
+export type { EarningTypeList } from '@gusto/embedded-api/models/components/earningtypelist'
 /** `CurrentEmploymentStatus` entity from the Gusto Embedded API. */
 export { CurrentEmploymentStatus } from '@gusto/embedded-api/models/components/employee'
 /** `EmployeeOnboardingStatus1` entity from the Gusto Embedded API. */
