@@ -408,6 +408,33 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/companyonboa
 
 ***
 
+<a id="companysuspension"></a>
+
+## CompanySuspension
+
+> **CompanySuspension** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/companysuspension.ts:38](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/companysuspension.ts#L38)
+
+Record representing the suspension of a company's Gusto account.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-companysuspensioncomments"></a> `comments?` | `string` \| `null` | User-supplied comments describing why they are suspending their account. |
+| <a id="property-companysuspensioncompanyuuid"></a> `companyUuid?` | `string` | Unique identifier for the company which is suspended. |
+| <a id="property-companysuspensioneffectivedate"></a> `effectiveDate?` | `string` | Date that the suspension took effect. |
+| <a id="property-companysuspensionfilequarterlyforms"></a> `fileQuarterlyForms?` | `boolean` | Should Gusto file quarterly tax forms on behalf of the company? The correct answer can depend on why the company is suspending their account, and how taxes are being reconciled. **Remarks** |
+| <a id="property-companysuspensionfileyearlyforms"></a> `fileYearlyForms?` | `boolean` | Should Gusto file yearly tax forms on behalf of the company? The correct answer can depend on why the company is suspending their account, and how taxes are being reconciled. **Remarks** |
+| <a id="property-companysuspensionleavingfor"></a> `leavingFor?` | `string` \| `null` | Which competitor the company is joining instead. Only required if `reason` is `'switching_provider'`. |
+| <a id="property-companysuspensionreason"></a> `reason?` | `string` | Explanation for why the company's account was suspended. |
+| <a id="property-companysuspensionreconciletaxmethod"></a> `reconcileTaxMethod?` | [`ReconcileTaxMethod`](#reconciletaxmethod-1) | How Gusto will handle taxes already collected. |
+| <a id="property-companysuspensiontaxrefunds"></a> `taxRefunds?` | [`TaxRefunds`](#taxrefunds)[] | Describes the taxes which are refundable to the company for this suspension. These may be refunded or paid by Gusto depending on the value in `reconcile_tax_method`. **Remarks** |
+| <a id="property-companysuspensionuuid"></a> `uuid?` | `string` | Unique identifier for this suspension. |
+
+***
+
 <a id="compensation"></a>
 
 ## Compensation
@@ -6361,6 +6388,37 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/taxrequireme
 
 ***
 
+<a id="reconciletaxmethod"></a>
+
+## ReconcileTaxMethod
+
+> `const` **ReconcileTaxMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/companysuspension.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/companysuspension.ts#L15)
+
+How Gusto will handle taxes already collected.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-reconciletaxmethodpaytaxes"></a> `PayTaxes` | `"pay_taxes"` |
+| <a id="property-reconciletaxmethodrefundtaxes"></a> `RefundTaxes` | `"refund_taxes"` |
+
+***
+
+<a id="reconciletaxmethod-1"></a>
+
+## ReconcileTaxMethod
+
+> **ReconcileTaxMethod** = `ClosedEnum`\<*typeof* [`ReconcileTaxMethod`](#reconciletaxmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/companysuspension.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/companysuspension.ts#L15)
+
+How Gusto will handle taxes already collected.
+
+***
+
 <a id="recoverycase"></a>
 
 ## RecoveryCase
@@ -6708,6 +6766,25 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/federaltaxde
 Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/federaltaxdetails.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/federaltaxdetails.ts#L12)
 
 `TaxPayerType` entity from the Gusto Embedded API.
+
+***
+
+<a id="taxrefunds"></a>
+
+## TaxRefunds
+
+> **TaxRefunds** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/companysuspension.ts:24](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/companysuspension.ts#L24)
+
+`TaxRefunds` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-taxrefundsamount"></a> `amount?` | `string` | Dollar amount. |
+| <a id="property-taxrefundsdescription"></a> `description?` | `string` | What kind of tax this is. |
 
 ***
 

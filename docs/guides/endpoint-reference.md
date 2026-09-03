@@ -527,3 +527,19 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | Flow | Blocks included |
 | --- | --- |
 | **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyConfigurationForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.TimeOffPolicyDetail, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule |
+
+## CompanyManagement
+
+### Components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **CompanyManagement.SuspensionFlow** | GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies) |
+| **CompanyManagement.SuspensionForm** | POST | [`/v1/companies/:companyUuid/suspensions`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-companies-company_uuid-suspensions) |
+| **CompanyManagement.SuspensionSummary** | GET | [`/v1/companies/:companyUuid/suspensions`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-suspensions) |
+
+### Flows
+
+| Flow | Blocks included |
+| --- | --- |
+| **CompanyManagement.SuspensionFlow** | CompanyManagement.SuspensionForm, CompanyManagement.SuspensionSummary |
