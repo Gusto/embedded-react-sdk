@@ -72,6 +72,25 @@ async function main() {
 
   const envPath = resolve(ENV_DIR, `.env.${zpEnv}`)
 
+  // Direct-API mode: talk to a Gusto API host directly with a Bearer token instead of the
+  // gws-flows flow-token proxy. Skip all flow-token provisioning/validation and hand off to vite.
+  const directEnv = loadEnvFile(envPath)
+  if (directEnv.DIRECT_API_HOST && directEnv.DIRECT_API_TOKEN) {
+    console.log(`  Direct API mode  ·  Target: ${directEnv.DIRECT_API_HOST}\n`)
+    if (sdkBuild === 'prod') {
+      execSync('npm run build', { stdio: 'inherit', cwd: ROOT_DIR })
+    }
+    const child = spawn('npx', ['vite', '--config', 'sdk-app/vite.config.ts', '--mode', zpEnv], {
+      stdio: 'inherit',
+      cwd: ROOT_DIR,
+      env: { ...process.env, ZP_ENV: zpEnv, SDK_BUILD: sdkBuild },
+    })
+    child.on('exit', code => {
+      process.exit(code ?? 0)
+    })
+    return
+  }
+
   if (!existsSync(envPath) || !envIsUsable(loadEnvFile(envPath))) {
     const setupOk = runSetup(zpEnv)
     if (!setupOk || !existsSync(envPath)) {

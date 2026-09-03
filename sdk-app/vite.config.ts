@@ -31,19 +31,39 @@ export default defineConfig(() => {
   const isProd = sdkBuild === 'prod'
   const env = loadEnvFile(zpEnv)
 
+  // Direct-API mode bypasses the gws-flows `/fe_sdk/<token>` proxy and talks to the
+  // Gusto API host directly, injecting a Bearer token server-side (kept out of client
+  // code, sidesteps browser CORS). Useful when the flow-token proxy silently drops
+  // writes; here the SDK's own OAuth-style auth path is exercised end-to-end.
+  const hasDirectApi = !!(env.DIRECT_API_HOST && env.DIRECT_API_TOKEN)
   const hasFlowToken = !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST)
-  const proxyMode = hasFlowToken ? 'flow-token' : null
+  const proxyMode = hasDirectApi ? 'direct-api' : hasFlowToken ? 'flow-token' : null
 
-  const proxyConfig = hasFlowToken
+  const proxyConfig = hasDirectApi
     ? {
         '/api': {
-          target: env.GWS_FLOWS_HOST,
+          target: env.DIRECT_API_HOST,
           changeOrigin: true,
-          secure: !env.GWS_FLOWS_HOST?.includes('localhost'),
-          rewrite: (path: string) => path.replace(/^\/api/, `/fe_sdk/${env.FLOW_TOKEN}`),
+          secure: !env.DIRECT_API_HOST?.includes('localhost'),
+          rewrite: (path: string) => path.replace(/^\/api/, ''),
+          configure: (proxy: { on: (event: string, cb: (proxyReq: { setHeader: (k: string, v: string) => void }) => void) => void }) => {
+            proxy.on('proxyReq', proxyReq => {
+              proxyReq.setHeader('Authorization', `Bearer ${env.DIRECT_API_TOKEN}`)
+              proxyReq.setHeader('x-gusto-api-version', env.DIRECT_API_VERSION || '2026-06-15')
+            })
+          },
         },
       }
-    : undefined
+    : hasFlowToken
+      ? {
+          '/api': {
+            target: env.GWS_FLOWS_HOST,
+            changeOrigin: true,
+            secure: !env.GWS_FLOWS_HOST?.includes('localhost'),
+            rewrite: (path: string) => path.replace(/^\/api/, `/fe_sdk/${env.FLOW_TOKEN}`),
+          },
+        }
+      : undefined
 
   const sdkSrcPath = resolve(__dirname, '../src')
 

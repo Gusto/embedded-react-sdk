@@ -47,7 +47,9 @@ export function useDemoManager({ pollingDisabled = false }: UseDemoManagerOption
   }, [])
 
   useEffect(() => {
-    if (proxyMode === 'none') return
+    // Direct-API mode has no gws-flows flow token to validate, so skip the
+    // token-health polling that would otherwise flag it as expired.
+    if (proxyMode === 'none' || proxyMode === 'direct-api') return
     if (pollingDisabled) {
       setState(prev => ({ ...prev, tokenStatus: 'unknown' }))
       return

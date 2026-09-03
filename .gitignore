@@ -212,6 +212,7 @@ sdk-app/dist/
 sdk-app/env/.env.demo
 sdk-app/env/.env.staging
 sdk-app/env/.env.localzp
+sdk-app/env/.env.stagingdirect
 
 # api-extractor artifacts
 .reports/temp
