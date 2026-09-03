@@ -34,7 +34,6 @@ function InformationRequestsFlowRoot({
   useI18n('InformationRequests')
   const { t } = useTranslation('InformationRequests')
   const { Modal, LoadingSpinner, Alert, Text } = useComponentContext()
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [alertState, setAlertState] = useState<SubmissionAlertState>({
     nextAlertId: 0,
     alerts: [],
@@ -70,19 +69,14 @@ function InformationRequestsFlowRoot({
   )
   const [current, send] = useMachine(informationRequestsMachineInstance)
 
+  const CurrentComponent = current.context.component
+  const Footer = CurrentComponent?.Footer || undefined
+  // Derived from the machine, not separate state, so it can't drift out of sync
+  // when the modal is dismissed without a state-machine event (e.g. Escape).
+  const isModalOpen = CurrentComponent !== null
+
   function handleEvent(type: EventType, data?: unknown) {
     send({ type, payload: data })
-
-    if (type === informationRequestEvents.INFORMATION_REQUEST_RESPOND) {
-      setIsModalOpen(true)
-    }
-
-    if (
-      type === informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL ||
-      type === informationRequestEvents.INFORMATION_REQUEST_FORM_DONE
-    ) {
-      setIsModalOpen(false)
-    }
 
     if (type === informationRequestEvents.INFORMATION_REQUEST_FORM_DONE && withAlert) {
       addSubmissionAlert()
@@ -90,13 +84,6 @@ function InformationRequestsFlowRoot({
 
     onEvent(type, data)
   }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const CurrentComponent = current.context.component
-  const Footer = CurrentComponent?.Footer || undefined
 
   return (
     <FlowContext.Provider
@@ -125,7 +112,9 @@ function InformationRequestsFlowRoot({
         </Suspense>
         <Modal
           isOpen={isModalOpen}
-          onClose={handleCloseModal}
+          onClose={() => {
+            handleEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL)
+          }}
           footer={
             Footer && (
               <BaseBoundaries LoaderComponent={LoaderComponent}>

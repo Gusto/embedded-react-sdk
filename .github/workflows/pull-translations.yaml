@@ -9,11 +9,23 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # The PR-creation step below pushes a new branch. Pushes authenticated with
+      # the default GITHUB_TOKEN never trigger other push-triggered workflows
+      # (GitHub's anti-recursion rule), so ci.yaml's required checks would never
+      # run and the PR would sit blocked forever. Mint a GitHub App token instead —
+      # same fix ci.yaml's derive-commit job already uses for the same reason.
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
       - name: Pull translations
         uses: Gusto/embedded-i18n-actions/pull_translations@main
         with:
           lokalise_project_id: ${{ vars.LOKALISE_PROJECT_ID }}
           lokalise_api_token: ${{ secrets.LOKALISE_API_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.app-token.outputs.token }}
           file_format: json
           pr_title: 'chore: sync translations from Lokalise'

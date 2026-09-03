@@ -178,10 +178,6 @@ const Root = ({
     {
       refetchInterval: isPolling ? 5_000 : false,
       placeholderData: keepPreviousData,
-      refetchOnMount: 'always',
-      // Discard the cache entry the moment this component unmounts so re-navigation
-      // never serves a stale pre-calculation snapshot (calculatedAt: null). SDK-1018.
-      gcTime: 0,
     },
   )
   const payrollData = data?.payrollShow
@@ -344,11 +340,6 @@ const Root = ({
   }
 
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
-    // A stale snapshot can be served with a null `calculatedAt` while its refetch is
-    // in flight; treat that as loading and only throw once the fetch settles. SDK-1018.
-    if (isFetching) {
-      return <PayrollLoading title={t('dataLoadingTitle')} />
-    }
     throw new Error(t('alerts.payrollNotCalculated'))
   }
 

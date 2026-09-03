@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.55.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.4...v0.55.5) (2026-08-31)
+
+### Fixes
+
+- Fix `InformationRequests` modal visibility so it is driven by the component's state machine ([#2662](https://github.com/Gusto/embedded-react-sdk/issues/2662))
+
+## [0.55.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.3...v0.55.4) (2026-08-31)
+
+### Features & Enhancements
+
+- Add explanatory copy for tax withholding and a disclaimer note for off-cycle payrolls ([#2618](https://github.com/Gusto/embedded-react-sdk/issues/2618))
+
+### Fixes
+
+- Add Suspense boundaries so components no longer throw a React error while i18n resources are loading ([#2654](https://github.com/Gusto/embedded-react-sdk/issues/2654))
+- Fix reimbursement amount validation ([#2630](https://github.com/Gusto/embedded-react-sdk/issues/2630))
+- Fix duplicate requirement keys colliding in the tax rate history so each entry is handled independently ([#2637](https://github.com/Gusto/embedded-react-sdk/issues/2637))
+- Correctly evaluate conditional (`applicable_if`) fields against non-editable sibling fields ([#2636](https://github.com/Gusto/embedded-react-sdk/issues/2636))
+- Show a loading indicator during data grid pagination transitions ([#2638](https://github.com/Gusto/embedded-react-sdk/issues/2638))
+- Show a loading indicator while a paystub downloads in `PayrollOverview` ([#2653](https://github.com/Gusto/embedded-react-sdk/issues/2653))
+- Prevent re-preparing a payroll from wiping an already-completed calculation ([#2656](https://github.com/Gusto/embedded-react-sdk/issues/2656))
+- Keep the current page visible during paginated list navigation instead of showing a loading fallback on every page change ([#2639](https://github.com/Gusto/embedded-react-sdk/issues/2639))
+- Disable invalid payment dates in the off-cycle payroll date picker ([#2650](https://github.com/Gusto/embedded-react-sdk/issues/2650))
+- Reject negative additional-earning amounts before submit ([#2651](https://github.com/Gusto/embedded-react-sdk/issues/2651))
+
+### Chores & Maintenance
+
+- Bump dependencies (`react-hook-form`, `react-i18next`, `dompurify`, `sass-embedded`, `@storybook/*`, `@testing-library/*`, `@types/react-dom`, `@typescript-eslint/*`, `eslint-plugin-storybook`, `cspell`)
+
 ## [0.55.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.2...v0.55.3) (2026-08-24)
 
 ### Features & Enhancements

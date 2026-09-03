@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -26,7 +25,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { SDKInternalError } from '@/types/sdkError'
-import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 
 const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -109,8 +107,11 @@ const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
   const previousCalculatedAtRef = useRef<number | null>(null)
+  // True once this screen has read a "calculating" status for the payroll, whether we started that
+  // calc or someone else did. Calling prepare after that would wipe the result, so we use this to
+  // keep prepare off.
+  const hasSeenCalculatingRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -130,6 +131,15 @@ const Root = ({
     [payrollData.payrollShow?.employeeCompensations],
   )
 
+  // Remember once we've seen it calculating.
+  if (isCalculatingStatus(payrollData.payrollShow?.processingRequest)) {
+    hasSeenCalculatingRef.current = true
+  }
+
+  // Show the loading state the whole time we're calculating, so a second tab shows the loader
+  // instead of a blank table until it moves to the overview.
+  const isCalculatingActive = isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current
+
   const {
     employeeDetails,
     employeeCompensations,
@@ -143,7 +153,9 @@ const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
-    isCalculating: isPolling || isCalculatingPayroll,
+    // Don't prepare while calculating, or once we've seen it calculate. If the payroll was already
+    // calculated when we opened (e.g. clicking Edit), we do prepare so it can be edited.
+    disablePrepare: isPolling || isCalculatingPayroll || hasSeenCalculatingRef.current,
     excludedEmployeeUuids,
   })
 
@@ -318,6 +330,8 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    // Mark it right away so prepare can't run and cancel the calculation we just started.
+    hasSeenCalculatingRef.current = true
     previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
@@ -331,10 +345,6 @@ const Root = ({
           if (!calcResult.ok) {
             throw calcResult.error
           }
-          // `payrollsCalculate` is a raw func, so it skips the global onSuccess
-          // invalidation that mutation hooks get; invalidate here so cached payroll
-          // reads (e.g. PayrollOverview's separate key) refetch fresh. SDK-1018.
-          void queryClient.invalidateQueries({ queryKey: [API_QUERY_NAMESPACE] })
           setIsPolling(true)
         } finally {
           setIsCalculatingPayroll(false)
@@ -431,6 +441,8 @@ const Root = ({
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
+      // Calculation failed, so let prepare run again on retry.
+      hasSeenCalculatingRef.current = false
     }
   }, [
     payrollData.payrollShow?.processingRequest?.status,
@@ -448,6 +460,8 @@ const Root = ({
     const timeoutId = setTimeout(() => {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
+      // Timed out waiting on the calculation, so let prepare run again.
+      hasSeenCalculatingRef.current = false
     }, POLLING_TIMEOUT_MS)
 
     return () => {
@@ -529,8 +543,8 @@ const Root = ({
         payrollCategory={payrollCategory}
         alerts={alerts}
         payrollAlert={payrollAlert}
-        isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}
-        isCalculating={isCalculatingPayroll || isPolling}
+        isPending={isCalculatingActive || isLoading || isUpdatingPayroll}
+        isCalculating={isCalculatingActive}
         payrollBlockers={payrollBlockers}
         pagination={pagination}
         withReimbursements={withReimbursements}

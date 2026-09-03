@@ -79,11 +79,21 @@ const DraftReimbursementSchema = z.object({
   ),
 })
 
+// A native `min={0}` only constrains the stepper: it does not stop a typed "-50", and the
+// SDK's <form> is noValidate so the browser never enforces it either. Negative amounts
+// therefore reached the platform and came back only as a submit-time error (SDK-1285).
+// Applied via z.record below, this covers every additional earning -- correction payment
+// included -- because they all share the fixedCompensations record.
+const nonNegativeAmountSchema = z
+  .string()
+  .optional()
+  .refine(val => !val || parseFloat(val) >= 0, { message: 'validations.negativeAmount' })
+
 const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   finalPayoutCompensations: z.record(z.string(), z.string().optional()),
-  fixedCompensations: z.record(z.string(), z.string().optional()),
+  fixedCompensations: z.record(z.string(), nonNegativeAmountSchema),
   reimbursements: z.array(ReimbursementFormSchema),
   paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
@@ -310,6 +320,25 @@ export const PayrollEditEmployeePresentation = ({
     }
   }
 
+  const resolveDefaultPaymentMethod = () => {
+    const preparedPaymentMethod = employeeCompensation?.paymentMethod
+
+    if (!preparedPaymentMethod) {
+      return hasDirectDepositSetup
+        ? PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
+        : PayrollEmployeeCompensationsTypePaymentMethod.Check
+    }
+
+    if (
+      !hasDirectDepositSetup &&
+      preparedPaymentMethod === PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
+    ) {
+      return PayrollEmployeeCompensationsTypePaymentMethod.Check
+    }
+
+    return preparedPaymentMethod
+  }
+
   const defaultValues = {
     hourlyCompensations: (() => {
       const hourlyCompensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
@@ -375,9 +404,7 @@ export const PayrollEditEmployeePresentation = ({
       recurring: reimbursement.recurring ?? false,
     })),
 
-    paymentMethod:
-      employeeCompensation?.paymentMethod ||
-      PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
+    paymentMethod: resolveDefaultPaymentMethod(),
   }
 
   const formHandlers = useForm<PayrollEditEmployeeFormValues>({
@@ -710,6 +737,9 @@ export const PayrollEditEmployeePresentation = ({
                     isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
+                    // useField only surfaces this once react-hook-form has flagged the
+                    // field, and the schema's only rule here is the negative-amount check.
+                    errorMessage={t('validations.negativeAmount')}
                   />
                 ))}
               </Grid>
@@ -728,6 +758,7 @@ export const PayrollEditEmployeePresentation = ({
                   isRequired
                   label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
                   name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
+                  errorMessage={t('validations.negativeAmount')}
                 />
               </Grid>
             </div>

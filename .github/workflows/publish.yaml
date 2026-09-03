@@ -137,9 +137,9 @@ jobs:
         continue-on-error: true
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          VERSION: ${{ steps.changelog.outputs.version }}
+          SUMMARY: ${{ steps.summary.outputs.text }}
         run: |
-          VERSION="${{ steps.changelog.outputs.version }}"
-          SUMMARY="${{ steps.summary.outputs.text }}"
           RELEASE_URL="https://github.com/Gusto/embedded-react-sdk/releases/tag/v${VERSION}"
           if [ -z "$SUMMARY" ]; then
             SUMMARY="A new version has been published. See the changelog for details."
