@@ -23,6 +23,7 @@ export const PAYMENT_METHOD_OPTIONS = PAYMENT_METHOD_VALUES.map(value => ({ valu
  */
 export const PayrollEditEmployeeErrorCodes = {
   NEGATIVE_AMOUNT: 'NEGATIVE_AMOUNT',
+  REIMBURSEMENT_AMOUNT: 'REIMBURSEMENT_AMOUNT',
 } as const
 
 /**
@@ -45,11 +46,30 @@ const nonNegativeAmount = z.string().refine(value => value === '' || NON_NEGATIV
   message: PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT,
 })
 
+// Committed reimbursement rows are presentational passthrough: they hold data
+// that was already validated when its draft was saved (or came from the server),
+// so the amount is a plain string here. All reimbursement validation lives in
+// `reimbursementDraftSchema` below, mirroring the legacy editor.
 const reimbursementSchema = z.object({
   uuid: z.string().nullable().optional(),
   description: z.string(),
-  amount: nonNegativeAmount,
+  amount: z.string(),
   recurring: z.boolean().optional(),
+})
+
+/**
+ * The single reimbursement validation schema: the "add reimbursement" draft row.
+ * Amount must be a number greater than zero, matching the legacy editor's
+ * inline validation. The hook validates the draft against this before committing
+ * it to the presentational `reimbursements` list.
+ *
+ * @internal
+ */
+export const reimbursementDraftSchema = z.object({
+  description: z.string(),
+  amount: z.string().refine(value => parseFloat(value) > 0, {
+    message: PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
+  }),
 })
 
 /**
@@ -78,6 +98,10 @@ export function createPayrollEditEmployeeSchema() {
     timeOff: z.record(z.string(), nonNegativeAmount),
     finalPayout: z.record(z.string(), nonNegativeAmount),
     reimbursements: z.array(reimbursementSchema),
+    // Binding shape only — the draft is validated against `reimbursementDraftSchema`
+    // at save time, not by the main resolver, so a half-filled draft never blocks
+    // the payroll submit.
+    reimbursementDraft: z.object({ description: z.string(), amount: z.string() }),
     paymentMethod: z.enum(PayrollUpdatePaymentMethod).optional(),
   })
 }
