@@ -1808,8 +1808,8 @@ Translation keys for the `Contractor.Management.Profile` i18n namespace.
 | `form.validations.businessName` | `"Business name is required"` |
 | `form.validations.ein` | `"The EIN must be exactly 9 digits long."` |
 | `form.validations.email` | `"Enter a valid email address"` |
-| `form.validations.firstName` | `"First name is required"` |
-| `form.validations.lastName` | `"Last name is required"` |
+| `form.validations.firstName` | `"Enter a valid first name"` |
+| `form.validations.lastName` | `"Enter a valid last name"` |
 | `form.validations.ssn` | `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` |
 | `form.validations.startDate` | `"Start date is required"` |
 | <a id="property-contractormanagementprofilelegalname"></a> `legalName` | `"Legal name"` |
