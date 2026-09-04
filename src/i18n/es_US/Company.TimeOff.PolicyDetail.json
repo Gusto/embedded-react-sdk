@@ -1,0 +1,11 @@
+{
+  "backLabel": "Volver a las políticas",
+  "employeeActions": "Acciones para {{name}}",
+  "emptyEmployees": {
+    "title": "No se ha agregado ningún empleado a esta política"
+  },
+  "removeEmployeeDialog": {
+    "description": "¿Estás seguro de que quieres quitar a {{name}} de esta política?",
+    "title": "Eliminar a {{name}}"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "holidayHint": "Dale a los empleados tiempo libre para los días festivos de la empresa. Elige qué días festivos observar.",
+  "holidayLabel": "Pago de días feriados",
+  "policyTypeHint": "Selecciona el tipo de política de tiempo libre que quieres configurar para tu equipo.",
+  "policyTypeLabel": "Tipo de póliza",
+  "sickLeaveHint": "Tiempo pagado que los empleados pueden usar cuando estén enfermos o cuidando de su salud.",
+  "sickLeaveLabel": "Licencia por enfermedad",
+  "timeOffHint": "Úsala para licencias pagadas o combina vacaciones y días por enfermedad en una sola política de PTO.",
+  "timeOffLabel": "Tiempo libre",
+  "title": "Seleccionar tipo de política",
+  "validations": {
+    "policyTypeRequired": "Selecciona un tipo de póliza"
+  }
+}

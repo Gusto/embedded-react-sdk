@@ -1,0 +1,25 @@
+{
+  "columns": {
+    "amountOutstanding": "Monto pendiente",
+    "latestErrorCode": "Último código de error",
+    "originalDebitDate": "Fecha original del débito",
+    "totalAmount": "Monto total"
+  },
+  "cta": {
+    "resolve": "Resolver"
+  },
+  "description": "Uno o más pagos no se pudieron procesar debido a un error bancario. Resuelve los casos de recuperación abiertos para continuar procesando la nómina.",
+  "emptyTableDescription": "No hay casos de recuperación que requieran tu respuesta en este momento.",
+  "emptyTableTitle": "No hay casos de recuperación",
+  "labels": {
+    "noLatestErrorCode": "—",
+    "noLatestErrorCodeAriaLabel": "No hay código de error disponible"
+  },
+  "status": {
+    "lost": "Perdido",
+    "open": "Abierto",
+    "recovered": "Recuperado",
+    "redebit_initiated": "Reintento de débito iniciado",
+    "wire_initiated": "Transferencia iniciada"
+  }
+}

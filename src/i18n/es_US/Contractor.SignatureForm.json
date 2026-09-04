@@ -1,0 +1,105 @@
+{
+  "acknowledgeCta": "Reconocer",
+  "acknowledgingCta": "Confirmando…",
+  "agreeLabel": "Acepto firmar este formulario electrónicamente.",
+  "certificationIntro": "Bajo pena de perjurio, certifico que:",
+  "certificationPoints": {
+    "backupWithholding": "No estoy sujeto a retención adicional porque (a) estoy exento de la retención adicional, o (b) no he sido notificado por el Servicio de Impuestos Internos (IRS) de que estoy sujeto a retención adicional como resultado de no declarar todos los intereses o dividendos, o (c) el IRS me ha notificado que ya no estoy sujeto a retención adicional;",
+    "fatca": "El(los) código(s) FATCA indicado(s) en este formulario (si lo hay) que señalan que estoy exento de la presentación de informes FATCA es correcto.",
+    "taxpayerId": "El número que aparece en este formulario es mi número correcto de identificación del contribuyente (o estoy esperando que se me asigne un número);",
+    "usPerson": "Soy un ciudadano estadounidense u otra persona de EE. UU. (definida a continuación);",
+    "usPersonDefinition": "Para fines de impuestos federales, se le considera una persona de EE. UU. si es: un individuo que es ciudadano estadounidense o extranjero residente en EE. UU.; una sociedad, corporación, compañía o asociación creada u organizada en Estados Unidos o bajo las leyes de Estados Unidos; un patrimonio (que no sea un patrimonio extranjero); o un fideicomiso nacional (según se define en la sección 301.7701-7 de los Reglamentos)."
+  },
+  "downloadPrompt": "<downloadLink>Descargar documento<\/downloadLink>",
+  "fields": {
+    "account_number": {
+      "label": "Números de cuenta"
+    },
+    "business_name": {
+      "description": "El nombre de su negocio, si es diferente al de arriba.",
+      "label": "Nombre del negocio (2)"
+    },
+    "company_name": {
+      "label": "Nombre y dirección del solicitante"
+    },
+    "ein": {
+      "changeCta": "Cambiar EIN",
+      "label": "Número de Identificación del Empleador (EIN)"
+    },
+    "exempt_payee_code": {
+      "label": "Código de beneficiario exento"
+    },
+    "exemption_from_FATCA": {
+      "description": "Ingrese el código (si corresponde) que indica que está exento de informar bajo la Ley de Cumplimiento Fiscal de Cuentas Extranjeras (FATCA).",
+      "label": "Código de exención de informes FATCA (4b)"
+    },
+    "foreign_partners": {
+      "description": "Si seleccionó \"Sociedad\", \"Fideicomiso\/Sucesión\" o marcó \"LLC\" e ingresó \"P\" como la clasificación fiscal, y está proporcionando este formulario a una sociedad, fideicomiso o sucesión en la que tiene una participación de propiedad, marque esta casilla si tiene algún socio, propietario o beneficiario extranjero.",
+      "label": "Socios\/propietarios\/beneficiarios extranjeros (3b)"
+    },
+    "home_address_street_2": {
+      "label": "Calle 2"
+    },
+    "home_address_zip": {
+      "label": "Código postal"
+    },
+    "llcClassificationCode": {
+      "description": "Seleccione el código correspondiente para la LLC, a menos que sea una entidad no considerada. Una entidad no considerada debe, en su lugar, marcar la opción apropiada para la clasificación fiscal de su propietario.",
+      "label": "Código de clasificación fiscal de LLC"
+    },
+    "name": {
+      "description": "Su nombre personal o el de su negocio. Si es propietario único o una entidad no considerada, escriba aquí el nombre del propietario y escriba el nombre del negocio\/entidad no considerada en el campo Nombre del negocio más abajo.",
+      "label": "Nombre de la entidad o del individuo (1)"
+    },
+    "other_text": {
+      "label": "Otro"
+    },
+    "ssn": {
+      "changeCta": "Cambiar SSN",
+      "label": "Número de Seguro Social (SSN)"
+    },
+    "taxClassification": {
+      "description": "Seleccione el tipo de negocio que tiene.",
+      "label": "Clasificación de impuestos federales (3)"
+    }
+  },
+  "instructions": "Consulte el Formulario W-9 del IRS para obtener instrucciones sobre cómo completar este formulario",
+  "options": {
+    "llcClassificationCode": {
+      "c": "C = Corporación C",
+      "p": "P = Sociedad",
+      "s": "S = Corporación S"
+    },
+    "taxClassification": {
+      "c_corporation": "Corporación tipo C",
+      "individual_proprietor": "Individuo\/propietario único",
+      "limited_liability_company": "LLC",
+      "other": "Otro",
+      "partnership": "Sociedad",
+      "s_corporation": "Corporación tipo S",
+      "trust_estate": "Fideicomiso\/sucesión"
+    }
+  },
+  "sectionInstructions": {
+    "address": "Consulte las secciones 5 a 7 del Formulario W-9 del IRS para obtener instrucciones.",
+    "certification": "Consulte la Parte 2 del Formulario W-9 del IRS para obtener instrucciones.",
+    "ein": "Su EIN es obligatorio como contratista comercial. Consulte la Parte 1 del Formulario W-9 del IRS para obtener instrucciones.",
+    "exemptions": "Consulte la sección 4 del Formulario W-9 del IRS para obtener instrucciones.",
+    "ssn": "Su SSN es obligatorio como contratista individual. Consulte la Parte 1 del Formulario W-9 del IRS para obtener instrucciones."
+  },
+  "sections": {
+    "address": "Dirección",
+    "certification": "Certificación",
+    "ein": "Número de identificación del empleador (EIN)",
+    "exemptions": "Exenciones",
+    "ssn": "Número de Seguro Social (SSN)"
+  },
+  "signatureRequired": "Firma requerida",
+  "signingCta": "Firmando…",
+  "validation": {
+    "agreeRequired": "Debe aceptar firmar este formulario electrónicamente.",
+    "invalidEin": "Ingresa un número de identificación del empleador válido.",
+    "invalidSsn": "Ingrese un número de Seguro Social válido.",
+    "required": "Este campo es obligatorio."
+  }
+}

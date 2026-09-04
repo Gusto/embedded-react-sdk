@@ -1,0 +1,118 @@
+{
+  "balancePreview": {
+    "availableBalance": "Saldo disponible",
+    "availableBalanceHint": "La cantidad de tiempo libre que este empleado tiene disponible hoy para usar en esta política.",
+    "negativeBalanceWarning": "Si apruebas esta solicitud, el empleado terminará con un saldo negativo de tiempo libre.",
+    "otherRequested": "Otro tiempo libre solicitado",
+    "otherRequestedHint": "Cualquier otro tiempo libre futuro aprobado y tiempo libre pendiente bajo esta política. Se excluye esta solicitud.",
+    "placeholder": "hrs por determinar",
+    "remainingBalance": "Saldo disponible restante",
+    "thisRequest": "Esta solicitud",
+    "title": "Saldo de tiempo libre para esta política"
+  },
+  "dateHoursFields": {
+    "duration": {
+      "dateHeader": "Fecha",
+      "description": "Elige cuántas horas de tiempo libre registrar para las fechas seleccionadas.",
+      "fullDays": "Días completos",
+      "fullDaysDescription": "Cuenta automáticamente 8 horas por cada día de semana (lunes a viernes). Los fines de semana se excluyen.",
+      "partialDays": "Días parciales",
+      "partialDaysDescription": "Usa esta opción para especificar el número exacto de horas para cada día.",
+      "timeRequestedHeader": "Hora solicitada",
+      "title": "Duración"
+    },
+    "endDate": "Fecha de finalización",
+    "hoursUnit": "hrs",
+    "invalidDateRange": "La fecha de finalización debe ser el mismo día o después de la fecha de inicio.",
+    "timeRequested": "Tiempo solicitado"
+  },
+  "flash": {
+    "approveSuccess": "Solicitud de tiempo libre aprobada",
+    "createSuccess": "Solicitud de tiempo libre creada correctamente",
+    "declineSuccess": "Solicitud de tiempo libre rechazada",
+    "employerNoteRequired": "Se requiere una nota para rechazar una solicitud"
+  },
+  "index": {
+    "addTimeOff": "Agregar tiempo libre",
+    "emptyState": {
+      "approved": {
+        "body": "Una vez que se apruebe el tiempo libre, aparecerá aquí.",
+        "heading": "Aún no hay solicitudes aprobadas"
+      },
+      "completed": {
+        "body": "Una vez que se complete el tiempo libre aprobado, aparecerá aquí.",
+        "heading": "Aún no hay tiempo libre completado"
+      },
+      "declined": {
+        "body": "Si se rechaza una solicitud de tiempo libre, aparecerá aquí.",
+        "heading": "No hay solicitudes rechazadas"
+      },
+      "needsReview": {
+        "body": "Las nuevas solicitudes de tiempo libre aparecerán aquí.",
+        "heading": "No hay solicitudes para revisar"
+      }
+    },
+    "tabs": {
+      "approved": "Aprobado",
+      "completed": "Completado",
+      "declined": "Rechazada",
+      "needsReview": "Requiere revisión"
+    },
+    "title": "Solicitudes de tiempo libre"
+  },
+  "new": {
+    "noteLabel": "Nota",
+    "optionalLabel": "(Opcional)",
+    "policyLabel": "Política",
+    "subtitle": "El tiempo libre que registres para un empleado se aprueba automáticamente.",
+    "title": "Agregar tiempo libre"
+  },
+  "policyType": {
+    "bereavement": "Duelo",
+    "custom": "Personalizado",
+    "floatingHoliday": "Día festivo flotante",
+    "juryDuty": "Servicio de jurado",
+    "learningAndDevelopment": "Aprendizaje y desarrollo",
+    "parentalLeave": "Licencia parental",
+    "personalDay": "Día personal",
+    "sick": "Licencia por enfermedad",
+    "vacation": "Vacaciones",
+    "volunteer": "Voluntariado",
+    "weather": "Clima"
+  },
+  "requestsTable": {
+    "actions": "Acciones",
+    "dates": "Fecha(s)",
+    "hoursUnit": "hrs",
+    "policy": "Política",
+    "remaining": "Restante",
+    "requested": "Solicitado",
+    "requestsCount_one": "{{count}} solicitud",
+    "requestsCount_other": "{{count}} solicitudes"
+  },
+  "show": {
+    "approveRequestCta": "Aprobar solicitud",
+    "breadcrumb": "Solicitudes de tiempo libre",
+    "breakdownDate": "Fecha",
+    "breakdownTimeRequested": "Tiempo solicitado",
+    "datesRequested": "Fecha(s) solicitada(s)",
+    "declineApprovedRequestCta": "Rechazar solicitud aprobada",
+    "declineRequestCta": "Rechazar solicitud",
+    "doneCta": "Listo",
+    "employeeNote": "Nota del empleado",
+    "employerNoteRequired": "Se requiere una nota para el empleado al rechazar una solicitud",
+    "hoursUnit": "hrs",
+    "noteToEmployee": "Nota para el empleado",
+    "notes": "Notas",
+    "policyName": "Nombre de la póliza",
+    "policyType": "Tipo de póliza",
+    "requestedOn": "Solicitado el",
+    "statusApproved": "Aprobado",
+    "statusCompleted": "Completado",
+    "statusDeclined": "Rechazada",
+    "statusNeedsReview": "Requiere revisión",
+    "timeRequested": "Tiempo solicitado",
+    "title": "Solicitud de {{policyType}}",
+    "viewBreakdown": "Ver desglose por día"
+  }
+}

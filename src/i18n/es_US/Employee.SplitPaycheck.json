@@ -1,0 +1,16 @@
+{
+  "percentageLabel": "Porcentaje",
+  "priorityLabel": "Prioridad",
+  "priority_few": "{{count}}º",
+  "priority_one": "{{count}}º",
+  "priority_other": "{{count}}.º",
+  "priority_two": "{{count}}.º",
+  "remainderLabel": "Selecciona si esta cuenta recibirá cualquier pago restante",
+  "splitAmountLabel": "Dividir monto",
+  "splitByLabel": "Dividir por",
+  "validations": {
+    "amountError": "Ingresa un monto válido",
+    "percentageError": "Si el monto del método de pago se divide por porcentaje, todos los montos divididos deben sumar exactamente 100.",
+    "priorityError": "Las prioridades deben ser secuenciales"
+  }
+}

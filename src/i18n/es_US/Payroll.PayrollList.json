@@ -1,0 +1,52 @@
+{
+  "dateFilter": {
+    "apply": "Aplicar",
+    "endDate": "Para",
+    "reset": "Restablecer",
+    "selectDates": "Seleccionar fechas",
+    "startDate": "De",
+    "trigger": "Filtrar por fecha"
+  },
+  "deletePayrollCta": "Cancelar nómina",
+  "deletePayrollDialog": {
+    "body": "Esto eliminará permanentemente esta nómina fuera de ciclo. Cualquier cambio que haya realizado se perderá.",
+    "cancelCta": "No, regresar",
+    "confirmCta": "Sí, cancelar nómina",
+    "title": "¿Cancelar la nómina de {{payPeriod}}?"
+  },
+  "deleteSuccessAlert": "Nómina cancelada",
+  "emptyState": {
+    "default": {
+      "title": "Todas las nóminas han sido procesadas"
+    },
+    "filtered": {
+      "description": "Intenta ajustar el filtro de fecha para ver más nóminas.",
+      "title": "No hay nóminas en este rango de fechas"
+    }
+  },
+  "offCycleCta": {
+    "description": "Puedes pagar a un empleado fuera de tu calendario de nómina normal ejecutando una nómina fuera de ciclo.",
+    "title": "Ejecutar una nómina fuera de ciclo"
+  },
+  "payrollMenuLabel": "Acciones de nómina",
+  "payrollsListLabel": "Nóminas",
+  "runPayrollTitle": "Procesar nómina",
+  "skipPayrollCta": "Omitir nómina",
+  "skipPayrollDialog": {
+    "body": "Antes de omitir esta nómina, revise las leyes de frecuencia de pago de su estado. Si no le paga al equipo a tiempo, esto podría generar sanciones o multas.",
+    "cancelCta": "No, regresar",
+    "confirmCta": "Sí, omitir nómina",
+    "title": "¿Omitir la nómina de {{payPeriod}}?"
+  },
+  "skipSuccessAlert": "Nómina omitida",
+  "submitPayrollCta": "Revisar y enviar",
+  "tableHeaders": {
+    "2": "Fecha de pago",
+    "3": "Ejecutado por"
+  },
+  "title": "Próxima nómina",
+  "type": {
+    "External": "Externo",
+    "Off-Cycle": "Fuera de ciclo"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "alerts": {
+    "stateTaxesUpdated": "Configuración de impuestos estatales actualizada correctamente."
+  },
+  "card": {
+    "listEmptyPlaceholder": "Sin valor",
+    "noStateTaxes": "No hay impuestos estatales registrados",
+    "noWithholdingForState": "No se requiere retención de impuesto estatal sobre los ingresos.",
+    "title": "Impuestos estatales"
+  },
+  "noWithholding": "No se requiere retención de impuesto estatal sobre los ingresos para el estado de trabajo de esta persona empleada.",
+  "stateTaxesTitle": "Requisitos de impuestos de {{state}}",
+  "validations": {
+    "required": "Este campo es obligatorio. Ingresa un valor."
+  }
+}

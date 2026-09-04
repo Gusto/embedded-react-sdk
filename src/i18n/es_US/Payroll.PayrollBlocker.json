@@ -1,0 +1,140 @@
+{
+  "alerts": {
+    "informationRequestResponded": {
+      "title": "Hemos recibido tu respuesta"
+    },
+    "recoveryCaseResubmitted": {
+      "title": "Pago reenviado"
+    }
+  },
+  "blockerSectionLabel": "Bloqueador",
+  "blockers": {
+    "contractor_only_company": {
+      "description": "La empresa está configurada como contractor_only y no puede procesar la nómina.",
+      "help": "Actualiza el tipo de empresa y completa la incorporación adicional.",
+      "title": "Empresa solo de contratistas"
+    },
+    "eftps_ic_error": {
+      "defaultAction": "Contactar al soporte",
+      "help": "Comunícate con el soporte, por favor.",
+      "title": "Error del Sistema Electrónico de Pago de Impuestos Federales"
+    },
+    "geocode_error": {
+      "description": "No se pudo verificar la dirección de la empresa o del empleado.",
+      "help": "Asegúrate de que todas las direcciones sean válidas y completas.",
+      "title": "Error en la verificación de la dirección"
+    },
+    "geocode_needed": {
+      "description": "Falta la verificación de la dirección de la empresa o del empleado.",
+      "help": "Asegúrate de que todas las direcciones se hayan ingresado correctamente.",
+      "title": "Falta verificación de dirección"
+    },
+    "invalid_signatory": {
+      "description": "Asegúrate de que la verificación de identidad del firmante de la empresa se haya completado correctamente.",
+      "help": "El firmante debe completar la verificación de identidad.",
+      "title": "Falló la verificación del firmante"
+    },
+    "missing_addresses": {
+      "defaultAction": "Agregar direcciones",
+      "help": "Falta un requisito de incorporación de la empresa. Confirma que se hayan agregado las direcciones de la empresa.",
+      "title": "Faltan las direcciones de la empresa"
+    },
+    "missing_bank_info": {
+      "defaultAction": "Agregar cuenta bancaria",
+      "help": "Agrega y verifica una cuenta bancaria de la empresa.",
+      "title": "Se requiere una cuenta bancaria"
+    },
+    "missing_bank_verification": {
+      "defaultAction": "Verificar cuenta",
+      "help": "Completa el proceso de verificación de la cuenta bancaria.",
+      "title": "Se requiere verificación de cuenta bancaria"
+    },
+    "missing_employee_setup": {
+      "help": "Agrega al menos un empleado para continuar.",
+      "title": "Se requieren empleados"
+    },
+    "missing_federal_tax_setup": {
+      "defaultAction": "Completar configuración de impuestos federales",
+      "help": "Falta un requisito de incorporación de la empresa. Confirma que se haya completado la configuración de impuestos federales de la empresa.",
+      "title": "Falta la configuración de impuestos federales"
+    },
+    "missing_forms": {
+      "help": "Completa y firma todos los formularios requeridos.",
+      "title": "Los formularios requieren firma"
+    },
+    "missing_industry_selection": {
+      "defaultAction": "Seleccionar industria",
+      "help": "Falta un requisito de incorporación de la empresa. Confirma que se haya seleccionado una industria para la empresa.",
+      "title": "Falta la selección de industria"
+    },
+    "missing_pay_schedule": {
+      "help": "Configura un calendario de pago para tus empleados.",
+      "title": "Se requiere un calendario de pago"
+    },
+    "missing_signatory": {
+      "defaultAction": "Configurar firmante",
+      "description": "Se requiere un firmante autorizado para firmar documentos en nombre de tu empresa.",
+      "help": "Designa a un firmante autorizado de la empresa para continuar.",
+      "title": "Se requiere un firmante autorizado"
+    },
+    "missing_state_tax_setup": {
+      "defaultAction": "Completar configuración del impuesto estatal",
+      "help": "Falta un requisito de incorporación de la empresa. Confirma que la empresa haya completado la configuración del impuesto estatal.",
+      "title": "Falta configuración del impuesto estatal"
+    },
+    "needs_approval": {
+      "help": "Tu cuenta está en revisión. Espera la aprobación.",
+      "title": "Aprobación pendiente"
+    },
+    "needs_onboarding": {
+      "defaultAction": "Completar incorporación",
+      "help": "Completa todos los pasos de incorporación requeridos.",
+      "title": "Incorporación incompleta"
+    },
+    "pay_schedule_setup_not_complete": {
+      "description": "Algunos empleados aún no tienen un calendario de pago configurado.",
+      "help": "Asigna a todos los empleados a un calendario de pago.",
+      "title": "Falta el calendario de pago del empleado"
+    },
+    "pending_information_request": {
+      "defaultAction": "Contactar al soporte",
+      "description": "La empresa tiene una solicitud de información abierta que debe enviarse y aprobarse para poder desbloquear la nómina.",
+      "help": "Por favor, comunícate con el soporte.",
+      "title": "Solicitud de información pendiente"
+    },
+    "pending_payroll_review": {
+      "defaultAction": "Contactar al soporte",
+      "description": "La nómina está bloqueada. Estamos revisando la información de nómina en tu cuenta.",
+      "help": "Comunícate con el soporte si crees que esto es un error.",
+      "title": "Nómina en revisión"
+    },
+    "pending_recovery_case": {
+      "defaultAction": "Contactar al soporte",
+      "description": "La empresa tiene un caso de recuperación abierto que debe resolverse para desbloquear la nómina.",
+      "help": "Comunícate con el soporte, por favor.",
+      "title": "Caso de recuperación pendiente"
+    },
+    "suspended": {
+      "defaultAction": "Contactar al soporte",
+      "help": "Comunícate con el soporte si crees que esto es un error.",
+      "title": "Empresa suspendida"
+    },
+    "wc_pending_approval": {
+      "defaultAction": "Contactar al soporte",
+      "description": "La póliza de compensación laboral debe ser aprobada.",
+      "help": "El proceso de compensación laboral no se ha completado y puede requerir más información. Comunícate con soporte.",
+      "title": "Compensación laboral pendiente de aprobación"
+    }
+  },
+  "blockersListDescription": "Debes resolver los siguientes problemas antes de poder procesar la nómina:",
+  "blockersListTitle": "Bloqueadores de nómina",
+  "breadcrumbLabel": "Bloqueadores de nómina",
+  "defaultBlockerDescription": "Bloqueador desconocido",
+  "defaultBlockerHelp": "Comunícate con el soporte, por favor.",
+  "estimatedTime": "Tiempo estimado",
+  "exitFlowCta": "Salir",
+  "multipleIssuesTitle": "{{count}} problemas te impiden procesar la nómina",
+  "noBlockersMessage": "No hay bloqueadores de nómina en este momento.",
+  "viewAllBlockers": "Ver todos los bloqueadores",
+  "viewBlocker": "Ver bloqueador"
+}

@@ -1,0 +1,25 @@
+{
+  "alerts": {
+    "bankAccountAdded": "Cuenta bancaria agregada",
+    "bankAccountRemoved": "Cuenta bancaria eliminada"
+  },
+  "bankAccountListLabel": "Cuenta bancaria del contratista",
+  "checkLabel": "Cheque",
+  "form": {
+    "nameLabel": "Apodo de la cuenta",
+    "routingNumberDescription": "9 dígitos, en la parte inferior izquierda de un cheque",
+    "validations": {
+      "accountNumber": "Ingresa un número de cuenta válido",
+      "name": "Se requiere el apodo de la cuenta",
+      "routingNumber": "Ingresa un número de ruta válido de 9 dígitos"
+    }
+  },
+  "hamburgerTitle": "Acciones de la cuenta bancaria",
+  "nicknameColumn": "Apodo",
+  "removeBankAccountCta": "Eliminar cuenta",
+  "removeBankAccountDialog": {
+    "description": "¿Estás seguro de que quieres eliminar la cuenta bancaria {{account}}? El método de pago del contratista volverá a Cheque.",
+    "title": "Eliminar cuenta bancaria"
+  },
+  "title": "Pago"
+}

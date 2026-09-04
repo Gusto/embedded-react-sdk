@@ -1,0 +1,12 @@
+{
+  "breadcrumbs": {
+    "form": "Despedir empleado"
+  },
+  "cancelSuccess": "La terminación se canceló correctamente",
+  "offCycleCreation": {
+    "error": "No se pudo crear la nómina fuera de ciclo. Inténtalo de nuevo.",
+    "loading": "Creando una nómina fuera de ciclo…",
+    "noPeriodsError": "No se encontraron períodos de pago de terminación sin procesar para este empleado.",
+    "retry": "Reintentar"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "notSelfOnboarding": {
+    "alertTitle": "El gobierno requiere que tenga los Formularios I-9 y W-4 completados y firmados.",
+    "description": "Firmará manualmente todos estos formularios por su empleado.",
+    "directDepositDescription": "Le permite pagar al empleado mediante depósito directo",
+    "employmentEligibilityDescription": "Verifica la identidad del empleado y su elegibilidad para trabajar (debe completarse en el lugar).",
+    "employmentEligibilityLabel": "Elegibilidad de empleo (Formulario I-9)",
+    "title": "Documentos del empleado"
+  },
+  "selfOnboarding": {
+    "alerts": {
+      "includedDescription": "El gobierno federal requiere verificación remota a través de una videollamada. Deberá completar el proceso de verificación fuera de esta aplicación. <Link href=\"https:\/\/support.gusto.com\/article\/100165395100000\/Complete-Form-I-9-and-E-Verify-for-new-hires\" target=\"_blank\">Lea las instrucciones<\/Link>.",
+      "includedDescription2": "Para evitar formularios I-9 duplicados, desmarque “elegibilidad de empleo” arriba.",
+      "notIncludedDescription": "Si está verificando en persona la identidad del empleado, seleccione el Formulario I-9 arriba. Si la verificación es remota, lea <Link href=\"https:\/\/support.gusto.com\/article\/100165395100000\/Complete-Form-I-9-and-E-Verify-for-new-hires\" target=\"_blank\">estas instrucciones<\/Link> .",
+      "notIncludedTitle": "¿Ya completó el Formulario I-9?"
+    },
+    "description": "Durante la incorporación, los empleados firmarán estos documentos.",
+    "directDepositDescription": "Le permite pagar al empleado mediante depósito directo",
+    "documentsIncludedLabel": "Incluimos automáticamente",
+    "includeI9Description": "Verifica la identidad y la elegibilidad de empleo del empleado (debe completarse en persona).",
+    "includeI9Heading": "¿Incluir el formulario I-9?",
+    "includeI9Label": "Elegibilidad de empleo (Formulario I-9)",
+    "title": "Documentos del empleado"
+  }
+}

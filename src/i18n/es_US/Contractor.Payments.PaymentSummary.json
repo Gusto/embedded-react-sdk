@@ -1,0 +1,32 @@
+{
+  "alerts": {
+    "wireDetailsSubmitted": "Datos de la transferencia enviados"
+  },
+  "breadcrumbLabel": "Resumen de pago",
+  "contractor": "Contratista",
+  "contractorPayDate": "Fecha de pago del contratista",
+  "contractorPaymentsTitle": "Pagos a contratistas",
+  "debitAccount": "Cuenta de débito",
+  "debitAmount": "Monto del débito",
+  "debitDate": "Fecha del débito",
+  "doneCta": "Listo",
+  "notAvailable": "N\/D",
+  "paymentMethod": "Método de pago",
+  "paymentMethods": {
+    "check": "Cheque",
+    "directDeposit": "Depósito directo",
+    "historicalPayment": "Pago histórico"
+  },
+  "paymentSummaryTitle": "Resumen de pago",
+  "reimbursement": "Reembolso",
+  "successMessage_one": "Se ha programado correctamente {{count}} pago a contratistas.",
+  "successMessage_other": "Se han programado correctamente {{count}} pagos a contratistas.",
+  "successTitle": "Grupo de pagos creado exitosamente",
+  "summarySubtitle": "Fecha de débito: {{debitDate}}",
+  "summaryTitle": "Resumen de pagos",
+  "total": "Total",
+  "totalAmount": "Monto total",
+  "wage": "Salario",
+  "wageType": "Tipo de salario",
+  "wireDetailsSubmittedTitle": "Detalles de la transferencia enviados"
+}

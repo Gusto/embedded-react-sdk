@@ -1,0 +1,79 @@
+{
+  "alerts": {
+    "contractorPaymentUpdated": "Pago actualizado para {{contractorName}}"
+  },
+  "amounts": {
+    "heading": "Ingresa los montos de pago",
+    "subtitle": "Ingresa las horas o el salario pagado a cada contratista junto con cualquier bonificación y reembolso."
+  },
+  "contractorTableHeaders": {
+    "contractor": "Contratista",
+    "reimbursement": "Reembolso",
+    "total": "Total",
+    "wage": "Monto fijo",
+    "wageType": "Salario"
+  },
+  "editContractor": "Editar pago del contratista",
+  "editContractorPayment": {
+    "errors": {
+      "directDepositNotAvailable": "El depósito directo no está disponible para contratistas configurados para pagos con cheque",
+      "unsupportedPaymentMethod": "Este método de pago no es compatible. Selecciona Cheque o Depósito directo."
+    },
+    "hoursAdornment": "hrs",
+    "hoursPayDescription": "{{rate}}\/hr × horas = {{total}}",
+    "paymentMethodLabel": "Método de pago",
+    "paymentMethods": {
+      "check": "Cheque",
+      "directDeposit": "Depósito directo",
+      "historicalPayment": "Pago histórico"
+    },
+    "reimbursementLabel": "Reembolso",
+    "saveCta": "Listo",
+    "subtitle": "Edita las horas del contratista, las ganancias adicionales y los reembolsos. Las entradas que no aplican a este contratista están deshabilitadas. Haz clic en \"Listo\" para aplicar el cambio.",
+    "title": "Editar pago del contratista",
+    "wageLabel": "Monto fijo"
+  },
+  "emptyTableDescription": "Selecciona al menos un contratista para registrar un pago.",
+  "emptyTableTitle": "No hay contratistas seleccionados",
+  "hoursAndPaymentsLabel": "Horas y pagos",
+  "na": "N\/D",
+  "paymentMethods": {
+    "check": "Cheque",
+    "directDeposit": "Depósito directo",
+    "historicalPayment": "Pago histórico"
+  },
+  "perHour": "\/h",
+  "review": {
+    "contractor": "Contratista",
+    "contractorPayDate": "Fecha de pago del contratista",
+    "contractorPaymentsTitle": "Pagos de contratistas",
+    "notAvailable": "N\/D",
+    "paymentMethod": "Método de pago",
+    "paymentMethods": {
+      "check": "Cheque",
+      "directDeposit": "Depósito directo",
+      "historicalPayment": "Pago histórico"
+    },
+    "paymentSummaryTitle": "Resumen de pago",
+    "reimbursement": "Reembolso",
+    "submitButton": "Enviar pago histórico",
+    "subtitle": "Pago histórico para {{checkDate}}",
+    "successMessage": "Este pago ha sido registrado. Véalo en la lista de pagos para ver todos sus detalles.",
+    "successTitle": "Pago histórico registrado correctamente",
+    "title": "Revisar y enviar",
+    "total": "Total",
+    "totalAmount": "Monto total",
+    "wage": "Salario",
+    "wageType": "Tipo de salario"
+  },
+  "select": {
+    "dateInFutureError": "No puedes emitir pagos históricos para fechas futuras. Elige una fecha en el pasado.",
+    "dateTooEarlyError": "No puedes crear un pago en {{year}}. Selecciona una fecha en {{allowedYear}}.",
+    "heading": "Registrar un pago histórico",
+    "subtitle": "Registra un pago a contratista que ya ocurrió fuera de Gusto. Elige una fecha de pago y los contratistas a los que pagaste."
+  },
+  "wageTypes": {
+    "fixed": "Fijo",
+    "hourly": "Por hora"
+  }
+}

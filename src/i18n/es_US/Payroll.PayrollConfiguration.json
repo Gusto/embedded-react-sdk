@@ -1,0 +1,47 @@
+{
+  "alerts": {
+    "directDepositDeadline": "Para pagar a tus empleados con depósito directo para el {{payDate}}, deberás procesar la nómina antes de las {{time}} del {{date}}.",
+    "directDepositDeadlineText": "Asegúrate de enviar todo antes de la fecha límite para garantizar pagos puntuales.",
+    "employeeUpdated": {
+      "label": "{{employeeName}} se actualizó correctamente"
+    },
+    "payrollDeadline": {
+      "label": "Fecha límite de la nómina",
+      "message": "Para pagarles a tus empleados con depósito directo en la fecha de pago, deberás ejecutar la nómina antes de la fecha límite."
+    },
+    "payrollLate": "Tu fecha de pago original era el {{initialCheckDate}}",
+    "payrollLateText": "Ejecuta la nómina antes de {{time}} el {{date}} para pagarles a tus empleados el {{newCheckDate}}.",
+    "progressSaved": "Tu progreso se ha guardado",
+    "skippedEmployees": {
+      "employeeAddressNotVerified": "Dirección del empleado no verificada",
+      "label": "Empleados omitidos"
+    }
+  },
+  "breadcrumbLabel": "Editar nómina para {{startDate}} - {{endDate}}",
+  "breadcrumbLabelDismissal": "Editar nómina de despido",
+  "calculatePayroll": "Calcular y revisar",
+  "calculatePayrollTitle": "Calcular y revisar",
+  "calculatingDescription": "Esto puede tardar uno o dos minutos. Puedes navegar a otra página mientras sucede.",
+  "calculatingPayroll": "Calculando nómina...",
+  "calculatingTitle": "Calculando la nómina...",
+  "description": "Nómina de {{payrollType}} para <dateWrapper>{{startDate}} - {{endDate}}<\/dateWrapper>",
+  "descriptionDismissal": "Nómina de {{payrollType}}",
+  "editMenu": {
+    "setNetEarnings": "Establecer las ganancias netas del empleado",
+    "skip": "Omitir empleado",
+    "unskip": "Dejar de omitir empleado"
+  },
+  "employeeCompensationsTitle": "Compensaciones de empleados",
+  "hoursAndEarningsDescription": "Revisa y actualiza las horas, reembolsos y ganancias adicionales de tu empleado a continuación.",
+  "loadingDescription": "Esto puede tardar uno o dos minutos. Puedes navegar a otra página mientras sucede.",
+  "loadingTitle": "Preparando la nómina...",
+  "pageTitle": "Editar nómina",
+  "skippedBadge": "Omitido",
+  "tableColumns": {
+    "additionalEarnings": "Ingresos adicionales",
+    "reimbursements": "Reembolsos",
+    "timeOff": "Tiempo libre",
+    "totalPay": "Pago total"
+  },
+  "unknownEmployeeFallback": "Empleado desconocido"
+}

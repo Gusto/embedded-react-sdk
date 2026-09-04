@@ -1,0 +1,62 @@
+{
+  "addTitle": "Agregar deducción",
+  "childSupport": {
+    "agencyLabel": "Agencia",
+    "agencyPlaceholder": "Seleccionar estado...",
+    "agencyRequired": "La agencia es obligatoria",
+    "allCounties": "Todos los condados",
+    "amountNonNegative": "El monto debe ser 0 o mayor",
+    "amountRequired": "El monto es obligatorio",
+    "caseNumberDescription": "Ingrese cuidadosamente el número de caso de Cumplimiento de Manutención de Menores",
+    "caseNumberRequired": "El número de caso es obligatorio",
+    "countyDescription": "Seleccione el condado estatal correspondiente",
+    "countyLabel": "Condado",
+    "countyPlaceholder": "Seleccione el condado...",
+    "countyRequired": "El condado es obligatorio",
+    "manualPaymentRequired": "Esta agencia no admite pagos electrónicos. Usted es responsable de pagarle a la agencia directamente.",
+    "maxPaycheckPercentage": "Porcentaje máximo del cheque de pago",
+    "orderNumberRequired": "El número de orden es obligatorio",
+    "payPeriodMaximumRequired": "El máximo por período de pago es obligatorio",
+    "paymentPeriod": {
+      "everyOtherWeek": "Cada dos semanas",
+      "everyWeek": "Cada semana",
+      "monthly": "Mensual",
+      "twicePerMonth": "Dos veces al mes"
+    },
+    "paymentPeriodDescription": "Ingresa con qué frecuencia la agencia cobra el monto de la retención",
+    "paymentPeriodLabel": "Por",
+    "paymentPeriodPlaceholder": "Selecciona el período de pago...",
+    "paymentPeriodRequired": "El período de pago es obligatorio",
+    "percentOutOfRange": "Debe estar entre 0 y 100",
+    "remittanceNumberDescription": "Ingrese cuidadosamente el ID de remesa de cumplimiento de manutención infantil",
+    "remittanceNumberRequired": "El número de remesa es obligatorio",
+    "totalAmountWithheld": "Monto total retenido",
+    "totalAmountWithheldDescription": "Ingresa el monto indicado en la carta de la agencia de manutención de menores"
+  },
+  "customOption": "Deducción personalizada (después de impuestos)",
+  "editTitle": "Editar deducción",
+  "garnishmentOption": "Embargo (una deducción ordenada por el tribunal)",
+  "garnishmentTypeLabel": "Tipo de embargo",
+  "standard": {
+    "amountNonNegative": "El monto debe ser 0 o mayor",
+    "amountRequired": "El monto es obligatorio",
+    "annualMaxDescription": "El monto máximo anual que deduces del pago del empleado para esta deducción específica. Deja este campo en blanco si no hay un máximo.",
+    "annualMaxLabel": "Máximo anual",
+    "frequencyLabel": "Frecuencia de la deducción",
+    "frequencyOneTime": "Única vez (solo la próxima nómina)",
+    "frequencyRecurring": "Recurrente (cada nómina)",
+    "frequencyRequired": "La frecuencia es obligatoria",
+    "totalAmountDescription": "Ajustaremos el monto del último pago y dejaremos de cobrar una vez que se alcance el monto total.",
+    "totalAmountLabel": "Monto total adeudado",
+    "typeFixed": "Monto fijo en dólares",
+    "typeLabel": "Porcentaje o monto fijo",
+    "typePercentage": "Porcentaje del pago",
+    "typeRequired": "El tipo de deducción es obligatorio"
+  },
+  "types": {
+    "childSupport": "Manutención de menores",
+    "custom": "Deducción personalizada",
+    "studentLoan": "Préstamo estudiantil"
+  },
+  "variantLabel": "Tipo de deducción"
+}

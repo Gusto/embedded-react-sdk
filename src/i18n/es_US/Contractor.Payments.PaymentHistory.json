@@ -1,0 +1,22 @@
+{
+  "actions": {
+    "cancel": "Cancelar pago"
+  },
+  "breadcrumbLabel": "Historial de pagos",
+  "errors": {
+    "paymentGroupNotFound": "Grupo de pago de contratista no encontrado"
+  },
+  "na": "N\/D",
+  "noPaymentsDescription": "No hay pagos para esta fecha.",
+  "noPaymentsFound": "No se encontraron pagos",
+  "perHour": "\/hr",
+  "subtitle": "Pagos debitados el <strong>{{date}}<\/strong>",
+  "tableHeaders": {
+    "contractor": "Contratista",
+    "reimbursements": "Reembolsos",
+    "total": "Total",
+    "wage": "Monto fijo",
+    "wageType": "Salario"
+  },
+  "title": "Historial de pagos del contratista"
+}
