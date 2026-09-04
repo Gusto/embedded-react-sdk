@@ -4635,7 +4635,6 @@ Translation keys for the `Payroll.GrossUpModal` i18n namespace.
 | ------ | ------ |
 | <a id="property-payrollgrossupmodalapplycta"></a> `applyCta` | `"Apply"` |
 | <a id="property-payrollgrossupmodalcalculatecta"></a> `calculateCta` | `"Calculate"` |
-| <a id="property-payrollgrossupmodalcalculatingcta"></a> `calculatingCta` | `"Calculating..."` |
 | <a id="property-payrollgrossupmodalcancelcta"></a> `cancelCta` | `"Cancel"` |
 | <a id="property-payrollgrossupmodaldescription"></a> `description` | `"Please enter the net amount you want this employee to receive. We'll then automatically calculate the gross amount you need to pay, including taxes and deductions."` |
 | <a id="property-payrollgrossupmodalerrormessage"></a> `errorMessage` | `"Unable to calculate gross up. Please try again."` |
