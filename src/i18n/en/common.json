@@ -21,6 +21,7 @@
     "ensureRequired": "Required prop is missing"
   },
   "icons": {
+    "completedStep": "Completed step",
     "selectArrow": "Show options",
     "calendarArrow": "Show calendar",
     "nextMonth": "Show next month",

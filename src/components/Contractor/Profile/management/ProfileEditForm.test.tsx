@@ -134,6 +134,28 @@ describe('ProfileEditForm — individual contractor', () => {
     expect(await screen.findByText('Profile updated')).toBeInTheDocument()
   })
 
+  it('saves a newly-entered email for a contractor who previously had none (regression for SDK-1299)', async () => {
+    mockContractor({ email: null, self_onboarding: false })
+    let requestBody: Record<string, unknown> | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      requestBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json({ ...baseIndividual, email: 'ada.new@example.com' })
+    })
+    server.use(handleUpdateContractor(updateResolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<ProfileEditForm contractorId="contractor-123" onEvent={onEvent} />)
+
+    await screen.findByDisplayValue('Ada')
+    await user.type(screen.getByLabelText(/Email address/), 'ada.new@example.com')
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(requestBody).toMatchObject({ email: 'ada.new@example.com' })
+  })
+
   it('fires CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED when Cancel is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<ProfileEditForm contractorId="contractor-123" onEvent={onEvent} />)

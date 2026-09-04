@@ -1,0 +1,43 @@
+{
+  "cancelDialog": {
+    "body": "Todos los cambios que hayas realizado en esta nómina se guardarán.",
+    "deadline": "Ejecuta esta nómina para {{deadline}} a fin de asegurarte de que tus empleados reciban su pago a tiempo.",
+    "primaryAction": "Sí, cancelar la nómina",
+    "secondaryAction": "No, regresar",
+    "title": "¿Cancelar la nómina de {{payPeriod}}?"
+  },
+  "columns": {
+    "payDate": "Fecha de pago",
+    "totalPayroll": "Nómina total"
+  },
+  "dataView": {
+    "label": "Historial de nómina"
+  },
+  "dateFilter": {
+    "apply": "Aplicar",
+    "endDate": "Hasta",
+    "reset": "Restablecer",
+    "selectDates": "Seleccionar fechas",
+    "startDate": "De",
+    "trigger": "Filtrar por fecha"
+  },
+  "emptyState": {
+    "default": {
+      "description": "Cuando proceses nóminas, aparecerán aquí para que las consultes fácilmente.",
+      "title": "No hay historial de nómina"
+    },
+    "filtered": {
+      "description": "Prueba ajustar el filtro de fechas para ver más nóminas.",
+      "title": "No hay nóminas en este rango de fechas"
+    }
+  },
+  "labels": {
+    "noAmount": "—"
+  },
+  "menu": {
+    "cancelPayroll": "Cancelar nómina",
+    "viewReceipt": "Ver recibo de nómina",
+    "viewSummary": "Ver resumen de nómina"
+  },
+  "title": "Historial de nómina"
+}

@@ -1,0 +1,25 @@
+{
+  "additionalWithholding": "Retención adicional",
+  "deductions": "Paso 4b: Deducciones",
+  "dependentsTotalIfApplicable": "Paso 3: Dependientes (si corresponde)",
+  "extraWithholding": "Paso 4c: Retención adicional",
+  "federalFilingStatus1c": "Paso 1c: Estado civil federal para la declaración (1c)",
+  "federalFilingStatusPlaceholder": "Seleccione estado civil para declarar impuestos...",
+  "federalTaxesTitle": "Retenciones de impuestos federales (Formulario W-4)",
+  "federalWithholdingAllowance": "Asignación de retención federal",
+  "fieldIsRequired": "Este campo es obligatorio. Ingrese un valor.",
+  "filingStatus": "Estado civil para efectos de declaración",
+  "filingStatusExemptFromWithholding": "Exento de retención",
+  "filingStatusHeadOfHousehold": "Cabeza de familia",
+  "filingStatusMarried": "Casado",
+  "filingStatusSingle": "Soltero",
+  "includesSpouseExplanation": "Incluye al cónyuge, si corresponde. Responder 2c dará como resultado una retención más alta, pero para preservar la privacidad, se puede dejar sin marcar. <IrsLink href=\"https:\/\/www.irs.gov\/newsroom\/faqs-on-the-2020-form-w-4\" target=\"_blank\">Obtenga más información en el sitio web del IRS<\/IrsLink>.",
+  "irsCalculator": "Usaremos esta información para retener los impuestos federales correspondientes de cada cheque de pago. Si no está seguro de qué ingresar aquí, consulte el <IrsCalculatorLink href=\"https:\/\/www.irs.gov\/pub\/irs-pdf\/fw4.pdf\" target=\"_blank\">Formulario W-4<\/IrsCalculatorLink> para calcular los valores, visite nuestro <HelpCenterLink href=\"https:\/\/support.gusto.com\" target=\"_blank\">Centro de ayuda<\/HelpCenterLink> o consulte con su asesor fiscal.",
+  "multipleJobs2c": "Paso 2c: Múltiples empleos (2c)",
+  "otherIncome": "Paso 4a: Otros ingresos",
+  "successAlert": "La configuración de impuestos federales se actualizó correctamente.",
+  "validations": {
+    "federalFilingStatus": "Seleccione estado civil para declarar impuestos",
+    "federalTwoJobs": "Selecciona una opción"
+  }
+}

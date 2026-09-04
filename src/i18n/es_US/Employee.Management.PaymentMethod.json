@@ -1,0 +1,18 @@
+{
+  "addAnotherCta": "Agregar otra cuenta bancaria",
+  "alerts": {
+    "bankAccountAdded": "Cuenta bancaria agregada correctamente.",
+    "bankAccountDeleted": "La cuenta bancaria se eliminó correctamente.",
+    "splitUpdated": "División del pago actualizada correctamente."
+  },
+  "bankAccountsListLabel": "Lista de cuentas bancarias de empleados",
+  "checkLabel": "Cheque",
+  "deleteBankAccountDialog": {
+    "description": "¿Estás seguro de que deseas eliminar la cuenta bancaria {{account}}?",
+    "title": "Eliminar cuenta bancaria"
+  },
+  "directDepositLabel": "Depósito directo",
+  "hamburgerTitle": "Acciones de la cuenta bancaria",
+  "nicknameColumn": "Apodo",
+  "title": "Pago"
+}

@@ -1,0 +1,13 @@
+{
+  "assignSignatoryCta": "Asignar firmante",
+  "changeSignatoryCta": "Cambiar firmante autorizado",
+  "documentListError": "No se pudieron cargar sus documentos, inténtelo de nuevo más tarde.",
+  "emptyTableTitle": "No se encontraron documentos",
+  "formColumnLabel": "Formulario",
+  "noSignatoryDescription": "Todavía no se ha asignado un firmante",
+  "notSigned": "No firmado",
+  "otherSignatoryDescription": "Su firmante es {{signatory}}, {{title}}.",
+  "otherSignatoryTitle": "Solo el firmante puede firmar documentos.",
+  "selfSignatoryDescription": "Eres la persona designada para firmar.",
+  "selfSignatoryTitle": "Ten en cuenta que solo la persona autorizada para firmar puede firmar documentos."
+}

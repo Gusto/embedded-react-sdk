@@ -1,0 +1,20 @@
+{
+  "amountLabel": "Monto total enviado",
+  "bankNameDescription": "El banco donde iniciaste la transferencia bancaria",
+  "bankNameLabel": "Banco emisor",
+  "bankNamePlaceholder": "Ingresa una institución financiera",
+  "confirmationAlert": {
+    "content": "Una vez que recibamos los fondos de tu banco, le pagaremos a tu equipo el {{checkDate}}.",
+    "emptyTitle": "Detalles de la transferencia enviados",
+    "title": "Datos de la transferencia enviados para la nómina de {{payrollRange}}"
+  },
+  "dateLabel": "Fecha de envío",
+  "description": "Ingresa los datos de la transferencia bancaria que enviaste a través de tu banco.",
+  "notesLabel": "Notas adicionales",
+  "title": "Confirma los datos de la transferencia para {{payrollRange}}",
+  "validations": {
+    "amount": "Se requiere el monto total enviado",
+    "bankName": "Se requiere el banco emisor",
+    "date": "La fecha de envío es obligatoria"
+  }
+}

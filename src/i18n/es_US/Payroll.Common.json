@@ -1,0 +1,21 @@
+{
+  "status": {
+    "calculating": "Calculando...",
+    "daysLate_one": "Con {{count}} día de retraso",
+    "daysLate_other": "{{count}} días de retraso",
+    "dueInDays_one": "Vence en {{count}} día",
+    "dueInDays_other": "Vence en {{count}} días",
+    "dueInHours_one": "Vence en {{count}} hora",
+    "dueInHours_other": "Vence en {{count}} horas",
+    "failed": "Error",
+    "inProgress": "En curso",
+    "paid": "Pagado",
+    "pending": "Pendiente",
+    "pendingApproval": "Aprobación pendiente",
+    "processed": "Procesado",
+    "processing": "Procesando",
+    "readyToSubmit": "Listo para enviar",
+    "submitted": "Enviado",
+    "waitingForWireIn": "En espera de transferencia entrante"
+  }
+}
