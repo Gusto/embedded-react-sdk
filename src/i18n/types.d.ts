@@ -2632,9 +2632,9 @@ export namespace Translations {
       /** @defaultValue `"Profile updated"` */
       successAlert: string
       validations: {
-        /** @defaultValue `"First name is required"` */
+        /** @defaultValue `"Enter a valid first name"` */
         firstName: string
-        /** @defaultValue `"Last name is required"` */
+        /** @defaultValue `"Enter a valid last name"` */
         lastName: string
         /** @defaultValue `"Business name is required"` */
         businessName: string

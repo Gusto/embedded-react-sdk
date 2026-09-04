@@ -98,7 +98,7 @@ describe('ProfileEditForm — individual contractor', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.getByText('First name is required')).toBeInTheDocument()
+      expect(screen.getByText('Enter a valid first name')).toBeInTheDocument()
     })
     expect(updateResolver).not.toHaveBeenCalled()
     expect(onEvent).not.toHaveBeenCalledWith(
@@ -132,6 +132,28 @@ describe('ProfileEditForm — individual contractor', () => {
       expect.objectContaining({ lastName: 'Byron' }),
     )
     expect(await screen.findByText('Profile updated')).toBeInTheDocument()
+  })
+
+  it('saves a first name with trailing whitespace instead of rejecting it as required (regression for SDK-1300)', async () => {
+    let requestBody: Record<string, unknown> | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      requestBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json(baseIndividual)
+    })
+    server.use(handleUpdateContractor(updateResolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<ProfileEditForm contractorId="contractor-123" onEvent={onEvent} />)
+
+    await screen.findByDisplayValue('Ada')
+    await user.type(screen.getByLabelText('First name'), ' ')
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(screen.queryByText('First name is required')).not.toBeInTheDocument()
+    expect(requestBody).toMatchObject({ first_name: 'Ada' })
   })
 
   it('saves a newly-entered email for a contractor who previously had none (regression for SDK-1299)', async () => {
