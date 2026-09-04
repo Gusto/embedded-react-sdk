@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { UseContractorListResult, ContractorWithActions } from '../shared/useContractorList'
 import type { ContractorTab } from './ManagementContractorList'
@@ -95,6 +95,17 @@ export function ManagementContractorListView({
     type: 'dismissal' | 'rehire'
   } | null>(null)
 
+  // Columns, item-menu shape, and empty-state copy stay pinned to the previously
+  // committed tab until the new tab's data lands, so they swap in one paint together
+  // with `contractors`/`pagination` instead of flashing ahead of the still-stale rows
+  // that `keepPreviousData` is rendering (SDK-1296).
+  const [committedTab, setCommittedTab] = useState(selectedTab)
+  useEffect(() => {
+    if (!isFetching) {
+      setCommittedTab(selectedTab)
+    }
+  }, [selectedTab, isFetching])
+
   const tabs = [
     { id: 'active', label: t('tabs.active'), content: null },
     { id: 'onboarding', label: t('tabs.onboarding'), content: null },
@@ -108,7 +119,7 @@ export function ManagementContractorListView({
       render: (contractor: ContractorWithActions) => <ContractorNameCell contractor={contractor} />,
     }
 
-    if (selectedTab === 'active') {
+    if (committedTab === 'active') {
       return [
         nameColumn,
         {
@@ -145,7 +156,7 @@ export function ManagementContractorListView({
       ]
     }
 
-    if (selectedTab === 'onboarding') {
+    if (committedTab === 'onboarding') {
       return [
         nameColumn,
         {
@@ -186,7 +197,7 @@ export function ManagementContractorListView({
     data: contractors,
     columns: getColumns(),
     itemMenu: contractor => {
-      if (selectedTab === 'onboarding') {
+      if (committedTab === 'onboarding') {
         const menuItems = []
 
         if (contractor.allowedActions.includes('cancel_self_onboarding')) {
@@ -294,8 +305,8 @@ export function ManagementContractorListView({
     pagination,
     emptyState: () => (
       <EmptyData
-        title={t(`emptyState.${selectedTab}.title`)}
-        description={t(`emptyState.${selectedTab}.description`)}
+        title={t(`emptyState.${committedTab}.title`)}
+        description={t(`emptyState.${committedTab}.description`)}
       />
     ),
   })
