@@ -93,6 +93,46 @@ const downloadGeneratedChecks = (url: string) => {
   document.body.removeChild(link)
 }
 
+const evaluatePrintChecksOutcome = (
+  data: GeneratedDocumentsGetQueryData,
+): PollTickResult<PrintChecksOutcome> => {
+  const status = data.generatedDocument?.status
+  if (status === GeneratedDocumentStatus.Succeeded) {
+    return {
+      done: true,
+      value: { type: 'succeeded', url: data.generatedDocument?.documentUrls?.[0] ?? null },
+    }
+  }
+  if (status === GeneratedDocumentStatus.Failed) {
+    return { done: true, value: { type: 'failed' } }
+  }
+  return { done: false }
+}
+
+const deadlinePrintChecksOutcome = (
+  lastData: GeneratedDocumentsGetQueryData | null,
+): PrintChecksOutcome => {
+  const status = lastData?.generatedDocument?.status
+  if (status === GeneratedDocumentStatus.Succeeded) {
+    return { type: 'succeeded', url: lastData?.generatedDocument?.documentUrls?.[0] ?? null }
+  }
+  return { type: 'failed' }
+}
+
+const handlePrintChecksOutcome = (
+  outcome: PrintChecksOutcome,
+  onEvent: OnEventType<EventType, unknown>,
+) => {
+  if (outcome.type === 'failed') {
+    onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
+    return
+  }
+  onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: outcome.url })
+  if (outcome.url) {
+    downloadGeneratedChecks(outcome.url)
+  }
+}
+
 /** @internal */
 export function PrintChecksForm(props: PrintChecksFormProps) {
   return (
@@ -123,58 +163,32 @@ const Root = ({ dictionary, payrollId, isGenerating }: PrintChecksFormProps) => 
 
   const { mutateAsync } = usePayrollsGeneratePrintableChecksMutation()
 
+  const fetchGeneratedDocument = (signal: AbortSignal) => {
+    const requestUuid = requestUuidRef.current
+    if (!requestUuid) {
+      throw new Error('usePollingTask started without a print-checks request in flight')
+    }
+    return queryClient.fetchQuery({
+      ...buildGeneratedDocumentsGetQuery(
+        gustoClient,
+        { documentType: DocumentType.PrintablePayrollChecks, requestUuid },
+        { signal },
+      ),
+      staleTime: 0,
+    })
+  }
+
   const { start: startGenerationPoll } = usePollingTask<
     GeneratedDocumentsGetQueryData,
     PrintChecksOutcome
   >({
-    fetch: signal => {
-      const requestUuid = requestUuidRef.current
-      if (!requestUuid) {
-        throw new Error('usePollingTask started without a print-checks request in flight')
-      }
-      return queryClient.fetchQuery({
-        ...buildGeneratedDocumentsGetQuery(
-          gustoClient,
-          { documentType: DocumentType.PrintablePayrollChecks, requestUuid },
-          { signal },
-        ),
-        staleTime: 0,
-      })
-    },
-    evaluate: (data): PollTickResult<PrintChecksOutcome> => {
-      const status = data.generatedDocument?.status
-      if (status === GeneratedDocumentStatus.Succeeded) {
-        return {
-          done: true,
-          value: { type: 'succeeded', url: data.generatedDocument?.documentUrls?.[0] ?? null },
-        }
-      }
-      if (status === GeneratedDocumentStatus.Failed) {
-        return { done: true, value: { type: 'failed' } }
-      }
-      return { done: false }
-    },
+    fetch: fetchGeneratedDocument,
+    evaluate: evaluatePrintChecksOutcome,
     onDone: outcome => {
-      if (outcome.type === 'failed') {
-        onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
-        return
-      }
-      onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: outcome.url })
-      if (outcome.url) {
-        downloadGeneratedChecks(outcome.url)
-      }
+      handlePrintChecksOutcome(outcome, onEvent)
     },
     onDeadline: lastData => {
-      const status = lastData?.generatedDocument?.status
-      if (status === GeneratedDocumentStatus.Succeeded) {
-        const url = lastData?.generatedDocument?.documentUrls?.[0] ?? null
-        onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: url })
-        if (url) {
-          downloadGeneratedChecks(url)
-        }
-        return
-      }
-      onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
+      handlePrintChecksOutcome(deadlinePrintChecksOutcome(lastData), onEvent)
     },
     intervalMs: POLL_INTERVAL_MS,
     deadlineMs: POLL_DEADLINE_MS,

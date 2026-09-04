@@ -63,6 +63,32 @@ const isCalculatedStatus = (
   (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
     processingRequest == null)
 
+const evaluateCalculationOutcome = (
+  data: PayrollsGetQueryData,
+  run: CalculationPollRun | null,
+): PollTickResult<CalculationOutcome> => {
+  const payroll = data.payrollShow
+
+  if (isCalculatingStatus(payroll?.processingRequest)) {
+    if (run) run.sawCalculating = true
+    return { done: false }
+  }
+
+  if (payroll?.processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed) {
+    return { done: true, value: { type: 'failed', payroll } }
+  }
+
+  const calculatedAt = payroll?.calculatedAt
+  const isNewCalculation =
+    run?.sawCalculating === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
+
+  if (isNewCalculation && isCalculatedStatus(payroll?.processingRequest, calculatedAt)) {
+    return { done: true, value: { type: 'calculated', payroll } }
+  }
+
+  return { done: false }
+}
+
 /**
  * Props for {@link PayrollConfiguration}.
  *
@@ -198,58 +224,42 @@ const Root = ({
     }
   }
 
+  const fetchPayroll = (signal: AbortSignal) =>
+    queryClient.fetchQuery({
+      ...buildPayrollsGetQuery(gustoClient, payrollRequest, { signal }),
+      staleTime: 0,
+    })
+
+  const handleCalculationDone = (outcome: CalculationOutcome) => {
+    if (outcome.type === 'failed') {
+      emitProcessingFailed(outcome.payroll)
+      return
+    }
+    emitCalculated(outcome.payroll)
+  }
+
+  // The server is the source of truth. A calculation that succeeded while we were waiting must
+  // never be reported as a failure — that reported false failures for payrolls that had
+  // calculated fine, and re-armed the prepare that would then wipe the result (SDK-1291).
+  // Advancing on a stale success is the safer of the two wrong answers: the next screen re-reads
+  // the payroll, whereas a false failure destroys real data.
+  const handleCalculationDeadline = (lastData: PayrollsGetQueryData | null) => {
+    const payroll = lastData?.payrollShow
+    if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
+      emitCalculated(payroll)
+      return
+    }
+    emitProcessingFailed(payroll)
+  }
+
   const { start: startCalculationPoll, isPolling } = usePollingTask<
     PayrollsGetQueryData,
     CalculationOutcome
   >({
-    fetch: signal =>
-      queryClient.fetchQuery({
-        ...buildPayrollsGetQuery(gustoClient, payrollRequest, { signal }),
-        staleTime: 0,
-      }),
-    evaluate: (data): PollTickResult<CalculationOutcome> => {
-      const payroll = data.payrollShow
-      const run = pollRunRef.current
-
-      if (isCalculatingStatus(payroll?.processingRequest)) {
-        if (run) run.sawCalculating = true
-        return { done: false }
-      }
-
-      if (payroll?.processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed) {
-        return { done: true, value: { type: 'failed', payroll } }
-      }
-
-      const calculatedAt = payroll?.calculatedAt
-      const isNewCalculation =
-        run?.sawCalculating === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
-
-      if (isNewCalculation && isCalculatedStatus(payroll?.processingRequest, calculatedAt)) {
-        return { done: true, value: { type: 'calculated', payroll } }
-      }
-
-      return { done: false }
-    },
-    onDone: outcome => {
-      if (outcome.type === 'failed') {
-        emitProcessingFailed(outcome.payroll)
-        return
-      }
-      emitCalculated(outcome.payroll)
-    },
-    onDeadline: lastData => {
-      const payroll = lastData?.payrollShow
-      // The server is the source of truth. A calculation that succeeded while we were waiting
-      // must never be reported as a failure — that reported false failures for payrolls that had
-      // calculated fine, and re-armed the prepare that would then wipe the result (SDK-1291).
-      // Advancing on a stale success is the safer of the two wrong answers: the next screen
-      // re-reads the payroll, whereas a false failure destroys real data.
-      if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
-        emitCalculated(payroll)
-        return
-      }
-      emitProcessingFailed(payroll)
-    },
+    fetch: fetchPayroll,
+    evaluate: data => evaluateCalculationOutcome(data, pollRunRef.current),
+    onDone: handleCalculationDone,
+    onDeadline: handleCalculationDeadline,
     intervalMs: POLL_INTERVAL_MS,
     deadlineMs: POLL_DEADLINE_MS,
   })

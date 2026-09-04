@@ -76,6 +76,41 @@ const isSubmittingStatus = (status: string | undefined) =>
 const isProcessedStatus = (processed: boolean | undefined, status: string | undefined) =>
   processed === true || status === PAYROLL_PROCESSING_STATUS.submit_success
 
+const evaluateSubmissionOutcome = (
+  queryData: PayrollsGetQueryData,
+  run: SubmissionPollRun | null,
+): PollTickResult<SubmissionOutcome> => {
+  const payroll = queryData.payrollShow
+  const submissionStatus = payroll?.processingRequest?.status
+  const isSubmitting = isSubmittingStatus(submissionStatus)
+
+  if (isSubmitting && run) run.sawSubmitting = true
+
+  if (submissionStatus === PAYROLL_PROCESSING_STATUS.processing_failed) {
+    return { done: true, value: { type: 'failed', payroll } }
+  }
+
+  // Checked ahead of the `isSubmitting` re-poll below: `processed` can flip true while
+  // `processingRequest.status` still reads `submitting` (a real API race), so a transition must
+  // be detected on `processed` alone, not gated on status having already moved on.
+  const isNewTransition =
+    run?.sawSubmitting === true ||
+    (run?.baseline != null &&
+      (payroll?.processed !== run.baseline.processed || submissionStatus !== run.baseline.status))
+
+  if (isNewTransition && isProcessedStatus(payroll?.processed, submissionStatus)) {
+    return { done: true, value: { type: 'processed', payroll } }
+  }
+
+  if (isSubmitting) return { done: false }
+
+  // Not actively submitting and nothing new to report — the tick's own re-render is what matters
+  // here, since it lets `usePayrollsGet` above pick up cache data even when its own observer
+  // notification never arrives (SDK-1291). Stop until something restarts the task (a Submit
+  // click, or the mount effect below picking up an in-flight submission).
+  return { done: true, value: { type: 'loaded' } }
+}
+
 /**
  * Props for {@link PayrollOverview}.
  *
@@ -323,68 +358,42 @@ const Root = ({
     setHasSubmittedInSession(false)
   }
 
+  const fetchPayroll = (signal: AbortSignal) =>
+    queryClient.fetchQuery({
+      ...buildPayrollsGetQuery(gustoEmbedded, payrollRequest, { signal }),
+      staleTime: 0,
+    })
+
+  const handleSubmissionDone = (outcome: SubmissionOutcome) => {
+    if (outcome.type === 'failed') {
+      emitProcessingFailed(outcome.payroll)
+      return
+    }
+    if (outcome.type === 'processed') {
+      emitProcessed(outcome.payroll)
+    }
+  }
+
+  // Verify against the server before reporting failure, same rationale as
+  // PayrollConfiguration's calculation poll: a success that arrived while we were waiting must
+  // never be reported as a failure.
+  const handleSubmissionDeadline = (lastData: PayrollsGetQueryData | null) => {
+    const payroll = lastData?.payrollShow
+    if (isProcessedStatus(payroll?.processed, payroll?.processingRequest?.status)) {
+      emitProcessed(payroll)
+      return
+    }
+    emitProcessingFailed(payroll)
+  }
+
   const { start: startPayrollPoll, isPolling } = usePollingTask<
     PayrollsGetQueryData,
     SubmissionOutcome
   >({
-    fetch: signal =>
-      queryClient.fetchQuery({
-        ...buildPayrollsGetQuery(gustoEmbedded, payrollRequest, { signal }),
-        staleTime: 0,
-      }),
-    evaluate: (queryData): PollTickResult<SubmissionOutcome> => {
-      const payroll = queryData.payrollShow
-      const run = pollRunRef.current
-      const submissionStatus = payroll?.processingRequest?.status
-      const isSubmitting = isSubmittingStatus(submissionStatus)
-
-      if (isSubmitting && run) run.sawSubmitting = true
-
-      if (submissionStatus === PAYROLL_PROCESSING_STATUS.processing_failed) {
-        return { done: true, value: { type: 'failed', payroll } }
-      }
-
-      // Checked ahead of the `isSubmitting` re-poll below: `processed` can flip true while
-      // `processingRequest.status` still reads `submitting` (a real API race), so a transition
-      // must be detected on `processed` alone, not gated on status having already moved on.
-      const isNewTransition =
-        run?.sawSubmitting === true ||
-        (run?.baseline != null &&
-          (payroll?.processed !== run.baseline.processed ||
-            submissionStatus !== run.baseline.status))
-
-      if (isNewTransition && isProcessedStatus(payroll?.processed, submissionStatus)) {
-        return { done: true, value: { type: 'processed', payroll } }
-      }
-
-      if (isSubmitting) return { done: false }
-
-      // Not actively submitting and nothing new to report — the tick's own re-render is what
-      // matters here, since it lets `usePayrollsGet` above pick up cache data even when its own
-      // observer notification never arrives (SDK-1291). Stop until something restarts the task
-      // (a Submit click, or the mount effect below picking up an in-flight submission).
-      return { done: true, value: { type: 'loaded' } }
-    },
-    onDone: outcome => {
-      if (outcome.type === 'failed') {
-        emitProcessingFailed(outcome.payroll)
-        return
-      }
-      if (outcome.type === 'processed') {
-        emitProcessed(outcome.payroll)
-      }
-    },
-    onDeadline: lastData => {
-      const payroll = lastData?.payrollShow
-      // Verify against the server before reporting failure, same rationale as
-      // PayrollConfiguration's calculation poll: a success that arrived while we were waiting
-      // must never be reported as a failure.
-      if (isProcessedStatus(payroll?.processed, payroll?.processingRequest?.status)) {
-        emitProcessed(payroll)
-        return
-      }
-      emitProcessingFailed(payroll)
-    },
+    fetch: fetchPayroll,
+    evaluate: queryData => evaluateSubmissionOutcome(queryData, pollRunRef.current),
+    onDone: handleSubmissionDone,
+    onDeadline: handleSubmissionDeadline,
     intervalMs: POLL_INTERVAL_MS,
     deadlineMs: POLL_DEADLINE_MS,
   })
