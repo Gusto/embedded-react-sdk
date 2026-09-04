@@ -54,6 +54,14 @@ describe('ProfileCard', () => {
     expect(screen.getByText('XXX-XX-XXXX')).toBeInTheDocument()
   })
 
+  it('includes the middle initial in the legal name when one is on file (regression for SDK-1298)', async () => {
+    mockContractor({ middle_initial: 'M' })
+
+    renderWithProviders(<ProfileCard contractorId="contractor-123" onEvent={onEvent} />)
+
+    expect(await screen.findByText('Ada M Lovelace')).toBeInTheDocument()
+  })
+
   it('shows the EIN label and masked value for a business contractor', async () => {
     mockContractor({
       type: 'Business',
