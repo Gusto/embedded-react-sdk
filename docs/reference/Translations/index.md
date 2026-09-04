@@ -4729,7 +4729,6 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 | `validations.checkDateRequired` | `"Payment date is required"` |
 | `validations.endDateAfterStart` | `"End date must be on or after start date"` |
 | `validations.endDateRequired` | `"End date is required"` |
-| `validations.startDateNotFuture` | `"Start date cannot be in the future for correction payrolls"` |
 | `validations.startDateRequired` | `"Start date is required"` |
 
 ***
