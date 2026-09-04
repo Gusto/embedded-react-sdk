@@ -1,0 +1,11 @@
+{
+  "getStartedCta": "Comencemos",
+  "landingDescription": "Vamos a completar tu incorporación para que puedas recibir tu pago. Este proceso normalmente toma alrededor de 8 minutos.",
+  "landingSubtitle": "Hola, {{firstName}}. Bienvenido(a) a {{companyName}}.",
+  "steps": {
+    "bankInfo": "Tu información bancaria (números de cuenta y de ruta)",
+    "personalInfo": "Tu información personal (domicilio, número de Seguro Social)",
+    "taxInfo": "Información de retención de impuestos (te ayudaremos a resolver esta parte)"
+  },
+  "stepsSubtitle": "Lo que necesitarás:"
+}

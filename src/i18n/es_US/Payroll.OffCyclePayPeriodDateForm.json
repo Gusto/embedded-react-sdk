@@ -1,0 +1,15 @@
+{
+  "checkOnlyDescription": "Selecciona esta opción si todos los empleados serán pagados solo con cheque. Esto te permite establecer la fecha del cheque para hoy o cualquier fecha futura.",
+  "checkOnlyLabel": "Nómina solo para cheques",
+  "endDateLabel": "Fecha de finalización",
+  "validations": {
+    "checkDateAchLeadTime_one": "La fecha de pago debe ser al menos {{count}} día hábil a partir de hoy para el depósito directo",
+    "checkDateAchLeadTime_other": "La fecha de pago debe ser al menos {{count}} días hábiles a partir de hoy para el depósito directo",
+    "checkDateNotPast": "La fecha de pago debe ser hoy o una fecha futura",
+    "checkDateRequired": "Se requiere la fecha de pago",
+    "endDateAfterStart": "La fecha de finalización debe ser igual o posterior a la fecha de inicio",
+    "endDateRequired": "Se requiere la fecha de finalización",
+    "startDateNotFuture": "La fecha de inicio no puede estar en el futuro para las nóminas de corrección",
+    "startDateRequired": "La fecha de inicio es obligatoria"
+  }
+}

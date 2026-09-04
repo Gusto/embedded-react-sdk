@@ -1,0 +1,54 @@
+{
+  "addContractorCta": "Agregar contratista",
+  "cancelDismissalDialog": {
+    "cancelCta": "No, regresar",
+    "confirmCta": "Sí, cancelar despido",
+    "description": "El despido programado de este contratista se cancelará y permanecerá activo.",
+    "title": "¿Cancelar despido?"
+  },
+  "cancelRehireCta": "Cancelar recontratación",
+  "cancelRehireDialog": {
+    "cancelCta": "No, regresar",
+    "confirmCta": "Sí, cancelar recontratación",
+    "description": "La recontratación programada de este contratista será eliminada.",
+    "title": "¿Cancelar recontratación?"
+  },
+  "contractorListLabel": "Lista de contratistas",
+  "dismissCta": "Despedir contratista",
+  "dismissalDateLabel": "Fecha de despido",
+  "emptyState": {
+    "active": {
+      "description": "Los contratistas que hayan completado la incorporación aparecerán aquí",
+      "title": "No hay contratistas activos"
+    },
+    "dismissed": {
+      "description": "Los contratistas despedidos aparecerán aquí",
+      "title": "No hay contratistas despedidos"
+    },
+    "onboarding": {
+      "description": "Los contratistas que están en proceso de incorporación aparecerán aquí",
+      "title": "No hay contratistas en incorporación"
+    }
+  },
+  "hamburgerTitle": "Menú de acciones del contratista",
+  "lastDayBadge": "Último día: {{date}}",
+  "nameLabel": "Nombre del contratista",
+  "onboardingStatusLabel": "Estado de incorporación",
+  "rateHourly": "Por hora: {{rate}}\/h",
+  "rehireCta": "Volver a contratar contratista",
+  "removeDialog": {
+    "confirmCta": "Eliminar contratista",
+    "description": "Esto eliminará permanentemente a este contratista de tu cuenta. Esta acción no se puede deshacer.",
+    "title": "¿Eliminar contratista?"
+  },
+  "reviewCta": "Revisar",
+  "startsBadge": "Comienza el {{date}}",
+  "tabs": {
+    "active": "Activo",
+    "dismissed": "Despedido",
+    "onboarding": "Incorporación"
+  },
+  "tabsLabel": "Pestañas de estado del contratista",
+  "title": "Contratistas",
+  "viewDetailsCta": "Ver detalles"
+}

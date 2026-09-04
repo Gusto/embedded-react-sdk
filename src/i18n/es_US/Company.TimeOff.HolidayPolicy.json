@@ -1,0 +1,78 @@
+{
+  "description": "Elige qué días festivos observa tu empresa y agregaremos automáticamente esas horas cuando ejecutes la nómina.",
+  "editEmployees": {
+    "title": "Agrega empleados a tu póliza"
+  },
+  "flash": {
+    "deleted": "La política de pago de días feriados se eliminó correctamente",
+    "employeeRemoved": "{{name}} ha sido eliminado de la póliza.",
+    "employeesAdded_one": "Se ha agregado {{count}} empleado a esta política.",
+    "employeesAdded_other": "Se han agregado {{count}} empleados a esta política.",
+    "employeesRemoved_one": "Se ha eliminado {{count}} empleado de la política.",
+    "employeesRemoved_other": "{{count}} empleados han sido eliminados de la póliza."
+  },
+  "holidayScheduleTable": {
+    "title": "Calendario de días feriados"
+  },
+  "holidays": {
+    "christmasDay": {
+      "name": "Día de Navidad",
+      "observedDate": "25 de diciembre"
+    },
+    "columbusDay": {
+      "name": "Día de la Raza (Día de los Pueblos Indígenas)",
+      "observedDate": "Segundo lunes de octubre"
+    },
+    "independenceDay": {
+      "name": "Día de la Independencia",
+      "observedDate": "4 de julio"
+    },
+    "juneteenth": {
+      "name": "Juneteenth",
+      "observedDate": "19 de junio"
+    },
+    "laborDay": {
+      "name": "Día del Trabajo",
+      "observedDate": "Primer lunes de septiembre"
+    },
+    "memorialDay": {
+      "name": "Día de los Caídos",
+      "observedDate": "Último lunes de mayo"
+    },
+    "mlkDay": {
+      "name": "Día de Martin Luther King Jr.",
+      "observedDate": "Tercer lunes de enero"
+    },
+    "newYearsDay": {
+      "name": "Día de Año Nuevo",
+      "observedDate": "1 de enero"
+    },
+    "presidentsDay": {
+      "name": "Día de los Presidentes",
+      "observedDate": "Tercer lunes de febrero"
+    },
+    "thanksgiving": {
+      "name": "Día de Acción de Gracias",
+      "observedDate": "Cuarto jueves de noviembre"
+    },
+    "veteransDay": {
+      "name": "Día de los Veteranos",
+      "observedDate": "11 de noviembre"
+    }
+  },
+  "show": {
+    "addEmployeesCta": "Agregar empleados",
+    "editPolicyCta": "Editar póliza",
+    "title": "Política de pago de días feriados"
+  },
+  "tableHeaders": {
+    "holidayName": "Día festivo",
+    "nextObservation": "Próxima observancia",
+    "observedDate": "Fecha de observancia"
+  },
+  "tableLabel": "Días feriados de la empresa",
+  "tabs": {
+    "holidays": "Días feriados"
+  },
+  "title": "Elige los días festivos de tu empresa"
+}

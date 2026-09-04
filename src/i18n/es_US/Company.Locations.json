@@ -1,0 +1,27 @@
+{
+  "addFirstLocationCta": "+ Agregar una dirección",
+  "addLocationCta": "+ Agregar otra dirección",
+  "addressTypeLabel": "Tipos de direcciones",
+  "emptyTableDescription": "Una vez que agregues direcciones, aparecerán aquí",
+  "emptyTableTitle": "No hay direcciones",
+  "filingAddress": "Dirección para declaraciones",
+  "filingAddressDescription": "Este es tu principal lugar físico de trabajo. No puede ser un apartado postal (P.O. Box). La dirección de presentación debe coincidir con la dirección que tienes registrada con el IRS, que puedes encontrar en tu formulario federal de asignación de EIN (Formulario CP575). La usaremos para todas las declaraciones locales, estatales y federales.",
+  "filingAddressDescriptionLocked": "Esta es la dirección para declaraciones de tu empresa. Para cambiarla, asigna otra ubicación como dirección para declaraciones.",
+  "hamburgerTitle": "Acciones de la ubicación",
+  "locationFormTitle": "Agregar dirección de la empresa",
+  "locationListCol1": "Direcciones",
+  "locationListCol2": "Estado de la dirección",
+  "locationListLabel": "Lista de direcciones de la empresa",
+  "mailingAddressDescription": "Aquí es donde te gustaría recibir correo. Por lo general, es la misma que tu dirección para declaraciones.",
+  "mailingAddressDescriptionLocked": "Esta es la dirección postal de tu empresa. Para cambiarla, designa otra ubicación como dirección postal.",
+  "phoneNumberLabel": "Número de teléfono",
+  "statePlaceholder": "Selecciona el estado...",
+  "street2Label": "Calle 2",
+  "validations": {
+    "city": "Proporciona un nombre de ciudad válido",
+    "phone": "Proporciona un número de teléfono válido",
+    "state": "Selecciona un estado",
+    "street1": "La dirección es obligatoria",
+    "zip": "Proporciona un código postal válido"
+  }
+}
