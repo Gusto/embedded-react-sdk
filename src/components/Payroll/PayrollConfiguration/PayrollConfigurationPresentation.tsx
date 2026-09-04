@@ -31,6 +31,7 @@ import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 interface PayrollConfigurationPresentationProps {
   employeeCompensations: PayrollEmployeeCompensationsType[]
@@ -95,6 +96,7 @@ export const PayrollConfigurationPresentation = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const dateFormatter = useDateFormatter()
   const formatEmployeePayRate = useFormatEmployeePayRate()
+  const isRegularRateOfPayEnabled = useUnstableFeature('payrollRegularRateOfPay')
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
@@ -250,6 +252,9 @@ export const PayrollConfigurationPresentation = ({
                   {
                     title: t('tableColumns.totalPay'),
                     render: (item: PayrollEmployeeCompensationsType) => {
+                      if (isRegularRateOfPayEnabled) {
+                        return formatNumberAsCurrency(Number(item.grossPay ?? 0))
+                      }
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const calculatedGrossPay = employee
                         ? calculateGrossPay(

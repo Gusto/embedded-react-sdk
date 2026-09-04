@@ -11,9 +11,9 @@
   "cancelCta": "Cancel payroll",
   "cancelDialogTitle": "Cancel {{startDate}} - {{endDate}} payroll?",
   "cancelDialogTitleDismissal": "Cancel payroll?",
-  "cancelDialogDescription": "Any changes you have made to this payroll will be saved.",
-  "cancelDialogDescriptionDeadline": "Run this payroll by {{deadline}} to ensure your employees are paid on time.",
-  "confirmCancelCta": " Yes, cancel payroll",
+  "cancelDialogDescription": "You may cancel this payroll and run it again later. Your changes will be saved.",
+  "cancelDialogDescriptionDeadline": "Run this payroll by {{deadline}} to pay your employees on time.",
+  "confirmCancelCta": "Yes, cancel payroll",
   "declineCancelCta": "No, go back",
   "payrollReceiptCta": "View payroll receipt",
   "downloadPaystubLabel": "Download paystub pdf",
@@ -24,7 +24,6 @@
   "cancellingTitle": "Cancelling payroll...",
   "cancelledEmptyState": "This payroll has been cancelled.",
   "skippedBadge": "Skipped",
-
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
     "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",

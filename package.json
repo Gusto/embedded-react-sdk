@@ -139,8 +139,8 @@
     "jest-axe": "^11.0.0",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
-    "json-schema-to-typescript": "^15.0.4",
-    "lint-staged": "^17.3.0",
+    "json-schema-to-typescript": "^16.0.0",
+    "lint-staged": "^17.4.1",
     "markdownlint-cli2": "^0.23.2",
     "msw": "^2.15.0",
     "npm-run-all": "^4.1.5",
@@ -156,7 +156,7 @@
     "storybook": "^10.5.5",
     "stylelint-config-standard": "^40.0.0",
     "ts-morph": "^28.0.0",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.13",
     "typescript-eslint": "^8.68.0",
     "vite": "^6.4.3",
     "vite-plugin-checker": "^0.14.5",
@@ -184,7 +184,7 @@
     "conventional-commits-filter": "^5.0.0"
   },
   "dependencies": {
-    "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-06-15@^0.1.0",
+    "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-06-15@0.3.0-rc.2",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.9.1",
     "@internationalized/date": "^3.12.3",
