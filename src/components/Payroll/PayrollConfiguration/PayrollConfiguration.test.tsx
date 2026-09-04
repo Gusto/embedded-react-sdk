@@ -695,6 +695,33 @@ describe('PayrollConfiguration', () => {
       })
     })
 
+    it('recovers to a retryable state when calculate itself fails (SDK-1276)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () =>
+          HttpResponse.json({ message: 'conflict' }, { status: 409 }),
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/There was a problem with your submission/i)).toBeInTheDocument()
+      })
+
+      // Before the fix, hasSeenCalculatingRef never reset on this path, so the component stayed
+      // on the "Calculating..." loading view forever -- the Calculate button never came back.
+      expect(await screen.findByRole('button', { name: /calculate/i })).toBeEnabled()
+    })
+
     it('continues polling when calculate_success but calculatedAt is null (SDK-595)', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
