@@ -8,9 +8,28 @@ import {
   formatPayRate,
   formatCompensationRate,
   formatPhoneNumber,
+  firstLastName,
 } from './formattedStrings'
 
 describe('formattedStrings', () => {
+  describe('firstLastName', () => {
+    it('joins first and last name', () => {
+      expect(firstLastName({ first_name: 'jane', last_name: 'doe' })).toBe('Jane Doe')
+    })
+
+    it('includes a capitalized middle initial when present (regression for SDK-1298)', () => {
+      expect(firstLastName({ first_name: 'jane', middle_initial: 'm', last_name: 'doe' })).toBe(
+        'Jane M Doe',
+      )
+    })
+
+    it('omits the middle initial when absent', () => {
+      expect(firstLastName({ first_name: 'jane', middle_initial: null, last_name: 'doe' })).toBe(
+        'Jane Doe',
+      )
+    })
+  })
+
   describe('removeNonDigits', () => {
     it('should return empty string for empty input', () => {
       expect(removeNonDigits('')).toBe('')

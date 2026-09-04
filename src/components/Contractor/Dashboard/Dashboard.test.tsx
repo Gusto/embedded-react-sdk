@@ -53,6 +53,15 @@ describe('Dashboard', () => {
     expect(await screen.findByText('Address')).toBeInTheDocument()
   })
 
+  it('includes the middle initial in the header when one is on file (regression for SDK-1298)', async () => {
+    server.use(
+      handleGetContractor(() => HttpResponse.json({ ...contractorFixture, middle_initial: 'M' })),
+    )
+    renderWithProviders(<Dashboard contractorId="contractor-123" onEvent={onEvent} />)
+
+    expect(await screen.findByRole('heading', { name: 'Ada M Lovelace' })).toBeInTheDocument()
+  })
+
   it('switches to the Pay tab and fires the tab-change event', async () => {
     const user = userEvent.setup()
     renderWithProviders(<Dashboard contractorId="contractor-123" onEvent={onEvent} />)
