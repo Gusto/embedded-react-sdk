@@ -116,7 +116,10 @@ export const DataTable = <T,>({
       ? [
           {
             key: 'actions-header',
-            content: <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>,
+            content: withJustify(
+              <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>,
+              'end',
+            ),
           },
         ]
       : []),
@@ -176,7 +179,7 @@ export const DataTable = <T,>({
         ? [
             {
               key: `menu-${rowIndex}`,
-              content: itemMenu(item),
+              content: withJustify(itemMenu(item), 'end'),
             },
           ]
         : []),

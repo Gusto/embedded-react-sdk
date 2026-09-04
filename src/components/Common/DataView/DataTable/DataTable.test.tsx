@@ -221,6 +221,26 @@ describe('DataTable Component', () => {
       expect(screen.getByText('Name').closest('div')?.className).toMatch(/cellEnd/)
       expect(screen.getByText('Alice').closest('div')?.className).toMatch(/cellEnd/)
     })
+
+    test('does not wrap content when justify is unset — even for the last column', () => {
+      // Alignment is now driven solely by column.justify; there is no implicit
+      // "last column right-aligns" behavior, so an unset column must not be wrapped.
+      renderTable({
+        columns: [{ key: 'name', title: 'Name', render: item => item.name }],
+      })
+
+      expect(screen.getByText('Name').closest('div')?.className ?? '').not.toMatch(/cellEnd/)
+      expect(screen.getByText('Alice').closest('div')?.className ?? '').not.toMatch(/cellEnd/)
+    })
+
+    test('end-aligns the injected actions column so the row menu stays flush-right', () => {
+      renderTable({
+        columns: [{ key: 'name', title: 'Name', render: item => item.name }],
+        itemMenu: item => <button type="button">Menu for {item.name}</button>,
+      })
+
+      expect(screen.getByText('Menu for Alice').closest('div')?.className).toMatch(/cellEnd/)
+    })
   })
 
   describe('accessibility', () => {

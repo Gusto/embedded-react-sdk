@@ -180,6 +180,7 @@ export const PayrollReceiptsPresentation = ({
           },
           {
             title: t('breakdown.amount'),
+            justify: 'end',
             render: (item: { label: string; amount: number }) =>
               formatNumberAsCurrency(item.amount),
           },
@@ -204,6 +205,7 @@ export const PayrollReceiptsPresentation = ({
           },
           {
             title: t('tax.amount'),
+            justify: 'end',
             render: (tax: TaxBreakdownItem) =>
               formatNumberAsCurrency(parseFloat(tax.amount || '0')),
           },
@@ -259,6 +261,7 @@ export const PayrollReceiptsPresentation = ({
             },
             {
               title: t('employee.childSupport'),
+              justify: 'end',
               render: (employee: EmployeeBreakdownItem) =>
                 formatNumberAsCurrency(parseFloat(employee.childSupportGarnishment || '0')),
             },
@@ -266,6 +269,7 @@ export const PayrollReceiptsPresentation = ({
               ? [
                   {
                     title: t('employee.reimbursement'),
+                    justify: 'end' as const,
                     render: (employee: EmployeeBreakdownItem) =>
                       formatNumberAsCurrency(parseFloat(employee.totalReimbursement || '0')),
                   },
@@ -273,11 +277,13 @@ export const PayrollReceiptsPresentation = ({
               : []),
             {
               title: t('employee.totalTaxes'),
+              justify: 'end',
               render: (employee: EmployeeBreakdownItem) =>
                 formatNumberAsCurrency(parseFloat(employee.totalTax || '0')),
             },
             {
               title: t('employee.netPay'),
+              justify: 'end',
               render: (employee: EmployeeBreakdownItem) =>
                 formatNumberAsCurrency(parseFloat(employee.netPay || '0')),
             },

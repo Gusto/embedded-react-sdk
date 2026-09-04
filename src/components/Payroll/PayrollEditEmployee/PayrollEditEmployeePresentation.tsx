@@ -477,6 +477,7 @@ export const PayrollEditEmployeePresentation = ({
       {
         key: 'amount',
         title: t('reimbursementAmountColumn'),
+        justify: 'end',
         render: row => formatNumberAsCurrency(parseFloat(row.amount || '0')),
       },
       {
