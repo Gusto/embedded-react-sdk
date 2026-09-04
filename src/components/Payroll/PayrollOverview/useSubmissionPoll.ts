@@ -1,11 +1,9 @@
 import { useCallback, useRef } from 'react'
-import {
-  buildPayrollsGetQuery,
-  type PayrollsGetQueryData,
+import type {
+  PayrollsGetQueryData,
+  PayrollsGetQueryError,
 } from '@gusto/embedded-api/react-query/payrollsGet'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { useQueryClient } from '@tanstack/react-query'
-import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
+import type { QueryObserverResult } from '@tanstack/react-query'
 import { PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
 
@@ -68,7 +66,11 @@ const evaluateSubmissionOutcome = (
 
 /** @internal */
 export interface UseSubmissionPollOptions {
-  payrollRequest: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest
+  /**
+   * The render-driving payroll query's own `refetch`, reused so the poll's reads land on the
+   * same query the component observes rather than racing a second, independently-built one.
+   */
+  refetch: () => Promise<QueryObserverResult<PayrollsGetQueryData, PayrollsGetQueryError>>
   onProcessed: (payroll: PayrollShow | undefined) => void
   onProcessingFailed: (payroll: PayrollShow | undefined) => void
 }
@@ -85,19 +87,17 @@ export interface SubmissionPoll {
  * @internal
  */
 export function useSubmissionPoll({
-  payrollRequest,
+  refetch,
   onProcessed,
   onProcessingFailed,
 }: UseSubmissionPollOptions): SubmissionPoll {
-  const gustoEmbedded = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
   const pollRunRef = useRef<SubmissionPollRun | null>(null)
 
-  const fetchPayroll = (signal: AbortSignal) =>
-    queryClient.fetchQuery({
-      ...buildPayrollsGetQuery(gustoEmbedded, payrollRequest, { signal }),
-      staleTime: 0,
-    })
+  const fetchPayroll = async (): Promise<PayrollsGetQueryData> => {
+    const result = await refetch()
+    if (result.status !== 'success') throw result.error ?? new Error('Payroll refetch failed')
+    return result.data
+  }
 
   const handleDone = (outcome: SubmissionOutcome) => {
     if (outcome.type === 'failed') {

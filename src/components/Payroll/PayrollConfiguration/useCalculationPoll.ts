@@ -1,11 +1,9 @@
 import { useCallback, useRef } from 'react'
-import {
-  buildPayrollsGetQuery,
-  type PayrollsGetQueryData,
+import type {
+  PayrollsGetQueryData,
+  PayrollsGetQueryError,
 } from '@gusto/embedded-api/react-query/payrollsGet'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { useQueryClient } from '@tanstack/react-query'
-import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
+import type { QueryObserverResult } from '@tanstack/react-query'
 import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
@@ -67,7 +65,11 @@ const evaluateCalculationOutcome = (
 
 /** @internal */
 export interface UseCalculationPollOptions {
-  payrollRequest: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest
+  /**
+   * The render-driving payroll query's own `refetch`, reused so the poll's reads land on the
+   * same query the component observes rather than racing a second, independently-built one.
+   */
+  refetch: () => Promise<QueryObserverResult<PayrollsGetQueryData, PayrollsGetQueryError>>
   onCalculated: (payroll: PayrollShow | undefined) => void
   onProcessingFailed: (payroll: PayrollShow | undefined) => void
 }
@@ -84,19 +86,17 @@ export interface CalculationPoll {
  * @internal
  */
 export function useCalculationPoll({
-  payrollRequest,
+  refetch,
   onCalculated,
   onProcessingFailed,
 }: UseCalculationPollOptions): CalculationPoll {
-  const gustoClient = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
   const pollRunRef = useRef<CalculationPollRun | null>(null)
 
-  const fetchPayroll = (signal: AbortSignal) =>
-    queryClient.fetchQuery({
-      ...buildPayrollsGetQuery(gustoClient, payrollRequest, { signal }),
-      staleTime: 0,
-    })
+  const fetchPayroll = async (): Promise<PayrollsGetQueryData> => {
+    const result = await refetch()
+    if (result.status !== 'success') throw result.error ?? new Error('Payroll refetch failed')
+    return result.data
+  }
 
   const handleDone = (outcome: CalculationOutcome) => {
     if (outcome.type === 'failed') {

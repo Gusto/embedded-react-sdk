@@ -109,7 +109,7 @@ const Root = ({
     [companyId, payrollId],
   )
 
-  const { data: payrollData } = usePayrollsGetSuspense(payrollRequest)
+  const { data: payrollData, refetch: refetchPayroll } = usePayrollsGetSuspense(payrollRequest)
 
   const excludedEmployeeUuids = useMemo(
     () =>
@@ -139,7 +139,7 @@ const Root = ({
   const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
 
   const { start: startCalculationPoll, isPolling } = useCalculationPoll({
-    payrollRequest,
+    refetch: refetchPayroll,
     onCalculated: (payroll: PayrollShow | undefined) => {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,

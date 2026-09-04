@@ -66,32 +66,23 @@ const basePayrollData: PayrollShow = {
 let mockPayrollData = { ...basePayrollData }
 let mockIsFetching = false
 
+const buildMockPayrollQueryData = () => ({
+  payrollShow: mockPayrollData,
+  httpMeta: {
+    response: {
+      headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
+    },
+  },
+})
+
 vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGet: () => ({
-    data: {
-      payrollShow: mockPayrollData,
-      httpMeta: {
-        response: {
-          headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
-        },
-      },
-    },
+    data: buildMockPayrollQueryData(),
     isFetching: mockIsFetching,
-  }),
-  // The submission poll reads through this directly (`queryClient.fetchQuery`), bypassing the
-  // `usePayrollsGet` mock above — mirror the same mutable `mockPayrollData` so a test can drive
-  // the poll by mutating that variable, same as it already does for the rendered hook.
-  buildPayrollsGetQuery: () => ({
-    queryKey: ['test', 'Payrolls', 'get', 'poll'],
-    queryFn: () =>
-      Promise.resolve({
-        payrollShow: mockPayrollData,
-        httpMeta: {
-          response: {
-            headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
-          },
-        },
-      }),
+    // The submission poll drives its reads through this `refetch`, reusing the same query
+    // instead of building a second one — so it reads whatever `mockPayrollData` holds at call
+    // time, same as the render-driving `data` above.
+    refetch: () => Promise.resolve({ status: 'success', data: buildMockPayrollQueryData() }),
   }),
 }))
 

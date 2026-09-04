@@ -63,6 +63,9 @@ export function useGenerationPoll({
   const queryClient = useQueryClient()
   const requestUuidRef = useRef<string | null>(null)
 
+  // Unlike the payroll polls, there's no sibling `useGeneratedDocumentsGet` rendering this data —
+  // the result is only ever downloaded, never displayed — so there's no other observer of this
+  // queryKey for this fetchQuery call to race against, and no `refetch` to reuse instead.
   const fetchGeneratedDocument = (signal: AbortSignal) => {
     const requestUuid = requestUuidRef.current
     if (!requestUuid) {

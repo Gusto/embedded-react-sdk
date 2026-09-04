@@ -181,7 +181,11 @@ const Root = ({
     [companyId, payrollId, currentPage, itemsPerPage],
   )
 
-  const { data, isFetching } = usePayrollsGet(payrollRequest, {
+  const {
+    data,
+    isFetching,
+    refetch: refetchPayroll,
+  } = usePayrollsGet(payrollRequest, {
     placeholderData: keepPreviousData,
   })
   const payrollData = data?.payrollShow
@@ -291,7 +295,7 @@ const Root = ({
   }
 
   const { start: startPayrollPoll, isPolling } = useSubmissionPoll({
-    payrollRequest,
+    refetch: refetchPayroll,
     onProcessed: emitProcessed,
     onProcessingFailed: emitProcessingFailed,
   })
