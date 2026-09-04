@@ -65,15 +65,13 @@ describe('ContractorListFlow', () => {
     expect(onEvent).toHaveBeenCalledWith('contractor/returnToList', undefined)
   })
 
-  it('leaves the list mounted when "Dismiss contractor" is chosen — no built-in navigation or mutation', async () => {
+  it('does not offer "Dismiss contractor" — no dismissal flow exists yet', async () => {
     const user = userEvent.setup()
     renderWithProviders(<ContractorListFlow companyId="123" onEvent={onEvent} />)
 
     await user.click(await screen.findByRole('button', { name: 'Actions for Ada Lovelace' }))
-    await user.click(await screen.findByRole('menuitem', { name: 'Dismiss contractor' }))
 
-    expect(onEvent).toHaveBeenCalledWith('contractor/dismiss', { contractorId: 'contractor-123' })
-    expect(screen.getByRole('tab', { name: 'Active' })).toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'Dismiss contractor' })).not.toBeInTheDocument()
   })
 
   it('routes "Add contractor" directly to the Profile step (skipping OnboardingFlow\'s own list), and Cancel returns to this list', async () => {

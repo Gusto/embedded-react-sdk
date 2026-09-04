@@ -28,10 +28,11 @@ dashboard; the onboarding steps show their own progress header instead,
 matching `OnboardingFlow`'s own screens exactly. Submitting, or cancelling
 from any step, returns to this list.
 
-"Dismiss" and "Rehire" have no corresponding sub-flow yet and are not
-handled internally — they continue to fire their documented events
-(`contractor/dismiss`, `contractor/rehire`) straight through `onEvent` for
-the host app to handle, exactly as they do outside this flow.
+"Rehire" has no corresponding sub-flow yet and is not handled internally —
+it continues to fire its documented event (`contractor/rehire`) straight
+through `onEvent` for the host app to handle, exactly as it does outside
+this flow. "Dismiss" isn't offered at all — the underlying list hides that
+row action until a dismissal flow exists to hand it off to.
 
 The flow forwards every event emitted by its blocks to `onEvent`;
 see the events table on each block for the full set of events and
@@ -69,7 +70,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 | Component | Description |
 | ------ | ------ |
-| [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
+| [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, rehire, cancel a scheduled dismissal or rehire). |
 | [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single contractor's details, pay, and documents. |
 | [ContractorOnboarding.ContractorProfile](../onboarding/blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [ContractorOnboarding.Address](../onboarding/blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
@@ -89,7 +90,7 @@ The Profile-entry path reuses the exact same Profile → Address → Payment Met
 
 The dashboard is given a "Back to contractors" header that emits `contractor/returnToList` to come back to the list.
 
-"Dismiss" (`contractor/dismiss`) and "Rehire" (`contractor/rehire`) have no corresponding sub-flow yet. They fire their documented events straight through to the host app, exactly as `ContractorList` does on its own outside this flow.
+"Rehire" (`contractor/rehire`) has no corresponding sub-flow yet — it fires its documented event straight through to the host app, exactly as `ContractorList` does on its own outside this flow. The Active tab's "Dismiss" row action isn't offered at all until a dismissal flow exists to hand it off to.
 
 ```mermaid
 flowchart LR

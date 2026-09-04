@@ -13,7 +13,7 @@ The Profile-entry path reuses the exact same Profile → Address → Payment Met
 
 The dashboard is given a "Back to contractors" header that emits `contractor/returnToList` to come back to the list.
 
-"Dismiss" (`contractor/dismiss`) and "Rehire" (`contractor/rehire`) have no corresponding sub-flow yet. They fire their documented events straight through to the host app, exactly as `ContractorList` does on its own outside this flow.
+"Rehire" (`contractor/rehire`) has no corresponding sub-flow yet — it fires its documented event straight through to the host app, exactly as `ContractorList` does on its own outside this flow. The Active tab's "Dismiss" row action isn't offered at all until a dismissal flow exists to hand it off to.
 
 ```mermaid
 flowchart LR

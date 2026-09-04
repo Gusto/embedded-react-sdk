@@ -9,7 +9,6 @@ import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingS
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import XCircleSvg from '@/assets/icons/x-circle.svg?react'
 import EyeSvg from '@/assets/icons/eye.svg?react'
-import SlashCircleSvg from '@/assets/icons/slash-circle.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { normalizeToDate, formatDateLong, formatDateLongWithYear } from '@/helpers/dateFormatting'
@@ -26,7 +25,6 @@ export interface ManagementContractorListViewProps extends Pick<
   onTabChange: (tab: ContractorTab) => void
   onEdit: (contractorId: string) => void
   onView: (contractorId: string) => void
-  onDismiss: (contractorId: string) => void
   onRehire: (contractorId: string) => void
   onDelete: (contractorId: string) => Promise<void>
   onCancelSelfOnboarding: (contractorId: string) => Promise<void>
@@ -79,7 +77,6 @@ export function ManagementContractorListView({
   pagination,
   onEdit,
   onView,
-  onDismiss,
   onRehire,
   onDelete,
   onCancelSelfOnboarding,
@@ -260,16 +257,6 @@ export function ManagementContractorListView({
             setCancelAction({ contractorId: contractor.uuid, type: 'dismissal' })
           },
           icon: <XCircleSvg aria-hidden />,
-        })
-      }
-
-      if (contractor.allowedActions.includes('dismiss')) {
-        menuItems.push({
-          label: t('dismissCta'),
-          onClick: () => {
-            onDismiss(contractor.uuid)
-          },
-          icon: <SlashCircleSvg aria-hidden />,
         })
       }
 

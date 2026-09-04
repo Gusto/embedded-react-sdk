@@ -24,10 +24,11 @@ import { Flow } from '@/components/Flow/Flow'
  * matching `OnboardingFlow`'s own screens exactly. Submitting, or cancelling
  * from any step, returns to this list.
  *
- * "Dismiss" and "Rehire" have no corresponding sub-flow yet and are not
- * handled internally — they continue to fire their documented events
- * (`contractor/dismiss`, `contractor/rehire`) straight through `onEvent` for
- * the host app to handle, exactly as they do outside this flow.
+ * "Rehire" has no corresponding sub-flow yet and is not handled internally —
+ * it continues to fire its documented event (`contractor/rehire`) straight
+ * through `onEvent` for the host app to handle, exactly as it does outside
+ * this flow. "Dismiss" isn't offered at all — the underlying list hides that
+ * row action until a dismissal flow exists to hand it off to.
  *
  * The flow forwards every event emitted by its blocks to `onEvent`;
  * see the events table on each block for the full set of events and
