@@ -4,6 +4,7 @@
   "startDateLabel": "Start date",
   "endDateLabel": "End date",
   "checkDateLabel": "Payment date",
+  "checkDateDescription": "Enter the date you'd like your employees to receive payment.",
   "validations": {
     "startDateRequired": "Start date is required",
     "endDateRequired": "End date is required",

@@ -41,6 +41,7 @@ export function OffCyclePayPeriodDateFormPresentation({
         <DatePickerField
           name="checkDate"
           label={t('checkDateLabel')}
+          description={t('checkDateDescription')}
           isRequired
           minDate={checkDateMinimum}
         />

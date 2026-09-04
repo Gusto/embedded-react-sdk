@@ -4716,6 +4716,7 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 
 | Property | Default value |
 | ------ | ------ |
+| <a id="property-payrolloffcyclepayperioddateformcheckdatedescription"></a> `checkDateDescription` | `"Enter the date you'd like your employees to receive payment."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckdatelabel"></a> `checkDateLabel` | `"Payment date"` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlydescription"></a> `checkOnlyDescription` | `"Select this option if all employees will be paid by check only. This allows you to set the check date to today or any future date."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlylabel"></a> `checkOnlyLabel` | `"Check-only payroll"` |
