@@ -30,6 +30,7 @@ import { ChristmasDay } from '@gusto/embedded-api/models/components/holidaypaypo
 import { ColumbusDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount';
 import { CompanyOnboardingStatusRequirements } from '@gusto/embedded-api/models/components/companyonboardingstatus';
+import { CompanySuspension } from '@gusto/embedded-api/models/components/companysuspension';
 import { Compensation } from '@gusto/embedded-api/models/components/compensation';
 import { ComponentType } from 'react';
 import { Contractor } from '@gusto/embedded-api/models/components/contractor';
@@ -149,6 +150,7 @@ import { Job } from '@gusto/embedded-api/models/components/job';
 import { JSX } from 'react';
 import { Juneteenth } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { LaborDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { LeavingFor } from '@gusto/embedded-api/models/operations/postcompaniescompanyuuidsuspensions';
 import { Licensee } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { Location as Location_2 } from '@gusto/embedded-api/models/components/location';
 import { MemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/contractor';
@@ -265,6 +267,9 @@ import { QueryClient } from '@tanstack/react-query';
 import { Questions } from '@gusto/embedded-api/models/components/employeestatetaxesrequest';
 import { RateType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
 import { ReactNode } from 'react';
+import { Reason } from '@gusto/embedded-api/models/operations/postcompaniescompanyuuidsuspensions';
+import { ReconcileTaxMethod } from '@gusto/embedded-api/models/components/companysuspension';
+import { ReconcileTaxMethod as ReconcileTaxMethod_2 } from '@gusto/embedded-api/models/operations/postcompaniescompanyuuidsuspensions';
 import { RecoveryCase } from '@gusto/embedded-api/models/components/recoverycase';
 import { RecoveryCaseStatus } from '@gusto/embedded-api/models/components/recoverycase';
 import { Ref } from 'react';
@@ -283,6 +288,7 @@ import { SyntheticEvent } from 'react';
 import { TableHTMLAttributes } from 'react';
 import { Taxes } from '@gusto/embedded-api/models/components/payrollreceipt';
 import { TaxPayerType } from '@gusto/embedded-api/models/components/federaltaxdetails';
+import { TaxRefunds } from '@gusto/embedded-api/models/components/companysuspension';
 import { TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement';
 import { TaxRequirementMetadata } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
 import { TaxRequirementMetadataType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
@@ -451,6 +457,9 @@ declare namespace APIModels {
         CompanyOnboardingStatusRequirements,
         OnboardingStep,
         Id,
+        TaxRefunds,
+        CompanySuspension,
+        ReconcileTaxMethod,
         MinimumWages,
         Compensation,
         PaymentUnit,
@@ -1057,6 +1066,18 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+declare namespace CompanyManagement {
+    export {
+        SuspensionFlow,
+        SuspensionFlowProps,
+        SuspensionForm,
+        SuspensionFormProps,
+        SuspensionFormData,
+        SuspensionSummary,
+        SuspensionSummaryProps
+    }
+}
+
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
@@ -1470,6 +1491,8 @@ export const componentEvents: {
     readonly COMPANY_STATE_TAX_MANAGE_RATES: "company/stateTaxes/manageRates";
     readonly COMPANY_OVERVIEW_DONE: "company/overview/done";
     readonly COMPANY_OVERVIEW_CONTINUE: "company/overview/continue";
+    readonly COMPANY_SUSPENSION_CREATED: "company/suspension/created";
+    readonly COMPANY_SUSPENSION_DONE: "company/suspension/done";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -4857,6 +4880,10 @@ export interface Resources {
     // (undocumented)
     'Company.StateTaxes': Translations.CompanyStateTaxes
     // (undocumented)
+    'Company.Suspension.Form': Translations.CompanySuspensionForm
+    // (undocumented)
+    'Company.Suspension.Summary': Translations.CompanySuspensionSummary
+    // (undocumented)
     'Company.TimeOff.CreateTimeOffPolicy': Translations.CompanyTimeOffCreateTimeOffPolicy
     // (undocumented)
     'Company.TimeOff.EmployeeTable': Translations.CompanyTimeOffEmployeeTable
@@ -5563,6 +5590,43 @@ export type SupportedLanguages = 'en'
 // @public
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number];
 
+// @alpha
+function SuspensionFlow(input: SuspensionFlowProps): JSX;
+
+// @alpha
+interface SuspensionFlowProps {
+    companyId: string;
+    FallbackComponent?: (props: FallbackProps) => JSX.Element;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @alpha
+function SuspensionForm(props: SuspensionFormProps): JSX;
+
+// @alpha
+interface SuspensionFormData {
+    comments?: string;
+    fileQuarterlyForms: boolean;
+    fileYearlyForms: boolean;
+    leavingFor?: LeavingFor;
+    reason?: Reason;
+    reconcileTaxMethod?: ReconcileTaxMethod_2;
+}
+
+// @alpha
+interface SuspensionFormProps extends BaseComponentInterface<'Company.Suspension.Form'> {
+    companyId: string;
+}
+
+// @alpha
+function SuspensionSummary(props: SuspensionSummaryProps): JSX;
+
+// @alpha
+interface SuspensionSummaryProps extends BaseComponentInterface<'Company.Suspension.Summary'> {
+    companyId: string;
+}
+
 // @public
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
     FieldComponent?: ComponentType<SwitchProps>;
@@ -5880,6 +5944,7 @@ export interface UnorderedListProps extends BaseListProps {
 
 // @alpha
 export interface UnstableFeatures {
+    companySuspension?: boolean;
     historicalPayments?: boolean;
     payrollRegularRateOfPay?: boolean;
 }

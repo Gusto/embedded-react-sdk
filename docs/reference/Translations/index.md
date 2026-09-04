@@ -834,6 +834,111 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 
 ***
 
+<a id="companysuspensionform"></a>
+
+### CompanySuspensionForm
+
+Translation keys for the `Company.Suspension.Form` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companysuspensionformcomments"></a> `comments` | |
+| `comments.label` | `"Comments"` |
+| `comments.labelLeavingForOther` | `"Comments, including which provider you're switching to (required)"` |
+| <a id="property-companysuspensionformeinchangewarning"></a> `einChangeWarning` | `"Please reach out to our support team so we can support your business changes."` |
+| <a id="property-companysuspensionformerrors"></a> `errors` | |
+| `errors.commentsRequired` | `"Please tell us which provider you're switching to."` |
+| `errors.leavingForRequired` | `"Please select the provider you're switching to."` |
+| `errors.reasonRequired` | `"Please select a reason for cancelling your account."` |
+| `errors.reconcileTaxMethodRequired` | `"Please choose how we should handle your taxes."` |
+| <a id="property-companysuspensionformfilequarterlyforms"></a> `fileQuarterlyForms` | `"All quarterly tax filings (like 941s)."` |
+| <a id="property-companysuspensionformfileyearlyforms"></a> `fileYearlyForms` | `"All year-end tax filings (like W-2s and 1099s)."` |
+| <a id="property-companysuspensionformhelpusimprove"></a> `helpUsImprove` | `"Help us improve by telling us why you have decided to cancel payroll."` |
+| <a id="property-companysuspensionformhowtohandletaxes"></a> `howToHandleTaxes` | `"How should we take care of the rest of your taxes?"` |
+| <a id="property-companysuspensionformleavingfor"></a> `leavingFor` | |
+| `leavingFor.accountant` | `"Accountant"` |
+| `leavingFor.adp` | `"ADP"` |
+| `leavingFor.adp_total_source` | `"ADP TotalSource"` |
+| `leavingFor.bamboo_hr` | `"BambooHR"` |
+| `leavingFor.bank_or_financial_institution` | `"Bank or Financial Institution"` |
+| `leavingFor.check` | `"Check"` |
+| `leavingFor.deel` | `"Deel"` |
+| `leavingFor.gusto_com` | `"Gusto"` |
+| `leavingFor.homebase` | `"Homebase"` |
+| `leavingFor.insperity` | `"Insperity"` |
+| `leavingFor.intuit_or_quickbooks` | `"Intuit or QuickBooks"` |
+| `leavingFor.justworks` | `"Justworks"` |
+| `leavingFor.label` | `"Which provider are you switching to?"` |
+| `leavingFor.manual` | `"Manual (In-House)"` |
+| `leavingFor.namely` | `"Namely"` |
+| `leavingFor.onpay` | `"OnPay"` |
+| `leavingFor.other` | `"Other"` |
+| `leavingFor.oyster` | `"Oyster"` |
+| `leavingFor.patriot` | `"Patriot"` |
+| `leavingFor.paychex` | `"Paychex"` |
+| `leavingFor.paycom` | `"Paycom"` |
+| `leavingFor.paylocity` | `"Paylocity"` |
+| `leavingFor.remote` | `"Remote"` |
+| `leavingFor.rippling` | `"Rippling"` |
+| `leavingFor.square` | `"Square"` |
+| `leavingFor.surepayroll` | `"SurePayroll"` |
+| `leavingFor.trinet` | `"Trinet"` |
+| `leavingFor.velocity_global` | `"Velocity Global"` |
+| `leavingFor.zenefits` | `"Zenefits"` |
+| <a id="property-companysuspensionformleavingforgustowarning"></a> `leavingForGustoWarning` | `"If you're switching to Gusto, please reach out to our support team so we can support your business changes."` |
+| <a id="property-companysuspensionformreason"></a> `reason` | |
+| `reason.acquired` | `"My company is being acquired."` |
+| `reason.changing_ein_or_entity_type` | `"My business is changing our FEIN or entity type."` |
+| `reason.label` | `"Why are you cancelling your account?"` |
+| `reason.no_more_employees` | `"I no longer have employees to pay via payroll at this time."` |
+| `reason.placeholder` | `"Select a reason"` |
+| `reason.shutting_down` | `"My company is shutting down."` |
+| `reason.switching_provider` | `"I am switching to a new payroll provider or solution."` |
+| <a id="property-companysuspensionformreconciletaxmethod"></a> `reconcileTaxMethod` | |
+| `reconcileTaxMethod.label` | `"Should we pay your taxes for this calendar year?"` |
+| `reconcileTaxMethod.payTaxes` | `"Yes, pay all outstanding company taxes on my behalf."` |
+| `reconcileTaxMethod.refundTaxes` | `"No, refund all outstanding taxes to my bank account. I'll pay the payroll taxes myself."` |
+| <a id="property-companysuspensionformrefundtaxeswarning"></a> `refundTaxesWarning` | `"You will be responsible for all future tax payments and tax filings, including W-2s and 1099s."` |
+| <a id="property-companysuspensionformresponsibleforfilingswarning"></a> `responsibleForFilingsWarning` | `"If you choose not to have us file your taxes, you'll be responsible for filing them yourself."` |
+| <a id="property-companysuspensionformsubmitcta"></a> `submitCta` | `"Cancel account"` |
+| <a id="property-companysuspensionformtitle"></a> `title` | `"Cancel account"` |
+| <a id="property-companysuspensionformwhattaxestofile"></a> `whatTaxesToFile` | `"What taxes should we file on your behalf?"` |
+
+***
+
+<a id="companysuspensionsummary"></a>
+
+### CompanySuspensionSummary
+
+Translation keys for the `Company.Suspension.Summary` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companysuspensionsummarydonecta"></a> `doneCta` | `"Done"` |
+| <a id="property-companysuspensionsummaryemptydescription"></a> `emptyDescription` | `"This company does not have a suspension on record."` |
+| <a id="property-companysuspensionsummaryemptytitle"></a> `emptyTitle` | `"No suspension found"` |
+| <a id="property-companysuspensionsummaryfilequarterlyformsno"></a> `fileQuarterlyFormsNo` | `"We will <strong>not</strong> file your company's Q{{quarter}} {{year}} forms."` |
+| <a id="property-companysuspensionsummaryfilequarterlyformsyes"></a> `fileQuarterlyFormsYes` | `"We'll file your company's Q{{quarter}} {{year}} forms."` |
+| <a id="property-companysuspensionsummaryfileyearlyformsno"></a> `fileYearlyFormsNo` | `"We will <strong>not</strong> file your company's yearly forms (such as W-2s and 1099s) for tax year {{year}}."` |
+| <a id="property-companysuspensionsummaryfileyearlyformsyes"></a> `fileYearlyFormsYes` | `"We'll file your company's yearly forms (such as W-2s and 1099s) for tax year {{year}}."` |
+| <a id="property-companysuspensionsummaryintro"></a> `intro` | `"You'll still be able to sign into your account to reference all of your company documents for tax and filing purposes."` |
+| <a id="property-companysuspensionsummarykeepbankaccountactive"></a> `keepBankAccountActive` | `"Please keep your bank account active to allow us to debit any additional taxes if needed for tax reconciliation. Closing your bank account could affect your tax filings and result in delays."` |
+| <a id="property-companysuspensionsummarypaytaxes"></a> `payTaxes` | `"We'll pay all outstanding tax payments."` |
+| <a id="property-companysuspensionsummarytaxamount"></a> `taxAmount` | `"Amount"` |
+| <a id="property-companysuspensionsummarytaxname"></a> `taxName` | `"Tax name"` |
+| <a id="property-companysuspensionsummarytaxrefundsummary"></a> `taxRefundSummary` | `"We will also refund the following taxes:"` |
+| <a id="property-companysuspensionsummarytitle"></a> `title` | `"Your payroll account has been canceled"` |
+| <a id="property-companysuspensionsummarytotaltaxes"></a> `totalTaxes` | `"Total taxes"` |
+| <a id="property-companysuspensionsummarywhattodonextbody"></a> `whatToDoNextBody` | `"Before the end of {{year}}, you'll need to close your accounts with the appropriate tax agencies. We may file $0 wage returns depending on your company's tax history and selected filing preferences. If you're unsure whether this applies to you, consult an accountant or the appropriate tax agency. If you don't close your accounts in an appropriate time, you'll be responsible for filing next year's taxes."` |
+| <a id="property-companysuspensionsummarywhattodonexttitle"></a> `whatToDoNextTitle` | `"What you need to do next"` |
+| <a id="property-companysuspensionsummarywhatwewillhandletitle"></a> `whatWeWillHandleTitle` | `"What we'll handle for you"` |
+
+***
+
 <a id="companytimeoffcreatetimeoffpolicy"></a>
 
 ### CompanyTimeOffCreateTimeOffPolicy
@@ -5751,6 +5856,8 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
 | <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |
 | <a id="property-resourcescompanystatetaxes"></a> `Company.StateTaxes` | [`CompanyStateTaxes`](#companystatetaxes) |
+| <a id="property-resourcescompanysuspensionform"></a> `Company.Suspension.Form` | [`CompanySuspensionForm`](#companysuspensionform) |
+| <a id="property-resourcescompanysuspensionsummary"></a> `Company.Suspension.Summary` | [`CompanySuspensionSummary`](#companysuspensionsummary) |
 | <a id="property-resourcescompanytimeoffcreatetimeoffpolicy"></a> `Company.TimeOff.CreateTimeOffPolicy` | [`CompanyTimeOffCreateTimeOffPolicy`](#companytimeoffcreatetimeoffpolicy) |
 | <a id="property-resourcescompanytimeoffemployeetable"></a> `Company.TimeOff.EmployeeTable` | [`CompanyTimeOffEmployeeTable`](#companytimeoffemployeetable) |
 | <a id="property-resourcescompanytimeoffholidaypolicy"></a> `Company.TimeOff.HolidayPolicy` | [`CompanyTimeOffHolidayPolicy`](#companytimeoffholidaypolicy) |
