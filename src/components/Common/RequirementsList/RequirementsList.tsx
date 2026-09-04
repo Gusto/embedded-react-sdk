@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
 import styles from './RequirementsList.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -16,6 +17,7 @@ interface RequirementsListProps {
 export const RequirementsList = ({ requirements }: RequirementsListProps) => {
   const Components = useComponentContext()
   const id = useId()
+  const { t } = useTranslation('common')
 
   return (
     <Flex flexDirection="column" alignItems="flex-start" gap={8}>
@@ -28,7 +30,12 @@ export const RequirementsList = ({ requirements }: RequirementsListProps) => {
               <div key={`${id}-${i}-${step.description}`} className={styles.listItem}>
                 {step.completed ? (
                   <div className={classNames(styles.listItemIcon, styles.success)}>
-                    <SuccessCheck width={16} height={16} />
+                    <SuccessCheck
+                      width={16}
+                      height={16}
+                      role="img"
+                      aria-label={t('icons.completedStep')}
+                    />
                   </div>
                 ) : (
                   <div className={styles.listItemIcon}>{i + 1}</div>
