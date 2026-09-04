@@ -1,0 +1,8 @@
+{
+  "checkImageAlt": "Imagen del cheque bancario de muestra que muestra la ubicación del número de ruta y del número de cuenta",
+  "nameLabel": "Apodo de la cuenta",
+  "routingNumberDescription": "(9 dígitos)",
+  "validations": {
+    "accountType": "Seleccione el tipo de cuenta"
+  }
+}

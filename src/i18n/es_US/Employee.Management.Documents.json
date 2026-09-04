@@ -1,0 +1,21 @@
+{
+  "columns": {
+    "actions": "Acciones",
+    "requiresSigning": "Estado de firma",
+    "title": "Formulario"
+  },
+  "emptyState": {
+    "description": "Los formularios del empleado aparecerán aquí cuando estén disponibles",
+    "title": "No hay formularios"
+  },
+  "listLabel": "Lista de formularios del empleado",
+  "signingStatus": {
+    "notSigned": "Sin firmar",
+    "signed": "Firmado"
+  },
+  "status": {
+    "draft": "Borrador",
+    "final": "Final"
+  },
+  "title": "Formularios"
+}

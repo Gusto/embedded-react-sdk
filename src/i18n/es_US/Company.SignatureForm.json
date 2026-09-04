@@ -1,0 +1,9 @@
+{
+  "confirmationError": "Debes aceptar firmar electrónicamente",
+  "downloadInstructions": "Revisa el documento. Cuando termines, firma abajo.",
+  "downloadPrompt": "{{description}} También puede <downloadLink>descargar este documento<\/downloadLink>.",
+  "signatureError": "Se requiere una firma",
+  "signatureFormTitle": "Firma requerida para {{formTitle}}",
+  "submitCta": "Firmar formulario",
+  "viewDocumentCta": "Ver documento"
+}

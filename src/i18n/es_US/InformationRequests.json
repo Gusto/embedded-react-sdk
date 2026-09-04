@@ -1,0 +1,7 @@
+{
+  "alerts": {
+    "informationRequestResponded": {
+      "title": "Hemos recibido tu respuesta"
+    }
+  }
+}

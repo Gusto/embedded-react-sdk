@@ -1,0 +1,16 @@
+{
+  "checkAmount": "Monto del cheque",
+  "downloadCta": "Descargar recibo de pago",
+  "downloadError": "No se puede descargar el recibo de pago",
+  "downloadLoadingMessage": "Generando recibo de pago…",
+  "emptyState": {
+    "description": "Los recibos de pago aparecerán aquí después de procesar la nómina",
+    "title": "Sin recibos de pago"
+  },
+  "grossPay": "Pago bruto",
+  "listEmptyPlaceholder": "Sin valor",
+  "listLabel": "Lista de recibos de pago",
+  "noPaymentMethod": "No disponible",
+  "payday": "Día de pago",
+  "title": "Recibos de pago"
+}

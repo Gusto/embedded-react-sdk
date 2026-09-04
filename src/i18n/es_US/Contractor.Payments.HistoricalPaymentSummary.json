@@ -1,0 +1,24 @@
+{
+  "contractor": "Contratista",
+  "contractorPayDate": "Fecha de pago del contratista",
+  "contractorPaymentsTitle": "Pagos a contratistas",
+  "doneCta": "Listo",
+  "notAvailable": "N\/D",
+  "paymentMethod": "Método de pago",
+  "paymentMethods": {
+    "check": "Cheque",
+    "directDeposit": "Depósito directo",
+    "historicalPayment": "Pago histórico"
+  },
+  "paymentSummaryTitle": "Resumen de pago",
+  "reimbursement": "Reembolso",
+  "successMessage_one": "Se ha registrado {{count}} pago a contratista.",
+  "successMessage_other": "Se han registrado {{count}} pagos a contratistas.",
+  "successTitle": "Pago histórico registrado correctamente",
+  "summarySubtitle": "Pago histórico para {{checkDate}}",
+  "summaryTitle": "Resumen de pago",
+  "total": "Total",
+  "totalAmount": "Monto total",
+  "wage": "Salario",
+  "wageType": "Tipo de salario"
+}
