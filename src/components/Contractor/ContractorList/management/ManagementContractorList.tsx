@@ -74,10 +74,6 @@ function ManagementContractorListRoot({
     onEvent(componentEvents.CONTRACTOR_CREATE)
   }
 
-  const handleDismiss = (contractorId: string) => {
-    onEvent(componentEvents.CONTRACTOR_DISMISS, { contractorId })
-  }
-
   const handleRehire = (contractorId: string) => {
     onEvent(componentEvents.CONTRACTOR_REHIRE, { contractorId })
   }
@@ -97,7 +93,6 @@ function ManagementContractorListRoot({
         status={contractorList.status}
         onEdit={handleEdit}
         onView={handleView}
-        onDismiss={handleDismiss}
         onRehire={handleRehire}
         onDelete={async (contractorId: string) => {
           await contractorList.actions.onDelete(contractorId)
@@ -124,8 +119,12 @@ function ManagementContractorListRoot({
 
 /**
  * Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed
- * tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire,
- * cancel a scheduled dismissal or rehire).
+ * tabs, with per-row actions tailored to each tab (edit, delete, view details, rehire, cancel a
+ * scheduled dismissal or rehire).
+ *
+ * @remarks
+ * The Active tab has no "Dismiss" action — there's no dismissal flow yet to hand that event off
+ * to, so the row action is hidden until one exists.
  *
  * @events
  * | Event | Description | Data |
@@ -135,7 +134,6 @@ function ManagementContractorListRoot({
  * | `contractor/view` | Fired when the user selects "View details" on an active or dismissed row. | `{ contractorId: string }` |
  * | `contractor/deleted` | Fired after an onboarding-tab row's "Remove" action completes. | `{ contractorId: string }` |
  * | `contractor/selfOnboarding/cancelled` | Fired after the "Cancel self-onboarding" action updates a contractor's onboarding status. | The updated `contractorOnboardingStatus` returned by the API. |
- * | `contractor/dismiss` | Fired when the user selects "Dismiss" on an active row. No mutation is performed by this component. | `{ contractorId: string }` |
  * | `contractor/rehire` | Fired when the user selects "Rehire" on a dismissed row. No mutation is performed by this component. | `{ contractorId: string }` |
  * | `contractor/dismissal/cancelled` | Fired after a scheduled dismissal is cancelled via the confirm dialog. | `{ contractorId: string }` |
  * | `contractor/rehire/cancelled` | Fired after a scheduled rehire is cancelled via the confirm dialog. | `{ contractorId: string }` |

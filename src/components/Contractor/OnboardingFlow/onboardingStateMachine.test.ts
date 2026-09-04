@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { createMachine, interpret } from 'robot3'
-import { onboardingMachine } from './onboardingStateMachine'
+import { createMachine, interpret, state, transition } from 'robot3'
+import { onboardingMachine, createContractorOnboardingSteps } from './onboardingStateMachine'
 import {
   ContractorListContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import type { MachineTransition } from '@/types/Helpers'
 
 /**
  * Routing contract for the contractor admin onboarding machine.
@@ -84,6 +85,24 @@ describe('contractor onboarding machine — new hire report gating', () => {
     expect(service.context.header).toMatchObject({ currentStep: 4, totalSteps: 4 })
   })
 
+  it("returns to list on the bare-message submit-done fire (OnboardingFlow's default, unguarded behavior)", () => {
+    const service = startFlow()
+    advanceToProfile(service)
+    send(service, componentEvents.CONTRACTOR_PROFILE_DONE, {
+      contractorId: 'c-1',
+      onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
+      selfOnboarding: false,
+    })
+    send(service, componentEvents.CONTRACTOR_ADDRESS_DONE)
+    send(service, componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
+    expect(service.machine.current).toBe('submit')
+
+    send(service, componentEvents.CONTRACTOR_SUBMIT_DONE, {
+      message: 'Contractor has been onboarded!',
+    })
+    expect(service.machine.current).toBe('list')
+  })
+
   it('keeps the new hire report on the self-onboarding path during the initial pass', () => {
     const service = startFlow()
     advanceToProfile(service)
@@ -109,5 +128,75 @@ describe('contractor onboarding machine — new hire report gating', () => {
     })
     expect(service.machine.current).toBe('submit')
     expect(service.context.header).toMatchObject({ currentStep: 2, totalSteps: 2 })
+  })
+})
+
+describe('createContractorOnboardingSteps — waitForExplicitSubmitDone', () => {
+  const startGuardedFlow = () => {
+    const machine = createMachine(
+      'list',
+      {
+        list: state<MachineTransition>(transition(componentEvents.CONTRACTOR_CREATE, 'profile')),
+        ...createContractorOnboardingSteps(ContractorListContextual, {
+          waitForExplicitSubmitDone: true,
+        }),
+      },
+      (initialContext: OnboardingFlowContextInterface) => ({
+        ...initialContext,
+        component: ContractorListContextual,
+        companyId: 'company-1',
+        selfOnboarding: false,
+      }),
+    )
+    return interpret(machine, () => {})
+  }
+
+  const sendGuarded = (
+    service: ReturnType<typeof startGuardedFlow>,
+    type: string,
+    payload: Record<string, unknown> = {},
+  ) => {
+    service.send({ type, payload })
+  }
+
+  const advanceToSubmit = (
+    service: ReturnType<typeof startGuardedFlow>,
+    selfOnboarding: boolean,
+  ) => {
+    sendGuarded(service, componentEvents.CONTRACTOR_CREATE)
+    sendGuarded(service, componentEvents.CONTRACTOR_PROFILE_DONE, {
+      contractorId: 'c-1',
+      onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
+      selfOnboarding,
+    })
+    if (!selfOnboarding) {
+      sendGuarded(service, componentEvents.CONTRACTOR_ADDRESS_DONE)
+      sendGuarded(service, componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
+    }
+    expect(service.machine.current).toBe('submit')
+  }
+
+  it('holds on the admin path\'s bare-message fire, waiting for the SubmitDone "Done" click', () => {
+    const service = startGuardedFlow()
+    advanceToSubmit(service, false)
+
+    sendGuarded(service, componentEvents.CONTRACTOR_SUBMIT_DONE, {
+      message: 'Contractor has been onboarded!',
+    })
+    expect(service.machine.current).toBe('submit')
+
+    sendGuarded(service, componentEvents.CONTRACTOR_SUBMIT_DONE, {
+      onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED,
+      message: 'Contractor has been onboarded!',
+    })
+    expect(service.machine.current).toBe('list')
+  })
+
+  it('returns to list immediately on the self-onboarding invite path, which has no confirmation screen', () => {
+    const service = startGuardedFlow()
+    advanceToSubmit(service, true)
+
+    sendGuarded(service, componentEvents.CONTRACTOR_SUBMIT_DONE, { message: 'Contractor invited!' })
+    expect(service.machine.current).toBe('list')
   })
 })

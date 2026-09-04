@@ -2655,6 +2655,8 @@ export namespace Translations {
     title: string
     /** @defaultValue `"Add contractor"` */
     addContractorCta: string
+    /** @defaultValue `"Back to contractors"` */
+    backToListCta: string
     /** @defaultValue `"Contractor status tabs"` */
     tabsLabel: string
     tabs: {
@@ -2691,8 +2693,6 @@ export namespace Translations {
     viewDetailsCta: string
     /** @defaultValue `"Remove"` */
     removeCta: string
-    /** @defaultValue `"Dismiss contractor"` */
-    dismissCta: string
     /** @defaultValue `"Rehire contractor"` */
     rehireCta: string
     /** @defaultValue `"Cancel self-onboarding"` */

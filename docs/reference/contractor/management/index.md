@@ -22,6 +22,7 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 | Component | Description |
 | --------- | ----------- |
+| [ContractorListFlow](contractor-list-flow.md) | Hub for viewing and managing a company's contractors, including onboarding new ones. |
 | [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single contractor's details, pay, and documents. |
 | [PaymentFlow](payment-flow.md) | Hub for creating and managing contractor payments for a company. |
 
@@ -35,7 +36,7 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 | [Compensation](blocks.md#compensation) | Management surface for viewing and editing a contractor's compensation after onboarding. |
 | [CompensationCard](blocks.md#compensationcard) | Read-only card showing a contractor's compensation type and rate with an Edit action. |
 | [CompensationEditForm](blocks.md#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
-| [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
+| [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, rehire, cancel a scheduled dismissal or rehire). |
 | [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
 | [Dashboard](blocks.md#dashboard) | Contractor management dashboard summarizing a single contractor's basic details, pay, and documents. |
 | [DocumentsCard](blocks.md#documentscard) | Standalone read-only "Documents" card. |

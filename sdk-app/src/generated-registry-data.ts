@@ -30,6 +30,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.CompensationCard': ['contractorId'],
   'ContractorManagement.CompensationEditForm': ['contractorId'],
   'ContractorManagement.ContractorList': ['companyId'],
+  'ContractorManagement.ContractorListFlow': ['companyId'],
   'ContractorManagement.CreateHistoricalPayment': ['companyId'],
   'ContractorManagement.CreatePayment': ['companyId'],
   'ContractorManagement.CreatePaymentFlow': ['companyId'],
