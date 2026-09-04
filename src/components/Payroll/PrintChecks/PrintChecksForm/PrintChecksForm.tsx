@@ -1,10 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useRef } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { usePayrollsGeneratePrintableChecksMutation } from '@gusto/embedded-api/react-query/payrollsGeneratePrintableChecks'
-import { useGeneratedDocumentsGet } from '@gusto/embedded-api/react-query/generatedDocumentsGet'
+import {
+  buildGeneratedDocumentsGetQuery,
+  type GeneratedDocumentsGetQueryData,
+} from '@gusto/embedded-api/react-query/generatedDocumentsGet'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   PrintingFormat,
   type PrintablePayrollChecksBody,
@@ -20,6 +25,12 @@ import { ActionsLayout, Flex, NumberInputField, RadioGroupField } from '@/compon
 import { Form } from '@/components/Common/Form'
 import { printChecksEvents, type EventType } from '@/shared/constants'
 import type { RadioGroupOption } from '@/index'
+import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
+
+const POLL_INTERVAL_MS = 5_000
+const POLL_DEADLINE_MS = 3 * 60 * 1000
+
+type PrintChecksOutcome = { type: 'succeeded'; url: string | null } | { type: 'failed' }
 
 interface PrintChecksFormProps extends BaseComponentInterface<'Payroll.PrintChecksForm'> {
   payrollId: string
@@ -96,8 +107,9 @@ const Root = ({ dictionary, payrollId, isGenerating }: PrintChecksFormProps) => 
   useI18n('Payroll.PrintChecksForm')
   const { t } = useTranslation('Payroll.PrintChecksForm')
   const { onEvent, baseSubmitHandler } = useBase()
-  const [requestUuid, setRequestUuid] = useState<string | null>(null)
-  const [isPolling, setIsPolling] = useState(false)
+  const requestUuidRef = useRef<string | null>(null)
+  const gustoClient = useGustoEmbeddedContext()
+  const queryClient = useQueryClient()
 
   const formMethods = useForm<PrintChecksFormValues>({
     resolver: zodResolver(PrintChecksFormSchema),
@@ -111,33 +123,62 @@ const Root = ({ dictionary, payrollId, isGenerating }: PrintChecksFormProps) => 
 
   const { mutateAsync } = usePayrollsGeneratePrintableChecksMutation()
 
-  const { data } = useGeneratedDocumentsGet(
-    {
-      documentType: DocumentType.PrintablePayrollChecks,
-      requestUuid: requestUuid || '',
-    },
-    {
-      enabled: !!requestUuid,
-      refetchInterval: isPolling ? 5_000 : false,
-    },
-  )
-
-  useEffect(() => {
-    const status = data?.generatedDocument?.status
-    if (!isPolling || !status) return
-
-    if (status === GeneratedDocumentStatus.Succeeded) {
-      setIsPolling(false)
-      const url = data.generatedDocument?.documentUrls?.[0] ?? null
-      onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: url })
-      if (url) {
-        downloadGeneratedChecks(url)
+  const { start: startGenerationPoll } = usePollingTask<
+    GeneratedDocumentsGetQueryData,
+    PrintChecksOutcome
+  >({
+    fetch: signal => {
+      const requestUuid = requestUuidRef.current
+      if (!requestUuid) {
+        throw new Error('usePollingTask started without a print-checks request in flight')
       }
-    } else if (status === GeneratedDocumentStatus.Failed) {
-      setIsPolling(false)
+      return queryClient.fetchQuery({
+        ...buildGeneratedDocumentsGetQuery(
+          gustoClient,
+          { documentType: DocumentType.PrintablePayrollChecks, requestUuid },
+          { signal },
+        ),
+        staleTime: 0,
+      })
+    },
+    evaluate: (data): PollTickResult<PrintChecksOutcome> => {
+      const status = data.generatedDocument?.status
+      if (status === GeneratedDocumentStatus.Succeeded) {
+        return {
+          done: true,
+          value: { type: 'succeeded', url: data.generatedDocument?.documentUrls?.[0] ?? null },
+        }
+      }
+      if (status === GeneratedDocumentStatus.Failed) {
+        return { done: true, value: { type: 'failed' } }
+      }
+      return { done: false }
+    },
+    onDone: outcome => {
+      if (outcome.type === 'failed') {
+        onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
+        return
+      }
+      onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: outcome.url })
+      if (outcome.url) {
+        downloadGeneratedChecks(outcome.url)
+      }
+    },
+    onDeadline: lastData => {
+      const status = lastData?.generatedDocument?.status
+      if (status === GeneratedDocumentStatus.Succeeded) {
+        const url = lastData?.generatedDocument?.documentUrls?.[0] ?? null
+        onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: url })
+        if (url) {
+          downloadGeneratedChecks(url)
+        }
+        return
+      }
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
-    }
-  }, [data, isPolling, onEvent])
+    },
+    intervalMs: POLL_INTERVAL_MS,
+    deadlineMs: POLL_DEADLINE_MS,
+  })
 
   const onSubmit = async (formData: PrintChecksFormValues) => {
     onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_START)
@@ -156,8 +197,8 @@ const Root = ({ dictionary, payrollId, isGenerating }: PrintChecksFormProps) => 
           throw new Error('Missing requestUuid in generate-printable-checks response')
         }
 
-        setRequestUuid(nextRequestUuid)
-        setIsPolling(true)
+        requestUuidRef.current = nextRequestUuid
+        startGenerationPoll()
       } catch (err) {
         onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, {
           errorMessage: extractErrorMessage(err),
