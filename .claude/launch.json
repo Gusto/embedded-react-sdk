@@ -7,6 +7,13 @@
       "runtimeArgs": ["run", "sdk-app"],
       "port": 5200,
       "autoPort": true
+    },
+    {
+      "name": "sdk-app-stagingdirect",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "sdk-app:stagingdirect"],
+      "port": 5200,
+      "autoPort": true
     }
   ]
 }
