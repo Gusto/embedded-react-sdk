@@ -695,6 +695,97 @@ describe('PayrollConfiguration', () => {
       })
     })
 
+    it('keeps reporting the deadline while the payroll stays in calculating', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // A payroll the server never moves off `calculating` is picked back up by the
+      // start-on-calculating effect after each deadline, so the failure is reported once per
+      // window rather than latching after the first. This is the repeated-failsafe shape seen in
+      // production; the deadline no longer lies about the outcome, but it does keep retrying.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+      })
+      expect(
+        onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
+      ).toHaveLength(1)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+      })
+      expect(
+        onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
+      ).toHaveLength(2)
+    })
+
+    it('recovers from a transient read failure mid-poll', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let hasCalculated = false
+      let hasFailedOnce = false
+
+      server.use(
+        // Listed before the payroll route below, which would otherwise match
+        // `/payrolls/blockers` via its `:payroll_id` segment.
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+          return HttpResponse.json([])
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+          // Fail exactly one read, and only once polling is underway.
+          if (hasCalculated && !hasFailedOnce) {
+            hasFailedOnce = true
+            return new HttpResponse(null, { status: 500 })
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: new Date().toISOString(),
+            processing_request: { status: 'calculate_success', errors: [] },
+          }
+          hasCalculated = true
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(15_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+    })
+
     it('continues polling when calculate_success but calculatedAt is null (SDK-595)', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
@@ -827,6 +918,148 @@ describe('PayrollConfiguration', () => {
       })
 
       expect(prepareCallCount).toBe(prepareCountBeforeCalculate)
+    })
+
+    it('advances instead of reporting failure when the deadline is reached on a calculated payroll (SDK-1291)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      // The calculation succeeded server-side, but nothing the poll reads ever looks like a *new*
+      // calculation, so the task runs all the way to its deadline. The server was right the whole
+      // time — reporting a failure here is what falsely failed real payrolls.
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: '2025-08-10T12:00:00Z',
+        processing_request: { status: 'calculate_success', errors: [] },
+      }
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
+    })
+
+    // Guardrail for the SDK-1231 gate: prepare resets a calculation, so reaching the poll
+    // deadline must not re-enable it while a good calculation exists.
+    it('keeps prepare gated after the poll deadline', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      const prepareResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json(currentPayrollData),
+      )
+
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: '2025-08-10T12:00:00Z',
+        processing_request: { status: 'calculate_success', errors: [] },
+      }
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          prepareResolver,
+        ),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+      const prepareCallsBeforeDeadline = prepareResolver.mock.calls.length
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 30_000)
+      })
+
+      expect(prepareResolver).toHaveBeenCalledTimes(prepareCallsBeforeDeadline)
+    })
+
+    it('fires RUN_PAYROLL_CALCULATED exactly once for a single calculation', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: new Date().toISOString(),
+            processing_request: { status: 'calculate_success', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 30_000)
+      })
+
+      const calculatedEvents = onEvent.mock.calls.filter(
+        ([eventType]) => eventType === 'runPayroll/calculated',
+      )
+      expect(calculatedEvents).toHaveLength(1)
+    })
+
+    it('reports nothing after the component unmounts mid-calculation', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      const { unmount } = renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+      unmount()
+      onEvent.mockClear()
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 30_000)
+      })
+
+      expect(onEvent).not.toHaveBeenCalled()
     })
   })
 
