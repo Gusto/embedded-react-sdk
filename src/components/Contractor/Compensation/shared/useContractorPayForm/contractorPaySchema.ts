@@ -18,7 +18,12 @@ export const WageType = ApiWageType
  */
 export const ContractorPayErrorCodes = {
   REQUIRED: 'REQUIRED',
+  MAX_HOURLY_RATE: 'MAX_HOURLY_RATE',
 } as const
+
+// Mirrors the server's fixed hourly-rate cap so an over-limit value is caught
+// inline instead of round-tripping to an API error.
+const HOURLY_RATE_CAP = 1_000_000_000_000
 
 /**
  * Union of validation error code strings emitted by the contractor pay form
@@ -34,7 +39,10 @@ const fieldValidators = {
   // No lower bound beyond non-negative here — a Fixed contractor's default of 0
   // must stay valid since the field doesn't apply to them. The "must be > 0
   // when Hourly" rule lives in the superRefine below instead.
-  hourlyRate: z.preprocess(coerceNaN(0), z.number().min(0)),
+  hourlyRate: z.preprocess(
+    coerceNaN(0),
+    z.number().min(0).max(HOURLY_RATE_CAP, { message: ContractorPayErrorCodes.MAX_HOURLY_RATE }),
+  ),
 }
 
 /**

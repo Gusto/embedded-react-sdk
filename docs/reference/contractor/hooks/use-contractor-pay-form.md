@@ -130,7 +130,7 @@ Bound to `hourlyRate`. Required and rendered only when `wageType` is `Hourly`.
 ```tsx
 <form.Fields.HourlyRate
   label="Hourly rate"
-  validationMessages={{ REQUIRED: '…' }}
+  validationMessages={{ REQUIRED: '…', MAX_HOURLY_RATE: '…' }}
 />
 ```
 
@@ -138,7 +138,7 @@ Bound to `hourlyRate`. Required and rendered only when `wageType` is `Hourly`.
 
 #### ContractorPayHourlyRateFieldProps
 
-> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`ContractorPayRequiredValidation`](#contractorpayrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`ContractorPayRequiredValidation`](#contractorpayrequiredvalidation) \| [`ContractorPayMaxHourlyRateValidation`](#contractorpaymaxhourlyratevalidation)\>\>
 
 Props accepted by [useContractorPayForm](#usecontractorpayform)'s `Fields.HourlyRate` component.
 
@@ -146,7 +146,7 @@ Props accepted by [useContractorPayForm](#usecontractorpayform)'s `Fields.Hourly
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorPayRequiredValidation`](#contractorpayrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorPayRequiredValidation`](#contractorpayrequiredvalidation) \| [`ContractorPayMaxHourlyRateValidation`](#contractorpaymaxhourlyratevalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
@@ -176,22 +176,12 @@ Props accepted by [useContractorPayForm](#usecontractorpayform)'s `Fields.WageTy
 
 _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
 
-## Validations
-
-<a id="contractorpayrequiredvalidation"></a>
-
-### ContractorPayRequiredValidation
-
-> **ContractorPayRequiredValidation** = `"REQUIRED"`
-
-Validation code for a required contractor pay field.
-
 ## Utility types
 <a id="contractorpayerrorcode"></a>
 
 ### ContractorPayErrorCode
 
-> **ContractorPayErrorCode** = `"REQUIRED"`
+> **ContractorPayErrorCode** = `"REQUIRED"` \| `"MAX_HOURLY_RATE"`
 
 Union of validation error code strings emitted by the contractor pay form
 schema.
@@ -211,6 +201,7 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 | Name | Type |
 | ------ | ------ |
+| `MAX_HOURLY_RATE` | `"MAX_HOURLY_RATE"` |
 | `REQUIRED` | `"REQUIRED"` |
 
 ***
@@ -250,6 +241,26 @@ Shape of the values managed by the contractor pay form.
 > **ContractorPayFormField** = `"hourlyRate"` \| `"wageType"`
 
 Field names accepted by the contractor pay form.
+
+***
+
+<a id="contractorpaymaxhourlyratevalidation"></a>
+
+### ContractorPayMaxHourlyRateValidation
+
+> **ContractorPayMaxHourlyRateValidation** = `"MAX_HOURLY_RATE"`
+
+Validation code for an hourly rate above the server's maximum cap.
+
+***
+
+<a id="contractorpayrequiredvalidation"></a>
+
+### ContractorPayRequiredValidation
+
+> **ContractorPayRequiredValidation** = `"REQUIRED"`
+
+Validation code for a required contractor pay field.
 
 ***
 
