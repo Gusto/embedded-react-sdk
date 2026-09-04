@@ -311,6 +311,9 @@ const Root = ({
   }
 
   const PaymentMethodField = Fields.paymentMethod
+  const ReimbursementDraft = Fields.reimbursementDraft
+  const reimbursementRows = form.data.reimbursements
+  const isAddingReimbursement = form.form.reimbursementDraft?.isAdding ?? false
 
   const handleSave = async () => {
     const result = await form.actions.onSubmit()
@@ -428,6 +431,110 @@ const Root = ({
 
             {PaymentMethodField ? (
               <section className={styles.section}>
+                {ReimbursementDraft ? (
+                  <section className={styles.section}>
+                    <Heading as="h3" styledAs="h4">
+                      {t('reimbursementTitle')}
+                    </Heading>
+                    {reimbursementRows && reimbursementRows.length > 0 ? (
+                      <table className={styles.table}>
+                        <thead>
+                          <tr>
+                            <th scope="col">{t('reimbursementDescriptionColumn')}</th>
+                            <th scope="col">{t('reimbursementAmountColumn')}</th>
+                            <th scope="col">{t('reimbursementTypeColumn')}</th>
+                            <th scope="col">
+                              <span className={styles.visuallyHidden}>
+                                {t('removeReimbursementLabel', {
+                                  description: t('reimbursementUnnamedFallback'),
+                                })}
+                              </span>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {reimbursementRows.map(row => {
+                            const displayDescription =
+                              row.description.trim() || t('reimbursementUnnamedFallback')
+                            return (
+                              <tr key={row.key}>
+                                <th scope="row">{displayDescription}</th>
+                                <td>{`$${row.amount}`}</td>
+                                <td>
+                                  {row.recurring
+                                    ? t('reimbursementTypeRecurring')
+                                    : t('reimbursementTypeOneTime')}
+                                </td>
+                                <td>
+                                  {row.recurring ? null : (
+                                    <Button
+                                      variant="tertiary"
+                                      onClick={() => form.actions.removeReimbursement?.(row.index)}
+                                      title={t('removeReimbursementLabel', {
+                                        description: displayDescription,
+                                      })}
+                                    >
+                                      {t('removeReimbursementLabel', {
+                                        description: displayDescription,
+                                      })}
+                                    </Button>
+                                  )}
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    ) : null}
+
+                    {isAddingReimbursement ? (
+                      <Flex flexDirection="column" gap={12}>
+                        <Flex gap={12} alignItems="flex-start">
+                          <ReimbursementDraft.Description
+                            label={t('reimbursementDescriptionLabel')}
+                            placeholder={t('reimbursementDescriptionPlaceholder')}
+                          />
+                          <ReimbursementDraft.Amount
+                            label={t('reimbursementAmountLabel')}
+                            adornmentStart="$"
+                            errorMessage={t('validations.reimbursementAmount')}
+                          />
+                        </Flex>
+                        <Flex gap={12}>
+                          <Button
+                            onClick={() => form.actions.saveReimbursement?.()}
+                            title={t('saveReimbursementCta')}
+                          >
+                            {t('saveReimbursementCta')}
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => form.actions.cancelReimbursement?.()}
+                            title={t('cancelReimbursementCta')}
+                          >
+                            {t('cancelReimbursementCta')}
+                          </Button>
+                        </Flex>
+                      </Flex>
+                    ) : (
+                      <>
+                        {reimbursementRows && reimbursementRows.length === 0 ? (
+                          <Text variant="supporting">{t('reimbursementEmptyTitle')}</Text>
+                        ) : null}
+                        <Flex justifyContent="flex-start">
+                          <Button
+                            variant="secondary"
+                            onClick={() => form.actions.beginAddReimbursement?.()}
+                            title={t('addReimbursementCta')}
+                          >
+                            {t('addReimbursementCta')}
+                          </Button>
+                        </Flex>
+                      </>
+                    )}
+                  </section>
+                ) : null}
+
                 <Heading as="h3" styledAs="h4">
                   {t('paymentMethodTitle')}
                 </Heading>
