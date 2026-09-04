@@ -12,6 +12,7 @@ import {
   getPaySchedules,
   updatePaySchedule,
 } from '@/test/mocks/apis/payschedule'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -733,6 +734,73 @@ describe('PaySchedule', () => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
     })
+  })
+
+  describe('remains interactive after creating the first schedule', () => {
+    it('lets the just-created schedule be edited', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      let scheduleCreated = false
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async () => {
+          if (!scheduleCreated) return HttpResponse.json([])
+          const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+          return HttpResponse.json(responseFixture.paySchedules)
+        }),
+        getPaySchedulePreview,
+        http.post(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async ({ request }) => {
+          const requestBody = (await request.json()) as Record<string, unknown>
+          const responseFixture = await getFixture('post-v1-companies-company_id-pay_schedules')
+          scheduleCreated = true
+          return HttpResponse.json({ ...responseFixture, ...requestBody }, { status: 201 })
+        }),
+        updatePaySchedule,
+      )
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+      })
+      await waitForFormToLoad()
+
+      await user.type(screen.getByLabelText(/name/i), 'New Schedule')
+
+      const payDateInput = screen.getByRole('group', { name: 'First pay date' })
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
+
+      const endDateInput = screen.getByRole('group', { name: 'First pay period end date' })
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '07')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_CREATED,
+          expect.any(Object),
+        )
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /actions/i }))
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
+      })
+    }, 15000)
   })
 
   describe('pay schedule preview functionality', () => {

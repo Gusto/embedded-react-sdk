@@ -1,0 +1,34 @@
+{
+  "actions": {
+    "cancelTermination": "Cancelar terminación",
+    "editDismissal": "Editar despido",
+    "runDismissalPayroll": "Ejecutar nómina de terminación"
+  },
+  "alert": {
+    "success": {
+      "label": "{{employeeName}} ha sido dado de baja correctamente"
+    }
+  },
+  "cancelDialog": {
+    "body": "¿Seguro que quieres cancelar esta terminación? El empleado permanecerá activo.",
+    "cancel": "No, regresar",
+    "confirm": "Sí, cancelar terminación",
+    "title": "¿Cancelar despido?"
+  },
+  "dates": {
+    "dismissed": "Despediste a {{employeeName}}.",
+    "lastDayOfWork": "Último día de trabajo",
+    "lastPayDay": "Último día de pago"
+  },
+  "offboarding": {
+    "disconnectAccounts": {
+      "description": "Si hay direcciones de correo electrónico de la empresa u otras cuentas asociadas con los empleados despedidos, te recomendamos desconectarlas antes del último día de los empleados."
+    },
+    "runPayroll": {
+      "description": "Recomendamos ejecutar la nómina de 2 a 4 días antes del último día de empleo para que haya suficiente tiempo para procesar el depósito directo. Asegúrate de <StateRequirementsLink href=\"https:\/\/support.gusto.com\/article\/100895878100000\/Final-paychecks\" target=\"_blank\">cumplir con los requisitos de tu estado<\/StateRequirementsLink> sobre el pago final de los empleados (fecha límite para pagar, PTO no utilizado, etc.). Si vas a pagar a un empleado fuera de la nómina (por ejemplo, con un cheque físico), asegúrate de registrarlo para fines de impuestos."
+    },
+    "title": "Lista de verificación de offboarding:"
+  },
+  "subtitle": "La terminación se ha enviado. Aquí está la línea de tiempo y qué puedes esperar.",
+  "title": "Resumen de despido"
+}

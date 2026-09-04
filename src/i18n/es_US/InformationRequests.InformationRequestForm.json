@@ -1,0 +1,39 @@
+{
+  "blockingAlert": {
+    "description": "No podrás procesar la nómina hasta que recibamos la información solicitada a continuación.",
+    "title": "Esta es una solicitud de bloqueo de nómina"
+  },
+  "cta": {
+    "close": "Cerrar",
+    "submit": "Enviar respuesta"
+  },
+  "fields": {
+    "fileUpload": {
+      "label": "Subir documento"
+    },
+    "textAnswer": {
+      "label": "Responde la pregunta anterior",
+      "placeholder": "Tu respuesta"
+    }
+  },
+  "questionTypes": {
+    "answer": "Respuesta requerida",
+    "document": "Documento requerido"
+  },
+  "title": "Solicitud de información",
+  "unsupported": {
+    "contactSupport": "Por favor, comunícate con soporte",
+    "generic": {
+      "description": "Necesitamos más información que no podemos recopilar aquí.",
+      "title": "Información adicional requerida"
+    },
+    "persona": {
+      "description": "Para garantizar la seguridad de tu cuenta, necesitamos información adicional para ayudar a verificar la identidad de tu firmante autorizado.",
+      "title": "Verificar identidad"
+    }
+  },
+  "validation": {
+    "fileRequired": "Por favor, sube un archivo",
+    "required": "Este campo es obligatorio"
+  }
+}

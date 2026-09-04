@@ -1,0 +1,14 @@
+{
+  "alerts": {
+    "addressUpdated": "Dirección actualizada",
+    "bankAccountAdded": "Cuenta bancaria agregada",
+    "bankAccountRemoved": "Cuenta bancaria eliminada",
+    "compensationUpdated": "Compensación actualizada",
+    "profileUpdated": "Perfil actualizado"
+  },
+  "contractorRoleLabel": "Contratista",
+  "tabs": {
+    "pay": "Pagar"
+  },
+  "tabsLabel": "Pestañas del panel del contratista"
+}

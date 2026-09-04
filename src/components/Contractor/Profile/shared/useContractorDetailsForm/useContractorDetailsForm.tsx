@@ -428,7 +428,8 @@ export function useContractorDetailsForm({
               wageType: payload.wageType,
               startDate: payload.startDate,
               selfOnboarding: selfOnboardingEnabled,
-              email: selfOnboardingEnabled ? payload.email || undefined : undefined,
+              email:
+                showEmailField || selfOnboardingEnabled ? payload.email || undefined : undefined,
               hourlyRate:
                 payload.wageType === WageType.Hourly ? String(payload.hourlyRate) : undefined,
               ...(payload.type === ContractorType.Individual
