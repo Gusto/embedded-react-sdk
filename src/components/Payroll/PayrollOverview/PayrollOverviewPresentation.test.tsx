@@ -512,6 +512,38 @@ describe('PayrollOverviewPresentation', () => {
     expect(screen.getByText('Hourly / Nonexempt')).toBeInTheDocument()
   })
 
+  it('includes reimbursements in the employee take-home Payment total', async () => {
+    const user = userEvent.setup()
+    const payrollWithReimbursement: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          reimbursements: [{ description: 'Travel', amount: '75.00' }],
+          grossPay: '5000',
+          netPay: '4000',
+          checkAmount: '4000',
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithReimbursement} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Employee take home/i }))
+
+    expect(await screen.findByText('$4,075.00')).toBeInTheDocument()
+  })
+
   it('renders a pagination control for the per-employee tables when pagination is provided', async () => {
     const payrollWithEmployees: PayrollShow = {
       ...mockPayrollData,
