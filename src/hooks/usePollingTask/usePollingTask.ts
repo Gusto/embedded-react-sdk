@@ -32,11 +32,25 @@ export interface UsePollingTaskOptions<TData, TValue> {
    * reporting a failure.
    */
   onDeadline: (lastData: TData | null) => void
-  /** Delay between the end of one tick and the start of the next. */
-  intervalMs: number
-  /** How long the task may run before `onDeadline` is called. */
-  deadlineMs: number
+  /** Delay between the end of one tick and the start of the next. Defaults to {@link DEFAULT_POLL_INTERVAL_MS}. */
+  intervalMs?: number
+  /** How long the task may run before `onDeadline` is called. Defaults to {@link DEFAULT_POLL_DEADLINE_MS}. */
+  deadlineMs?: number
 }
+
+/**
+ * Default delay between polling reads.
+ *
+ * @internal
+ */
+export const DEFAULT_POLL_INTERVAL_MS = 5_000
+
+/**
+ * Default duration a polling task may run before its deadline fires.
+ *
+ * @internal
+ */
+export const DEFAULT_POLL_DEADLINE_MS = 3 * 60 * 1000
 
 /**
  * An imperative handle to a polling task.
@@ -119,7 +133,8 @@ export function usePollingTask<TData, TValue>(
     const runId = runIdRef.current
     const controller = new AbortController()
     controllerRef.current = controller
-    const { intervalMs, deadlineMs } = optionsRef.current
+    const { intervalMs = DEFAULT_POLL_INTERVAL_MS, deadlineMs = DEFAULT_POLL_DEADLINE_MS } =
+      optionsRef.current
     const deadline = Date.now() + deadlineMs
     let last: { value: TData } | null = null
 

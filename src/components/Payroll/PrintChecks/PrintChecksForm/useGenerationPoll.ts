@@ -9,9 +9,6 @@ import { DocumentType } from '@gusto/embedded-api/models/operations/getv1generat
 import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument'
 import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
 
-const POLL_INTERVAL_MS = 5_000
-const POLL_DEADLINE_MS = 3 * 60 * 1000
-
 type PrintChecksOutcome = { type: 'succeeded'; url: string | null } | { type: 'failed' }
 
 const evaluatePrintChecksOutcome = (
@@ -96,8 +93,6 @@ export function useGenerationPoll({
     onDeadline: lastData => {
       handleOutcome(deadlinePrintChecksOutcome(lastData))
     },
-    intervalMs: POLL_INTERVAL_MS,
-    deadlineMs: POLL_DEADLINE_MS,
   })
 
   const start = useCallback(

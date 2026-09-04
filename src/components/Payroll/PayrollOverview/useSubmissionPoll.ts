@@ -9,9 +9,6 @@ import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/emb
 import { PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
 
-const POLL_INTERVAL_MS = 5_000
-const POLL_DEADLINE_MS = 3 * 60 * 1000
-
 /** @internal */
 export type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
 
@@ -129,8 +126,6 @@ export function useSubmissionPoll({
     evaluate: queryData => evaluateSubmissionOutcome(queryData, pollRunRef.current),
     onDone: handleDone,
     onDeadline: handleDeadline,
-    intervalMs: POLL_INTERVAL_MS,
-    deadlineMs: POLL_DEADLINE_MS,
   })
 
   const start = useCallback(
