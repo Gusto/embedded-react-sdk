@@ -9,7 +9,14 @@ import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
-import { DataView, Flex, HamburgerMenu, DateRangeFilter, EmptyData } from '@/components/Common'
+import {
+  DataView,
+  Flex,
+  HamburgerMenu,
+  DateRangeFilter,
+  EmptyData,
+  VisuallyHidden,
+} from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import { useI18n } from '@/i18n'
@@ -321,7 +328,7 @@ export const PayrollListPresentation = ({
                 dateFormatter.formatShortWithWeekdayAndYear(payrollDeadline),
             },
             {
-              title: t('tableHeaders.4'),
+              title: <VisuallyHidden>{t('tableHeaders.4')}</VisuallyHidden>,
               render: payroll => {
                 const wireInRequest = wireInRequests.find(
                   wire => wire.paymentUuid === payroll.payrollUuid,
