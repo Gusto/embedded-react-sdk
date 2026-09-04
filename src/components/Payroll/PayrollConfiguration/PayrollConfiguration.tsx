@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import {
+  buildPayrollsGetQuery,
+  usePayrollsGetSuspense,
+  type PayrollsGetQueryData,
+} from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { useQueryClient } from '@tanstack/react-query'
+import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
@@ -25,6 +31,26 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { SDKInternalError } from '@/types/sdkError'
+import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
+
+const POLL_INTERVAL_MS = 5_000
+const POLL_DEADLINE_MS = 3 * 60 * 1000
+
+type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
+
+type CalculationOutcome =
+  | { type: 'calculated'; payroll: PayrollShow | undefined }
+  | { type: 'failed'; payroll: PayrollShow | undefined }
+
+/**
+ * Per-run state for the calculation poll. Written when a run starts and read only from inside
+ * the poll loop — never during render, which is what made the previous `previousCalculatedAtRef`
+ * completion gate depend on a render arriving.
+ */
+interface CalculationPollRun {
+  baselineCalculatedAt: number | null
+  sawCalculating: boolean
+}
 
 const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -104,23 +130,25 @@ const Root = ({
   const { baseSubmitHandler } = useBase()
   const dateFormatter = useDateFormatter()
 
-  const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
-  const previousCalculatedAtRef = useRef<number | null>(null)
+  const pollRunRef = useRef<CalculationPollRun | null>(null)
   // True once this screen has read a "calculating" status for the payroll, whether we started that
   // calc or someone else did. Calling prepare after that would wipe the result, so we use this to
   // keep prepare off.
   const hasSeenCalculatingRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
+  const queryClient = useQueryClient()
 
-  const { data: payrollData } = usePayrollsGetSuspense(
-    {
+  const payrollRequest = useMemo<GetV1CompaniesCompanyIdPayrollsPayrollIdRequest>(
+    () => ({
       companyId,
       payrollId,
       include: ['taxes', 'benefits', 'deductions', 'payroll_status_meta'],
-    },
-    { refetchInterval: isPolling ? 5_000 : false },
+    }),
+    [companyId, payrollId],
   )
+
+  const { data: payrollData } = usePayrollsGetSuspense(payrollRequest)
 
   const excludedEmployeeUuids = useMemo(
     () =>
@@ -135,6 +163,96 @@ const Root = ({
   if (isCalculatingStatus(payrollData.payrollShow?.processingRequest)) {
     hasSeenCalculatingRef.current = true
   }
+
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: companyId,
+  })
+
+  const payrollBlockerList = blockersData.payrollBlockers ?? []
+
+  const blockersFromApi: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
+    key: blocker.key,
+    message: blocker.message,
+  }))
+
+  const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
+
+  const emitCalculated = (payroll: PayrollShow | undefined) => {
+    onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
+      payrollId,
+      alert: {
+        type: 'success',
+        title: t('alerts.progressSaved'),
+        alertKey: 'progressSaved',
+      },
+      payPeriod: payroll?.payPeriod,
+    })
+    setPayrollBlockers([])
+  }
+
+  const emitProcessingFailed = (payroll: PayrollShow | undefined) => {
+    onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+    // Let prepare run again on retry — but only when there is no calculation for it to wipe.
+    if (payroll?.calculatedAt == null) {
+      hasSeenCalculatingRef.current = false
+    }
+  }
+
+  const { start: startCalculationPoll, isPolling } = usePollingTask<
+    PayrollsGetQueryData,
+    CalculationOutcome
+  >({
+    fetch: signal =>
+      queryClient.fetchQuery({
+        ...buildPayrollsGetQuery(gustoClient, payrollRequest, { signal }),
+        staleTime: 0,
+      }),
+    evaluate: (data): PollTickResult<CalculationOutcome> => {
+      const payroll = data.payrollShow
+      const run = pollRunRef.current
+
+      if (isCalculatingStatus(payroll?.processingRequest)) {
+        if (run) run.sawCalculating = true
+        return { done: false }
+      }
+
+      if (payroll?.processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed) {
+        return { done: true, value: { type: 'failed', payroll } }
+      }
+
+      const calculatedAt = payroll?.calculatedAt
+      const isNewCalculation =
+        run?.sawCalculating === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
+
+      if (isNewCalculation && isCalculatedStatus(payroll?.processingRequest, calculatedAt)) {
+        return { done: true, value: { type: 'calculated', payroll } }
+      }
+
+      return { done: false }
+    },
+    onDone: outcome => {
+      if (outcome.type === 'failed') {
+        emitProcessingFailed(outcome.payroll)
+        return
+      }
+      emitCalculated(outcome.payroll)
+    },
+    onDeadline: lastData => {
+      const payroll = lastData?.payrollShow
+      // The server is the source of truth. A calculation that succeeded while we were waiting
+      // must never be reported as a failure — that reported false failures for payrolls that had
+      // calculated fine, and re-armed the prepare that would then wipe the result (SDK-1291).
+      // Advancing on a stale success is the safer of the two wrong answers: the next screen
+      // re-reads the payroll, whereas a false failure destroys real data.
+      if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
+        emitCalculated(payroll)
+        return
+      }
+      emitProcessingFailed(payroll)
+    },
+    intervalMs: POLL_INTERVAL_MS,
+    deadlineMs: POLL_DEADLINE_MS,
+  })
 
   // Show the loading state the whole time we're calculating, so a second tab shows the loader
   // instead of a blank table until it moves to the overview.
@@ -315,24 +433,10 @@ const Root = ({
     }
   }
 
-  const { data: blockersData } = usePayrollsGetBlockersSuspense({
-    companyUuid: companyId,
-  })
-
-  const payrollBlockerList = blockersData.payrollBlockers ?? []
-
-  const blockersFromApi: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
-    key: blocker.key,
-    message: blocker.message,
-  }))
-
-  const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
-
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
     // Mark it right away so prepare can't run and cancel the calculation we just started.
     hasSeenCalculatingRef.current = true
-    previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
@@ -345,7 +449,11 @@ const Root = ({
           if (!calcResult.ok) {
             throw calcResult.error
           }
-          setIsPolling(true)
+          pollRunRef.current = {
+            baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
+            sawCalculating: false,
+          }
+          startCalculationPoll()
         } finally {
           setIsCalculatingPayroll(false)
         }
@@ -410,64 +518,24 @@ const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
   }
 
+  // Pick up a calculation this screen didn't start (another tab, another admin). Starting a poll
+  // from rendered data is fine — only the decision to *finish* one must not depend on a render,
+  // and that lives in the poll loop.
   useEffect(() => {
-    if (isCalculatingStatus(payrollData.payrollShow?.processingRequest) && !isPolling) {
-      previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
-      setIsPolling(true)
+    if (isPolling) return
+    if (!isCalculatingStatus(payrollData.payrollShow?.processingRequest)) return
+
+    pollRunRef.current = {
+      baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
+      sawCalculating: true,
     }
-    const currentCalculatedAt = payrollData.payrollShow?.calculatedAt
-    const isNewCalculation = currentCalculatedAt?.getTime() !== previousCalculatedAtRef.current
-    if (
-      isPolling &&
-      isNewCalculation &&
-      isCalculatedStatus(payrollData.payrollShow?.processingRequest, currentCalculatedAt)
-    ) {
-      onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
-        payrollId,
-        alert: {
-          type: 'success',
-          title: t('alerts.progressSaved'),
-          alertKey: 'progressSaved',
-        },
-        payPeriod: payrollData.payrollShow?.payPeriod,
-      })
-      setPayrollBlockers([])
-      setIsPolling(false)
-    }
-    if (
-      isPolling &&
-      payrollData.payrollShow?.processingRequest?.status ===
-        PayrollProcessingRequestStatus.ProcessingFailed
-    ) {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-      setIsPolling(false)
-      // Calculation failed, so let prepare run again on retry.
-      hasSeenCalculatingRef.current = false
-    }
+    startCalculationPoll()
   }, [
-    payrollData.payrollShow?.processingRequest?.status,
+    payrollData.payrollShow?.processingRequest,
     payrollData.payrollShow?.calculatedAt,
     isPolling,
-    onEvent,
-    t,
-    payrollId,
+    startCalculationPoll,
   ])
-
-  useEffect(() => {
-    if (!isPolling) return
-
-    const POLLING_TIMEOUT_MS = 3 * 60 * 1000
-    const timeoutId = setTimeout(() => {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-      setIsPolling(false)
-      // Timed out waiting on the calculation, so let prepare run again.
-      hasSeenCalculatingRef.current = false
-    }, POLLING_TIMEOUT_MS)
-
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [isPolling, onEvent])
 
   const payrollAlert = (() => {
     const statusMeta = payrollData.payrollShow?.payrollStatusMeta
