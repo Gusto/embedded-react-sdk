@@ -66,10 +66,12 @@ const fieldValidators = {
   email: z.email({ error: () => ContractorDetailsErrorCodes.INVALID_EMAIL }),
   firstName: z
     .string()
+    .trim()
     .min(1, { message: ContractorDetailsErrorCodes.REQUIRED })
     .regex(NAME_REGEX, { message: ContractorDetailsErrorCodes.INVALID_NAME }),
   lastName: z
     .string()
+    .trim()
     .min(1, { message: ContractorDetailsErrorCodes.REQUIRED })
     .regex(NAME_REGEX, { message: ContractorDetailsErrorCodes.INVALID_NAME }),
   middleInitial: z.string(),

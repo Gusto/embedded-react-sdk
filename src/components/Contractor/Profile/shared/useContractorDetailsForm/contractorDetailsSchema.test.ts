@@ -107,6 +107,18 @@ describe('createContractorDetailsSchema', () => {
       expect(issueFor(result, 'firstName')?.message).toBe(INVALID_NAME)
     })
 
+    it('trims surrounding whitespace from firstName/lastName instead of rejecting it (regression for SDK-1300)', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, firstName: 'John ', lastName: ' Doe' },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.firstName).toBe('John')
+        expect(result.data.lastName).toBe('Doe')
+      }
+    })
+
     it('treats ssn as optional by default (API contract)', () => {
       const result = parse({ ...validIndividualEmployerLed, ssn: '' }, { mode: 'create' })
       expect(result.success).toBe(true)
