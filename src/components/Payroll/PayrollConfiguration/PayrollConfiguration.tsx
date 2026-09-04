@@ -1,15 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import {
-  buildPayrollsGetQuery,
-  usePayrollsGetSuspense,
-  type PayrollsGetQueryData,
-} from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { useQueryClient } from '@tanstack/react-query'
 import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
-import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
-import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
@@ -24,6 +17,7 @@ import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
+import { useCalculationPoll, isCalculatingStatus, type PayrollShow } from './useCalculationPoll'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -31,63 +25,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { SDKInternalError } from '@/types/sdkError'
-import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
-
-const POLL_INTERVAL_MS = 5_000
-const POLL_DEADLINE_MS = 3 * 60 * 1000
-
-type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
-
-type CalculationOutcome =
-  | { type: 'calculated'; payroll: PayrollShow | undefined }
-  | { type: 'failed'; payroll: PayrollShow | undefined }
-
-/**
- * Per-run state for the calculation poll. Written when a run starts and read only from inside
- * the poll loop — never during render, which is what made the previous `previousCalculatedAtRef`
- * completion gate depend on a render arriving.
- */
-interface CalculationPollRun {
-  baselineCalculatedAt: number | null
-  sawCalculating: boolean
-}
-
-const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
-  processingRequest?.status === PayrollProcessingRequestStatus.Calculating
-
-const isCalculatedStatus = (
-  processingRequest?: PayrollProcessingRequest | null,
-  calculatedAt?: Date | null,
-) =>
-  calculatedAt != null &&
-  (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
-    processingRequest == null)
-
-const evaluateCalculationOutcome = (
-  data: PayrollsGetQueryData,
-  run: CalculationPollRun | null,
-): PollTickResult<CalculationOutcome> => {
-  const payroll = data.payrollShow
-
-  if (isCalculatingStatus(payroll?.processingRequest)) {
-    if (run) run.sawCalculating = true
-    return { done: false }
-  }
-
-  if (payroll?.processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed) {
-    return { done: true, value: { type: 'failed', payroll } }
-  }
-
-  const calculatedAt = payroll?.calculatedAt
-  const isNewCalculation =
-    run?.sawCalculating === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
-
-  if (isNewCalculation && isCalculatedStatus(payroll?.processingRequest, calculatedAt)) {
-    return { done: true, value: { type: 'calculated', payroll } }
-  }
-
-  return { done: false }
-}
 
 /**
  * Props for {@link PayrollConfiguration}.
@@ -157,13 +94,11 @@ const Root = ({
   const dateFormatter = useDateFormatter()
 
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
-  const pollRunRef = useRef<CalculationPollRun | null>(null)
   // True once this screen has read a "calculating" status for the payroll, whether we started that
   // calc or someone else did. Calling prepare after that would wipe the result, so we use this to
   // keep prepare off.
   const hasSeenCalculatingRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
 
   const payrollRequest = useMemo<GetV1CompaniesCompanyIdPayrollsPayrollIdRequest>(
     () => ({
@@ -203,65 +138,27 @@ const Root = ({
 
   const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
 
-  const emitCalculated = (payroll: PayrollShow | undefined) => {
-    onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
-      payrollId,
-      alert: {
-        type: 'success',
-        title: t('alerts.progressSaved'),
-        alertKey: 'progressSaved',
-      },
-      payPeriod: payroll?.payPeriod,
-    })
-    setPayrollBlockers([])
-  }
-
-  const emitProcessingFailed = (payroll: PayrollShow | undefined) => {
-    onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-    // Let prepare run again on retry — but only when there is no calculation for it to wipe.
-    if (payroll?.calculatedAt == null) {
-      hasSeenCalculatingRef.current = false
-    }
-  }
-
-  const fetchPayroll = (signal: AbortSignal) =>
-    queryClient.fetchQuery({
-      ...buildPayrollsGetQuery(gustoClient, payrollRequest, { signal }),
-      staleTime: 0,
-    })
-
-  const handleCalculationDone = (outcome: CalculationOutcome) => {
-    if (outcome.type === 'failed') {
-      emitProcessingFailed(outcome.payroll)
-      return
-    }
-    emitCalculated(outcome.payroll)
-  }
-
-  // The server is the source of truth. A calculation that succeeded while we were waiting must
-  // never be reported as a failure — that reported false failures for payrolls that had
-  // calculated fine, and re-armed the prepare that would then wipe the result (SDK-1291).
-  // Advancing on a stale success is the safer of the two wrong answers: the next screen re-reads
-  // the payroll, whereas a false failure destroys real data.
-  const handleCalculationDeadline = (lastData: PayrollsGetQueryData | null) => {
-    const payroll = lastData?.payrollShow
-    if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
-      emitCalculated(payroll)
-      return
-    }
-    emitProcessingFailed(payroll)
-  }
-
-  const { start: startCalculationPoll, isPolling } = usePollingTask<
-    PayrollsGetQueryData,
-    CalculationOutcome
-  >({
-    fetch: fetchPayroll,
-    evaluate: data => evaluateCalculationOutcome(data, pollRunRef.current),
-    onDone: handleCalculationDone,
-    onDeadline: handleCalculationDeadline,
-    intervalMs: POLL_INTERVAL_MS,
-    deadlineMs: POLL_DEADLINE_MS,
+  const { start: startCalculationPoll, isPolling } = useCalculationPoll({
+    payrollRequest,
+    onCalculated: (payroll: PayrollShow | undefined) => {
+      onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollId,
+        alert: {
+          type: 'success',
+          title: t('alerts.progressSaved'),
+          alertKey: 'progressSaved',
+        },
+        payPeriod: payroll?.payPeriod,
+      })
+      setPayrollBlockers([])
+    },
+    onProcessingFailed: (payroll: PayrollShow | undefined) => {
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+      // Let prepare run again on retry — but only when there is no calculation for it to wipe.
+      if (payroll?.calculatedAt == null) {
+        hasSeenCalculatingRef.current = false
+      }
+    },
   })
 
   // Show the loading state the whole time we're calculating, so a second tab shows the loader
@@ -459,11 +356,11 @@ const Root = ({
           if (!calcResult.ok) {
             throw calcResult.error
           }
-          pollRunRef.current = {
+          startCalculationPoll({
             baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
+            // We just submitted the payroll, so we haven't yet seen it return with the calculating status
             sawCalculating: false,
-          }
-          startCalculationPoll()
+          })
         } finally {
           setIsCalculatingPayroll(false)
         }
@@ -535,11 +432,11 @@ const Root = ({
     if (isPolling) return
     if (!isCalculatingStatus(payrollData.payrollShow?.processingRequest)) return
 
-    pollRunRef.current = {
+    startCalculationPoll({
       baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
+      // We have seen the calculating status, which is why we're starting to poll now until it completes or fails.
       sawCalculating: true,
-    }
-    startCalculationPoll()
+    })
   }, [
     payrollData.payrollShow?.processingRequest,
     payrollData.payrollShow?.calculatedAt,

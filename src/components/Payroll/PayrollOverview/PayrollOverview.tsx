@@ -1,15 +1,11 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payrollsSubmit'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
-import {
-  buildPayrollsGetQuery,
-  usePayrollsGet,
-  type PayrollsGetQueryData,
-} from '@gusto/embedded-api/react-query/payrollsGet'
-import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
+import { usePayrollsGet } from '@gusto/embedded-api/react-query/payrollsGet'
+import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
@@ -28,6 +24,7 @@ import { canCancelPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
+import { useSubmissionPoll, type PayrollShow } from './useSubmissionPoll'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
   componentEvents,
@@ -47,69 +44,6 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { renderErrorList } from '@/helpers/apiErrorToList'
 import { Flex, PayrollLoading } from '@/components/Common'
 import { usePagination } from '@/hooks/usePagination/usePagination'
-import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
-
-const POLL_INTERVAL_MS = 5_000
-const POLL_DEADLINE_MS = 3 * 60 * 1000
-
-type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
-
-type SubmissionOutcome =
-  | { type: 'processed'; payroll: PayrollShow | undefined }
-  | { type: 'failed'; payroll: PayrollShow | undefined }
-  | { type: 'loaded' }
-
-/**
- * Per-run state for the submission poll. `baseline` is only known when the run starts from a
- * click on Submit, where the pre-submit render already has data to snapshot. A run started at
- * mount (to guard the initial read, see below) has no such baseline, so it relies on
- * `sawSubmitting` alone.
- */
-interface SubmissionPollRun {
-  baseline: { processed: boolean; status: string | undefined } | null
-  sawSubmitting: boolean
-}
-
-const isSubmittingStatus = (status: string | undefined) =>
-  status === PAYROLL_PROCESSING_STATUS.submitting
-
-const isProcessedStatus = (processed: boolean | undefined, status: string | undefined) =>
-  processed === true || status === PAYROLL_PROCESSING_STATUS.submit_success
-
-const evaluateSubmissionOutcome = (
-  queryData: PayrollsGetQueryData,
-  run: SubmissionPollRun | null,
-): PollTickResult<SubmissionOutcome> => {
-  const payroll = queryData.payrollShow
-  const submissionStatus = payroll?.processingRequest?.status
-  const isSubmitting = isSubmittingStatus(submissionStatus)
-
-  if (isSubmitting && run) run.sawSubmitting = true
-
-  if (submissionStatus === PAYROLL_PROCESSING_STATUS.processing_failed) {
-    return { done: true, value: { type: 'failed', payroll } }
-  }
-
-  // Checked ahead of the `isSubmitting` re-poll below: `processed` can flip true while
-  // `processingRequest.status` still reads `submitting` (a real API race), so a transition must
-  // be detected on `processed` alone, not gated on status having already moved on.
-  const isNewTransition =
-    run?.sawSubmitting === true ||
-    (run?.baseline != null &&
-      (payroll?.processed !== run.baseline.processed || submissionStatus !== run.baseline.status))
-
-  if (isNewTransition && isProcessedStatus(payroll?.processed, submissionStatus)) {
-    return { done: true, value: { type: 'processed', payroll } }
-  }
-
-  if (isSubmitting) return { done: false }
-
-  // Not actively submitting and nothing new to report — the tick's own re-render is what matters
-  // here, since it lets `usePayrollsGet` above pick up cache data even when its own observer
-  // notification never arrives (SDK-1291). Stop until something restarts the task (a Submit
-  // click, or the mount effect below picking up an in-flight submission).
-  return { done: true, value: { type: 'loaded' } }
-}
 
 /**
  * Props for {@link PayrollOverview}.
@@ -234,8 +168,6 @@ const Root = ({
     defaultItemsPerPage: 25,
   })
   const gustoEmbedded = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
-  const pollRunRef = useRef<SubmissionPollRun | null>(null)
 
   const payrollRequest = useMemo<GetV1CompaniesCompanyIdPayrollsPayrollIdRequest>(
     () => ({
@@ -358,54 +290,19 @@ const Root = ({
     setHasSubmittedInSession(false)
   }
 
-  const fetchPayroll = (signal: AbortSignal) =>
-    queryClient.fetchQuery({
-      ...buildPayrollsGetQuery(gustoEmbedded, payrollRequest, { signal }),
-      staleTime: 0,
-    })
-
-  const handleSubmissionDone = (outcome: SubmissionOutcome) => {
-    if (outcome.type === 'failed') {
-      emitProcessingFailed(outcome.payroll)
-      return
-    }
-    if (outcome.type === 'processed') {
-      emitProcessed(outcome.payroll)
-    }
-  }
-
-  // Verify against the server before reporting failure, same rationale as
-  // PayrollConfiguration's calculation poll: a success that arrived while we were waiting must
-  // never be reported as a failure.
-  const handleSubmissionDeadline = (lastData: PayrollsGetQueryData | null) => {
-    const payroll = lastData?.payrollShow
-    if (isProcessedStatus(payroll?.processed, payroll?.processingRequest?.status)) {
-      emitProcessed(payroll)
-      return
-    }
-    emitProcessingFailed(payroll)
-  }
-
-  const { start: startPayrollPoll, isPolling } = usePollingTask<
-    PayrollsGetQueryData,
-    SubmissionOutcome
-  >({
-    fetch: fetchPayroll,
-    evaluate: queryData => evaluateSubmissionOutcome(queryData, pollRunRef.current),
-    onDone: handleSubmissionDone,
-    onDeadline: handleSubmissionDeadline,
-    intervalMs: POLL_INTERVAL_MS,
-    deadlineMs: POLL_DEADLINE_MS,
+  const { start: startPayrollPoll, isPolling } = useSubmissionPoll({
+    payrollRequest,
+    onProcessed: emitProcessed,
+    onProcessingFailed: emitProcessingFailed,
   })
 
   // Always poll from mount, not just after Submit: the initial read is a non-suspense query, so
   // if its notification never arrives (SDK-1291) the component is stuck on `!payrollData` forever
   // with no other render source. This also doubles as picking up a submission already in flight
-  // (another tab, another admin) — `evaluate` above keeps the loop going for as long as it reads
-  // `submitting`, regardless of why the loop started.
+  // (another tab, another admin) — the poll's own evaluate rules keep the loop going for as long
+  // as it reads `submitting`, regardless of why the loop started.
   useEffect(() => {
-    pollRunRef.current = { baseline: null, sawSubmitting: false }
-    startPayrollPoll()
+    startPayrollPoll({ baseline: null, sawSubmitting: false })
   }, [startPayrollPoll])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
@@ -521,14 +418,13 @@ const Root = ({
       })
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
-      pollRunRef.current = {
+      startPayrollPoll({
         baseline: {
           processed: payrollData.processed ?? false,
           status: payrollData.processingRequest?.status,
         },
         sawSubmitting: false,
-      }
-      startPayrollPoll()
+      })
       setHasSubmittedInSession(true)
     })
   }
