@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
@@ -78,6 +78,21 @@ vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
     },
     isFetching: mockIsFetching,
   }),
+  // The submission poll reads through this directly (`queryClient.fetchQuery`), bypassing the
+  // `usePayrollsGet` mock above — mirror the same mutable `mockPayrollData` so a test can drive
+  // the poll by mutating that variable, same as it already does for the rendered hook.
+  buildPayrollsGetQuery: () => ({
+    queryKey: ['test', 'Payrolls', 'get', 'poll'],
+    queryFn: () =>
+      Promise.resolve({
+        payrollShow: mockPayrollData,
+        httpMeta: {
+          response: {
+            headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
+          },
+        },
+      }),
+  }),
 }))
 
 vi.mock('@gusto/embedded-api/react-query/payrollsSubmit', () => ({
@@ -136,8 +151,13 @@ describe('PayrollOverview polling', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers({ shouldAdvanceTime: true })
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('stops polling and emits RUN_PAYROLL_PROCESSED when processed is true even without submit_success status', async () => {
@@ -147,7 +167,7 @@ describe('PayrollOverview polling', () => {
       processingRequest: { status: 'submitting', errors: [] },
     }
 
-    const { rerender } = renderWithProviders(
+    renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
     )
 
@@ -161,9 +181,11 @@ describe('PayrollOverview polling', () => {
       processingRequest: { status: 'submitting', errors: [] },
     }
 
-    rerender(
-      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
-    )
+    // The poll reads through `buildPayrollsGetQuery` directly, independent of any render — advance
+    // its own timer past one interval so the next tick picks up the mutated mock data above.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
 
     await waitFor(() => {
       expect(mockOnEvent).toHaveBeenCalledWith(
@@ -180,7 +202,7 @@ describe('PayrollOverview polling', () => {
       processingRequest: { status: 'submitting', errors: [] },
     }
 
-    const { rerender } = renderWithProviders(
+    renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
     )
 
@@ -194,9 +216,9 @@ describe('PayrollOverview polling', () => {
       processingRequest: null as unknown as PayrollShow['processingRequest'],
     }
 
-    rerender(
-      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
-    )
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
 
     await waitFor(() => {
       expect(mockOnEvent).toHaveBeenCalledWith(
