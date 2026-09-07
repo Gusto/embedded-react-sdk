@@ -1,61 +1,69 @@
 import { useState, useMemo } from 'react'
-import type { AgentPayment, AgentPaymentStatus } from './types'
-import { deriveAgentPaymentStatus } from './types'
+import type { TaxPayment, TaxPaymentStatus } from './types'
+import { deriveTaxPaymentStatus, FEDERAL_JURISDICTION } from './types'
 import styles from './AgentPaymentsFlow.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common'
+import { EmptyData, Flex } from '@/components/Common'
 import SearchIcon from '@/assets/icons/search-lg.svg?react'
 import CaretDownIcon from '@/assets/icons/caret-down.svg?react'
 
-const STATUS_LABELS: Record<AgentPaymentStatus, string> = {
-  draft: 'Draft',
-  pending: 'Pending',
+const STATUS_LABELS: Record<TaxPaymentStatus, string> = {
   paid: 'Paid',
+  scheduled: 'Scheduled',
   overdue: 'Overdue',
-  refunded: 'Refunded',
+  refund: 'Refund / Credit',
 }
 
-const STATUS_BADGE_VARIANTS: Record<AgentPaymentStatus, 'info' | 'warning' | 'success' | 'error'> =
-  {
-    draft: 'info',
-    pending: 'warning',
-    paid: 'success',
-    overdue: 'error',
-    refunded: 'info',
-  }
+const STATUS_BADGE_VARIANTS: Record<TaxPaymentStatus, 'info' | 'warning' | 'success' | 'error'> = {
+  paid: 'success',
+  scheduled: 'info',
+  overdue: 'error',
+  refund: 'info',
+}
 
 function formatUSD(amount: string): string {
-  const num = parseFloat(amount)
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(num)
+  }).format(parseFloat(amount))
 }
 
-type SortKey = 'agent_name' | 'payment_type' | 'due_date' | 'amount' | 'status'
+function formatDate(isoDate: string): string {
+  return new Date(`${isoDate}T00:00:00`).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+function formatPeriod(payment: TaxPayment): string {
+  return `${formatDate(payment.period_start)} – ${formatDate(payment.period_end)}`
+}
+
+type SortKey = 'agency_name' | 'jurisdiction' | 'due_date' | 'amount' | 'status'
 type SortDir = 'asc' | 'desc'
 
 interface AgentPaymentsListProps {
-  payments: AgentPayment[]
+  payments: TaxPayment[]
   onSelectPayment: (uuid: string) => void
 }
 
 export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsListProps) {
-  const { Alert, Badge, Button, ComboBox, Table, Text, TextInput, Heading } = useComponentContext()
+  const { Alert, Badge, Button, Select, Table, Text, TextInput, Heading } = useComponentContext()
 
   const today = new Date().toISOString().slice(0, 10)
 
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('')
-  const [filterPaymentType, setFilterPaymentType] = useState<string>('')
+  const [filterJurisdiction, setFilterJurisdiction] = useState<string>('')
   const [sortKey, setSortKey] = useState<SortKey>('due_date')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
   const paymentsWithStatus = useMemo(
     () =>
-      payments.map(p => ({
-        payment: p,
-        status: deriveAgentPaymentStatus(p, today),
+      payments.map(payment => ({
+        payment,
+        status: deriveTaxPaymentStatus(payment, today),
       })),
     [payments, today],
   )
@@ -64,13 +72,17 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
     .filter(({ status }) => status === 'overdue')
     .map(({ payment }) => payment)
 
-  const paymentTypeOptions = useMemo(() => {
+  const jurisdictionOptions = useMemo(() => {
     const seen = new Set<string>()
-    const options = [{ value: '', label: 'All types' }]
+    const options = [{ value: '', label: 'All jurisdictions' }]
     for (const { payment } of paymentsWithStatus) {
-      if (!seen.has(payment.payment_type)) {
-        seen.add(payment.payment_type)
-        options.push({ value: payment.payment_type, label: payment.payment_type })
+      if (!seen.has(payment.jurisdiction)) {
+        seen.add(payment.jurisdiction)
+        options.push({
+          value: payment.jurisdiction,
+          label:
+            payment.jurisdiction === FEDERAL_JURISDICTION ? 'Federal (US)' : payment.jurisdiction,
+        })
       }
     }
     return options
@@ -78,15 +90,15 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
 
   const statusOptions = [
     { value: '', label: 'All statuses' },
-    ...(['draft', 'pending', 'paid', 'overdue', 'refunded'] as const).map(s => ({
-      value: s,
-      label: STATUS_LABELS[s],
+    ...(['paid', 'scheduled', 'overdue', 'refund'] as const).map(status => ({
+      value: status,
+      label: STATUS_LABELS[status],
     })),
   ]
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
-      setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
+      setSortDir(direction => (direction === 'asc' ? 'desc' : 'asc'))
     } else {
       setSortKey(key)
       setSortDir('asc')
@@ -94,33 +106,27 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
   }
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase()
-    let result = paymentsWithStatus.filter(({ payment, status }) => {
+    const query = search.toLowerCase()
+    const result = paymentsWithStatus.filter(({ payment, status }) => {
       if (filterStatus && status !== filterStatus) return false
-      if (filterPaymentType && payment.payment_type !== filterPaymentType) return false
-      if (
-        q &&
-        !payment.agent_name.toLowerCase().includes(q) &&
-        !payment.description.toLowerCase().includes(q)
-      )
-        return false
+      if (filterJurisdiction && payment.jurisdiction !== filterJurisdiction) return false
+      if (query && !payment.agency_name.toLowerCase().includes(query)) return false
       return true
     })
 
-    result = [...result].sort((a, b) => {
+    return [...result].sort((a, b) => {
       let cmp = 0
-      if (sortKey === 'agent_name') cmp = a.payment.agent_name.localeCompare(b.payment.agent_name)
-      else if (sortKey === 'payment_type')
-        cmp = a.payment.payment_type.localeCompare(b.payment.payment_type)
+      if (sortKey === 'agency_name')
+        cmp = a.payment.agency_name.localeCompare(b.payment.agency_name)
+      else if (sortKey === 'jurisdiction')
+        cmp = a.payment.jurisdiction.localeCompare(b.payment.jurisdiction)
       else if (sortKey === 'due_date') cmp = a.payment.due_date.localeCompare(b.payment.due_date)
       else if (sortKey === 'amount')
         cmp = parseFloat(a.payment.amount) - parseFloat(b.payment.amount)
       else cmp = a.status.localeCompare(b.status)
       return sortDir === 'asc' ? cmp : -cmp
     })
-
-    return result
-  }, [paymentsWithStatus, search, filterStatus, filterPaymentType, sortKey, sortDir])
+  }, [paymentsWithStatus, search, filterStatus, filterJurisdiction, sortKey, sortDir])
 
   const sortHeader = (label: string, key: SortKey) => {
     const isActive = sortKey === key
@@ -148,22 +154,24 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
     key: payment.uuid,
     data: [
       {
-        key: 'agent',
-        content: <span className={styles.agentName}>{payment.agent_name}</span>,
+        key: 'agency',
+        content: <span className={styles.agentName}>{payment.agency_name}</span>,
       },
       {
-        key: 'type',
+        key: 'jurisdiction',
         content: (
           <Text as="span" size="sm" variant="supporting">
-            {payment.payment_type}
+            {payment.jurisdiction === FEDERAL_JURISDICTION
+              ? 'Federal'
+              : `State · ${payment.jurisdiction}`}
           </Text>
         ),
       },
       {
-        key: 'description',
+        key: 'period',
         content: (
           <Text as="span" size="sm" variant="supporting">
-            {payment.description}
+            {formatPeriod(payment)}
           </Text>
         ),
       },
@@ -171,11 +179,7 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
         key: 'due_date',
         content: (
           <Text as="span" size="sm" variant="supporting">
-            {new Date(payment.due_date).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
+            {formatDate(payment.due_date)}
           </Text>
         ),
       },
@@ -217,23 +221,17 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
           label={`${overduePayments.length} payment${overduePayments.length > 1 ? 's' : ''} overdue`}
         >
           <Text size="sm">
-            {overduePayments.map((p, i) => (
-              <span key={p.uuid}>
-                {i > 0 && ', '}
+            {overduePayments.map((payment, index) => (
+              <span key={payment.uuid}>
+                {index > 0 && ', '}
                 <button
                   type="button"
                   className={styles.alertLink}
                   onClick={() => {
-                    onSelectPayment(p.uuid)
+                    onSelectPayment(payment.uuid)
                   }}
                 >
-                  {p.agent_name} (due{' '}
-                  {new Date(p.due_date).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                  )
+                  {payment.agency_name} (due {formatDate(payment.due_date)})
                 </button>
               </span>
             ))}{' '}
@@ -247,7 +245,7 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
         <TextInput
           label="Search payments"
           shouldVisuallyHideLabel
-          placeholder="Search by agency or description..."
+          placeholder="Search by agency..."
           value={search}
           onChange={setSearch}
           type="search"
@@ -256,15 +254,15 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
       </div>
 
       <div className={styles.filterRow}>
-        <ComboBox
-          label="Payment type"
+        <Select
+          label="Jurisdiction"
           shouldVisuallyHideLabel
-          placeholder="All types"
-          options={paymentTypeOptions}
-          value={filterPaymentType}
-          onChange={setFilterPaymentType}
+          placeholder="All jurisdictions"
+          options={jurisdictionOptions}
+          value={filterJurisdiction}
+          onChange={setFilterJurisdiction}
         />
-        <ComboBox
+        <Select
           label="Status"
           shouldVisuallyHideLabel
           placeholder="All statuses"
@@ -277,20 +275,16 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
       <Table
         aria-label="Agent payments"
         headers={[
-          { key: 'agent', content: sortHeader('Agent', 'agent_name') },
-          { key: 'type', content: sortHeader('Type', 'payment_type') },
-          { key: 'description', content: 'Description' },
+          { key: 'agency', content: sortHeader('Agency', 'agency_name') },
+          { key: 'jurisdiction', content: sortHeader('Jurisdiction', 'jurisdiction') },
+          { key: 'period', content: 'Period' },
           { key: 'due_date', content: sortHeader('Due Date', 'due_date') },
           { key: 'amount', content: sortHeader('Amount', 'amount') },
           { key: 'status', content: sortHeader('Status', 'status') },
           { key: 'action', content: '' },
         ]}
         rows={tableRows}
-        emptyState={
-          <Text variant="supporting" size="sm">
-            No payments match your filters.
-          </Text>
-        }
+        emptyState={<EmptyData title="No payments match your filters" />}
       />
     </Flex>
   )
