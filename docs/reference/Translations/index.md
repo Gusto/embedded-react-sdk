@@ -1625,6 +1625,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | `form.title` | `"Edit compensation"` |
 | `form.validations` | |
 | `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `form.wageTypeLabel` | `"Compensation type"` |
 | <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
 | <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
@@ -2368,6 +2369,7 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.firstName` | `"First name is required for individual contractors"` |
 | `validations.firstNameFormat` | `"First name is not valid"` |
 | `validations.hourlyRate` | `"Hourly rate is required for hourly contractors"` |
+| `validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `validations.lastName` | `"Last name is required for individual contractors"` |
 | `validations.lastNameFormat` | `"Last name is not valid"` |
 | `validations.ssn` | `"SSN is required for individual contractors"` |

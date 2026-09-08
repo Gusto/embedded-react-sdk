@@ -384,7 +384,10 @@ function ContractorProfileReady({
                   label={t('fields.hourlyRate.label')}
                   min={0}
                   format="currency"
-                  validationMessages={{ REQUIRED: t('validations.hourlyRate') }}
+                  validationMessages={{
+                    REQUIRED: t('validations.hourlyRate'),
+                    MAX_HOURLY_RATE: t('validations.hourlyRateMax'),
+                  }}
                 />
               )}
 
