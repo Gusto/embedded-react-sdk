@@ -15,6 +15,7 @@ export {
 } from './contractorPaySchema'
 export {
   type RequiredValidation,
+  type MaxHourlyRateValidation,
   type WageTypeFieldProps,
   type HourlyRateFieldProps,
 } from './fields'
