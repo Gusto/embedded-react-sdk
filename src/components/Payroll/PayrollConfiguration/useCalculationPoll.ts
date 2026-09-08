@@ -21,8 +21,20 @@ type CalculationOutcome =
  * completion gate depend on a render arriving.
  */
 interface CalculationPollRun {
+  /**
+   * Fast calculations may transition directly to `CalculateSuccess` between ticks, without ever
+   * seeing the `Calculating` status.
+   * If we know the previous `calculatedAt` timestamp and it changes, we know our polling can resolve.
+   */
   baselineCalculatedAt: number | null
-  sawCalculating: boolean
+  /**
+   * The API contract guarantees no relationship between `processingRequest.status` and `calculatedAt` —
+   * a deduped/coalesced calculate can legitimately return `CalculateSuccess` with the exact same
+   * `calculatedAt` as the baseline captured when this run started.
+   * If we have seen `Calculating` status during this run, and it changes to `CalculateSuccess`,
+   * we know our polling can resolve even if the timestamp hasn't changed.
+   */
+  sawCalculatingThisPoll: boolean
 }
 
 /** @internal */
@@ -44,7 +56,7 @@ const evaluateCalculationOutcome = (
   const payroll = data.payrollShow
 
   if (isCalculatingStatus(payroll?.processingRequest)) {
-    if (run) run.sawCalculating = true
+    if (run) run.sawCalculatingThisPoll = true
     return { done: false }
   }
 
@@ -54,7 +66,7 @@ const evaluateCalculationOutcome = (
 
   const calculatedAt = payroll?.calculatedAt
   const isNewCalculation =
-    run?.sawCalculating === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
+    run?.sawCalculatingThisPoll === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
 
   if (isNewCalculation && isCalculatedStatus(payroll?.processingRequest, calculatedAt)) {
     return { done: true, value: { type: 'calculated', payroll } }

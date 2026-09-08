@@ -359,7 +359,7 @@ const Root = ({
           startCalculationPoll({
             baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
             // We just submitted the payroll, so we haven't yet seen it return with the calculating status
-            sawCalculating: false,
+            sawCalculatingThisPoll: false,
           })
         } catch (error) {
           // Calculate itself failed before polling ever started (e.g. a 409 conflict), so let
@@ -441,7 +441,7 @@ const Root = ({
     startCalculationPoll({
       baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
       // We have seen the calculating status, which is why we're starting to poll now until it completes or fails.
-      sawCalculating: true,
+      sawCalculatingThisPoll: true,
     })
   }, [
     payrollData.payrollShow?.processingRequest,
