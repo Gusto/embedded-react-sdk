@@ -9,6 +9,7 @@ import {
   handleDeleteContractor,
   handleCancelContractorDismissal,
   handleCancelContractorRehire,
+  handleScheduleContractorDismissal,
   handleScheduleContractorRehire,
 } from '@/test/mocks/apis/contractors'
 import { contractorEvents } from '@/shared/constants'
@@ -78,17 +79,26 @@ describe('ManagementContractorList — Active tab', () => {
     expect(screen.getByText(/Last day /)).toBeInTheDocument()
   })
 
-  it('does not offer "Dismiss contractor" on an active row — no dismissal flow exists yet', async () => {
+  it('offers "Dismiss contractor" and fires contractor/dismiss without calling the mutation', async () => {
     mockList([{ ...baseContractor }])
 
+    const dismissResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 200 }),
+    )
+    server.use(handleScheduleContractorDismissal(dismissResolver))
+
+    const onEvent = vi.fn()
     const user = userEvent.setup()
-    renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={() => {}} />)
+    renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={onEvent} />)
 
     await screen.findByText('Ada Lovelace')
     await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Dismiss contractor' }))
 
-    expect(await screen.findByRole('menuitem', { name: 'View details' })).toBeInTheDocument()
-    expect(screen.queryByRole('menuitem', { name: 'Dismiss contractor' })).not.toBeInTheDocument()
+    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DISMISS, {
+      contractorId: 'contractor-123',
+    })
+    expect(dismissResolver).not.toHaveBeenCalled()
   })
 
   it('cancels a scheduled dismissal via the confirm dialog', async () => {

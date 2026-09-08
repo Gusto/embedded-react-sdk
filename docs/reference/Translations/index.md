@@ -1662,6 +1662,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlistcontinuecta"></a> `continueCta` | `"Continue"` |
 | <a id="property-contractormanagementcontractorlistcontractorlistlabel"></a> `contractorListLabel` | `"List of contractors"` |
 | <a id="property-contractormanagementcontractorlistdismissaldatelabel"></a> `dismissalDateLabel` | `"Dismissal date"` |
+| <a id="property-contractormanagementcontractorlistdismisscta"></a> `dismissCta` | `"Dismiss contractor"` |
 | <a id="property-contractormanagementcontractorlisteditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-contractormanagementcontractorlistemptystate"></a> `emptyState` | |
 | `emptyState.active` | |

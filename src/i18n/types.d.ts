@@ -2693,6 +2693,8 @@ export namespace Translations {
     viewDetailsCta: string
     /** @defaultValue `"Remove"` */
     removeCta: string
+    /** @defaultValue `"Dismiss contractor"` */
+    dismissCta: string
     /** @defaultValue `"Rehire contractor"` */
     rehireCta: string
     /** @defaultValue `"Cancel self-onboarding"` */

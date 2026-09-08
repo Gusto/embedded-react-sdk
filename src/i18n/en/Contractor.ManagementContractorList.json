@@ -21,6 +21,7 @@
   "continueCta": "Continue",
   "viewDetailsCta": "View details",
   "removeCta": "Remove",
+  "dismissCta": "Dismiss contractor",
   "rehireCta": "Rehire contractor",
   "cancelSelfOnboardingCta": "Cancel self-onboarding",
   "cancelDismissalCta": "Cancel dismissal",
