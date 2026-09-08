@@ -153,13 +153,76 @@ export interface JobFields {
 }
 
 /**
+ * Presentation props accepted by a bound reimbursement description (text) field.
+ *
+ * @remarks
+ * The hook binds the react-hook-form `name` internally; the UI supplies copy and
+ * layout props (label, placeholder, `shouldVisuallyHideLabel`).
+ *
+ * @public
+ */
+export type ReimbursementDescriptionFieldProps = Omit<
+  TextInputProps,
+  'name' | 'value' | 'onChange' | 'isInvalid' | 'type'
+>
+
+/**
+ * The draft "add reimbursement" field group exposed on
+ * `form.Fields.reimbursementDraft`.
+ *
+ * @remarks
+ * A single in-progress row the UI reveals when the user starts adding a
+ * reimbursement. `Description` and `Amount` bind to `reimbursementDraft.description`
+ * / `reimbursementDraft.amount`. The UI shows them while `form.reimbursementDraft.isAdding`
+ * is `true`, then calls `actions.saveReimbursement` (commits to the list) or
+ * `actions.cancelReimbursement` (discards). Committed rows are rendered from
+ * `data.reimbursements`, not from bound fields.
+ *
+ * @public
+ */
+export interface ReimbursementDraftFields {
+  /** Description field pre-bound to the draft's form path. */
+  Description: ComponentType<ReimbursementDescriptionFieldProps>
+  /** Amount field pre-bound to the draft's form path. */
+  Amount: PayrollEditEmployeeFieldComponent
+}
+
+/**
+ * A committed reimbursement row for display in the consumer's table.
+ *
+ * @remarks
+ * Exposed on `data.reimbursements`, seeded from the employee's existing
+ * reimbursements and appended to as the user saves drafts. Display-only: the UI
+ * renders `description`, `amount`, and the recurring/one-time `type`, plus a
+ * remove control wired to `actions.removeReimbursement(index)`. `index` is the
+ * row's position in the underlying form array (the removal handle); `uuid` is
+ * present for rows that already exist server-side.
+ *
+ * @public
+ */
+export interface ReimbursementRow {
+  /** Opaque, stable React key. */
+  key: string
+  /** The row's index in the reimbursements form array; pass to `removeReimbursement`. */
+  index: number
+  /** The reimbursement's server UUID, when it already exists. */
+  uuid?: string
+  /** The reimbursement description (may be blank; the UI supplies a fallback). */
+  description: string
+  /** The reimbursement amount as a decimal string. */
+  amount: string
+  /** Whether this reimbursement recurs. Recurring rows are managed outside payroll. */
+  recurring: boolean
+}
+
+/**
  * The render-ready field collections exposed on `form.Fields`.
  *
  * @remarks
  * Job-scoped inputs (hours, additional earnings) are grouped under `jobs`, one
  * entry per job, so multi-job employees render correctly. Employee-scoped
- * sections (other earnings, time off, final payout, payment method) stay
- * top-level.
+ * sections (other earnings, time off, final payout, payment method,
+ * reimbursements) stay top-level.
  *
  * @public
  */
@@ -174,6 +237,12 @@ export interface PayrollEditEmployeeFields {
   finalPayout?: TimeOffEntry[]
   /** Payment-method selector, present only when the employee has direct deposit set up. */
   paymentMethod?: PayrollEditEmployeePaymentMethodField
+  /**
+   * The draft "add reimbursement" field group, present only for itemized
+   * (non-off-cycle) payrolls. Render while `form.reimbursementDraft.isAdding` is
+   * `true`; committed rows come from `data.reimbursements`.
+   */
+  reimbursementDraft?: ReimbursementDraftFields
 }
 
 /**
@@ -207,6 +276,26 @@ function createPaymentMethodField(): PayrollEditEmployeePaymentMethodField {
     return (
       <RadioGroupHookField<never, PayrollUpdatePaymentMethod> {...props} name="paymentMethod" />
     )
+  }
+}
+
+function createTextField(name: string): ComponentType<ReimbursementDescriptionFieldProps> {
+  return function BoundTextField(props: ReimbursementDescriptionFieldProps) {
+    return <TextInputField {...props} name={name} />
+  }
+}
+
+/**
+ * Builds the draft "add reimbursement" field group, binding its Description and
+ * Amount fields to the `reimbursementDraft` form path.
+ *
+ * @returns The pre-bound draft field group for `form.Fields.reimbursementDraft`.
+ * @internal
+ */
+export function createReimbursementDraftFields(): ReimbursementDraftFields {
+  return {
+    Description: createTextField('reimbursementDraft.description'),
+    Amount: createNumberField('reimbursementDraft.amount'),
   }
 }
 
