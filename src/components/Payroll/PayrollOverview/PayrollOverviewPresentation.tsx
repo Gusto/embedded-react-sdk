@@ -38,6 +38,7 @@ import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
+  employeeFlsaStatusByUuid?: Record<string, string | undefined>
   bankAccount?: CompanyBankAccount
   taxes: Record<string, { employee: number; employer: number }>
   status?: PayrollOverviewStatus
@@ -79,6 +80,7 @@ export const PayrollOverviewPresentation = ({
   onPayrollReceipt,
   onPaystubDownload,
   payrollData,
+  employeeFlsaStatusByUuid = {},
   bankAccount,
   taxes,
   status = PayrollOverviewStatus.Viewing,
@@ -384,9 +386,9 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.compensationType'),
               render: (employeeCompensations: EmployeeCompensations) => {
-                const flsaStatus = employeeCompensations.hourlyCompensations?.find(
-                  compensation => compensation.flsaStatus,
-                )?.flsaStatus
+                const flsaStatus = employeeCompensations.employeeUuid
+                  ? employeeFlsaStatusByUuid[employeeCompensations.employeeUuid]
+                  : undefined
 
                 switch (flsaStatus) {
                   case FlsaStatus.EXEMPT:

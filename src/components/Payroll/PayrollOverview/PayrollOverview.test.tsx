@@ -65,6 +65,7 @@ const basePayrollData: PayrollShow = {
 
 let mockPayrollData = { ...basePayrollData }
 let mockIsFetching = false
+let mockShowEmployees: { uuid: string; flsaStatus?: string }[] = []
 
 vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGet: () => ({
@@ -102,6 +103,12 @@ vi.mock('@gusto/embedded-api/react-query/bankAccountsGet', () => ({
 
 vi.mock('@gusto/embedded-api/react-query/wireInRequestsGet', () => ({
   useWireInRequestsGet: () => ({ data: undefined }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+  useEmployeesList: () => ({
+    data: { showEmployees: mockShowEmployees },
+  }),
 }))
 
 vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
@@ -279,6 +286,47 @@ describe('PayrollOverview tax totals', () => {
     // Aggregate amount ($100.00) is shown; the page-level sum ($1.00) is not.
     expect(screen.getAllByText('$100.00').length).toBeGreaterThan(0)
     expect(screen.queryByText('$1.00')).not.toBeInTheDocument()
+  })
+})
+
+describe('PayrollOverview compensation type', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
+    mockShowEmployees = []
+  })
+
+  it('populates compensation type for a salaried employee with no hourlyCompensations entry', async () => {
+    const user = userEvent.setup()
+    mockPayrollData = {
+      ...basePayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-salaried',
+          firstName: 'Patricia',
+          lastName: 'Churchland',
+          excluded: false,
+          fixedCompensations: [{ name: 'Salary', amount: '2000.0' }],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          grossPay: '2000',
+          netPay: '1600',
+          checkAmount: '1600',
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+    mockShowEmployees = [{ uuid: 'emp-salaried', flsaStatus: 'Exempt' }]
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
+
+    expect(await screen.findByText('Salaried / Exempt')).toBeInTheDocument()
   })
 })
 

@@ -1,6 +1,7 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payrollsSubmit'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { usePayrollsGet } from '@gusto/embedded-api/react-query/payrollsGet'
+import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
@@ -191,6 +192,24 @@ const Root = ({
     { enabled: !!wireInId },
   )
   const wireInRequest = wireInRequestData?.wireInRequest
+
+  // Scoped to the current page's employees so this stays bounded regardless of company size,
+  // since `flsaStatus` (compensation type) isn't available on employeeCompensations for
+  // employees without an hourlyCompensations line item (e.g. salaried employees).
+  const employeeUuids = (payrollData?.employeeCompensations ?? [])
+    .map(employeeCompensation => employeeCompensation.employeeUuid)
+    .filter((uuid): uuid is string => !!uuid)
+
+  const { data: employeesData } = useEmployeesList(
+    { companyId, uuids: employeeUuids },
+    { enabled: employeeUuids.length > 0 },
+  )
+  const employeeFlsaStatusByUuid = (employeesData?.showEmployees ?? []).reduce<
+    Record<string, string | undefined>
+  >((acc, employee) => {
+    acc[employee.uuid] = employee.flsaStatus
+    return acc
+  }, {})
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
@@ -474,6 +493,7 @@ const Root = ({
       canCancel={canCancelPayroll(payrollData) && !readOnly}
       canEdit={!readOnly}
       payrollData={payrollData}
+      employeeFlsaStatusByUuid={employeeFlsaStatusByUuid}
       bankAccount={bankAccount}
       taxes={taxes}
       alerts={combinedAlerts}
