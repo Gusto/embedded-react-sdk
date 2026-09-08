@@ -1,0 +1,33 @@
+{
+  "backToListCta": "Volver a empleados",
+  "cancelCta": "Cancelar incorporación",
+  "deleteDialog": {
+    "confirmCta": "Eliminar empleado",
+    "description": "Esto eliminará permanentemente a este empleado de tu cuenta. Esta acción no se puede deshacer.",
+    "title": "¿Cancelar la incorporación del empleado?"
+  },
+  "dismissCta": "Despedir empleado",
+  "employeeListLabel": "Lista de empleados",
+  "emptyState": {
+    "active": {
+      "description": "Los empleados que hayan completado la incorporación aparecerán aquí",
+      "title": "No hay empleados activos"
+    },
+    "dismissed": {
+      "description": "Los empleados dados de baja aparecerán aquí",
+      "title": "No hay empleados despedidos"
+    },
+    "onboarding": {
+      "description": "Los empleados que se estén incorporando actualmente aparecerán aquí",
+      "title": "No hay empleados en incorporación"
+    }
+  },
+  "hamburgerTitle": "Menú de acciones del empleado",
+  "lastDayLabel": "Último día",
+  "tabs": {
+    "active": "Activo",
+    "dismissed": "Descartado",
+    "onboarding": "Incorporación"
+  },
+  "tabsLabel": "Pestañas de estado del empleado"
+}

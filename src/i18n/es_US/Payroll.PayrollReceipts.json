@@ -1,0 +1,39 @@
+{
+  "breadcrumbLabel": "Recibos",
+  "breakdown": {
+    "category": "Categoría",
+    "directDeposits": "Depósitos directos",
+    "garnishments": "Embargos",
+    "reimbursements": "Reembolsos",
+    "taxes": "Impuestos (empleado y empleador)"
+  },
+  "employee": {
+    "childSupport": "Manutención de menores",
+    "netPay": "Pago neto",
+    "reimbursement": "Reembolso",
+    "totalEmployees": "{{count}} empleados en esta nómina",
+    "totalEmployees_one": "{{count}} empleado en esta nómina",
+    "totalEmployees_other": "{{count}} empleados en esta nómina",
+    "totalTaxes": "Impuestos totales"
+  },
+  "exitFlowCta": "Salir",
+  "receipt": {
+    "address": "525 20th St, San Francisco, CA 94107 | 415-777-8888",
+    "companyInfo": "Tu proveedor de nómina se asocia con Gusto Inc. para el procesamiento de pagos. Gusto Inc. es un transmisor de dinero autorizado. Obtén más información en nuestra página de licencias.",
+    "debitDate": "Fecha de débito",
+    "detailsLabel": "Detalles del recibo",
+    "employeeCount": "{{count}} empleados",
+    "employeeCount_one": "{{count}} empleado",
+    "employeeCount_other": "{{count}} empleados",
+    "from": "De",
+    "receiptId": "ID del recibo",
+    "to": "Para",
+    "totalLabel": "Total"
+  },
+  "sections": {
+    "debitedLabel": "Debitado"
+  },
+  "tax": {
+    "name": "Tipo de impuesto"
+  }
+}

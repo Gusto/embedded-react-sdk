@@ -1,0 +1,44 @@
+{
+  "addReimbursementCta": "Agregar reembolso único",
+  "addReimbursementLink": "Agregar reembolso único",
+  "additionalEarningsTitle": "Ganancias adicionales",
+  "breadcrumbLabel": "{{firstName}} {{lastName}}",
+  "cancelReimbursementCta": "Cancelar reembolso",
+  "compensationNames": {
+    "doubleOvertime": "Horas extra dobles"
+  },
+  "finalPayoutDescription": "Ingresa las horas no utilizadas que se pagarán en el cheque final. Esto es independiente de las horas de tiempo libre usadas durante el período de pago.",
+  "finalPayoutTitle": "Pago de tiempo libre no utilizado",
+  "fixedCompensationNames": {
+    "cashTips": "Propinas en efectivo",
+    "correctionPayment": "Pago de corrección",
+    "paycheckTips": "Propinas del cheque de pago",
+    "reimbursement": "Reembolso"
+  },
+  "grossPayLabel": "Pago bruto (sin incluir reembolsos)",
+  "grossPayLabelMobile": "Pago bruto: {{grossPay}} (sin incluir reembolsos)",
+  "pageTitle": "Editar la nómina de {{employeeName}}",
+  "paymentMethodDescription": "Cambiar el método de pago predeterminado solo se aplicará a esta nómina.",
+  "paymentMethodOptions": {
+    "check": "Cheque",
+    "directDeposit": "Depósito directo"
+  },
+  "paymentMethodTitle": "Pago",
+  "recurringReimbursementLabel": "{{description}} (reembolso recurrente)",
+  "recurringReimbursementTooltip": "Los reembolsos recurrentes se administran fuera de la nómina.",
+  "regularHoursTitle": "Horas regulares",
+  "reimbursementDescriptionPlaceholder": "por ejemplo, suministros de oficina",
+  "reimbursementEmptyTitle": "Sin reembolsos",
+  "reimbursementTitle": "Reembolsos",
+  "reimbursementTypeOneTime": "Único",
+  "reimbursementTypeRecurring": "Recurrente",
+  "reimbursementUnnamedFallback": "Reembolso",
+  "reimbursementsTableLabel": "Reembolsos",
+  "removeReimbursementLabel": "Eliminar el reembolso de {{description}}",
+  "saveReimbursementCta": "Guardar reembolso",
+  "timeOffBalance": {
+    "remaining": "Quedan {{balance}}"
+  },
+  "timeOffTitle": "Tiempo libre",
+  "timeOffTitleDismissal": "Horas de tiempo libre usadas en este período de pago"
+}

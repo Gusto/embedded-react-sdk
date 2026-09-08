@@ -1,0 +1,39 @@
+{
+  "errorCodes": {
+    "R01": {
+      "body": "Intentamos hacer un débito en su cuenta bancaria. Lamentablemente, recibimos el siguiente error: <medium>R01: Fondos insuficientes.<\/medium>",
+      "instruction": "Esto significa que tu cuenta bancaria no tenía fondos suficientes para cubrir los débitos de tu factura. Transfiere fondos suficientes a tu cuenta bancaria. Luego selecciona <medium>Volver a enviar el pago<\/medium> a continuación.",
+      "title": "R01: Fondos insuficientes"
+    },
+    "R02": {
+      "body": "Intentamos hacer un débito en su cuenta bancaria. Lamentablemente, recibimos el siguiente error: <medium>R02: Cuenta cerrada.<\/medium>",
+      "instruction": "Este error significa que la cuenta que intentamos debitar está cerrada. Conecta una cuenta bancaria nueva. Luego selecciona <medium>Volver a enviar el pago<\/medium> a continuación.",
+      "title": "R02: Cuenta cerrada"
+    },
+    "R16": {
+      "body": "Intentamos debitar de tu cuenta bancaria. Lamentablemente, recibimos el siguiente error: <medium>R16: Cuenta congelada.<\/medium>",
+      "instruction": "Los bancos pueden congelar una cuenta por varias razones (por ejemplo, para protegerte a ti y a otros del fraude, etc.). Trabaja con tu banco para entender por qué se congeló tu cuenta bancaria y para descongelarla. Una vez que hayas confirmado con tu banco que tu cuenta está lista, selecciona <medium>Reenviar pago<\/medium> a continuación.",
+      "title": "R16: Cuenta congelada"
+    },
+    "R29": {
+      "achCodes": [
+        "1453942850",
+        "1800948598",
+        "2453942850",
+        "4270465600",
+        "9138864001",
+        "9138864004",
+        "9138864002",
+        "9138864003",
+        "9138864007"
+      ],
+      "body": "Intentamos debitar de tu cuenta bancaria. Lamentablemente, recibimos el siguiente error: <medium>R29: El cliente corporativo indica que no está autorizado.<\/medium>",
+      "instruction": "Una vez que lo haya hecho, seleccione <medium>Volver a enviar pago<\/medium> a continuación.",
+      "listDescription": "Por lo general, este error significa que su banco necesita autorizarnos para debitar su cuenta. Trabaje con su banco para asegurarse de que los siguientes códigos ACH estén autorizados para debitar su cuenta:"
+    },
+    "bankError": {
+      "body": "Se produjo un error bancario. Comunícate con soporte para desbloquear tu cuenta.",
+      "title": "Error bancario"
+    }
+  }
+}

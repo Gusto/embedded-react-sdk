@@ -7022,6 +7022,8 @@ export namespace Translations {
     endDateLabel: string
     /** @defaultValue `"Payment date"` */
     checkDateLabel: string
+    /** @defaultValue `"Enter the date you'd like your employees to receive payment."` */
+    checkDateDescription: string
     validations: {
       /** @defaultValue `"Start date is required"` */
       startDateRequired: string
@@ -8600,6 +8602,8 @@ export namespace Translations {
       ensureRequired: string
     }
     icons: {
+      /** @defaultValue `"Completed step"` */
+      completedStep: string
       /** @defaultValue `"Show options"` */
       selectArrow: string
       /** @defaultValue `"Show calendar"` */

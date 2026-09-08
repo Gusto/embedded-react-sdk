@@ -1,0 +1,8 @@
+{
+  "emptyState": "No se encontraron contratistas elegibles.",
+  "searchLabel": "Buscar por nombre",
+  "searchPlaceholder": "Buscar por nombre",
+  "tableLabel": "Contratistas",
+  "wageColumn": "Salario",
+  "wageHourly": "Por hora · {{rate}}\/hr"
+}

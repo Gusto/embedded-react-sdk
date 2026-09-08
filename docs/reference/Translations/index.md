@@ -58,6 +58,7 @@ Translation keys for the `common` i18n namespace.
 | `fileInput.uploadInstructions` | `"<clickToUpload>Click to upload</clickToUpload> or drag and drop"` |
 | <a id="property-commonicons"></a> `icons` | |
 | `icons.calendarArrow` | `"Show calendar"` |
+| `icons.completedStep` | `"Completed step"` |
 | `icons.nextMonth` | `"Show next month"` |
 | `icons.paginationFirst` | `"Navigate to first page"` |
 | `icons.paginationLast` | `"Navigate to last page"` |
@@ -4715,6 +4716,7 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 
 | Property | Default value |
 | ------ | ------ |
+| <a id="property-payrolloffcyclepayperioddateformcheckdatedescription"></a> `checkDateDescription` | `"Enter the date you'd like your employees to receive payment."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckdatelabel"></a> `checkDateLabel` | `"Payment date"` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlydescription"></a> `checkOnlyDescription` | `"Select this option if all employees will be paid by check only. This allows you to set the check date to today or any future date."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlylabel"></a> `checkOnlyLabel` | `"Check-only payroll"` |
