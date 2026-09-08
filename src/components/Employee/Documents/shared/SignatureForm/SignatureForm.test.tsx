@@ -52,7 +52,7 @@ describe('Employee SignatureForm', () => {
       renderWithProviders(<SignatureForm {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
       })
     })
 
@@ -61,7 +61,7 @@ describe('Employee SignatureForm', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByLabelText('I am the employee and I agree to sign electronically'),
+          screen.getByLabelText(/^I am the employee and I agree to sign electronically *\*?$/),
         ).toBeInTheDocument()
       })
     })
@@ -91,12 +91,12 @@ describe('Employee SignatureForm', () => {
       renderWithProviders(<SignatureForm {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Signature'), 'Jane Doe')
+      await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Jane Doe')
       await user.click(
-        screen.getByLabelText('I am the employee and I agree to sign electronically'),
+        screen.getByLabelText(/^I am the employee and I agree to sign electronically *\*?$/),
       )
       await user.click(screen.getByRole('button', { name: 'Sign form' }))
 
@@ -142,12 +142,12 @@ describe('Employee SignatureForm', () => {
       renderWithProviders(<SignatureForm {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Signature'), 'Jane Doe')
+      await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Jane Doe')
       await user.click(
-        screen.getByLabelText('I am the employee and I agree to sign electronically'),
+        screen.getByLabelText(/^I am the employee and I agree to sign electronically *\*?$/),
       )
       await user.click(screen.getByRole('button', { name: 'Sign form' }))
 
@@ -170,11 +170,11 @@ describe('Employee SignatureForm', () => {
       renderWithProviders(<SignatureForm {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
       })
 
       await user.click(
-        screen.getByLabelText('I am the employee and I agree to sign electronically'),
+        screen.getByLabelText(/^I am the employee and I agree to sign electronically *\*?$/),
       )
       await user.click(screen.getByRole('button', { name: 'Sign form' }))
 
@@ -192,10 +192,10 @@ describe('Employee SignatureForm', () => {
       renderWithProviders(<SignatureForm {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Signature'), 'Jane Doe')
+      await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Jane Doe')
       await user.click(screen.getByRole('button', { name: 'Sign form' }))
 
       await waitFor(() => {

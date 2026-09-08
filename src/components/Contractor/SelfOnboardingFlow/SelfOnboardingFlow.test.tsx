@@ -61,7 +61,7 @@ describe('Contractor SelfOnboardingFlow', () => {
 
     // Profile (self-onboarding, isAdmin=false)
     await screen.findByText('Complete your profile')
-    await user.type(await screen.findByLabelText('Social Security Number'), '123-45-6789')
+    await user.type(await screen.findByLabelText(/^Social Security Number *\*?$/), '123-45-6789')
     await user.click(screen.getByRole('button', { name: 'Continue' }))
 
     // Address (pre-filled from the address on file)

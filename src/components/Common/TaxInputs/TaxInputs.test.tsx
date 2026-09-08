@@ -34,7 +34,7 @@ describe('TaxInputs', () => {
       )
 
       expect(screen.getByText('XXXXX1234')).toBeInTheDocument()
-      expect(screen.getByLabelText('EIN suffix')).toHaveAttribute('placeholder', '##')
+      expect(screen.getByLabelText(/^EIN suffix *\*?$/)).toHaveAttribute('placeholder', '##')
     })
 
     it('renders normally, without a start adornment, when metadata.prefix is null', () => {
@@ -49,7 +49,10 @@ describe('TaxInputs', () => {
         />,
       )
 
-      expect(screen.getByLabelText('UBI number')).toHaveAttribute('placeholder', '### ### ###')
+      expect(screen.getByLabelText(/^UBI number *\*?$/)).toHaveAttribute(
+        'placeholder',
+        '### ### ###',
+      )
     })
   })
 })

@@ -26,7 +26,7 @@ describe('LocationForm', () => {
 
   it('renders empty location form', async () => {
     await waitFor(() => {
-      expect(screen.getByLabelText('Street 1')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Street 1 *\*?$/)).toBeInTheDocument()
     })
   })
 
@@ -34,7 +34,7 @@ describe('LocationForm', () => {
     const submitButton = await screen.findByTestId('location-submit')
     await user.click(submitButton)
 
-    const cityField = await screen.findByLabelText('City')
+    const cityField = await screen.findByLabelText(/^City *\*?$/)
     expect(cityField).toHaveAttribute('aria-invalid', 'true')
     expect(onEvent).not.toHaveBeenCalledWith(companyEvents.COMPANY_LOCATION_CREATED)
   })
@@ -42,14 +42,14 @@ describe('LocationForm', () => {
   //TODO: will re-enable after speakeasy transition
   // it('submits sucessfully with correct data', async () => {
   //   await waitFor(() => {
-  //     expect(screen.getByLabelText('Street 1')).toBeInTheDocument()
+  //     expect(screen.getByLabelText(/^Street 1 *\*?$/)).toBeInTheDocument()
   //   })
 
-  //   await user.type(screen.getByLabelText('Street 1'), '123 Main street')
-  //   await user.type(screen.getByLabelText('City'), 'New York')
-  //   await user.click(screen.getByLabelText('State'))
+  //   await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main street')
+  //   await user.type(screen.getByLabelText(/^City *\*?$/), 'New York')
+  //   await user.click(screen.getByLabelText(/^State *\*?$/))
   //   await user.click(screen.getByRole('option', { name: 'New York' }))
-  //   await user.type(screen.getByLabelText('Zip'), '10005')
+  //   await user.type(screen.getByLabelText(/^Zip *\*?$/), '10005')
   //   await user.type(screen.getByLabelText(/Phone Number/i), '9558799898')
 
   //   const submitButton = await screen.findByTestId('location-submit')
@@ -156,7 +156,7 @@ describe('LocationForm (Enter key submits with a native-button component overrid
   })
 
   it('submits the form when Enter is pressed in a field instead of cancelling', async () => {
-    const streetField = await screen.findByLabelText('Street 1')
+    const streetField = await screen.findByLabelText(/^Street 1 *\*?$/)
     await user.click(streetField)
     await user.keyboard('{Enter}')
 

@@ -932,7 +932,7 @@ describe('Employee Profile', () => {
       await user.type(screen.getByLabelText(/Street 1/), '456 Oak Ave')
       await user.type(screen.getByLabelText(/City/), 'Denver')
       await user.type(screen.getByLabelText(/Zip/), '80201')
-      await user.click(screen.getByLabelText('State'))
+      await user.click(screen.getByLabelText(/^State *\*?$/))
       await user.click(await screen.findByRole('option', { name: 'Colorado' }))
 
       await user.click(screen.getByRole('button', { name: /Continue/ }))

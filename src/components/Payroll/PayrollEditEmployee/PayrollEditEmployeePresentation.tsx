@@ -678,7 +678,6 @@ export const PayrollEditEmployeePresentation = ({
                             type="number"
                             min={0}
                             adornmentEnd={t('hoursUnit')}
-                            isRequired
                             label={getCompensationLabel(compensationName)}
                             name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
                           />
@@ -742,7 +741,6 @@ export const PayrollEditEmployeePresentation = ({
                     type="number"
                     min={0}
                     adornmentStart="$"
-                    isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
                     // useField only surfaces this once react-hook-form has flagged the
@@ -763,7 +761,6 @@ export const PayrollEditEmployeePresentation = ({
                   type="number"
                   min={0}
                   adornmentStart="$"
-                  isRequired
                   label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
                   name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
                   errorMessage={t('validations.negativeAmount')}

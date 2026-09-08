@@ -42,7 +42,9 @@ describe('Contractor SignatureForm', () => {
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
-    expect(screen.getByLabelText('Entity or individual name (1)')).toHaveValue('Klay Thompson')
+    expect(screen.getByLabelText(/^Entity or individual name \(1\) *\*?$/)).toHaveValue(
+      'Klay Thompson',
+    )
   })
 
   it('shows the on-file SSN masked and locked, revealing an empty input after Change', async () => {
@@ -76,7 +78,7 @@ describe('Contractor SignatureForm', () => {
 
     await screen.findByRole('button', { name: 'Sign' })
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
-    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Klay Thompson')
     await user.click(
       screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
     )
@@ -117,7 +119,7 @@ describe('Contractor SignatureForm', () => {
     expect(screen.queryByRole('button', { name: 'Change EIN' })).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
-    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Klay Thompson')
     await user.click(
       screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
     )
@@ -158,7 +160,7 @@ describe('Contractor SignatureForm', () => {
     expect(screen.queryByLabelText(/Social Security Number \(SSN\)/)).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
-    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Klay Thompson')
     await user.click(
       screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
     )
@@ -180,7 +182,7 @@ describe('Contractor SignatureForm', () => {
     await user.click(screen.getByRole('button', { name: 'Change SSN' }))
     await user.type(screen.getByLabelText(/Social Security Number \(SSN\)/), '123')
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
-    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Klay Thompson')
     await user.click(
       screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
     )
@@ -203,8 +205,8 @@ describe('Contractor SignatureForm', () => {
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
-    expect(screen.getByLabelText('Entity or individual name (1)')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Business name (2)')).not.toBeInTheDocument()
+    expect(screen.getByLabelText(/^Entity or individual name \(1\) *\*?$/)).toBeInTheDocument()
+    expect(screen.queryByLabelText(/^Business name \(2\) *\*?$/)).not.toBeInTheDocument()
   })
 
   it('presence-gates core fields too, guarding against API divergence', async () => {
@@ -221,7 +223,9 @@ describe('Contractor SignatureForm', () => {
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
-    expect(screen.queryByLabelText('Entity or individual name (1)')).not.toBeInTheDocument()
+    expect(
+      screen.queryByLabelText(/^Entity or individual name \(1\) *\*?$/),
+    ).not.toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'C-Corporation' })).toBeInTheDocument()
   })
 
@@ -239,10 +243,10 @@ describe('Contractor SignatureForm', () => {
     renderForm()
 
     await screen.findByRole('button', { name: 'Sign' })
-    expect(screen.queryByLabelText('LLC tax classification code')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/^LLC tax classification code *\*?$/)).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('radio', { name: 'LLC' }))
-    expect(screen.getByLabelText('LLC tax classification code')).toBeInTheDocument()
+    expect(screen.getByLabelText(/^LLC tax classification code *\*?$/)).toBeInTheDocument()
   })
 
   it('blocks submission and skips the API when consent is not given', async () => {
@@ -282,7 +286,7 @@ describe('Contractor SignatureForm', () => {
 
     await screen.findByRole('button', { name: 'Sign' })
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
-    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Klay Thompson')
     await user.click(
       screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
     )

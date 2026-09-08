@@ -71,7 +71,7 @@ describe('AddressEditForm — individual contractor', () => {
     renderWithProviders(<AddressEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('999 Kiera Stravenue')
-    await user.clear(screen.getByLabelText('Street 1'))
+    await user.clear(screen.getByLabelText(/^Street 1 *\*?$/))
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -96,8 +96,8 @@ describe('AddressEditForm — individual contractor', () => {
     renderWithProviders(<AddressEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('999 Kiera Stravenue')
-    await user.clear(screen.getByLabelText('City'))
-    await user.type(screen.getByLabelText('City'), 'Oakland')
+    await user.clear(screen.getByLabelText(/^City *\*?$/))
+    await user.type(screen.getByLabelText(/^City *\*?$/), 'Oakland')
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {

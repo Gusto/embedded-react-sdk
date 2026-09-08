@@ -2,10 +2,10 @@ import { useId } from 'react'
 import classNames from 'classnames'
 import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
-import { FieldCaption } from '../FieldCaption'
 import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 import styles from './Fieldset.module.scss'
 import { getDataProps } from '@/helpers/getDataProps'
+import { FieldCaption } from '@/components/Common/FieldCaption'
 
 /** @internal */
 export interface FieldsetProps extends Omit<

@@ -76,7 +76,7 @@ describe('Contractor DocumentSigner', () => {
 
     await goToSignatureForm(user)
     await user.click(screen.getByRole('radio', { name: 'C-Corporation' }))
-    await user.type(screen.getByLabelText('Signature'), 'Klay Thompson')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Klay Thompson')
     await user.click(
       screen.getByRole('checkbox', { name: 'I agree to electronically sign this form.' }),
     )

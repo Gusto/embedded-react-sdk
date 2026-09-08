@@ -302,7 +302,7 @@ describe('PayrollEditEmployeePresentation', () => {
       />,
     )
 
-    expect(await screen.findByLabelText('Regular Hours')).toBeInTheDocument()
+    expect(await screen.findByLabelText(/^Regular Hours *\*?$/)).toBeInTheDocument()
     expect(screen.queryByText('Designer')).not.toBeInTheDocument()
   })
 
@@ -310,21 +310,21 @@ describe('PayrollEditEmployeePresentation', () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getAllByLabelText('Regular Hours')).toHaveLength(2)
+      expect(screen.getAllByLabelText(/^Regular Hours *\*?$/)).toHaveLength(2)
     })
-    expect(screen.getByLabelText('Overtime')).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Overtime *\*?$/)).toBeInTheDocument()
   })
 
   it('pre-fills form fields with existing compensation hours', async () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
-    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours *\*?$/)
 
     expect(regularHoursInputs).toHaveLength(2)
     expect(regularHoursInputs[0]).toHaveValue(40)
     expect(regularHoursInputs[1]).toHaveValue(20)
 
-    const overtimeInput = screen.getByLabelText('Overtime')
+    const overtimeInput = screen.getByLabelText(/^Overtime *\*?$/)
     expect(overtimeInput).toHaveValue(5)
   })
 
@@ -355,7 +355,7 @@ describe('PayrollEditEmployeePresentation', () => {
     const user = userEvent.setup()
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours *\*?$/)
     const regularHoursJob1Input = regularHoursInputs[0]!
     await user.clear(regularHoursJob1Input)
     await user.type(regularHoursJob1Input, '45')
@@ -386,10 +386,10 @@ describe('PayrollEditEmployeePresentation', () => {
   it('filters compensations by job UUID correctly', async () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
-    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours *\*?$/)
     expect(regularHoursInputs[0]).toHaveValue(40)
 
-    const overtimeInput = screen.getByLabelText('Overtime')
+    const overtimeInput = screen.getByLabelText(/^Overtime *\*?$/)
     expect(overtimeInput).toHaveValue(5)
 
     expect(regularHoursInputs[1]).toHaveValue(20)
@@ -413,7 +413,7 @@ describe('PayrollEditEmployeePresentation', () => {
       />,
     )
 
-    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours *\*?$/)
     expect(regularHoursInputs[0]).toHaveValue(40)
   })
 
@@ -435,7 +435,7 @@ describe('PayrollEditEmployeePresentation', () => {
       />,
     )
 
-    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours *\*?$/)
     expect(regularHoursInputs[0]).toHaveValue(null)
   })
 
@@ -444,7 +444,7 @@ describe('PayrollEditEmployeePresentation', () => {
     const user = userEvent.setup()
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours *\*?$/)
     const regularHoursJob1Input = regularHoursInputs[0]!
     await user.clear(regularHoursJob1Input)
     await user.type(regularHoursJob1Input, '42')
@@ -480,15 +480,15 @@ describe('PayrollEditEmployeePresentation', () => {
       await waitFor(() => {
         expect(screen.getByText('Time off')).toBeInTheDocument()
       })
-      expect(screen.getByLabelText('Vacation Hours')).toBeInTheDocument()
-      expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Vacation Hours *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Sick Hours *\*?$/)).toBeInTheDocument()
     })
 
     it('pre-fills time off fields with existing hours', async () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
-      const vacationInput = await screen.findByLabelText('Vacation Hours')
-      const sickInput = await screen.findByLabelText('Sick Hours')
+      const vacationInput = await screen.findByLabelText(/^Vacation Hours *\*?$/)
+      const sickInput = await screen.findByLabelText(/^Sick Hours *\*?$/)
 
       expect(vacationInput).toHaveValue(8)
       expect(sickInput).toHaveValue(0)
@@ -506,7 +506,7 @@ describe('PayrollEditEmployeePresentation', () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Sick Hours *\*?$/)).toBeInTheDocument()
       })
 
       const remainingTexts = screen.queryAllByText(/remaining/)
@@ -518,7 +518,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const user = userEvent.setup()
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-      const vacationInput = await screen.findByLabelText('Vacation Hours')
+      const vacationInput = await screen.findByLabelText(/^Vacation Hours *\*?$/)
       await user.clear(vacationInput)
       await user.type(vacationInput, '16')
 
@@ -545,7 +545,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const user = userEvent.setup()
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
-      const vacationInput = await screen.findByLabelText('Vacation Hours')
+      const vacationInput = await screen.findByLabelText(/^Vacation Hours *\*?$/)
 
       await waitFor(() => {
         expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
@@ -564,7 +564,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const user = userEvent.setup()
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-      const vacationInput = await screen.findByLabelText('Vacation Hours')
+      const vacationInput = await screen.findByLabelText(/^Vacation Hours *\*?$/)
       await user.clear(vacationInput)
 
       const saveButton = screen.getByText('Save')
@@ -781,7 +781,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const user = userEvent.setup()
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-      const sickInput = await screen.findByLabelText('Sick Hours')
+      const sickInput = await screen.findByLabelText(/^Sick Hours *\*?$/)
       await user.clear(sickInput)
       await user.type(sickInput, '4')
 
@@ -811,8 +811,8 @@ describe('PayrollEditEmployeePresentation', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Additional earnings')).toBeInTheDocument()
-        expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
-        expect(screen.getByLabelText('Commission')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Bonus *\*?$/)).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Commission *\*?$/)).toBeInTheDocument()
       })
     })
 
@@ -869,7 +869,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const user = userEvent.setup()
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-      const bonusInput = await screen.findByLabelText('Bonus')
+      const bonusInput = await screen.findByLabelText(/^Bonus *\*?$/)
       await user.clear(bonusInput)
       await user.type(bonusInput, '750')
 
@@ -929,10 +929,10 @@ describe('PayrollEditEmployeePresentation', () => {
 
       expect(screen.getByText('Additional earnings')).toBeInTheDocument()
 
-      const bonusInput = screen.getByLabelText('Bonus')
+      const bonusInput = screen.getByLabelText(/^Bonus *\*?$/)
       expect(bonusInput).toHaveValue(100)
 
-      const commissionInput = screen.getByLabelText('Commission')
+      const commissionInput = screen.getByLabelText(/^Commission *\*?$/)
       expect(commissionInput).toHaveValue(50)
     })
 
@@ -1000,11 +1000,11 @@ describe('PayrollEditEmployeePresentation', () => {
 
       expect(screen.getByText('Additional earnings')).toBeInTheDocument()
 
-      expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
-      expect(screen.getByLabelText('Commission')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Bonus *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Commission *\*?$/)).toBeInTheDocument()
 
-      expect(screen.getByLabelText('Bonus')).toHaveValue(0)
-      expect(screen.getByLabelText('Commission')).toHaveValue(0)
+      expect(screen.getByLabelText(/^Bonus *\*?$/)).toHaveValue(0)
+      expect(screen.getByLabelText(/^Commission *\*?$/)).toHaveValue(0)
     })
 
     it('does not create missing compensations for owner employees', () => {
@@ -1067,11 +1067,11 @@ describe('PayrollEditEmployeePresentation', () => {
 
       renderWithProviders(<PayrollEditEmployeePresentation {...propsForSubmitTest} />)
 
-      const commissionInput = await screen.findByLabelText('Commission')
+      const commissionInput = await screen.findByLabelText(/^Commission *\*?$/)
       await user.clear(commissionInput)
       await user.type(commissionInput, '75.50')
 
-      const cashTipsInput = screen.getByLabelText('Cash tips')
+      const cashTipsInput = screen.getByLabelText(/^Cash tips *\*?$/)
       await user.clear(cashTipsInput)
       await user.type(cashTipsInput, '0')
 
@@ -1099,7 +1099,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       renderWithProviders(<PayrollEditEmployeePresentation {...propsForZeroTest} />)
 
-      const bonusInput = screen.getByLabelText('Bonus')
+      const bonusInput = screen.getByLabelText(/^Bonus *\*?$/)
       await user.clear(bonusInput)
       await user.type(bonusInput, '0')
 
@@ -1129,7 +1129,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       // findBy, not getBy: the labels are translated, so a getBy here only passes when an
       // earlier test in the file has already warmed the i18n namespace.
-      const bonusInput = await screen.findByLabelText('Bonus')
+      const bonusInput = await screen.findByLabelText(/^Bonus *\*?$/)
       await user.clear(bonusInput)
 
       const saveButton = screen.getByRole('button', { name: /save/i })
@@ -1155,7 +1155,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       // 'Paycheck tips' is an available type with no saved compensation, so there is
       // nothing to zero out and it must stay out of the payload.
-      const tipsInput = await screen.findByLabelText('Paycheck tips')
+      const tipsInput = await screen.findByLabelText(/^Paycheck tips *\*?$/)
       await user.type(tipsInput, '10')
       await user.clear(tipsInput)
 
@@ -1181,7 +1181,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       // Clear first: the field defaults to '0.00', and appending to that yields
       // '0.00-50', which a number input rejects outright and blanks.
-      const correctionInput = await screen.findByLabelText('Correction payment')
+      const correctionInput = await screen.findByLabelText(/^Correction payment *\*?$/)
       await user.clear(correctionInput)
       await user.type(correctionInput, '-50')
 
@@ -1201,7 +1201,7 @@ describe('PayrollEditEmployeePresentation', () => {
         <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
       )
 
-      const bonusInput = await screen.findByLabelText('Bonus')
+      const bonusInput = await screen.findByLabelText(/^Bonus *\*?$/)
       await user.clear(bonusInput)
       await user.type(bonusInput, '-1')
 
@@ -1221,10 +1221,10 @@ describe('PayrollEditEmployeePresentation', () => {
         <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
       )
 
-      const bonusInput = await screen.findByLabelText('Bonus')
+      const bonusInput = await screen.findByLabelText(/^Bonus *\*?$/)
       await user.clear(bonusInput)
 
-      const commissionInput = screen.getByLabelText('Commission')
+      const commissionInput = screen.getByLabelText(/^Commission *\*?$/)
       await user.clear(commissionInput)
       await user.type(commissionInput, '0')
 
@@ -1251,8 +1251,8 @@ describe('PayrollEditEmployeePresentation', () => {
         />,
       )
 
-      expect(screen.getByLabelText('Check')).toBeChecked()
-      expect(screen.getByLabelText('Direct deposit')).not.toBeChecked()
+      expect(screen.getByLabelText(/^Check *\*?$/)).toBeChecked()
+      expect(screen.getByLabelText(/^Direct deposit *\*?$/)).not.toBeChecked()
     })
 
     it('defaults to Direct Deposit when no payment method is specified', () => {
@@ -1268,8 +1268,8 @@ describe('PayrollEditEmployeePresentation', () => {
         />,
       )
 
-      expect(screen.getByLabelText('Direct deposit')).toBeChecked()
-      expect(screen.getByLabelText('Check')).not.toBeChecked()
+      expect(screen.getByLabelText(/^Direct deposit *\*?$/)).toBeChecked()
+      expect(screen.getByLabelText(/^Check *\*?$/)).not.toBeChecked()
     })
 
     it('updates payment method when form is submitted', async () => {
@@ -1286,7 +1286,7 @@ describe('PayrollEditEmployeePresentation', () => {
       )
 
       const user = userEvent.setup()
-      const checkRadio = screen.getByLabelText('Check')
+      const checkRadio = screen.getByLabelText(/^Check *\*?$/)
       await user.click(checkRadio)
 
       const saveButton = screen.getByRole('button', { name: 'Save' })
@@ -1376,7 +1376,7 @@ describe('PayrollEditEmployeePresentation', () => {
         ).toBeInTheDocument()
       })
 
-      const regularHoursInput = await screen.findByLabelText('Regular Hours')
+      const regularHoursInput = await screen.findByLabelText(/^Regular Hours *\*?$/)
       await user.clear(regularHoursInput)
       await user.type(regularHoursInput, '8')
 
@@ -1431,7 +1431,7 @@ describe('PayrollEditEmployeePresentation', () => {
         expect(screen.getByText('Gross pay: $0.00 (excluding reimbursements)')).toBeInTheDocument()
       })
 
-      const bonusInput = await screen.findByLabelText('Bonus')
+      const bonusInput = await screen.findByLabelText(/^Bonus *\*?$/)
       await user.clear(bonusInput)
       await user.type(bonusInput, '500')
 
@@ -1460,8 +1460,8 @@ describe('PayrollEditEmployeePresentation', () => {
       )
 
       expect(screen.getByText('Payment method')).toBeInTheDocument()
-      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
-      expect(screen.getByLabelText('Check')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Direct deposit *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Check *\*?$/)).toBeInTheDocument()
     })
 
     it('hides payment method control when employee does not have direct deposit set up', () => {
@@ -1470,8 +1470,8 @@ describe('PayrollEditEmployeePresentation', () => {
       )
 
       expect(screen.queryByText('Payment method')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Direct deposit')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Check')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Direct deposit *\*?$/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Check *\*?$/)).not.toBeInTheDocument()
     })
 
     it('shows payment method control by default when hasDirectDepositSetup is not provided', () => {
@@ -1483,8 +1483,8 @@ describe('PayrollEditEmployeePresentation', () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutDirectDepositFlag} />)
 
       expect(screen.getByText('Payment method')).toBeInTheDocument()
-      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
-      expect(screen.getByLabelText('Check')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Direct deposit *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Check *\*?$/)).toBeInTheDocument()
     })
 
     it('allows form submission without payment method when employee has no direct deposit', async () => {
@@ -1594,7 +1594,7 @@ describe('PayrollEditEmployeePresentation', () => {
       await user.click(addButton)
 
       expect(await screen.findByLabelText(/Description/i)).toBeInTheDocument()
-      expect(screen.getByLabelText('Amount')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Amount *\*?$/)).toBeInTheDocument()
     })
 
     it('submits a newly added reimbursement row', async () => {
@@ -1610,7 +1610,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const descriptionInput = await screen.findByLabelText(/Description/i)
       await user.type(descriptionInput, 'Office supplies')
 
-      const amountInput = screen.getByLabelText('Amount')
+      const amountInput = screen.getByLabelText(/^Amount *\*?$/)
       await user.clear(amountInput)
       await user.type(amountInput, '42.50')
 
@@ -1690,7 +1690,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const descriptionInput = await screen.findByLabelText(/Description/i)
       await user.type(descriptionInput, 'Office supplies')
 
-      const amountInput = screen.getByLabelText('Amount')
+      const amountInput = screen.getByLabelText(/^Amount *\*?$/)
       await user.type(amountInput, '-50')
 
       await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
@@ -1708,7 +1708,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
       await user.click(addButton)
 
-      const amountInput = screen.getByLabelText('Amount')
+      const amountInput = screen.getByLabelText(/^Amount *\*?$/)
       await user.type(amountInput, '-10')
       await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
 
@@ -1807,7 +1807,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByText('$50.00')).toBeInTheDocument()
       expect(screen.getByText('Recurring')).toBeInTheDocument()
       expect(screen.queryByLabelText(/Description/i)).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Amount')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Amount *\*?$/)).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: /Remove/i })).not.toBeInTheDocument()
     })
 
@@ -1848,14 +1848,14 @@ describe('PayrollEditEmployeePresentation', () => {
     it('renders a single Reimbursement input pre-filled from fixed_compensations on off-cycle', async () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...offCycleProps} />)
 
-      const reimbursementInput = await screen.findByLabelText('Reimbursement')
+      const reimbursementInput = await screen.findByLabelText(/^Reimbursement *\*?$/)
       expect(reimbursementInput).toHaveValue(75.5)
     })
 
     it('does not render the itemized Add link on off-cycle', async () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...offCycleProps} />)
 
-      await screen.findByLabelText('Reimbursement')
+      await screen.findByLabelText(/^Reimbursement *\*?$/)
       expect(
         screen.queryByRole('button', { name: 'Add one-time reimbursement' }),
       ).not.toBeInTheDocument()
@@ -1872,7 +1872,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutReimbursement} />)
 
-      const reimbursementInput = await screen.findByLabelText('Reimbursement')
+      const reimbursementInput = await screen.findByLabelText(/^Reimbursement *\*?$/)
       expect(reimbursementInput).toHaveValue(0)
     })
 
@@ -1881,7 +1881,7 @@ describe('PayrollEditEmployeePresentation', () => {
       const user = userEvent.setup()
       renderWithProviders(<PayrollEditEmployeePresentation {...offCycleProps} onSave={onSave} />)
 
-      const reimbursementInput = await screen.findByLabelText('Reimbursement')
+      const reimbursementInput = await screen.findByLabelText(/^Reimbursement *\*?$/)
       await user.clear(reimbursementInput)
       await user.type(reimbursementInput, '125')
 
@@ -1908,7 +1908,7 @@ describe('PayrollEditEmployeePresentation', () => {
       await waitFor(() => {
         expect(screen.queryByRole('heading', { name: 'Reimbursements' })).not.toBeInTheDocument()
       })
-      expect(screen.queryByLabelText('Reimbursement')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Reimbursement *\*?$/)).not.toBeInTheDocument()
     })
   })
 })

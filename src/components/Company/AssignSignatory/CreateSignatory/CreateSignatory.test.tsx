@@ -46,11 +46,11 @@ describe('CreateSignatory', () => {
         expect(screen.getByText('Signatory person details')).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('First name'), 'John')
-      await user.type(screen.getByLabelText('Last name'), 'Doe')
-      await user.type(screen.getByLabelText('Email address'), 'john.doe@example.com')
-      await user.type(screen.getByLabelText('Phone number'), '5551234567')
-      await user.type(screen.getByLabelText('Social security number'), '123456789')
+      await user.type(screen.getByLabelText(/^First name *\*?$/), 'John')
+      await user.type(screen.getByLabelText(/^Last name *\*?$/), 'Doe')
+      await user.type(screen.getByLabelText(/^Email address *\*?$/), 'john.doe@example.com')
+      await user.type(screen.getByLabelText(/^Phone number *\*?$/), '5551234567')
+      await user.type(screen.getByLabelText(/^Social security number *\*?$/), '123456789')
 
       const titleControl = screen.getByRole('button', {
         name: /Select title/i,
@@ -65,15 +65,15 @@ describe('CreateSignatory', () => {
       await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /day/i }), '01')
       await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /year/i }), '1995')
 
-      await user.type(screen.getByLabelText('Street 1'), '123 Main St')
-      await user.type(screen.getByLabelText('City'), 'San Francisco')
+      await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
+      await user.type(screen.getByLabelText(/^City *\*?$/), 'San Francisco')
 
-      const stateControl = screen.getByLabelText('State')
+      const stateControl = screen.getByLabelText(/^State *\*?$/)
       await user.click(stateControl)
       const californiaOption = screen.getByRole('option', { name: 'California' })
       await user.click(californiaOption)
 
-      await user.type(screen.getByLabelText('Zip'), '94105')
+      await user.type(screen.getByLabelText(/^Zip *\*?$/), '94105')
 
       const submitButton = screen.getByRole('button', { name: 'Sign documents' })
       await user.click(submitButton)
@@ -132,7 +132,7 @@ describe('CreateSignatory', () => {
         expect(screen.getByText('Signatory person details')).toBeInTheDocument()
       })
 
-      expect(screen.getByLabelText('Email address')).toBeDisabled()
+      expect(screen.getByLabelText(/^Email address *\*?$/)).toBeDisabled()
     })
 
     it('fires the correct updated events when form is submitted successfully', async () => {

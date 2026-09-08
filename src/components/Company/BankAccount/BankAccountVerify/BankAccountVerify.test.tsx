@@ -34,8 +34,8 @@ describe('Company BankAccounts Verify', () => {
   it('fires submission with correct payload', async () => {
     const submitButton = await screen.findByTestId('bank-account-verify-submit')
     expect(submitButton).toBeInTheDocument()
-    await user.type(screen.getByLabelText('Test deposit #1'), '0.61')
-    await user.type(screen.getByLabelText('Test deposit #2'), '0.78')
+    await user.type(screen.getByLabelText(/^Test deposit #1 *\*?$/), '0.61')
+    await user.type(screen.getByLabelText(/^Test deposit #2 *\*?$/), '0.78')
     await user.click(submitButton)
 
     await waitFor(() => {

@@ -138,7 +138,7 @@ const enterHoursAndContinue = async (user: ReturnType<typeof userEvent.setup>) =
   await selectContractorAndContinue(user)
   await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
   await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
-  await user.type(screen.getByLabelText('Hours'), '10')
+  await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
   await user.click(screen.getByRole('button', { name: 'Done' }))
 
   await waitFor(() => {
@@ -244,7 +244,7 @@ describe('CreateHistoricalPayment', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
-    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
     await user.click(screen.getByRole('button', { name: 'Done' }))
 
     await waitFor(() => {
@@ -260,7 +260,7 @@ describe('CreateHistoricalPayment', () => {
     await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Hours *\*?$/)).toBeInTheDocument()
     })
     expect(screen.queryByText('Payment Method')).not.toBeInTheDocument()
   })
@@ -300,7 +300,7 @@ describe('CreateHistoricalPayment', () => {
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_EDIT)
 
-    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
     await user.click(screen.getByRole('button', { name: 'Done' }))
 
     expect(onEvent).toHaveBeenCalledWith(
@@ -338,7 +338,7 @@ describe('CreateHistoricalPayment', () => {
     await selectContractorAndContinue(user)
     await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
-    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
     await user.click(screen.getByRole('button', { name: 'Done' }))
 
     await user.click(screen.getByRole('button', { name: 'Back' }))

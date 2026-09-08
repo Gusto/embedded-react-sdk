@@ -38,19 +38,19 @@ describe('CompensationEditForm', () => {
   it('shows the hourly rate field pre-filled for an Hourly contractor', async () => {
     renderWithProviders(<CompensationEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
-    expect(await screen.findByLabelText('Hourly')).toBeChecked()
-    expect(screen.getByLabelText('Hourly rate')).toHaveValue('45.00')
+    expect(await screen.findByLabelText(/^Hourly *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Hourly rate *\*?$/)).toHaveValue('45.00')
   })
 
   it('hides the hourly rate field when Fixed is selected', async () => {
     const user = userEvent.setup()
     renderWithProviders(<CompensationEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
-    await screen.findByLabelText('Hourly')
-    await user.click(screen.getByLabelText('Fixed'))
+    await screen.findByLabelText(/^Hourly *\*?$/)
+    await user.click(screen.getByLabelText(/^Fixed *\*?$/))
 
     await waitFor(() => {
-      expect(screen.queryByLabelText('Hourly rate')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Hourly rate *\*?$/)).not.toBeInTheDocument()
     })
   })
 
@@ -73,8 +73,8 @@ describe('CompensationEditForm', () => {
     const user = userEvent.setup()
     renderWithProviders(<CompensationEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
-    await screen.findByLabelText('Hourly')
-    const rateField = screen.getByLabelText('Hourly rate')
+    await screen.findByLabelText(/^Hourly *\*?$/)
+    const rateField = screen.getByLabelText(/^Hourly rate *\*?$/)
     await user.clear(rateField)
     await user.type(rateField, '50')
     await user.click(screen.getByRole('button', { name: 'Save' }))
@@ -121,7 +121,7 @@ describe('CompensationEditForm', () => {
     const user = userEvent.setup()
     renderWithProviders(<CompensationEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
-    await screen.findByLabelText('Hourly')
+    await screen.findByLabelText(/^Hourly *\*?$/)
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(onEvent).toHaveBeenCalledWith(

@@ -90,9 +90,9 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.type(await screen.findByLabelText(/last name/i), 'silver')
 
       await fillDate({ date: { month: 1, day: 1, year: 2000 }, name: 'Date of birth', user })
-      await user.type(await screen.findByLabelText('Street 1'), '123 Any St')
+      await user.type(await screen.findByLabelText(/^Street 1 *\*?$/), '123 Any St')
       await user.type(await screen.findByLabelText(/city/i), 'Redmond')
-      await user.click(await screen.findByLabelText('State'))
+      await user.click(await screen.findByLabelText(/^State *\*?$/))
       await user.click(await screen.findByRole('option', { name: 'Washington' }))
       const zip = await screen.findByLabelText(/zip/i)
       await user.clear(zip)
