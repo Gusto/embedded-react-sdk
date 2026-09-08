@@ -947,7 +947,7 @@ describe('PayrollConfiguration', () => {
       expect(prepareCallCount).toBe(prepareCountBeforeCalculate)
     })
 
-    it('advances instead of reporting failure when the deadline is reached on a calculated payroll (SDK-1291)', async () => {
+    it('advances instead of reporting failure when the deadline is reached on a calculated payroll', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
       // The calculation succeeded server-side, but nothing the poll reads ever looks like a *new*
