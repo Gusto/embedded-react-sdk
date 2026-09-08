@@ -28,7 +28,7 @@ describe('BankAccount', () => {
     await user.click(changeButton)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Routing number *\*?$/)).toBeInTheDocument()
     })
   })
 })

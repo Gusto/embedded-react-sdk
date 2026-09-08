@@ -8575,8 +8575,6 @@ export namespace Translations {
       /** @defaultValue `"There were multiple problems with your submission"` */
       multipleErrorsEncountered: string
     }
-    /** @defaultValue `"(optional)"` */
-    optionalLabel: string
     /** @defaultValue `"Select an option..."` */
     selectPlaceholder: string
     /** @defaultValue `"You are on step {{currentStep}} of {{totalSteps}}"` */

@@ -1611,6 +1611,7 @@ export interface ComponentsContextType {
     DateRangePicker: FunctionComponent<DateRangePickerProps>;
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
+    FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
     FormBoxHeader: FunctionComponent<FormBoxHeaderProps>;
@@ -3064,6 +3065,15 @@ interface FederalTaxesProps_3 extends BaseComponentInterface<'Company.FederalTax
 
 // @public
 export type FederalTaxesRequiredValidation = typeof FederalTaxesErrorCodes.REQUIRED;
+
+// @public
+export interface FieldCaptionProps {
+    as?: 'label' | 'legend';
+    children: ReactNode;
+    htmlFor?: string;
+    isRequired?: boolean;
+    isVisuallyHidden?: boolean;
+}
 
 // @public
 export interface FieldMetadata {

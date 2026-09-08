@@ -24,8 +24,8 @@ replace specific components while keeping SDK defaults for the rest.
 
 To take full control of every UI component (and eliminate the React Aria dependency),
 pass a complete [ComponentsContextType](#componentscontexttype) to [GustoProviderCustomUIAdapter](providers.md#gustoprovidercustomuiadapter) instead.
-All properties are then required except `PaginationControl` and `PayrollLoading`,
-which fall back to built-in SDK implementations when omitted.
+All properties are then required except `PaginationControl`, `PayrollLoading`, and
+`FieldCaption`, which fall back to built-in SDK implementations when omitted.
 
 ### Examples
 
@@ -115,6 +115,7 @@ function App() {
 | `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
 | `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
 | `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
+| `FieldCaption?` | `FunctionComponent`\<[`FieldCaptionProps`](index.mdx#fieldcaptionprops)\> | Label or legend for a form field, with a required indicator. Defaults to the SDK's built-in caption when omitted. |
 | `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
 | `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 

@@ -38,34 +38,34 @@ describe('Contractor PaymentMethod', () => {
   })
 
   it('renders with mock payment method information', async () => {
-    const directDepositRadio = await screen.findByLabelText('Direct deposit')
+    const directDepositRadio = await screen.findByLabelText(/^Direct deposit *\*?$/)
     expect(directDepositRadio).toBeInTheDocument()
 
-    const nameField = await screen.findByLabelText('Account nickname')
+    const nameField = await screen.findByLabelText(/^Account nickname *\*?$/)
     expect(nameField).toHaveValue('BoA Checking Account')
 
     // The masked account number is seeded as the field value (the keep-existing sentinel).
-    const accountField = screen.getByLabelText('Account number')
+    const accountField = screen.getByLabelText(/^Account number *\*?$/)
     expect(accountField).toHaveValue('XXXX1207')
   })
 
   it('shows bank account fields when Direct Deposit is selected', async () => {
-    expect(await screen.findByLabelText('Account nickname')).toBeInTheDocument()
-    expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
-    expect(screen.getByLabelText('Account number')).toBeInTheDocument()
-    expect(screen.getByLabelText('Checking')).toBeInTheDocument()
-    expect(screen.getByLabelText('Savings')).toBeInTheDocument()
+    expect(await screen.findByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Routing number *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Account number *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Checking *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Savings *\*?$/)).toBeInTheDocument()
   })
 
   it('hides bank account fields when Check is selected', async () => {
-    const checkRadio = await screen.findByLabelText('Check')
+    const checkRadio = await screen.findByLabelText(/^Check *\*?$/)
     await user.click(checkRadio)
 
     await waitFor(() => {
-      expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Account nickname *\*?$/)).not.toBeInTheDocument()
     })
-    expect(screen.queryByLabelText('Routing number')).not.toBeInTheDocument()
-    expect(screen.queryByLabelText('Account number')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/^Routing number *\*?$/)).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/^Account number *\*?$/)).not.toBeInTheDocument()
   })
 
   it('blocks submit when an invalid account number is entered', async () => {
@@ -74,7 +74,7 @@ describe('Contractor PaymentMethod', () => {
     )
     server.use(handleCreateContractorBankAccount(createResolver))
 
-    const accountField = await screen.findByLabelText('Account number')
+    const accountField = await screen.findByLabelText(/^Account number *\*?$/)
     await user.clear(accountField)
     await user.type(accountField, 'not-a-number')
 
@@ -86,7 +86,7 @@ describe('Contractor PaymentMethod', () => {
   })
 
   it('blocks submit when the account nickname is cleared', async () => {
-    const nameField = await screen.findByLabelText('Account nickname')
+    const nameField = await screen.findByLabelText(/^Account nickname *\*?$/)
     await user.clear(nameField)
 
     const submitButton = screen.getByRole('button', { name: 'Continue' })
@@ -97,7 +97,7 @@ describe('Contractor PaymentMethod', () => {
   })
 
   it('blocks submit when the routing number is invalid', async () => {
-    const routingField = await screen.findByLabelText('Routing number')
+    const routingField = await screen.findByLabelText(/^Routing number *\*?$/)
     await user.clear(routingField)
     await user.type(routingField, '123')
 
@@ -114,7 +114,7 @@ describe('Contractor PaymentMethod', () => {
     )
     server.use(handleUpdateContractorPaymentMethod(updateResolver))
 
-    const field = await screen.findByLabelText('Account number')
+    const field = await screen.findByLabelText(/^Account number *\*?$/)
     await user.clear(field)
     await user.type(field, '123123123')
 
@@ -151,7 +151,7 @@ describe('Contractor PaymentMethod', () => {
       handleUpdateContractorPaymentMethod(updateResolver),
     )
 
-    await screen.findByLabelText('Account nickname')
+    await screen.findByLabelText(/^Account nickname *\*?$/)
     const submitButton = screen.getByRole('button', { name: 'Continue' })
     await user.click(submitButton)
 
@@ -184,7 +184,7 @@ describe('Contractor PaymentMethod', () => {
       handleUpdateContractorPaymentMethod(updateResolver),
     )
 
-    const checkRadio = await screen.findByLabelText('Check')
+    const checkRadio = await screen.findByLabelText(/^Check *\*?$/)
     await user.click(checkRadio)
 
     const submitButton = screen.getByRole('button', { name: 'Continue' })
@@ -214,7 +214,7 @@ describe('Contractor PaymentMethod', () => {
       handleUpdateContractorPaymentMethod(updateResolver),
     )
 
-    const field = await screen.findByLabelText('Account number')
+    const field = await screen.findByLabelText(/^Account number *\*?$/)
     await user.clear(field)
     await user.type(field, '123123123')
 

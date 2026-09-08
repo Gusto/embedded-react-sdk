@@ -48,11 +48,11 @@ async function selectState(user: ReturnType<typeof userEvent.setup>, stateName: 
 }
 
 async function fillAllFields(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByLabelText('Street 1'), '123 Main St')
+  await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
   await user.type(screen.getByLabelText(/Street 2/i), 'Apt 4B')
-  await user.type(screen.getByLabelText('City'), 'Denver')
+  await user.type(screen.getByLabelText(/^City *\*?$/), 'Denver')
   await selectState(user, /Colorado/i)
-  await user.type(screen.getByLabelText('Zip'), '80202')
+  await user.type(screen.getByLabelText(/^Zip *\*?$/), '80202')
 }
 
 describe('Contractor/Address', () => {
@@ -114,16 +114,16 @@ describe('Contractor/Address', () => {
 
       await screen.findByText('Home address')
 
-      expect(screen.getByLabelText('Street 1')).toHaveValue('999 Default St')
+      expect(screen.getByLabelText(/^Street 1 *\*?$/)).toHaveValue('999 Default St')
       expect(screen.getByLabelText(/Street 2/i)).toHaveValue('Apt 123')
-      expect(screen.getByLabelText('City')).toHaveValue('Default City')
+      expect(screen.getByLabelText(/^City *\*?$/)).toHaveValue('Default City')
       expect(
         screen.getByRole('button', {
           name: /Colorado/i,
           expanded: false,
         }),
       ).toBeInTheDocument()
-      expect(screen.getByLabelText('Zip')).toHaveValue('80202')
+      expect(screen.getByLabelText(/^Zip *\*?$/)).toHaveValue('80202')
     })
   })
 
@@ -166,9 +166,9 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={mockOnEvent} />)
       await screen.findByText('Home address')
 
-      await user.type(screen.getByLabelText('City'), 'Denver')
+      await user.type(screen.getByLabelText(/^City *\*?$/), 'Denver')
       await selectState(user, /Colorado/i)
-      await user.type(screen.getByLabelText('Zip'), '80202')
+      await user.type(screen.getByLabelText(/^Zip *\*?$/), '80202')
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
 
@@ -184,9 +184,9 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={mockOnEvent} />)
       await screen.findByText('Home address')
 
-      await user.type(screen.getByLabelText('Street 1'), '123 Main St')
+      await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
       await selectState(user, /Colorado/i)
-      await user.type(screen.getByLabelText('Zip'), '80202')
+      await user.type(screen.getByLabelText(/^Zip *\*?$/), '80202')
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
 
@@ -202,9 +202,9 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={mockOnEvent} />)
       await screen.findByText('Home address')
 
-      await user.type(screen.getByLabelText('Street 1'), '123 Main St')
-      await user.type(screen.getByLabelText('City'), 'Denver')
-      await user.type(screen.getByLabelText('Zip'), '80202')
+      await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
+      await user.type(screen.getByLabelText(/^City *\*?$/), 'Denver')
+      await user.type(screen.getByLabelText(/^Zip *\*?$/), '80202')
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
 
@@ -220,8 +220,8 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={mockOnEvent} />)
       await screen.findByText('Home address')
 
-      await user.type(screen.getByLabelText('Street 1'), '123 Main St')
-      await user.type(screen.getByLabelText('City'), 'Denver')
+      await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
+      await user.type(screen.getByLabelText(/^City *\*?$/), 'Denver')
       await selectState(user, /Colorado/i)
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
@@ -238,10 +238,10 @@ describe('Contractor/Address', () => {
       renderWithProviders(<Address contractorId="contractor_id" onEvent={mockOnEvent} />)
       await screen.findByText('Home address')
 
-      await user.type(screen.getByLabelText('Street 1'), '123 Main St')
-      await user.type(screen.getByLabelText('City'), 'Denver')
+      await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
+      await user.type(screen.getByLabelText(/^City *\*?$/), 'Denver')
       await selectState(user, /Colorado/i)
-      await user.type(screen.getByLabelText('Zip'), '80202')
+      await user.type(screen.getByLabelText(/^Zip *\*?$/), '80202')
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
 
@@ -372,16 +372,16 @@ describe('Contractor/Address', () => {
 
       await screen.findByText('Home address')
 
-      expect(screen.getByLabelText('Street 1')).toHaveValue('999 Kiera Stravenue')
+      expect(screen.getByLabelText(/^Street 1 *\*?$/)).toHaveValue('999 Kiera Stravenue')
       expect(screen.getByLabelText(/Street 2/i)).toHaveValue('Suite 541')
-      expect(screen.getByLabelText('City')).toHaveValue('San Francisco')
+      expect(screen.getByLabelText(/^City *\*?$/)).toHaveValue('San Francisco')
       expect(
         screen.getByRole('button', {
           name: /California/i,
           expanded: false,
         }),
       ).toBeInTheDocument()
-      expect(screen.getByLabelText('Zip')).toHaveValue('94107')
+      expect(screen.getByLabelText(/^Zip *\*?$/)).toHaveValue('94107')
     })
 
     it('submits the version from the loaded address', async () => {

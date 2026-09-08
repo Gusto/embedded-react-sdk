@@ -220,7 +220,7 @@ describe('PaymentFlow', () => {
     await user.click(await screen.findByRole('button', { name: 'Edit contractor payment' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
     await screen.findByRole('heading', { name: 'Edit contractor pay' })
-    await user.type(screen.getByLabelText('Hours'), '8')
+    await user.type(screen.getByLabelText(/^Hours *\*?$/), '8')
     await user.click(screen.getByRole('button', { name: 'Done' }))
     await waitFor(() => {
       expect(screen.queryByRole('heading', { name: 'Edit contractor pay' })).not.toBeInTheDocument()
@@ -279,7 +279,7 @@ describe('PaymentFlow', () => {
     await screen.findByRole('heading', { name: 'Enter payment amounts' })
     await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
-    await user.type(screen.getByLabelText('Hours'), '10')
+    await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
     await user.click(screen.getByRole('button', { name: 'Done' }))
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()

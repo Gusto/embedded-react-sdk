@@ -35,7 +35,7 @@ describe('PaymentMethodEditForm', () => {
     renderWithProviders(<PaymentMethodEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('BoA Checking Account')
-    await user.clear(screen.getByLabelText('Account nickname'))
+    await user.clear(screen.getByLabelText(/^Account nickname *\*?$/))
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -62,8 +62,8 @@ describe('PaymentMethodEditForm', () => {
     renderWithProviders(<PaymentMethodEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('BoA Checking Account')
-    await user.clear(screen.getByLabelText('Account nickname'))
-    await user.type(screen.getByLabelText('Account nickname'), 'New Nickname')
+    await user.clear(screen.getByLabelText(/^Account nickname *\*?$/))
+    await user.type(screen.getByLabelText(/^Account nickname *\*?$/), 'New Nickname')
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {

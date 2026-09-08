@@ -99,7 +99,7 @@ describe('PaymentMethod (management)', () => {
       await user.click(screen.getByRole('button', { name: /add another bank account/i }))
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
     })
   })
@@ -111,11 +111,11 @@ describe('PaymentMethod (management)', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
 
-      expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
-      expect(screen.getByLabelText('Account number')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Routing number *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Account number *\*?$/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
     })
@@ -148,12 +148,12 @@ describe('PaymentMethod (management)', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Account nickname'), 'Test Account')
-      await user.type(screen.getByLabelText('Routing number'), '011401533')
-      await user.type(screen.getByLabelText('Account number'), '123456789')
+      await user.type(screen.getByLabelText(/^Account nickname *\*?$/), 'Test Account')
+      await user.type(screen.getByLabelText(/^Routing number *\*?$/), '011401533')
+      await user.type(screen.getByLabelText(/^Account number *\*?$/), '123456789')
       await user.click(screen.getByRole('button', { name: 'Save' }))
 
       await waitFor(() => {
@@ -193,7 +193,7 @@ describe('PaymentMethod (management)', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole('button', { name: 'Save' }))
@@ -212,12 +212,12 @@ describe('PaymentMethod (management)', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Account nickname'), 'Test')
-      await user.type(screen.getByLabelText('Routing number'), '12')
-      await user.type(screen.getByLabelText('Account number'), '123456789')
+      await user.type(screen.getByLabelText(/^Account nickname *\*?$/), 'Test')
+      await user.type(screen.getByLabelText(/^Routing number *\*?$/), '12')
+      await user.type(screen.getByLabelText(/^Account number *\*?$/), '123456789')
       await user.click(screen.getByRole('button', { name: 'Save' }))
 
       await waitFor(() => {

@@ -94,7 +94,7 @@ describe('ProfileEditForm — individual contractor', () => {
     renderWithProviders(<ProfileEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('Ada')
-    await user.clear(screen.getByLabelText('First name'))
+    await user.clear(screen.getByLabelText(/^First name *\*?$/))
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -119,8 +119,8 @@ describe('ProfileEditForm — individual contractor', () => {
     renderWithProviders(<ProfileEditForm contractorId="contractor-123" onEvent={onEvent} />)
 
     await screen.findByDisplayValue('Ada')
-    await user.clear(screen.getByLabelText('Last name'))
-    await user.type(screen.getByLabelText('Last name'), 'Byron')
+    await user.clear(screen.getByLabelText(/^Last name *\*?$/))
+    await user.type(screen.getByLabelText(/^Last name *\*?$/), 'Byron')
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -185,6 +185,6 @@ describe('ProfileEditForm — business contractor', () => {
 
     expect(screen.getByDisplayValue('XX-XXX4879')).toBeDisabled()
     expect(screen.getAllByText('Employer Identification Number (EIN)').length).toBeGreaterThan(0)
-    expect(screen.queryByLabelText('First name')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/^First name *\*?$/)).not.toBeInTheDocument()
   })
 })
