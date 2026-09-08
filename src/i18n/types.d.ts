@@ -2473,6 +2473,8 @@ export namespace Translations {
       validations: {
         /** @defaultValue `"Enter a valid hourly rate"` */
         hourlyRate: string
+        /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+        hourlyRateMax: string
       }
     }
   }
@@ -3605,6 +3607,8 @@ export namespace Translations {
       einFormat: string
       /** @defaultValue `"Hourly rate is required for hourly contractors"` */
       hourlyRate: string
+      /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+      hourlyRateMax: string
       /** @defaultValue `"Start date is required"` */
       startDate: string
     }
@@ -7022,6 +7026,8 @@ export namespace Translations {
     endDateLabel: string
     /** @defaultValue `"Payment date"` */
     checkDateLabel: string
+    /** @defaultValue `"Enter the date you'd like your employees to receive payment."` */
+    checkDateDescription: string
     validations: {
       /** @defaultValue `"Start date is required"` */
       startDateRequired: string
@@ -7688,9 +7694,9 @@ export namespace Translations {
     cancelDialog: {
       /** @defaultValue `"Cancel {{payPeriod}} payroll?"` */
       title: string
-      /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+      /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
       body: string
-      /** @defaultValue `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` */
+      /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
       deadline: string
       /** @defaultValue `"Yes, cancel payroll"` */
       primaryAction: string
@@ -7850,11 +7856,11 @@ export namespace Translations {
     cancelDialogTitle: string
     /** @defaultValue `"Cancel payroll?"` */
     cancelDialogTitleDismissal: string
-    /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+    /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
     cancelDialogDescription: string
-    /** @defaultValue `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` */
+    /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
     cancelDialogDescriptionDeadline: string
-    /** @defaultValue `" Yes, cancel payroll"` */
+    /** @defaultValue `"Yes, cancel payroll"` */
     confirmCancelCta: string
     /** @defaultValue `"No, go back"` */
     declineCancelCta: string
@@ -8600,6 +8606,8 @@ export namespace Translations {
       ensureRequired: string
     }
     icons: {
+      /** @defaultValue `"Completed step"` */
+      completedStep: string
       /** @defaultValue `"Show options"` */
       selectArrow: string
       /** @defaultValue `"Show calendar"` */

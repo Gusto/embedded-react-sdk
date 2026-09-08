@@ -1,0 +1,12 @@
+{
+  "clearAriaLabel": "Borrar empleados seleccionados",
+  "clearSearch": "Borrar búsqueda",
+  "department": "Departamento",
+  "noSearchResults": "No se encontraron empleados",
+  "searchLabel": "Buscar por nombre o departamento",
+  "searchPlaceholder": "Buscar por nombre o departamento",
+  "selectAll": "Seleccionar todo",
+  "selectAllEmployees": "Seleccionar todos los empleados",
+  "selected": "de {{numAll}} empleados seleccionados",
+  "unknownEmployeeFallback": "Empleado desconocido"
+}

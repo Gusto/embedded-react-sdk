@@ -1,0 +1,18 @@
+{
+  "actionLabel": "Acciones",
+  "addressesCta": "Direcciones",
+  "deleteCta": "Eliminar empleado",
+  "deleteDialog": {
+    "confirmCta": "Eliminar empleado",
+    "description": "Esto eliminará permanentemente a este empleado de tu cuenta. Esta acción no se puede deshacer.",
+    "title": "¿Eliminar empleado?"
+  },
+  "employeeListLabel": "Lista de empleados actuales",
+  "emptyTableDescription": "Una vez que haya agregado empleados, aparecerán aquí",
+  "emptyTableTitle": "Sin empleados",
+  "federalTaxesCta": "Impuestos federales",
+  "hamburgerTitle": "Menú de acciones del empleado",
+  "reviewCta": "Revisar",
+  "skipCta": "Haré esto más tarde",
+  "title": "Sus empleados"
+}

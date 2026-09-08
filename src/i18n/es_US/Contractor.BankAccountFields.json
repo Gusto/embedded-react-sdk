@@ -1,0 +1,10 @@
+{
+  "nameLabel": "Apodo de la cuenta",
+  "routingNumberDescription": "9 dígitos, en la parte inferior izquierda de un cheque",
+  "validations": {
+    "accountName": "El apodo de la cuenta es obligatorio",
+    "accountNumber": "Ingresa un número de cuenta válido",
+    "accountNumberFormat": "Ingresa un número de cuenta válido",
+    "routingNumber": "Ingresa un número de ruta válido de 9 dígitos"
+  }
+}

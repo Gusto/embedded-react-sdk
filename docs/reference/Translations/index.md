@@ -58,6 +58,7 @@ Translation keys for the `common` i18n namespace.
 | `fileInput.uploadInstructions` | `"<clickToUpload>Click to upload</clickToUpload> or drag and drop"` |
 | <a id="property-commonicons"></a> `icons` | |
 | `icons.calendarArrow` | `"Show calendar"` |
+| `icons.completedStep` | `"Completed step"` |
 | `icons.nextMonth` | `"Show next month"` |
 | `icons.paginationFirst` | `"Navigate to first page"` |
 | `icons.paginationLast` | `"Navigate to last page"` |
@@ -1624,6 +1625,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | `form.title` | `"Edit compensation"` |
 | `form.validations` | |
 | `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `form.wageTypeLabel` | `"Compensation type"` |
 | <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
 | <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
@@ -2367,6 +2369,7 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.firstName` | `"First name is required for individual contractors"` |
 | `validations.firstNameFormat` | `"First name is not valid"` |
 | `validations.hourlyRate` | `"Hourly rate is required for hourly contractors"` |
+| `validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `validations.lastName` | `"Last name is required for individual contractors"` |
 | `validations.lastNameFormat` | `"Last name is not valid"` |
 | `validations.ssn` | `"SSN is required for individual contractors"` |
@@ -4715,6 +4718,7 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 
 | Property | Default value |
 | ------ | ------ |
+| <a id="property-payrolloffcyclepayperioddateformcheckdatedescription"></a> `checkDateDescription` | `"Enter the date you'd like your employees to receive payment."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckdatelabel"></a> `checkDateLabel` | `"Payment date"` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlydescription"></a> `checkOnlyDescription` | `"Select this option if all employees will be paid by check only. This allows you to set the check date to today or any future date."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlylabel"></a> `checkOnlyLabel` | `"Check-only payroll"` |
@@ -5103,8 +5107,8 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrollhistorycanceldialog"></a> `cancelDialog` | |
-| `cancelDialog.body` | `"Any changes you have made to this payroll will be saved."` |
-| `cancelDialog.deadline` | `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` |
+| `cancelDialog.body` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
+| `cancelDialog.deadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
 | `cancelDialog.primaryAction` | `"Yes, cancel payroll"` |
 | `cancelDialog.secondaryAction` | `"No, go back"` |
 | `cancelDialog.title` | `"Cancel {{payPeriod}} payroll?"` |
@@ -5251,8 +5255,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewbackcta"></a> `backCta` | `"Back"` |
 | <a id="property-payrollpayrolloverviewbreadcrumblabel"></a> `breadcrumbLabel` | `"Submit"` |
 | <a id="property-payrollpayrolloverviewcancelcta"></a> `cancelCta` | `"Cancel payroll"` |
-| <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"Any changes you have made to this payroll will be saved."` |
-| <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` |
+| <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
+| <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{startDate}} - {{endDate}} payroll?"` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitledismissal"></a> `cancelDialogTitleDismissal` | `"Cancel payroll?"` |
 | <a id="property-payrollpayrolloverviewcancelledemptystate"></a> `cancelledEmptyState` | `"This payroll has been cancelled."` |
@@ -5260,7 +5264,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewcompensationtypelabels"></a> `compensationTypeLabels` | |
 | `compensationTypeLabels.exempt` | `"Salaried / Exempt"` |
 | `compensationTypeLabels.nonexempt` | `"Hourly / Nonexempt"` |
-| <a id="property-payrollpayrolloverviewconfirmcancelcta"></a> `confirmCancelCta` | `" Yes, cancel payroll"` |
+| <a id="property-payrollpayrolloverviewconfirmcancelcta"></a> `confirmCancelCta` | `"Yes, cancel payroll"` |
 | <a id="property-payrollpayrolloverviewdataloadingtitle"></a> `dataLoadingTitle` | `"Loading payroll..."` |
 | <a id="property-payrollpayrolloverviewdataviews"></a> `dataViews` | |
 | `dataViews.companyPaysTab` | `"Company pays"` |

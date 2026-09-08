@@ -172,18 +172,25 @@ const buildCompensationFromFormData = (
         fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
     )
 
-    if (formAmount !== undefined && formAmount !== '') {
+    // Clearing the field means "no additional earning". For an entry that already has a
+    // saved amount we have to send an explicit 0: omitting it leaves the previously saved
+    // value in place server-side, so the box looked empty while the old amount survived
+    // the save (SDK-1284). This makes clearing behave exactly like typing 0. An entry with
+    // no saved compensation stays omitted -- there is nothing to zero out.
+    const resolvedAmount = formAmount === '' && existingFixedCompensation ? '0' : formAmount
+
+    if (resolvedAmount !== undefined && resolvedAmount !== '') {
       if (existingFixedCompensation) {
         updatedFixedCompensations.push({
           name: existingFixedCompensation.name,
           jobUuid: existingFixedCompensation.jobUuid,
-          amount: formAmount,
+          amount: resolvedAmount,
         })
-      } else if (parseFloat(formAmount) !== 0) {
+      } else if (parseFloat(resolvedAmount) !== 0) {
         updatedFixedCompensations.push({
           name: fixedCompensationName,
           jobUuid: primaryJobUuid,
-          amount: formAmount,
+          amount: resolvedAmount,
         })
       }
     }

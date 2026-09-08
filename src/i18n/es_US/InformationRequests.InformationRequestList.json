@@ -1,0 +1,20 @@
+{
+  "cta": {
+    "respond": "Responder"
+  },
+  "emptyTableDescription": "No hay solicitudes de información que requieran tu respuesta en este momento.",
+  "emptyTableTitle": "No hay solicitudes de información",
+  "status": {
+    "incomplete": "Incompleto",
+    "payrollBlocking": "Bloqueo de nómina",
+    "underReview": "En revisión"
+  },
+  "title": "Solicitudes de información",
+  "types": {
+    "accountProtection": "Protección de la cuenta",
+    "companyOnboarding": "Incorporación de la empresa",
+    "paymentError": "Error de pago",
+    "paymentRequest": "Solicitud de pago",
+    "unknown": "Solicitud de información"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "La mayoría de los estados requieren que los empleadores presenten un informe de nueva contratación para los contratistas dentro de los 20 días a partir de su fecha de inicio. Aunque el informe esté atrasado, por lo general es mejor presentarlo tarde que arriesgarse a recibir sanciones por incumplimiento.",
+  "doFileLegend": "Selecciona si deseas o no que presentemos el informe de nueva contratación",
+  "noOption": "No, ya he presentado o presentaré el informe yo mismo",
+  "statePlaceholder": "Seleccionar estado...",
+  "stateSelectionLabel": "Estado de trabajo",
+  "title": "¿Presentar informe de nueva contratación?",
+  "validations": {
+    "state": "Por favor selecciona el estado de trabajo"
+  },
+  "yesOption": "Sí, presenta el informe por mí"
+}

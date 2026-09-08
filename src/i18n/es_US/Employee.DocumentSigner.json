@@ -1,0 +1,13 @@
+{
+  "confirmSignatureError": "Debes aceptar firmar electrónicamente",
+  "documentListError": "No se pudieron cargar sus documentos, inténtelo de nuevo más tarde.",
+  "downloadAndReviewInstructions": "Revisa el documento. Cuando termines, firma abajo.",
+  "downloadPrompt": "{{description}} También puede <downloadLink>descargar este documento<\/downloadLink>.",
+  "emptyTableTitle": "No se encontraron documentos",
+  "formColumnLabel": "Formulario",
+  "notSigned": "No firmado",
+  "signFormCta": "Firmar formulario",
+  "signatureFieldError": "La firma es obligatoria",
+  "signatureFormTitle": "Firma requerida para {{formTitle}}",
+  "viewDocumentCta": "Ver documento"
+}

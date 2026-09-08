@@ -1,0 +1,12 @@
+{
+  "departmentColumn": "Departamento",
+  "description": "Selecciona los empleados que quieres agregar a esta política.",
+  "emptyState": "Todos los empleados elegibles ya se han agregado a esta política.",
+  "errors": {
+    "completePolicyFailed": "No se puede completar esta política. {{details}}"
+  },
+  "holidayDescription": "Selecciona a los empleados que quieres agregar a esta política de pago por días festivos.",
+  "reassignmentWarning": "Cualquier empleado actualmente asignado a otra política de tiempo libre pagado será movido a esta política.",
+  "startingBalanceColumn": "Saldo inicial (hrs)",
+  "title": "Agregar empleados a la póliza"
+}
