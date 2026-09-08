@@ -125,7 +125,10 @@ function CompensationEditFormRoot({
               <Fields.HourlyRate
                 label={t('form.hourlyRateLabel')}
                 format="currency"
-                validationMessages={{ REQUIRED: t('form.validations.hourlyRate') }}
+                validationMessages={{
+                  REQUIRED: t('form.validations.hourlyRate'),
+                  MAX_HOURLY_RATE: t('form.validations.hourlyRateMax'),
+                }}
               />
             )}
             <ActionsLayout>

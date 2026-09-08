@@ -1,0 +1,21 @@
+{
+  "firstName": "Nombre legal",
+  "formTitle": "Formulario del empleado",
+  "lastName": "Apellido legal",
+  "middleInitial": "Inicial del segundo nombre",
+  "preferredFirstName": "Nombre de pila preferido",
+  "selfOnboardingDescription": "Tu empleado será invitado a ingresar su información en su propio tiempo.",
+  "ssnLabel": "Número de Seguro Social (9 dígitos)",
+  "ssnMask": "***-**-****",
+  "startDateDescription": "El primer día de trabajo de tu empleado en tu empresa.",
+  "successAlert": "Perfil actualizado correctamente",
+  "title": "Información básica",
+  "validations": {
+    "email": "Se requiere un correo electrónico válido",
+    "firstName": "Ingresa un nombre de pila válido",
+    "lastName": "Ingresa un apellido válido",
+    "startDate": "Selecciona una fecha de inicio válida",
+    "startDateOutOfRange": "Un empleado debe tener una fecha de inicio que sea dentro de los próximos seis meses a partir de hoy."
+  },
+  "workAddressSectionTitle": "Dirección de trabajo"
+}

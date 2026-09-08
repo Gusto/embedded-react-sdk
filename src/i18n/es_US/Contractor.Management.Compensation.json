@@ -1,0 +1,22 @@
+{
+  "alerts": {
+    "compensationUpdated": "Compensación actualizada"
+  },
+  "emptyPlaceholder": "–",
+  "fixedLabel": "Fijo",
+  "form": {
+    "description": "Actualiza el tipo y la tarifa de compensación del contratista.",
+    "fixedDescription": "Paga una cantidad fija en cada período de pago.",
+    "hourlyDescription": "Paga según las horas trabajadas.",
+    "successAlert": "Compensación actualizada",
+    "title": "Editar compensación",
+    "validations": {
+      "hourlyRate": "Ingresa una tarifa por hora válida"
+    },
+    "wageTypeLabel": "Tipo de compensación"
+  },
+  "hourlyLabel": "Por hora",
+  "hourlyRateValue": "${{rate}}\/h",
+  "title": "Compensación",
+  "wageLabel": "Salario"
+}

@@ -1,0 +1,13 @@
+{
+  "fallbackName": "allí",
+  "getStartedCta": "Comenzar",
+  "landingDescription": "Solo necesitamos algunos datos tuyos para completar la configuración.",
+  "landingSubtitle": "Bienvenido, {{contractorName}}. {{companyName}} te ha invitado a completar tu incorporación.",
+  "steps": {
+    "address": "Agrega tu dirección postal",
+    "documents": "Revisa y firma los documentos",
+    "paymentMethod": "Configura tu método de pago",
+    "profile": "Completa tu perfil e información de impuestos"
+  },
+  "stepsSubtitle": "Esto es lo que tendrás que hacer:"
+}

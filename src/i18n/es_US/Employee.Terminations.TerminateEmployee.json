@@ -1,0 +1,48 @@
+{
+  "actions": {
+    "submit": "Terminar empleado"
+  },
+  "alert": {
+    "anotherWay": {
+      "label": "Después de su último día, no podrás deshacer este despido",
+      "text": "Asegúrate de que realmente quieres finalizar el empleo de {{employeeName}}. Podrás cancelar el despido o hacer cambios hasta su último día. Después de su último día de trabajo, ya no podrás cancelar este despido y tendrás que recontratar a la persona si regresa."
+    },
+    "dismissalPayroll": {
+      "label": "Después de enviar, no podrás deshacer este despido",
+      "text": "Asegúrate de que deseas finalizar el empleo de {{employeeName}}. No podrás cancelar esta baja y deberás volver a contratarlo si regresa."
+    },
+    "regularPayroll": {
+      "label": "Después de su último día, no podrás deshacer este despido",
+      "text": "Asegúrate de que realmente quieres finalizar el empleo de {{employeeName}}. Podrás cancelar el despido o hacer cambios hasta su último día. Después de su último día de trabajo, ya no podrás cancelar este despido y tendrás que recontratar a la persona si regresa."
+    }
+  },
+  "form": {
+    "lastDayOfEmployment": {
+      "description": "El último día debe ser después de su período de nómina regular más reciente (aunque se le haya pagado $0). Si nunca empezó a trabajar, la fecha de despido debe ser en o después de la fecha de contratación.",
+      "label": "Último día de trabajo"
+    },
+    "payrollOption": {
+      "description": "Recomendamos ejecutar una nómina de despido. Asegúrate de cumplir con los requisitos de tu estado sobre el pago final de los empleados (fecha límite de pago, PTO no utilizado, etc.).",
+      "label": "¿Cómo se debe manejar la nómina final?",
+      "options": {
+        "anotherWay": {
+          "description": "Puedes ejecutar una nómina fuera de ciclo para calcular manualmente los montos finales, o puedes pagarlos fuera de la aplicación (pero asegúrate de reportar esta nómina para que los montos se registren en los formularios de impuestos). También puedes seleccionar esta opción si ya los pagaste.",
+          "label": "Otra manera"
+        },
+        "dismissalPayroll": {
+          "description": "Ejecuta una nómina final que automáticamente paga el PTO no utilizado, te permite incluir liquidación, mantener un registro separado para auditorías y elegir un día de pago personalizado según cuándo la ejecutes."
+        },
+        "regularPayroll": {
+          "description": "Igual que las nóminas de despido, excepto que no habrá un registro separado del pago final y no podrás personalizar el día de pago final (se le pagará en el día de pago regular).",
+          "label": "Nómina regular"
+        }
+      }
+    }
+  },
+  "subtitle": "Establece su último día de trabajo y elige cómo manejar su nómina final.",
+  "title": "Despedir a {{employeeName}}",
+  "validation": {
+    "lastDayRequired": "Se requiere el último día de trabajo",
+    "payrollOptionRequired": "Selecciona cómo manejar la nómina final"
+  }
+}

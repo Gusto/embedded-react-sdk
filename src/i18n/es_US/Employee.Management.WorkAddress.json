@@ -1,0 +1,34 @@
+{
+  "cardManageCta": "Administrar",
+  "cardNoAddress": "No hay una dirección de trabajo registrada",
+  "changeCta": "Cambiar dirección",
+  "changeModalDescription": "Esta información se usa para nómina, beneficios y RR. HH., así que asegúrate de que sea correcta.",
+  "changeModalTitle": "Cambiar dirección de trabajo",
+  "changePendingDescription": "La dirección de trabajo de {{possessiveLabel}} cambiará a {{newAddress}} el {{effectiveDate}}.",
+  "changePendingPossessiveFallback": "De este empleado",
+  "changePendingTitle": "Cambio pendiente",
+  "columns": {
+    "endDate": "Fecha de finalización",
+    "location": "Ubicación"
+  },
+  "currentEmpty": "No hay una dirección de trabajo registrada.",
+  "currentSectionTitle": "Dirección de trabajo actual",
+  "currentSince": "Desde el {{date}}",
+  "deleteModalDescription": "Eliminar una dirección no se puede deshacer. <strong>{{address}}<\/strong> se eliminará del historial.",
+  "deleteModalTitle": "¿Eliminar dirección?",
+  "description": "La dirección de trabajo de un empleado es el lugar principal donde realiza su trabajo. Mantenla precisa para fines de nómina e impuestos.",
+  "editModalDescription": "Revisa o actualiza la dirección de trabajo registrada. Esta información se usa para nómina, beneficios y RR. HH., así que mantenla exacta.",
+  "editModalTitle": "Editar dirección de trabajo",
+  "editPastAddressAlertTitle": "Editar una dirección de trabajo puede tener implicaciones en tus cálculos y retenciones de impuestos.",
+  "form": {
+    "editInactiveLocationLabel": "Dirección de trabajo corregida",
+    "editInactiveStartDateDescription": "La fecha en que esta dirección de trabajo entró en vigor para este empleado.",
+    "locationRequired": "Selecciona una ubicación de trabajo",
+    "selectPlaceholder": "Selecciona una dirección de trabajo...",
+    "startDateRequired": "La fecha de inicio es obligatoria"
+  },
+  "historyEmptyDescription": "Cuando este empleado tenga más de una dirección de trabajo registrada, las ubicaciones anteriores aparecerán aquí.",
+  "historyEmptyTitle": "Aún no hay historial de direcciones",
+  "historySectionTitle": "Historial de direcciones de trabajo",
+  "rowMenuAriaLabel": "Abrir acciones de fila de dirección de trabajo"
+}

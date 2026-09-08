@@ -1,0 +1,8 @@
+{
+  "noWithholding": "No se requiere retención de impuestos estatales sobre los ingresos para el estado de trabajo de este empleado.",
+  "stateTaxesTitle": "Requisitos de impuestos de {{state}}",
+  "successAlert": "Configuración de impuestos estatales actualizada correctamente.",
+  "validations": {
+    "required": "Este campo es obligatorio. Ingresa un valor."
+  }
+}
