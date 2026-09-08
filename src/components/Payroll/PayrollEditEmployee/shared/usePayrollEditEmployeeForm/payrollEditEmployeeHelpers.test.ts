@@ -6,6 +6,7 @@ import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/component
 import {
   normalizeWorkweeks,
   collectOvertimeEarningNames,
+  resolveEditableFixedCompensations,
   derivePayrollEditEmployeeDefaults,
   buildPayrollUpdateEmployeeCompensation,
   type NormalizedWorkweek,
@@ -73,6 +74,47 @@ describe('collectOvertimeEarningNames', () => {
 
   it('returns an empty set for an undefined list', () => {
     expect(collectOvertimeEarningNames(undefined)).toEqual(new Set())
+  })
+})
+
+describe('resolveEditableFixedCompensations', () => {
+  const fixedCompensationTypes = [
+    { name: 'Bonus' },
+    { name: 'Commission' },
+    { name: 'Cash Tips' },
+    { name: 'Reimbursement' },
+  ]
+
+  it('seeds blank placeholders for missing types on the primary job, sorted by name', () => {
+    const result = resolveEditableFixedCompensations(
+      [{ jobUuid: 'job-1', name: 'Bonus', amount: '500.00' }],
+      fixedCompensationTypes,
+      'job-1',
+      'Nonexempt',
+    )
+
+    expect(result).toEqual([
+      { jobUuid: 'job-1', name: 'Bonus', amount: '500.00' },
+      { jobUuid: 'job-1', name: 'Cash Tips' },
+      { jobUuid: 'job-1', name: 'Commission' },
+    ])
+  })
+
+  it('skips placeholders entirely for owners', () => {
+    const result = resolveEditableFixedCompensations([], fixedCompensationTypes, 'job-1', 'Owner')
+
+    expect(result).toEqual([])
+  })
+
+  it('keeps existing compensations but omits excluded types', () => {
+    const result = resolveEditableFixedCompensations(
+      [{ jobUuid: 'job-1', name: 'Reimbursement', amount: '10.00' }],
+      fixedCompensationTypes,
+      'job-1',
+      'Nonexempt',
+    )
+
+    expect(result.map(entry => entry.name)).toEqual(['Bonus', 'Cash Tips', 'Commission'])
   })
 })
 

@@ -25,6 +25,7 @@ import {
   collectOvertimeEarningNames,
   derivePayrollEditEmployeeDefaults,
   normalizeWorkweeks,
+  resolveEditableFixedCompensations,
 } from './payrollEditEmployeeHelpers'
 import { createPayrollEditEmployeeFields, type PayrollEditEmployeeFields } from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
@@ -236,6 +237,23 @@ export function usePayrollEditEmployeeForm({
   }, [employeeCompensation, employee])
   const isOvertimeEligible = isOvertimeEligibleFlsaStatus(flsaStatus)
 
+  const primaryJobUuid = useMemo(() => employee?.jobs?.find(job => job.primary)?.uuid, [employee])
+
+  // Seed a blank input for every payroll fixed-compensation type (like the stable
+  // editor), then let the field/defaults builders split them into additional
+  // earnings vs `other` by overtime inclusion. Without this, an employee whose
+  // prepared payroll carries no fixed compensations shows no earnings inputs.
+  const resolvedFixedCompensations = useMemo(
+    () =>
+      resolveEditableFixedCompensations(
+        employeeCompensation?.fixedCompensations,
+        preparedPayroll?.fixedCompensationTypes,
+        primaryJobUuid,
+        flsaStatus,
+      ),
+    [employeeCompensation, preparedPayroll?.fixedCompensationTypes, primaryJobUuid, flsaStatus],
+  )
+
   const jobTitlesByUuid = useMemo(() => {
     const titles = new Map<string, string>()
     for (const job of employee?.jobs ?? []) {
@@ -254,6 +272,7 @@ export function usePayrollEditEmployeeForm({
         hasDirectDepositSetup,
         overtimeEarningNames,
         isOvertimeEligible,
+        resolvedFixedCompensations,
       ),
     [
       employeeCompensation,
@@ -261,6 +280,7 @@ export function usePayrollEditEmployeeForm({
       hasDirectDepositSetup,
       overtimeEarningNames,
       isOvertimeEligible,
+      resolvedFixedCompensations,
     ],
   )
 
@@ -279,6 +299,7 @@ export function usePayrollEditEmployeeForm({
     () =>
       createPayrollEditEmployeeFields({
         employeeCompensation,
+        fixedCompensations: resolvedFixedCompensations,
         workweeks,
         payrollCategory,
         hasDirectDepositSetup,
@@ -288,6 +309,7 @@ export function usePayrollEditEmployeeForm({
       }),
     [
       employeeCompensation,
+      resolvedFixedCompensations,
       workweeks,
       payrollCategory,
       hasDirectDepositSetup,

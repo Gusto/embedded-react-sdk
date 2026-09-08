@@ -12,6 +12,12 @@ import type {
 import { PayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
 import { cleanupReimbursements } from '@/components/Payroll/helpers'
 import { SDKInternalError } from '@/types/sdkError'
+import { EXCLUDED_ADDITIONAL_EARNINGS, FlsaStatus } from '@/shared/constants'
+
+/** One fixed-compensation line off the prepared compensation. */
+type FixedCompensationEntry = NonNullable<
+  PayrollEmployeeCompensationsType['fixedCompensations']
+>[number]
 
 /**
  * Internal normalized form of a workweek: the API exposes
@@ -87,6 +93,52 @@ export function collectOvertimeEarningNames(
 }
 
 /**
+ * Merges the employee's existing fixed compensations with a blank placeholder for
+ * every payroll fixed-compensation type they don't yet have, mirroring the stable editor
+ * (`getAdditionalEarningsCompensations`). This is what lets the editor surface an
+ * empty input for Bonus, Commission, etc. even when the prepared payroll carries
+ * no fixed compensations. Placeholders attach to the primary job and carry no
+ * amount (blank), so an untouched earning submits as zero without altering pay.
+ *
+ * @remarks
+ * Owners (FLSA status `Owner`) never receive placeholders. Earning types that are
+ * handled elsewhere or never shown as additional earnings
+ * ({@link EXCLUDED_ADDITIONAL_EARNINGS}) and inactive types are skipped. The
+ * result is sorted alphabetically by name. The regular-rate-of-pay split between
+ * additional earnings and `other` happens downstream via `overtimeEarningNames`;
+ * this helper only decides which earning lines exist.
+ *
+ * @param existingFixedCompensations - The prepared compensation's fixed compensations.
+ * @param fixedCompensationTypes - The prepared payroll's `fixedCompensationTypes` (the same source the stable editor uses).
+ * @param primaryJobUuid - The employee's primary job UUID; placeholders attach here.
+ * @param flsaStatus - The employee's FLSA status; owners get no placeholders.
+ * @returns The merged, filtered, alphabetically sorted fixed-compensation lines.
+ * @internal
+ */
+export function resolveEditableFixedCompensations(
+  existingFixedCompensations: FixedCompensationEntry[] | undefined,
+  fixedCompensationTypes: Array<{ name?: string | null }> | undefined,
+  primaryJobUuid: string | undefined,
+  flsaStatus: string | undefined,
+): FixedCompensationEntry[] {
+  const merged: FixedCompensationEntry[] = [...(existingFixedCompensations ?? [])]
+
+  if (flsaStatus !== FlsaStatus.OWNER && primaryJobUuid) {
+    for (const compensationType of fixedCompensationTypes ?? []) {
+      const name = compensationType.name
+      if (!name) continue
+      if (EXCLUDED_ADDITIONAL_EARNINGS.includes(name)) continue
+      const exists = merged.some(entry => entry.name?.toLowerCase() === name.toLowerCase())
+      if (!exists) merged.push({ name, jobUuid: primaryJobUuid })
+    }
+  }
+
+  return merged
+    .filter(entry => entry.name && !EXCLUDED_ADDITIONAL_EARNINGS.includes(entry.name))
+    .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+}
+
+/**
  * Trims an API decimal string (e.g. `"40.000"`, `"500.00"`) to a clean editable
  * value (`"40"`, `"500"`), preserving real fractional parts (`"40.5"`). A blank
  * or non-numeric value returns `''` (meaning "not provided").
@@ -142,6 +194,7 @@ export function derivePayrollEditEmployeeDefaults(
   hasDirectDepositSetup: boolean,
   overtimeEarningNames: Set<string>,
   isOvertimeEligible: boolean,
+  fixedCompensations: FixedCompensationEntry[] = employeeCompensation?.fixedCompensations ?? [],
 ): PayrollEditEmployeeFormData {
   // Only overtime-eligible employees split hours/earnings by workweek; everyone
   // else renders (and seeds) flat, even on a multi-workweek payroll.
@@ -164,7 +217,7 @@ export function derivePayrollEditEmployeeDefaults(
   // The hook owns this bucketing so the UI just renders each section.
   const additionalEarnings: PayrollEditEmployeeFormData['additionalEarnings'] = {}
   const other: PayrollEditEmployeeFormData['other'] = {}
-  for (const compensation of employeeCompensation?.fixedCompensations ?? []) {
+  for (const compensation of fixedCompensations) {
     if (!compensation.jobUuid || !compensation.name) continue
     if (overtimeEarningNames.has(compensation.name)) {
       const jobEarnings = (additionalEarnings[compensation.jobUuid] ??= {})
