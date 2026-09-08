@@ -80,7 +80,7 @@ describe('TimeOffField', () => {
     renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Vacation Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Vacation Hours\b/)).toBeInTheDocument()
     })
     expect(screen.getByDisplayValue('8.0')).toBeInTheDocument()
   })
@@ -107,7 +107,7 @@ describe('TimeOffField', () => {
     renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Sick Hours\b/)).toBeInTheDocument()
     })
     expect(screen.queryByText('remaining')).not.toBeInTheDocument()
   })
@@ -129,7 +129,7 @@ describe('TimeOffField', () => {
     renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Unknown Policy')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Unknown Policy\b/)).toBeInTheDocument()
     })
     expect(screen.queryByText('remaining')).not.toBeInTheDocument()
   })
