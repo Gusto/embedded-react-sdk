@@ -75,7 +75,7 @@ const validBusinessSelfOnboarding = {
   email: 'billing@acme.com',
 }
 
-const { REQUIRED, INVALID_NAME, INVALID_EMAIL, INVALID_SSN, INVALID_EIN } =
+const { REQUIRED, INVALID_NAME, INVALID_EMAIL, INVALID_SSN, INVALID_EIN, MAX_HOURLY_RATE } =
   ContractorDetailsErrorCodes
 
 describe('createContractorDetailsSchema', () => {
@@ -279,6 +279,23 @@ describe('createContractorDetailsSchema', () => {
     it('ignores hourlyRate when wageType is Fixed (field excluded)', () => {
       const result = parse(
         { ...validIndividualEmployerLed, wageType: WageType.Fixed, hourlyRate: undefined },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(true)
+    })
+
+    it('rejects an hourlyRate above the server cap (regression for SDK-1297)', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Hourly, hourlyRate: 1_000_000_000_001 },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(false)
+      expect(issueFor(result, 'hourlyRate')?.message).toBe(MAX_HOURLY_RATE)
+    })
+
+    it('accepts an hourlyRate at the server cap', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Hourly, hourlyRate: 1_000_000_000_000 },
         { mode: 'create' },
       )
       expect(result.success).toBe(true)
