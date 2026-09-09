@@ -17,13 +17,16 @@
 #   domains=<JSON array>  e.g. ["payroll","time-off"] or [] or ["company",...]
 #
 # Selection rules:
-#   1. push to main / workflow_dispatch  → all domains (always exhaustive)
-#   2. PR with only non-runtime files    → []           (skip e2e entirely)
-#   3. PR touching a path outside any domain's surface
-#      (e.g. src/components/Common/, src/hooks/, package.json, this script)
-#      → all domains (safe default for cross-cutting changes)
-#   4. PR touching only domain-owned paths
-#      → exactly the domains whose surface was touched
+#   1. push to main / workflow_dispatch
+#        → all domains (always exhaustive)
+#   2. push to any other branch
+#        → []  (skip — e2e now runs only on the merge queue and main)
+#   3. merge_group with only non-runtime files 
+#        → [] (skip e2e entirely)
+#   4. merge_group touching a path outside any domain's surface (e.g. src/components/Common/, src/hooks/)
+#        → all domains (safe default for cross-cutting changes)
+#   5. merge_group touching only domain-owned paths
+#        → exactly the domains whose surface was touched
 #
 # Domain naming contract:
 #   e2e/tests/<kebab>  ↔  src/components/<Pascal>     (e.g. time-off ↔ TimeOff)
@@ -57,6 +60,16 @@ REF="${REF:-}"
 if [[ "$EVENT_NAME" == "workflow_dispatch" || "$REF" == "refs/heads/main" ]]; then
   echo "Running all domains (event=$EVENT_NAME ref=$REF)"
   echo "domains=$all_domains_json" >> "$GITHUB_OUTPUT"
+  exit 0
+fi
+
+# e2e runs only on the merge queue and main. A plain push to any
+# other branch (e.g. every commit pushed to an open PR) skips e2e entirely
+# rather than running a diff-selected subset — that per-push fan-out was
+# what overloaded the demo backend.
+if [[ "$EVENT_NAME" != "merge_group" ]]; then
+  echo "Skipping e2e (event=$EVENT_NAME runs only on merge_group or push to main)"
+  echo "domains=[]" >> "$GITHUB_OUTPUT"
   exit 0
 fi
 
