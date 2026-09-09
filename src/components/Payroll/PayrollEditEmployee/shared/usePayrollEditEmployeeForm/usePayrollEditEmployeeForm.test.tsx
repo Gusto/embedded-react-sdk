@@ -721,6 +721,44 @@ describe('usePayrollEditEmployeeForm', () => {
     ).toEqual(expect.arrayContaining(['Regular Hours', 'Overtime']))
   })
 
+  it('prepopulates Regular Hours from real per-week breakdowns when already split on load', async () => {
+    const prepare = {
+      ...MULTI_WORKWEEK_PREPARE,
+      employee_compensations: [
+        {
+          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
+          hourly_compensations: [
+            // Regular Hours carries a real, uneven per-week breakdown (40/20) --
+            // distinct from what an even split of the 60 total (30/30) would be.
+            ...MULTI_WORKWEEK_PREPARE.employee_compensations[0]!.hourly_compensations,
+            {
+              job_uuid: 'job-1',
+              name: 'Overtime',
+              hours: '5',
+              flsa_status: 'Nonexempt',
+              breakdowns: [
+                { start_date: '2024-01-01', end_date: '2024-01-07', hours: '5.0' },
+                { start_date: '2024-01-08', end_date: '2024-01-14', hours: '0.0' },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+    expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
+
+    const { getValues } = result.current.form.hookFormInternals.formMethods
+    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('40')
+    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('20')
+  })
+
   it('revealOvertime splits the hours section and un-hides the Overtime row', async () => {
     const prepare = {
       ...MULTI_WORKWEEK_PREPARE,
@@ -758,6 +796,44 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(weekOne.map(entry => entry.name)).toEqual(
       expect.arrayContaining(['Regular Hours', 'Overtime']),
     )
+  })
+
+  it('revealOvertime prepopulates Regular Hours from its real per-week breakdowns, not an even split', async () => {
+    const prepare = {
+      ...MULTI_WORKWEEK_PREPARE,
+      employee_compensations: [
+        {
+          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
+          hourly_compensations: [
+            // Regular Hours' real breakdown (40/20) is uneven -- an even split
+            // of the 60 total would produce 30/30, which must NOT appear here.
+            ...MULTI_WORKWEEK_PREPARE.employee_compensations[0]!.hourly_compensations,
+            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
+          ],
+        },
+      ],
+    }
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+    expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(true)
+
+    act(() => {
+      assertReady(result.current)
+      result.current.actions.revealOvertime()
+    })
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
+    })
+
+    const { getValues } = result.current.form.hookFormInternals.formMethods
+    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('40')
+    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('20')
   })
 
   it("preserves an untouched sibling line's total via an even split when Save is pressed right after revealing", async () => {
