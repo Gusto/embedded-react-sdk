@@ -3,40 +3,6 @@
   width: 100%;
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: 8px 12px;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  thead th {
-    font-weight: var(--g-font-weight-medium, 500);
-  }
-
-  tbody th {
-    font-weight: var(--g-font-weight-regular, 400);
-  }
-}
-
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.inputContainer {
+  max-width: toRem(160);
 }

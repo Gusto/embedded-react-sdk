@@ -104,8 +104,8 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    expect(await screen.findByLabelText(/^Regular Hours/)).toHaveValue(80)
-    expect(screen.queryByLabelText(/^Overtime/)).not.toBeInTheDocument()
+    expect(await screen.findByRole('spinbutton', { name: /^Regular Hours/ })).toHaveValue(80)
+    expect(screen.queryByRole('spinbutton', { name: /^Overtime/ })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Add overtime' })).toBeInTheDocument()
   })
 
@@ -118,17 +118,23 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     await user.click(screen.getByRole('button', { name: 'Add overtime' }))
 
     expect(screen.queryByRole('button', { name: 'Add overtime' })).not.toBeInTheDocument()
-    expect(screen.getByLabelText(/^Regular Hours Jan 1–Jan 7, 2024/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/^Regular Hours Jan 8–Jan 14, 2024/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/^Overtime Jan 1–Jan 7, 2024/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('spinbutton', { name: /^Regular Hours Jan 1–Jan 7, 2024/ }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('spinbutton', { name: /^Regular Hours Jan 8–Jan 14, 2024/ }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('spinbutton', { name: /^Overtime Jan 1–Jan 7, 2024/ }),
+    ).toBeInTheDocument()
   })
 
   it('starts already split, with no Add overtime button, when the employee already has overtime hours', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('5'))))
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    await screen.findByLabelText(/^Overtime Jan 1–Jan 7, 2024/)
-    expect(screen.getByLabelText(/^Overtime Jan 1–Jan 7, 2024/)).toHaveValue(5)
+    await screen.findByRole('spinbutton', { name: /^Overtime Jan 1–Jan 7, 2024/ })
+    expect(screen.getByRole('spinbutton', { name: /^Overtime Jan 1–Jan 7, 2024/ })).toHaveValue(5)
     expect(screen.queryByRole('button', { name: 'Add overtime' })).not.toBeInTheDocument()
   })
 
@@ -136,7 +142,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(exemptSingleWorkweekPrepare())))
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    expect(await screen.findByLabelText(/^Salary/)).toBeInTheDocument()
+    expect(await screen.findByRole('spinbutton', { name: /^Salary/ })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Add overtime' })).not.toBeInTheDocument()
   })
 
@@ -152,7 +158,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     const user = userEvent.setup()
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    const timeOffField = await screen.findByLabelText(/^Vacation Hours/)
+    const timeOffField = await screen.findByRole('spinbutton', { name: /^Vacation Hours/ })
     expect(screen.getByText('40 remaining')).toBeInTheDocument()
 
     await user.clear(timeOffField)
@@ -196,7 +202,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     const user = userEvent.setup()
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    await screen.findByLabelText(/^Regular Hours/)
+    await screen.findByRole('spinbutton', { name: /^Regular Hours/ })
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -219,7 +225,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     const user = userEvent.setup()
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
-    await screen.findByLabelText(/^Regular Hours/)
+    await screen.findByRole('spinbutton', { name: /^Regular Hours/ })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)

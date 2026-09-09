@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import type { ReactNode } from 'react'
 import { useWatch, type Control } from 'react-hook-form'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
@@ -26,10 +25,14 @@ import {
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common'
+import { Flex, Grid, DataView } from '@/components/Common'
+import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import InfoIcon from '@/assets/icons/info.svg?react'
 
 /**
  * In-development regular-rate-of-pay rebuild of {@link PayrollEditEmployee}.
@@ -64,11 +67,11 @@ export function UNSTABLE_PayrollEditEmployee({
 }
 
 /**
- * A single time-off row whose "remaining" balance decrements live as the user enters
- * hours used. The remaining value is presentational only (no submit impact), which is the
- * one sanctioned use of `useWatch` in this component.
+ * The "Type" cell for a time-off row: the policy name plus a live remaining balance that
+ * decrements as the user enters hours used. Presentational only (no submit impact), which is
+ * the one sanctioned use of `useWatch` in this component.
  */
-function TimeOffRow({
+function TimeOffTypeCell({
   entry,
   accrualBalance,
   control,
@@ -84,26 +87,12 @@ function TimeOffRow({
     accrualBalance != null ? parseFloat(accrualBalance) - (parseFloat(entered) || 0) : undefined
 
   return (
-    <tr>
-      <th scope="row">
-        <Flex flexDirection="column" gap={2}>
-          <span>{entry.name}</span>
-          {remaining != null ? (
-            <Text variant="supporting">
-              {t('timeOffBalance.remaining', { balance: remaining })}
-            </Text>
-          ) : null}
-        </Flex>
-      </th>
-      <td>
-        <entry.Field
-          label={entry.name}
-          shouldVisuallyHideLabel
-          adornmentEnd={t('hoursUnit')}
-          errorMessage={t('validations.negativeAmount')}
-        />
-      </td>
-    </tr>
+    <Flex flexDirection="column" gap={2}>
+      <span>{entry.name}</span>
+      {remaining != null ? (
+        <Text variant="supporting">{t('timeOffBalance.remaining', { balance: remaining })}</Text>
+      ) : null}
+    </Flex>
   )
 }
 
@@ -121,7 +110,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Button, Heading, Text } = useComponentContext()
+  const { Box, BoxHeader, Button, ButtonIcon, Heading, Text } = useComponentContext()
 
   const form = usePayrollEditEmployeeForm({ employeeId, companyId, payrollId, withReimbursements })
 
@@ -192,126 +181,118 @@ const Root = ({
     section: HourEntry[] | Record<string, HourEntry[]>,
     options: {
       title: string
+      label: string
       rowHeader: string
       valueColumnLabel: string
       labelFor: (name: string) => string
-      adornmentStart?: ReactNode
-      adornmentEnd?: ReactNode
-      footer?: ReactNode
+      adornmentStart?: string
+      adornmentEnd?: string
+      footer?: React.ReactNode
     },
   ) => {
-    const { title, rowHeader, valueColumnLabel, labelFor, adornmentStart, adornmentEnd, footer } =
-      options
+    const {
+      title,
+      label,
+      rowHeader,
+      valueColumnLabel,
+      labelFor,
+      adornmentStart,
+      adornmentEnd,
+      footer,
+    } = options
     const split = isSplitByWorkweek(section)
     const weekStarts = split ? Object.keys(section) : []
     const rows = split ? (section[weekStarts[0] ?? ''] ?? []) : section
     if (rows.length === 0 && !footer) return null
 
+    const renderField = (entry: HourEntry, fieldLabel: string) => (
+      <div className={styles.inputContainer}>
+        <entry.Field
+          label={fieldLabel}
+          shouldVisuallyHideLabel
+          adornmentStart={adornmentStart}
+          adornmentEnd={adornmentEnd}
+          errorMessage={t('validations.negativeAmount')}
+        />
+      </div>
+    )
+
+    const valueColumn: useDataViewPropReturn<HourEntry>['columns'][number] = {
+      title: valueColumnLabel,
+      justify: 'end',
+      render: row => renderField(row, labelFor(row.name)),
+    }
+
+    const workweekColumns: useDataViewPropReturn<HourEntry>['columns'] = weekStarts.map(
+      startDate => ({
+        title: weekRangeLabel(startDate),
+        justify: 'end',
+        render: row => {
+          const cell = (section as Record<string, HourEntry[]>)[startDate]?.find(
+            entry => entry.jobUuid === row.jobUuid && entry.name === row.name,
+          )
+          return cell
+            ? renderField(cell, `${labelFor(row.name)} ${weekRangeLabel(startDate)}`)
+            : null
+        },
+      }),
+    )
+
+    const columns: useDataViewPropReturn<HourEntry>['columns'] = [
+      { title: rowHeader, render: row => labelFor(row.name) },
+      ...(split ? workweekColumns : [valueColumn]),
+    ]
+
     return (
-      <section className={styles.section}>
-        <Heading as="h3" styledAs="h4">
-          {title}
-        </Heading>
-        {rows.length > 0 && (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th scope="col">{rowHeader}</th>
-                {split ? (
-                  weekStarts.map(startDate => (
-                    <th key={startDate} scope="col">
-                      {weekRangeLabel(startDate)}
-                    </th>
-                  ))
-                ) : (
-                  <th scope="col">{valueColumnLabel}</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(row => {
-                const rowLabel = labelFor(row.name)
-                return (
-                  <tr key={`${row.jobUuid}:${row.name}`}>
-                    <th scope="row">{rowLabel}</th>
-                    {split ? (
-                      weekStarts.map(startDate => {
-                        const cell = section[startDate]?.find(
-                          entry => entry.jobUuid === row.jobUuid && entry.name === row.name,
-                        )
-                        return (
-                          <td key={startDate}>
-                            {cell ? (
-                              <cell.Field
-                                label={`${rowLabel} ${weekRangeLabel(startDate)}`}
-                                shouldVisuallyHideLabel
-                                adornmentStart={adornmentStart}
-                                adornmentEnd={adornmentEnd}
-                                errorMessage={t('validations.negativeAmount')}
-                              />
-                            ) : null}
-                          </td>
-                        )
-                      })
-                    ) : (
-                      <td>
-                        <row.Field
-                          label={rowLabel}
-                          shouldVisuallyHideLabel
-                          adornmentStart={adornmentStart}
-                          adornmentEnd={adornmentEnd}
-                          errorMessage={t('validations.negativeAmount')}
-                        />
-                      </td>
-                    )}
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        )}
-        {footer}
-      </section>
+      <Box header={<BoxHeader title={title} />} withPadding={false} footer={footer}>
+        <DataView label={label} isWithinBox columns={columns} data={rows} />
+      </Box>
     )
   }
 
   const renderTimeOffSection = (
     entries: TimeOffEntry[],
-    options: { title: string; description?: ReactNode; showBalance?: boolean },
+    options: { title: string; description?: string; showBalance?: boolean },
   ) => {
     if (entries.length === 0) return null
     const { title, description, showBalance } = options
 
+    const columns: useDataViewPropReturn<TimeOffEntry>['columns'] = [
+      {
+        title: t('typeColumn'),
+        render: entry => (
+          <TimeOffTypeCell
+            entry={entry}
+            control={control}
+            accrualBalance={
+              showBalance
+                ? employee.eligiblePaidTimeOff?.find(policy => policy.name === entry.name)
+                    ?.accrualBalance
+                : undefined
+            }
+          />
+        ),
+      },
+      {
+        title: t('hoursColumn'),
+        justify: 'end',
+        render: entry => (
+          <div className={styles.inputContainer}>
+            <entry.Field
+              label={entry.name}
+              shouldVisuallyHideLabel
+              adornmentEnd={t('hoursUnit')}
+              errorMessage={t('validations.negativeAmount')}
+            />
+          </div>
+        ),
+      },
+    ]
+
     return (
-      <section className={styles.section}>
-        <Heading as="h3" styledAs="h4">
-          {title}
-        </Heading>
-        {description ? <Text variant="supporting">{description}</Text> : null}
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th scope="col">{t('typeColumn')}</th>
-              <th scope="col">{t('hoursColumn')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map(entry => (
-              <TimeOffRow
-                key={entry.key}
-                entry={entry}
-                control={control}
-                accrualBalance={
-                  showBalance
-                    ? employee.eligiblePaidTimeOff?.find(policy => policy.name === entry.name)
-                        ?.accrualBalance
-                    : undefined
-                }
-              />
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <Box header={<BoxHeader title={title} description={description} />} withPadding={false}>
+        <DataView label={title} isWithinBox columns={columns} data={entries} />
+      </Box>
     )
   }
 
@@ -364,21 +345,23 @@ const Root = ({
               </Flex>
             </Flex>
 
-            {Fields.jobs.map(job => (
-              <Flex key={job.jobUuid} flexDirection="column" gap={16}>
-                {Fields.jobs.length > 1 && job.title ? (
-                  <Heading as="h3">{job.title}</Heading>
-                ) : null}
-                {renderBreakdownSection(job.hours, {
-                  title: form.data.isOvertimeEligible
-                    ? t('regularHoursTitle')
-                    : t('regularHoursTitleWithoutOvertime'),
-                  rowHeader: t('hourTypeColumn'),
-                  valueColumnLabel: t('hoursColumn'),
-                  labelFor: hoursLabel,
-                  adornmentEnd: t('hoursUnit'),
-                  footer: job.hasHiddenOvertime ? (
-                    <Flex justifyContent="flex-start">
+            {Fields.jobs.map(job => {
+              const isMultiJob = Fields.jobs.length > 1
+              const genericHoursTitle = form.data.isOvertimeEligible
+                ? t('regularHoursTitle')
+                : t('regularHoursTitleWithoutOvertime')
+
+              return (
+                <Flex key={job.jobUuid} flexDirection="column" gap={16}>
+                  {isMultiJob ? <Heading as="h3">{genericHoursTitle}</Heading> : null}
+                  {renderBreakdownSection(job.hours, {
+                    title: isMultiJob ? (job.title ?? genericHoursTitle) : genericHoursTitle,
+                    label: genericHoursTitle,
+                    rowHeader: t('hourTypeColumn'),
+                    valueColumnLabel: t('hoursColumn'),
+                    labelFor: hoursLabel,
+                    adornmentEnd: t('hoursUnit'),
+                    footer: job.hasHiddenOvertime ? (
                       <Button
                         variant="secondary"
                         onClick={() => {
@@ -388,18 +371,19 @@ const Root = ({
                       >
                         {t('addOvertimeCta')}
                       </Button>
-                    </Flex>
-                  ) : undefined,
-                })}
-                {renderBreakdownSection(job.additionalEarnings, {
-                  title: t('additionalEarningsTitle'),
-                  rowHeader: t('typeColumn'),
-                  valueColumnLabel: t('amountColumn'),
-                  labelFor: earningLabel,
-                  adornmentStart: '$',
-                })}
-              </Flex>
-            ))}
+                    ) : undefined,
+                  })}
+                  {renderBreakdownSection(job.additionalEarnings, {
+                    title: t('additionalEarningsTitle'),
+                    label: t('additionalEarningsTitle'),
+                    rowHeader: t('typeColumn'),
+                    valueColumnLabel: t('amountColumn'),
+                    labelFor: earningLabel,
+                    adornmentStart: '$',
+                  })}
+                </Flex>
+              )
+            })}
 
             {renderTimeOffSection(Fields.timeOff, {
               title: Fields.finalPayout ? t('timeOffTitleDismissal') : t('timeOffTitle'),
@@ -413,101 +397,100 @@ const Root = ({
                 })
               : null}
 
-            {Fields.other.length > 0 ? (
-              <section className={styles.section}>
-                <Heading as="h3" styledAs="h4">
-                  {t('otherTitle')}
-                </Heading>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th scope="col">{t('typeColumn')}</th>
-                      <th scope="col">{t('amountColumn')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Fields.other.map(entry => {
-                      const rowLabel = earningLabel(entry.id)
-                      return (
-                        <tr key={entry.key}>
-                          <th scope="row">{rowLabel}</th>
-                          <td>
-                            <entry.Field
-                              label={rowLabel}
-                              shouldVisuallyHideLabel
-                              adornmentStart="$"
-                              errorMessage={t('validations.negativeAmount')}
-                            />
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </section>
-            ) : null}
+            {Fields.other.length > 0
+              ? (() => {
+                  const columns: useDataViewPropReturn<(typeof Fields.other)[number]>['columns'] = [
+                    { title: t('typeColumn'), render: entry => earningLabel(entry.id) },
+                    {
+                      title: t('amountColumn'),
+                      justify: 'end',
+                      render: entry => (
+                        <div className={styles.inputContainer}>
+                          <entry.Field
+                            label={earningLabel(entry.id)}
+                            shouldVisuallyHideLabel
+                            adornmentStart="$"
+                            errorMessage={t('validations.negativeAmount')}
+                          />
+                        </div>
+                      ),
+                    },
+                  ]
+                  return (
+                    <Box header={<BoxHeader title={t('otherTitle')} />} withPadding={false}>
+                      <DataView
+                        label={t('otherTitle')}
+                        isWithinBox
+                        columns={columns}
+                        data={Fields.other}
+                      />
+                    </Box>
+                  )
+                })()
+              : null}
 
             {PaymentMethodField ? (
-              <section className={styles.section}>
+              <Flex flexDirection="column" gap={24}>
                 {ReimbursementDraft ? (
-                  <section className={styles.section}>
+                  <Flex flexDirection="column" gap={12}>
                     <Heading as="h3" styledAs="h4">
                       {t('reimbursementTitle')}
                     </Heading>
-                    {reimbursementRows && reimbursementRows.length > 0 ? (
-                      <table className={styles.table}>
-                        <thead>
-                          <tr>
-                            <th scope="col">{t('reimbursementDescriptionColumn')}</th>
-                            <th scope="col">{t('reimbursementAmountColumn')}</th>
-                            <th scope="col">{t('reimbursementTypeColumn')}</th>
-                            <th scope="col">
-                              <span className={styles.visuallyHidden}>
-                                {t('removeReimbursementLabel', {
-                                  description: t('reimbursementUnnamedFallback'),
-                                })}
-                              </span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {reimbursementRows.map(row => {
-                            const displayDescription =
-                              row.description.trim() || t('reimbursementUnnamedFallback')
-                            return (
-                              <tr key={row.key}>
-                                <th scope="row">{displayDescription}</th>
-                                <td>{`$${row.amount}`}</td>
-                                <td>
-                                  {row.recurring
-                                    ? t('reimbursementTypeRecurring')
-                                    : t('reimbursementTypeOneTime')}
-                                </td>
-                                <td>
-                                  {row.recurring ? null : (
-                                    <Button
-                                      variant="tertiary"
-                                      onClick={() => form.actions.removeReimbursement?.(row.index)}
-                                      title={t('removeReimbursementLabel', {
-                                        description: displayDescription,
-                                      })}
-                                    >
-                                      {t('removeReimbursementLabel', {
-                                        description: displayDescription,
-                                      })}
-                                    </Button>
-                                  )}
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    ) : null}
+                    {reimbursementRows?.map(row => {
+                      const displayDescription =
+                        row.description.trim() || t('reimbursementUnnamedFallback')
+                      const formattedAmount = formatNumberAsCurrency(parseFloat(row.amount || '0'))
+
+                      if (row.recurring) {
+                        return (
+                          <Flex
+                            key={row.key}
+                            alignItems="center"
+                            justifyContent="space-between"
+                            gap={12}
+                            aria-label={t('recurringReimbursementLabel', {
+                              description: displayDescription,
+                            })}
+                          >
+                            <Text>{displayDescription}</Text>
+                            <Flex alignItems="center" gap={8}>
+                              <Text>{formattedAmount}</Text>
+                              <InfoIcon
+                                aria-label={t('recurringReimbursementTooltip')}
+                                role="img"
+                              />
+                            </Flex>
+                          </Flex>
+                        )
+                      }
+
+                      return (
+                        <Flex
+                          key={row.key}
+                          alignItems="center"
+                          justifyContent="space-between"
+                          gap={12}
+                        >
+                          <Text>{displayDescription}</Text>
+                          <Flex alignItems="center" gap={12}>
+                            <Text>{formattedAmount}</Text>
+                            <ButtonIcon
+                              variant="tertiary"
+                              onClick={() => form.actions.removeReimbursement?.(row.index)}
+                              aria-label={t('removeReimbursementLabel', {
+                                description: displayDescription,
+                              })}
+                            >
+                              <TrashCanSvg aria-hidden />
+                            </ButtonIcon>
+                          </Flex>
+                        </Flex>
+                      )
+                    })}
 
                     {isAddingReimbursement ? (
                       <Flex flexDirection="column" gap={12}>
-                        <Flex gap={12} alignItems="flex-start">
+                        <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                           <ReimbursementDraft.Description
                             label={t('reimbursementDescriptionLabel')}
                             placeholder={t('reimbursementDescriptionPlaceholder')}
@@ -517,7 +500,7 @@ const Root = ({
                             adornmentStart="$"
                             errorMessage={t('validations.reimbursementAmount')}
                           />
-                        </Flex>
+                        </Grid>
                         <Flex gap={12}>
                           <Button
                             onClick={() => form.actions.saveReimbursement?.()}
@@ -535,37 +518,35 @@ const Root = ({
                         </Flex>
                       </Flex>
                     ) : (
-                      <>
-                        {reimbursementRows && reimbursementRows.length === 0 ? (
-                          <Text variant="supporting">{t('reimbursementEmptyTitle')}</Text>
-                        ) : null}
-                        <Flex justifyContent="flex-start">
-                          <Button
-                            variant="secondary"
-                            onClick={() => form.actions.beginAddReimbursement?.()}
-                            title={t('addReimbursementCta')}
-                          >
-                            {t('addReimbursementCta')}
-                          </Button>
-                        </Flex>
-                      </>
+                      <div>
+                        <Button
+                          variant="tertiary"
+                          onClick={() => form.actions.beginAddReimbursement?.()}
+                          title={t('addReimbursementLink')}
+                          icon={<PlusCircleIcon aria-hidden />}
+                        >
+                          {t('addReimbursementLink')}
+                        </Button>
+                      </div>
                     )}
-                  </section>
+                  </Flex>
                 ) : null}
 
-                <Heading as="h3" styledAs="h4">
-                  {t('paymentMethodTitle')}
-                </Heading>
-                <PaymentMethodField
-                  label={t('paymentMethodLabel')}
-                  description={t('paymentMethodDescription')}
-                  getOptionLabel={value =>
-                    value === PayrollUpdatePaymentMethod.Check
-                      ? t('paymentMethodOptions.check')
-                      : t('paymentMethodOptions.directDeposit')
-                  }
-                />
-              </section>
+                <Flex flexDirection="column" gap={12}>
+                  <Heading as="h3" styledAs="h4">
+                    {t('paymentMethodTitle')}
+                  </Heading>
+                  <PaymentMethodField
+                    label={t('paymentMethodLabel')}
+                    description={t('paymentMethodDescription')}
+                    getOptionLabel={value =>
+                      value === PayrollUpdatePaymentMethod.Check
+                        ? t('paymentMethodOptions.check')
+                        : t('paymentMethodOptions.directDeposit')
+                    }
+                  />
+                </Flex>
+              </Flex>
             ) : null}
           </Flex>
         </SDKFormProvider>
