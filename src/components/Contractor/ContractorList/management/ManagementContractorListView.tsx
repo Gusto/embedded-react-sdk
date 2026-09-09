@@ -20,6 +20,8 @@ export interface ManagementContractorListViewProps extends Pick<
   Extract<UseContractorListResult, { isLoading: false }>,
   'pagination' | 'status'
 > {
+  /** CSS class name applied to the root element. */
+  className?: string
   contractors: ContractorWithActions[]
   isFetching: boolean
   selectedTab: ContractorTab
@@ -71,6 +73,7 @@ function isOnboardingEditReview(onboardingStatus?: string | null) {
 
 /** @internal */
 export function ManagementContractorListView({
+  className,
   contractors,
   isFetching,
   selectedTab,
@@ -313,27 +316,29 @@ export function ManagementContractorListView({
 
   return (
     <>
-      <Flex flexDirection="column" gap={32}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Components.Heading as="h2">{t('title')}</Components.Heading>
-          <Components.Button variant="secondary" onClick={onAddContractor}>
-            {t('addContractorCta')}
-          </Components.Button>
-        </Flex>
+      <div className={className}>
+        <Flex flexDirection="column" gap={32}>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Components.Heading as="h2">{t('title')}</Components.Heading>
+            <Components.Button variant="secondary" onClick={onAddContractor}>
+              {t('addContractorCta')}
+            </Components.Button>
+          </Flex>
 
-        <Flex flexDirection="column" gap={0}>
-          <Components.Tabs
-            tabs={tabs}
-            selectedId={selectedTab}
-            onSelectionChange={id => {
-              onTabChange(id as ContractorTab)
-            }}
-            aria-label={t('tabsLabel')}
-          />
+          <Flex flexDirection="column" gap={0}>
+            <Components.Tabs
+              tabs={tabs}
+              selectedId={selectedTab}
+              onSelectionChange={id => {
+                onTabChange(id as ContractorTab)
+              }}
+              aria-label={t('tabsLabel')}
+            />
 
-          <DataView label={t('contractorListLabel')} {...dataViewProps} />
+            <DataView label={t('contractorListLabel')} {...dataViewProps} />
+          </Flex>
         </Flex>
-      </Flex>
+      </div>
 
       <Components.Dialog
         isOpen={!!contractorToRemove}

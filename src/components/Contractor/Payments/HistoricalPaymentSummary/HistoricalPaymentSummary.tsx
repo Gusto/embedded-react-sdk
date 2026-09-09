@@ -48,7 +48,13 @@ export function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps) {
   )
 }
 
-function Root({ paymentGroupId, companyId, dictionary, onEvent }: HistoricalPaymentSummaryProps) {
+function Root({
+  paymentGroupId,
+  companyId,
+  dictionary,
+  onEvent,
+  className,
+}: HistoricalPaymentSummaryProps) {
   useUnstableFeature('historicalPayments', { throwIfDisabled: true })
   useI18n('Contractor.Payments.HistoricalPaymentSummary')
   useComponentDictionary('Contractor.Payments.HistoricalPaymentSummary', dictionary)
@@ -78,35 +84,37 @@ function Root({ paymentGroupId, companyId, dictionary, onEvent }: HistoricalPaym
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Alert status="success" label={t('successTitle')}>
-        <Text>
-          {t('successMessage', {
-            count: contractorPaymentGroup.contractorPayments?.length ?? 0,
-          })}
-        </Text>
-      </Alert>
-
-      <Flex justifyContent="space-between" alignItems="flex-start">
-        <Flex flexDirection="column" gap={2}>
-          <Heading as="h2">{t('summaryTitle')}</Heading>
-          <Text variant="supporting">
-            {t('summarySubtitle', {
-              checkDate: formatLongWithYear(contractorPaymentGroup.checkDate ?? ''),
+    <div className={className}>
+      <Flex flexDirection="column" gap={24}>
+        <Alert status="success" label={t('successTitle')}>
+          <Text>
+            {t('successMessage', {
+              count: contractorPaymentGroup.contractorPayments?.length ?? 0,
             })}
           </Text>
-        </Flex>
-        <Button onClick={handleDone} variant="primary">
-          {t('doneCta')}
-        </Button>
-      </Flex>
+        </Alert>
 
-      <PaymentSummaryBlock
-        contractorPaymentGroup={contractorPaymentGroup}
-        contractors={contractors}
-        showDebitColumns={false}
-        dictionary={summaryDictionary}
-      />
-    </Flex>
+        <Flex justifyContent="space-between" alignItems="flex-start">
+          <Flex flexDirection="column" gap={2}>
+            <Heading as="h2">{t('summaryTitle')}</Heading>
+            <Text variant="supporting">
+              {t('summarySubtitle', {
+                checkDate: formatLongWithYear(contractorPaymentGroup.checkDate ?? ''),
+              })}
+            </Text>
+          </Flex>
+          <Button onClick={handleDone} variant="primary">
+            {t('doneCta')}
+          </Button>
+        </Flex>
+
+        <PaymentSummaryBlock
+          contractorPaymentGroup={contractorPaymentGroup}
+          contractors={contractors}
+          showDebitColumns={false}
+          dictionary={summaryDictionary}
+        />
+      </Flex>
+    </div>
   )
 }

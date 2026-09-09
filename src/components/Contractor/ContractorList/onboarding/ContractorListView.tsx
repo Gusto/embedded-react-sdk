@@ -16,6 +16,8 @@ export interface ContractorListViewProps extends Pick<
   Extract<UseContractorListResult, { isLoading: false }>,
   'pagination' | 'status'
 > {
+  /** CSS class name applied to the root element. */
+  className?: string
   contractors: ContractorWithActions[]
   isFetching: boolean
   successMessage?: string
@@ -34,6 +36,7 @@ function contractorDisplayName(contractor: ContractorWithActions) {
 
 /** @internal */
 export function ContractorListView({
+  className,
   contractors,
   isFetching,
   pagination,
@@ -121,25 +124,27 @@ export function ContractorListView({
 
   return (
     <>
-      <Flex flexDirection="column">
-        {successMessage && <Components.Alert label={successMessage} status="success" />}
+      <div className={className}>
+        <Flex flexDirection="column">
+          {successMessage && <Components.Alert label={successMessage} status="success" />}
 
-        <Flex alignItems="center" justifyContent="space-between">
-          <Components.Heading as="h2">{t('title')}</Components.Heading>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Components.Heading as="h2">{t('title')}</Components.Heading>
 
-          {contractors.length > 0 && (
-            <Components.Button variant="secondary" onClick={onAddContractor}>
-              {t('addAnotherCta')}
-            </Components.Button>
-          )}
+            {contractors.length > 0 && (
+              <Components.Button variant="secondary" onClick={onAddContractor}>
+                {t('addAnotherCta')}
+              </Components.Button>
+            )}
+          </Flex>
+
+          <DataView label={t('contractorListLabel')} {...dataViewProps} />
+
+          <ActionsLayout>
+            <Components.Button onClick={onContinue}>{t('continueCta')}</Components.Button>
+          </ActionsLayout>
         </Flex>
-
-        <DataView label={t('contractorListLabel')} {...dataViewProps} />
-
-        <ActionsLayout>
-          <Components.Button onClick={onContinue}>{t('continueCta')}</Components.Button>
-        </ActionsLayout>
-      </Flex>
+      </div>
 
       <Components.Dialog
         isOpen={!!contractorToDelete}

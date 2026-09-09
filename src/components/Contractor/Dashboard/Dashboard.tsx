@@ -28,6 +28,7 @@ function DashboardRoot({
   onEvent,
   selectedTab: controlledTab,
   LoaderComponent,
+  className,
 }: DashboardProps) {
   useI18n('Contractor.Dashboard')
   useComponentDictionary('Contractor.Dashboard', dictionary)
@@ -43,40 +44,42 @@ function DashboardRoot({
   ]
 
   return (
-    <Flex flexDirection="column" gap={32}>
-      <Suspense fallback={null}>
-        <DashboardHeader contractorId={contractorId} />
-      </Suspense>
+    <div className={className}>
+      <Flex flexDirection="column" gap={32}>
+        <Suspense fallback={null}>
+          <DashboardHeader contractorId={contractorId} />
+        </Suspense>
 
-      <Flex flexDirection="column" gap={8}>
-        <Components.Tabs
-          tabs={tabs}
-          selectedId={selectedTab}
-          onSelectionChange={id => {
-            const next = id as DashboardTab
-            setInternalTab(next)
-            onEvent(componentEvents.CONTRACTOR_DASHBOARD_TAB_CHANGE, { tab: next })
-          }}
-          aria-label={t('tabsLabel')}
-        />
+        <Flex flexDirection="column" gap={8}>
+          <Components.Tabs
+            tabs={tabs}
+            selectedId={selectedTab}
+            onSelectionChange={id => {
+              const next = id as DashboardTab
+              setInternalTab(next)
+              onEvent(componentEvents.CONTRACTOR_DASHBOARD_TAB_CHANGE, { tab: next })
+            }}
+            aria-label={t('tabsLabel')}
+          />
 
-        <Flex flexDirection="column" gap={24}>
-          {selectedTab === 'details' && (
-            <DetailsView contractorId={contractorId} onEvent={onEvent} />
-          )}
+          <Flex flexDirection="column" gap={24}>
+            {selectedTab === 'details' && (
+              <DetailsView contractorId={contractorId} onEvent={onEvent} />
+            )}
 
-          {selectedTab === 'pay' && <PayView contractorId={contractorId} onEvent={onEvent} />}
+            {selectedTab === 'pay' && <PayView contractorId={contractorId} onEvent={onEvent} />}
 
-          {selectedTab === 'documents' && (
-            <DocumentsCard
-              contractorId={contractorId}
-              onEvent={onEvent}
-              LoaderComponent={LoaderComponent}
-            />
-          )}
+            {selectedTab === 'documents' && (
+              <DocumentsCard
+                contractorId={contractorId}
+                onEvent={onEvent}
+                LoaderComponent={LoaderComponent}
+              />
+            )}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </div>
   )
 }
 

@@ -36,6 +36,21 @@ function mockContractorWithStatus(onboardingStatus: string, onboarded = false) {
   )
 }
 
+describe('ContractorList', () => {
+  beforeEach(() => {
+    mockContractorWithStatus('admin_onboarding_incomplete')
+  })
+
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <ContractorList companyId="company-123" onEvent={() => {}} className="custom-class" />,
+    )
+
+    await screen.findByText('Ada Lovelace')
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+})
+
 describe('ContractorList hamburger menu edit/review CTA', () => {
   beforeEach(() => {
     mockContractorWithStatus('admin_onboarding_incomplete')

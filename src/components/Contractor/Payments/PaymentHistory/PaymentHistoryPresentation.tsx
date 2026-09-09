@@ -16,6 +16,8 @@ import EyeIcon from '@/assets/icons/eye.svg?react'
 import CancelIcon from '@/assets/icons/slash-circle.svg?react'
 
 interface PaymentHistoryPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   paymentGroup: ContractorPaymentGroup
   contractors: Contractor[]
   onViewPayment: (paymentId: string) => void
@@ -25,6 +27,7 @@ interface PaymentHistoryPresentationProps {
 
 /** @internal */
 export const PaymentHistoryPresentation = ({
+  className,
   paymentGroup,
   contractors,
   onViewPayment,
@@ -47,122 +50,128 @@ export const PaymentHistoryPresentation = ({
   }
 
   return (
-    <Flex flexDirection="column" gap={32}>
-      <Flex flexDirection="column" gap={8}>
-        <Heading as="h2">{t('title')}</Heading>
-        <Text>
-          <Trans
-            i18nKey={'subtitle'}
-            t={t}
-            values={{ date: formatLongWithYear(paymentGroup.debitDate) }}
-            components={{
-              strong: <Text weight="bold" as="span" />,
-            }}
-          />
-        </Text>
-      </Flex>
-
-      <Flex flexDirection="column" gap={16}>
-        <Heading as="h2">{t('paymentsSection')}</Heading>
-
-        {payments.length === 0 ? (
-          <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')} />
-        ) : (
-          <>
-            <DataView
-              columns={[
-                {
-                  title: t('tableHeaders.contractor'),
-                  render: ({ contractorUuid }) =>
-                    getContractorDisplayName(
-                      contractors.find(contractor => contractor.uuid === contractorUuid),
-                    ),
-                },
-                {
-                  title: t('tableHeaders.wageType'),
-                  render: contractor => formatWageType(contractor),
-                },
-                {
-                  title: t('tableHeaders.paymentMethod'),
-                  render: ({ paymentMethod }) => paymentMethod,
-                },
-                {
-                  title: t('tableHeaders.hours'),
-                  justify: 'end',
-                  render: ({ wageType, hours }) =>
-                    wageType === 'Fixed'
-                      ? t('na')
-                      : hours
-                        ? formatHoursDisplay(Number(hours))
-                        : '–',
-                },
-                {
-                  title: t('tableHeaders.wage'),
-                  justify: 'end',
-                  render: ({ wageType, wage }) =>
-                    wageType === 'Hourly' ? t('na') : wage ? currencyFormatter(Number(wage)) : '–',
-                },
-                {
-                  title: t('tableHeaders.bonus'),
-                  justify: 'end',
-                  render: ({ bonus }) => (bonus ? currencyFormatter(Number(bonus)) : '–'),
-                },
-                {
-                  title: t('tableHeaders.reimbursements'),
-                  justify: 'end',
-                  render: ({ reimbursement }) =>
-                    reimbursement ? currencyFormatter(Number(reimbursement)) : '–',
-                },
-                {
-                  title: t('tableHeaders.total'),
-                  justify: 'end',
-                  render: contractorPayment =>
-                    contractorPayment.wageTotal
-                      ? currencyFormatter(getContractorPaymentTotalAmount(contractorPayment))
-                      : '–',
-                },
-              ]}
-              itemMenu={({ contractorUuid, mayCancel, uuid }) => {
-                const items = [
-                  {
-                    label: t('actions.view'),
-                    onClick: () => {
-                      onViewPayment(contractorUuid!)
-                    },
-                    icon: (
-                      <span className={styles.icon}>
-                        <EyeIcon aria-hidden />
-                      </span>
-                    ),
-                  },
-                ]
-                if (mayCancel) {
-                  items.push({
-                    label: t('actions.cancel'),
-                    onClick: () => {
-                      onCancelPayment(uuid!)
-                    },
-                    icon: (
-                      <span className={styles.icon}>
-                        <CancelIcon aria-hidden />
-                      </span>
-                    ),
-                  })
-                }
-                return (
-                  <HamburgerMenu
-                    items={items}
-                    triggerLabel={t('tableHeaders.action')}
-                    isLoading={isCancelling}
-                  />
-                )
+    <div className={className}>
+      <Flex flexDirection="column" gap={32}>
+        <Flex flexDirection="column" gap={8}>
+          <Heading as="h2">{t('title')}</Heading>
+          <Text>
+            <Trans
+              i18nKey={'subtitle'}
+              t={t}
+              values={{ date: formatLongWithYear(paymentGroup.debitDate) }}
+              components={{
+                strong: <Text weight="bold" as="span" />,
               }}
-              data={payments}
-              label={t('title')}
             />
-          </>
-        )}
+          </Text>
+        </Flex>
+
+        <Flex flexDirection="column" gap={16}>
+          <Heading as="h2">{t('paymentsSection')}</Heading>
+
+          {payments.length === 0 ? (
+            <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')} />
+          ) : (
+            <>
+              <DataView
+                columns={[
+                  {
+                    title: t('tableHeaders.contractor'),
+                    render: ({ contractorUuid }) =>
+                      getContractorDisplayName(
+                        contractors.find(contractor => contractor.uuid === contractorUuid),
+                      ),
+                  },
+                  {
+                    title: t('tableHeaders.wageType'),
+                    render: contractor => formatWageType(contractor),
+                  },
+                  {
+                    title: t('tableHeaders.paymentMethod'),
+                    render: ({ paymentMethod }) => paymentMethod,
+                  },
+                  {
+                    title: t('tableHeaders.hours'),
+                    justify: 'end',
+                    render: ({ wageType, hours }) =>
+                      wageType === 'Fixed'
+                        ? t('na')
+                        : hours
+                          ? formatHoursDisplay(Number(hours))
+                          : '–',
+                  },
+                  {
+                    title: t('tableHeaders.wage'),
+                    justify: 'end',
+                    render: ({ wageType, wage }) =>
+                      wageType === 'Hourly'
+                        ? t('na')
+                        : wage
+                          ? currencyFormatter(Number(wage))
+                          : '–',
+                  },
+                  {
+                    title: t('tableHeaders.bonus'),
+                    justify: 'end',
+                    render: ({ bonus }) => (bonus ? currencyFormatter(Number(bonus)) : '–'),
+                  },
+                  {
+                    title: t('tableHeaders.reimbursements'),
+                    justify: 'end',
+                    render: ({ reimbursement }) =>
+                      reimbursement ? currencyFormatter(Number(reimbursement)) : '–',
+                  },
+                  {
+                    title: t('tableHeaders.total'),
+                    justify: 'end',
+                    render: contractorPayment =>
+                      contractorPayment.wageTotal
+                        ? currencyFormatter(getContractorPaymentTotalAmount(contractorPayment))
+                        : '–',
+                  },
+                ]}
+                itemMenu={({ contractorUuid, mayCancel, uuid }) => {
+                  const items = [
+                    {
+                      label: t('actions.view'),
+                      onClick: () => {
+                        onViewPayment(contractorUuid!)
+                      },
+                      icon: (
+                        <span className={styles.icon}>
+                          <EyeIcon aria-hidden />
+                        </span>
+                      ),
+                    },
+                  ]
+                  if (mayCancel) {
+                    items.push({
+                      label: t('actions.cancel'),
+                      onClick: () => {
+                        onCancelPayment(uuid!)
+                      },
+                      icon: (
+                        <span className={styles.icon}>
+                          <CancelIcon aria-hidden />
+                        </span>
+                      ),
+                    })
+                  }
+                  return (
+                    <HamburgerMenu
+                      items={items}
+                      triggerLabel={t('tableHeaders.action')}
+                      isLoading={isCancelling}
+                    />
+                  )
+                }}
+                data={payments}
+                label={t('title')}
+              />
+            </>
+          )}
+        </Flex>
       </Flex>
-    </Flex>
+    </div>
   )
 }
