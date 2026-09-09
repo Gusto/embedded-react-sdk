@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.55.5",
+  "version": "0.55.6",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -176,7 +176,7 @@
   },
   "overrides": {
     "esbuild": "^0.28.1",
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^4.3.2",
     "uuid": "^11.1.1",
     "@babel/core": "^7.29.6",
     "markdown-it": "^14.2.0",
