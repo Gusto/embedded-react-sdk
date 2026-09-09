@@ -3,7 +3,7 @@ import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { HTTPClientError } from '@gusto/embedded-api/models/errors/httpclienterrors'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
-import { normalizeToSDKError, SDKInternalError } from './sdkError'
+import { GENERIC_API_ERROR_MESSAGE, normalizeToSDKError, SDKInternalError } from './sdkError'
 
 function createHttpMeta(status: number, body: string) {
   return {
@@ -122,31 +122,53 @@ describe('normalizeToSDKError', () => {
       expect(result.message).toBe('2 fields have issues')
     })
 
-    it('falls back to the raw message when body is not valid JSON', () => {
+    it('falls back to a generic message when body is not valid JSON', () => {
       const error = new APIError('', createHttpMeta(500, 'Internal Server Error'))
       const result = normalizeToSDKError(error)
 
       expect(result.category).toBe('api_error')
       expect(result.httpStatus).toBe(500)
       expect(result.fieldErrors).toEqual([])
-      expect(result.message).toContain('Status 500')
+      expect(result.message).toBe(GENERIC_API_ERROR_MESSAGE)
     })
 
-    it('falls back to the raw message when body JSON has no errors array', () => {
+    it('falls back to a generic message when body JSON has no errors array', () => {
       const body = JSON.stringify({ message: 'Something went wrong' })
       const error = new APIError('', createHttpMeta(403, body))
       const result = normalizeToSDKError(error)
 
       expect(result.fieldErrors).toEqual([])
-      expect(result.message).toContain('Status 403')
+      expect(result.message).toBe(GENERIC_API_ERROR_MESSAGE)
     })
 
-    it('falls back to the raw message when body is empty', () => {
+    it('falls back to a generic message when body is empty', () => {
       const error = new APIError('', createHttpMeta(502, ''))
       const result = normalizeToSDKError(error)
 
       expect(result.fieldErrors).toEqual([])
-      expect(result.message).toContain('Status 502')
+      expect(result.message).toBe(GENERIC_API_ERROR_MESSAGE)
+    })
+
+    it('sanitizes a raw HTML gateway body (502) into the generic message', () => {
+      const htmlBody =
+        '<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n'
+      const response = new Response(htmlBody, {
+        status: 502,
+        headers: { 'content-type': 'text/html' },
+      })
+      const error = new APIError('', {
+        response,
+        request: new Request('https://api.gusto.com/v1/test'),
+        body: htmlBody,
+      })
+      const result = normalizeToSDKError(error)
+
+      expect(result.category).toBe('api_error')
+      expect(result.httpStatus).toBe(502)
+      expect(result.fieldErrors).toEqual([])
+      expect(result.message).toBe(GENERIC_API_ERROR_MESSAGE)
+      expect(result.message).not.toContain('<html')
+      expect(result.message).not.toContain('nginx')
     })
 
     it('skips errors entries that lack a message', () => {
