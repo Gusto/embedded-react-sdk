@@ -190,6 +190,7 @@ export const PaymentStatementPresentation = ({
           },
           {
             title: t('amountColumn'),
+            justify: 'end',
             render: ({ amount }) => amount || '',
           },
         ]}

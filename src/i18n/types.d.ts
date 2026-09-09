@@ -2473,6 +2473,8 @@ export namespace Translations {
       validations: {
         /** @defaultValue `"Enter a valid hourly rate"` */
         hourlyRate: string
+        /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+        hourlyRateMax: string
       }
     }
   }
@@ -2632,9 +2634,9 @@ export namespace Translations {
       /** @defaultValue `"Profile updated"` */
       successAlert: string
       validations: {
-        /** @defaultValue `"First name is required"` */
+        /** @defaultValue `"Enter a valid first name"` */
         firstName: string
-        /** @defaultValue `"Last name is required"` */
+        /** @defaultValue `"Enter a valid last name"` */
         lastName: string
         /** @defaultValue `"Business name is required"` */
         businessName: string
@@ -3607,6 +3609,8 @@ export namespace Translations {
       einFormat: string
       /** @defaultValue `"Hourly rate is required for hourly contractors"` */
       hourlyRate: string
+      /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+      hourlyRateMax: string
       /** @defaultValue `"Start date is required"` */
       startDate: string
     }
@@ -7024,6 +7028,8 @@ export namespace Translations {
     endDateLabel: string
     /** @defaultValue `"Payment date"` */
     checkDateLabel: string
+    /** @defaultValue `"Enter the date you'd like your employees to receive payment."` */
+    checkDateDescription: string
     validations: {
       /** @defaultValue `"Start date is required"` */
       startDateRequired: string

@@ -1,0 +1,17 @@
+{
+  "bankAccountForm": {
+    "nameLabel": "Nombre de la cuenta",
+    "routingNumberDescription": "9 dígitos",
+    "validations": {
+      "accountName": "Se requiere el nombre de la cuenta",
+      "accountNumber": "Ingresa un número de cuenta válido",
+      "routingNumber": "Se requiere el número de ruta (9 dígitos)"
+    }
+  },
+  "checkDescription": "Si seleccionas cheque como método de pago, tendrás que escribir un cheque físico a este empleado en cada día de pago.",
+  "checkLabel": "Cheque",
+  "directDepositDescription": "Recomendamos el depósito directo: depositaremos los cheques de pago directamente en la cuenta bancaria de tu empleado.",
+  "directDepositLabel": "Depósito directo",
+  "submittingCta": "Guardando…",
+  "title": "Detalles de pago del contratista"
+}

@@ -1,0 +1,14 @@
+{
+  "aria": {
+    "reasonSelection": "Selecciona el motivo de la nómina fuera de ciclo"
+  },
+  "options": {
+    "bonus": {
+      "description": "Paga un bono, regalo o comisión."
+    },
+    "correction": {
+      "label": "Pago de corrección"
+    }
+  },
+  "title": "Motivo"
+}

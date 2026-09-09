@@ -1,0 +1,36 @@
+{
+  "ariaLabels": {
+    "copyTrackingCode": "Copiar código de rastreo"
+  },
+  "cta": {
+    "close": "Cerrar",
+    "confirm": "He hecho una transferencia bancaria"
+  },
+  "fields": {
+    "accountNumber": "Número de cuenta del destinatario",
+    "amount": "Monto a transferir",
+    "bankName": "Nombre del banco",
+    "recipientAddress": "Dirección del destinatario",
+    "recipientName": "Nombre del destinatario",
+    "routingNumber": "Número de ruta del destinatario",
+    "trackingCode": "Código de rastreo único"
+  },
+  "messages": {
+    "copied": "¡Copiado al portapapeles!",
+    "noInstructions": "No hay instrucciones de transferencia bancaria disponibles en este momento.",
+    "unableToLoad": "No se pueden cargar los detalles de las instrucciones de transferencia bancaria."
+  },
+  "requirements": {
+    "amountMatch": "El monto que envíe debe coincidir exactamente con el monto en las instrucciones de la transferencia",
+    "authorized": "Debe estar autorizado para usar la cuenta bancaria en nombre de la empresa",
+    "trackingCode": "Debe incluir el código de rastreo único de las instrucciones de la transferencia bancaria",
+    "usBank": "La cuenta bancaria de origen debe estar en los EE. UU."
+  },
+  "requirementsTitle": "Lo que debe saber al enviar fondos por transferencia bancaria",
+  "selectFallback": "Transferencia bancaria",
+  "selectLabel": "Transferencia bancaria para nómina",
+  "selectLabelContractorPaymentGroup": "Pago al contratista por {{requestedAmount}}",
+  "selectLabelPayroll": "Nómina para {{payrollRange}}",
+  "subtitle": "Esta información le indica a su banco cuánto y a dónde enviar la transferencia bancaria. Asegúrese de enviar una transferencia bancaria; no aceptaremos transferencias ACH. Después, confirme abajo que ha completado este paso.",
+  "title": "Instrucciones para la transferencia bancaria"
+}

@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.55.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.5...v0.55.6) (2026-09-08)
+
+### Fixes
+
+- Default the payment method to check when an employee has no bank account on file ([#2683](https://github.com/Gusto/embedded-react-sdk/issues/2683))
+- Give contractor row action-menu buttons a row-specific accessible name ([#2647](https://github.com/Gusto/embedded-react-sdk/issues/2647))
+- Add an accessible label to the completed-step checkmark icon ([#2672](https://github.com/Gusto/embedded-react-sdk/issues/2672))
+- Freeze `PaySchedule`'s initial routing decision so it no longer changes mid-flow ([#2703](https://github.com/Gusto/embedded-react-sdk/issues/2703))
+- Right-align numeric `DataView` columns (currency, hours, tax rate) that aren't the last column in the table ([#2648](https://github.com/Gusto/embedded-react-sdk/issues/2648))
+- Add helper text under the off-cycle Payment date ([#2701](https://github.com/Gusto/embedded-react-sdk/issues/2701))
+- Recover from a failed payroll calculation instead of stalling forever ([#2700](https://github.com/Gusto/embedded-react-sdk/issues/2700))
+- Include reimbursements in the employee take-home Payment total ([#2699](https://github.com/Gusto/embedded-react-sdk/issues/2699))
+- Persist `0` when an additional-earning field is cleared instead of dropping it ([#2649](https://github.com/Gusto/embedded-react-sdk/issues/2649))
+- Make the cancel payroll dialog describe cancelling ([#2652](https://github.com/Gusto/embedded-react-sdk/issues/2652))
+- Fix payroll calculation, submission, and check-generation screens getting stuck (e.g. an unresolving "Loading payroll..." state) when a status update was missed ([#2715](https://github.com/Gusto/embedded-react-sdk/issues/2715))
+- Cap the hourly rate input at the server's inline validation limit ([#2710](https://github.com/Gusto/embedded-react-sdk/issues/2710))
+- Save a contractor's email address when edited from the management Profile form ([#2696](https://github.com/Gusto/embedded-react-sdk/issues/2696))
+
+### Chores & Maintenance
+
+- Bump `@gusto/embedded-api` to `0.3.0-rc.2` ([#2678](https://github.com/Gusto/embedded-react-sdk/issues/2678))
+- Bump dependencies (`react-error-boundary`, `react-hook-form`)
+- Bump dev dependencies (`react-router-dom`, `@typescript-eslint/parser`, `typescript-eslint`, `json-schema-to-typescript`, `lint-staged`, `tsx`)
+
 ## [0.55.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.4...v0.55.5) (2026-08-31)
 
 ### Fixes

@@ -1821,6 +1821,7 @@ export const ContractorDetailsErrorCodes: {
     readonly INVALID_EMAIL: "INVALID_EMAIL";
     readonly INVALID_SSN: "INVALID_SSN";
     readonly INVALID_EIN: "INVALID_EIN";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -1846,6 +1847,9 @@ export interface ContractorDetailsFormFields {
     WageType: ComponentType<ContractorWageTypeFieldProps>;
     WorkState: ComponentType<ContractorWorkStateFieldProps> | undefined;
 }
+
+// @public
+export type ContractorDetailsMaxHourlyRateValidation = typeof ContractorDetailsErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
@@ -1880,7 +1884,7 @@ export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFie
 export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
-export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation | ContractorDetailsMaxHourlyRateValidation>>;
 
 // @public
 export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
@@ -2021,6 +2025,7 @@ export type ContractorPayErrorCode = (typeof ContractorPayErrorCodes)[keyof type
 // @public
 export const ContractorPayErrorCodes: {
     readonly REQUIRED: "REQUIRED";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -2039,7 +2044,10 @@ export interface ContractorPayFormFields {
 }
 
 // @public
-export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation>>;
+export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation | ContractorPayMaxHourlyRateValidation>>;
+
+// @public
+export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];

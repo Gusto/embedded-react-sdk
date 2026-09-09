@@ -1,0 +1,29 @@
+{
+  "actionColumnLabel": "Acciones",
+  "alerts": {
+    "paymentCancelledSuccessfully": "Pago del contratista cancelado correctamente",
+    "paymentCreatedSuccessfully_one": "Se creó correctamente {{count}} pago a contratistas.",
+    "paymentCreatedSuccessfully_other": "Se crearon correctamente {{count}} pagos a contratistas.",
+    "rfiPendingResponseDescription": "Necesitamos un poco más de información sobre tu negocio. Responde lo antes posible para poder procesar los pagos a tiempo.",
+    "rfiPendingResponseTitle": "Los pagos pueden ser bloqueados: Proporciona más información para poder procesar los pagos",
+    "rfiPendingReviewDescription": "Estamos revisando información sobre su negocio. Es posible que se bloqueen los pagos hasta que se complete la revisión.",
+    "rfiPendingReviewTitle": "Es posible que se bloqueen los pagos",
+    "rfiRespondCta": "Responder",
+    "wireDetailsSubmitted": "Detalles de la transferencia enviados"
+  },
+  "applyDate": "Fecha de aplicación",
+  "breadcrumbLabel": "Pagos a contratistas",
+  "createPaymentCta": "Nuevo pago",
+  "dateRanges": {
+    "last12Months": "Últimos 12 meses",
+    "last3Months": "Últimos 3 meses",
+    "last6Months": "Últimos 6 meses"
+  },
+  "noPaymentsDescription": "Todavía no se han creado pagos a contratistas. Crea tu primer pago para comenzar.",
+  "noPaymentsFound": "No se encontraron pagos",
+  "reimbursementTotalColumnLabel": "Total de reembolsos",
+  "subtitle": "Pagos próximos y pasados",
+  "title": "Pagos a contratistas",
+  "viewPaymentCta": "Ver pago",
+  "wageTotalColumnLabel": "Total de salarios"
+}

@@ -1,0 +1,8 @@
+{
+  "labels": {
+    "deadline": "Fecha límite para procesar la nómina",
+    "frequency": "Frecuencia de pago"
+  },
+  "pageTitle": "Configurar calendario de pagos",
+  "pleaseVerify": "Asegúrate de verificar que esta información sea correcta. Si esta información no es correcta, puede retrasar cuándo se le pagará a tu equipo."
+}

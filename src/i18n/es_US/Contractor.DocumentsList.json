@@ -1,0 +1,8 @@
+{
+  "emptyTitle": "No se encontraron documentos",
+  "errorTitle": "No se pudieron cargar tus documentos, intenta de nuevo más tarde.",
+  "notReadyBody": "El formulario W-9 aún no se ha generado por completo. Vuelve a revisar más tarde o comunícate con soporte si el problema continúa.",
+  "notReadyTitle": "El W-9 aún no está listo para firmar",
+  "notSigned": "No firmado",
+  "subtitle": "Revisa y firma tus documentos, por favor."
+}

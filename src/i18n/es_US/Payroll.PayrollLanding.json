@@ -1,0 +1,18 @@
+{
+  "alerts": {
+    "payrollCancelled": "Nómina cancelada"
+  },
+  "aria": {
+    "tabNavigation": "Navegación de nómina"
+  },
+  "breadcrumbs": {
+    "overview": "Resumen del {{startDate}} al {{endDate}}",
+    "receipt": "Recibo de nómina del {{startDate}} al {{endDate}}"
+  },
+  "labels": {
+    "loading": "Cargando datos de nómina..."
+  },
+  "tabs": {
+    "payrollHistory": "Historial de nómina"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "balanceTable": {
+    "balance": "Saldo (hrs)",
+    "employeeCount_one": "{{count}} empleado",
+    "employeeCount_other": "{{count}} empleados"
+  },
+  "errors": {
+    "updatePolicySettingsFailed": "No se pueden actualizar los ajustes de la política. {{details}}"
+  },
+  "flash": {
+    "balanceUpdated": "Se ha actualizado el saldo de tiempo libre de {{name}}.",
+    "employeesAdded_one": "Se ha agregado {{count}} empleado a esta política.",
+    "employeesAdded_other": "Se han agregado {{count}} empleados a esta política.",
+    "policyActive": "Tu política de tiempo libre está activa.",
+    "policyUpdated": "Los detalles de esta política se han actualizado.",
+    "settingsUpdated": "Los detalles de esta política se han actualizado."
+  },
+  "policyDetails": {
+    "accrualMethodFixed": "Tasa de acumulación",
+    "accrualMethodFixedHint": "La tasa a la que los empleados acumularán tiempo libre pagado.",
+    "accrualMethodHint": "La tasa a la que los empleados acumularán tiempo de descanso pagado.",
+    "accrualMethodLabel": "Método de acumulación",
+    "accrualRateAndUnitError": "Debes proporcionar una tasa base válida.",
+    "additionalOptionsLabel": "Opciones adicionales",
+    "allAtOnceHint": "Los empleados reciben por adelantado todo su saldo anual de tiempo libre.",
+    "allAtOnceLabel": "Todo de una vez",
+    "allPaidHoursLabel": "Incluir todas las horas pagadas",
+    "createTitle": "Detalles de la póliza",
+    "editTitle": "Editar {{name}}",
+    "employeesWillAccrueLabel": "Los empleados acumularán",
+    "fixedAccrualRateHint": "El número total de horas que ganan los empleados.",
+    "fixedAccrualRateLabel": "Total de horas por año",
+    "forEveryLabel": "Por cada",
+    "hoursUnit": "horas",
+    "hoursWorkedUnit": "horas trabajadas",
+    "includeOvertimeLabel": "Incluir horas extra",
+    "perAnniversaryYearLabel": "La fecha de inicio de cada empleado",
+    "perCalendarYearLabel": "Fecha personalizada",
+    "perHourPaidHint": "Los empleados ganan tiempo libre según las horas trabajadas (por ejemplo, 1 hora por cada 40 horas trabajadas).",
+    "perHourPaidLabel": "Según las horas trabajadas",
+    "perPayPeriodHint": "Los empleados ganan tiempo libre gradualmente con cada cheque de pago.",
+    "perPayPeriodLabel": "Cada período de pago",
+    "perYearHint": "Los empleados ganan una cantidad fija de tiempo libre cada año (por ejemplo, 120 horas por año).",
+    "perYearLabel": "Cantidad fija por año",
+    "policyNameLabel": "Nombre de la póliza",
+    "policyResetDateType": "Fecha de restablecimiento",
+    "policyResetDateTypeHint": "El período de acumulación se restablecerá en esta fecha cada año.",
+    "unlimitedHint": "Los empleados pueden tomar tiempo libre flexible sin un límite establecido.",
+    "unlimitedLabel": "Ilimitado",
+    "validations": {
+      "accrualMethod": "Selecciona un método de acumulación.",
+      "accrualMethodFixed": "Selecciona una tasa de acumulación.",
+      "accrualRate": "Se requiere una tasa de acumulación.",
+      "accrualRateUnit": "Se requieren las horas trabajadas.",
+      "policyName": "El nombre de la política es obligatorio.",
+      "resetDateType": "Selecciona una fecha de restablecimiento."
+    }
+  },
+  "policySettings": {
+    "accrualMaximumHint": "El saldo máximo que un empleado puede acumular por período. La acumulación se detendrá cuando se alcance este límite.",
+    "accrualMaximumLabel": "Máximo de acumulación",
+    "balanceMaximumHint": "El saldo máximo que un empleado puede tener a la vez. La acumulación se detiene cuando se alcanza este límite.",
+    "balanceMaximumLabel": "Saldo máximo",
+    "carryOverLimitHint": "Las horas máximas permitidas para trasladar de un período de acumulación al siguiente.",
+    "carryOverLimitLabel": "Límite de traspaso",
+    "createTitle": "Configuración de la política",
+    "daysUnit": "días",
+    "editTitle": "Configuración de {{name}}",
+    "errors": {
+      "balanceExceedsMaximum": "El saldo máximo no puede ser menor que el saldo actual de un empleado. Reduce primero el saldo del empleado o aumenta el máximo.",
+      "waitingPeriodMustBeWholeNumber": "El período de espera debe ser un número entero de días"
+    },
+    "hoursUnit": "horas",
+    "numberOfDaysPlaceholder": "0",
+    "numberOfHoursPlaceholder": "0",
+    "paidOutOnTerminationHint": "Elige si el tiempo libre no utilizado se paga cuando un empleado se va. Algunos estados lo exigen por ley.",
+    "paidOutOnTerminationLabel": "Pago al despido",
+    "waitingPeriodHint": "La cantidad de días que los empleados deben trabajar antes de comenzar a acumular tiempo libre.",
+    "waitingPeriodLabel": "Período de espera"
+  },
+  "startingBalances": {
+    "alertHeader": "Los saldos de los siguientes empleados necesitan revisión",
+    "createPolicyCta": "Crear política",
+    "description": "Si tus empleados tienen un saldo existente, ingresa esas horas aquí. Los empleados que pasen de otra política a esta trasladarán sus horas acumuladas.",
+    "noEmployees": "Aún no has agregado ningún empleado a esta política, así que no hay saldos iniciales para agregar.",
+    "title": "Saldos iniciales"
+  }
+}
