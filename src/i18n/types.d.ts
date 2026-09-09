@@ -2657,6 +2657,8 @@ export namespace Translations {
     title: string
     /** @defaultValue `"Add contractor"` */
     addContractorCta: string
+    /** @defaultValue `"Back to contractors"` */
+    backToListCta: string
     /** @defaultValue `"Contractor status tabs"` */
     tabsLabel: string
     tabs: {
