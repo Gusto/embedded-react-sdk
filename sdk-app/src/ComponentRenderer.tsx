@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
 import { useResolvedTheme } from './useThemeModeContext'
+import { useLanguageModeContext } from './LanguageModeContext'
 import { darkTheme } from './darkTheme'
 import { useThemeEditor } from './ThemePanel/ThemeEditorContext'
 import { useDesignSystem } from './ThemePanel/DesignSystemContext'
@@ -148,6 +149,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
     component: string
   }>()
   const resolvedTheme = useResolvedTheme()
+  const { lng, locale } = useLanguageModeContext()
   const { themeOverrides } = useThemeEditor()
   const { designSystem } = useDesignSystem()
   const resolvedComponents = designSystem === 'native' ? nativeComponents : undefined
@@ -307,6 +309,8 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
                 theme={resolvedSDKTheme}
                 components={resolvedComponents}
                 unstableFeatures={unstableFeatures}
+                lng={lng}
+                locale={locale}
                 key={providerKey}
               >
                 <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
