@@ -88,7 +88,7 @@ export function PrintChecksForm(props: PrintChecksFormProps) {
   )
 }
 
-const Root = ({ dictionary, payrollId, isGenerating }: PrintChecksFormProps) => {
+const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFormProps) => {
   useComponentDictionary('Payroll.PrintChecksForm', dictionary)
   useI18n('Payroll.PrintChecksForm')
   const { t } = useTranslation('Payroll.PrintChecksForm')
@@ -165,7 +165,11 @@ const Root = ({ dictionary, payrollId, isGenerating }: PrintChecksFormProps) => 
 
   return (
     <FormProvider {...formMethods}>
-      <Form id={PRINT_CHECKS_FORM_ID} onSubmit={formMethods.handleSubmit(onSubmit)}>
+      <Form
+        id={PRINT_CHECKS_FORM_ID}
+        onSubmit={formMethods.handleSubmit(onSubmit)}
+        className={className}
+      >
         <Flex flexDirection="column" gap={20}>
           <RadioGroupField
             name="printingFormat"

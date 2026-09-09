@@ -31,7 +31,7 @@ export function RecoveryCasesResubmit(props: RecoveryCasesResubmitProps) {
   )
 }
 
-function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
+function Root({ dictionary, recoveryCaseId, className }: RecoveryCasesResubmitProps) {
   useComponentDictionary('Payroll.RecoveryCasesResubmit', dictionary)
   const { Heading, Text } = useComponentContext()
   const { onEvent, baseSubmitHandler } = useBase()
@@ -64,18 +64,20 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
   }
 
   return (
-    <Flex flexDirection="column" gap={16}>
-      {title && <Heading as="h2">{title}</Heading>}
-      {subtitle && <Text>{subtitle}</Text>}
-      {description.length > 0 && description}
-      {/*
-        This empty form is used to connect the Footer's submit button to the submission logic
-        via the form attribute. This is semantically incorrect and hidden from assistive tech.
-      */}
-      <Form id={RECOVERY_CASES_RESUBMIT_FORM_ID} onSubmit={onSubmit} aria-hidden="true">
-        {/* Empty form - submission triggered by footer button via form attribute */}
-      </Form>
-    </Flex>
+    <div className={className}>
+      <Flex flexDirection="column" gap={16}>
+        {title && <Heading as="h2">{title}</Heading>}
+        {subtitle && <Text>{subtitle}</Text>}
+        {description.length > 0 && description}
+        {/*
+          This empty form is used to connect the Footer's submit button to the submission logic
+          via the form attribute. This is semantically incorrect and hidden from assistive tech.
+        */}
+        <Form id={RECOVERY_CASES_RESUBMIT_FORM_ID} onSubmit={onSubmit} aria-hidden="true">
+          {/* Empty form - submission triggered by footer button via form attribute */}
+        </Form>
+      </Flex>
+    </div>
   )
 }
 

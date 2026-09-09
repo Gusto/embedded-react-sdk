@@ -19,22 +19,24 @@ export function PrintChecksSummary(props: PrintChecksSummaryProps) {
   )
 }
 
-const Root = ({ dictionary, documentUrl }: PrintChecksSummaryProps) => {
+const Root = ({ dictionary, documentUrl, className }: PrintChecksSummaryProps) => {
   useComponentDictionary('Payroll.PrintChecksSummary', dictionary)
   useI18n('Payroll.PrintChecksSummary')
   const { t } = useTranslation('Payroll.PrintChecksSummary')
   const { Heading, Text, Link } = useComponentContext()
 
   return (
-    <Flex flexDirection="column" gap={16}>
-      <Heading as="h2">{t('succeededTitle')}</Heading>
-      <Text variant="supporting">{t('succeededDescription')}</Text>
-      {documentUrl && (
-        <Link href={documentUrl} target="_blank" rel="noreferrer">
-          {t('viewChecksCta')}
-        </Link>
-      )}
-    </Flex>
+    <div className={className}>
+      <Flex flexDirection="column" gap={16}>
+        <Heading as="h2">{t('succeededTitle')}</Heading>
+        <Text variant="supporting">{t('succeededDescription')}</Text>
+        {documentUrl && (
+          <Link href={documentUrl} target="_blank" rel="noreferrer">
+            {t('viewChecksCta')}
+          </Link>
+        )}
+      </Flex>
+    </div>
   )
 }
 

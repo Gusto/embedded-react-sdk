@@ -88,4 +88,15 @@ describe('PrintChecksBanner', () => {
 
     expect(screen.queryByRole('alert')).toBeNull()
   })
+
+  it('applies custom className', async () => {
+    mockEmployeeCompensations = [checkCompensation]
+
+    const { container } = renderWithProviders(
+      <PrintChecksBanner {...defaultProps} className="custom-class" />,
+    )
+
+    await screen.findByText(/noted 1 employee/i)
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
 })

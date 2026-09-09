@@ -41,7 +41,12 @@ export function PayrollReceipts(props: PayrollReceiptsProps) {
   )
 }
 
-const Root = ({ payrollId, dictionary, withReimbursements = true }: PayrollReceiptsProps) => {
+const Root = ({
+  payrollId,
+  dictionary,
+  withReimbursements = true,
+  className,
+}: PayrollReceiptsProps) => {
   useComponentDictionary('Payroll.PayrollReceipts', dictionary)
   useI18n('Payroll.PayrollReceipts')
 
@@ -64,6 +69,7 @@ const Root = ({ payrollId, dictionary, withReimbursements = true }: PayrollRecei
 
   return (
     <PayrollReceiptsPresentation
+      className={className}
       receiptData={{ ...payrollData, employeeCompensations: sortedEmployeeCompensations }}
       withReimbursements={withReimbursements}
     />

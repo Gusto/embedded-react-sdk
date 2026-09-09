@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import type {
   EmployeeCompensations,
   PayrollShow,
@@ -37,6 +38,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
+  className?: string
   payrollData: PayrollShow
   bankAccount?: CompanyBankAccount
   taxes: Record<string, { employee: number; employer: number }>
@@ -73,6 +75,7 @@ const getPayrollOverviewTitle = (
 
 /** @internal */
 export const PayrollOverviewPresentation = ({
+  className,
   onEdit,
   onSubmit,
   onCancel,
@@ -139,7 +142,7 @@ export const PayrollOverviewPresentation = ({
 
   if (status === PayrollOverviewStatus.Cancelled) {
     return (
-      <div ref={containerRef} className={styles.container}>
+      <div ref={containerRef} className={classNames(styles.container, className)}>
         <Flex flexDirection="column" alignItems="stretch">
           <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
             <Flex flexDirection="column" gap={4}>
@@ -640,7 +643,7 @@ export const PayrollOverviewPresentation = ({
   )
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={classNames(styles.container, className)}>
       <Flex flexDirection="column" alignItems="stretch">
         <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
           <Flex flexDirection="column" gap={4}>
