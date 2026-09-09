@@ -98,7 +98,7 @@ export function ManagementContractorListView({
   // Columns, item-menu shape, and empty-state copy stay pinned to the previously
   // committed tab until the new tab's data lands, so they swap in one paint together
   // with `contractors`/`pagination` instead of flashing ahead of the still-stale rows
-  // that `keepPreviousData` is rendering (SDK-1296).
+  // that `keepPreviousData` is rendering.
   const [committedTab, setCommittedTab] = useState(selectedTab)
   useEffect(() => {
     if (!isFetching) {
