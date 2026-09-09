@@ -59,6 +59,7 @@ function DocumentList({
     columns: [
       {
         title: columnLabels.form,
+        wrap: true,
         render: (form: FormData) => (
           <>
             <Components.Text weight="medium" size="sm">

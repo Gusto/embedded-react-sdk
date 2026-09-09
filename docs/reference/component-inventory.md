@@ -1325,10 +1325,11 @@ Shape of a single cell your [Table](#tableprops) implementation receives for hea
 
 ##### Properties
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to be displayed in the table cell |
-| `key` | `string` | Unique identifier for the table cell |
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `content` | `ReactNode` | | Content to be displayed in the table cell |
+| `key` | `string` | | Unique identifier for the table cell |
+| `wrap?` | `boolean` | `false` | When true, the cell allows its content to wrap onto multiple lines within a bounded width instead of staying on a single line. Use for columns holding long free-form text (descriptions, notes, messages); otherwise cells hug their content and the table scrolls horizontally. |
 
 <a id="tablerow"></a>
 
