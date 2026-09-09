@@ -29,8 +29,8 @@
     "saveCta": "Save",
     "successAlert": "Profile updated",
     "validations": {
-      "firstName": "First name is required",
-      "lastName": "Last name is required",
+      "firstName": "Enter a valid first name",
+      "lastName": "Enter a valid last name",
       "businessName": "Business name is required",
       "startDate": "Start date is required",
       "email": "Enter a valid email address",
