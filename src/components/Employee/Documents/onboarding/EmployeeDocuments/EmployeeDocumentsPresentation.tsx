@@ -18,6 +18,8 @@ export type EmployeeDocumentsFormValues = z.infer<typeof EmployeeDocumentsSchema
 
 /** @internal */
 export interface EmployeeDocumentsPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   isEmployeeSelfOnboarding: boolean
   currentI9Status: boolean
   onSubmit: (formData: EmployeeDocumentsFormValues) => Promise<void>
@@ -27,6 +29,7 @@ export interface EmployeeDocumentsPresentationProps {
 
 /** @internal */
 export const EmployeeDocumentsPresentation = ({
+  className,
   isEmployeeSelfOnboarding,
   currentI9Status,
   onSubmit,
@@ -134,7 +137,7 @@ export const EmployeeDocumentsPresentation = ({
   )
 
   return (
-    <>
+    <div className={className} data-testid="employee-documents">
       <Flex flexDirection="column" gap={16}>
         {isEmployeeSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
 
@@ -155,6 +158,6 @@ export const EmployeeDocumentsPresentation = ({
           )}
         </Flex>
       </Flex>
-    </>
+    </div>
   )
 }

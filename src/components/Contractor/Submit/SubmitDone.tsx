@@ -5,23 +5,27 @@ import { Flex } from '@/components/Common/Flex'
 
 interface SubmitDoneProps {
   onDone: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
-export const SubmitDone = ({ onDone }: SubmitDoneProps) => {
+export const SubmitDone = ({ onDone, className }: SubmitDoneProps) => {
   useI18n('Contractor.Submit')
   const { Button, Heading, Text } = useComponentContext()
   const { t } = useTranslation('Contractor.Submit')
 
   return (
-    <Flex flexDirection="column" gap={20} alignItems="center">
-      <Flex flexDirection="column" gap={4} alignItems="center">
-        <Heading as="h2">{t('doneTitle')}</Heading>
-        <Text variant="supporting">{t('doneDescription')}</Text>
+    <div className={className} data-testid="contractor-submit-done">
+      <Flex flexDirection="column" gap={20} alignItems="center">
+        <Flex flexDirection="column" gap={4} alignItems="center">
+          <Heading as="h2">{t('doneTitle')}</Heading>
+          <Text variant="supporting">{t('doneDescription')}</Text>
+        </Flex>
+        <Button variant="secondary" onClick={onDone}>
+          {t('doneCta')}
+        </Button>
       </Flex>
-      <Button variant="secondary" onClick={onDone}>
-        {t('doneCta')}
-      </Button>
-    </Flex>
+    </div>
   )
 }

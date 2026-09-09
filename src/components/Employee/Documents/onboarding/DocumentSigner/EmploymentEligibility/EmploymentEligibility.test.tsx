@@ -53,6 +53,15 @@ describe('EmploymentEligibility', () => {
       await screen.findByRole('heading', { name: 'Employment Eligibility' })
       expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
     })
+
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <EmploymentEligibility {...defaultProps} className="custom-class" />,
+      )
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   describe('status selection', () => {

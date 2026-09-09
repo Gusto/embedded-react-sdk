@@ -53,6 +53,22 @@ describe('PaymentsList', () => {
     })
   })
 
+  it('applies custom className', async () => {
+    server.use(
+      handleGetContractorPaymentGroupsList(() =>
+        HttpResponse.json([mockPaymentGroupWithBlockers], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        }),
+      ),
+    )
+
+    renderWithProviders(<PaymentsList {...defaultProps} className="custom-class" />)
+
+    await waitFor(() => {
+      expect(screen.getByTestId('payments-list')).toHaveClass('custom-class')
+    })
+  })
+
   it('keeps the current page visible and marks the grid busy instead of re-suspending while the next page loads', async () => {
     const user = userEvent.setup()
     let resolveSecondPage: (() => void) | undefined

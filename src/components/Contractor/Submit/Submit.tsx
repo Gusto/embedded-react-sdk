@@ -49,7 +49,7 @@ export function ContractorSubmit(props: ContractorSubmitProps) {
   )
 }
 
-const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
+const Root = ({ contractorId, selfOnboarding, dictionary, className }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
   useComponentDictionary('Contractor.Submit', dictionary)
   const { Alert, Button, Heading, UnorderedList } = useComponentContext()
@@ -109,38 +109,46 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
   }
 
   if (onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
-    return <SubmitDone onDone={handleSubmitDone} />
+    return <SubmitDone onDone={handleSubmitDone} className={className} />
   }
   if (
     onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED &&
     selfOnboarding
   ) {
-    return <InviteContractor onSubmit={handleInviteContractor} contractorId={contractorId} />
+    return (
+      <InviteContractor
+        onSubmit={handleInviteContractor}
+        contractorId={contractorId}
+        className={className}
+      />
+    )
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <FlexItem>
-        <Heading as="h2">{t('heading')}</Heading>
-      </FlexItem>
+    <div className={className} data-testid="contractor-submit">
+      <Flex flexDirection="column" gap={24}>
+        <FlexItem>
+          <Heading as="h2">{t('heading')}</Heading>
+        </FlexItem>
 
-      <ContractorSubmitDocuments
-        contractorId={contractorId}
-        documentsToCollect={documentsToCollect}
-        contractorName={contractorName}
-        hasW9={hasW9}
-      />
-      <Flex flexDirection="column" gap={8}>
-        <Alert status="warning" label={t('title')}>
-          <UnorderedList items={items} />
-        </Alert>
-        <ActionsLayout justifyContent="end">
-          <Button title={t('submitCta')} onClick={onSubmit} isLoading={isPending}>
-            {t('submitCta')}
-          </Button>
-        </ActionsLayout>
+        <ContractorSubmitDocuments
+          contractorId={contractorId}
+          documentsToCollect={documentsToCollect}
+          contractorName={contractorName}
+          hasW9={hasW9}
+        />
+        <Flex flexDirection="column" gap={8}>
+          <Alert status="warning" label={t('title')}>
+            <UnorderedList items={items} />
+          </Alert>
+          <ActionsLayout justifyContent="end">
+            <Button title={t('submitCta')} onClick={onSubmit} isLoading={isPending}>
+              {t('submitCta')}
+            </Button>
+          </ActionsLayout>
+        </Flex>
       </Flex>
-    </Flex>
+    </div>
   )
 }
 
@@ -246,9 +254,12 @@ const DocumentRequirementItem = ({
 const InviteContractor = ({
   onSubmit,
   contractorId,
+  className,
 }: {
   onSubmit: () => void
   contractorId: string
+  /** CSS class name applied to the root element. */
+  className?: string
 }) => {
   const { t } = useTranslation('Contractor.Submit', { keyPrefix: 'inviteContractor' })
   const { Button, Heading, Text } = useComponentContext()
@@ -257,27 +268,29 @@ const InviteContractor = ({
   const contractor = contractorData.contractor
 
   return (
-    <Flex flexDirection="column">
-      <Heading as="h2">{t('title')}</Heading>
-      <Text>{t('description')}</Text>
+    <div className={className} data-testid="contractor-invite">
       <Flex flexDirection="column">
-        <div>
-          <Text>
-            {firstLastName({
-              first_name: contractor?.firstName,
-              last_name: contractor?.lastName,
-            })}
-          </Text>
-          <Text>{contractor?.email}</Text>
-        </div>
-        <div>
-          <Text>{t('startDateLabel')}</Text>
-          <Text>{contractor?.startDate}</Text>
-        </div>
+        <Heading as="h2">{t('title')}</Heading>
+        <Text>{t('description')}</Text>
+        <Flex flexDirection="column">
+          <div>
+            <Text>
+              {firstLastName({
+                first_name: contractor?.firstName,
+                last_name: contractor?.lastName,
+              })}
+            </Text>
+            <Text>{contractor?.email}</Text>
+          </div>
+          <div>
+            <Text>{t('startDateLabel')}</Text>
+            <Text>{contractor?.startDate}</Text>
+          </div>
+        </Flex>
+        <Button title={t('inviteCta')} onClick={onSubmit}>
+          {t('inviteCta')}
+        </Button>
       </Flex>
-      <Button title={t('inviteCta')} onClick={onSubmit}>
-        {t('inviteCta')}
-      </Button>
-    </Flex>
+    </div>
   )
 }

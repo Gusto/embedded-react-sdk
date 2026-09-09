@@ -49,7 +49,7 @@ export function EmploymentEligibility(props: EmploymentEligibilityProps) {
   )
 }
 
-const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
+const Root = ({ employeeId, dictionary, className }: EmploymentEligibilityProps) => {
   useComponentDictionary('Employee.EmploymentEligibility', dictionary)
   useI18n('Employee.EmploymentEligibility')
   const { onEvent, baseSubmitHandler, LoadingIndicator } = useBase()
@@ -112,6 +112,7 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
   return (
     <EmploymentEligibilityPresentation
       key={existingAuth?.uuid}
+      className={className}
       onSubmit={handleSubmit}
       defaultValues={defaultValues}
       hasDocumentNumber={existingAuth?.hasDocumentNumber}

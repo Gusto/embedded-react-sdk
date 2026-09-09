@@ -59,6 +59,14 @@ describe('DocumentManager', () => {
       })
     })
 
+    it('applies custom className', async () => {
+      renderWithProviders(<DocumentManager {...defaultProps} className="custom-class" />)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('document-manager')).toHaveClass('custom-class')
+      })
+    })
+
     it('renders a Back button', async () => {
       renderWithProviders(<DocumentManager {...defaultProps} />)
 

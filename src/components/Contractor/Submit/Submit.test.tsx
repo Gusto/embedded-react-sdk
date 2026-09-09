@@ -88,6 +88,37 @@ describe('ContractorSubmit', () => {
     expect(await screen.findByText('Documents')).toBeInTheDocument()
   })
 
+  test('applies custom className', async () => {
+    server.use(
+      handleGetContractor(() =>
+        HttpResponse.json({
+          uuid: 'contractor-uuid',
+          type: 'Individual',
+          first_name: 'Test',
+          last_name: 'Contractor',
+        }),
+      ),
+      handleGetContractorOnboardingStatus(() =>
+        HttpResponse.json({
+          uuid: 'status-uuid',
+          onboarding_status: 'admin_onboarding_review',
+          onboarding_steps: [],
+        }),
+      ),
+      handleGetContractorDocuments(() => HttpResponse.json([])),
+    )
+
+    renderWithProviders(
+      <ContractorSubmit
+        contractorId="contractor-uuid"
+        onEvent={mockOnEvent}
+        className="custom-class"
+      />,
+    )
+
+    expect(await screen.findByTestId('contractor-submit')).toHaveClass('custom-class')
+  })
+
   test('hides documents section when there are no documents to collect', () => {
     server.use(
       handleGetContractor(() =>
