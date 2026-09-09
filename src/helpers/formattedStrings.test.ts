@@ -17,7 +17,7 @@ describe('formattedStrings', () => {
       expect(firstLastName({ first_name: 'jane', last_name: 'doe' })).toBe('Jane Doe')
     })
 
-    it('includes a capitalized middle initial when present (regression for SDK-1298)', () => {
+    it('includes a capitalized middle initial when present', () => {
       expect(firstLastName({ first_name: 'jane', middle_initial: 'm', last_name: 'doe' })).toBe(
         'Jane M Doe',
       )

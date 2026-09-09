@@ -54,7 +54,7 @@ describe('ProfileCard', () => {
     expect(screen.getByText('XXX-XX-XXXX')).toBeInTheDocument()
   })
 
-  it('includes the middle initial in the legal name when one is on file (regression for SDK-1298)', async () => {
+  it('includes the middle initial in the legal name when one is on file', async () => {
     mockContractor({ middle_initial: 'M' })
 
     renderWithProviders(<ProfileCard contractorId="contractor-123" onEvent={onEvent} />)

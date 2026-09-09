@@ -53,7 +53,7 @@ describe('Dashboard', () => {
     expect(await screen.findByText('Address')).toBeInTheDocument()
   })
 
-  it('includes the middle initial in the header when one is on file (regression for SDK-1298)', async () => {
+  it('includes the middle initial in the header when one is on file', async () => {
     server.use(
       handleGetContractor(() => HttpResponse.json({ ...contractorFixture, middle_initial: 'M' })),
     )
