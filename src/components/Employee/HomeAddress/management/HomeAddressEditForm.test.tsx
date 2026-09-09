@@ -31,6 +31,21 @@ describe('HomeAddressEditForm', () => {
     expect(screen.getByText(/New York/)).toBeInTheDocument()
   })
 
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <HomeAddressEditForm employeeId="employee-123" onEvent={onEvent} className="custom-class" />,
+    )
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(/100 5th Ave/)).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   it('lists prior home addresses in history', async () => {
     renderWithProviders(<HomeAddressEditForm employeeId="employee-123" onEvent={onEvent} />)
 

@@ -21,6 +21,8 @@ interface TerminationSummaryPresentationProps {
   onDialogClose: () => void
   onDialogConfirm: () => void
   isCancelling: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -41,6 +43,7 @@ export function TerminationSummaryPresentation({
   onDialogClose,
   onDialogConfirm,
   isCancelling,
+  className,
 }: TerminationSummaryPresentationProps) {
   const { Alert, Heading, Text, Button, DescriptionList, Dialog, Link } = useComponentContext()
   const { formatLongWithYear } = useDateFormatter()
@@ -67,83 +70,85 @@ export function TerminationSummaryPresentation({
   const hasActions = canCancel || canEdit || showRunPayroll || showRunOffCyclePayroll
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={4}>
-        {showSuccessAlert && (
-          <Alert status="success" label={t('alert.success.label', { employeeName })} />
-        )}
-        <Heading as="h2">{t('title')}</Heading>
-        <Text variant="supporting">{t('subtitle')}</Text>
-      </Flex>
+    <section className={className}>
+      <Flex flexDirection="column" gap={24}>
+        <Flex flexDirection="column" gap={4}>
+          {showSuccessAlert && (
+            <Alert status="success" label={t('alert.success.label', { employeeName })} />
+          )}
+          <Heading as="h2">{t('title')}</Heading>
+          <Text variant="supporting">{t('subtitle')}</Text>
+        </Flex>
 
-      <DescriptionList items={dateItems} />
-
-      <Flex flexDirection="column" gap={16}>
-        <Heading as="h3">{t('offboarding.title')}</Heading>
+        <DescriptionList items={dateItems} />
 
         <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={8}>
-            <Heading as="h4">{t('offboarding.runPayroll.title')}</Heading>
-            <Text>
-              <Trans
-                i18nKey="offboarding.runPayroll.description"
-                t={t}
-                components={{
-                  StateRequirementsLink: <Link />,
-                }}
-              />
-            </Text>
-          </Flex>
+          <Heading as="h3">{t('offboarding.title')}</Heading>
 
-          <Flex flexDirection="column" gap={8}>
-            <Heading as="h4">{t('offboarding.taxForms.title')}</Heading>
-            <Text>{t('offboarding.taxForms.description')}</Text>
-          </Flex>
+          <Flex flexDirection="column" gap={16}>
+            <Flex flexDirection="column" gap={8}>
+              <Heading as="h4">{t('offboarding.runPayroll.title')}</Heading>
+              <Text>
+                <Trans
+                  i18nKey="offboarding.runPayroll.description"
+                  t={t}
+                  components={{
+                    StateRequirementsLink: <Link />,
+                  }}
+                />
+              </Text>
+            </Flex>
 
-          <Flex flexDirection="column" gap={8}>
-            <Heading as="h4">{t('offboarding.disconnectAccounts.title')}</Heading>
-            <Text>{t('offboarding.disconnectAccounts.description')}</Text>
+            <Flex flexDirection="column" gap={8}>
+              <Heading as="h4">{t('offboarding.taxForms.title')}</Heading>
+              <Text>{t('offboarding.taxForms.description')}</Text>
+            </Flex>
+
+            <Flex flexDirection="column" gap={8}>
+              <Heading as="h4">{t('offboarding.disconnectAccounts.title')}</Heading>
+              <Text>{t('offboarding.disconnectAccounts.description')}</Text>
+            </Flex>
           </Flex>
         </Flex>
+
+        {hasActions && (
+          <ActionsLayout>
+            {canCancel && (
+              <Button variant="error" onClick={onCancelClick} isDisabled={isLoading}>
+                {t('actions.cancelTermination')}
+              </Button>
+            )}
+            {canEdit && (
+              <Button variant="secondary" onClick={onEditDismissal} isDisabled={isLoading}>
+                {t('actions.editDismissal')}
+              </Button>
+            )}
+            {showRunPayroll && (
+              <Button variant="primary" onClick={onRunDismissalPayroll} isDisabled={isLoading}>
+                {t('actions.runDismissalPayroll')}
+              </Button>
+            )}
+            {showRunOffCyclePayroll && (
+              <Button variant="primary" onClick={onRunOffCyclePayroll} isDisabled={isLoading}>
+                {t('actions.runOffCyclePayroll')}
+              </Button>
+            )}
+          </ActionsLayout>
+        )}
+
+        <Dialog
+          isOpen={isCancelDialogOpen}
+          onClose={onDialogClose}
+          onPrimaryActionClick={onDialogConfirm}
+          isDestructive
+          isPrimaryActionLoading={isCancelling}
+          primaryActionLabel={t('cancelDialog.confirm')}
+          closeActionLabel={t('cancelDialog.cancel')}
+          title={t('cancelDialog.title')}
+        >
+          <Text>{t('cancelDialog.body')}</Text>
+        </Dialog>
       </Flex>
-
-      {hasActions && (
-        <ActionsLayout>
-          {canCancel && (
-            <Button variant="error" onClick={onCancelClick} isDisabled={isLoading}>
-              {t('actions.cancelTermination')}
-            </Button>
-          )}
-          {canEdit && (
-            <Button variant="secondary" onClick={onEditDismissal} isDisabled={isLoading}>
-              {t('actions.editDismissal')}
-            </Button>
-          )}
-          {showRunPayroll && (
-            <Button variant="primary" onClick={onRunDismissalPayroll} isDisabled={isLoading}>
-              {t('actions.runDismissalPayroll')}
-            </Button>
-          )}
-          {showRunOffCyclePayroll && (
-            <Button variant="primary" onClick={onRunOffCyclePayroll} isDisabled={isLoading}>
-              {t('actions.runOffCyclePayroll')}
-            </Button>
-          )}
-        </ActionsLayout>
-      )}
-
-      <Dialog
-        isOpen={isCancelDialogOpen}
-        onClose={onDialogClose}
-        onPrimaryActionClick={onDialogConfirm}
-        isDestructive
-        isPrimaryActionLoading={isCancelling}
-        primaryActionLabel={t('cancelDialog.confirm')}
-        closeActionLabel={t('cancelDialog.cancel')}
-        title={t('cancelDialog.title')}
-      >
-        <Text>{t('cancelDialog.body')}</Text>
-      </Dialog>
-    </Flex>
+    </section>
   )
 }

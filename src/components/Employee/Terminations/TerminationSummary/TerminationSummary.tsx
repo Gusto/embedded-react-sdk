@@ -86,6 +86,7 @@ const Root = ({
   payrollOption,
   payrollUuid,
   dictionary,
+  className,
 }: TerminationSummaryProps) => {
   useComponentDictionary('Employee.Terminations.TerminationSummary', dictionary)
   useI18n('Employee.Terminations.TerminationSummary')
@@ -201,6 +202,7 @@ const Root = ({
       onDialogClose={handleDialogClose}
       onDialogConfirm={handleConfirmCancel}
       isCancelling={isDeleting}
+      className={className}
     />
   )
 }

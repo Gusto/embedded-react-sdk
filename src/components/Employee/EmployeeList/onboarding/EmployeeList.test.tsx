@@ -36,6 +36,16 @@ describe('EmployeeList', () => {
     })
   })
 
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <EmployeeList companyId="some-company-uuid" onEvent={() => {}} className="custom-class" />,
+    )
+
+    await screen.findByText('Sean Test')
+
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   it('emits EMPLOYEE_UPDATE with the employeeId when reviewing a self-onboarded employee', async () => {
     server.use(
       handleGetCompanyEmployees(() =>
