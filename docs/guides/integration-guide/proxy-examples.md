@@ -114,6 +114,8 @@ function enforceAllowlist(req: express.Request, res: express.Response, next: exp
 }
 
 app.all('/gusto-api/*', authenticate, enforceAllowlist, async (req, res) => {
-  // Forward the request to the Gusto API, adding auth and client IP headers
+  // Forward the request to the Gusto API, adding auth and client IP headers.
+  // Not required, but we highly recommend also forwarding the incoming
+  // X-Gusto-SDK-Version header so Gusto can attribute traffic to SDK versions.
 })
 ```
