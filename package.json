@@ -115,7 +115,7 @@
     "@types/jest-axe": "^3.5.9",
     "@types/pngjs": "^6.0.5",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
+    "@types/react-dom": "^19.2.7",
     "@typescript-eslint/parser": "^8.69.0",
     "@typescript-eslint/rule-tester": "^8.68.0",
     "@typescript-eslint/utils": "^8.68.0",
