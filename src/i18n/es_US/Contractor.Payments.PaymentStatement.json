@@ -1,0 +1,21 @@
+{
+  "breadcrumbLabel": "Estado de pago para {{contractorName}}",
+  "debitedColumn": "Debitado",
+  "errors": {
+    "contractorNotFound": "Contratista no encontrado",
+    "paymentGroupNotFound": "Grupo de pagos del contratista no encontrado",
+    "paymentNotFound": "Pago no encontrado"
+  },
+  "hoursAmount": "{{hours}} horas a {{rate}}\/hr",
+  "receipt": {
+    "debitDate": "Fecha de débito",
+    "detailsLabel": "Detalles del recibo",
+    "disclaimer": "Este recibo confirma que los fondos se han transferido electrónicamente a la cuenta bancaria del destinatario. Los servicios de transmisión de dinero son proporcionados por Gusto, Inc. de conformidad con sus <licensesLink>licencias<\/licensesLink>.",
+    "from": "De",
+    "to": "A",
+    "totalLabel": "Total"
+  },
+  "reimbursement": "Reembolso",
+  "title": "Estado de pago para {{contractorName}}",
+  "wageLabel": "Salario"
+}

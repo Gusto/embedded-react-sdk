@@ -1,0 +1,70 @@
+{
+  "buttons": {
+    "create": "Crear contratista",
+    "creating": "Creando…",
+    "updating": "Guardando…"
+  },
+  "fields": {
+    "businessName": {
+      "label": "Nombre del negocio"
+    },
+    "ein": {
+      "label": "EIN"
+    },
+    "email": {
+      "label": "Correo electrónico del contratista"
+    },
+    "firstName": {
+      "label": "Nombre"
+    },
+    "hourlyRate": {
+      "label": "Tarifa por hora"
+    },
+    "lastName": {
+      "label": "Apellido"
+    },
+    "middleInitial": {
+      "label": "Inicial del segundo nombre"
+    },
+    "selfOnboarding": {
+      "description": "Su contratista recibirá una invitación para ingresar su información cuando tenga tiempo.",
+      "label": "Invite a este contratista a ingresar algunos de sus propios datos en línea"
+    },
+    "ssn": {
+      "label": "Número de Seguro Social"
+    },
+    "startDate": {
+      "description": "Primer día de trabajo de su contratista en su empresa",
+      "label": "Fecha de inicio"
+    },
+    "wageType": {
+      "label": "Tipo de salario"
+    }
+  },
+  "selfOnboarding": {
+    "businessDescription": "Verifique el nombre de su negocio y proporcione su EIN.",
+    "individualDescription": "Verifique su nombre y proporcione su número de Seguro Social.",
+    "submitting": "Guardando…",
+    "title": "Complete su perfil"
+  },
+  "title": "Perfil del contratista",
+  "validations": {
+    "businessName": "El nombre del negocio es obligatorio para contratistas comerciales",
+    "ein": "Se requiere EIN para los contratistas comerciales",
+    "einFormat": "El EIN debe tener un formato válido (XX-XXXXXXX)",
+    "email": "El correo electrónico es obligatorio para invitar a un contratista",
+    "emailFormat": "El correo electrónico debe ser una dirección válida",
+    "firstName": "El nombre es obligatorio para contratistas individuales",
+    "firstNameFormat": "El nombre no es válido",
+    "hourlyRate": "La tarifa por hora es obligatoria para contratistas por hora",
+    "lastName": "El apellido es obligatorio para contratistas individuales",
+    "lastNameFormat": "El apellido no es válido",
+    "ssn": "El SSN es obligatorio para contratistas individuales",
+    "ssnFormat": "El SSN debe tener un formato válido",
+    "startDate": "La fecha de inicio es obligatoria"
+  },
+  "w9EditWarning": {
+    "body": "Este contratista ya firmó un Formulario W-9. Si está haciendo correcciones, también debe actualizar y conservar una nueva versión firmada del Formulario W-9 que refleje la información corregida.",
+    "label": "Los cambios requerirán un Formulario W-9 actualizado"
+  }
+}

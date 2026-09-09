@@ -1,0 +1,15 @@
+{
+  "addAnotherCta": "+ Agregar otro contratista",
+  "addContractorCta": "Agregar un contratista",
+  "contractorListLabel": "Una lista de contratistas",
+  "deleteDialog": {
+    "confirmCta": "Eliminar contratista",
+    "description": "Esto eliminará permanentemente a este contratista de tu cuenta. Esta acción no se puede deshacer.",
+    "title": "¿Eliminar al contratista?"
+  },
+  "emptyTableDescription": "Agrega contratistas para configurarlos para la nómina.",
+  "emptyTableTitle": "Aún no has agregado ningún contratista",
+  "progressBarCta": "Regresar a contratistas",
+  "reviewCta": "Revisar",
+  "title": "Contratistas"
+}

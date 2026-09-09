@@ -2473,6 +2473,8 @@ export namespace Translations {
       validations: {
         /** @defaultValue `"Enter a valid hourly rate"` */
         hourlyRate: string
+        /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+        hourlyRateMax: string
       }
     }
   }
@@ -3605,6 +3607,8 @@ export namespace Translations {
       einFormat: string
       /** @defaultValue `"Hourly rate is required for hourly contractors"` */
       hourlyRate: string
+      /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+      hourlyRateMax: string
       /** @defaultValue `"Start date is required"` */
       startDate: string
     }
@@ -7022,6 +7026,8 @@ export namespace Translations {
     endDateLabel: string
     /** @defaultValue `"Payment date"` */
     checkDateLabel: string
+    /** @defaultValue `"Enter the date you'd like your employees to receive payment."` */
+    checkDateDescription: string
     validations: {
       /** @defaultValue `"Start date is required"` */
       startDateRequired: string

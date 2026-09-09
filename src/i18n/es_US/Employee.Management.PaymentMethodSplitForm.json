@@ -1,0 +1,14 @@
+{
+  "amountLabel": "Monto fijo",
+  "draggableListLabel": "Lista reordenable de cuentas bancarias",
+  "percentageLabel": "Porcentaje",
+  "remainderLabel": "Remanente",
+  "splitAmountLabel": "{{name}} ({{account_number}})",
+  "splitByLabel": "Dividir por",
+  "splitDescription": "Puedes dividir tu cheque de pago en diferentes cuentas por porcentaje o por montos fijos en dólares. Al dividir por monto, puedes reordenar la prioridad de las cuentas bancarias haciendo clic y arrastrando el ícono de lista a la izquierda del campo de cuenta bancaria. Pagaremos los montos en el orden especificado hasta que tu salario haya sido distribuido por completo a la última cuenta de \"remanente\".",
+  "validations": {
+    "amountError": "Ingresa un monto válido",
+    "percentageAmountError": "El porcentaje debe ser un número entero entre 0 y 100",
+    "percentageErrorWithTotal": "Las divisiones deben sumar el 100 %. Actualmente {{total}} %."
+  }
+}

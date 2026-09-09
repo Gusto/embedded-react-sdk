@@ -30,6 +30,13 @@ import { normalizeEin, usePlaceholderEin } from '@/helpers/federalEin'
 export type RequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED
 
 /**
+ * Validation code for an hourly rate above the server's maximum cap.
+ *
+ * @public
+ */
+export type MaxHourlyRateValidation = typeof ContractorDetailsErrorCodes.MAX_HOURLY_RATE
+
+/**
  * Validation error codes emitted by the name fields of {@link useContractorDetailsForm}.
  *
  * @public
@@ -116,7 +123,9 @@ export function StartDateField(props: StartDateFieldProps) {
  *
  * @public
  */
-export type HourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<RequiredValidation>>
+export type HourlyRateFieldProps = HookFieldProps<
+  NumberInputHookFieldProps<RequiredValidation | MaxHourlyRateValidation>
+>
 
 /** @internal */
 export function HourlyRateField(props: HourlyRateFieldProps) {

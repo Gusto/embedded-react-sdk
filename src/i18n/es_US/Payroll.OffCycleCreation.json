@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "missingPayrollId": "La nómina fuera de ciclo se creó, pero no se devolvió ningún ID de nómina",
+    "noEmployeesSelected": "Se debe seleccionar al menos un empleado"
+  },
+  "includeAllEmployeesLabel": "Incluir a todos los empleados en esta nómina",
+  "pageDescription": "Configura los detalles de tu nómina fuera de ciclo a continuación.",
+  "pageTitle": "Nueva nómina fuera de ciclo",
+  "payPeriodSectionTitle": "Periodo de pago y fecha de pago"
+}
