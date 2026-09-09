@@ -20,6 +20,8 @@ interface SelectEmployeesTimeOffProps {
   policyId: string
   policyType: CreatableTimeOffPolicyType
   mode?: 'standalone' | 'wizard'
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 const PAID_TIME_OFF_NAME_BY_POLICY_TYPE: Record<CreatableTimeOffPolicyType, string> = {
@@ -99,6 +101,7 @@ function SelectEmployeesTimeOffInner({
   mode = 'standalone',
   existingAssigneeUuids,
   hideBalances = false,
+  className,
 }: InnerProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
@@ -279,6 +282,7 @@ function SelectEmployeesTimeOffInner({
       pagination={pagination}
       isFetching={isFetching}
       isPending={isSubmitPending}
+      className={className}
     />
   )
 }

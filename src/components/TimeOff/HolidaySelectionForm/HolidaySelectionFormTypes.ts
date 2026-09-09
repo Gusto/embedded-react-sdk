@@ -16,6 +16,8 @@ export interface HolidayItem {
 
 interface HolidaySelectionFormBaseProps {
   holidays: HolidayItem[]
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 interface HolidaySelectionFormSelectModeProps extends HolidaySelectionFormBaseProps {

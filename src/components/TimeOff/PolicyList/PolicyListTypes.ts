@@ -34,4 +34,6 @@ export interface PolicyListPresentationProps {
   isDeletingPolicyId?: string | null
   /** True while any mutation is in flight; drives the dialog confirm button's loading state. */
   isPending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }

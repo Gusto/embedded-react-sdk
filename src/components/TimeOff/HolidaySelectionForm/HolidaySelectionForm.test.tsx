@@ -92,6 +92,20 @@ describe('HolidaySelectionForm', () => {
     })
   })
 
+  describe('custom className', () => {
+    it('applies custom className to the root element', async () => {
+      const { container } = renderWithProviders(
+        <HolidaySelectionForm {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Choose your company holidays')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+  })
+
   describe('selection', () => {
     it('can deselect a holiday', async () => {
       renderWithProviders(<HolidaySelectionForm {...defaultProps} />)

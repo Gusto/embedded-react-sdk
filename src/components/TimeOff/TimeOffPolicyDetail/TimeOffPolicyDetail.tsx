@@ -159,7 +159,7 @@ interface EditBalanceState {
   currentBalance: number
 }
 
-function Root({ policyId }: TimeOffPolicyDetailProps) {
+function Root({ policyId, className }: TimeOffPolicyDetailProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
   const { onEvent, baseSubmitHandler, error, setError } = useBase()
@@ -406,6 +406,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         onDismissAlert={() => {
           setSuccessAlert(undefined)
         }}
+        className={className}
       />
 
       <EditEmployeeBalanceModal

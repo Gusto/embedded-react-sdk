@@ -16,6 +16,8 @@ import { componentEvents } from '@/shared/constants'
 interface SelectEmployeesHolidayProps {
   companyId: string
   mode?: 'standalone' | 'wizard'
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -61,6 +63,7 @@ function SelectEmployeesHolidayInner({
   mode = 'standalone',
   existingAssigneeUuids,
   version,
+  className,
 }: InnerProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
@@ -151,6 +154,7 @@ function SelectEmployeesHolidayInner({
       pagination={pagination}
       isFetching={isFetching}
       isPending={isAddPending}
+      className={className}
     />
   )
 }

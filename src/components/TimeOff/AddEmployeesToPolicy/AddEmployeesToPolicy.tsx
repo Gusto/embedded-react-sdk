@@ -53,7 +53,7 @@ export interface AddEmployeesToPolicyProps extends BaseComponentInterface<never>
  * }
  * ```
  */
-export function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps) {
+export function AddEmployeesToPolicy({ className, ...props }: AddEmployeesToPolicyProps) {
   return (
     <BaseComponent {...props}>
       <SelectEmployeesTimeOff
@@ -61,6 +61,7 @@ export function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps) {
         policyId={props.policyId}
         policyType={props.policyType}
         mode="standalone"
+        className={className}
       />
     </BaseComponent>
   )
