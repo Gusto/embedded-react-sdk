@@ -13174,6 +13174,7 @@ interface UsePayrollConfigurationReady extends BaseHookReady<UsePayrollConfigura
     actions: {
         calculatePayroll: () => Promise<void>;
         toggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => Promise<HookSubmitResult<PayrollPrepared | undefined> | undefined>;
+        refetch: () => Promise<void>;
     };
     pagination: PaginationControlProps;
 }

@@ -136,6 +136,7 @@ export function usePayrollGrossUp({
       }
       return result.value.payrollPrepared
     },
+    enabled: employeeId.length > 0,
     retry: false,
   })
 

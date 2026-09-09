@@ -141,6 +141,12 @@ export interface UsePayrollConfigurationReady extends BaseHookReady<
     toggleExclude: (
       employeeCompensation: PayrollEmployeeCompensationsType,
     ) => Promise<HookSubmitResult<PayrollPrepared | undefined> | undefined>
+    /**
+     * Re-runs the underlying prepare, re-deriving the editable compensations and the
+     * already-processed state. Call after an out-of-band change (e.g. cancelling a
+     * processed payroll) to drop back into the configuration table.
+     */
+    refetch: () => Promise<void>
   }
 }
 
@@ -450,6 +456,7 @@ export function usePayrollConfiguration({
     actions: {
       calculatePayroll: onCalculatePayroll,
       toggleExclude,
+      refetch,
     },
     errorHandling,
   }
