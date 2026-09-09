@@ -152,7 +152,9 @@ function formatAmountInput(value: string | null | undefined): string {
 function buildWeekMap(
   workweeks: NormalizedWorkweek[],
   total: string | undefined,
-  breakdowns: Array<{ startDate?: RFCDate; hours?: string; amount?: string }> | undefined,
+  breakdowns:
+    | Array<{ startDate?: RFCDate; endDate?: RFCDate; hours?: string; amount?: string }>
+    | undefined,
   isSplit: boolean,
 ): Record<string, string> {
   const weekMap: Record<string, string> = {}
@@ -167,7 +169,18 @@ function buildWeekMap(
       weekMap[workweek.startDate] = index === 0 ? formatAmountInput(total) : ''
       return
     }
-    const breakdown = breakdowns?.find(entry => entry.startDate?.toString() === workweek.startDate)
+    // A breakdown counts as real per-workweek data only when its range matches
+    // this workweek exactly (both boundaries). The API returns a single row
+    // spanning the whole pay period when no split was ever set — that sentinel
+    // matches no individual workweek, so every cell stays blank and the line
+    // round-trips as an unsplit total (submit resends the total with no
+    // breakdowns, letting the backend distribute). Matching on `startDate` alone
+    // would wrongly pin that whole-period total to the first workweek.
+    const breakdown = breakdowns?.find(
+      entry =>
+        entry.startDate?.toString() === workweek.startDate &&
+        entry.endDate?.toString() === workweek.endDate,
+    )
     weekMap[workweek.startDate] = formatAmountInput(breakdown?.hours ?? breakdown?.amount)
   })
 

@@ -200,6 +200,42 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     })
   })
 
+  it('leaves every workweek blank for a single breakdown spanning the whole pay period', () => {
+    // The API returns one whole-period row when no per-workweek split was set.
+    // It must not be pinned to the first workweek; both cells stay blank so the
+    // line round-trips as an unsplit total.
+    const wholePeriod: PayrollEmployeeCompensationsType = {
+      ...compensation,
+      hourlyCompensations: [
+        {
+          jobUuid: 'job-1',
+          name: 'Regular Hours',
+          hours: '80.0',
+          breakdowns: [
+            {
+              startDate: new RFCDate('2024-01-01'),
+              endDate: new RFCDate('2024-01-14'),
+              hours: '80',
+            },
+          ],
+        },
+      ],
+    }
+
+    const defaults = derivePayrollEditEmployeeDefaults(
+      wholePeriod,
+      [WEEK_ONE, WEEK_TWO],
+      true,
+      new Set(),
+      true,
+    )
+
+    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
+      '2024-01-01': '',
+      '2024-01-08': '',
+    })
+  })
+
   it('forces Check when the employee has no direct deposit set up', () => {
     const defaults = derivePayrollEditEmployeeDefaults(
       compensation,
