@@ -9,6 +9,8 @@ import {
   resolveEditableFixedCompensations,
   derivePayrollEditEmployeeDefaults,
   buildPayrollUpdateEmployeeCompensation,
+  hasExistingOvertimeHours,
+  seedRevealedWeekMaps,
   type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import type { PayrollEditEmployeeFormData } from './payrollEditEmployeeSchema'
@@ -140,6 +142,7 @@ describe('derivePayrollEditEmployeeDefaults', () => {
       true,
       new Set(['Bonus']),
       true,
+      true,
     )
 
     expect(defaults.hours).toEqual({ 'job-1': { 'Regular Hours': { '2024-01-01': '40' } } })
@@ -154,6 +157,7 @@ describe('derivePayrollEditEmployeeDefaults', () => {
       true,
       new Set(['Bonus']),
       false,
+      true,
     )
 
     expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
@@ -192,6 +196,7 @@ describe('derivePayrollEditEmployeeDefaults', () => {
       true,
       new Set(),
       true,
+      true,
     )
 
     expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
@@ -207,9 +212,132 @@ describe('derivePayrollEditEmployeeDefaults', () => {
       false,
       new Set(),
       true,
+      true,
     )
 
     expect(defaults.paymentMethod).toBe(PayrollUpdatePaymentMethod.Check)
+  })
+
+  it('stays flat when overtime-eligible but not yet revealed, even on a multi-workweek payroll', () => {
+    const defaults = derivePayrollEditEmployeeDefaults(
+      compensation,
+      [WEEK_ONE, WEEK_TWO],
+      true,
+      new Set(['Bonus']),
+      true,
+      false,
+    )
+
+    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
+      '2024-01-01': '40',
+      '2024-01-08': '',
+    })
+    expect(defaults.additionalEarnings['job-1']!['Bonus']).toEqual({
+      '2024-01-01': '500',
+      '2024-01-08': '',
+    })
+  })
+})
+
+describe('hasExistingOvertimeHours', () => {
+  it('returns true when an Overtime line has non-zero hours', () => {
+    expect(
+      hasExistingOvertimeHours([
+        { jobUuid: 'job-1', name: 'Regular Hours', hours: '40' },
+        { jobUuid: 'job-1', name: 'Overtime', hours: '5' },
+      ]),
+    ).toBe(true)
+  })
+
+  it('returns true when a Double overtime line has non-zero hours', () => {
+    expect(
+      hasExistingOvertimeHours([{ jobUuid: 'job-1', name: 'Double overtime', hours: '2.5' }]),
+    ).toBe(true)
+  })
+
+  it('returns false when Overtime/Double overtime lines are zero or absent', () => {
+    expect(
+      hasExistingOvertimeHours([
+        { jobUuid: 'job-1', name: 'Regular Hours', hours: '40' },
+        { jobUuid: 'job-1', name: 'Overtime', hours: '0' },
+      ]),
+    ).toBe(false)
+    expect(hasExistingOvertimeHours(undefined)).toBe(false)
+  })
+})
+
+describe('seedRevealedWeekMaps', () => {
+  const compensation: PayrollEmployeeCompensationsType = {
+    employeeUuid: 'emp-1',
+    version: 'comp-v1',
+    hourlyCompensations: [
+      { jobUuid: 'job-1', name: 'Regular Hours', hours: '80' },
+      { jobUuid: 'job-1', name: 'Overtime', hours: '0' },
+    ],
+    fixedCompensations: [{ jobUuid: 'job-1', name: 'Bonus', amount: '500.00' }],
+    paidTimeOff: [],
+    reimbursements: [],
+  }
+
+  it('evenly splits a line left entirely blank across workweeks', () => {
+    const hours = {
+      'job-1': {
+        'Regular Hours': { '2024-01-01': '', '2024-01-08': '' },
+        Overtime: { '2024-01-01': '', '2024-01-08': '' },
+      },
+    }
+    const result = seedRevealedWeekMaps(hours, {}, compensation, [WEEK_ONE, WEEK_TWO])
+
+    // Regular Hours had a real, non-zero total -- seeded to an even split.
+    expect(result.hours['job-1']!['Regular Hours']).toEqual({
+      '2024-01-01': '40',
+      '2024-01-08': '40',
+    })
+    // Overtime's original total is 0 -- nothing to preserve, stays blank.
+    expect(result.hours['job-1']!.Overtime).toEqual({
+      '2024-01-01': '',
+      '2024-01-08': '',
+    })
+  })
+
+  it('leaves a line with a real per-week value untouched', () => {
+    const hours = {
+      'job-1': {
+        'Regular Hours': { '2024-01-01': '40', '2024-01-08': '' },
+      },
+    }
+    const result = seedRevealedWeekMaps(hours, {}, compensation, [WEEK_ONE, WEEK_TWO])
+
+    expect(result.hours['job-1']!['Regular Hours']).toEqual({
+      '2024-01-01': '40',
+      '2024-01-08': '',
+    })
+  })
+
+  it('seeds overtime-affecting additional earnings the same way', () => {
+    const additionalEarnings = {
+      'job-1': { Bonus: { '2024-01-01': '', '2024-01-08': '' } },
+    }
+    const result = seedRevealedWeekMaps({}, additionalEarnings, compensation, [WEEK_ONE, WEEK_TWO])
+
+    expect(result.additionalEarnings['job-1']!.Bonus).toEqual({
+      '2024-01-01': '250',
+      '2024-01-08': '250',
+    })
+  })
+
+  it('splits an odd total without losing a cent to rounding', () => {
+    const oddCompensation: PayrollEmployeeCompensationsType = {
+      ...compensation,
+      hourlyCompensations: [{ jobUuid: 'job-1', name: 'Regular Hours', hours: '81' }],
+    }
+    const hours = {
+      'job-1': { 'Regular Hours': { '2024-01-01': '', '2024-01-08': '' } },
+    }
+    const result = seedRevealedWeekMaps(hours, {}, oddCompensation, [WEEK_ONE, WEEK_TWO])
+
+    const weekValues = Object.values(result.hours['job-1']!['Regular Hours']!).map(Number)
+    expect(weekValues.reduce((sum, value) => sum + value, 0)).toBe(81)
   })
 })
 
@@ -235,6 +363,7 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
       [WEEK_ONE],
       PayrollCategory.Regular,
       true,
+      true,
     )
 
     expect(result.hourlyCompensations).toEqual([
@@ -253,6 +382,7 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
       compensation,
       [WEEK_ONE, WEEK_TWO],
       PayrollCategory.Regular,
+      true,
       true,
     )
 
@@ -278,6 +408,7 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
       [WEEK_ONE, WEEK_TWO],
       PayrollCategory.Regular,
       true,
+      true,
     )
 
     const bonus = result.fixedCompensations!.find(entry => entry.name === 'Bonus')!
@@ -296,10 +427,31 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
       [WEEK_ONE, WEEK_TWO],
       PayrollCategory.Regular,
       true,
+      true,
     )
 
     expect(result.hourlyCompensations).toEqual([
       { jobUuid: 'job-1', name: 'Regular Hours', hours: '40' },
+    ])
+  })
+
+  it('sends the flat total with no breakdowns when overtime-eligible but not revealed, regardless of workweek count', () => {
+    const formData: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2024-01-01': '55' } } },
+    }
+
+    const result = buildPayrollUpdateEmployeeCompensation(
+      formData,
+      compensation,
+      [WEEK_ONE, WEEK_TWO],
+      PayrollCategory.Regular,
+      true,
+      false,
+    )
+
+    expect(result.hourlyCompensations).toEqual([
+      { jobUuid: 'job-1', name: 'Regular Hours', hours: '55' },
     ])
   })
 
@@ -316,12 +468,14 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
       [WEEK_ONE],
       PayrollCategory.Dismissal,
       true,
+      true,
     )
     const regular = buildPayrollUpdateEmployeeCompensation(
       formData,
       compensation,
       [WEEK_ONE],
       PayrollCategory.Regular,
+      true,
       true,
     )
 

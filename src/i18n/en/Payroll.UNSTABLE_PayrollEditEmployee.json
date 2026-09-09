@@ -5,6 +5,7 @@
   "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular and overtime hours",
   "regularHoursTitleWithoutOvertime": "Regular hours",
+  "addOvertimeCta": "Add overtime",
   "hoursUnit": "Hours",
   "saveCta": "Save",
   "cancelCta": "Cancel",
