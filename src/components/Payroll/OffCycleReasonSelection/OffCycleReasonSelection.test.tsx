@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, test, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OffCycleReasonSelection } from './OffCycleReasonSelection'
@@ -178,6 +178,16 @@ describe('OffCycleReasonSelection', () => {
       await waitFor(() => {
         expect(screen.getByRole('radiogroup')).toBeInTheDocument()
       })
+    })
+  })
+
+  test('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <OffCycleReasonSelection {...defaultProps} className="custom-class" />,
+    )
+
+    await waitFor(() => {
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
   })
 })

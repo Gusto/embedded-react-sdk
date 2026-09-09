@@ -90,6 +90,7 @@ const Root = ({
   onEvent,
   withOffcyclePayroll = true,
   LoaderComponent,
+  className,
 }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
@@ -219,30 +220,32 @@ const Root = ({
   const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
 
   return (
-    <PayrollListPresentation
-      payrolls={payrollList}
-      pagination={paginationProps}
-      paySchedules={paySchedulesList}
-      onRunPayroll={onRunPayroll}
-      onSubmitPayroll={onSubmitPayroll}
-      onSkipPayroll={onSkipPayroll}
-      onDeletePayroll={onDeletePayroll}
-      onRunOffCyclePayroll={onRunOffCyclePayroll}
-      showSkipSuccessAlert={showSkipSuccessAlert}
-      onDismissSkipSuccessAlert={() => {
-        setShowSkipSuccessAlert(false)
-      }}
-      showDeleteSuccessAlert={showDeleteSuccessAlert}
-      onDismissDeleteSuccessAlert={() => {
-        setShowDeleteSuccessAlert(false)
-      }}
-      skippingPayrollId={skippingPayrollId}
-      deletingPayrollId={deletingPayrollId}
-      blockers={blockers}
-      wireInRequests={wireInRequests}
-      dateRangeFilter={dateRangeFilter}
-      hasUnprocessedTransitions={hasUnprocessedTransitions}
-      withOffcyclePayroll={withOffcyclePayroll}
-    />
+    <div className={className}>
+      <PayrollListPresentation
+        payrolls={payrollList}
+        pagination={paginationProps}
+        paySchedules={paySchedulesList}
+        onRunPayroll={onRunPayroll}
+        onSubmitPayroll={onSubmitPayroll}
+        onSkipPayroll={onSkipPayroll}
+        onDeletePayroll={onDeletePayroll}
+        onRunOffCyclePayroll={onRunOffCyclePayroll}
+        showSkipSuccessAlert={showSkipSuccessAlert}
+        onDismissSkipSuccessAlert={() => {
+          setShowSkipSuccessAlert(false)
+        }}
+        showDeleteSuccessAlert={showDeleteSuccessAlert}
+        onDismissDeleteSuccessAlert={() => {
+          setShowDeleteSuccessAlert(false)
+        }}
+        skippingPayrollId={skippingPayrollId}
+        deletingPayrollId={deletingPayrollId}
+        blockers={blockers}
+        wireInRequests={wireInRequests}
+        dateRangeFilter={dateRangeFilter}
+        hasUnprocessedTransitions={hasUnprocessedTransitions}
+        withOffcyclePayroll={withOffcyclePayroll}
+      />
+    </div>
   )
 }

@@ -12,6 +12,7 @@ function OffCycleDeductionsSettingRoot({
   dictionary,
   skipRegularDeductions,
   onEvent,
+  className,
 }: OffCycleDeductionsSettingProps) {
   useComponentDictionary('Payroll.OffCycleDeductionsSetting', dictionary)
   useI18n('Payroll.OffCycleDeductionsSetting')
@@ -48,6 +49,7 @@ function OffCycleDeductionsSettingRoot({
       options={options}
       value={selectedValue}
       onChange={handleChange}
+      className={className}
     />
   )
 }

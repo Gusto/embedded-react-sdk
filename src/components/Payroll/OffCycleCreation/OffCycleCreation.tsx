@@ -61,7 +61,7 @@ export function OffCycleCreation(props: OffCycleCreationProps) {
   )
 }
 
-function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreationProps) {
+function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCycleCreationProps) {
   useComponentDictionary('Payroll.OffCycleCreation', dictionary)
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleReasonSelection')
@@ -239,6 +239,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
           onTaxWithholdingEditClick={handleTaxWithholdingEditClick}
           onTaxWithholdingModalDone={handleTaxWithholdingModalDone}
           onTaxWithholdingModalCancel={handleTaxWithholdingModalCancel}
+          className={className}
         />
       </Form>
     </FormProvider>

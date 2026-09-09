@@ -87,6 +87,7 @@ const Root = ({
   onEvent,
   dictionary,
   withReimbursements = true,
+  className,
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
@@ -166,18 +167,20 @@ const Root = ({
   }
 
   return (
-    <PayrollEditEmployeePresentation
-      onSave={onSave}
-      onCancel={onCancel}
-      employee={employee}
-      isPending={isPending}
-      employeeCompensation={employeeCompensation}
-      fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
-      payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
-      paySchedule={paySchedule}
-      payrollCategory={payrollCategory}
-      withReimbursements={withReimbursements}
-      hasDirectDepositSetup={hasDirectDepositSetup}
-    />
+    <div className={className}>
+      <PayrollEditEmployeePresentation
+        onSave={onSave}
+        onCancel={onCancel}
+        employee={employee}
+        isPending={isPending}
+        employeeCompensation={employeeCompensation}
+        fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
+        payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
+        paySchedule={paySchedule}
+        payrollCategory={payrollCategory}
+        withReimbursements={withReimbursements}
+        hasDirectDepositSetup={hasDirectDepositSetup}
+      />
+    </div>
   )
 }

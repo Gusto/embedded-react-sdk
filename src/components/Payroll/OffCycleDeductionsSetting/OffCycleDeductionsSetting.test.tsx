@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, test, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OffCycleDeductionsSetting } from './OffCycleDeductionsSetting'
@@ -201,6 +201,20 @@ describe('OffCycleDeductionsSetting', () => {
       await waitFor(() => {
         expect(screen.getByRole('radiogroup')).toBeInTheDocument()
       })
+    })
+  })
+
+  test('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <OffCycleDeductionsSetting
+        skipRegularDeductions={true}
+        onEvent={onEvent}
+        className="custom-class"
+      />,
+    )
+
+    await waitFor(() => {
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
   })
 })

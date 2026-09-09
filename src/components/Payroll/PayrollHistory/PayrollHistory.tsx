@@ -66,7 +66,13 @@ const getDefaultStartDate = (): Date => {
 
 const getDefaultEndDate = (): Date => new Date()
 
-const Root = ({ onEvent, companyId, dictionary, LoaderComponent }: PayrollHistoryProps) => {
+const Root = ({
+  onEvent,
+  companyId,
+  dictionary,
+  LoaderComponent,
+  className,
+}: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
 
@@ -146,20 +152,22 @@ const Root = ({ onEvent, companyId, dictionary, LoaderComponent }: PayrollHistor
   const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
 
   return (
-    <PayrollHistoryPresentation
-      payrollHistory={payrollHistory}
-      wireInRequests={wireInRequests}
-      pagination={paginationProps}
-      onViewSummary={handleViewSummary}
-      onViewReceipt={handleViewReceipt}
-      onCancelPayroll={handleCancelPayroll}
-      cancelDialogItem={cancelDialogItem}
-      onCancelDialogOpen={setCancelDialogItem}
-      onCancelDialogClose={() => {
-        setCancelDialogItem(null)
-      }}
-      isLoading={isCancelling}
-      dateRangeFilter={dateRangeFilter}
-    />
+    <div className={className}>
+      <PayrollHistoryPresentation
+        payrollHistory={payrollHistory}
+        wireInRequests={wireInRequests}
+        pagination={paginationProps}
+        onViewSummary={handleViewSummary}
+        onViewReceipt={handleViewReceipt}
+        onCancelPayroll={handleCancelPayroll}
+        cancelDialogItem={cancelDialogItem}
+        onCancelDialogOpen={setCancelDialogItem}
+        onCancelDialogClose={() => {
+          setCancelDialogItem(null)
+        }}
+        isLoading={isCancelling}
+        dateRangeFilter={dateRangeFilter}
+      />
+    </div>
   )
 }

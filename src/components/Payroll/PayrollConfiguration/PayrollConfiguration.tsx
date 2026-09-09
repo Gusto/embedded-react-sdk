@@ -86,6 +86,7 @@ const Root = ({
   dictionary,
   alerts,
   withReimbursements = true,
+  className,
 }: PayrollConfigurationProps) => {
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
@@ -499,18 +500,20 @@ const Root = ({
     }
 
     return (
-      <PayrollOverview
-        companyId={companyId}
-        payrollId={payrollId}
-        onEvent={onAlreadyProcessedOverviewEvent}
-        withReimbursements={withReimbursements}
-        alerts={[alreadyProcessedAlert]}
-      />
+      <div className={className}>
+        <PayrollOverview
+          companyId={companyId}
+          payrollId={payrollId}
+          onEvent={onAlreadyProcessedOverviewEvent}
+          withReimbursements={withReimbursements}
+          alerts={[alreadyProcessedAlert]}
+        />
+      </div>
     )
   }
 
   return (
-    <>
+    <div className={className}>
       <PayrollConfigurationPresentation
         onCalculatePayroll={onCalculatePayroll}
         isCalculateDisabled={blockersFromApi.length > 0}
@@ -542,6 +545,6 @@ const Root = ({
           }}
         />
       )}
-    </>
+    </div>
   )
 }
