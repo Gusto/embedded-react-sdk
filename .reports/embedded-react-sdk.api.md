@@ -4239,6 +4239,19 @@ declare namespace Payroll {
     export {
         PayrollConfiguration,
         PayrollConfigurationProps,
+        usePayrollConfiguration,
+        UsePayrollConfigurationParams,
+        UsePayrollConfigurationData,
+        UsePayrollConfigurationStatus,
+        UsePayrollConfigurationReady,
+        UsePayrollConfigurationResult,
+        PayrollConfigurationNotice,
+        usePayrollGrossUp,
+        UsePayrollGrossUpParams,
+        UsePayrollGrossUpData,
+        UsePayrollGrossUpStatus,
+        UsePayrollGrossUpReady,
+        UsePayrollGrossUpResult,
         PayrollEditEmployee,
         PayrollEditEmployeeProps,
         PayrollHistory,
@@ -4305,6 +4318,18 @@ interface PayrollBlockerListProps extends BaseComponentInterface<'Payroll.Payrol
 
 // @public
 function PayrollConfiguration(props: PayrollConfigurationProps): JSX;
+
+// @public
+type PayrollConfigurationNotice = {
+    type: 'latePayroll';
+    initialCheckDate: string;
+    expectedDebitTime: string;
+    expectedCheckDate: string;
+} | {
+    type: 'directDepositDeadline';
+    checkDate: string;
+    payrollDeadline: Date;
+};
 
 // @public
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
@@ -5865,7 +5890,6662 @@ interface TransitionFlowProps {
 }
 
 // @public
-export namespace Translations { /* per-namespace i18n key interfaces, recreated from the translation JSON — body omitted from report; see src/i18n/types.d.ts and the Translations reference */ }
+export namespace Translations {
+    export interface common {
+        // (undocumented)
+        back: string
+        // (undocumented)
+        card: {
+            selectRowLabel: string
+            selectAllRowsLabel: string
+        }
+        // (undocumented)
+        compensationRateFormats: {
+            hourly: string
+            weekly: string
+            monthly: string
+            yearly: string
+            paycheck: string
+        }
+        // (undocumented)
+        errors: {
+            errorHeading: string
+            globalReactError: string
+            resetGlobalError: string
+            unknownError: string
+            missingParamsOrContext: string
+            unhandledEvent: string
+            unknownEventType: string
+            ensureRequired: string
+        }
+        // (undocumented)
+        fileInput: {
+            uploadInstructions: string
+            acceptedTypes: string
+            removeFile: string
+        }
+        // (undocumented)
+        icons: {
+            completedStep: string
+            selectArrow: string
+            calendarArrow: string
+            nextMonth: string
+            previousMonth: string
+            paginationFirst: string
+            paginationPrev: string
+            paginationNext: string
+            paginationLast: string
+        }
+        // (undocumented)
+        inputs: {
+            ssn: {
+                placeholder: string
+            }
+            ein: {
+                placeholder: string
+            }
+            workersCompensationRatePerHourAdornment: string
+        }
+        // (undocumented)
+        labels: {
+            paginationControlCountLabel: string
+            paginationFetchingLabel: string
+            openMenu: string
+            menuLabel: string
+            tabNavigation: string
+            selectedItems: string
+            removeItem: string
+        }
+        // (undocumented)
+        onboardingStatus: {
+            contractor: {
+                undefined: string
+                admin_onboarding_incomplete: string
+                admin_onboarding_review: string
+                onboarding_completed: string
+                self_onboarding_not_invited: string
+                self_onboarding_invited: string
+                self_onboarding_started: string
+                self_onboarding_review: string
+            }
+            employee: {
+                undefined: string
+                admin_onboarding_incomplete: string
+                onboarding_completed: string
+                self_onboarding_pending_invite: string
+                self_onboarding_invited: string
+                self_onboarding_invited_started: string
+                self_onboarding_invited_overdue: string
+                self_onboarding_completed_by_employee: string
+                self_onboarding_awaiting_admin_review: string
+            }
+        }
+        // (undocumented)
+        optionalLabel: string
+        // (undocumented)
+        payRateFormats: {
+            hourly: string
+            weekly: string
+            monthly: string
+            yearly: string
+            paycheck: string
+        }
+        // (undocumented)
+        progressBarLabel: string
+        // (undocumented)
+        reorderableList: {
+            itemMovedDown: string
+            itemMovedUp: string
+            dragStarted: string
+            dragEnded: string
+            movedUp: string
+            movedDown: string
+            reorderingCanceled: string
+            reorderingExited: string
+            reorderingStarted: string
+            reorderingComplete: string
+            draggableLabel: string
+            draggableLabelActive: string
+            draggablePosition: string
+            item: string
+            dropItemHere: string
+            draggableItem: string
+        }
+        // (undocumented)
+        selectPlaceholder: string
+        // (undocumented)
+        signatoryTitles: {
+            owner: string
+            president: string
+            vice_president: string
+            treasurer: string
+            corporate_officer: string
+            partner: string
+            member: string
+        }
+        // (undocumented)
+        statesHash: {
+            AL: string
+            AK: string
+            AZ: string
+            AR: string
+            CA: string
+            CO: string
+            CT: string
+            DE: string
+            DC: string
+            FL: string
+            GA: string
+            HI: string
+            ID: string
+            IL: string
+            IN: string
+            IA: string
+            KS: string
+            KY: string
+            LA: string
+            ME: string
+            MD: string
+            MA: string
+            MI: string
+            MN: string
+            MS: string
+            MO: string
+            MT: string
+            NE: string
+            NV: string
+            NH: string
+            NJ: string
+            NM: string
+            NY: string
+            NC: string
+            ND: string
+            OH: string
+            OK: string
+            OR: string
+            PA: string
+            RI: string
+            SC: string
+            SD: string
+            TN: string
+            TX: string
+            UT: string
+            VT: string
+            VA: string
+            WA: string
+            WV: string
+            WI: string
+            WY: string
+        }
+        // (undocumented)
+        status: {
+            loading: string
+            loadingOptions: string
+            requiredField: string
+            errorEncountered: string
+            multipleErrorsEncountered: string
+        }
+        // (undocumented)
+        table: {
+            selectRowHeader: string
+            selectRowLabel: string
+            selectAllRowsLabel: string
+            actionsColumnHeader: string
+        }
+        // (undocumented)
+        validations: {
+            accountName: string
+            routingNumber: string
+            accountNumber: string
+            ssn: string
+            ssnRequired: string
+            location: string
+            dob: string
+            percentageMin: string
+            percentageMax: string
+        }
+    }
+    export interface CompanyAddresses {
+        // (undocumented)
+        addCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        filingLabel: string
+        // (undocumented)
+        mailingLabel: string
+        // (undocumented)
+        title: string
+    }
+    export interface CompanyAssignSignatory {
+        // (undocumented)
+        address: {
+            title: string
+            description: string
+            street1: string
+            street2: string
+            city: string
+            state: string
+            statePlaceholder: string
+            zip: string
+        }
+        // (undocumented)
+        buttons: {
+            signDocuments: string
+            inviteSignatory: string
+        }
+        // (undocumented)
+        description: string
+        // (undocumented)
+        inviteSignatory: {
+            title: string
+            description: string
+            signatoryEmail: string
+            confirmEmail: string
+            firstName: string
+            lastName: string
+        }
+        // (undocumented)
+        signatoryDetails: {
+            title: string
+            description: string
+            firstName: string
+            lastName: string
+            email: string
+            phone: string
+            ssn: string
+            birthday: string
+            titleSelect: {
+                label: string
+                placeholder: string
+            }
+        }
+        // (undocumented)
+        signingOptions: {
+            label: string
+            selfSign: string
+            appointOther: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            dob: string
+            email: string
+            emailMismatch: string
+            firstName: string
+            lastName: string
+            phone: string
+            title: string
+            address: {
+                street1: string
+                city: string
+                state: string
+                zip: string
+            }
+        }
+    }
+    export interface CompanyBankAccount {
+        // (undocumented)
+        accountNumberLabel: string
+        // (undocumented)
+        addBankAccountDescription: string
+        // (undocumented)
+        addBankAccountTitle: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        changeBankAccountCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        deposit1Description: string
+        // (undocumented)
+        deposit1Label: string
+        // (undocumented)
+        deposit2Description: string
+        // (undocumented)
+        deposit2Label: string
+        // (undocumented)
+        form: {
+            routingNumberLabel: string
+            routingNumberDescription: string
+            accountNumberLabel: string
+        }
+        // (undocumented)
+        routingNumberLabel: string
+        // (undocumented)
+        validations: {
+            routingNumber: string
+            accountNumber: string
+            deposit1: string
+            deposit2: string
+        }
+        // (undocumented)
+        verificationAlert: {
+            awaiting_deposits: {
+                label: string
+                description: string
+            }
+            ready_for_verification: {
+                label: string
+                description: string
+            }
+            verified: {
+                label: string
+            }
+        }
+        // (undocumented)
+        verifyBankAccountCta: string
+        // (undocumented)
+        verifyBankAccountDescription: string
+        // (undocumented)
+        verifyBankAccountTitle: string
+        // (undocumented)
+        verifyCta: string
+    }
+    export interface CompanyDocumentList {
+        // (undocumented)
+        actionColumnLabel: string
+        // (undocumented)
+        assignSignatoryCta: string
+        // (undocumented)
+        changeSignatoryCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        documentListError: string
+        // (undocumented)
+        documentListLabel: string
+        // (undocumented)
+        documentListTitle: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        formColumnLabel: string
+        // (undocumented)
+        forms: {
+            US_8655: {
+                description: string
+            }
+            US_8655_MODIFIED: {
+                description: string
+            }
+            US_8821: {
+                description: string
+            }
+            US_8974: {
+                description: string
+            }
+            US_940: {
+                description: string
+            }
+            US_940c: {
+                description: string
+            }
+            US_941: {
+                description: string
+            }
+            US_941_SCHEDULE_B: {
+                description: string
+            }
+            US_941X: {
+                description: string
+            }
+            US_944: {
+                description: string
+            }
+            US_944X: {
+                description: string
+            }
+            ACH_Reversal: {
+                description: string
+            }
+            amended_package: {
+                description: string
+            }
+            'CA_DE-9': {
+                description: string
+            }
+            'CA_DE-9ADJ': {
+                description: string
+            }
+            'CA_DE-9C': {
+                description: string
+            }
+            'BENEFITS_ANNOTATED_CA_DE-9C': {
+                description: string
+            }
+            co_employee_refund_instructions: {
+                description: string
+            }
+            company_direct_deposit: {
+                description: string
+            }
+            'US_Company_W-2': {
+                description: string
+            }
+            'US_Company_W-2 (Corrected)': {
+                description: string
+            }
+            'US_Company_W-2_Cover_Sheet': {
+                description: string
+            }
+            DC_DOES_UC30: {
+                description: string
+            }
+            'FL_RT-6': {
+                description: string
+            }
+            IL_DOR_941: {
+                description: string
+            }
+            IL_DOR_941X: {
+                description: string
+            }
+            'IL_UI-340': {
+                description: string
+            }
+            'IL_UI-40C': {
+                description: string
+            }
+            ky_unemployment: {
+                description: string
+            }
+            ky_unemployment_amendment: {
+                description: string
+            }
+            MA_941: {
+                description: string
+            }
+            ma_unemployment: {
+                description: string
+            }
+            md_unemployment: {
+                description: string
+            }
+            md_unemployment_amendment: {
+                description: string
+            }
+            mt_tax_coupon: {
+                description: string
+            }
+            'NY_MTA-305': {
+                description: string
+            }
+            'NY_MTA-305c': {
+                description: string
+            }
+            'NY_NYS-45': {
+                description: string
+            }
+            'NY_NYS-45-X': {
+                description: string
+            }
+            'NY_TR-2000': {
+                description: string
+            }
+            'NY_TR-579-WT': {
+                description: string
+            }
+            'OHIO_IT-3': {
+                description: string
+            }
+            'OHIO_IT-3c': {
+                description: string
+            }
+            'OHIO_IT-501': {
+                description: string
+            }
+            'OHIO_IT-941': {
+                description: string
+            }
+            'OHIO_IT-941c': {
+                description: string
+            }
+            'OHIO_SD-101': {
+                description: string
+            }
+            'OHIO_SD-141': {
+                description: string
+            }
+            'OHIO_SD-141c': {
+                description: string
+            }
+            OHIO_SUTA: {
+                description: string
+            }
+            OHIO_SUTA_CORRECTION: {
+                description: string
+            }
+            quarterly_package: {
+                description: string
+            }
+            'Benefits Annotated QWR': {
+                description: string
+            }
+            'Incomplete Benefits Annotated QWR': {
+                description: string
+            }
+            sc_unemployment: {
+                description: string
+            }
+            TEXAS_SUTA: {
+                description: string
+            }
+            TEXAS_SUTA_AMENDMENT: {
+                description: string
+            }
+            vt_unemployment: {
+                description: string
+            }
+            'US_W-2': {
+                description: string
+            }
+            'US_W-2_Employer_Copy': {
+                description: string
+            }
+            US_W2_Employer_Printable_Copy: {
+                description: string
+            }
+            'US_W-2c': {
+                description: string
+            }
+            'US_W-3': {
+                description: string
+            }
+            WA_LNI: {
+                description: string
+            }
+            WA_LNI_AMENDMENT: {
+                description: string
+            }
+            'WA_EMS-5208': {
+                description: string
+            }
+            'WA_EMS-5208D': {
+                description: string
+            }
+            US_1099: {
+                description: string
+            }
+            'US_1099 (Corrected)': {
+                description: string
+            }
+            US_1099_Employer_Printable_Copy: {
+                description: string
+            }
+            SYMMETRY_PAYROLL_FORM: {
+                description: string
+            }
+        }
+        // (undocumented)
+        noSignatoryDescription: string
+        // (undocumented)
+        notSigned: string
+        // (undocumented)
+        otherSignatoryDescription: string
+        // (undocumented)
+        otherSignatoryTitle: string
+        // (undocumented)
+        selfSignatoryDescription: string
+        // (undocumented)
+        selfSignatoryTitle: string
+        // (undocumented)
+        signDocumentComplete: string
+        // (undocumented)
+        signDocumentCta: string
+    }
+    export interface CompanyFederalTaxes {
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        entityTypeAndLegalNameIntro: string
+        // (undocumented)
+        federalEinDescription: string
+        // (undocumented)
+        federalEinLabel: string
+        // (undocumented)
+        federalFilingFormDescription: string
+        // (undocumented)
+        federalFilingFormLabel: string
+        // (undocumented)
+        federalFilingFormPlaceholder: string
+        // (undocumented)
+        filingForm: {
+            '941': string
+            '944': string
+        }
+        // (undocumented)
+        legalEntityNameDescription: string
+        // (undocumented)
+        legalEntityNameError: string
+        // (undocumented)
+        legalEntityNameLabel: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        taxPayerType: {
+            'C-Corporation': string
+            'S-Corporation': string
+            'Sole proprietor': string
+            LLC: string
+            LLP: string
+            'Limited partnership': string
+            'Co-ownership': string
+            Association: string
+            Trusteeship: string
+            'General partnership': string
+            'Joint venture': string
+            'Non-Profit': string
+        }
+        // (undocumented)
+        taxpayerTypeDescription: string
+        // (undocumented)
+        taxpayerTypeLabel: string
+        // (undocumented)
+        taxpayerTypePlaceholder: string
+    }
+    export interface CompanyIndustry {
+        // (undocumented)
+        description: string
+        // (undocumented)
+        label: string
+        // (undocumented)
+        placeholder: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+    }
+    export interface CompanyLocations {
+        // (undocumented)
+        addFirstLocationCta: string
+        // (undocumented)
+        addLocationCta: string
+        // (undocumented)
+        addressTypeLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cityLabel: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        filingAddress: string
+        // (undocumented)
+        filingAddressDescription: string
+        // (undocumented)
+        filingAddressDescriptionLocked: string
+        // (undocumented)
+        filingAddressLabel: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        locationFormDescription: string
+        // (undocumented)
+        locationFormTitle: string
+        // (undocumented)
+        locationListCol1: string
+        // (undocumented)
+        locationListCol2: string
+        // (undocumented)
+        locationListLabel: string
+        // (undocumented)
+        locationsListDescription: string
+        // (undocumented)
+        locationsListTitle: string
+        // (undocumented)
+        mailingAddress: string
+        // (undocumented)
+        mailingAddressDescription: string
+        // (undocumented)
+        mailingAddressDescriptionLocked: string
+        // (undocumented)
+        mailingAddressLabel: string
+        // (undocumented)
+        phoneNumberLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        stateLabel: string
+        // (undocumented)
+        statePlaceholder: string
+        // (undocumented)
+        street1Label: string
+        // (undocumented)
+        street2Label: string
+        // (undocumented)
+        validations: {
+            street1: string
+            city: string
+            state: string
+            zip: string
+            phone: string
+        }
+        // (undocumented)
+        zipLabel: string
+    }
+    export interface CompanyOnboardingOverview {
+        // (undocumented)
+        initialSetupCta: string
+        // (undocumented)
+        initialSetupDescription: string
+        // (undocumented)
+        initialSetupTitle: string
+        // (undocumented)
+        missingRequirementsCta: string
+        // (undocumented)
+        missingRequirementsDescription: string
+        // (undocumented)
+        missingRequirementsTitle: string
+        // (undocumented)
+        onboardingCompletedCta: string
+        // (undocumented)
+        onboardingCompletedDescription: string
+        // (undocumented)
+        onboardingCompletedTitle: string
+        // (undocumented)
+        stepDescriptions: {
+            add_addresses: string
+            federal_tax_setup: string
+            select_industry: string
+            add_bank_info: string
+            add_employees: string
+            state_setup: string
+            payroll_schedule: string
+            sign_all_forms: string
+            verify_bank_info: string
+            external_payroll: string
+        }
+        // (undocumented)
+        stepTitles: {
+            add_addresses: string
+            federal_tax_setup: string
+            select_industry: string
+            add_bank_info: string
+            add_employees: string
+            state_setup: string
+            payroll_schedule: string
+            sign_all_forms: string
+            verify_bank_info: string
+            external_payroll: string
+        }
+    }
+    export interface CompanyPaySchedule {
+        // (undocumented)
+        actions: {
+            cancel: string
+            save: string
+        }
+        // (undocumented)
+        addAnotherPayScheduleCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        descriptions: {
+            frequencyOptionsDescription: string
+            anchorPayDateDescription_one: string
+            anchorPayDateDescription_other: string
+            anchorEndOfPayPeriodDescription: string
+        }
+        // (undocumented)
+        frequencies: {
+            everyWeek: string
+            everyOtherWeek: string
+            twicePerMonth: string
+            monthly: string
+        }
+        // (undocumented)
+        frequencyOptions: {
+            '15thAndLast': string
+            custom: string
+        }
+        // (undocumented)
+        headings: {
+            addPaySchedule: string
+            editPaySchedule: string
+            pageTitle: string
+        }
+        // (undocumented)
+        labels: {
+            name: string
+            payfrequency: string
+            frequency: string
+            frequencyPlaceholder: string
+            deadline: string
+            frequencyOptions: string
+            firstPayDate: string
+            firstPayPeriodEndDate: string
+            firstPayDayOfTheMonth: string
+            lastPayDayOfTheMonth: string
+            preview: string
+            legend: string
+        }
+        // (undocumented)
+        listDescription: string
+        // (undocumented)
+        listDescription2: string
+        // (undocumented)
+        loading: string
+        // (undocumented)
+        payPreview: {
+            payPeriod: string
+            payday: string
+            payrollDeadline: string
+        }
+        // (undocumented)
+        payScheduleList: {
+            name: string
+            actions: string
+            active: string
+            inactive: string
+            edit: string
+        }
+        // (undocumented)
+        payScheduleListLabel: string
+        // (undocumented)
+        pleaseVerify: string
+        // (undocumented)
+        previewAlert: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        saveAndContinueCta: string
+        // (undocumented)
+        validations: {
+            name: string
+            frequency: string
+            frequencyOptions: string
+            firstPayDate: string
+            firstPayPeriodEndDate: string
+            firstPayDayOfTheMonth: string
+            lastPayDayOfTheMonth: string
+            dayRange: string
+        }
+    }
+    export interface CompanySignatureForm {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        confirmationError: string
+        // (undocumented)
+        confirmationLabel: string
+        // (undocumented)
+        downloadInstructions: string
+        // (undocumented)
+        downloadPrompt: string
+        // (undocumented)
+        signatureDescription: string
+        // (undocumented)
+        signatureError: string
+        // (undocumented)
+        signatureFormTitle: string
+        // (undocumented)
+        signatureLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        viewDocumentCta: string
+    }
+    export interface CompanyStateTaxes {
+        // (undocumented)
+        form: {
+            saveCta: string
+            cancelCta: string
+            title: string
+            effectiveFromLabel: string
+            noEditableRequirementsTitle: string
+            noEditableRequirementsDescription: string
+            validations: {
+                minValue: string
+                maxValue: string
+                oneOf: string
+                required: string
+            }
+        }
+        // (undocumented)
+        list: {
+            selfOnboardingWarningLabel: string
+            selfOnboardingWarningDescription: string
+            continueCta: string
+            editStateTaxCta: string
+            continueStateTaxSetupCta: string
+            manageRatesCta: string
+            hamburgerTitle: string
+            requirementsListCol1: string
+            requirementsListCol2: string
+            completeBadge: string
+            incompleteBadge: string
+            notStartedBadge: string
+            inProgressBadge: string
+            startStateTaxSetupCta: string
+            defaultRatesAppliedText: string
+            readyToRunPayrollBadge: string
+            requirementsListLabel: string
+            emptyTableTitle: string
+            emptyTableDescription: string
+        }
+        // (undocumented)
+        manageRates: {
+            title: string
+            subtitle: string
+            backCta: string
+            addRateCta: string
+            effectiveDateLabel: string
+            effectiveDatePlaceholder: string
+            effectiveDateColumnLabel: string
+            statusColumnLabel: string
+            currentBadge: string
+            scheduledBadge: string
+            historicalBadge: string
+            emptyHistoryTitle: string
+            emptyHistoryDescription: string
+            addRateDialogTitle: string
+            addRateDialogDescription: string
+            saveRateCta: string
+            cancelCta: string
+            noEditableFieldsTitle: string
+            noEditableFieldsDescription: string
+            rateScheduledSuccess: string
+        }
+    }
+    export interface CompanyTimeOffCreateTimeOffPolicy {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        balanceTable: {
+            balance: string
+            employeeCount_one: string
+            employeeCount_other: string
+        }
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        errors: {
+            updatePolicySettingsFailed: string
+        }
+        // (undocumented)
+        flash: {
+            policyUpdated: string
+            policyActive: string
+            employeesAdded_one: string
+            employeesAdded_other: string
+            balanceUpdated: string
+            settingsUpdated: string
+        }
+        // (undocumented)
+        policyDetails: {
+            createTitle: string
+            editTitle: string
+            policyNameLabel: string
+            accrualMethodLabel: string
+            accrualMethodHint: string
+            perHourPaidLabel: string
+            perHourPaidHint: string
+            perYearLabel: string
+            perYearHint: string
+            unlimitedLabel: string
+            unlimitedHint: string
+            accrualRateAndUnitError: string
+            employeesWillAccrueLabel: string
+            forEveryLabel: string
+            hoursUnit: string
+            hoursWorkedUnit: string
+            additionalOptionsLabel: string
+            includeOvertimeLabel: string
+            allPaidHoursLabel: string
+            fixedAccrualRateLabel: string
+            fixedAccrualRateHint: string
+            accrualMethodFixed: string
+            accrualMethodFixedHint: string
+            perPayPeriodLabel: string
+            perPayPeriodHint: string
+            allAtOnceLabel: string
+            allAtOnceHint: string
+            policyResetDateType: string
+            policyResetDateTypeHint: string
+            perAnniversaryYearLabel: string
+            perCalendarYearLabel: string
+            monthLabel: string
+            dayLabel: string
+            validations: {
+                policyName: string
+                accrualMethod: string
+                accrualRate: string
+                accrualRateUnit: string
+                accrualMethodFixed: string
+                resetDateType: string
+            }
+        }
+        // (undocumented)
+        policySettings: {
+            createTitle: string
+            editTitle: string
+            hoursUnit: string
+            daysUnit: string
+            accrualMaximumLabel: string
+            accrualMaximumHint: string
+            balanceMaximumLabel: string
+            balanceMaximumHint: string
+            carryOverLimitLabel: string
+            carryOverLimitHint: string
+            waitingPeriodLabel: string
+            waitingPeriodHint: string
+            paidOutOnTerminationLabel: string
+            paidOutOnTerminationHint: string
+            numberOfHoursPlaceholder: string
+            numberOfDaysPlaceholder: string
+            continueCta: string
+            errors: {
+                balanceExceedsMaximum: string
+                waitingPeriodMustBeWholeNumber: string
+            }
+        }
+        // (undocumented)
+        startingBalances: {
+            title: string
+            description: string
+            noEmployees: string
+            alertHeader: string
+            createPolicyCta: string
+        }
+    }
+    export interface CompanyTimeOffEmployeeTable {
+        // (undocumented)
+        clear: string
+        // (undocumented)
+        clearAriaLabel: string
+        // (undocumented)
+        clearSearch: string
+        // (undocumented)
+        department: string
+        // (undocumented)
+        jobTitle: string
+        // (undocumented)
+        name: string
+        // (undocumented)
+        noSearchResults: string
+        // (undocumented)
+        searchLabel: string
+        // (undocumented)
+        searchPlaceholder: string
+        // (undocumented)
+        selectAll: string
+        // (undocumented)
+        selectAllEmployees: string
+        // (undocumented)
+        selected: string
+        // (undocumented)
+        tableLabel: string
+        // (undocumented)
+        unknownEmployeeFallback: string
+    }
+    export interface CompanyTimeOffHolidayPolicy {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        editEmployees: {
+            title: string
+        }
+        // (undocumented)
+        flash: {
+            deleted: string
+            employeesAdded_one: string
+            employeesAdded_other: string
+            employeeRemoved: string
+            employeesRemoved_one: string
+            employeesRemoved_other: string
+        }
+        // (undocumented)
+        holidays: {
+            newYearsDay: {
+                name: string
+                observedDate: string
+            }
+            mlkDay: {
+                name: string
+                observedDate: string
+            }
+            presidentsDay: {
+                name: string
+                observedDate: string
+            }
+            memorialDay: {
+                name: string
+                observedDate: string
+            }
+            juneteenth: {
+                name: string
+                observedDate: string
+            }
+            independenceDay: {
+                name: string
+                observedDate: string
+            }
+            laborDay: {
+                name: string
+                observedDate: string
+            }
+            columbusDay: {
+                name: string
+                observedDate: string
+            }
+            veteransDay: {
+                name: string
+                observedDate: string
+            }
+            thanksgiving: {
+                name: string
+                observedDate: string
+            }
+            christmasDay: {
+                name: string
+                observedDate: string
+            }
+        }
+        // (undocumented)
+        holidayScheduleTable: {
+            title: string
+            editCta: string
+        }
+        // (undocumented)
+        show: {
+            title: string
+            addEmployeesCta: string
+            editPolicyCta: string
+        }
+        // (undocumented)
+        tableHeaders: {
+            holidayName: string
+            observedDate: string
+            nextObservation: string
+        }
+        // (undocumented)
+        tableLabel: string
+        // (undocumented)
+        tabs: {
+            holidays: string
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface CompanyTimeOffPolicyDetail {
+        // (undocumented)
+        backLabel: string
+        // (undocumented)
+        employeeActions: string
+        // (undocumented)
+        emptyEmployees: {
+            title: string
+            addEmployeeCta: string
+        }
+        // (undocumented)
+        removeEmployeeDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        tabs: {
+            employees: string
+        }
+    }
+    export interface CompanyTimeOffSelectEmployees {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        departmentColumn: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        emptyState: string
+        // (undocumented)
+        errors: {
+            completePolicyFailed: string
+        }
+        // (undocumented)
+        holidayDescription: string
+        // (undocumented)
+        reassignmentWarning: string
+        // (undocumented)
+        startingBalanceColumn: string
+        // (undocumented)
+        title: string
+    }
+    export interface CompanyTimeOffSelectPolicyType {
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        holidayHint: string
+        // (undocumented)
+        holidayLabel: string
+        // (undocumented)
+        policyTypeHint: string
+        // (undocumented)
+        policyTypeLabel: string
+        // (undocumented)
+        sickLeaveHint: string
+        // (undocumented)
+        sickLeaveLabel: string
+        // (undocumented)
+        timeOffHint: string
+        // (undocumented)
+        timeOffLabel: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            policyTypeRequired: string
+        }
+    }
+    export interface CompanyTimeOffTimeOffPolicies {
+        // (undocumented)
+        actions: {
+            viewPolicy: string
+            deletePolicy: string
+            menuTrigger: string
+            menuFor: string
+        }
+        // (undocumented)
+        allEmployeesLabel: string
+        // (undocumented)
+        createPolicyCta: string
+        // (undocumented)
+        deleteHolidayDialog: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        deletePolicyDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        employeeCount_one: string
+        // (undocumented)
+        employeeCount_other: string
+        // (undocumented)
+        emptyState: {
+            heading: string
+            body: string
+        }
+        // (undocumented)
+        enrolledDash: string
+        // (undocumented)
+        errors: {
+            pendingRequestsBlockDeletion: string
+            deleteFailed: string
+        }
+        // (undocumented)
+        finishSetupCta: string
+        // (undocumented)
+        flash: {
+            policyDeleted: string
+            holidayDeleted: string
+            invalidPolicyType: string
+        }
+        // (undocumented)
+        holidayPayPolicy: string
+        // (undocumented)
+        incompleteBadge: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        tableHeaders: {
+            name: string
+            enrolled: string
+        }
+        // (undocumented)
+        tableLabel: string
+    }
+    export interface CompanyTimeOffTimeOffPolicyDetails {
+        // (undocumented)
+        accrualMethod: {
+            label: string
+            unlimited: string
+            perPayPeriod: string
+            perCalendarYear: string
+            perAnniversaryYear: string
+            perHourWorked: string
+            perHourWorkedNoOvertime: string
+            perHourPaid: string
+            perHourPaidNoOvertime: string
+        }
+        // (undocumented)
+        accrualRate: {
+            label: string
+            unlimited: string
+            perPayPeriod: string
+            perCalendarYear: string
+            perAnniversaryYear: string
+            perHourWorked: string
+            perHourWorkedNoOvertime: string
+            perHourPaid: string
+            perHourPaidNoOvertime: string
+        }
+        // (undocumented)
+        accrualRateTitle: string
+        // (undocumented)
+        accrualWaitingPeriodDays: {
+            label: string
+            noPeriod: string
+            withPeriod: string
+        }
+        // (undocumented)
+        addEmployeeCta: string
+        // (undocumented)
+        addEmployeeModal: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        breadcrumb: string
+        // (undocumented)
+        carryoverLimitHours: {
+            label: string
+            noLimit: string
+            withLimit: string
+        }
+        // (undocumented)
+        changeSettingsCta: string
+        // (undocumented)
+        details: string
+        // (undocumented)
+        editBalanceModal: {
+            title: string
+            balanceLabel: string
+            currentBalance: string
+            hoursUnit: string
+            cancelCta: string
+            updateCta: string
+            errors: {
+                balanceExceedsMax: string
+                updateFailed: string
+            }
+        }
+        // (undocumented)
+        editPolicyCta: string
+        // (undocumented)
+        employeeTable: {
+            balance: string
+            actions: string
+            editBalance: string
+            removeEmployee: string
+        }
+        // (undocumented)
+        flash: {
+            employeeRemoved: string
+            employeesAdded_one: string
+            employeesAdded_other: string
+            balanceUpdated: string
+        }
+        // (undocumented)
+        maxAccrualHoursPerYear: {
+            label: string
+            noMaximum: string
+            withMaximum: string
+        }
+        // (undocumented)
+        maxHours: {
+            label: string
+            noMaximum: string
+            withMaximum: string
+        }
+        // (undocumented)
+        paidOutOnTermination: {
+            label: string
+            yes: string
+            no: string
+        }
+        // (undocumented)
+        policyName: string
+        // (undocumented)
+        policySettingsTitle: string
+        // (undocumented)
+        policyType: {
+            label: string
+            vacation: string
+            sick: string
+            custom: string
+            parentalLeave: string
+            weather: string
+            volunteer: string
+            personalDay: string
+            learningAndDevelopment: string
+            juryDuty: string
+            floatingHoliday: string
+            bereavement: string
+        }
+        // (undocumented)
+        removeEmployeeModal: {
+            title: string
+            alert: string
+            removeCta: string
+        }
+        // (undocumented)
+        removeEmployeesModal: {
+            title: string
+            alert: string
+            removeCta: string
+        }
+        // (undocumented)
+        resetDate: string
+        // (undocumented)
+        subtitle: {
+            vacation: string
+            sick: string
+        }
+        // (undocumented)
+        tabs: {
+            employees: string
+            policyDetails: string
+        }
+    }
+    export interface CompanyTimeOffTimeOffRequests {
+        // (undocumented)
+        balancePreview: {
+            title: string
+            availableBalance: string
+            availableBalanceHint: string
+            otherRequested: string
+            otherRequestedHint: string
+            thisRequest: string
+            remainingBalance: string
+            placeholder: string
+            negativeBalanceWarning: string
+        }
+        // (undocumented)
+        dateHoursFields: {
+            startDate: string
+            endDate: string
+            timeRequested: string
+            hoursUnit: string
+            invalidDateRange: string
+            duration: {
+                title: string
+                description: string
+                fullDays: string
+                fullDaysDescription: string
+                partialDays: string
+                partialDaysDescription: string
+                dateHeader: string
+                timeRequestedHeader: string
+            }
+        }
+        // (undocumented)
+        flash: {
+            createSuccess: string
+            approveSuccess: string
+            declineSuccess: string
+            employerNoteRequired: string
+        }
+        // (undocumented)
+        index: {
+            title: string
+            addTimeOff: string
+            tabs: {
+                needsReview: string
+                approved: string
+                completed: string
+                declined: string
+            }
+            emptyState: {
+                needsReview: {
+                    heading: string
+                    body: string
+                }
+                approved: {
+                    heading: string
+                    body: string
+                }
+                completed: {
+                    heading: string
+                    body: string
+                }
+                declined: {
+                    heading: string
+                    body: string
+                }
+            }
+        }
+        // (undocumented)
+        new: {
+            title: string
+            breadcrumb: string
+            subtitle: string
+            employeeLabel: string
+            selectEmployee: string
+            policyLabel: string
+            selectPolicy: string
+            noteLabel: string
+            optionalLabel: string
+            saveCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        policyType: {
+            vacation: string
+            sick: string
+            bereavement: string
+            floatingHoliday: string
+            juryDuty: string
+            learningAndDevelopment: string
+            personalDay: string
+            volunteer: string
+            weather: string
+            parentalLeave: string
+            custom: string
+        }
+        // (undocumented)
+        requestsTable: {
+            employee: string
+            policy: string
+            dates: string
+            requested: string
+            remaining: string
+            actions: string
+            view: string
+            requestsCount_one: string
+            requestsCount_other: string
+            hoursUnit: string
+        }
+        // (undocumented)
+        show: {
+            title: string
+            breadcrumb: string
+            details: string
+            employee: string
+            datesRequested: string
+            timeRequested: string
+            viewBreakdown: string
+            breakdownDate: string
+            breakdownTimeRequested: string
+            employeeNote: string
+            policyName: string
+            policyType: string
+            requestedOn: string
+            noteToEmployee: string
+            notes: string
+            hoursUnit: string
+            statusNeedsReview: string
+            statusApproved: string
+            statusCompleted: string
+            statusDeclined: string
+            approveRequestCta: string
+            declineRequestCta: string
+            declineApprovedRequestCta: string
+            doneCta: string
+            employerNoteRequired: string
+        }
+    }
+    export interface ContractorAddress {
+        // (undocumented)
+        businessAddressDescription: string
+        // (undocumented)
+        businessAddressTitle: string
+        // (undocumented)
+        city: string
+        // (undocumented)
+        homeAddressDescription: string
+        // (undocumented)
+        homeAddressTitle: string
+        // (undocumented)
+        state: string
+        // (undocumented)
+        statePlaceholder: string
+        // (undocumented)
+        street1: string
+        // (undocumented)
+        street2: string
+        // (undocumented)
+        submit: string
+        // (undocumented)
+        submitting: string
+        // (undocumented)
+        validations: {
+            street1: string
+            city: string
+            state: string
+            zip: string
+            zipInvalid: string
+        }
+        // (undocumented)
+        w9EditWarning: {
+            label: string
+            body: string
+        }
+        // (undocumented)
+        zip: string
+    }
+    export interface ContractorBankAccountFields {
+        // (undocumented)
+        accountNumberLabel: string
+        // (undocumented)
+        accountTypeChecking: string
+        // (undocumented)
+        accountTypeLabel: string
+        // (undocumented)
+        accountTypeSavings: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        routingNumberDescription: string
+        // (undocumented)
+        routingNumberLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        validations: {
+            accountName: string
+            routingNumber: string
+            accountNumber: string
+            accountNumberFormat: string
+        }
+    }
+    export interface ContractorContractorList {
+        // (undocumented)
+        addAnotherCta: string
+        // (undocumented)
+        addContractorCta: string
+        // (undocumented)
+        cancelSelfOnboardingCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        contractorListLabel: string
+        // (undocumented)
+        deleteCta: string
+        // (undocumented)
+        deleteDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        listHeaders: {
+            name: string
+            status: string
+        }
+        // (undocumented)
+        progressBarCta: string
+        // (undocumented)
+        reviewCta: string
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorDashboard {
+        // (undocumented)
+        alerts: {
+            profileUpdated: string
+            addressUpdated: string
+            bankAccountAdded: string
+            bankAccountRemoved: string
+            compensationUpdated: string
+        }
+        // (undocumented)
+        contractorRoleLabel: string
+        // (undocumented)
+        tabs: {
+            details: string
+            pay: string
+            documents: string
+        }
+        // (undocumented)
+        tabsLabel: string
+    }
+    export interface ContractorDocumentsList {
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        documentColumnLabel: string
+        // (undocumented)
+        documentListLabel: string
+        // (undocumented)
+        emptyTitle: string
+        // (undocumented)
+        errorTitle: string
+        // (undocumented)
+        notReadyBody: string
+        // (undocumented)
+        notReadyTitle: string
+        // (undocumented)
+        notSigned: string
+        // (undocumented)
+        signDocumentCta: string
+        // (undocumented)
+        signed: string
+        // (undocumented)
+        statusColumnLabel: string
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorLanding {
+        // (undocumented)
+        fallbackName: string
+        // (undocumented)
+        getStartedCta: string
+        // (undocumented)
+        landingDescription: string
+        // (undocumented)
+        landingSubtitle: string
+        // (undocumented)
+        steps: {
+            profile: string
+            address: string
+            paymentMethod: string
+            documents: string
+        }
+        // (undocumented)
+        stepsSubtitle: string
+    }
+    export interface ContractorManagementAddress {
+        // (undocumented)
+        alerts: {
+            addressUpdated: string
+        }
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        emptyPlaceholder: string
+        // (undocumented)
+        form: {
+            title: string
+            businessDescription: string
+            homeDescription: string
+            street1: string
+            street2: string
+            city: string
+            state: string
+            statePlaceholder: string
+            zip: string
+            cancelCta: string
+            saveCta: string
+            successAlert: string
+            validations: {
+                street1: string
+                city: string
+                state: string
+                zip: string
+                zipInvalid: string
+            }
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorManagementCompensation {
+        // (undocumented)
+        alerts: {
+            compensationUpdated: string
+        }
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        emptyPlaceholder: string
+        // (undocumented)
+        fixedLabel: string
+        // (undocumented)
+        form: {
+            title: string
+            description: string
+            wageTypeLabel: string
+            fixedDescription: string
+            hourlyDescription: string
+            hourlyRateLabel: string
+            cancelCta: string
+            saveCta: string
+            successAlert: string
+            validations: {
+                hourlyRate: string
+                hourlyRateMax: string
+            }
+        }
+        // (undocumented)
+        hourlyLabel: string
+        // (undocumented)
+        hourlyRateValue: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        typeLabel: string
+        // (undocumented)
+        wageLabel: string
+    }
+    export interface ContractorManagementContractorList {
+        // (undocumented)
+        addContractorCta: string
+        // (undocumented)
+        cancelDismissalCta: string
+        // (undocumented)
+        cancelDismissalDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        cancelRehireCta: string
+        // (undocumented)
+        cancelRehireDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        cancelSelfOnboardingCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        contractorListLabel: string
+        // (undocumented)
+        dismissalDateLabel: string
+        // (undocumented)
+        dismissCta: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        emptyState: {
+            active: {
+                title: string
+                description: string
+            }
+            onboarding: {
+                title: string
+                description: string
+            }
+            dismissed: {
+                title: string
+                description: string
+            }
+        }
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        lastDayBadge: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        onboardingStatusLabel: string
+        // (undocumented)
+        rateHourly: string
+        // (undocumented)
+        rateLabel: string
+        // (undocumented)
+        rehireCta: string
+        // (undocumented)
+        removeCta: string
+        // (undocumented)
+        removeDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        reviewCta: string
+        // (undocumented)
+        startsBadge: string
+        // (undocumented)
+        statusColumnLabel: string
+        // (undocumented)
+        tabs: {
+            active: string
+            onboarding: string
+            dismissed: string
+        }
+        // (undocumented)
+        tabsLabel: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        viewDetailsCta: string
+    }
+    export interface ContractorManagementDocuments {
+        // (undocumented)
+        descriptionColumn: string
+        // (undocumented)
+        emptyPlaceholder: string
+        // (undocumented)
+        emptyState: {
+            title: string
+        }
+        // (undocumented)
+        listLabel: string
+        // (undocumented)
+        nameColumn: string
+        // (undocumented)
+        signingStatus: {
+            signed: string
+            notSigned: string
+        }
+        // (undocumented)
+        signingStatusColumn: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        viewCta: string
+    }
+    export interface ContractorManagementPaymentMethod {
+        // (undocumented)
+        accountTypeColumn: string
+        // (undocumented)
+        addBankAccountCta: string
+        // (undocumented)
+        alerts: {
+            bankAccountAdded: string
+            bankAccountRemoved: string
+        }
+        // (undocumented)
+        bankAccountListLabel: string
+        // (undocumented)
+        checkLabel: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        form: {
+            title: string
+            nameLabel: string
+            routingNumberLabel: string
+            routingNumberDescription: string
+            accountNumberLabel: string
+            accountTypeLabel: string
+            accountTypeChecking: string
+            accountTypeSavings: string
+            cancelCta: string
+            saveCta: string
+            validations: {
+                name: string
+                routingNumber: string
+                accountNumber: string
+            }
+        }
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        nicknameColumn: string
+        // (undocumented)
+        paymentMethodLabel: string
+        // (undocumented)
+        removeBankAccountCta: string
+        // (undocumented)
+        removeBankAccountDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        routingNumberColumn: string
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorManagementProfile {
+        // (undocumented)
+        alerts: {
+            profileUpdated: string
+        }
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        email: string
+        // (undocumented)
+        employerIdentificationNumber: string
+        // (undocumented)
+        form: {
+            title: string
+            firstName: string
+            middleInitial: string
+            lastName: string
+            businessName: string
+            startDate: string
+            ssnLabel: string
+            ssnMask: string
+            einLabel: string
+            einMask: string
+            onFileHint: string
+            changeCta: string
+            email: string
+            emailDescription: string
+            cancelCta: string
+            saveCta: string
+            successAlert: string
+            validations: {
+                firstName: string
+                lastName: string
+                businessName: string
+                startDate: string
+                email: string
+                ssn: string
+                ein: string
+            }
+        }
+        // (undocumented)
+        legalName: string
+        // (undocumented)
+        listEmptyPlaceholder: string
+        // (undocumented)
+        socialSecurityNumber: string
+        // (undocumented)
+        startDate: string
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorNewHireReport {
+        // (undocumented)
+        description: string
+        // (undocumented)
+        doFileLegend: string
+        // (undocumented)
+        noOption: string
+        // (undocumented)
+        statePlaceholder: string
+        // (undocumented)
+        stateSelectionLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            state: string
+        }
+        // (undocumented)
+        yesOption: string
+    }
+    export interface ContractorOnboardingSummary {
+        // (undocumented)
+        description: string
+        // (undocumented)
+        doneCta: string
+        // (undocumented)
+        subtitle: string
+    }
+    export interface ContractorPaymentMethod {
+        // (undocumented)
+        bankAccountForm: {
+            nameLabel: string
+            routingNumberLabel: string
+            routingNumberDescription: string
+            accountNumberLabel: string
+            accountTypeLabel: string
+            accountTypeChecking: string
+            accountTypeSavings: string
+            validations: {
+                accountName: string
+                routingNumber: string
+                accountNumber: string
+            }
+        }
+        // (undocumented)
+        checkDescription: string
+        // (undocumented)
+        checkLabel: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        directDepositDescription: string
+        // (undocumented)
+        directDepositLabel: string
+        // (undocumented)
+        paymentFieldsetLegend: string
+        // (undocumented)
+        submittingCta: string
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorPaymentsCreateHistoricalPayment {
+        // (undocumented)
+        alerts: {
+            contractorPaymentUpdated: string
+        }
+        // (undocumented)
+        amounts: {
+            heading: string
+            subtitle: string
+            continueButton: string
+        }
+        // (undocumented)
+        backButton: string
+        // (undocumented)
+        contractorTableHeaders: {
+            contractor: string
+            wageType: string
+            paymentMethod: string
+            hours: string
+            wage: string
+            bonus: string
+            reimbursement: string
+            total: string
+        }
+        // (undocumented)
+        editContractor: string
+        // (undocumented)
+        editContractorPayment: {
+            title: string
+            subtitle: string
+            hoursLabel: string
+            hoursAdornment: string
+            hoursPayDescription: string
+            wageLabel: string
+            bonusLabel: string
+            reimbursementLabel: string
+            paymentMethodLabel: string
+            cancelCta: string
+            saveCta: string
+            paymentMethods: {
+                check: string
+                directDeposit: string
+                historicalPayment: string
+            }
+            errors: {
+                directDepositNotAvailable: string
+                unsupportedPaymentMethod: string
+            }
+        }
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        hoursAndPaymentsLabel: string
+        // (undocumented)
+        na: string
+        // (undocumented)
+        paymentMethods: {
+            directDeposit: string
+            check: string
+            historicalPayment: string
+        }
+        // (undocumented)
+        perHour: string
+        // (undocumented)
+        review: {
+            title: string
+            subtitle: string
+            submitButton: string
+            successTitle: string
+            successMessage: string
+            paymentSummaryTitle: string
+            totalAmount: string
+            contractorPayDate: string
+            contractorPaymentsTitle: string
+            contractor: string
+            wageType: string
+            paymentMethod: string
+            paymentMethods: {
+                directDeposit: string
+                check: string
+                historicalPayment: string
+            }
+            hours: string
+            wage: string
+            bonus: string
+            reimbursement: string
+            total: string
+            totalsLabel: string
+            notAvailable: string
+        }
+        // (undocumented)
+        select: {
+            heading: string
+            subtitle: string
+            dateLabel: string
+            dateInFutureError: string
+            dateTooEarlyError: string
+            continueButton: string
+        }
+        // (undocumented)
+        totalsLabel: string
+        // (undocumented)
+        wageTypes: {
+            fixed: string
+            hourly: string
+        }
+    }
+    export interface ContractorPaymentsCreatePayment {
+        // (undocumented)
+        alerts: {
+            contractorPaymentUpdated: string
+            noContractorPayments: string
+        }
+        // (undocumented)
+        backButton: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        contractorTableHeaders: {
+            contractor: string
+            wageType: string
+            paymentMethod: string
+            hours: string
+            wage: string
+            bonus: string
+            reimbursement: string
+            total: string
+        }
+        // (undocumented)
+        dateLabel: string
+        // (undocumented)
+        editContractor: string
+        // (undocumented)
+        editContractorPayment: {
+            title: string
+            subtitle: string
+            hoursLabel: string
+            hoursAdornment: string
+            hoursPayDescription: string
+            wageLabel: string
+            bonusLabel: string
+            reimbursementLabel: string
+            paymentMethodLabel: string
+            cancelCta: string
+            saveCta: string
+            paymentMethods: {
+                check: string
+                directDeposit: string
+                historicalPayment: string
+            }
+            errors: {
+                directDepositNotAvailable: string
+                unsupportedPaymentMethod: string
+            }
+        }
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        hoursAndPaymentsLabel: string
+        // (undocumented)
+        na: string
+        // (undocumented)
+        paymentMethods: {
+            directDeposit: string
+            check: string
+            historicalPayment: string
+        }
+        // (undocumented)
+        paymentSpeedNotice_one: string
+        // (undocumented)
+        paymentSpeedNotice_other: string
+        // (undocumented)
+        perHour: string
+        // (undocumented)
+        previewPresentation: {
+            breadcrumbLabel: string
+            reviewAndSubmitTitle: string
+            reviewSubtitle: string
+            summaryTableHeaders: {
+                totalAmount: string
+                debitAmount: string
+                debitAccount: string
+                debitDate: string
+                contractorPayDate: string
+            }
+            paymentSummaryTitle: string
+            whatYourCompanyPays: string
+            contractorTableHeaders: {
+                contractor: string
+                wageType: string
+                paymentMethod: string
+                hours: string
+                wage: string
+                bonus: string
+                reimbursement: string
+                total: string
+            }
+            totalsLabel: string
+            editButton: string
+            submitButton: string
+            perHour: string
+            na: string
+            wageTypes: {
+                fixed: string
+                hourly: string
+            }
+            paymentMethods: {
+                directDeposit: string
+                check: string
+                historicalPayment: string
+            }
+            alerts: {
+                submitPaymentsDeadline: string
+            }
+            naDebitAccount: string
+            submissionBlockers: {
+                genericBlockerTitle: string
+                genericBlockerMessage: string
+                fastAchOptions: {
+                    description: string
+                    fundingOptionsLabel: string
+                    wireLabel: string
+                    wireFastestBadge: string
+                    wireDescription: string
+                    directDepositLabel: string
+                    directDepositDescription: string
+                    contractorPayDate: string
+                }
+                fast_ach_threshold_exceeded: {
+                    title: string
+                }
+                needs_earned_access_for_fast_ach: {
+                    title: string
+                }
+            }
+        }
+        // (undocumented)
+        successState: {
+            title: string
+            message: string
+            message_other: string
+            doneCta: string
+            wireDetailsSubmittedTitle: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        totalsLabel: string
+        // (undocumented)
+        wageTypes: {
+            fixed: string
+            hourly: string
+        }
+        // (undocumented)
+        wireDetailsBanner: {
+            title: string
+            titleFallback: string
+            description: string
+            startWireTransferCta: string
+            confirmationDescription: string
+        }
+    }
+    export interface ContractorPaymentsHistoricalPaymentSummary {
+        // (undocumented)
+        bonus: string
+        // (undocumented)
+        contractor: string
+        // (undocumented)
+        contractorPayDate: string
+        // (undocumented)
+        contractorPaymentsTitle: string
+        // (undocumented)
+        doneCta: string
+        // (undocumented)
+        hours: string
+        // (undocumented)
+        notAvailable: string
+        // (undocumented)
+        paymentMethod: string
+        // (undocumented)
+        paymentMethods: {
+            directDeposit: string
+            check: string
+            historicalPayment: string
+        }
+        // (undocumented)
+        paymentSummaryTitle: string
+        // (undocumented)
+        reimbursement: string
+        // (undocumented)
+        successMessage_one: string
+        // (undocumented)
+        successMessage_other: string
+        // (undocumented)
+        successTitle: string
+        // (undocumented)
+        summarySubtitle: string
+        // (undocumented)
+        summaryTitle: string
+        // (undocumented)
+        total: string
+        // (undocumented)
+        totalAmount: string
+        // (undocumented)
+        totalsLabel: string
+        // (undocumented)
+        wage: string
+        // (undocumented)
+        wageType: string
+    }
+    export interface ContractorPaymentsPaymentHistory {
+        // (undocumented)
+        actions: {
+            view: string
+            cancel: string
+        }
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        errors: {
+            paymentGroupNotFound: string
+        }
+        // (undocumented)
+        na: string
+        // (undocumented)
+        noPaymentsDescription: string
+        // (undocumented)
+        noPaymentsFound: string
+        // (undocumented)
+        paymentsSection: string
+        // (undocumented)
+        perHour: string
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        tableHeaders: {
+            contractor: string
+            wageType: string
+            paymentMethod: string
+            hours: string
+            wage: string
+            bonus: string
+            reimbursements: string
+            total: string
+            action: string
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface ContractorPaymentsPaymentsList {
+        // (undocumented)
+        actionColumnLabel: string
+        // (undocumented)
+        alerts: {
+            paymentCreatedSuccessfully_one: string
+            paymentCreatedSuccessfully_other: string
+            paymentCancelledSuccessfully: string
+            wireDetailsSubmitted: string
+            rfiPendingResponseTitle: string
+            rfiPendingResponseDescription: string
+            rfiPendingReviewTitle: string
+            rfiPendingReviewDescription: string
+            rfiRespondCta: string
+        }
+        // (undocumented)
+        applyDate: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        createPaymentCta: string
+        // (undocumented)
+        dateRanges: {
+            last3Months: string
+            last6Months: string
+            last12Months: string
+        }
+        // (undocumented)
+        historicalPaymentCta: {
+            title: string
+            description: string
+            button: string
+        }
+        // (undocumented)
+        noPaymentsDescription: string
+        // (undocumented)
+        noPaymentsFound: string
+        // (undocumented)
+        paymentDateColumnLabel: string
+        // (undocumented)
+        reimbursementTotalColumnLabel: string
+        // (undocumented)
+        startDate: string
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        viewPaymentCta: string
+        // (undocumented)
+        wageTotalColumnLabel: string
+    }
+    export interface ContractorPaymentsPaymentStatement {
+        // (undocumented)
+        amountColumn: string
+        // (undocumented)
+        bonus: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        debitedColumn: string
+        // (undocumented)
+        errors: {
+            paymentGroupNotFound: string
+            paymentNotFound: string
+            contractorNotFound: string
+        }
+        // (undocumented)
+        hoursAmount: string
+        // (undocumented)
+        hoursLabel: string
+        // (undocumented)
+        receipt: {
+            totalLabel: string
+            detailsLabel: string
+            from: string
+            to: string
+            debitDate: string
+            disclaimer: string
+        }
+        // (undocumented)
+        reimbursement: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        wageLabel: string
+    }
+    export interface ContractorPaymentsPaymentSummary {
+        // (undocumented)
+        alerts: {
+            wireDetailsSubmitted: string
+        }
+        // (undocumented)
+        bonus: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        contractor: string
+        // (undocumented)
+        contractorPayDate: string
+        // (undocumented)
+        contractorPaymentsTitle: string
+        // (undocumented)
+        debitAccount: string
+        // (undocumented)
+        debitAmount: string
+        // (undocumented)
+        debitDate: string
+        // (undocumented)
+        doneCta: string
+        // (undocumented)
+        hours: string
+        // (undocumented)
+        notAvailable: string
+        // (undocumented)
+        paymentMethod: string
+        // (undocumented)
+        paymentMethods: {
+            directDeposit: string
+            check: string
+            historicalPayment: string
+        }
+        // (undocumented)
+        paymentSummaryTitle: string
+        // (undocumented)
+        reimbursement: string
+        // (undocumented)
+        successMessage_one: string
+        // (undocumented)
+        successMessage_other: string
+        // (undocumented)
+        successTitle: string
+        // (undocumented)
+        summarySubtitle: string
+        // (undocumented)
+        summaryTitle: string
+        // (undocumented)
+        total: string
+        // (undocumented)
+        totalAmount: string
+        // (undocumented)
+        totalsLabel: string
+        // (undocumented)
+        wage: string
+        // (undocumented)
+        wageType: string
+        // (undocumented)
+        wireDetailsSubmittedTitle: string
+    }
+    export interface ContractorProfile {
+        // (undocumented)
+        buttons: {
+            cancel: string
+            create: string
+            update: string
+            creating: string
+            updating: string
+        }
+        // (undocumented)
+        fields: {
+            selfOnboarding: {
+                label: string
+                description: string
+            }
+            email: {
+                label: string
+            }
+            contractorType: {
+                label: string
+            }
+            firstName: {
+                label: string
+            }
+            lastName: {
+                label: string
+            }
+            middleInitial: {
+                label: string
+            }
+            ssn: {
+                label: string
+            }
+            businessName: {
+                label: string
+            }
+            startDate: {
+                label: string
+                description: string
+            }
+            wageType: {
+                label: string
+            }
+            hourlyRate: {
+                label: string
+            }
+            ein: {
+                label: string
+            }
+        }
+        // (undocumented)
+        selfOnboarding: {
+            title: string
+            individualDescription: string
+            businessDescription: string
+            continue: string
+            submitting: string
+        }
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            email: string
+            emailFormat: string
+            firstName: string
+            firstNameFormat: string
+            lastName: string
+            lastNameFormat: string
+            ssn: string
+            ssnFormat: string
+            businessName: string
+            ein: string
+            einFormat: string
+            hourlyRate: string
+            hourlyRateMax: string
+            startDate: string
+        }
+        // (undocumented)
+        w9EditWarning: {
+            label: string
+            body: string
+        }
+    }
+    export interface ContractorSelectContractors {
+        // (undocumented)
+        emptyState: string
+        // (undocumented)
+        nameColumn: string
+        // (undocumented)
+        searchLabel: string
+        // (undocumented)
+        searchPlaceholder: string
+        // (undocumented)
+        tableLabel: string
+        // (undocumented)
+        wageColumn: string
+        // (undocumented)
+        wageHourly: string
+    }
+    export interface ContractorSignatureForm {
+        // (undocumented)
+        acknowledgeCta: string
+        // (undocumented)
+        acknowledgingCta: string
+        // (undocumented)
+        agreeLabel: string
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        certificationIntro: string
+        // (undocumented)
+        certificationPoints: {
+            taxpayerId: string
+            backupWithholding: string
+            usPerson: string
+            usPersonDefinition: string
+            fatca: string
+        }
+        // (undocumented)
+        downloadPrompt: string
+        // (undocumented)
+        fields: {
+            name: {
+                label: string
+                description: string
+            }
+            business_name: {
+                label: string
+                description: string
+            }
+            taxClassification: {
+                label: string
+                description: string
+            }
+            llcClassificationCode: {
+                label: string
+                description: string
+            }
+            other_text: {
+                label: string
+            }
+            foreign_partners: {
+                label: string
+                description: string
+            }
+            exempt_payee_code: {
+                label: string
+            }
+            exemption_from_FATCA: {
+                label: string
+                description: string
+            }
+            home_address_street_1: {
+                label: string
+            }
+            home_address_street_2: {
+                label: string
+            }
+            home_address_city: {
+                label: string
+            }
+            home_address_state: {
+                label: string
+            }
+            home_address_zip: {
+                label: string
+            }
+            account_number: {
+                label: string
+            }
+            company_name: {
+                label: string
+            }
+            ssn: {
+                label: string
+                changeCta: string
+            }
+            ein: {
+                label: string
+                changeCta: string
+            }
+            signature_text: {
+                label: string
+            }
+        }
+        // (undocumented)
+        instructions: string
+        // (undocumented)
+        options: {
+            taxClassification: {
+                individual_proprietor: string
+                c_corporation: string
+                s_corporation: string
+                partnership: string
+                trust_estate: string
+                limited_liability_company: string
+                other: string
+            }
+            llcClassificationCode: {
+                placeholder: string
+                c: string
+                s: string
+                p: string
+            }
+        }
+        // (undocumented)
+        sectionInstructions: {
+            exemptions: string
+            address: string
+            ssn: string
+            ein: string
+            certification: string
+        }
+        // (undocumented)
+        sections: {
+            exemptions: string
+            address: string
+            ssn: string
+            ein: string
+            certification: string
+        }
+        // (undocumented)
+        signatureRequired: string
+        // (undocumented)
+        signCta: string
+        // (undocumented)
+        signingCta: string
+        // (undocumented)
+        validation: {
+            required: string
+            agreeRequired: string
+            invalidSsn: string
+            invalidEin: string
+        }
+    }
+    export interface ContractorSubmit {
+        // (undocumented)
+        documentRequirements: {
+            title: string
+            description: string
+            downloadCta: string
+            documents: {
+                taxpayer_identification_form_w_9: {
+                    title: string
+                    description: string
+                }
+            }
+            alertLabel: string
+        }
+        // (undocumented)
+        doneCta: string
+        // (undocumented)
+        doneDescription: string
+        // (undocumented)
+        doneTitle: string
+        // (undocumented)
+        heading: string
+        // (undocumented)
+        inviteContractor: {
+            title: string
+            description: string
+            startDateLabel: string
+            inviteCta: string
+            successMessage: string
+        }
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        submitDone: {
+            successMessage: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        warningItems: {
+            '0': string
+            '1': string
+        }
+    }
+    export interface EmployeeBankAccount {
+        // (undocumented)
+        accountNumberLabel: string
+        // (undocumented)
+        accountTypeChecking: string
+        // (undocumented)
+        accountTypeLabel: string
+        // (undocumented)
+        accountTypeSavings: string
+        // (undocumented)
+        accountTypeSelect: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        checkImageAlt: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        routingNumberDescription: string
+        // (undocumented)
+        routingNumberLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            accountType: string
+        }
+    }
+    export interface EmployeeBankFormBody {
+        // (undocumented)
+        accountNumberLabel: string
+        // (undocumented)
+        accountTypeChecking: string
+        // (undocumented)
+        accountTypeLabel: string
+        // (undocumented)
+        accountTypeSavings: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        routingNumberDescription: string
+        // (undocumented)
+        routingNumberLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        validations: {
+            accountName: string
+            routingNumber: string
+            accountNumber: string
+            accountNumberFormat: string
+        }
+    }
+    export interface EmployeeCompensation {
+        // (undocumented)
+        addAnotherJobCta: string
+        // (undocumented)
+        addAnotherJobTitle: string
+        // (undocumented)
+        addTitle: string
+        // (undocumented)
+        adjustForMinimumWage: string
+        // (undocumented)
+        adjustForMinimumWageDescription: string
+        // (undocumented)
+        allCompensations: {
+            amountColumn: string
+            deleteCta: string
+            editCta: string
+            jobColumn: string
+            perColumn: string
+            tableLabel: string
+            typeColumn: string
+        }
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cancelNewJobCta: string
+        // (undocumented)
+        classificationLink: string
+        // (undocumented)
+        commissionAlerts: {
+            federalMinimumPay: {
+                label: string
+                body: string
+            }
+            minimumWage: {
+                label: string
+                body: string
+            }
+            ownerSalary: {
+                label: string
+            }
+        }
+        // (undocumented)
+        editTitle: string
+        // (undocumented)
+        effectiveDate: string
+        // (undocumented)
+        effectiveDateDescription: string
+        // (undocumented)
+        effectiveDateLabel: string
+        // (undocumented)
+        employeeClassification: string
+        // (undocumented)
+        flsaStatusLabels: {
+            'Commission Only Exempt': string
+            'Commission Only Nonexempt': string
+            Exempt: string
+            Nonexempt: string
+            Owner: string
+            'Salaried Nonexempt': string
+        }
+        // (undocumented)
+        flsaStatusPlaceholder: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        hireDate: string
+        // (undocumented)
+        jobTitle: string
+        // (undocumented)
+        minimumWageDescription: string
+        // (undocumented)
+        minimumWageLabel: string
+        // (undocumented)
+        minimumWagePlaceholder: string
+        // (undocumented)
+        paymentUnitDescription: string
+        // (undocumented)
+        paymentUnitOptions: {
+            Hour: string
+            Month: string
+            Paycheck: string
+            Week: string
+            Year: string
+        }
+        // (undocumented)
+        paymentUnitPlaceholder: string
+        // (undocumented)
+        saveNewJobCta: string
+        // (undocumented)
+        stateWcClassCodeDescription: string
+        // (undocumented)
+        stateWcClassCodeLabel: string
+        // (undocumented)
+        stateWcCoveredDescription: string
+        // (undocumented)
+        stateWcCoveredLabel: string
+        // (undocumented)
+        stateWcCoveredOptions: {
+            yes: string
+            no: string
+        }
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        twoPercentStakeholderLabel: string
+        // (undocumented)
+        validations: {
+            effectiveDate: string
+            effectiveDateBeforeHire: string
+            hireDate: string
+            classificationChangeNotification: string
+            classificationChangeRemovesSecondaryJobs: string
+            exemptThreshold: string
+            paymentUnit: string
+            rate: string
+            nonZeroRate: string
+            rateExemptThreshold: string
+            title: string
+            minimumWage: string
+            stateWcClassCode: string
+            effectiveDateBeforeMin: string
+            jobTitleSentence: string
+        }
+        // (undocumented)
+        wageFrequencyLabel: string
+        // (undocumented)
+        wageLabel: string
+    }
+    export interface EmployeeDashboard {
+        // (undocumented)
+        alerts: {
+            bankAccountAdded: string
+            bankAccountDeleted: string
+            splitUpdated: string
+            deductionAdded: string
+            deductionUpdated: string
+            deductionDeleted: string
+            jobAdded: string
+            profileUpdated: string
+            federalTaxesUpdated: string
+            stateTaxesUpdated: string
+        }
+        // (undocumented)
+        employeeRoleLabel: string
+        // (undocumented)
+        tabs: {
+            basicDetails: string
+            jobAndPay: string
+            taxes: string
+            documents: string
+        }
+        // (undocumented)
+        tabsLabel: string
+    }
+    export interface EmployeeDeductions {
+        // (undocumented)
+        actionsColumn: string
+        // (undocumented)
+        addDeductionButtonCta: string
+        // (undocumented)
+        addDeductionCta: string
+        // (undocumented)
+        addDeductionTitle: string
+        // (undocumented)
+        agency: string
+        // (undocumented)
+        agencyDescription: string
+        // (undocumented)
+        agencyRequired: string
+        // (undocumented)
+        allCounties: string
+        // (undocumented)
+        amountNonNegative: string
+        // (undocumented)
+        amountRequired: string
+        // (undocumented)
+        annualMaxDescription: string
+        // (undocumented)
+        annualMaxLabel: string
+        // (undocumented)
+        backToDeductionsCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        caseNumber: string
+        // (undocumented)
+        caseNumberDescription: string
+        // (undocumented)
+        caseNumberRequired: string
+        // (undocumented)
+        childSupport: string
+        // (undocumented)
+        childSupportTitle: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        county: string
+        // (undocumented)
+        countyDescription: string
+        // (undocumented)
+        countyRequired: string
+        // (undocumented)
+        courtOrderedLabel: string
+        // (undocumented)
+        creditorGarnishment: string
+        // (undocumented)
+        customDeductionOption: string
+        // (undocumented)
+        customDeductionTitle: string
+        // (undocumented)
+        deductionAmountDescriptionFixed: string
+        // (undocumented)
+        deductionAmountDescriptionPercentage: string
+        // (undocumented)
+        deductionAmountLabel: string
+        // (undocumented)
+        deductionsTableLabel: string
+        // (undocumented)
+        deductionTypeFixedAmountOption: string
+        // (undocumented)
+        deductionTypeLabel: string
+        // (undocumented)
+        deductionTypeLabelV2: string
+        // (undocumented)
+        deductionTypePercentageOption: string
+        // (undocumented)
+        deductionTypePercentageOptionV2: string
+        // (undocumented)
+        deductionTypeRadioLabel: string
+        // (undocumented)
+        deductionTypeRequired: string
+        // (undocumented)
+        deleteCta: string
+        // (undocumented)
+        deleteDeductionDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        descriptionLabel: string
+        // (undocumented)
+        descriptionLabelV2: string
+        // (undocumented)
+        descriptionRequired: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        editDeductionTitle: string
+        // (undocumented)
+        emptyListMessage: string
+        // (undocumented)
+        everyOtherWeek: string
+        // (undocumented)
+        everyWeek: string
+        // (undocumented)
+        externalPostTaxDeductions: string
+        // (undocumented)
+        externalPostTaxDeductionsDescription: string
+        // (undocumented)
+        federalLoan: string
+        // (undocumented)
+        federalTaxLien: string
+        // (undocumented)
+        frequencyColumn: string
+        // (undocumented)
+        frequencyLabel: string
+        // (undocumented)
+        frequencyOneTimeOption: string
+        // (undocumented)
+        frequencyOneTimeOptionV2: string
+        // (undocumented)
+        frequencyRecurringOption: string
+        // (undocumented)
+        frequencyRecurringOptionV2: string
+        // (undocumented)
+        frequencyRequired: string
+        // (undocumented)
+        garnishmentOption: string
+        // (undocumented)
+        garnishmentType: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        includeDeductionsDescription: string
+        // (undocumented)
+        includeDeductionsDescriptionV2: string
+        // (undocumented)
+        includeDeductionsEmptyState: string
+        // (undocumented)
+        includeDeductionsFormLabel: string
+        // (undocumented)
+        includeDeductionsNo: string
+        // (undocumented)
+        includeDeductionsYes: string
+        // (undocumented)
+        manualPaymentRequired: string
+        // (undocumented)
+        maxPaycheckPercentage: string
+        // (undocumented)
+        maxPaycheckPercentageDescription: string
+        // (undocumented)
+        monthly: string
+        // (undocumented)
+        nameColumn: string
+        // (undocumented)
+        nonRecurringText: string
+        // (undocumented)
+        orderNumberDescription: string
+        // (undocumented)
+        orderNumberRequired: string
+        // (undocumented)
+        otherGarnishment: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        paymentPeriodRequired: string
+        // (undocumented)
+        payPeriodMaximum: string
+        // (undocumented)
+        payPeriodMaximumRequired: string
+        // (undocumented)
+        per: string
+        // (undocumented)
+        percentOutOfRange: string
+        // (undocumented)
+        perDescription: string
+        // (undocumented)
+        recurringAmount: string
+        // (undocumented)
+        recurringText: string
+        // (undocumented)
+        remittanceNumberDescription: string
+        // (undocumented)
+        remittanceNumberRequired: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        stateTaxLien: string
+        // (undocumented)
+        studentLoan: string
+        // (undocumented)
+        totalAmountDescription: string
+        // (undocumented)
+        totalAmountLabel: string
+        // (undocumented)
+        totalAmountWithheld: string
+        // (undocumented)
+        totalAmountWithheldDescription: string
+        // (undocumented)
+        twicePerMonth: string
+        // (undocumented)
+        validations: {
+            description: string
+            amount: string
+        }
+        // (undocumented)
+        withheldColumn: string
+    }
+    export interface EmployeeDeductionsForm {
+        // (undocumented)
+        actions: {
+            save: string
+            cancel: string
+        }
+        // (undocumented)
+        addTitle: string
+        // (undocumented)
+        childSupport: {
+            agencyLabel: string
+            agencyPlaceholder: string
+            agencyDescription: string
+            agencyRequired: string
+            manualPaymentRequired: string
+            countyLabel: string
+            countyPlaceholder: string
+            countyDescription: string
+            allCounties: string
+            countyRequired: string
+            caseNumberDescription: string
+            caseNumberRequired: string
+            orderNumberDescription: string
+            orderNumberRequired: string
+            remittanceNumberDescription: string
+            remittanceNumberRequired: string
+            totalAmountWithheld: string
+            totalAmountWithheldDescription: string
+            payPeriodMaximumRequired: string
+            maxPaycheckPercentage: string
+            maxPaycheckPercentageDescription: string
+            amountRequired: string
+            amountNonNegative: string
+            percentOutOfRange: string
+            paymentPeriodLabel: string
+            paymentPeriodPlaceholder: string
+            paymentPeriodDescription: string
+            paymentPeriodRequired: string
+            paymentPeriod: {
+                everyWeek: string
+                everyOtherWeek: string
+                twicePerMonth: string
+                monthly: string
+            }
+        }
+        // (undocumented)
+        customOption: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        editTitle: string
+        // (undocumented)
+        garnishmentOption: string
+        // (undocumented)
+        garnishmentTypeLabel: string
+        // (undocumented)
+        standard: {
+            descriptionLabel: string
+            descriptionRequired: string
+            frequencyLabel: string
+            frequencyRecurring: string
+            frequencyOneTime: string
+            frequencyRequired: string
+            typeLabel: string
+            typePercentage: string
+            typeFixed: string
+            typeRequired: string
+            amountLabel: string
+            amountPercentDescription: string
+            amountFixedDescription: string
+            amountRequired: string
+            amountNonNegative: string
+            totalAmountLabel: string
+            totalAmountDescription: string
+            annualMaxLabel: string
+            annualMaxDescription: string
+        }
+        // (undocumented)
+        types: {
+            childSupport: string
+            federalTaxLien: string
+            stateTaxLien: string
+            studentLoan: string
+            creditorGarnishment: string
+            federalLoan: string
+            otherGarnishment: string
+            custom: string
+        }
+        // (undocumented)
+        variantDescription: string
+        // (undocumented)
+        variantLabel: string
+    }
+    export interface EmployeeDocumentManager {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        downloadDocumentCta: string
+        // (undocumented)
+        viewDocumentCta: string
+    }
+    export interface EmployeeDocumentSigner {
+        // (undocumented)
+        actionColumnLabel: string
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        confirmSignatureCheckboxLabel: string
+        // (undocumented)
+        confirmSignatureError: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        documentListError: string
+        // (undocumented)
+        documentListLabel: string
+        // (undocumented)
+        documentListTitle: string
+        // (undocumented)
+        downloadAndReviewInstructions: string
+        // (undocumented)
+        downloadPrompt: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        formColumnLabel: string
+        // (undocumented)
+        forms: {
+            employee_direct_deposit: {
+                description: string
+            }
+            'US_I-9': {
+                description: string
+            }
+            'US_W-4': {
+                description: string
+            }
+            or_w4: {
+                description: string
+            }
+            Or_Portland_Multnomah: {
+                description: string
+            }
+        }
+        // (undocumented)
+        notSigned: string
+        // (undocumented)
+        signatureFieldDescription: string
+        // (undocumented)
+        signatureFieldError: string
+        // (undocumented)
+        signatureFieldLabel: string
+        // (undocumented)
+        signatureFormTitle: string
+        // (undocumented)
+        signDocumentComplete: string
+        // (undocumented)
+        signDocumentCta: string
+        // (undocumented)
+        signFormCta: string
+        // (undocumented)
+        viewDocumentCta: string
+    }
+    export interface EmployeeEmployeeDocuments {
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        notSelfOnboarding: {
+            title: string
+            description: string
+            employmentEligibilityLabel: string
+            employmentEligibilityDescription: string
+            taxWithholdingLabel: string
+            taxWithholdingDescription: string
+            directDepositLabel: string
+            directDepositDescription: string
+            alertTitle: string
+        }
+        // (undocumented)
+        selfOnboarding: {
+            title: string
+            description: string
+            documentsIncludedLabel: string
+            taxWithholdingLabel: string
+            taxWithholdingDescription: string
+            directDepositLabel: string
+            directDepositDescription: string
+            includeI9Heading: string
+            includeI9Label: string
+            includeI9Description: string
+            alerts: {
+                includedTitle: string
+                includedDescription: string
+                includedDescription2: string
+                notIncludedTitle: string
+                notIncludedDescription: string
+            }
+        }
+    }
+    export interface EmployeeEmployeeList {
+        // (undocumented)
+        actionLabel: string
+        // (undocumented)
+        addAnotherCta: string
+        // (undocumented)
+        addEmployeeCta: string
+        // (undocumented)
+        addressesCta: string
+        // (undocumented)
+        cancelSelfOnboardingCta: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        deductionsCta: string
+        // (undocumented)
+        deleteCta: string
+        // (undocumented)
+        deleteDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        employeeListLabel: string
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        federalTaxesCta: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        reviewCta: string
+        // (undocumented)
+        skipCta: string
+        // (undocumented)
+        statusLabel: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeEmploymentEligibility {
+        // (undocumented)
+        authorizationDocument: {
+            label: string
+            options: {
+                uscis_alien_registration_number: string
+                form_i94: string
+                foreign_passport: string
+            }
+        }
+        // (undocumented)
+        country: {
+            label: string
+            description: string
+            placeholder: string
+        }
+        // (undocumented)
+        documentNumber: {
+            uscis_alien_registration_number: {
+                label: string
+                description: string
+                placeholder: string
+            }
+            form_i94: {
+                label: string
+                description: string
+                placeholder: string
+            }
+            foreign_passport: {
+                label: string
+                placeholder: string
+            }
+        }
+        // (undocumented)
+        expirationDate: {
+            label: string
+        }
+        // (undocumented)
+        select: {
+            label: string
+            description: string
+            placeholder: string
+            options: {
+                citizen: string
+                permanent_resident: string
+                noncitizen: string
+                alien: string
+            }
+        }
+        // (undocumented)
+        statusDescriptions: {
+            citizen: string
+            permanent_resident: string
+            noncitizen: string
+            alien: string
+        }
+        // (undocumented)
+        submit: string
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeFederalTaxes {
+        // (undocumented)
+        additionalWithholding: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        deductions: string
+        // (undocumented)
+        dependentsTotalIfApplicable: string
+        // (undocumented)
+        extraWithholding: string
+        // (undocumented)
+        federalFilingStatus1c: string
+        // (undocumented)
+        federalFilingStatusPlaceholder: string
+        // (undocumented)
+        federalTaxesTitle: string
+        // (undocumented)
+        federalWithholdingAllowance: string
+        // (undocumented)
+        fieldIsRequired: string
+        // (undocumented)
+        filingStatus: string
+        // (undocumented)
+        filingStatusExemptFromWithholding: string
+        // (undocumented)
+        filingStatusHeadOfHousehold: string
+        // (undocumented)
+        filingStatusMarried: string
+        // (undocumented)
+        filingStatusMarriedWithholdAsSingle: string
+        // (undocumented)
+        filingStatusSingle: string
+        // (undocumented)
+        includesSpouseExplanation: string
+        // (undocumented)
+        irsCalculator: string
+        // (undocumented)
+        multipleJobs2c: string
+        // (undocumented)
+        otherIncome: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        selectWithholdingDescription: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        successAlert: string
+        // (undocumented)
+        twoJobNoLabel: string
+        // (undocumented)
+        twoJobYesLabel: string
+        // (undocumented)
+        validations: {
+            federalFilingStatus: string
+            federalTwoJobs: string
+        }
+    }
+    export interface EmployeeFederalTaxesView {
+        // (undocumented)
+        deductions: string
+        // (undocumented)
+        dependentsTotalIfApplicable: string
+        // (undocumented)
+        extraWithholding: string
+        // (undocumented)
+        federalFilingStatus1c: string
+        // (undocumented)
+        federalFilingStatusPlaceholder: string
+        // (undocumented)
+        federalTaxesTitle: string
+        // (undocumented)
+        fieldIsRequired: string
+        // (undocumented)
+        filingStatusExemptFromWithholding: string
+        // (undocumented)
+        filingStatusHeadOfHousehold: string
+        // (undocumented)
+        filingStatusMarried: string
+        // (undocumented)
+        filingStatusSingle: string
+        // (undocumented)
+        includesSpouseExplanation: string
+        // (undocumented)
+        irsCalculator: string
+        // (undocumented)
+        multipleJobs2c: string
+        // (undocumented)
+        otherIncome: string
+        // (undocumented)
+        selectWithholdingDescription: string
+        // (undocumented)
+        twoJobNoLabel: string
+        // (undocumented)
+        twoJobYesLabel: string
+        // (undocumented)
+        validations: {
+            federalFilingStatus: string
+            federalTwoJobs: string
+        }
+    }
+    export interface EmployeeHomeAddress {
+        // (undocumented)
+        cancel: string
+        // (undocumented)
+        city: string
+        // (undocumented)
+        courtesyWithholdingDescription: string
+        // (undocumented)
+        courtesyWithholdingLabel: string
+        // (undocumented)
+        desc: string
+        // (undocumented)
+        editAddress: string
+        // (undocumented)
+        effectiveDate: string
+        // (undocumented)
+        formTitle: string
+        // (undocumented)
+        learnMoreCta: string
+        // (undocumented)
+        state: string
+        // (undocumented)
+        statePlaceholder: string
+        // (undocumented)
+        street1: string
+        // (undocumented)
+        street2: string
+        // (undocumented)
+        submit: string
+        // (undocumented)
+        validations: {
+            street1: string
+            city: string
+            state: string
+            zip: string
+        }
+        // (undocumented)
+        withholdingNote: string
+        // (undocumented)
+        withholdingTitle: string
+        // (undocumented)
+        zip: string
+    }
+    export interface EmployeeI9SignatureForm {
+        // (undocumented)
+        addPreparerCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        confirmationError: string
+        // (undocumented)
+        confirmationLabel: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        downloadInstructions: string
+        // (undocumented)
+        eligibilityAlertChangeStatusCta: string
+        // (undocumented)
+        eligibilityAlertDescription_alien: string
+        // (undocumented)
+        eligibilityAlertDescription_citizen: string
+        // (undocumented)
+        eligibilityAlertDescription_noncitizen: string
+        // (undocumented)
+        eligibilityAlertDescription_permanent_resident: string
+        // (undocumented)
+        eligibilityAlertLabel_alien: string
+        // (undocumented)
+        eligibilityAlertLabel_citizen: string
+        // (undocumented)
+        eligibilityAlertLabel_noncitizen: string
+        // (undocumented)
+        eligibilityAlertLabel_permanent_resident: string
+        // (undocumented)
+        preparerCityError: string
+        // (undocumented)
+        preparerCityLabel: string
+        // (undocumented)
+        preparerConfirmationError: string
+        // (undocumented)
+        preparerConfirmationLabel: string
+        // (undocumented)
+        preparerFirstNameError: string
+        // (undocumented)
+        preparerFirstNameLabel: string
+        // (undocumented)
+        preparerLastNameError: string
+        // (undocumented)
+        preparerLastNameLabel: string
+        // (undocumented)
+        preparerNo: string
+        // (undocumented)
+        preparerNote: string
+        // (undocumented)
+        preparerQuestion: string
+        // (undocumented)
+        preparerQuestionError: string
+        // (undocumented)
+        preparerSectionTitle: string
+        // (undocumented)
+        preparerSignatureDescription: string
+        // (undocumented)
+        preparerSignatureError: string
+        // (undocumented)
+        preparerSignatureLabel: string
+        // (undocumented)
+        preparerStateError: string
+        // (undocumented)
+        preparerStateLabel: string
+        // (undocumented)
+        preparerStatePlaceholder: string
+        // (undocumented)
+        preparerStreet1Error: string
+        // (undocumented)
+        preparerStreet1Label: string
+        // (undocumented)
+        preparerStreet2Label: string
+        // (undocumented)
+        preparerYes: string
+        // (undocumented)
+        preparerZipError: string
+        // (undocumented)
+        preparerZipLabel: string
+        // (undocumented)
+        removePreparerCta: string
+        // (undocumented)
+        signatureDescription: string
+        // (undocumented)
+        signatureError: string
+        // (undocumented)
+        signatureLabel: string
+        // (undocumented)
+        signCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        viewDocumentCta: string
+    }
+    export interface EmployeeLanding {
+        // (undocumented)
+        getStartedCta: string
+        // (undocumented)
+        landingDescription: string
+        // (undocumented)
+        landingSubtitle: string
+        // (undocumented)
+        steps: {
+            personalInfo: string
+            taxInfo: string
+            bankInfo: string
+        }
+        // (undocumented)
+        stepsSubtitle: string
+    }
+    export interface EmployeeManagementCompensation {
+        // (undocumented)
+        addAnotherJobTitle: string
+        // (undocumented)
+        addJobTitle: string
+        // (undocumented)
+        adjustForMinimumWage: string
+        // (undocumented)
+        adjustForMinimumWageDescription: string
+        // (undocumented)
+        alerts: {
+            jobAdded: string
+        }
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cancelNewJobCta: string
+        // (undocumented)
+        card: {
+            title: string
+            editCta: string
+            jobTitle: string
+            type: string
+            types: {
+                hourly: string
+                salary: string
+            }
+            wage: string
+            effectiveDate: string
+            addJobCta: string
+            addAnotherJobCta: string
+            tableLabel: string
+            hamburgerTitle: string
+            editJobCta: string
+            deleteJobCta: string
+            listEmptyPlaceholder: string
+            columns: {
+                jobTitle: string
+                payType: string
+                effectiveDate: string
+                status: string
+            }
+            pendingStatus: string
+            deleteJobDialog: {
+                title: string
+                description: string
+                confirmCta: string
+                cancelCta: string
+            }
+            emptyState: {
+                title: string
+                description: string
+            }
+            pendingChange: {
+                alertLabel: string
+                alertLabelWithJob: string
+                summaryLabel: string
+                reviewCta: string
+                cancelCta: string
+                modal: {
+                    title: string
+                    description: string
+                    closeCta: string
+                }
+                details: {
+                    titleChange: string
+                    payChange: string
+                    flsaChange: string
+                    newJob: string
+                    newJobNoTitle: string
+                    newJobNoRate: string
+                    newJobMinimal: string
+                    minWageEnabled: string
+                    minWageEnabledNoRate: string
+                    minWageDisabled: string
+                    minWageChanged: string
+                    minWageChangedNoRate: string
+                }
+            }
+        }
+        // (undocumented)
+        classificationLink: string
+        // (undocumented)
+        commissionAlerts: {
+            federalMinimumPay: {
+                label: string
+                body: string
+            }
+            minimumWage: {
+                label: string
+                body: string
+            }
+            ownerSalary: {
+                label: string
+            }
+        }
+        // (undocumented)
+        editCompensationTitle: string
+        // (undocumented)
+        effectiveDate: string
+        // (undocumented)
+        effectiveDateLabel: string
+        // (undocumented)
+        employeeClassification: string
+        // (undocumented)
+        flsaStatusLabels: {
+            'Commission Only Exempt': string
+            'Commission Only Nonexempt': string
+            Exempt: string
+            Nonexempt: string
+            Owner: string
+            'Salaried Nonexempt': string
+        }
+        // (undocumented)
+        flsaStatusPlaceholder: string
+        // (undocumented)
+        hireDate: string
+        // (undocumented)
+        hireDateLabel: string
+        // (undocumented)
+        jobTitle: string
+        // (undocumented)
+        jobTitleLabel: string
+        // (undocumented)
+        minimumWageDescription: string
+        // (undocumented)
+        minimumWageLabel: string
+        // (undocumented)
+        minimumWagePlaceholder: string
+        // (undocumented)
+        paymentUnitDescription: string
+        // (undocumented)
+        paymentUnitOptions: {
+            Hour: string
+            Month: string
+            Paycheck: string
+            Week: string
+            Year: string
+        }
+        // (undocumented)
+        paymentUnitPlaceholder: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        saveNewJobCta: string
+        // (undocumented)
+        stateWcClassCodeDescription: string
+        // (undocumented)
+        stateWcClassCodeLabel: string
+        // (undocumented)
+        stateWcCoveredDescription: string
+        // (undocumented)
+        stateWcCoveredLabel: string
+        // (undocumented)
+        stateWcCoveredOptions: {
+            yes: string
+            no: string
+        }
+        // (undocumented)
+        twoPercentShareholderLabel: string
+        // (undocumented)
+        twoPercentStakeholderLabel: string
+        // (undocumented)
+        validations: {
+            jobTitleSentence: string
+            title: string
+            hireDate: string
+            exemptThreshold: string
+            classificationChangeNotification: string
+            classificationChangeRemovesSecondaryJobs: string
+            rate: string
+            nonZeroRate: string
+            rateExemptThreshold: string
+            paymentUnit: string
+            minimumWage: string
+            stateWcClassCode: string
+            effectiveDate: string
+            effectiveDateBeforeHire: string
+            effectiveDateBeforeMin: string
+        }
+        // (undocumented)
+        wageFrequencyLabel: string
+        // (undocumented)
+        wageLabel: string
+    }
+    export interface EmployeeManagementDeductions {
+        // (undocumented)
+        addDeductionCta: string
+        // (undocumented)
+        alerts: {
+            deductionAdded: string
+            deductionUpdated: string
+            deductionDeleted: string
+        }
+        // (undocumented)
+        amountPerPaycheck: string
+        // (undocumented)
+        columns: {
+            deduction: string
+            frequency: string
+            withhold: string
+        }
+        // (undocumented)
+        deleteCta: string
+        // (undocumented)
+        deleteDeductionDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        emptyState: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        form: {
+            addTitle: string
+            editTitle: string
+            description: string
+            variantLabel: string
+            variantDescription: string
+            garnishmentOption: string
+            customOption: string
+            garnishmentTypeLabel: string
+            types: {
+                childSupport: string
+                federalTaxLien: string
+                stateTaxLien: string
+                studentLoan: string
+                creditorGarnishment: string
+                federalLoan: string
+                otherGarnishment: string
+                custom: string
+            }
+            standard: {
+                descriptionLabel: string
+                descriptionRequired: string
+                frequencyLabel: string
+                frequencyRecurring: string
+                frequencyOneTime: string
+                frequencyRequired: string
+                typeLabel: string
+                typePercentage: string
+                typeFixed: string
+                typeRequired: string
+                amountLabel: string
+                amountPercentDescription: string
+                amountFixedDescription: string
+                amountRequired: string
+                amountNonNegative: string
+                totalAmountLabel: string
+                totalAmountDescription: string
+                annualMaxLabel: string
+                annualMaxDescription: string
+            }
+            childSupport: {
+                agencyLabel: string
+                agencyDescription: string
+                agencyRequired: string
+                manualPaymentRequired: string
+                countyLabel: string
+                countyDescription: string
+                allCounties: string
+                countyRequired: string
+                caseNumberDescription: string
+                caseNumberRequired: string
+                orderNumberDescription: string
+                orderNumberRequired: string
+                remittanceNumberDescription: string
+                remittanceNumberRequired: string
+                totalAmountWithheld: string
+                totalAmountWithheldDescription: string
+                payPeriodMaximumRequired: string
+                maxPaycheckPercentage: string
+                maxPaycheckPercentageDescription: string
+                amountRequired: string
+                amountNonNegative: string
+                percentOutOfRange: string
+                paymentPeriodLabel: string
+                paymentPeriodDescription: string
+                paymentPeriodRequired: string
+                paymentPeriod: {
+                    everyWeek: string
+                    everyOtherWeek: string
+                    twicePerMonth: string
+                    monthly: string
+                }
+            }
+            actions: {
+                save: string
+                cancel: string
+            }
+        }
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        listLabel: string
+        // (undocumented)
+        oneTime: string
+        // (undocumented)
+        recurring: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeManagementDocuments {
+        // (undocumented)
+        columns: {
+            title: string
+            year: string
+            status: string
+            requiresSigning: string
+            actions: string
+        }
+        // (undocumented)
+        emptyState: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        listLabel: string
+        // (undocumented)
+        signingStatus: {
+            signed: string
+            notSigned: string
+        }
+        // (undocumented)
+        status: {
+            draft: string
+            final: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        viewCta: string
+    }
+    export interface EmployeeManagementEmployeeList {
+        // (undocumented)
+        addEmployeeCta: string
+        // (undocumented)
+        backToListCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        deleteDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        dismissCta: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        employeeListLabel: string
+        // (undocumented)
+        emptyState: {
+            active: {
+                title: string
+                description: string
+            }
+            onboarding: {
+                title: string
+                description: string
+            }
+            dismissed: {
+                title: string
+                description: string
+            }
+        }
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        jobTitleLabel: string
+        // (undocumented)
+        lastDayLabel: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        startDateLabel: string
+        // (undocumented)
+        statusLabel: string
+        // (undocumented)
+        tabs: {
+            active: string
+            onboarding: string
+            dismissed: string
+        }
+        // (undocumented)
+        tabsLabel: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeManagementFederalTaxes {
+        // (undocumented)
+        alerts: {
+            federalTaxesUpdated: string
+        }
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        card: {
+            title: string
+            editCta: string
+            filingStatus: string
+            multipleJobs: string
+            dependentsAndOtherCredits: string
+            otherIncome: string
+            deductions: string
+            extraWithholding: string
+            listEmptyPlaceholder: string
+        }
+        // (undocumented)
+        common: {
+            yes: string
+            no: string
+        }
+        // (undocumented)
+        deductions: string
+        // (undocumented)
+        dependentsTotalIfApplicable: string
+        // (undocumented)
+        extraWithholding: string
+        // (undocumented)
+        federalFilingStatus1c: string
+        // (undocumented)
+        federalFilingStatusPlaceholder: string
+        // (undocumented)
+        federalTaxesTitle: string
+        // (undocumented)
+        fieldIsRequired: string
+        // (undocumented)
+        filingStatusExemptFromWithholding: string
+        // (undocumented)
+        filingStatusHeadOfHousehold: string
+        // (undocumented)
+        filingStatusMarried: string
+        // (undocumented)
+        filingStatusSingle: string
+        // (undocumented)
+        includesSpouseExplanation: string
+        // (undocumented)
+        irsCalculator: string
+        // (undocumented)
+        multipleJobs2c: string
+        // (undocumented)
+        otherIncome: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        selectWithholdingDescription: string
+        // (undocumented)
+        twoJobNoLabel: string
+        // (undocumented)
+        twoJobYesLabel: string
+        // (undocumented)
+        validations: {
+            federalFilingStatus: string
+            federalTwoJobs: string
+        }
+    }
+    export interface EmployeeManagementHomeAddress {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        card: {
+            title: string
+            manageCta: string
+            noAddress: string
+        }
+        // (undocumented)
+        changeCta: string
+        // (undocumented)
+        changePendingDescription: string
+        // (undocumented)
+        changePendingPossessiveFallback: string
+        // (undocumented)
+        changePendingTitle: string
+        // (undocumented)
+        columns: {
+            address: string
+            startDate: string
+            endDate: string
+        }
+        // (undocumented)
+        createModalDescription: string
+        // (undocumented)
+        createModalTitle: string
+        // (undocumented)
+        currentSectionTitle: string
+        // (undocumented)
+        currentSince: string
+        // (undocumented)
+        deleteModalConfirmCta: string
+        // (undocumented)
+        deleteModalDescription: string
+        // (undocumented)
+        deleteModalTitle: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        editModalDescription: string
+        // (undocumented)
+        editModalTitle: string
+        // (undocumented)
+        form: {
+            street1: string
+            street2: string
+            city: string
+            state: string
+            statePlaceholder: string
+            zip: string
+            noCurrentAddress: string
+            courtesyWithholdingLabel: string
+            courtesyWithholdingDescription: string
+            learnMoreCta: string
+            withholdingTitle: string
+            withholdingNote: string
+            startDateRequired: string
+            validations: {
+                street1: string
+                city: string
+                state: string
+                zip: string
+            }
+        }
+        // (undocumented)
+        historyEmptyDescription: string
+        // (undocumented)
+        historyEmptyTitle: string
+        // (undocumented)
+        historySectionTitle: string
+        // (undocumented)
+        rowDelete: string
+        // (undocumented)
+        rowEdit: string
+        // (undocumented)
+        rowMenuAriaLabel: string
+        // (undocumented)
+        startDateHelper: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        submitErrorAlertFallback: string
+        // (undocumented)
+        submitErrorAlertHelp: string
+        // (undocumented)
+        submitErrorAlertTitle: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeManagementPaymentMethod {
+        // (undocumented)
+        accountTypeColumn: string
+        // (undocumented)
+        addAnotherCta: string
+        // (undocumented)
+        addBankAccountCta: string
+        // (undocumented)
+        alerts: {
+            bankAccountAdded: string
+            bankAccountDeleted: string
+            splitUpdated: string
+        }
+        // (undocumented)
+        bankAccountsListLabel: string
+        // (undocumented)
+        checkLabel: string
+        // (undocumented)
+        deleteBankAccountCta: string
+        // (undocumented)
+        deleteBankAccountDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        directDepositLabel: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        nicknameColumn: string
+        // (undocumented)
+        paymentMethodLabel: string
+        // (undocumented)
+        routingNumberColumn: string
+        // (undocumented)
+        splitCta: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeManagementPaymentMethodBankForm {
+        // (undocumented)
+        accountNumberLabel: string
+        // (undocumented)
+        accountTypeChecking: string
+        // (undocumented)
+        accountTypeLabel: string
+        // (undocumented)
+        accountTypeSavings: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        routingNumberDescription: string
+        // (undocumented)
+        routingNumberLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            accountName: string
+            routingNumber: string
+            accountNumber: string
+            accountNumberFormat: string
+        }
+    }
+    export interface EmployeeManagementPaymentMethodSplitForm {
+        // (undocumented)
+        amountLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        draggableListLabel: string
+        // (undocumented)
+        percentageLabel: string
+        // (undocumented)
+        remainderLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        splitAmountLabel: string
+        // (undocumented)
+        splitByLabel: string
+        // (undocumented)
+        splitDescription: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            percentageErrorWithTotal: string
+            amountError: string
+            percentageAmountError: string
+        }
+    }
+    export interface EmployeeManagementPaystubs {
+        // (undocumented)
+        checkAmount: string
+        // (undocumented)
+        downloadCta: string
+        // (undocumented)
+        downloadError: string
+        // (undocumented)
+        downloadLoadingMessage: string
+        // (undocumented)
+        emptyState: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        grossPay: string
+        // (undocumented)
+        listEmptyPlaceholder: string
+        // (undocumented)
+        listLabel: string
+        // (undocumented)
+        noPaymentMethod: string
+        // (undocumented)
+        payday: string
+        // (undocumented)
+        paymentMethod: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeManagementProfile {
+        // (undocumented)
+        alerts: {
+            profileUpdated: string
+        }
+        // (undocumented)
+        dateOfBirth: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        form: {
+            title: string
+            firstName: string
+            middleInitial: string
+            lastName: string
+            email: string
+            emailDescription: string
+            ssnLabel: string
+            dobLabel: string
+            cancelCta: string
+            saveCta: string
+            successAlert: string
+            validations: {
+                email: string
+                firstName: string
+                lastName: string
+            }
+        }
+        // (undocumented)
+        legalName: string
+        // (undocumented)
+        listEmptyPlaceholder: string
+        // (undocumented)
+        personalEmail: string
+        // (undocumented)
+        socialSecurityNumber: string
+        // (undocumented)
+        startDate: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeManagementStateTaxes {
+        // (undocumented)
+        alerts: {
+            stateTaxesUpdated: string
+        }
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        card: {
+            title: string
+            editCta: string
+            noStateTaxes: string
+            noWithholdingForState: string
+            listEmptyPlaceholder: string
+            yes: string
+            no: string
+        }
+        // (undocumented)
+        noWithholding: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        stateTaxesTitle: string
+        // (undocumented)
+        validations: {
+            required: string
+        }
+    }
+    export interface EmployeeManagementWorkAddress {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cardManageCta: string
+        // (undocumented)
+        cardNoAddress: string
+        // (undocumented)
+        cardTitle: string
+        // (undocumented)
+        changeCta: string
+        // (undocumented)
+        changeModalDescription: string
+        // (undocumented)
+        changeModalTitle: string
+        // (undocumented)
+        changePendingDescription: string
+        // (undocumented)
+        changePendingPossessiveFallback: string
+        // (undocumented)
+        changePendingTitle: string
+        // (undocumented)
+        columns: {
+            location: string
+            startDate: string
+            endDate: string
+        }
+        // (undocumented)
+        currentEmpty: string
+        // (undocumented)
+        currentSectionTitle: string
+        // (undocumented)
+        currentSince: string
+        // (undocumented)
+        deleteModalConfirmCta: string
+        // (undocumented)
+        deleteModalDescription: string
+        // (undocumented)
+        deleteModalTitle: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        editModalDescription: string
+        // (undocumented)
+        editModalTitle: string
+        // (undocumented)
+        editPastAddressAlertTitle: string
+        // (undocumented)
+        form: {
+            editLocationLabel: string
+            editInactiveLocationLabel: string
+            editLocationDescription: string
+            newWorkAddressLabel: string
+            newWorkAddressDescription: string
+            selectPlaceholder: string
+            locationRequired: string
+            startDateLabel: string
+            startDateDescription: string
+            editInactiveStartDateDescription: string
+            startDateRequired: string
+        }
+        // (undocumented)
+        historyEmptyDescription: string
+        // (undocumented)
+        historyEmptyTitle: string
+        // (undocumented)
+        historySectionTitle: string
+        // (undocumented)
+        rowDelete: string
+        // (undocumented)
+        rowEdit: string
+        // (undocumented)
+        rowMenuAriaLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+    }
+    export interface EmployeeOnboardingSummary {
+        // (undocumented)
+        description: string
+        // (undocumented)
+        doneCta: string
+        // (undocumented)
+        handedOffAdminDescription: string
+        // (undocumented)
+        handedOffAdminSubtitle: string
+        // (undocumented)
+        missingRequirementsDescription: string
+        // (undocumented)
+        missingRequirementsSubtitle: string
+        // (undocumented)
+        newHireReportCta: string
+        // (undocumented)
+        onboardedAdminDescription: string
+        // (undocumented)
+        onboardedAdminSubtitle: string
+        // (undocumented)
+        onboardedSelfDescription: string
+        // (undocumented)
+        onboardedSelfSubtitle: string
+        // (undocumented)
+        steps: {
+            personal_details: string
+            compensation_details: string
+            add_work_address: string
+            add_home_address: string
+            federal_tax_setup: string
+            state_tax_setup: string
+            direct_deposit_setup: string
+            employee_form_signing: string
+            file_new_hire_report: string
+            admin_review: string
+        }
+        // (undocumented)
+        stepsDescriptions: {
+            personal_details: string
+            compensation_details: string
+            add_work_address: string
+            add_home_address: string
+            federal_tax_setup: string
+            state_tax_setup: string
+            direct_deposit_setup: string
+            employee_form_signing: string
+            file_new_hire_report: string
+            admin_review: string
+        }
+        // (undocumented)
+        subTitle: string
+    }
+    export interface EmployeePaymentMethod {
+        // (undocumented)
+        accountNumberLabel: string
+        // (undocumented)
+        accountTypeChecking: string
+        // (undocumented)
+        accountTypeColumn: string
+        // (undocumented)
+        accountTypeLabel: string
+        // (undocumented)
+        accountTypeSavings: string
+        // (undocumented)
+        actionColumn: string
+        // (undocumented)
+        addAnotherCta: string
+        // (undocumented)
+        addBankAccountCta: string
+        // (undocumented)
+        addBankAccountFormTitle: string
+        // (undocumented)
+        allocationColumn: string
+        // (undocumented)
+        amountLabel: string
+        // (undocumented)
+        bankAccountsListLabel: string
+        // (undocumented)
+        bankFormSuccessAlert: string
+        // (undocumented)
+        cancelAddCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        checkDescription: string
+        // (undocumented)
+        checkDescriptionSelf: string
+        // (undocumented)
+        checkLabel: string
+        // (undocumented)
+        deleteBankAccountCta: string
+        // (undocumented)
+        deleteBankAccountDialog: {
+            title: string
+            description: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        deleteBankAccountSuccessAlert: string
+        // (undocumented)
+        directDepositDescription: string
+        // (undocumented)
+        directDepositDescriptionSelf: string
+        // (undocumented)
+        directDepositLabel: string
+        // (undocumented)
+        draggableListLabel: string
+        // (undocumented)
+        hamburgerTitle: string
+        // (undocumented)
+        managementTitle: string
+        // (undocumented)
+        nameLabel: string
+        // (undocumented)
+        nicknameColumn: string
+        // (undocumented)
+        paymentFieldsetLegend: string
+        // (undocumented)
+        paymentMethodLabel: string
+        // (undocumented)
+        percentageLabel: string
+        // (undocumented)
+        priority_few: string
+        // (undocumented)
+        priority_one: string
+        // (undocumented)
+        priority_other: string
+        // (undocumented)
+        priority_two: string
+        // (undocumented)
+        priorityLabel: string
+        // (undocumented)
+        remainderLabel: string
+        // (undocumented)
+        routingNumberColumn: string
+        // (undocumented)
+        routingNumberDescription: string
+        // (undocumented)
+        routingNumberLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        splitAmountLabel: string
+        // (undocumented)
+        splitByLabel: string
+        // (undocumented)
+        splitCta: string
+        // (undocumented)
+        splitDescription: string
+        // (undocumented)
+        splitTitle: string
+        // (undocumented)
+        splitViewSuccessAlert: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            percentageError: string
+            percentageErrorWithTotal: string
+            percentageAmountError: string
+            amountError: string
+            accountName: string
+            routingNumber: string
+            accountNumber: string
+            accountNumberFormat: string
+        }
+    }
+    export interface EmployeePaySchedules {
+        // (undocumented)
+        labels: {
+            frequency: string
+            firstPayDate: string
+            deadline: string
+        }
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        pleaseVerify: string
+        // (undocumented)
+        saveAndContinueCta: string
+    }
+    export interface EmployeeProfile {
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        dobLabel: string
+        // (undocumented)
+        email: string
+        // (undocumented)
+        emailDescription: string
+        // (undocumented)
+        firstName: string
+        // (undocumented)
+        formTitle: string
+        // (undocumented)
+        lastName: string
+        // (undocumented)
+        middleInitial: string
+        // (undocumented)
+        preferredFirstName: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        selfOnboardingDescription: string
+        // (undocumented)
+        selfOnboardingLabel: string
+        // (undocumented)
+        ssnLabel: string
+        // (undocumented)
+        ssnMask: string
+        // (undocumented)
+        startDateDescription: string
+        // (undocumented)
+        startDateLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        successAlert: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            email: string
+            firstName: string
+            lastName: string
+            startDate: string
+            startDateOutOfRange: string
+        }
+        // (undocumented)
+        workAddress: string
+        // (undocumented)
+        workAddressDescription: string
+        // (undocumented)
+        workAddressPlaceholder: string
+        // (undocumented)
+        workAddressSectionDescription: string
+        // (undocumented)
+        workAddressSectionTitle: string
+    }
+    export interface EmployeeSplitPaycheck {
+        // (undocumented)
+        amountLabel: string
+        // (undocumented)
+        bankDescription: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        percentageLabel: string
+        // (undocumented)
+        priority_few: string
+        // (undocumented)
+        priority_one: string
+        // (undocumented)
+        priority_other: string
+        // (undocumented)
+        priority_two: string
+        // (undocumented)
+        priorityLabel: string
+        // (undocumented)
+        remainderLabel: string
+        // (undocumented)
+        splitAmountLabel: string
+        // (undocumented)
+        splitByLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            percentageError: string
+            priorityError: string
+            amountError: string
+        }
+    }
+    export interface EmployeeSplitPaymentsFormBody {
+        // (undocumented)
+        amountLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        draggableListLabel: string
+        // (undocumented)
+        percentageLabel: string
+        // (undocumented)
+        remainderLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        splitAmountLabel: string
+        // (undocumented)
+        splitByLabel: string
+        // (undocumented)
+        splitDescription: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            percentageErrorWithTotal: string
+            amountError: string
+            percentageAmountError: string
+        }
+    }
+    export interface EmployeeStateTaxes {
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        noWithholding: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        stateTaxesTitle: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        successAlert: string
+        // (undocumented)
+        validations: {
+            required: string
+        }
+    }
+    export interface EmployeeStateTaxesView {
+        // (undocumented)
+        noWithholding: string
+        // (undocumented)
+        stateTaxesTitle: string
+        // (undocumented)
+        validations: {
+            required: string
+        }
+    }
+    export interface EmployeeTerminationsTerminateEmployee {
+        // (undocumented)
+        actions: {
+            submit: string
+            cancel: string
+        }
+        // (undocumented)
+        alert: {
+            dismissalPayroll: {
+                label: string
+                text: string
+            }
+            regularPayroll: {
+                label: string
+                text: string
+            }
+            anotherWay: {
+                label: string
+                text: string
+            }
+        }
+        // (undocumented)
+        form: {
+            lastDayOfEmployment: {
+                label: string
+                description: string
+            }
+            payrollOption: {
+                label: string
+                description: string
+                options: {
+                    dismissalPayroll: {
+                        label: string
+                        description: string
+                    }
+                    regularPayroll: {
+                        label: string
+                        description: string
+                    }
+                    anotherWay: {
+                        label: string
+                        description: string
+                    }
+                }
+            }
+        }
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validation: {
+            lastDayRequired: string
+            payrollOptionRequired: string
+        }
+    }
+    export interface EmployeeTerminationsTerminationFlow {
+        // (undocumented)
+        breadcrumbs: {
+            form: string
+            summary: string
+            dismissal: string
+        }
+        // (undocumented)
+        cancelSuccess: string
+        // (undocumented)
+        offCycleCreation: {
+            loading: string
+            error: string
+            noPeriodsError: string
+            retry: string
+        }
+    }
+    export interface EmployeeTerminationsTerminationSummary {
+        // (undocumented)
+        actions: {
+            cancelTermination: string
+            editDismissal: string
+            runDismissalPayroll: string
+            runOffCyclePayroll: string
+        }
+        // (undocumented)
+        alert: {
+            success: {
+                label: string
+            }
+        }
+        // (undocumented)
+        cancelDialog: {
+            title: string
+            body: string
+            confirm: string
+            cancel: string
+        }
+        // (undocumented)
+        dates: {
+            today: string
+            dismissed: string
+            lastDayOfWork: string
+            lastPayDay: string
+        }
+        // (undocumented)
+        offboarding: {
+            title: string
+            runPayroll: {
+                title: string
+                description: string
+            }
+            taxForms: {
+                title: string
+                description: string
+            }
+            disconnectAccounts: {
+                title: string
+                description: string
+            }
+        }
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+    }
+    export interface InformationRequests {
+        // (undocumented)
+        alerts: {
+            informationRequestResponded: {
+                title: string
+                description: string
+            }
+        }
+    }
+    export interface InformationRequestsInformationRequestForm {
+        // (undocumented)
+        blockingAlert: {
+            title: string
+            description: string
+        }
+        // (undocumented)
+        cta: {
+            cancel: string
+            submit: string
+            close: string
+        }
+        // (undocumented)
+        fields: {
+            textAnswer: {
+                label: string
+                placeholder: string
+            }
+            fileUpload: {
+                label: string
+            }
+        }
+        // (undocumented)
+        questionTypes: {
+            document: string
+            answer: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        unsupported: {
+            persona: {
+                title: string
+                description: string
+            }
+            generic: {
+                title: string
+                description: string
+            }
+            contactSupport: string
+        }
+        // (undocumented)
+        validation: {
+            required: string
+            fileRequired: string
+        }
+    }
+    export interface InformationRequestsInformationRequestList {
+        // (undocumented)
+        columns: {
+            type: string
+            status: string
+        }
+        // (undocumented)
+        cta: {
+            respond: string
+        }
+        // (undocumented)
+        description: string
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        status: {
+            incomplete: string
+            underReview: string
+            payrollBlocking: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        types: {
+            companyOnboarding: string
+            accountProtection: string
+            paymentRequest: string
+            paymentError: string
+            unknown: string
+        }
+    }
+    export interface PayrollCommon {
+        // (undocumented)
+        status: {
+            processed: string
+            calculating: string
+            readyToSubmit: string
+            processing: string
+            failed: string
+            waitingForWireIn: string
+            pendingApproval: string
+            dueInHours_one: string
+            dueInHours_other: string
+            dueInDays_one: string
+            dueInDays_other: string
+            daysLate_one: string
+            daysLate_other: string
+            pending: string
+            paid: string
+            complete: string
+            submitted: string
+            inProgress: string
+        }
+    }
+    export interface PayrollConfirmWireDetailsBanner {
+        // (undocumented)
+        banner: {
+            title: string
+            titleWithPayroll: string
+            titleMultiple: string
+            description: string
+            requestLabelPayroll: string
+            requestLabelContractorPaymentGroup: string
+        }
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        cta: {
+            startWireTransfer: string
+        }
+        // (undocumented)
+        modal: {
+            title: string
+            close: string
+            submitCta: string
+        }
+    }
+    export interface PayrollConfirmWireDetailsForm {
+        // (undocumented)
+        amountLabel: string
+        // (undocumented)
+        bankNameDescription: string
+        // (undocumented)
+        bankNameLabel: string
+        // (undocumented)
+        bankNamePlaceholder: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        confirmationAlert: {
+            title: string
+            emptyTitle: string
+            content: string
+        }
+        // (undocumented)
+        dateLabel: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        notesLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            amount: string
+            date: string
+            bankName: string
+        }
+    }
+    export interface PayrollDismissal {
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        emptyState: string
+        // (undocumented)
+        errors: {
+            missingPayrollId: string
+            noPayPeriodSelected: string
+            invalidPayPeriod: string
+        }
+        // (undocumented)
+        pageDescription: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        selectLabel: string
+        // (undocumented)
+        selectPlaceholder: string
+    }
+    export interface PayrollEmployeeSelection {
+        // (undocumented)
+        searchPlaceholder: string
+        // (undocumented)
+        sectionTitle: string
+    }
+    export interface PayrollGrossUpModal {
+        // (undocumented)
+        applyCta: string
+        // (undocumented)
+        calculateCta: string
+        // (undocumented)
+        calculatingCta: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        errorMessage: string
+        // (undocumented)
+        grossPayResult: string
+        // (undocumented)
+        netPayLabel: string
+        // (undocumented)
+        title: string
+        // (undocumented)
+        validations: {
+            netPay: string
+        }
+        // (undocumented)
+        warning: string
+    }
+    export interface PayrollOffCycle {
+        // (undocumented)
+        createOffCyclePayroll: {
+            breadcrumbLabel: string
+        }
+    }
+    export interface PayrollOffCycleCreation {
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        errors: {
+            missingPayrollId: string
+            noEmployeesSelected: string
+        }
+        // (undocumented)
+        includeAllEmployeesLabel: string
+        // (undocumented)
+        pageDescription: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        payPeriodSectionDescription: string
+        // (undocumented)
+        payPeriodSectionTitle: string
+        // (undocumented)
+        taxWithholdingDisclaimer: string
+    }
+    export interface PayrollOffCycleDeductionsSetting {
+        // (undocumented)
+        description: string
+        // (undocumented)
+        options: {
+            include: {
+                label: string
+            }
+            skip: {
+                label: string
+            }
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface PayrollOffCyclePayPeriodDateForm {
+        // (undocumented)
+        checkDateDescription: string
+        // (undocumented)
+        checkDateLabel: string
+        // (undocumented)
+        checkOnlyDescription: string
+        // (undocumented)
+        checkOnlyLabel: string
+        // (undocumented)
+        endDateLabel: string
+        // (undocumented)
+        startDateLabel: string
+        // (undocumented)
+        validations: {
+            startDateRequired: string
+            endDateRequired: string
+            checkDateRequired: string
+            endDateAfterStart: string
+            startDateNotFuture: string
+            checkDateAchLeadTime_one: string
+            checkDateAchLeadTime_other: string
+            checkDateNotPast: string
+        }
+    }
+    export interface PayrollOffCycleReasonSelection {
+        // (undocumented)
+        aria: {
+            reasonSelection: string
+        }
+        // (undocumented)
+        options: {
+            correction: {
+                label: string
+                description: string
+            }
+            bonus: {
+                label: string
+                description: string
+            }
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface PayrollOffCycleTaxWithholding {
+        // (undocumented)
+        description: string
+        // (undocumented)
+        editButton: string
+        // (undocumented)
+        modal: {
+            title: string
+            regularSection: {
+                title: string
+                subtitle: string
+                rateLabel: string
+                ratePlaceholder: string
+                rateDescription: string
+            }
+            supplementalSection: {
+                title: string
+                useSupplementalRate: string
+                useSupplementalRateDescription: string
+                useRegularRate: string
+                useRegularRateDescription: string
+            }
+            cancelButton: string
+            doneButton: string
+        }
+        // (undocumented)
+        payPeriodFrequency: {
+            everyWeek: string
+            everyOtherWeek: string
+            twicePerMonth: string
+            monthly: string
+            quarterly: string
+            semiannually: string
+            annually: string
+        }
+        // (undocumented)
+        table: {
+            headers: {
+                wageTypes: string
+                taxedAs: string
+            }
+            taxedAsRegular: string
+            taxedAsSupplemental: string
+            taxedAsNotTaxed: string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        wageTypeGroups: {
+            regular: {
+                label: string
+                description: string
+                taxedAsDescription: string
+            }
+            supplemental: {
+                label: string
+                description: string
+                taxedAsDescription: string
+            }
+            reimbursement: {
+                label: string
+                taxedAsDescription: string
+            }
+        }
+    }
+    export interface PayrollPayrollBlocker {
+        // (undocumented)
+        alerts: {
+            recoveryCaseResubmitted: {
+                title: string
+                description: string
+            }
+            informationRequestResponded: {
+                title: string
+                description: string
+            }
+        }
+        // (undocumented)
+        blockers: {
+            geocode_error: {
+                title: string
+                description: string
+                help: string
+            }
+            geocode_needed: {
+                title: string
+                description: string
+                help: string
+            }
+            missing_signatory: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            invalid_signatory: {
+                title: string
+                description: string
+                help: string
+            }
+            suspended: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            needs_onboarding: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_bank_info: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_bank_verification: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_employee_setup: {
+                title: string
+                description: string
+                help: string
+            }
+            missing_pay_schedule: {
+                title: string
+                description: string
+                help: string
+            }
+            pay_schedule_setup_not_complete: {
+                title: string
+                description: string
+                help: string
+            }
+            missing_forms: {
+                title: string
+                description: string
+                help: string
+            }
+            needs_approval: {
+                title: string
+                description: string
+                help: string
+            }
+            pending_payroll_review: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            contractor_only_company: {
+                title: string
+                description: string
+                help: string
+            }
+            eftps_ic_error: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            wc_pending_approval: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            pending_recovery_case: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            pending_information_request: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_addresses: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_federal_tax_setup: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_industry_selection: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+            missing_state_tax_setup: {
+                title: string
+                description: string
+                help: string
+                defaultAction: string
+            }
+        }
+        // (undocumented)
+        blockerSectionLabel: string
+        // (undocumented)
+        blockersListDescription: string
+        // (undocumented)
+        blockersListTitle: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        defaultBlockerDescription: string
+        // (undocumented)
+        defaultBlockerHelp: string
+        // (undocumented)
+        estimatedTime: string
+        // (undocumented)
+        exitFlowCta: string
+        // (undocumented)
+        multipleIssuesTitle: string
+        // (undocumented)
+        noBlockersMessage: string
+        // (undocumented)
+        viewAllBlockers: string
+        // (undocumented)
+        viewBlocker: string
+    }
+    export interface PayrollPayrollConfiguration {
+        // (undocumented)
+        alerts: {
+            alreadyProcessed: string
+            progressSaved: string
+            directDepositDeadline: string
+            directDepositDeadlineText: string
+            payrollLate: string
+            payrollLateText: string
+            payrollDeadline: {
+                label: string
+                message: string
+            }
+            skippedEmployees: {
+                label: string
+                employeeAddressNotVerified: string
+            }
+            employeeUpdated: {
+                label: string
+            }
+        }
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        breadcrumbLabelDismissal: string
+        // (undocumented)
+        calculatePayroll: string
+        // (undocumented)
+        calculatePayrollTitle: string
+        // (undocumented)
+        calculatingDescription: string
+        // (undocumented)
+        calculatingPayroll: string
+        // (undocumented)
+        calculatingTitle: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        descriptionDismissal: string
+        // (undocumented)
+        editMenu: {
+            edit: string
+            skip: string
+            unskip: string
+            setNetEarnings: string
+        }
+        // (undocumented)
+        employeeCompensationsTitle: string
+        // (undocumented)
+        exitFlowCta: string
+        // (undocumented)
+        hoursAndEarningsDescription: string
+        // (undocumented)
+        hoursAndEarningsTitle: string
+        // (undocumented)
+        loadingDescription: string
+        // (undocumented)
+        loadingTitle: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        skippedBadge: string
+        // (undocumented)
+        tableColumns: {
+            employees: string
+            hours: string
+            timeOff: string
+            additionalEarnings: string
+            reimbursements: string
+            totalPay: string
+        }
+        // (undocumented)
+        unknownEmployeeFallback: string
+    }
+    export interface PayrollPayrollEditEmployee {
+        // (undocumented)
+        additionalEarningsTitle: string
+        // (undocumented)
+        addReimbursementCta: string
+        // (undocumented)
+        addReimbursementLink: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cancelReimbursementCta: string
+        // (undocumented)
+        compensationNames: {
+            regularHours: string
+            overtime: string
+            doubleOvertime: string
+        }
+        // (undocumented)
+        finalPayoutDescription: string
+        // (undocumented)
+        finalPayoutTitle: string
+        // (undocumented)
+        fixedCompensationNames: {
+            bonus: string
+            paycheckTips: string
+            correctionPayment: string
+            commission: string
+            cashTips: string
+            reimbursement: string
+        }
+        // (undocumented)
+        grossPayLabel: string
+        // (undocumented)
+        grossPayLabelMobile: string
+        // (undocumented)
+        hoursUnit: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        paymentMethodDescription: string
+        // (undocumented)
+        paymentMethodLabel: string
+        // (undocumented)
+        paymentMethodOptions: {
+            directDeposit: string
+            check: string
+        }
+        // (undocumented)
+        paymentMethodTitle: string
+        // (undocumented)
+        recurringReimbursementLabel: string
+        // (undocumented)
+        recurringReimbursementTooltip: string
+        // (undocumented)
+        regularHoursTitle: string
+        // (undocumented)
+        reimbursementAmountColumn: string
+        // (undocumented)
+        reimbursementAmountLabel: string
+        // (undocumented)
+        reimbursementDescriptionColumn: string
+        // (undocumented)
+        reimbursementDescriptionLabel: string
+        // (undocumented)
+        reimbursementDescriptionPlaceholder: string
+        // (undocumented)
+        reimbursementEmptyTitle: string
+        // (undocumented)
+        reimbursementsTableLabel: string
+        // (undocumented)
+        reimbursementTitle: string
+        // (undocumented)
+        reimbursementTypeColumn: string
+        // (undocumented)
+        reimbursementTypeOneTime: string
+        // (undocumented)
+        reimbursementTypeRecurring: string
+        // (undocumented)
+        reimbursementUnnamedFallback: string
+        // (undocumented)
+        removeReimbursementLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        saveReimbursementCta: string
+        // (undocumented)
+        timeOffBalance: {
+            remaining: string
+        }
+        // (undocumented)
+        timeOffTitle: string
+        // (undocumented)
+        timeOffTitleDismissal: string
+        // (undocumented)
+        validations: {
+            reimbursementAmount: string
+            negativeAmount: string
+        }
+    }
+    export interface PayrollPayrollFlow {
+        // (undocumented)
+        exitFlowCta: string
+    }
+    export interface PayrollPayrollHistory {
+        // (undocumented)
+        cancelDialog: {
+            title: string
+            body: string
+            deadline: string
+            primaryAction: string
+            secondaryAction: string
+        }
+        // (undocumented)
+        columns: {
+            payPeriod: string
+            type: string
+            payDate: string
+            status: string
+            totalPayroll: string
+        }
+        // (undocumented)
+        dataView: {
+            label: string
+        }
+        // (undocumented)
+        dateFilter: {
+            startDate: string
+            endDate: string
+            apply: string
+            cancel: string
+            reset: string
+            selectDates: string
+            trigger: string
+        }
+        // (undocumented)
+        emptyState: {
+            default: {
+                title: string
+                description: string
+            }
+            filtered: {
+                title: string
+                description: string
+            }
+        }
+        // (undocumented)
+        labels: {
+            noAmount: string
+        }
+        // (undocumented)
+        menu: {
+            viewSummary: string
+            viewReceipt: string
+            cancelPayroll: string
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface PayrollPayrollLanding {
+        // (undocumented)
+        alerts: {
+            payrollCancelled: string
+        }
+        // (undocumented)
+        aria: {
+            tabNavigation: string
+        }
+        // (undocumented)
+        breadcrumbs: {
+            landing: string
+            overview: string
+            receipt: string
+        }
+        // (undocumented)
+        labels: {
+            loading: string
+        }
+        // (undocumented)
+        tabs: {
+            runPayroll: string
+            payrollHistory: string
+        }
+    }
+    export interface PayrollPayrollList {
+        // (undocumented)
+        dateFilter: {
+            startDate: string
+            endDate: string
+            apply: string
+            cancel: string
+            reset: string
+            selectDates: string
+            trigger: string
+        }
+        // (undocumented)
+        deletePayrollCta: string
+        // (undocumented)
+        deletePayrollDialog: {
+            title: string
+            body: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        deleteSuccessAlert: string
+        // (undocumented)
+        emptyState: {
+            default: {
+                title: string
+            }
+            filtered: {
+                title: string
+                description: string
+            }
+        }
+        // (undocumented)
+        offCycleCta: {
+            title: string
+            description: string
+            button: string
+        }
+        // (undocumented)
+        payrollMenuLabel: string
+        // (undocumented)
+        payrollsListLabel: string
+        // (undocumented)
+        runPayrollTitle: string
+        // (undocumented)
+        skipPayrollCta: string
+        // (undocumented)
+        skipPayrollDialog: {
+            title: string
+            body: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        skipSuccessAlert: string
+        // (undocumented)
+        submitPayrollCta: string
+        // (undocumented)
+        tableHeaders: {
+            '0': string
+            '1': string
+            '2': string
+            '3': string
+            '4': string
+        }
+        // (undocumented)
+        title: string
+        // (undocumented)
+        type: {
+            External: string
+            'Off-Cycle': string
+            Regular: string
+        }
+    }
+    export interface PayrollPayrollOverview {
+        // (undocumented)
+        alerts: {
+            payrollNotCalculated: string
+            directDepositDeadline: string
+            directDepositDeadlineText: string
+            paystubPdfError: string
+            payrollProcessedTitle: string
+            payrollProcessedMessage: string
+            payrollProcessingFailedTitle: string
+            payrollProcessingFailedCtaLabel: string
+            wireDetailsSubmittedTitle: string
+            wireDetailsSubmittedMessage: string
+        }
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cancelDialogDescription: string
+        // (undocumented)
+        cancelDialogDescriptionDeadline: string
+        // (undocumented)
+        cancelDialogTitle: string
+        // (undocumented)
+        cancelDialogTitleDismissal: string
+        // (undocumented)
+        cancelledEmptyState: string
+        // (undocumented)
+        cancellingTitle: string
+        // (undocumented)
+        compensationTypeLabels: {
+            exempt: string
+            nonexempt: string
+        }
+        // (undocumented)
+        confirmCancelCta: string
+        // (undocumented)
+        dataLoadingTitle: string
+        // (undocumented)
+        dataViews: {
+            label: string
+            companyPaysTab: string
+            companyPaysTable: string
+            hoursWorkedTab: string
+            hoursWorkedTable: string
+            employeeTakeHomeTab: string
+            employeeTakeHomeTable: string
+            taxesTab: string
+            taxesTable: string
+            debitedTable: string
+        }
+        // (undocumented)
+        declineCancelCta: string
+        // (undocumented)
+        directDepositLabel: string
+        // (undocumented)
+        downloadLoadingMessage: string
+        // (undocumented)
+        downloadPaystubLabel: string
+        // (undocumented)
+        editCta: string
+        // (undocumented)
+        exitFlowCta: string
+        // (undocumented)
+        garnishmentsLabel: string
+        // (undocumented)
+        loadingDescription: string
+        // (undocumented)
+        loadingTitle: string
+        // (undocumented)
+        overviewTitle: string
+        // (undocumented)
+        pageSubtitle: string
+        // (undocumented)
+        pageSubtitleDismissal: string
+        // (undocumented)
+        payrollReceiptCta: string
+        // (undocumented)
+        payrollSummaryLabel: string
+        // (undocumented)
+        payrollSummaryTitle: string
+        // (undocumented)
+        payrollSummaryTitleFourDay: string
+        // (undocumented)
+        payrollSummaryTitleWire: string
+        // (undocumented)
+        reimbursementLabel: string
+        // (undocumented)
+        skippedBadge: string
+        // (undocumented)
+        submissionBlockers: {
+            genericBlockerTitle: string
+            genericBlockerMessage: string
+            fastAchOptions: {
+                description: string
+                fundingOptionsLabel: string
+                wireLabel: string
+                wireFastestBadge: string
+                wireDescription: string
+                directDepositLabel: string
+                directDepositDescription: string
+                employeePayDate: string
+            }
+            fast_ach_threshold_exceeded: {
+                title: string
+            }
+            needs_earned_access_for_fast_ach: {
+                title: string
+            }
+        }
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        summaryTitle: string
+        // (undocumented)
+        tableHeaders: {
+            totalPayroll: string
+            debitAmount: string
+            wireAmount: string
+            wireTransferDeadline: string
+            employees: string
+            grossPay: string
+            reimbursements: string
+            debitAccount: string
+            debitDate: string
+            employeePayDate: string
+            companyTaxes: string
+            companyBenefits: string
+            companyPays: string
+            compensationType: string
+            regular: string
+            overtime: string
+            doubleOT: string
+            timeOff: string
+            totalHours: string
+            paymentType: string
+            employeeTaxes: string
+            employeeBenefits: string
+            payment: string
+            deductions: string
+            taxDescription: string
+            byYourEmployees: string
+            byYourCompany: string
+            debitedByGusto: string
+            taxesTotal: string
+            paystub: string
+            footerTotalsLabel: string
+            footerTotalsDescription: string
+        }
+        // (undocumented)
+        taxesLabel: string
+        // (undocumented)
+        totalsLabel: string
+    }
+    export interface PayrollPayrollReceipts {
+        // (undocumented)
+        backCta: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        breakdown: {
+            directDeposits: string
+            reimbursements: string
+            garnishments: string
+            taxes: string
+            totals: string
+            category: string
+            amount: string
+        }
+        // (undocumented)
+        employee: {
+            name: string
+            paymentMethod: string
+            childSupport: string
+            reimbursement: string
+            totalTaxes: string
+            netPay: string
+            totalEmployees: string
+            totalEmployees_one: string
+            totalEmployees_other: string
+        }
+        // (undocumented)
+        exitFlowCta: string
+        // (undocumented)
+        receipt: {
+            totalLabel: string
+            detailsLabel: string
+            receiptId: string
+            from: string
+            to: string
+            debitDate: string
+            employeeCount: string
+            employeeCount_one: string
+            employeeCount_other: string
+            disclaimer: string
+            companyInfo: string
+            address: string
+        }
+        // (undocumented)
+        sections: {
+            debitedLabel: string
+            taxLabel: string
+            employeesLabel: string
+        }
+        // (undocumented)
+        tax: {
+            name: string
+            amount: string
+        }
+    }
+    export interface PayrollPrintChecksBanner {
+        // (undocumented)
+        cta: string
+        // (undocumented)
+        description: string
+        // (undocumented)
+        title_one: string
+        // (undocumented)
+        title_other: string
+    }
+    export interface PayrollPrintChecksFailure {
+        // (undocumented)
+        closeCta: string
+        // (undocumented)
+        failedTitle: string
+        // (undocumented)
+        retryCta: string
+    }
+    export interface PayrollPrintChecksForm {
+        // (undocumented)
+        blankStockDescription: string
+        // (undocumented)
+        blankStockLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        customStockDescription: string
+        // (undocumented)
+        customStockLabel: string
+        // (undocumented)
+        modalTitle: string
+        // (undocumented)
+        startingCheckNumberDescription: string
+        // (undocumented)
+        startingCheckNumberLabel: string
+        // (undocumented)
+        submitCta: string
+        // (undocumented)
+        submitCtaLoading: string
+        // (undocumented)
+        validations: {
+            startingCheckNumber: string
+        }
+    }
+    export interface PayrollPrintChecksSummary {
+        // (undocumented)
+        closeCta: string
+        // (undocumented)
+        succeededDescription: string
+        // (undocumented)
+        succeededTitle: string
+        // (undocumented)
+        viewChecksCta: string
+    }
+    export interface PayrollRecoveryCasesList {
+        // (undocumented)
+        columns: {
+            originalDebitDate: string
+            totalAmount: string
+            amountOutstanding: string
+            latestErrorCode: string
+            status: string
+        }
+        // (undocumented)
+        cta: {
+            resolve: string
+        }
+        // (undocumented)
+        description: string
+        // (undocumented)
+        emptyTableDescription: string
+        // (undocumented)
+        emptyTableTitle: string
+        // (undocumented)
+        labels: {
+            noLatestErrorCode: string
+            noLatestErrorCodeAriaLabel: string
+        }
+        // (undocumented)
+        status: {
+            open: string
+            redebit_initiated: string
+            wire_initiated: string
+            recovered: string
+            lost: string
+        }
+        // (undocumented)
+        title: string
+    }
+    export interface PayrollRecoveryCasesResubmit {
+        // (undocumented)
+        cta: {
+            cancel: string
+            resubmit: string
+        }
+        // (undocumented)
+        errorCodes: {
+            R01: {
+                title: string
+                subtitle: string
+                body: string
+                instruction: string
+            }
+            R02: {
+                title: string
+                subtitle: string
+                body: string
+                instruction: string
+            }
+            R16: {
+                title: string
+                subtitle: string
+                body: string
+                instruction: string
+            }
+            R29: {
+                title: string
+                subtitle: string
+                body: string
+                listDescription: string
+                achCodes: {
+                    '0': string
+                    '1': string
+                    '2': string
+                    '3': string
+                    '4': string
+                    '5': string
+                    '6': string
+                    '7': string
+                    '8': string
+                }
+                instruction: string
+            }
+            bankError: {
+                title: string
+                subtitle: string
+                body: string
+                instruction: string
+            }
+        }
+    }
+    export interface PayrollTransition {
+        // (undocumented)
+        breadcrumbLabel: string
+    }
+    export interface PayrollTransitionCreation {
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        checkDateLabel: string
+        // (undocumented)
+        continueCta: string
+        // (undocumented)
+        detailsHeading: string
+        // (undocumented)
+        errors: {
+            missingPayrollId: string
+            checkDateRequired: string
+            checkDateAchLeadTime_one: string
+            checkDateAchLeadTime_other: string
+        }
+        // (undocumented)
+        pageDescription: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        payPeriodLabel: string
+        // (undocumented)
+        payScheduleLabel: string
+        // (undocumented)
+        transitionExplanation: string
+    }
+    export interface PayrollTransitionPayrollAlert {
+        // (undocumented)
+        alertDescription: string
+        // (undocumented)
+        alertTitle: string
+        // (undocumented)
+        runPayroll: string
+        // (undocumented)
+        skipDialog: {
+            title: string
+            body: string
+            confirmCta: string
+            cancelCta: string
+        }
+        // (undocumented)
+        skipPayroll: string
+        // (undocumented)
+        skipSuccessAlert: string
+    }
+    // @internal
+    export interface PayrollUNSTABLE_PayrollEditEmployee {
+        // (undocumented)
+        additionalEarningsTitle: string
+        // (undocumented)
+        addReimbursementCta: string
+        // (undocumented)
+        addReimbursementLink: string
+        // (undocumented)
+        amountColumn: string
+        // (undocumented)
+        breadcrumbLabel: string
+        // (undocumented)
+        cancelCta: string
+        // (undocumented)
+        cancelReimbursementCta: string
+        // (undocumented)
+        compensationNames: {
+            regularHours: string
+            overtime: string
+            doubleOvertime: string
+        }
+        // (undocumented)
+        finalPayoutDescription: string
+        // (undocumented)
+        finalPayoutTitle: string
+        // (undocumented)
+        fixedCompensationNames: {
+            bonus: string
+            paycheckTips: string
+            correctionPayment: string
+            commission: string
+            cashTips: string
+            reimbursement: string
+        }
+        // (undocumented)
+        grossPayLabel: string
+        // (undocumented)
+        grossPayLabelMobile: string
+        // (undocumented)
+        hoursColumn: string
+        // (undocumented)
+        hoursUnit: string
+        // (undocumented)
+        hourTypeColumn: string
+        // (undocumented)
+        otherTitle: string
+        // (undocumented)
+        pageTitle: string
+        // (undocumented)
+        paymentMethodDescription: string
+        // (undocumented)
+        paymentMethodLabel: string
+        // (undocumented)
+        paymentMethodOptions: {
+            directDeposit: string
+            check: string
+        }
+        // (undocumented)
+        paymentMethodTitle: string
+        // (undocumented)
+        recurringReimbursementLabel: string
+        // (undocumented)
+        recurringReimbursementTooltip: string
+        // (undocumented)
+        regularHoursTitle: string
+        // (undocumented)
+        regularHoursTitleWithoutOvertime: string
+        // (undocumented)
+        reimbursementAmountColumn: string
+        // (undocumented)
+        reimbursementAmountLabel: string
+        // (undocumented)
+        reimbursementDescriptionColumn: string
+        // (undocumented)
+        reimbursementDescriptionLabel: string
+        // (undocumented)
+        reimbursementDescriptionPlaceholder: string
+        // (undocumented)
+        reimbursementEmptyTitle: string
+        // (undocumented)
+        reimbursementsTableLabel: string
+        // (undocumented)
+        reimbursementTitle: string
+        // (undocumented)
+        reimbursementTypeColumn: string
+        // (undocumented)
+        reimbursementTypeOneTime: string
+        // (undocumented)
+        reimbursementTypeRecurring: string
+        // (undocumented)
+        reimbursementUnnamedFallback: string
+        // (undocumented)
+        removeReimbursementLabel: string
+        // (undocumented)
+        saveCta: string
+        // (undocumented)
+        saveReimbursementCta: string
+        // (undocumented)
+        timeOffBalance: {
+            remaining: string
+        }
+        // (undocumented)
+        timeOffTitle: string
+        // (undocumented)
+        timeOffTitleDismissal: string
+        // (undocumented)
+        typeColumn: string
+        // (undocumented)
+        validations: {
+            reimbursementAmount: string
+            negativeAmount: string
+        }
+    }
+    export interface PayrollWireInstructions {
+        // (undocumented)
+        ariaLabels: {
+            copyTrackingCode: string
+        }
+        // (undocumented)
+        cta: {
+            close: string
+            confirm: string
+        }
+        // (undocumented)
+        fields: {
+            trackingCode: string
+            amount: string
+            bankName: string
+            bankAddress: string
+            recipientName: string
+            recipientAddress: string
+            accountNumber: string
+            routingNumber: string
+        }
+        // (undocumented)
+        messages: {
+            copied: string
+            noInstructions: string
+            unableToLoad: string
+        }
+        // (undocumented)
+        requirements: {
+            trackingCode: string
+            amountMatch: string
+            usBank: string
+            authorized: string
+        }
+        // (undocumented)
+        requirementsTitle: string
+        // (undocumented)
+        selectFallback: string
+        // (undocumented)
+        selectLabel: string
+        // (undocumented)
+        selectLabelContractorPaymentGroup: string
+        // (undocumented)
+        selectLabelPayroll: string
+        // (undocumented)
+        subtitle: string
+        // (undocumented)
+        title: string
+    }
+}
 
 // @public
 export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<FederalTaxesRequiredValidation, boolean>>;
@@ -6467,6 +13147,81 @@ export interface UsePaymentMethodFormReady extends BaseFormHookReady<PaymentMeth
 
 // @public
 export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFormReady;
+
+// @public
+function usePayrollConfiguration(input: UsePayrollConfigurationParams): UsePayrollConfigurationResult;
+
+// @public
+type UsePayrollConfigurationData = {
+    employeeCompensations: PayrollEmployeeCompensationsType[];
+    employeeDetails: Employee[];
+    payPeriod?: PayrollPayPeriodType;
+    paySchedule?: PayScheduleShow;
+    payrollCategory: PayrollCategory;
+    blockers: ApiPayrollBlocker[];
+    notice?: PayrollConfigurationNotice;
+};
+
+// @public
+interface UsePayrollConfigurationParams {
+    companyId: string;
+    onEvent: OnEventType<EventType, unknown>;
+    payrollId: string;
+}
+
+// @public
+interface UsePayrollConfigurationReady extends BaseHookReady<UsePayrollConfigurationData, UsePayrollConfigurationStatus> {
+    actions: {
+        calculatePayroll: () => Promise<void>;
+        toggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => Promise<HookSubmitResult<PayrollPrepared | undefined> | undefined>;
+    };
+    pagination: PaginationControlProps;
+}
+
+// @public
+type UsePayrollConfigurationResult = HookLoadingResult | UsePayrollConfigurationReady;
+
+// @public
+type UsePayrollConfigurationStatus = {
+    isPreparing: boolean;
+    isFetching: boolean;
+    isUpdating: boolean;
+    isCalculating: boolean;
+    isProcessed: boolean;
+};
+
+// @public
+function usePayrollGrossUp(input: UsePayrollGrossUpParams): UsePayrollGrossUpResult;
+
+// @public
+type UsePayrollGrossUpData = {
+    isEligible: boolean;
+    targetCompensationName: string | null;
+};
+
+// @public
+interface UsePayrollGrossUpParams {
+    companyId: string;
+    employeeId: string;
+    payrollId: string;
+}
+
+// @public
+interface UsePayrollGrossUpReady extends BaseHookReady<UsePayrollGrossUpData, UsePayrollGrossUpStatus> {
+    actions: {
+        calculateGrossUp: (netPay: number) => Promise<string | null>;
+        applyGrossUp: (grossAmount: string) => Promise<HookSubmitResult<PayrollPrepared | undefined> | undefined>;
+    };
+}
+
+// @public
+type UsePayrollGrossUpResult = HookLoadingResult | UsePayrollGrossUpReady;
+
+// @public
+type UsePayrollGrossUpStatus = {
+    isCalculating: boolean;
+    isApplying: boolean;
+};
 
 // @public
 export function usePayScheduleForm(input: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady;

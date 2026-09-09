@@ -31,6 +31,8 @@ interface UsePayrollConfigurationDataReturn {
   payrollCategory: PayrollCategory
   pagination: PaginationControlProps
   isLoading: boolean
+  /** True while a background prepare/employees fetch is in flight (pagination, post-mutation refetch). */
+  isFetching: boolean
   isAlreadyProcessed: boolean
   refetch: () => Promise<void>
 }
@@ -237,6 +239,7 @@ export function usePayrollConfigurationData({
     payrollCategory: derivePayrollCategory(prepareData ?? {}),
     pagination,
     isLoading,
+    isFetching: isPaginationFetching,
     isAlreadyProcessed,
     refetch: handleRefetch,
   }

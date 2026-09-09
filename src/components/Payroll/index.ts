@@ -1,5 +1,22 @@
 export { PayrollConfiguration } from './PayrollConfiguration/PayrollConfiguration'
 export type { PayrollConfigurationProps } from './PayrollConfiguration/PayrollConfiguration'
+export { usePayrollConfiguration } from './PayrollConfiguration/shared/usePayrollConfiguration'
+export type {
+  UsePayrollConfigurationParams,
+  UsePayrollConfigurationData,
+  UsePayrollConfigurationStatus,
+  UsePayrollConfigurationReady,
+  UsePayrollConfigurationResult,
+  PayrollConfigurationNotice,
+} from './PayrollConfiguration/shared/usePayrollConfiguration'
+export { usePayrollGrossUp } from './PayrollConfiguration/shared/usePayrollGrossUp'
+export type {
+  UsePayrollGrossUpParams,
+  UsePayrollGrossUpData,
+  UsePayrollGrossUpStatus,
+  UsePayrollGrossUpReady,
+  UsePayrollGrossUpResult,
+} from './PayrollConfiguration/shared/usePayrollGrossUp'
 export { PayrollEditEmployee } from './PayrollEditEmployee/PayrollEditEmployee'
 export type { PayrollEditEmployeeProps } from './PayrollEditEmployee/PayrollEditEmployee'
 export { PayrollHistory } from './PayrollHistory/PayrollHistory'
