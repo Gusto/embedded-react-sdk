@@ -1,0 +1,68 @@
+{
+  "title": "Cancel account",
+  "helpUsImprove": "Help us improve by telling us why you have decided to cancel payroll.",
+  "reason": {
+    "label": "Why are you cancelling your account?",
+    "placeholder": "Select a reason",
+    "switching_provider": "I am switching to a new payroll provider or solution.",
+    "shutting_down": "My company is shutting down.",
+    "acquired": "My company is being acquired.",
+    "no_more_employees": "I no longer have employees to pay via payroll at this time.",
+    "changing_ein_or_entity_type": "My business is changing our FEIN or entity type."
+  },
+  "leavingFor": {
+    "label": "Which provider are you switching to?",
+    "accountant": "Accountant",
+    "adp": "ADP",
+    "adp_total_source": "ADP TotalSource",
+    "bank_or_financial_institution": "Bank or Financial Institution",
+    "bamboo_hr": "BambooHR",
+    "check": "Check",
+    "deel": "Deel",
+    "gusto_com": "Gusto",
+    "homebase": "Homebase",
+    "insperity": "Insperity",
+    "intuit_or_quickbooks": "Intuit or QuickBooks",
+    "justworks": "Justworks",
+    "manual": "Manual (In-House)",
+    "namely": "Namely",
+    "onpay": "OnPay",
+    "other": "Other",
+    "oyster": "Oyster",
+    "patriot": "Patriot",
+    "paychex": "Paychex",
+    "paycom": "Paycom",
+    "paylocity": "Paylocity",
+    "remote": "Remote",
+    "rippling": "Rippling",
+    "square": "Square",
+    "surepayroll": "SurePayroll",
+    "trinet": "Trinet",
+    "velocity_global": "Velocity Global",
+    "zenefits": "Zenefits"
+  },
+  "einChangeWarning": "Please reach out to our support team so we can support your business changes.",
+  "leavingForGustoWarning": "If you're switching to Gusto, please reach out to our support team so we can support your business changes.",
+  "comments": {
+    "label": "Comments",
+    "labelLeavingForOther": "Comments, including which provider you're switching to (required)"
+  },
+  "howToHandleTaxes": "How should we take care of the rest of your taxes?",
+  "reconcileTaxMethod": {
+    "label": "Should we pay your taxes for this calendar year?",
+    "payTaxes": "Yes, pay all outstanding company taxes on my behalf.",
+    "refundTaxes": "No, refund all outstanding taxes to my bank account. I'll pay the payroll taxes myself."
+  },
+  "whatTaxesToFile": "What taxes should we file on your behalf?",
+  "fileQuarterlyForms": "All quarterly tax filings (like 941s).",
+  "fileYearlyForms": "All year-end tax filings (like W-2s and 1099s).",
+  "responsibleForFilingsWarning": "If you choose not to have us file your taxes, you'll be responsible for filing them yourself.",
+  "refundTaxesWarning": "You will be responsible for all future tax payments and tax filings, including W-2s and 1099s.",
+  "submitCta": "Cancel account",
+  "errors": {
+    "reasonRequired": "Please select a reason for cancelling your account.",
+    "leavingForRequired": "Please select the provider you're switching to.",
+    "reconcileTaxMethodRequired": "Please choose how we should handle your taxes.",
+    "commentsRequired": "Please tell us which provider you're switching to."
+  }
+}

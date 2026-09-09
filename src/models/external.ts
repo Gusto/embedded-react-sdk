@@ -23,6 +23,10 @@ export { CompanyOnboardingStatusRequirements } from '@gusto/embedded-api/models/
 /** `OnboardingStep` entity from the Gusto Embedded API. */
 export type { OnboardingStep } from '@gusto/embedded-api/models/components/companyonboardingstatus'
 export { Id } from '@gusto/embedded-api/models/components/companyonboardingstatus'
+/** `TaxRefunds` entity from the Gusto Embedded API. */
+export type { TaxRefunds } from '@gusto/embedded-api/models/components/companysuspension'
+export type { CompanySuspension } from '@gusto/embedded-api/models/components/companysuspension'
+export { ReconcileTaxMethod } from '@gusto/embedded-api/models/components/companysuspension'
 /** `MinimumWages` entity from the Gusto Embedded API. */
 export type { MinimumWages } from '@gusto/embedded-api/models/components/compensation'
 export type { Compensation } from '@gusto/embedded-api/models/components/compensation'
