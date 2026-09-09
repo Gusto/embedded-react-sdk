@@ -8393,6 +8393,8 @@ export namespace Translations {
     regularHoursTitle: string
     /** @defaultValue `"Regular hours"` */
     regularHoursTitleWithoutOvertime: string
+    /** @defaultValue `"Add overtime"` */
+    addOvertimeCta: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */

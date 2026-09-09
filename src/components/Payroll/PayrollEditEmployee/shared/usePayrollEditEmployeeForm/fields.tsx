@@ -8,6 +8,7 @@ import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/
 import type { HookFieldProps } from '@/partner-hook-utils/types'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
+import { COMPENSATION_NAME_DOUBLE_OVERTIME, COMPENSATION_NAME_OVERTIME } from '@/shared/constants'
 
 /**
  * Presentation props accepted by a bound numeric field in the payroll editor.
@@ -146,10 +147,17 @@ export interface JobFields {
   jobUuid: string
   /** The job's display title, when available, for a per-job heading. */
   title?: string
-  /** Hours inputs for this job. */
+  /** Hours inputs for this job. Excludes Overtime/Double-overtime rows while they're hidden — see {@link JobFields.hasHiddenOvertime}. */
   hours: HourEntry[] | Record<string, HourEntry[]>
   /** Overtime-affecting earnings for this job. */
   additionalEarnings: EarningEntry[] | Record<string, EarningEntry[]>
+  /**
+   * Whether this job has Overtime or Double-overtime lines that are currently
+   * hidden from `hours`. `true` only while `isOvertimeRevealed` is `false` and
+   * the job actually has such a line; render an "add overtime" affordance
+   * wired to `actions.revealOvertime` when this is `true`.
+   */
+  hasHiddenOvertime: boolean
 }
 
 /**
@@ -316,6 +324,12 @@ export interface CreatePayrollEditEmployeeFieldsOptions {
   overtimeEarningNames: Set<string>
   /** Whether the employee is overtime-eligible (nonexempt family). Gates per-workweek splitting. */
   isOvertimeEligible: boolean
+  /**
+   * Whether the workweek split has been revealed. Gates per-workweek splitting
+   * alongside `isOvertimeEligible`, and whether Overtime/Double-overtime rows
+   * are included in a job's `hours`.
+   */
+  isOvertimeRevealed: boolean
   /** Job title lookup by job UUID, for per-job section headings. */
   jobTitlesByUuid: Map<string, string>
 }
@@ -325,6 +339,7 @@ function buildBreakdownSection(
   workweeks: NormalizedWorkweek[],
   pathPrefix: 'hours' | 'additionalEarnings',
   isOvertimeEligible: boolean,
+  isOvertimeRevealed: boolean,
 ): HourEntry[] | Record<string, HourEntry[]> {
   const rows = compensations.filter(
     (compensation): compensation is { jobUuid: string; name: string } =>
@@ -343,10 +358,11 @@ function buildBreakdownSection(
     Field: createNumberField(`${pathPrefix}.${row.jobUuid}.${row.name}.${weekStart}`),
   })
 
-  // Split into per-workweek columns only for overtime-eligible employees; workweek
-  // breakdowns exist solely to compute overtime premiums, so an ineligible
-  // employee renders flat even on a multi-workweek payroll.
-  if (workweeks.length > 1 && isOvertimeEligible) {
+  // Split into per-workweek columns only for overtime-eligible employees once
+  // revealed; workweek breakdowns exist solely to compute overtime premiums, so
+  // an ineligible employee renders flat even on a multi-workweek payroll, and an
+  // eligible one stays flat until the split is revealed.
+  if (workweeks.length > 1 && isOvertimeEligible && isOvertimeRevealed) {
     const byWeek: Record<string, HourEntry[]> = {}
     for (const workweek of workweeks) {
       byWeek[workweek.startDate] = rows.map(row => toEntry(row, workweek.startDate, true))
@@ -372,7 +388,7 @@ function buildBreakdownSection(
  * final payout is added only for dismissal payrolls, and the payment-method
  * selector appears only when direct deposit is set up.
  *
- * @param options - The prepared compensation, normalized workweeks, payroll category, direct-deposit flag, overtime earning names, eligibility, and job titles.
+ * @param options - The prepared compensation, normalized workweeks, payroll category, direct-deposit flag, overtime earning names, eligibility, reveal state, and job titles.
  * @returns The populated field collections.
  * @internal
  */
@@ -384,6 +400,7 @@ export function createPayrollEditEmployeeFields({
   hasDirectDepositSetup,
   overtimeEarningNames,
   isOvertimeEligible,
+  isOvertimeRevealed,
   jobTitlesByUuid,
 }: CreatePayrollEditEmployeeFieldsOptions): PayrollEditEmployeeFields {
   const hourlyCompensations = employeeCompensation?.hourlyCompensations ?? []
@@ -403,22 +420,43 @@ export function createPayrollEditEmployeeFields({
     }
   }
 
-  const jobs: JobFields[] = jobUuids.map(jobUuid => ({
-    jobUuid,
-    title: jobTitlesByUuid.get(jobUuid),
-    hours: buildBreakdownSection(
-      hourlyCompensations.filter(compensation => compensation.jobUuid === jobUuid),
-      workweeks,
-      'hours',
-      isOvertimeEligible,
-    ),
-    additionalEarnings: buildBreakdownSection(
-      overtimeAffecting.filter(compensation => compensation.jobUuid === jobUuid),
-      workweeks,
-      'additionalEarnings',
-      isOvertimeEligible,
-    ),
-  }))
+  const isOvertimeName = (name: string | null | undefined) =>
+    name === COMPENSATION_NAME_OVERTIME || name === COMPENSATION_NAME_DOUBLE_OVERTIME
+
+  const jobs: JobFields[] = jobUuids.map(jobUuid => {
+    const jobHourlyCompensations = hourlyCompensations.filter(
+      compensation => compensation.jobUuid === jobUuid,
+    )
+    const hasHiddenOvertime =
+      !isOvertimeRevealed &&
+      jobHourlyCompensations.some(compensation => isOvertimeName(compensation.name))
+    // Overtime/Double-overtime rows stay out of `hours` entirely while hidden —
+    // their underlying form values are untouched (still whatever the prepared
+    // compensation carried), so hiding the row can't lose or corrupt data.
+    const visibleHourlyCompensations = isOvertimeRevealed
+      ? jobHourlyCompensations
+      : jobHourlyCompensations.filter(compensation => !isOvertimeName(compensation.name))
+
+    return {
+      jobUuid,
+      title: jobTitlesByUuid.get(jobUuid),
+      hasHiddenOvertime,
+      hours: buildBreakdownSection(
+        visibleHourlyCompensations,
+        workweeks,
+        'hours',
+        isOvertimeEligible,
+        isOvertimeRevealed,
+      ),
+      additionalEarnings: buildBreakdownSection(
+        overtimeAffecting.filter(compensation => compensation.jobUuid === jobUuid),
+        workweeks,
+        'additionalEarnings',
+        isOvertimeEligible,
+        isOvertimeRevealed,
+      ),
+    }
+  })
 
   const other: OtherEntry[] = nonOvertime
     .filter(

@@ -12,7 +12,12 @@ import type {
 import { PayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
 import { cleanupReimbursements } from '@/components/Payroll/helpers'
 import { SDKInternalError } from '@/types/sdkError'
-import { EXCLUDED_ADDITIONAL_EARNINGS, FlsaStatus } from '@/shared/constants'
+import {
+  COMPENSATION_NAME_DOUBLE_OVERTIME,
+  COMPENSATION_NAME_OVERTIME,
+  EXCLUDED_ADDITIONAL_EARNINGS,
+  FlsaStatus,
+} from '@/shared/constants'
 
 /** One fixed-compensation line off the prepared compensation. */
 type FixedCompensationEntry = NonNullable<
@@ -139,6 +144,31 @@ export function resolveEditableFixedCompensations(
 }
 
 /**
+ * Whether the employee's prepared compensation already carries non-zero
+ * Overtime or Double-overtime hours.
+ *
+ * @remarks
+ * Used to default the workweek-split reveal state: an employee who already
+ * has real overtime hours starts revealed (per-workweek columns, visible
+ * Overtime/Double-overtime rows) rather than requiring an extra click to see
+ * data that's already there.
+ *
+ * @param hourlyCompensations - The prepared compensation's hourly lines.
+ * @returns `true` when any Overtime or Double-overtime line has hours greater than zero.
+ * @internal
+ */
+export function hasExistingOvertimeHours(
+  hourlyCompensations: PayrollEmployeeCompensationsType['hourlyCompensations'] | undefined,
+): boolean {
+  return (hourlyCompensations ?? []).some(
+    compensation =>
+      (compensation.name === COMPENSATION_NAME_OVERTIME ||
+        compensation.name === COMPENSATION_NAME_DOUBLE_OVERTIME) &&
+      parseFloat(compensation.hours ?? '0') > 0,
+  )
+}
+
+/**
  * Trims an API decimal string (e.g. `"40.000"`, `"500.00"`) to a clean editable
  * value (`"40"`, `"500"`), preserving real fractional parts (`"40.5"`). A blank
  * or non-numeric value returns `''` (meaning "not provided").
@@ -197,6 +227,7 @@ function buildWeekMap(
  *
  * @param employeeCompensation - The employee's prepared compensation, if loaded.
  * @param workweeks - Normalized workweeks for the pay period.
+ * @param isOvertimeRevealed - Whether the workweek split has been revealed (see {@link hasExistingOvertimeHours}, `actions.revealOvertime`). Gates splitting alongside `isOvertimeEligible`.
  * @returns Default {@link PayrollEditEmployeeFormData} for `useForm`.
  * @internal
  */
@@ -206,11 +237,13 @@ export function derivePayrollEditEmployeeDefaults(
   hasDirectDepositSetup: boolean,
   overtimeEarningNames: Set<string>,
   isOvertimeEligible: boolean,
+  isOvertimeRevealed: boolean,
   fixedCompensations: FixedCompensationEntry[] = employeeCompensation?.fixedCompensations ?? [],
 ): PayrollEditEmployeeFormData {
-  // Only overtime-eligible employees split hours/earnings by workweek; everyone
-  // else renders (and seeds) flat, even on a multi-workweek payroll.
-  const isSplit = workweeks.length > 1 && isOvertimeEligible
+  // Only overtime-eligible employees split hours/earnings by workweek, and only
+  // once the split has been revealed; everyone else renders (and seeds) flat,
+  // even on a multi-workweek payroll.
+  const isSplit = workweeks.length > 1 && isOvertimeEligible && isOvertimeRevealed
 
   const hours: PayrollEditEmployeeFormData['hours'] = {}
   for (const compensation of employeeCompensation?.hourlyCompensations ?? []) {
@@ -348,6 +381,8 @@ function sumWeekValues(
  * @param employeeCompensation - The prepared compensation, for identifying metadata (`version`, `employeeUuid`).
  * @param workweeks - Normalized workweeks for the pay period.
  * @param payrollCategory - The payroll category, gating itemized vs. off-cycle reimbursements.
+ * @param isOvertimeEligible - Whether the employee is overtime-eligible (nonexempt family).
+ * @param isOvertimeRevealed - Whether the workweek split has been revealed. A collapsed job always submits its flat total, regardless of eligibility — the backend evenly splits an unbroken-down total across workweeks itself, so this is a safe (if less precise) default until the user provides real per-week numbers.
  * @returns The employee-compensation entry for the `PayrollUpdate` request body.
  * @internal
  */
@@ -357,11 +392,13 @@ export function buildPayrollUpdateEmployeeCompensation(
   workweeks: NormalizedWorkweek[],
   payrollCategory: PayrollCategory,
   isOvertimeEligible: boolean,
+  isOvertimeRevealed: boolean,
 ): PayrollUpdateEmployeeCompensations {
   // Breakdowns are emitted only when the line is actually split by workweek:
-  // multiple workweeks AND an overtime-eligible employee. This must match the
-  // field builder's gate so what renders and what submits never drift.
-  const isSplit = workweeks.length > 1 && isOvertimeEligible
+  // multiple workweeks, an overtime-eligible employee, and the split revealed.
+  // This must match the field builder's gate so what renders and what submits
+  // never drift.
+  const isSplit = workweeks.length > 1 && isOvertimeEligible && isOvertimeRevealed
   const hasValue = (value: string | undefined) => value != null && value !== ''
   const originalHours = originalTotals(
     employeeCompensation?.hourlyCompensations,
@@ -469,5 +506,118 @@ export function buildPayrollUpdateEmployeeCompensation(
     ...(usesItemizedReimbursements
       ? { reimbursements: cleanupReimbursements(formData.reimbursements) }
       : {}),
+  }
+}
+
+function groupOriginalTotals<T extends { jobUuid?: string; name?: string }>(
+  items: T[] | undefined,
+  selectTotal: (item: T) => string | null | undefined,
+): Map<string, Map<string, string>> {
+  const totalsByJob = new Map<string, Map<string, string>>()
+  for (const item of items ?? []) {
+    if (!item.jobUuid || !item.name) continue
+    const forJob = totalsByJob.get(item.jobUuid) ?? new Map<string, string>()
+    forJob.set(item.name, selectTotal(item) ?? '0')
+    totalsByJob.set(item.jobUuid, forJob)
+  }
+  return totalsByJob
+}
+
+/**
+ * Evenly splits `total` across `workweeks` in integer minor units (same
+ * technique as {@link sumWeekValues}), so re-summing the result reconstructs
+ * the original total exactly with no float drift.
+ */
+function evenlySplitTotal(
+  total: string,
+  workweeks: NormalizedWorkweek[],
+  decimals: number,
+): Record<string, string> {
+  const factor = 10 ** decimals
+  const totalMinorUnits = Math.round((parseFloat(total) || 0) * factor)
+  const base = Math.floor(totalMinorUnits / workweeks.length)
+  const remainder = totalMinorUnits - base * workweeks.length
+
+  const weekMap: Record<string, string> = {}
+  workweeks.forEach((workweek, index) => {
+    const minorUnits = base + (index < remainder ? 1 : 0)
+    weekMap[workweek.startDate] = String(minorUnits / factor)
+  })
+  return weekMap
+}
+
+function seedSectionWeekMaps(
+  section: Record<string, Record<string, Record<string, string>>>,
+  totalsByJob: Map<string, Map<string, string>>,
+  workweeks: NormalizedWorkweek[],
+  decimals: number,
+): Record<string, Record<string, Record<string, string>>> {
+  const seeded: Record<string, Record<string, Record<string, string>>> = {}
+  for (const [jobUuid, weekMapsByName] of Object.entries(section)) {
+    const jobTotals = totalsByJob.get(jobUuid)
+    const seededNames: Record<string, Record<string, string>> = {}
+    for (const [name, weekMap] of Object.entries(weekMapsByName)) {
+      const isAllBlank = workweeks.every(workweek => !weekMap[workweek.startDate])
+      const originalTotal = jobTotals?.get(name)
+      seededNames[name] =
+        isAllBlank && originalTotal && parseFloat(originalTotal) !== 0
+          ? evenlySplitTotal(originalTotal, workweeks, decimals)
+          : weekMap
+    }
+    seeded[jobUuid] = seededNames
+  }
+  return seeded
+}
+
+/**
+ * Seeds any hourly or overtime-affecting-earning line left entirely blank by
+ * a fresh {@link derivePayrollEditEmployeeDefaults} call (no real per-week
+ * breakdown to draw from) with an even split of its original flat total,
+ * instead of leaving it blank.
+ *
+ * @remarks
+ * Once any cell in a job is touched, {@link buildPayrollUpdateEmployeeCompensation}
+ * submits real breakdowns for every line in that job — a blank cell there
+ * means zero. Without this, revealing the workweek split and editing only
+ * one line (e.g. Overtime) while leaving a sibling line (e.g. Regular Hours)
+ * untouched would silently zero that sibling's original total the moment
+ * Save is pressed. An even split keeps the original total intact — the same
+ * total the backend itself would compute if no breakdown were sent at all —
+ * while remaining a value the user can freely overwrite with the real
+ * per-week distribution if they know it.
+ *
+ * @param hours - The `hours` section from a freshly-derived, revealed set of defaults.
+ * @param additionalEarnings - The `additionalEarnings` section from the same defaults.
+ * @param employeeCompensation - The prepared compensation, for each line's original flat total.
+ * @param workweeks - Normalized workweeks for the pay period.
+ * @returns The same two sections, with all-blank lines seeded to an even split.
+ * @internal
+ */
+export function seedRevealedWeekMaps(
+  hours: PayrollEditEmployeeFormData['hours'],
+  additionalEarnings: PayrollEditEmployeeFormData['additionalEarnings'],
+  employeeCompensation: PayrollEmployeeCompensationsType | undefined,
+  workweeks: NormalizedWorkweek[],
+): {
+  hours: PayrollEditEmployeeFormData['hours']
+  additionalEarnings: PayrollEditEmployeeFormData['additionalEarnings']
+} {
+  const hourlyTotals = groupOriginalTotals(
+    employeeCompensation?.hourlyCompensations,
+    compensation => compensation.hours,
+  )
+  const earningTotals = groupOriginalTotals(
+    employeeCompensation?.fixedCompensations,
+    compensation => compensation.amount,
+  )
+
+  return {
+    hours: seedSectionWeekMaps(hours, hourlyTotals, workweeks, HOURS_DECIMALS),
+    additionalEarnings: seedSectionWeekMaps(
+      additionalEarnings,
+      earningTotals,
+      workweeks,
+      AMOUNT_DECIMALS,
+    ),
   }
 }
