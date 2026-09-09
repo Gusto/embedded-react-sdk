@@ -153,8 +153,7 @@ function buildWeekMap(
   workweeks: NormalizedWorkweek[],
   total: string | undefined,
   breakdowns:
-    | Array<{ startDate?: RFCDate; endDate?: RFCDate; hours?: string; amount?: string }>
-    | undefined,
+    Array<{ startDate?: RFCDate; endDate?: RFCDate; hours?: string; amount?: string }> | undefined,
   isSplit: boolean,
 ): Record<string, string> {
   const weekMap: Record<string, string> = {}
