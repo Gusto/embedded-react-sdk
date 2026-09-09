@@ -107,7 +107,7 @@ describe('createContractorDetailsSchema', () => {
       expect(issueFor(result, 'firstName')?.message).toBe(INVALID_NAME)
     })
 
-    it('trims surrounding whitespace from firstName/lastName instead of rejecting it (regression for SDK-1300)', () => {
+    it('trims surrounding whitespace from firstName/lastName instead of rejecting it', () => {
       const result = parse(
         { ...validIndividualEmployerLed, firstName: 'John ', lastName: ' Doe' },
         { mode: 'create' },

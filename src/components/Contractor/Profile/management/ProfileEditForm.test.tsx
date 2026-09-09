@@ -134,7 +134,7 @@ describe('ProfileEditForm — individual contractor', () => {
     expect(await screen.findByText('Profile updated')).toBeInTheDocument()
   })
 
-  it('saves a first name with trailing whitespace instead of rejecting it as required (regression for SDK-1300)', async () => {
+  it('saves a first name with trailing whitespace instead of rejecting it as required', async () => {
     let requestBody: Record<string, unknown> | null = null
     const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
       requestBody = (await request.json()) as Record<string, unknown>
