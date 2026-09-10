@@ -600,11 +600,17 @@ jobs:
   # (e.g. time-off ↔ TimeOff). Adding or removing a domain folder is the
   # only thing required to add or remove a shard.
   #
-  # The selection is a two-stage filter:
+  # e2e now runs only on the merge queue and main, not on every
+  # push to a branch — running the full Playwright suite against the live
+  # demo backend on every commit to an open PR was overloading it.
+  # A plain push to any other branch short-circuits to an empty
+  # domain list here, which skips `e2e-setup` and `e2e` entirely.
+  #
+  # For merge_group events, the selection is a two-stage filter:
   #
   #   1. Drop files whose extension can't affect runtime or test
   #      behavior (.md, LICENSE, .gitignore, images, etc.). A docs-only
-  #      PR produces an empty filtered diff and skips e2e entirely.
+  #      change produces an empty filtered diff and skips e2e entirely.
   #   2. Of the surviving files, if any sit OUTSIDE every known domain's
   #      surface area (`src/components/<Pascal>/` or `e2e/tests/<kebab>/`),
   #      treat the change as cross-cutting and run every shard.

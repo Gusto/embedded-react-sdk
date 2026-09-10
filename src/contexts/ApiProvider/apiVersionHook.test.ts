@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import { apiVersionHook } from './apiVersionHook'
+import { SDK_VERSION } from './apiVersion'
 
 describe('apiVersionHook', () => {
   test('sets X-Gusto-API-Version header to 2025-06-15', () => {
@@ -9,6 +10,15 @@ describe('apiVersionHook', () => {
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest) as Request
 
     expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-06-15')
+  })
+
+  test('sets X-Gusto-SDK-Version header to the package name and version', () => {
+    const mockRequest = new Request('https://api.example.com/v1/companies')
+    const mockContext = {} as Parameters<typeof apiVersionHook.beforeRequest>[0]
+
+    const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest) as Request
+
+    expect(modifiedRequest.headers.get('X-Gusto-SDK-Version')).toBe(SDK_VERSION)
   })
 
   test('overrides existing X-Gusto-API-Version header', () => {

@@ -36,6 +36,14 @@ const SINGLE_WORKWEEK_PREPARE = {
   external: false,
   pay_period: { start_date: '2024-01-01', end_date: '2024-01-07' },
   workweeks: [{ start_date: '2024-01-01', end_date: '2024-01-07' }],
+  fixed_compensation_types: [
+    { name: 'Bonus' },
+    { name: 'Commission' },
+    { name: 'Correction Payment' },
+    { name: 'Cash Tips' },
+    { name: 'Paycheck Tips' },
+    { name: 'Reimbursement' },
+  ],
   employee_compensations: [
     {
       employee_uuid: 'emp-1',
@@ -295,7 +303,7 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(String(tiledHours)).toBe(hourly.hours)
   })
 
-  it('buckets earnings by overtime inclusion: Bonus into additional earnings, not other', async () => {
+  it('seeds every company earning type, bucketed by overtime inclusion', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(SINGLE_WORKWEEK_PREPARE)))
 
     const { result } = renderPayrollEditEmployeeForm()
@@ -309,11 +317,13 @@ describe('usePayrollEditEmployeeForm', () => {
     expect((form.Fields.jobs[0]!.hours as HourEntry[]).map(entry => entry.name)).toContain(
       'Regular Hours',
     )
-    // Bonus is included_in_overtime_pay in the earning-types mock, so it is an additional earning.
+    // Every company earning type is seeded (like the stable editor), even ones the prepared
+    // payroll has no fixed compensation for. Overtime-included types (Bonus, Commission,
+    // Correction Payment) become additional earnings; the rest (Cash/Paycheck Tips) become other.
     expect(
       (form.Fields.jobs[0]!.additionalEarnings as EarningEntry[]).map(entry => entry.name),
-    ).toEqual(['Bonus'])
-    expect(form.Fields.other).toHaveLength(0)
+    ).toEqual(['Bonus', 'Commission', 'Correction Payment'])
+    expect(form.Fields.other.map(entry => entry.id)).toEqual(['Cash Tips', 'Paycheck Tips'])
     expect(typeof form.Fields.paymentMethod).toBe('function')
     expect(data.isMultipleWorkweeks).toBe(false)
   })

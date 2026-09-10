@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
@@ -65,18 +65,25 @@ const basePayrollData: PayrollShow = {
 
 let mockPayrollData = { ...basePayrollData }
 let mockIsFetching = false
+let mockShowEmployees: { uuid: string; flsaStatus?: string }[] = []
+
+const buildMockPayrollQueryData = () => ({
+  payrollShow: mockPayrollData,
+  httpMeta: {
+    response: {
+      headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
+    },
+  },
+})
 
 vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGet: () => ({
-    data: {
-      payrollShow: mockPayrollData,
-      httpMeta: {
-        response: {
-          headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
-        },
-      },
-    },
+    data: buildMockPayrollQueryData(),
     isFetching: mockIsFetching,
+    // The submission poll drives its reads through this `refetch`, reusing the same query
+    // instead of building a second one — so it reads whatever `mockPayrollData` holds at call
+    // time, same as the render-driving `data` above.
+    refetch: () => Promise.resolve({ status: 'success', data: buildMockPayrollQueryData() }),
   }),
 }))
 
@@ -102,6 +109,12 @@ vi.mock('@gusto/embedded-api/react-query/bankAccountsGet', () => ({
 
 vi.mock('@gusto/embedded-api/react-query/wireInRequestsGet', () => ({
   useWireInRequestsGet: () => ({ data: undefined }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+  useEmployeesList: () => ({
+    data: { showEmployees: mockShowEmployees },
+  }),
 }))
 
 vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
@@ -136,8 +149,13 @@ describe('PayrollOverview polling', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers({ shouldAdvanceTime: true })
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('stops polling and emits RUN_PAYROLL_PROCESSED when processed is true even without submit_success status', async () => {
@@ -147,7 +165,7 @@ describe('PayrollOverview polling', () => {
       processingRequest: { status: 'submitting', errors: [] },
     }
 
-    const { rerender } = renderWithProviders(
+    renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
     )
 
@@ -161,9 +179,11 @@ describe('PayrollOverview polling', () => {
       processingRequest: { status: 'submitting', errors: [] },
     }
 
-    rerender(
-      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
-    )
+    // The poll reads through `buildPayrollsGetQuery` directly, independent of any render — advance
+    // its own timer past one interval so the next tick picks up the mutated mock data above.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
 
     await waitFor(() => {
       expect(mockOnEvent).toHaveBeenCalledWith(
@@ -180,7 +200,7 @@ describe('PayrollOverview polling', () => {
       processingRequest: { status: 'submitting', errors: [] },
     }
 
-    const { rerender } = renderWithProviders(
+    renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
     )
 
@@ -194,9 +214,9 @@ describe('PayrollOverview polling', () => {
       processingRequest: null as unknown as PayrollShow['processingRequest'],
     }
 
-    rerender(
-      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
-    )
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
 
     await waitFor(() => {
       expect(mockOnEvent).toHaveBeenCalledWith(
@@ -279,6 +299,47 @@ describe('PayrollOverview tax totals', () => {
     // Aggregate amount ($100.00) is shown; the page-level sum ($1.00) is not.
     expect(screen.getAllByText('$100.00').length).toBeGreaterThan(0)
     expect(screen.queryByText('$1.00')).not.toBeInTheDocument()
+  })
+})
+
+describe('PayrollOverview compensation type', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
+    mockShowEmployees = []
+  })
+
+  it('populates compensation type for a salaried employee with no hourlyCompensations entry', async () => {
+    const user = userEvent.setup()
+    mockPayrollData = {
+      ...basePayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-salaried',
+          firstName: 'Patricia',
+          lastName: 'Churchland',
+          excluded: false,
+          fixedCompensations: [{ name: 'Salary', amount: '2000.0' }],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          grossPay: '2000',
+          netPay: '1600',
+          checkAmount: '1600',
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+    mockShowEmployees = [{ uuid: 'emp-salaried', flsaStatus: 'Exempt' }]
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
+
+    expect(await screen.findByText('Salaried / Exempt')).toBeInTheDocument()
   })
 })
 

@@ -187,6 +187,7 @@ export const PayrollHistoryPresentation = ({
           },
           {
             title: t('columns.totalPayroll'),
+            justify: 'end',
             render: (item: Payroll) => formatNumberAsCurrency(calculateTotalPayroll(item)),
           },
         ]}
