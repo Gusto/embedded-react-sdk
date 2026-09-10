@@ -1,5 +1,5 @@
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import { normalizeToDate } from '@/helpers/dateFormatting'
+import { formatWireDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 
 const startOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
 
@@ -27,7 +27,8 @@ export function getPendingFutureHomeAddress(
     if (!raw) {
       return false
     }
-    const parsed = normalizeToDate(raw.toString())
+    const wireDateString = formatWireDateToStringDate(raw)
+    const parsed = wireDateString ? normalizeToDate(wireDateString) : null
     if (!parsed) {
       return false
     }
@@ -39,8 +40,8 @@ export function getPendingFutureHomeAddress(
   }
 
   pending.sort((a, b) => {
-    const as = a.effectiveDate?.toString() ?? ''
-    const bs = b.effectiveDate?.toString() ?? ''
+    const as = (a.effectiveDate && formatWireDateToStringDate(a.effectiveDate)) ?? ''
+    const bs = (b.effectiveDate && formatWireDateToStringDate(b.effectiveDate)) ?? ''
     return as.localeCompare(bs)
   })
 

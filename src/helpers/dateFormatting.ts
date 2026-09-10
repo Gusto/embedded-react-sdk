@@ -255,6 +255,29 @@ export const formatDateToStringDate = (date: Date): string | null => {
 }
 
 /**
+ * Formats a `Date` as a `YYYY-MM-DD` string using its UTC year, month, and day.
+ *
+ * @remarks Use this — never {@link formatDateToStringDate} or `.toString()` — for a
+ * date-only field read directly off an API response (e.g. a `PayrollUpdate`-adjacent
+ * inbound model). The generated client parses those wire strings via `new Date(wireString)`,
+ * which lands at UTC midnight; reading the result back with local components rolls the
+ * calendar day back by one in any timezone behind UTC. This is the read-side counterpart to
+ * that parse, not a general-purpose formatter — a `Date` built by our own code (a date
+ * picker, `normalizeToDate`) is local-midnight and should go through
+ * {@link formatDateToStringDate} instead.
+ *
+ * @param date - The date to format.
+ * @returns A `YYYY-MM-DD` string, or `null` when the input is an invalid date.
+ * @internal
+ */
+export const formatWireDateToStringDate = (date: Date): string | null => {
+  if (isNaN(date.getTime())) {
+    return null
+  }
+  return date.toISOString().slice(0, 10)
+}
+
+/**
  * Converts any parseable date string to a `YYYY-MM-DD` ISO string using local time.
  *
  * @remarks Reads the local year, month, and day so the calendar date is

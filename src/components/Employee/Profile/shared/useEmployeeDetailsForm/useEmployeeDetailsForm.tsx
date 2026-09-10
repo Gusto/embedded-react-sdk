@@ -8,7 +8,6 @@ import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeesCreateMutation } from '@gusto/embedded-api/react-query/employeesCreate'
 import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createEmployeeDetailsSchema,
   type EmployeeDetailsOptionalFieldsToRequire,
@@ -33,7 +32,7 @@ import type {
   SsnFieldProps,
   SelfOnboardingFieldProps,
 } from './fields'
-import { normalizeToISOString } from '@/helpers/dateFormatting'
+import { normalizeToDate, normalizeToISOString } from '@/helpers/dateFormatting'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -347,7 +346,7 @@ export function useEmployeeDetailsForm({
                   requestBody: {
                     ...body,
                     selfOnboarding,
-                    dateOfBirth: dateOfBirth ? new RFCDate(new Date(dateOfBirth)) : undefined,
+                    dateOfBirth: dateOfBirth ? normalizeToDate(dateOfBirth)! : undefined,
                     ssn: hasSsnInput ? cleanedSsn : undefined,
                   },
                 },

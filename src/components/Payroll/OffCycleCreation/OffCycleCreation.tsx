@@ -8,7 +8,6 @@ import {
   OffCycleReason as ApiOffCycleReason,
   WithholdingPayPeriod,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
@@ -197,9 +196,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
           requestBody: {
             offCycle: true,
             offCycleReason: LOCAL_TO_API_REASON[reason],
-            startDate: new RFCDate(startDate),
-            endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(checkDate),
+            startDate,
+            endDate,
+            checkDate,
             skipRegularDeductions: data.skipRegularDeductions,
             isCheckOnlyPayroll: data.isCheckOnly,
             employeeUuids,

@@ -1,7 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
 import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
@@ -18,7 +17,7 @@ import { useI18n } from '@/i18n'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
 /**
@@ -107,10 +106,9 @@ function Root({
     await baseSubmitHandler(data, async payload => {
       const { street1, street2, city, state, zip, birthday, email, ssn, ...signatoryData } = payload
 
-      const birthdayString = formatDateToStringDate(birthday) || ''
       const commonData = {
         ...signatoryData,
-        birthday: new RFCDate(birthdayString),
+        birthday,
         homeAddress: {
           street1,
           street2,
