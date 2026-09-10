@@ -13,7 +13,6 @@ import {
 } from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
 import { invalidateAllPayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
 import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { PayrollOption } from '../types'
 import { TerminateEmployeePresentation } from './TerminateEmployeePresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -22,7 +21,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 
 /**
  * Props for {@link TerminateEmployee}.
@@ -192,11 +191,11 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
                   requestBody: {
                     offCycle: true,
                     offCycleReason: OffCycleReason.DismissedEmployee,
-                    startDate: new RFCDate(terminationPeriod.startDate),
-                    endDate: new RFCDate(terminationPeriod.endDate),
+                    startDate: normalizeToDate(terminationPeriod.startDate)!,
+                    endDate: normalizeToDate(terminationPeriod.endDate)!,
                     employeeUuids: [employeeId],
                     checkDate: terminationPeriod.checkDate
-                      ? new RFCDate(terminationPeriod.checkDate)
+                      ? normalizeToDate(terminationPeriod.checkDate)!
                       : undefined,
                   },
                 },

@@ -10,7 +10,6 @@ import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySc
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
 import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createPayScheduleSchema,
   type PayScheduleOptionalFieldsToRequire,
@@ -50,7 +49,11 @@ import type {
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import {
+  formatDateToStringDate,
+  formatWireDateToStringDate,
+  normalizeToDate,
+} from '@/helpers/dateFormatting'
 
 export type { PayScheduleOptionalFieldsToRequire } from './payScheduleSchema'
 
@@ -308,9 +311,13 @@ export function usePayScheduleForm({
       currentPaySchedule?.day2 ?? partnerDefaults?.day2 ?? undefined,
     ),
     anchorPayDate:
-      currentPaySchedule?.anchorPayDate?.toString() ?? partnerDefaults?.anchorPayDate ?? null,
+      (currentPaySchedule?.anchorPayDate &&
+        formatWireDateToStringDate(currentPaySchedule.anchorPayDate)) ??
+      partnerDefaults?.anchorPayDate ??
+      null,
     anchorEndOfPayPeriod:
-      currentPaySchedule?.anchorEndOfPayPeriod?.toString() ??
+      (currentPaySchedule?.anchorEndOfPayPeriod &&
+        formatWireDateToStringDate(currentPaySchedule.anchorEndOfPayPeriod)) ??
       partnerDefaults?.anchorEndOfPayPeriod ??
       null,
     day1: currentPaySchedule?.day1 ?? partnerDefaults?.day1 ?? NaN,
@@ -355,9 +362,11 @@ export function usePayScheduleForm({
     {
       companyId,
       frequency: watchedFrequency,
-      ...(formattedAnchorPayDate && { anchorPayDate: new RFCDate(formattedAnchorPayDate) }),
+      ...(formattedAnchorPayDate && {
+        anchorPayDate: normalizeToDate(formattedAnchorPayDate)!,
+      }),
       ...(formattedAnchorEndOfPayPeriod && {
-        anchorEndOfPayPeriod: new RFCDate(formattedAnchorEndOfPayPeriod),
+        anchorEndOfPayPeriod: normalizeToDate(formattedAnchorEndOfPayPeriod)!,
       }),
       day1: watchedDay1 || undefined,
       day2: watchedDay2 || undefined,
@@ -408,8 +417,8 @@ export function usePayScheduleForm({
                   companyId,
                   payScheduleCreateRequest: {
                     frequency: payload.frequency,
-                    anchorPayDate: new RFCDate(anchorPayDate),
-                    anchorEndOfPayPeriod: new RFCDate(anchorEndOfPayPeriod),
+                    anchorPayDate: normalizeToDate(anchorPayDate)!,
+                    anchorEndOfPayPeriod: normalizeToDate(anchorEndOfPayPeriod)!,
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
@@ -425,8 +434,8 @@ export function usePayScheduleForm({
                   companyId,
                   payScheduleUpdateRequest: {
                     frequency: payload.frequency,
-                    anchorPayDate: new RFCDate(anchorPayDate),
-                    anchorEndOfPayPeriod: new RFCDate(anchorEndOfPayPeriod),
+                    anchorPayDate: normalizeToDate(anchorPayDate)!,
+                    anchorEndOfPayPeriod: normalizeToDate(anchorEndOfPayPeriod)!,
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,

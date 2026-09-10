@@ -9,7 +9,6 @@ import { useLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
 import { useEmployeeAddressesRetrieveWorkAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveWorkAddress'
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createWorkAddressSchema,
   type WorkAddressOptionalFieldsToRequire,
@@ -33,6 +32,7 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 export type { WorkAddressOptionalFieldsToRequire } from './workAddressSchema'
 
@@ -318,7 +318,7 @@ export function useWorkAddressForm({
                 : options?.effectiveDate
 
             const effectiveDateParam = resolvedEffectiveDate
-              ? new RFCDate(new Date(resolvedEffectiveDate))
+              ? normalizeToDate(resolvedEffectiveDate)!
               : undefined
 
             let updatedWorkAddress: EmployeeWorkAddress

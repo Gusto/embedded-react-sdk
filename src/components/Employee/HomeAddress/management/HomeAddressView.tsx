@@ -18,7 +18,12 @@ import { ActionsLayout, DataView, EmptyData, HamburgerMenu, useDataView } from '
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
+import {
+  addDays,
+  formatDateLongWithYear,
+  formatWireDateToStringDate,
+  normalizeToDate,
+} from '@/helpers/dateFormatting'
 import { formatStreetForDisplay, getCityStateZip } from '@/helpers/formattedStrings'
 
 function HomeAddressCourtesyWithholdingBlock({
@@ -186,8 +191,8 @@ export function HomeAddressView({
   }, [employeeDisplayName, t])
 
   const chronologicalAsc = [...(homeAddresses ?? [])].sort((a, b) => {
-    const aDate = a.effectiveDate?.toString() ?? ''
-    const bDate = b.effectiveDate?.toString() ?? ''
+    const aDate = (a.effectiveDate && formatWireDateToStringDate(a.effectiveDate)) ?? ''
+    const bDate = (b.effectiveDate && formatWireDateToStringDate(b.effectiveDate)) ?? ''
     if (!aDate && !bDate) return 0
     if (!aDate) return 1
     if (!bDate) return -1
@@ -202,7 +207,8 @@ export function HomeAddressView({
     if (idx === -1 || idx >= chronologicalAsc.length - 1) return '—'
     const nextStart = chronologicalAsc[idx + 1]?.effectiveDate
     if (!nextStart) return '—'
-    const nextDate = normalizeToDate(nextStart.toString())
+    const nextDateString = formatWireDateToStringDate(nextStart)
+    const nextDate = nextDateString ? normalizeToDate(nextDateString) : null
     if (!nextDate) return '—'
     const endDate = addDays(nextDate, -1)
     const y = endDate.getFullYear()
@@ -226,7 +232,7 @@ export function HomeAddressView({
       {
         title: t('columns.startDate'),
         render: (row: EmployeeAddress) =>
-          row.effectiveDate ? formatDateLongWithYear(row.effectiveDate.toString()) : '—',
+          row.effectiveDate ? formatDateLongWithYear(formatWireDateToStringDate(row.effectiveDate)) : '—',
       },
       {
         title: t('columns.endDate'),
@@ -381,7 +387,9 @@ export function HomeAddressView({
               {currentHomeAddress.effectiveDate ? (
                 <Components.Text variant="supporting">
                   {t('currentSince', {
-                    date: formatDateLongWithYear(currentHomeAddress.effectiveDate.toString()),
+                    date: formatDateLongWithYear(
+                      formatWireDateToStringDate(currentHomeAddress.effectiveDate),
+                    ),
                   })}
                 </Components.Text>
               ) : null}
@@ -396,7 +404,9 @@ export function HomeAddressView({
                   possessiveLabel: changePendingPossessiveLabel,
                   newAddress: formatPendingHomeAddressLine(pendingFutureAddress),
                   effectiveDate: pendingFutureAddress.effectiveDate
-                    ? formatDateLongWithYear(pendingFutureAddress.effectiveDate.toString())
+                    ? formatDateLongWithYear(
+                        formatWireDateToStringDate(pendingFutureAddress.effectiveDate),
+                      )
                     : '—',
                   interpolation: { escapeValue: false },
                 })}

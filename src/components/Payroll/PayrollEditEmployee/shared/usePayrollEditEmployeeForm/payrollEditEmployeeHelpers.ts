@@ -4,7 +4,6 @@ import {
   PayrollUpdatePaymentMethod,
   type PayrollUpdateEmployeeCompensations,
 } from '@gusto/embedded-api/models/components/payrollupdate'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type {
   PayrollEditEmployeeFormData,
   PayrollEditEmployeeFormOutputs,
@@ -13,6 +12,7 @@ import { PayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payroll
 import { cleanupReimbursements } from '@/components/Payroll/helpers'
 import { SDKInternalError } from '@/types/sdkError'
 import { EXCLUDED_ADDITIONAL_EARNINGS, FlsaStatus } from '@/shared/constants'
+import { formatWireDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 
 /** One fixed-compensation line off the prepared compensation. */
 type FixedCompensationEntry = NonNullable<
@@ -21,7 +21,7 @@ type FixedCompensationEntry = NonNullable<
 
 /**
  * Internal normalized form of a workweek: the API exposes
- * `{ startDate?: RFCDate; endDate?: RFCDate }`, but the hook keys week-maps by
+ * `{ startDate?: Date; endDate?: Date }`, but the hook keys week-maps by
  * `YYYY-MM-DD` strings and builds breakdowns from them, so both boundaries are
  * required strings here. Not part of the public surface — partners read the raw
  * workweeks off `data.preparedPayroll.workweeks` (the API type).
@@ -38,21 +38,21 @@ export interface NormalizedWorkweek {
  * {@link NormalizedWorkweek} boundary strings, falling back to a single
  * pay-period-spanning workweek when the API returns no workweek boundaries.
  *
- * @param workweeks - The prepared payroll's top-level `workweeks` (RFCDate boundaries), possibly `null`.
+ * @param workweeks - The prepared payroll's top-level `workweeks` (date boundaries), possibly `null`.
  * @param payPeriod - The prepared payroll's `payPeriod`, used as the single-workweek fallback.
  * @returns One entry per workweek; a single entry spanning the pay period when none are supplied.
  * @throws SDKInternalError when neither workweeks nor a pay period are present (a malformed prepared payroll).
  * @internal
  */
 export function normalizeWorkweeks(
-  workweeks: Array<{ startDate?: RFCDate; endDate?: RFCDate }> | null | undefined,
+  workweeks: Array<{ startDate?: Date; endDate?: Date }> | null | undefined,
   payPeriod: { startDate?: string; endDate?: string } | undefined,
 ): NormalizedWorkweek[] {
-  const normalized = (workweeks ?? []).flatMap(week =>
-    week.startDate && week.endDate
-      ? [{ startDate: week.startDate.toString(), endDate: week.endDate.toString() }]
-      : [],
-  )
+  const normalized = (workweeks ?? []).flatMap(week => {
+    const startDate = week.startDate && formatWireDateToStringDate(week.startDate)
+    const endDate = week.endDate && formatWireDateToStringDate(week.endDate)
+    return startDate && endDate ? [{ startDate, endDate }] : []
+  })
 
   if (normalized.length > 0) {
     return normalized
@@ -152,7 +152,7 @@ function formatAmountInput(value: string | null | undefined): string {
 function buildWeekMap(
   workweeks: NormalizedWorkweek[],
   total: string | undefined,
-  breakdowns: Array<{ startDate?: RFCDate; hours?: string; amount?: string }> | undefined,
+  breakdowns: Array<{ startDate?: Date; hours?: string; amount?: string }> | undefined,
   isSplit: boolean,
 ): Record<string, string> {
   const weekMap: Record<string, string> = {}
@@ -167,7 +167,9 @@ function buildWeekMap(
       weekMap[workweek.startDate] = index === 0 ? formatAmountInput(total) : ''
       return
     }
-    const breakdown = breakdowns?.find(entry => entry.startDate?.toString() === workweek.startDate)
+    const breakdown = breakdowns?.find(
+      entry => entry.startDate && formatWireDateToStringDate(entry.startDate) === workweek.startDate,
+    )
     weekMap[workweek.startDate] = formatAmountInput(breakdown?.hours ?? breakdown?.amount)
   })
 
@@ -388,8 +390,8 @@ export function buildPayrollUpdateEmployeeCompensation(
             name,
             hours: sumWeekValues(weekMap, workweeks, HOURS_DECIMALS),
             breakdowns: workweeks.map(workweek => ({
-              startDate: new RFCDate(workweek.startDate),
-              endDate: new RFCDate(workweek.endDate),
+              startDate: normalizeToDate(workweek.startDate)!,
+              endDate: normalizeToDate(workweek.endDate)!,
               hours: weekValue(weekMap, workweek.startDate),
             })),
           }
@@ -407,8 +409,8 @@ export function buildPayrollUpdateEmployeeCompensation(
             name,
             amount: sumWeekValues(weekMap, workweeks, AMOUNT_DECIMALS),
             breakdowns: workweeks.map(workweek => ({
-              startDate: new RFCDate(workweek.startDate),
-              endDate: new RFCDate(workweek.endDate),
+              startDate: normalizeToDate(workweek.startDate)!,
+              endDate: normalizeToDate(workweek.endDate)!,
               amount: weekValue(weekMap, workweek.startDate),
             })),
           }

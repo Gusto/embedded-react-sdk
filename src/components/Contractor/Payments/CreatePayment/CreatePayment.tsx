@@ -8,7 +8,6 @@ import type {
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
 import { useEffect, useRef, useState } from 'react'
 import DOMPurify from 'dompurify'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
@@ -17,7 +16,7 @@ import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { PreviewPresentation } from './PreviewPresentation'
 import { useCreatePaymentAmountsDictionary } from './useFormDictionary'
-import { addBusinessDays } from '@/helpers/dateFormatting'
+import { addBusinessDays, normalizeToDate } from '@/helpers/dateFormatting'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
   payrollSubmitHandler,
@@ -201,7 +200,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
       )
 
       const requestBody: PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody = {
-        checkDate: new RFCDate(paymentDate),
+        checkDate: normalizeToDate(paymentDate)!,
         contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
         creationToken,
         ...(submissionBlockers.length > 0 && { submissionBlockers }),
@@ -244,7 +243,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
             companyId,
             requestBody: {
               contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
-              checkDate: new RFCDate(paymentDate),
+              checkDate: normalizeToDate(paymentDate)!,
             },
           },
         })

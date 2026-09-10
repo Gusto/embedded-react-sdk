@@ -3,7 +3,6 @@ import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/r
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import type { PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as ContractorPaymentMethod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -17,7 +16,7 @@ import {
   useCreateHistoricalPaymentDictionary,
   useCreateHistoricalPaymentReviewDictionary,
 } from './useFormDictionary'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 import { ActionsLayout, Flex, FlexItem } from '@/components/Common'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -232,7 +231,7 @@ function AmountsAndReview({
         request: {
           companyId,
           requestBody: {
-            checkDate: new RFCDate(checkDate),
+            checkDate: normalizeToDate(checkDate)!,
             contractorPayments: touchedContractorPayments(),
           },
         },
@@ -259,7 +258,7 @@ function AmountsAndReview({
         request: {
           companyId,
           requestBody: {
-            checkDate: new RFCDate(checkDate),
+            checkDate: normalizeToDate(checkDate)!,
             creationToken,
             contractorPayments: touchedContractorPayments(),
           },

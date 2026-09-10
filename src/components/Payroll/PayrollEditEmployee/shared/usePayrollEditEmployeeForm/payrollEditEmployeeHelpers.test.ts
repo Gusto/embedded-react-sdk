@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { EarningTypeList } from '@gusto/embedded-api/models/components/earningtypelist'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
+import { formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 import {
   normalizeWorkweeks,
   collectOvertimeEarningNames,
@@ -28,9 +28,9 @@ const emptyFormData: PayrollEditEmployeeFormData = {
 }
 
 describe('normalizeWorkweeks', () => {
-  it('normalizes RFCDate boundaries to YYYY-MM-DD strings', () => {
+  it('normalizes Date boundaries to YYYY-MM-DD strings', () => {
     const result = normalizeWorkweeks(
-      [{ startDate: new RFCDate('2024-01-01'), endDate: new RFCDate('2024-01-07') }],
+      [{ startDate: normalizeToDate('2024-01-01')!, endDate: normalizeToDate('2024-01-07')! }],
       undefined,
     )
 
@@ -45,7 +45,10 @@ describe('normalizeWorkweeks', () => {
 
   it('drops workweeks missing a boundary', () => {
     const result = normalizeWorkweeks(
-      [{ startDate: new RFCDate('2024-01-01') }, { endDate: new RFCDate('2024-01-14') }],
+      [
+        { startDate: normalizeToDate('2024-01-01')! },
+        { endDate: normalizeToDate('2024-01-14')! },
+      ],
       { startDate: '2024-01-01', endDate: '2024-01-14' },
     )
 
@@ -172,13 +175,13 @@ describe('derivePayrollEditEmployeeDefaults', () => {
           hours: '60.0',
           breakdowns: [
             {
-              startDate: new RFCDate('2024-01-01'),
-              endDate: new RFCDate('2024-01-07'),
+              startDate: normalizeToDate('2024-01-01')!,
+              endDate: normalizeToDate('2024-01-07')!,
               hours: '40',
             },
             {
-              startDate: new RFCDate('2024-01-08'),
-              endDate: new RFCDate('2024-01-14'),
+              startDate: normalizeToDate('2024-01-08')!,
+              endDate: normalizeToDate('2024-01-14')!,
               hours: '20',
             },
           ],
@@ -259,10 +262,9 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
     const line = result.hourlyCompensations![0]!
     expect(line.hours).toBe('60')
     expect(line.breakdowns).toHaveLength(2)
-    expect(line.breakdowns!.map(breakdown => breakdown.startDate!.toString())).toEqual([
-      '2024-01-01',
-      '2024-01-08',
-    ])
+    expect(
+      line.breakdowns!.map(breakdown => formatDateToStringDate(breakdown.startDate!)),
+    ).toEqual(['2024-01-01', '2024-01-08'])
     expect(line.breakdowns!.map(breakdown => breakdown.hours)).toEqual(['40', '20'])
   })
 

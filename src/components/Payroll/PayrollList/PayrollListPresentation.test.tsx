@@ -3,13 +3,13 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { PayrollType } from './types'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import { mockUseContainerBreakpoints } from '@/test/setup'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
@@ -19,8 +19,8 @@ const mockPaySchedules: PayScheduleShow[] = [
   {
     uuid: 'schedule-1',
     frequency: 'Every week',
-    anchorPayDate: new RFCDate('2024-01-01'),
-    anchorEndOfPayPeriod: new RFCDate('2024-01-07'),
+    anchorPayDate: normalizeToDate('2024-01-01')!,
+    anchorEndOfPayPeriod: normalizeToDate('2024-01-07')!,
     customName: 'Weekly Schedule',
     active: true,
     version: '56a489ce86ed6c1b0f0cecc4050a0b01',
