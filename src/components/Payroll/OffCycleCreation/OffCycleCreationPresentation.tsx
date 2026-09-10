@@ -24,6 +24,8 @@ export function OffCycleCreationPresentation({
   isPending,
   minCheckDate,
   minCheckOnlyDate,
+  maxDate,
+  minPayPeriodDate,
   taxWithholdingConfig,
   isTaxWithholdingModalOpen,
   onTaxWithholdingEditClick,
@@ -94,6 +96,8 @@ export function OffCycleCreationPresentation({
         <OffCyclePayPeriodDateFormPresentation
           minCheckDate={minCheckDate}
           minCheckOnlyDate={minCheckOnlyDate}
+          maxDate={maxDate}
+          minPayPeriodDate={minPayPeriodDate}
         />
       </Flex>
 

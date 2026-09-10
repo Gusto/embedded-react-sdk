@@ -359,6 +359,20 @@ export const addDays = (date: Date, days: number): Date => {
 }
 
 /**
+ * Returns a new `Date` offset by a given number of years.
+ *
+ * @param date - The base date. Not mutated.
+ * @param years - Number of years to add (negative values subtract).
+ * @returns A new `Date` shifted by `years`.
+ * @internal
+ */
+export const addYears = (date: Date, years: number): Date => {
+  const result = new Date(date)
+  result.setFullYear(result.getFullYear() + years)
+  return result
+}
+
+/**
  * Returns a new `Date` offset by a given number of business days (Monday–Friday).
  *
  * @remarks Skips Saturdays and Sundays when counting. The result is normalized
