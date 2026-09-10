@@ -224,6 +224,21 @@ function formatAmountInput(value: string | null | undefined): string {
 }
 
 /**
+ * Seeds a cell from a line's total: same as {@link formatAmountInput} except a
+ * zero total yields `''` rather than `"0"`. A line whose total is zero (e.g. an
+ * Overtime line with no overtime) should render as a blank cell the user can
+ * fill in, not a pre-filled `0` — and a pre-filled `0` would also count as a
+ * filled cell, tripping the per-row "fill every workweek" check for a line the
+ * user never actually touched. Only used for total-seeded cells, never for real
+ * per-week breakdown values (a genuine `0` breakdown must survive to keep a
+ * matched split's tiling intact).
+ */
+function formatSeededTotal(value: string | null | undefined): string {
+  const formatted = formatAmountInput(value)
+  return formatted === '0' ? '' : formatted
+}
+
+/**
  * Builds one job+name line's week map in one of three shapes, gated by
  * `isSplit` (`workweeks.length > 1 && isOvertimeEligible && withOvertime`):
  *
@@ -247,7 +262,7 @@ function buildWeekMap(
   const firstWorkweekStart = workweeks[0]?.startDate ?? ''
 
   if (!isSplit) {
-    return { [firstWorkweekStart]: formatAmountInput(total) }
+    return { [firstWorkweekStart]: formatSeededTotal(total) }
   }
 
   const weekMap: Record<string, string> = {}
@@ -260,7 +275,7 @@ function buildWeekMap(
     })
   } else {
     workweeks.forEach((workweek, index) => {
-      weekMap[workweek.startDate] = index === 0 ? formatAmountInput(total) : ''
+      weekMap[workweek.startDate] = index === 0 ? formatSeededTotal(total) : ''
     })
   }
   return weekMap

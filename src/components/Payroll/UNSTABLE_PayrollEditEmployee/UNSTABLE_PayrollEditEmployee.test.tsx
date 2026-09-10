@@ -248,14 +248,14 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Add overtime' }))
 
-    // Fill the second workweek of every seeded row so no row is left partial.
-    const fillSecondWeek = async (namePrefix: RegExp) => {
-      const field = screen.getByRole('spinbutton', { name: namePrefix })
-      await user.clear(field)
-      await user.type(field, '0')
-    }
-    await fillSecondWeek(/^Regular Hours Jan 8–Jan 14, 2024/)
-    await fillSecondWeek(/^Overtime Jan 8–Jan 14, 2024/)
+    // Regular Hours is seeded into its first cell, so its second must be filled
+    // to complete the row. Overtime/Double-overtime are left entirely blank
+    // (untouched), which is valid and simply sends nothing for them.
+    const regularWeekTwo = screen.getByRole('spinbutton', {
+      name: /^Regular Hours Jan 8–Jan 14, 2024/,
+    })
+    await user.clear(regularWeekTwo)
+    await user.type(regularWeekTwo, '0')
 
     await user.click(screen.getByRole('button', { name: 'Save' }))
 

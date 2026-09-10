@@ -227,6 +227,37 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     })
   })
 
+  it('seeds a zero-total line as a blank first cell, not "0", when split without matching breakdowns', () => {
+    const withZeroOvertime: PayrollEmployeeCompensationsType = {
+      ...compensation,
+      hourlyCompensations: [
+        { jobUuid: 'job-1', name: 'Regular Hours', hours: '80' },
+        { jobUuid: 'job-1', name: 'Overtime', hours: '0' },
+      ],
+    }
+
+    const defaults = derivePayrollEditEmployeeDefaults(
+      withZeroOvertime,
+      [WEEK_ONE, WEEK_TWO],
+      true,
+      new Set(),
+      true,
+      true,
+    )
+
+    // A real total seeds its first cell; a zero total leaves every cell blank so
+    // the user sees an empty input, not a pre-filled 0 (which would also trip the
+    // per-row completeness check for a line they never touched).
+    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
+      '2024-01-01': '80',
+      '2024-01-08': '',
+    })
+    expect(defaults.hours['job-1']!.Overtime).toEqual({
+      '2024-01-01': '',
+      '2024-01-08': '',
+    })
+  })
+
   it('forces Check when the employee has no direct deposit set up', () => {
     const defaults = derivePayrollEditEmployeeDefaults(
       compensation,
