@@ -63,6 +63,7 @@
   },
   "validations": {
     "reimbursementAmount": "Amount must be greater than zero",
-    "negativeAmount": "Amount cannot be negative"
+    "negativeAmount": "Amount cannot be negative",
+    "requiredWorkweek": "Enter an amount for every workweek"
   }
 }

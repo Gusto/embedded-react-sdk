@@ -8,8 +8,12 @@ import {
   type HourEntry,
   type TimeOffEntry,
 } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/fields'
-import type { PayrollEditEmployeeFormData } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
+import {
+  PayrollEditEmployeeErrorCodes,
+  type PayrollEditEmployeeFormData,
+} from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
 import styles from './UNSTABLE_PayrollEditEmployee.module.scss'
+import { useFieldErrorMessage } from '@/partner-hook-utils/form/useFieldErrorMessage'
 import {
   componentEvents,
   COMPENSATION_NAME_REGULAR_HOURS,
@@ -43,10 +47,12 @@ import InfoIcon from '@/assets/icons/info.svg?react'
  * enabled. Consumes {@link usePayrollEditEmployeeForm} and renders the header, server-provided
  * gross pay, the hours / additional-earnings / time-off / other / payment-method sections, and the
  * `Cancel`/`Save` controls, performing a real payroll update on save. For an overtime-eligible
- * employee on a multi-workweek payroll, Overtime/Double-overtime rows start hidden behind an
- * "add overtime" control unless the employee already has real overtime hours; revealing them also
- * switches hours and overtime-affecting earnings to per-workweek columns. `Cancel` and `Save` emit
- * the same events as the stable component so the surrounding flow behaves identically.
+ * employee on a multi-workweek payroll, Overtime/Double-overtime rows start hidden behind a single,
+ * employee-level "Add overtime" control (`form.data.withOvertime` / `form.actions.addOvertime`)
+ * unless the employee already has real overtime hours or matching per-workweek breakdowns; adding
+ * overtime also switches hours and overtime-affecting earnings to per-workweek columns and surfaces
+ * the per-row "fill in every workweek" validation. `Cancel` and `Save` emit the same events as the
+ * stable component so the surrounding flow behaves identically.
  *
  * @internal
  */
@@ -93,6 +99,52 @@ function TimeOffTypeCell({
         <Text variant="supporting">{t('timeOffBalance.remaining', { balance: remaining })}</Text>
       ) : null}
     </Flex>
+  )
+}
+
+/**
+ * One bound hours/earnings cell that resolves its own validation message from
+ * the field's current error code. A split cell (one with `workweekStart`) can
+ * fail either the negative-amount or required-workweek check; a collapsed cell
+ * binds to a single workweek key, so only the negative-amount check can fire
+ * (the per-row completeness rule is a structural no-op there). Rendered inside
+ * the form provider so `useFieldErrorMessage` can read the react-hook-form error.
+ */
+function BreakdownCell({
+  entry,
+  pathPrefix,
+  label,
+  adornmentStart,
+  adornmentEnd,
+}: {
+  entry: HourEntry
+  pathPrefix: 'hours' | 'additionalEarnings'
+  label: string
+  adornmentStart?: string
+  adornmentEnd?: string
+}) {
+  const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
+  const negativeAmount = t('validations.negativeAmount')
+  const resolvedError = useFieldErrorMessage(
+    entry.workweekStart
+      ? `${pathPrefix}.${entry.jobUuid}.${entry.name}.${entry.workweekStart}`
+      : '',
+    {
+      [PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT]: negativeAmount,
+      [PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK]: t('validations.requiredWorkweek'),
+    },
+  )
+
+  return (
+    <div className={styles.inputContainer}>
+      <entry.Field
+        label={label}
+        shouldVisuallyHideLabel
+        adornmentStart={adornmentStart}
+        adornmentEnd={adornmentEnd}
+        errorMessage={resolvedError ?? negativeAmount}
+      />
+    </div>
   )
 }
 
@@ -178,6 +230,7 @@ const Root = ({
     })
 
   const renderBreakdownSection = (
+    pathPrefix: 'hours' | 'additionalEarnings',
     section: HourEntry[] | Record<string, HourEntry[]>,
     options: {
       title: string
@@ -206,15 +259,13 @@ const Root = ({
     if (rows.length === 0 && !footer) return null
 
     const renderField = (entry: HourEntry, fieldLabel: string) => (
-      <div className={styles.inputContainer}>
-        <entry.Field
-          label={fieldLabel}
-          shouldVisuallyHideLabel
-          adornmentStart={adornmentStart}
-          adornmentEnd={adornmentEnd}
-          errorMessage={t('validations.negativeAmount')}
-        />
-      </div>
+      <BreakdownCell
+        entry={entry}
+        pathPrefix={pathPrefix}
+        label={fieldLabel}
+        adornmentStart={adornmentStart}
+        adornmentEnd={adornmentEnd}
+      />
     )
 
     const valueColumn: useDataViewPropReturn<HourEntry>['columns'][number] = {
@@ -345,27 +396,31 @@ const Root = ({
               </Flex>
             </Flex>
 
-            {Fields.jobs.map(job => {
+            {Fields.jobs.map((job, index) => {
               const isMultiJob = Fields.jobs.length > 1
               const genericHoursTitle = form.data.isOvertimeEligible
                 ? t('regularHoursTitle')
                 : t('regularHoursTitleWithoutOvertime')
+              // One "Add overtime" affordance for the whole employee, not one per
+              // job -- attach it to the first job's hours box only.
+              const showAddOvertime =
+                index === 0 && !form.data.withOvertime && form.data.isOvertimeEligible
 
               return (
                 <Flex key={job.jobUuid} flexDirection="column" gap={16}>
                   {isMultiJob ? <Heading as="h3">{genericHoursTitle}</Heading> : null}
-                  {renderBreakdownSection(job.hours, {
+                  {renderBreakdownSection('hours', job.hours, {
                     title: isMultiJob ? (job.title ?? genericHoursTitle) : genericHoursTitle,
                     label: genericHoursTitle,
                     rowHeader: t('hourTypeColumn'),
                     valueColumnLabel: t('hoursColumn'),
                     labelFor: hoursLabel,
                     adornmentEnd: t('hoursUnit'),
-                    footer: job.hasHiddenOvertime ? (
+                    footer: showAddOvertime ? (
                       <Button
                         variant="secondary"
                         onClick={() => {
-                          form.actions.revealOvertime()
+                          form.actions.addOvertime()
                         }}
                         title={t('addOvertimeCta')}
                       >
@@ -373,7 +428,7 @@ const Root = ({
                       </Button>
                     ) : undefined,
                   })}
-                  {renderBreakdownSection(job.additionalEarnings, {
+                  {renderBreakdownSection('additionalEarnings', job.additionalEarnings, {
                     title: t('additionalEarningsTitle'),
                     label: t('additionalEarningsTitle'),
                     rowHeader: t('typeColumn'),

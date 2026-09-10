@@ -215,6 +215,56 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     expect(updateBody).not.toBeNull()
   })
 
+  it('blocks Save and shows the required-workweek error when a revealed row is left partially filled', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(multiWorkweekPrepare('0')),
+    )
+    server.use(handlePayrollsUpdate(updateResolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Add overtime' }))
+    // addOvertime seeds each line's first workweek cell and leaves the second
+    // blank -- a partial row. Saving must surface the required-workweek error.
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(await screen.findAllByText('Enter an amount for every workweek')).not.toHaveLength(0)
+    expect(updateResolver).not.toHaveBeenCalled()
+  })
+
+  it('saves per-workweek breakdowns once every revealed cell is filled', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
+    let updateBody: Record<string, unknown> | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json(multiWorkweekPrepare('0'))
+    })
+    server.use(handlePayrollsUpdate(updateResolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Add overtime' }))
+
+    // Fill the second workweek of every seeded row so no row is left partial.
+    const fillSecondWeek = async (namePrefix: RegExp) => {
+      const field = screen.getByRole('spinbutton', { name: namePrefix })
+      await user.clear(field)
+      await user.type(field, '0')
+    }
+    await fillSecondWeek(/^Regular Hours Jan 8–Jan 14, 2024/)
+    await fillSecondWeek(/^Overtime Jan 8–Jan 14, 2024/)
+
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(updateBody).not.toBeNull()
+  })
+
   it('cancels without calling the update endpoint', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const updateResolver = vi.fn<HttpResponseResolver>(() =>
