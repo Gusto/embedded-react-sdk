@@ -129,6 +129,24 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     ).toBeInTheDocument()
   })
 
+  it('flags each empty workweek cell of a partial row on save', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(multiWorkweekPrepare('0')),
+    )
+    server.use(handlePayrollsUpdate(updateResolver))
+    const user = userEvent.setup()
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Add overtime' }))
+    // Add overtime seeds only the first cell (Regular Hours 80), leaving the
+    // second week blank -- a partial row. Saving must surface the required error.
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(await screen.findAllByText('Enter a value for each week')).not.toHaveLength(0)
+    expect(updateResolver).not.toHaveBeenCalled()
+  })
+
   it('starts already split, with no Add overtime button, when the employee already has overtime hours', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('5'))))
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)

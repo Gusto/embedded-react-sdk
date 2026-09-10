@@ -23,6 +23,7 @@ export const PAYMENT_METHOD_OPTIONS = PAYMENT_METHOD_VALUES.map(value => ({ valu
  */
 export const PayrollEditEmployeeErrorCodes = {
   NEGATIVE_AMOUNT: 'NEGATIVE_AMOUNT',
+  REQUIRED_WORKWEEK: 'REQUIRED_WORKWEEK',
   REIMBURSEMENT_AMOUNT: 'REIMBURSEMENT_AMOUNT',
 } as const
 
@@ -44,6 +45,30 @@ const NON_NEGATIVE = /^\d+(\.\d+)?$/
 // non-negative number.
 const nonNegativeAmount = z.string().refine(value => value === '' || NON_NEGATIVE.test(value), {
   message: PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT,
+})
+
+// One overtime-affecting line's per-workweek cells (a "row"): a record keyed by
+// workweek start date. A row is all-or-nothing in the split view — either every
+// cell is blank (the line stays a flat, untouched total) or every cell is filled
+// (the line submits real breakdowns). A partial row (some filled, some blank)
+// flags each blank cell REQUIRED_WORKWEEK so the user must complete it.
+//
+// In the collapsed (flat) view a row has exactly one cell (see buildWeekMap), so
+// this rule is a natural no-op there: a single cell is trivially all-blank or
+// all-filled.
+const workweekRow = z.record(z.string(), nonNegativeAmount).superRefine((weekMap, ctx) => {
+  const entries = Object.entries(weekMap)
+  const filledCount = entries.filter(([, value]) => value !== '').length
+  if (filledCount === 0 || filledCount === entries.length) return
+  for (const [workweekStart, value] of entries) {
+    if (value === '') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK,
+        path: [workweekStart],
+      })
+    }
+  }
 })
 
 // Committed reimbursement rows are presentational passthrough: they hold data
@@ -78,22 +103,20 @@ export const reimbursementDraftSchema = z.object({
  * @remarks
  * Overtime-affecting values are keyed by workweek internally: hours and
  * additional earnings are job-then-name-then-workweekStart records, so the
- * single-workweek case is just the degenerate one-key form of the multi-workweek
- * shape. Non-overtime earnings (other) are flat job-then-name-to-amount records
- * with no per-workweek breakdown, since they do not feed the blended rate. Time
- * off and final payout are keyed by compensation name. This keeps one schema and
- * one submit path.
+ * collapsed (flat) case is just the degenerate one-key form of the multi-workweek
+ * shape. Each innermost row is validated all-or-nothing across its workweek cells
+ * (see {@link PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK}). Non-overtime
+ * earnings (other) are flat job-then-name-to-amount records with no per-workweek
+ * breakdown, since they do not feed the blended rate. Time off and final payout
+ * are keyed by compensation name. This keeps one schema and one submit path.
  *
  * @returns The Zod schema validating {@link PayrollEditEmployeeFormData}.
  * @internal
  */
 export function createPayrollEditEmployeeSchema() {
   return z.object({
-    hours: z.record(z.string(), z.record(z.string(), z.record(z.string(), nonNegativeAmount))),
-    additionalEarnings: z.record(
-      z.string(),
-      z.record(z.string(), z.record(z.string(), nonNegativeAmount)),
-    ),
+    hours: z.record(z.string(), z.record(z.string(), workweekRow)),
+    additionalEarnings: z.record(z.string(), z.record(z.string(), workweekRow)),
     other: z.record(z.string(), z.record(z.string(), nonNegativeAmount)),
     timeOff: z.record(z.string(), nonNegativeAmount),
     finalPayout: z.record(z.string(), nonNegativeAmount),

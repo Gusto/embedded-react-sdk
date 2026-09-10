@@ -90,6 +90,70 @@ describe('createPayrollEditEmployeeSchema', () => {
     expect(result.success).toBe(true)
   })
 
+  it('treats a workweek row with every cell blank as valid (submittable)', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '', '2025-01-08': '' } } },
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('treats a workweek row with every cell filled as valid', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '40', '2025-01-08': '20' } } },
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('flags each blank cell of a partial workweek row with REQUIRED_WORKWEEK', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: {
+        'job-1': { 'Regular Hours': { '2025-01-01': '40', '2025-01-08': '', '2025-01-15': '' } },
+      },
+    })
+
+    expect(result.success).toBe(false)
+    const requiredIssues = result.error!.issues.filter(
+      issue => issue.message === PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK,
+    )
+    expect(requiredIssues.map(issue => issue.path)).toEqual([
+      ['hours', 'job-1', 'Regular Hours', '2025-01-08'],
+      ['hours', 'job-1', 'Regular Hours', '2025-01-15'],
+    ])
+  })
+
+  it('applies the same partial-row rule to additional earnings', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      additionalEarnings: { 'job-1': { Bonus: { '2025-01-01': '100', '2025-01-08': '' } } },
+    })
+
+    expect(result.success).toBe(false)
+    expect(
+      result.error!.issues.some(
+        issue => issue.message === PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK,
+      ),
+    ).toBe(true)
+  })
+
+  it('does not flag a single-cell (collapsed) row, filled or blank', () => {
+    const filled = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '40' } } },
+    })
+    const blank = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '' } } },
+    })
+
+    expect(filled.success).toBe(true)
+    expect(blank.success).toBe(true)
+  })
+
   it('allows paymentMethod to be omitted', () => {
     const result = schema.safeParse(baseFormData)
 

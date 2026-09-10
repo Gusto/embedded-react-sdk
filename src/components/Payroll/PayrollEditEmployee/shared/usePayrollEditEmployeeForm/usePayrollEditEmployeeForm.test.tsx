@@ -60,21 +60,80 @@ const SINGLE_WORKWEEK_PREPARE = {
   ],
 }
 
-const MULTI_WORKWEEK_PREPARE = {
+const WORKWEEKS = [
+  { start_date: '2024-01-01', end_date: '2024-01-07' },
+  { start_date: '2024-01-08', end_date: '2024-01-14' },
+]
+
+// Case 1: no overtime hours and no breakdowns -> overtime off, collapsed on load.
+const COLLAPSED_PREPARE = {
   payroll_uuid: 'payroll-1',
   uuid: 'payroll-1',
   off_cycle: false,
   external: false,
   pay_period: { start_date: '2024-01-01', end_date: '2024-01-14' },
-  workweeks: [
-    { start_date: '2024-01-01', end_date: '2024-01-07' },
-    { start_date: '2024-01-08', end_date: '2024-01-14' },
+  workweeks: WORKWEEKS,
+  employee_compensations: [
+    {
+      employee_uuid: 'emp-1',
+      gross_pay: '1200.00',
+      version: 'comp-collapsed',
+      payment_method: 'Direct Deposit',
+      hourly_compensations: [
+        {
+          job_uuid: 'job-1',
+          name: 'Regular Hours',
+          hours: '80',
+          flsa_status: 'Nonexempt',
+          breakdowns: [],
+        },
+        {
+          job_uuid: 'job-1',
+          name: 'Overtime',
+          hours: '0',
+          flsa_status: 'Nonexempt',
+          breakdowns: [],
+        },
+      ],
+      fixed_compensations: [],
+      paid_time_off: [],
+      reimbursements: [],
+    },
   ],
+}
+
+// Case 1 variant with a single Regular Hours line, for the per-row validation flow.
+const COLLAPSED_REGULAR_ONLY_PREPARE = {
+  ...COLLAPSED_PREPARE,
+  employee_compensations: [
+    {
+      ...COLLAPSED_PREPARE.employee_compensations[0],
+      hourly_compensations: [
+        {
+          job_uuid: 'job-1',
+          name: 'Regular Hours',
+          hours: '80',
+          flsa_status: 'Nonexempt',
+          breakdowns: [],
+        },
+      ],
+    },
+  ],
+}
+
+// Case 2: existing breakdowns tiling the workweeks -> overtime on, split from breakdowns.
+const BREAKDOWNS_PREPARE = {
+  payroll_uuid: 'payroll-1',
+  uuid: 'payroll-1',
+  off_cycle: false,
+  external: false,
+  pay_period: { start_date: '2024-01-01', end_date: '2024-01-14' },
+  workweeks: WORKWEEKS,
   employee_compensations: [
     {
       employee_uuid: 'emp-1',
       gross_pay: '1500.00',
-      version: 'comp-v2',
+      version: 'comp-breakdowns',
       payment_method: 'Direct Deposit',
       hourly_compensations: [
         {
@@ -95,27 +154,32 @@ const MULTI_WORKWEEK_PREPARE = {
   ],
 }
 
-const MULTI_WORKWEEK_NO_BREAKDOWNS_PREPARE = {
+// Case 3: overtime hours but no matching breakdowns -> overtime on, first cell seeded only.
+const OVERTIME_NO_BREAKDOWNS_PREPARE = {
   payroll_uuid: 'payroll-1',
   uuid: 'payroll-1',
   off_cycle: false,
   external: false,
   pay_period: { start_date: '2024-01-01', end_date: '2024-01-14' },
-  workweeks: [
-    { start_date: '2024-01-01', end_date: '2024-01-07' },
-    { start_date: '2024-01-08', end_date: '2024-01-14' },
-  ],
+  workweeks: WORKWEEKS,
   employee_compensations: [
     {
       employee_uuid: 'emp-1',
-      gross_pay: '1200.00',
-      version: 'comp-v3',
+      gross_pay: '1700.00',
+      version: 'comp-ot-flat',
       payment_method: 'Direct Deposit',
       hourly_compensations: [
         {
           job_uuid: 'job-1',
           name: 'Regular Hours',
-          hours: '80.000',
+          hours: '80',
+          flsa_status: 'Nonexempt',
+          breakdowns: [],
+        },
+        {
+          job_uuid: 'job-1',
+          name: 'Overtime',
+          hours: '5',
           flsa_status: 'Nonexempt',
           breakdowns: [],
         },
@@ -149,7 +213,8 @@ interface CapturedBody {
   employee_compensations: CapturedComp[]
 }
 
-// A two-workweek payroll whose hourly line carries breakdowns and a given FLSA status.
+// A two-workweek payroll whose hourly line carries matching breakdowns and a given
+// FLSA status (a case-2 fixture: overtime starts on for eligible employees).
 function multiWorkweekPrepareWithFlsa(flsaStatus: string | undefined) {
   return {
     payroll_uuid: 'payroll-1',
@@ -157,10 +222,7 @@ function multiWorkweekPrepareWithFlsa(flsaStatus: string | undefined) {
     off_cycle: false,
     external: false,
     pay_period: { start_date: '2024-01-01', end_date: '2024-01-14' },
-    workweeks: [
-      { start_date: '2024-01-01', end_date: '2024-01-07' },
-      { start_date: '2024-01-08', end_date: '2024-01-14' },
-    ],
+    workweeks: WORKWEEKS,
     employee_compensations: [
       {
         employee_uuid: 'emp-1',
@@ -267,15 +329,8 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(submitResult).toEqual(expect.objectContaining({ mode: 'update' }))
   })
 
-  it('tiles every workweek exactly for a multi-workweek pay period', async () => {
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(MULTI_WORKWEEK_PREPARE)))
-
-    let updateBody: CapturedBody | null = null
-    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
-      updateBody = (await request.json()) as CapturedBody
-      return HttpResponse.json(MULTI_WORKWEEK_PREPARE)
-    })
-    server.use(handlePayrollsUpdate(updateResolver))
+  it('starts with overtime off and collapsed when there are no overtime hours and no breakdowns', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(COLLAPSED_PREPARE)))
 
     const { result } = renderPayrollEditEmployeeForm()
     await waitFor(() => {
@@ -283,35 +338,83 @@ describe('usePayrollEditEmployeeForm', () => {
     })
     assertReady(result.current)
 
-    // This fixture's Regular-Hours-only line carries no existing overtime, so the
-    // editor starts collapsed; reveal to exercise the split/tiling path.
+    expect(result.current.data.withOvertime).toBe(false)
+    const job = result.current.form.Fields.jobs[0]!
+    expect(isSplitByWorkweek(job.hours)).toBe(false)
+    // Overtime rows are filtered out of the flat view while overtime is off.
+    expect((job.hours as HourEntry[]).map(entry => entry.name)).toEqual(['Regular Hours'])
+  })
+
+  it('starts with overtime on and split-from-breakdowns when breakdowns match the workweeks', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(BREAKDOWNS_PREPARE)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+
+    expect(result.current.data.withOvertime).toBe(true)
+    expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
+
+    const { getValues } = result.current.form.hookFormInternals.formMethods
+    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('40')
+    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('20')
+  })
+
+  it('starts with overtime on and seeds only the first cell when there are overtime hours but no breakdowns', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(OVERTIME_NO_BREAKDOWNS_PREPARE)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+
+    expect(result.current.data.withOvertime).toBe(true)
+    expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
+
+    const { getValues } = result.current.form.hookFormInternals.formMethods
+    // Each line's total lands in its first cell; every other cell is blank.
+    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('80')
+    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('')
+    expect(getValues('hours.job-1.Overtime.2024-01-01')).toBe('5')
+    expect(getValues('hours.job-1.Overtime.2024-01-08')).toBe('')
+  })
+
+  it('addOvertime turns overtime on, splits the section, and seeds only the first cell', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(COLLAPSED_PREPARE)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+    expect(result.current.data.withOvertime).toBe(false)
+
     act(() => {
       assertReady(result.current)
-      result.current.actions.revealOvertime()
+      result.current.actions.addOvertime()
     })
+
     await waitFor(() => {
       assertReady(result.current)
+      expect(result.current.data.withOvertime).toBe(true)
       expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
     })
-    const ready = result.current
 
-    await act(async () => {
-      await ready.actions.onSubmit()
-    })
-
-    expect(updateResolver).toHaveBeenCalledTimes(1)
-    const hourly = updateBody!.employee_compensations[0]!.hourly_compensations![0]!
-    expect(hourly).toMatchObject({ name: 'Regular Hours', hours: '60' })
-    expect(hourly.breakdowns).toEqual([
-      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '40' },
-      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '20' },
-    ])
-
-    const tiledHours = hourly.breakdowns!.reduce(
-      (sum, breakdown) => sum + parseFloat(breakdown.hours ?? '0'),
-      0,
+    // The Overtime row is un-hidden by turning overtime on.
+    const weekOne = (result.current.form.Fields.jobs[0]!.hours as Record<string, HourEntry[]>)[
+      '2024-01-01'
+    ]!
+    expect(weekOne.map(entry => entry.name)).toEqual(
+      expect.arrayContaining(['Regular Hours', 'Overtime']),
     )
-    expect(String(tiledHours)).toBe(hourly.hours)
+
+    const { getValues } = result.current.form.hookFormInternals.formMethods
+    // First cell seeded with the total, every other cell blank -- no even split.
+    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('80')
+    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('')
   })
 
   it('seeds every company earning type, bucketed by overtime inclusion', async () => {
@@ -337,34 +440,6 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(form.Fields.other.map(entry => entry.id)).toEqual(['Cash Tips', 'Paycheck Tips'])
     expect(typeof form.Fields.paymentMethod).toBe('function')
     expect(data.isMultipleWorkweeks).toBe(false)
-  })
-
-  it('splits the hours section by workweek once revealed for a multi-workweek pay period', async () => {
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(MULTI_WORKWEEK_PREPARE)))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-    // No existing overtime in this fixture, so it starts collapsed.
-    expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(false)
-    expect(result.current.data.isMultipleWorkweeks).toBe(true)
-
-    act(() => {
-      assertReady(result.current)
-      result.current.actions.revealOvertime()
-    })
-
-    await waitFor(() => {
-      assertReady(result.current)
-      const { hours } = result.current.form.Fields.jobs[0]!
-      expect(isSplitByWorkweek(hours)).toBe(true)
-      expect(Object.keys(hours as Record<string, HourEntry[]>)).toEqual([
-        '2024-01-01',
-        '2024-01-08',
-      ])
-    })
   })
 
   it('groups hours into one jobs entry per job, with titles', async () => {
@@ -427,13 +502,13 @@ describe('usePayrollEditEmployeeForm', () => {
     })
   })
 
-  it('resends the original total without breakdowns when a multi-workweek line is left unsplit', async () => {
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(MULTI_WORKWEEK_NO_BREAKDOWNS_PREPARE)))
+  it('resends the original total without breakdowns when a multi-workweek line stays collapsed', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(COLLAPSED_REGULAR_ONLY_PREPARE)))
 
     let updateBody: CapturedBody | null = null
     const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
       updateBody = (await request.json()) as CapturedBody
-      return HttpResponse.json(MULTI_WORKWEEK_NO_BREAKDOWNS_PREPARE)
+      return HttpResponse.json(COLLAPSED_REGULAR_ONLY_PREPARE)
     })
     server.use(handlePayrollsUpdate(updateResolver))
 
@@ -443,12 +518,11 @@ describe('usePayrollEditEmployeeForm', () => {
     })
     assertReady(result.current)
 
-    // No existing overtime, so this starts collapsed (flat) by default -- no
-    // reveal needed; collapsed is itself the "left unsplit" state under test.
+    // Overtime off, so this starts collapsed (flat) -- the "left unsplit" state.
+    expect(result.current.data.withOvertime).toBe(false)
     expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(false)
     const ready = result.current
 
-    // Save without touching any week cell.
     await act(async () => {
       await ready.actions.onSubmit()
     })
@@ -459,7 +533,7 @@ describe('usePayrollEditEmployeeForm', () => {
   })
 
   it.each(['Nonexempt', 'Salaried Nonexempt', 'Commission Only Nonexempt'])(
-    'splits hours by workweek once revealed for the overtime-eligible status %s',
+    'starts split for the overtime-eligible status %s when breakdowns match',
     async flsaStatus => {
       server.use(
         handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepareWithFlsa(flsaStatus))),
@@ -470,19 +544,9 @@ describe('usePayrollEditEmployeeForm', () => {
       })
       assertReady(result.current)
       expect(result.current.data.isOvertimeEligible).toBe(true)
-      // No existing overtime in this fixture, so it starts collapsed.
-      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(false)
-
-      act(() => {
-        assertReady(result.current)
-        result.current.actions.revealOvertime()
-      })
-
-      await waitFor(() => {
-        assertReady(result.current)
-        expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
-        expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.additionalEarnings)).toBe(true)
-      })
+      expect(result.current.data.withOvertime).toBe(true)
+      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
+      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.additionalEarnings)).toBe(true)
     },
   )
 
@@ -507,6 +571,7 @@ describe('usePayrollEditEmployeeForm', () => {
     server.use(
       handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepareWithFlsa(undefined))),
     )
+    // The employee response carries no primary-job compensation FLSA either.
     const { result } = renderPayrollEditEmployeeForm()
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false)
@@ -539,16 +604,8 @@ describe('usePayrollEditEmployeeForm', () => {
     })
     assertReady(result.current)
     expect(result.current.data.isOvertimeEligible).toBe(true)
-
-    act(() => {
-      assertReady(result.current)
-      result.current.actions.revealOvertime()
-    })
-
-    await waitFor(() => {
-      assertReady(result.current)
-      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
-    })
+    // Eligible + matching breakdowns -> starts split without any Add overtime click.
+    expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
   })
 
   it('submits the total with no breakdowns for an overtime-ineligible multi-workweek line', async () => {
@@ -577,68 +634,10 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(hourly).not.toHaveProperty('breakdowns')
   })
 
-  it('persists an entered week and tiles the whole job when one cell is edited', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            { job_uuid: 'job-1', name: 'Regular Hours', hours: '40', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Double overtime', hours: '0', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-    let updateBody: CapturedBody | null = null
-    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
-      updateBody = (await request.json()) as CapturedBody
-      return HttpResponse.json(prepare)
-    })
-    server.use(handlePayrollsUpdate(updateResolver))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-
-    // No existing overtime, so reveal the split before entering a per-week value.
-    act(() => {
-      assertReady(result.current)
-      result.current.actions.revealOvertime()
-    })
-    await waitFor(() => {
-      assertReady(result.current)
-      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
-    })
-    const ready = result.current
-
-    // Enter Overtime for the first workweek only.
-    act(() => {
-      ready.form.hookFormInternals.formMethods.setValue('hours.job-1.Overtime.2024-01-01', '5')
-    })
-    await act(async () => {
-      await ready.actions.onSubmit()
-    })
-
-    const hourly = updateBody!.employee_compensations[0]!.hourly_compensations!
-    const overtime = hourly.find(line => line.name === 'Overtime')!
-    expect(overtime.hours).toBe('5')
-    expect(overtime.breakdowns).toEqual([
-      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '5' },
-      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '0' },
-    ])
-    // The whole job tiles so the API's all-or-nothing rule holds.
-    expect(hourly.every(line => Array.isArray(line.breakdowns))).toBe(true)
-  })
-
-  it('blocks submit and does not call the update endpoint when an amount is negative', async () => {
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(SINGLE_WORKWEEK_PREPARE)))
+  it('blocks submit on a partially-filled workweek row and never calls the update endpoint', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(COLLAPSED_REGULAR_ONLY_PREPARE)))
     const updateResolver = vi.fn<HttpResponseResolver>(() =>
-      HttpResponse.json(SINGLE_WORKWEEK_PREPARE),
+      HttpResponse.json(COLLAPSED_REGULAR_ONLY_PREPARE),
     )
     server.use(handlePayrollsUpdate(updateResolver))
 
@@ -647,14 +646,18 @@ describe('usePayrollEditEmployeeForm', () => {
       expect(result.current.isLoading).toBe(false)
     })
     assertReady(result.current)
-    const ready = result.current
 
+    // Turning overtime on seeds Regular Hours' first cell (80) and leaves the
+    // second blank -- a partial row the validation must reject.
     act(() => {
-      ready.form.hookFormInternals.formMethods.setValue(
-        'hours.job-1.Regular Hours.2024-01-01',
-        '-5',
-      )
+      assertReady(result.current)
+      result.current.actions.addOvertime()
     })
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
+    })
+    const ready = result.current
 
     let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
     await act(async () => {
@@ -665,249 +668,12 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(updateResolver).not.toHaveBeenCalled()
   })
 
-  it('starts collapsed (flat, overtime hidden) for an eligible employee with no existing overtime', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            { job_uuid: 'job-1', name: 'Regular Hours', hours: '80', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-
-    const job = result.current.form.Fields.jobs[0]!
-    expect(job.hasHiddenOvertime).toBe(true)
-    expect(isSplitByWorkweek(job.hours)).toBe(false)
-    expect((job.hours as HourEntry[]).map(entry => entry.name)).toEqual(['Regular Hours'])
-  })
-
-  it('starts revealed (split, overtime visible) for an eligible employee with existing overtime hours', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            { job_uuid: 'job-1', name: 'Regular Hours', hours: '80', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Overtime', hours: '5', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-
-    const job = result.current.form.Fields.jobs[0]!
-    expect(job.hasHiddenOvertime).toBe(false)
-    expect(isSplitByWorkweek(job.hours)).toBe(true)
-    expect(
-      Object.values(job.hours as Record<string, HourEntry[]>)[0]!.map(entry => entry.name),
-    ).toEqual(expect.arrayContaining(['Regular Hours', 'Overtime']))
-  })
-
-  it('prepopulates Regular Hours from real per-week breakdowns when already split on load', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            // Regular Hours carries a real, uneven per-week breakdown (40/20) --
-            // distinct from what an even split of the 60 total (30/30) would be.
-            ...MULTI_WORKWEEK_PREPARE.employee_compensations[0]!.hourly_compensations,
-            {
-              job_uuid: 'job-1',
-              name: 'Overtime',
-              hours: '5',
-              flsa_status: 'Nonexempt',
-              breakdowns: [
-                { start_date: '2024-01-01', end_date: '2024-01-07', hours: '5.0' },
-                { start_date: '2024-01-08', end_date: '2024-01-14', hours: '0.0' },
-              ],
-            },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-    expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
-
-    const { getValues } = result.current.form.hookFormInternals.formMethods
-    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('40')
-    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('20')
-  })
-
-  it('revealOvertime splits the hours section and un-hides the Overtime row', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            { job_uuid: 'job-1', name: 'Regular Hours', hours: '80', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-    expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(true)
-
-    act(() => {
-      assertReady(result.current)
-      result.current.actions.revealOvertime()
-    })
-
-    await waitFor(() => {
-      assertReady(result.current)
-      expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
-    })
-    const job = result.current.form.Fields.jobs[0]!
-    expect(isSplitByWorkweek(job.hours)).toBe(true)
-    const weekOne = (job.hours as Record<string, HourEntry[]>)['2024-01-01']!
-    expect(weekOne.map(entry => entry.name)).toEqual(
-      expect.arrayContaining(['Regular Hours', 'Overtime']),
-    )
-  })
-
-  it('revealOvertime prepopulates Regular Hours from its real per-week breakdowns, not an even split', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            // Regular Hours' real breakdown (40/20) is uneven -- an even split
-            // of the 60 total would produce 30/30, which must NOT appear here.
-            ...MULTI_WORKWEEK_PREPARE.employee_compensations[0]!.hourly_compensations,
-            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-    expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(true)
-
-    act(() => {
-      assertReady(result.current)
-      result.current.actions.revealOvertime()
-    })
-    await waitFor(() => {
-      assertReady(result.current)
-      expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
-    })
-
-    const { getValues } = result.current.form.hookFormInternals.formMethods
-    expect(getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('40')
-    expect(getValues('hours.job-1.Regular Hours.2024-01-08')).toBe('20')
-  })
-
-  it("preserves an untouched sibling line's total via an even split when Save is pressed right after revealing", async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            { job_uuid: 'job-1', name: 'Regular Hours', hours: '80', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
+  it('submits real breakdowns once every workweek cell of a row is filled', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(COLLAPSED_REGULAR_ONLY_PREPARE)))
     let updateBody: CapturedBody | null = null
     const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
       updateBody = (await request.json()) as CapturedBody
-      return HttpResponse.json(prepare)
-    })
-    server.use(handlePayrollsUpdate(updateResolver))
-
-    const { result } = renderPayrollEditEmployeeForm()
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-    assertReady(result.current)
-
-    // Reveal without touching Regular Hours at all.
-    act(() => {
-      assertReady(result.current)
-      result.current.actions.revealOvertime()
-    })
-    await waitFor(() => {
-      assertReady(result.current)
-      expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
-    })
-
-    await act(async () => {
-      assertReady(result.current)
-      await result.current.actions.onSubmit()
-    })
-
-    // Regular Hours was never touched, but Overtime activating the job's
-    // breakdown mode must not silently zero it: an even split keeps its
-    // original 80-hour total intact rather than losing it to blank cells.
-    const hourly = updateBody!.employee_compensations[0]!.hourly_compensations!
-    const regularHours = hourly.find(line => line.name === 'Regular Hours')!
-    expect(regularHours.hours).toBe('80')
-    expect(regularHours.breakdowns).toEqual([
-      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '40' },
-      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '40' },
-    ])
-  })
-
-  it('submits a real breakdown once the user enters a per-week value after revealing', async () => {
-    const prepare = {
-      ...MULTI_WORKWEEK_PREPARE,
-      employee_compensations: [
-        {
-          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
-          hourly_compensations: [
-            { job_uuid: 'job-1', name: 'Regular Hours', hours: '80', flsa_status: 'Nonexempt' },
-            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
-          ],
-        },
-      ],
-    }
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
-    let updateBody: CapturedBody | null = null
-    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
-      updateBody = (await request.json()) as CapturedBody
-      return HttpResponse.json(prepare)
+      return HttpResponse.json(COLLAPSED_REGULAR_ONLY_PREPARE)
     })
     server.use(handlePayrollsUpdate(updateResolver))
 
@@ -919,43 +685,78 @@ describe('usePayrollEditEmployeeForm', () => {
 
     act(() => {
       assertReady(result.current)
-      result.current.actions.revealOvertime()
+      result.current.actions.addOvertime()
     })
     await waitFor(() => {
       assertReady(result.current)
-      expect(result.current.form.Fields.jobs[0]!.hasHiddenOvertime).toBe(false)
+      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
     })
+    const ready = result.current
 
+    // Fill the second cell (the first is seeded with the 80 total).
     act(() => {
-      assertReady(result.current)
-      result.current.form.hookFormInternals.formMethods.setValue(
-        'hours.job-1.Overtime.2024-01-01',
-        '5',
+      ready.form.hookFormInternals.formMethods.setValue(
+        'hours.job-1.Regular Hours.2024-01-08',
+        '40',
       )
     })
     await act(async () => {
-      assertReady(result.current)
-      await result.current.actions.onSubmit()
+      await ready.actions.onSubmit()
+    })
+
+    expect(updateResolver).toHaveBeenCalledTimes(1)
+    const hourly = updateBody!.employee_compensations[0]!.hourly_compensations![0]!
+    expect(hourly.hours).toBe('120')
+    expect(hourly.breakdowns).toEqual([
+      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '80' },
+      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '40' },
+    ])
+  })
+
+  it('submits breakdowns per line: a fully-filled line tiles while an untouched collapsed line stays flat', async () => {
+    // job-1 is overtime-eligible (splits); job-2 is not in the split because it
+    // has no overtime line -- it still renders, but here we exercise two lines on
+    // the same eligible job.
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(OVERTIME_NO_BREAKDOWNS_PREPARE)))
+    let updateBody: CapturedBody | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateBody = (await request.json()) as CapturedBody
+      return HttpResponse.json(OVERTIME_NO_BREAKDOWNS_PREPARE)
+    })
+    server.use(handlePayrollsUpdate(updateResolver))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+    const ready = result.current
+
+    // Both lines seed their first cell only; fill each line's remaining cell so
+    // both rows are complete (partial rows would block submit).
+    act(() => {
+      ready.form.hookFormInternals.formMethods.setValue(
+        'hours.job-1.Regular Hours.2024-01-08',
+        '40',
+      )
+      ready.form.hookFormInternals.formMethods.setValue('hours.job-1.Overtime.2024-01-08', '3')
+    })
+    await act(async () => {
+      await ready.actions.onSubmit()
     })
 
     const hourly = updateBody!.employee_compensations[0]!.hourly_compensations!
+    const regular = hourly.find(line => line.name === 'Regular Hours')!
+    expect(regular.hours).toBe('120')
+    expect(regular.breakdowns).toEqual([
+      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '80' },
+      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '40' },
+    ])
     const overtime = hourly.find(line => line.name === 'Overtime')!
-    expect(overtime.hours).toBe('5')
+    expect(overtime.hours).toBe('8')
     expect(overtime.breakdowns).toEqual([
       { start_date: '2024-01-01', end_date: '2024-01-07', hours: '5' },
-      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '0' },
-    ])
-
-    // Regular Hours was never touched by this edit, but the job's breakdown
-    // mode is all-or-nothing once any cell in it is touched (Overtime, here).
-    // Without the even-split seeding, Regular Hours' untouched, blank cells
-    // would submit as 0 -- silently zeroing an employee's regular hours the
-    // moment they enter overtime for a different line in the same job.
-    const regularHours = hourly.find(line => line.name === 'Regular Hours')!
-    expect(regularHours.hours).toBe('80')
-    expect(regularHours.breakdowns).toEqual([
-      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '40' },
-      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '40' },
+      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '3' },
     ])
   })
 

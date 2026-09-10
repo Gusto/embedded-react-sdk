@@ -147,17 +147,10 @@ export interface JobFields {
   jobUuid: string
   /** The job's display title, when available, for a per-job heading. */
   title?: string
-  /** Hours inputs for this job. Excludes Overtime/Double-overtime rows while they're hidden — see {@link JobFields.hasHiddenOvertime}. */
+  /** Hours inputs for this job. Excludes Overtime/Double-overtime rows while overtime mode is off (`withOvertime` is `false`). */
   hours: HourEntry[] | Record<string, HourEntry[]>
   /** Overtime-affecting earnings for this job. */
   additionalEarnings: EarningEntry[] | Record<string, EarningEntry[]>
-  /**
-   * Whether this job has Overtime or Double-overtime lines that are currently
-   * hidden from `hours`. `true` only while `isOvertimeRevealed` is `false` and
-   * the job actually has such a line; render an "add overtime" affordance
-   * wired to `actions.revealOvertime` when this is `true`.
-   */
-  hasHiddenOvertime: boolean
 }
 
 /**
@@ -325,11 +318,11 @@ export interface CreatePayrollEditEmployeeFieldsOptions {
   /** Whether the employee is overtime-eligible (nonexempt family). Gates per-workweek splitting. */
   isOvertimeEligible: boolean
   /**
-   * Whether the workweek split has been revealed. Gates per-workweek splitting
+   * The single, global overtime-mode flag. Gates per-workweek splitting
    * alongside `isOvertimeEligible`, and whether Overtime/Double-overtime rows
    * are included in a job's `hours`.
    */
-  isOvertimeRevealed: boolean
+  withOvertime: boolean
   /** Job title lookup by job UUID, for per-job section headings. */
   jobTitlesByUuid: Map<string, string>
 }
@@ -339,7 +332,7 @@ function buildBreakdownSection(
   workweeks: NormalizedWorkweek[],
   pathPrefix: 'hours' | 'additionalEarnings',
   isOvertimeEligible: boolean,
-  isOvertimeRevealed: boolean,
+  withOvertime: boolean,
 ): HourEntry[] | Record<string, HourEntry[]> {
   const rows = compensations.filter(
     (compensation): compensation is { jobUuid: string; name: string } =>
@@ -358,11 +351,11 @@ function buildBreakdownSection(
     Field: createNumberField(`${pathPrefix}.${row.jobUuid}.${row.name}.${weekStart}`),
   })
 
-  // Split into per-workweek columns only for overtime-eligible employees once
-  // revealed; workweek breakdowns exist solely to compute overtime premiums, so
-  // an ineligible employee renders flat even on a multi-workweek payroll, and an
-  // eligible one stays flat until the split is revealed.
-  if (workweeks.length > 1 && isOvertimeEligible && isOvertimeRevealed) {
+  // Split into per-workweek columns only for overtime-eligible employees with
+  // overtime mode on; workweek breakdowns exist solely to compute overtime
+  // premiums, so an ineligible employee renders flat even on a multi-workweek
+  // payroll, and an eligible one stays flat until overtime mode is on.
+  if (workweeks.length > 1 && isOvertimeEligible && withOvertime) {
     const byWeek: Record<string, HourEntry[]> = {}
     for (const workweek of workweeks) {
       byWeek[workweek.startDate] = rows.map(row => toEntry(row, workweek.startDate, true))
@@ -388,7 +381,7 @@ function buildBreakdownSection(
  * final payout is added only for dismissal payrolls, and the payment-method
  * selector appears only when direct deposit is set up.
  *
- * @param options - The prepared compensation, normalized workweeks, payroll category, direct-deposit flag, overtime earning names, eligibility, reveal state, and job titles.
+ * @param options - The prepared compensation, normalized workweeks, payroll category, direct-deposit flag, overtime earning names, eligibility, overtime-mode flag, and job titles.
  * @returns The populated field collections.
  * @internal
  */
@@ -400,7 +393,7 @@ export function createPayrollEditEmployeeFields({
   hasDirectDepositSetup,
   overtimeEarningNames,
   isOvertimeEligible,
-  isOvertimeRevealed,
+  withOvertime,
   jobTitlesByUuid,
 }: CreatePayrollEditEmployeeFieldsOptions): PayrollEditEmployeeFields {
   const hourlyCompensations = employeeCompensation?.hourlyCompensations ?? []
@@ -427,33 +420,30 @@ export function createPayrollEditEmployeeFields({
     const jobHourlyCompensations = hourlyCompensations.filter(
       compensation => compensation.jobUuid === jobUuid,
     )
-    const hasHiddenOvertime =
-      !isOvertimeRevealed &&
-      jobHourlyCompensations.some(compensation => isOvertimeName(compensation.name))
-    // Overtime/Double-overtime rows stay out of `hours` entirely while hidden —
-    // their underlying form values are untouched (still whatever the prepared
-    // compensation carried), so hiding the row can't lose or corrupt data.
-    const visibleHourlyCompensations = isOvertimeRevealed
+    // Overtime/Double-overtime rows are filtered out of `hours` entirely while
+    // overtime mode is off — their underlying form values are untouched (still
+    // whatever the prepared compensation carried), so hiding the row can't lose
+    // or corrupt data. This is driven purely by the single global flag.
+    const visibleHourlyCompensations = withOvertime
       ? jobHourlyCompensations
       : jobHourlyCompensations.filter(compensation => !isOvertimeName(compensation.name))
 
     return {
       jobUuid,
       title: jobTitlesByUuid.get(jobUuid),
-      hasHiddenOvertime,
       hours: buildBreakdownSection(
         visibleHourlyCompensations,
         workweeks,
         'hours',
         isOvertimeEligible,
-        isOvertimeRevealed,
+        withOvertime,
       ),
       additionalEarnings: buildBreakdownSection(
         overtimeAffecting.filter(compensation => compensation.jobUuid === jobUuid),
         workweeks,
         'additionalEarnings',
         isOvertimeEligible,
-        isOvertimeRevealed,
+        withOvertime,
       ),
     }
   })

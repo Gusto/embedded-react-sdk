@@ -10,7 +10,7 @@ import {
   derivePayrollEditEmployeeDefaults,
   buildPayrollUpdateEmployeeCompensation,
   hasExistingOvertimeHours,
-  seedRevealedWeekMaps,
+  hasBreakdownsMatchingWorkweeks,
   type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import type { PayrollEditEmployeeFormData } from './payrollEditEmployeeSchema'
@@ -135,7 +135,7 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     reimbursements: [],
   }
 
-  it('trims decimal totals and buckets earnings into additional vs other', () => {
+  it('trims decimal totals and buckets earnings into additional vs other (single workweek)', () => {
     const defaults = derivePayrollEditEmployeeDefaults(
       compensation,
       [WEEK_ONE],
@@ -150,7 +150,23 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     expect(defaults.other).toEqual({ 'job-1': { 'Cash Tips': '25' } })
   })
 
-  it('seeds only the first workweek when the line is not split (overtime-ineligible)', () => {
+  it('collapses to a single first-workweek key when overtime is off, on a multi-workweek payroll', () => {
+    const defaults = derivePayrollEditEmployeeDefaults(
+      compensation,
+      [WEEK_ONE, WEEK_TWO],
+      true,
+      new Set(['Bonus']),
+      true,
+      false,
+    )
+
+    // A collapsed row holds only its first-workweek key (the total); no empty
+    // keys for the other workweeks, so the per-row validation is a no-op.
+    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({ '2024-01-01': '40' })
+    expect(defaults.additionalEarnings['job-1']!['Bonus']).toEqual({ '2024-01-01': '500' })
+  })
+
+  it('collapses to a single first-workweek key for an overtime-ineligible employee', () => {
     const defaults = derivePayrollEditEmployeeDefaults(
       compensation,
       [WEEK_ONE, WEEK_TWO],
@@ -160,13 +176,10 @@ describe('derivePayrollEditEmployeeDefaults', () => {
       true,
     )
 
-    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
-      '2024-01-01': '40',
-      '2024-01-08': '',
-    })
+    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({ '2024-01-01': '40' })
   })
 
-  it('seeds each workweek from its breakdown when split (overtime-eligible)', () => {
+  it('seeds each workweek from its breakdown when split and breakdowns match the workweeks', () => {
     const withBreakdowns: PayrollEmployeeCompensationsType = {
       ...compensation,
       hourlyCompensations: [
@@ -205,6 +218,28 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     })
   })
 
+  it('puts the total in the first cell and leaves the rest blank when split without matching breakdowns', () => {
+    const defaults = derivePayrollEditEmployeeDefaults(
+      compensation,
+      [WEEK_ONE, WEEK_TWO],
+      true,
+      new Set(['Bonus']),
+      true,
+      true,
+    )
+
+    // No breakdowns on the line -> first cell carries the total, the rest are
+    // blank. No even split, no distribution.
+    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
+      '2024-01-01': '40',
+      '2024-01-08': '',
+    })
+    expect(defaults.additionalEarnings['job-1']!['Bonus']).toEqual({
+      '2024-01-01': '500',
+      '2024-01-08': '',
+    })
+  })
+
   it('forces Check when the employee has no direct deposit set up', () => {
     const defaults = derivePayrollEditEmployeeDefaults(
       compensation,
@@ -216,26 +251,6 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     )
 
     expect(defaults.paymentMethod).toBe(PayrollUpdatePaymentMethod.Check)
-  })
-
-  it('stays flat when overtime-eligible but not yet revealed, even on a multi-workweek payroll', () => {
-    const defaults = derivePayrollEditEmployeeDefaults(
-      compensation,
-      [WEEK_ONE, WEEK_TWO],
-      true,
-      new Set(['Bonus']),
-      true,
-      false,
-    )
-
-    expect(defaults.hours['job-1']!['Regular Hours']).toEqual({
-      '2024-01-01': '40',
-      '2024-01-08': '',
-    })
-    expect(defaults.additionalEarnings['job-1']!['Bonus']).toEqual({
-      '2024-01-01': '500',
-      '2024-01-08': '',
-    })
   })
 })
 
@@ -266,78 +281,72 @@ describe('hasExistingOvertimeHours', () => {
   })
 })
 
-describe('seedRevealedWeekMaps', () => {
-  const compensation: PayrollEmployeeCompensationsType = {
-    employeeUuid: 'emp-1',
-    version: 'comp-v1',
-    hourlyCompensations: [
-      { jobUuid: 'job-1', name: 'Regular Hours', hours: '80' },
-      { jobUuid: 'job-1', name: 'Overtime', hours: '0' },
-    ],
-    fixedCompensations: [{ jobUuid: 'job-1', name: 'Bonus', amount: '500.00' }],
-    paidTimeOff: [],
-    reimbursements: [],
-  }
+describe('hasBreakdownsMatchingWorkweeks', () => {
+  const matchingBreakdowns = [
+    { startDate: new RFCDate('2024-01-01'), endDate: new RFCDate('2024-01-07'), hours: '40' },
+    { startDate: new RFCDate('2024-01-08'), endDate: new RFCDate('2024-01-14'), hours: '20' },
+  ]
 
-  it('evenly splits a line left entirely blank across workweeks', () => {
-    const hours = {
-      'job-1': {
-        'Regular Hours': { '2024-01-01': '', '2024-01-08': '' },
-        Overtime: { '2024-01-01': '', '2024-01-08': '' },
-      },
-    }
-    const result = seedRevealedWeekMaps(hours, {}, compensation, [WEEK_ONE, WEEK_TWO])
-
-    // Regular Hours had a real, non-zero total -- seeded to an even split.
-    expect(result.hours['job-1']!['Regular Hours']).toEqual({
-      '2024-01-01': '40',
-      '2024-01-08': '40',
-    })
-    // Overtime's original total is 0 -- nothing to preserve, stays blank.
-    expect(result.hours['job-1']!.Overtime).toEqual({
-      '2024-01-01': '',
-      '2024-01-08': '',
-    })
+  it('returns true when a line tiles every workweek by start and end date', () => {
+    expect(
+      hasBreakdownsMatchingWorkweeks(
+        [{ jobUuid: 'job-1', name: 'Regular Hours', hours: '60', breakdowns: matchingBreakdowns }],
+        [WEEK_ONE, WEEK_TWO],
+      ),
+    ).toBe(true)
   })
 
-  it('leaves a line with a real per-week value untouched', () => {
-    const hours = {
-      'job-1': {
-        'Regular Hours': { '2024-01-01': '40', '2024-01-08': '' },
-      },
-    }
-    const result = seedRevealedWeekMaps(hours, {}, compensation, [WEEK_ONE, WEEK_TWO])
-
-    expect(result.hours['job-1']!['Regular Hours']).toEqual({
-      '2024-01-01': '40',
-      '2024-01-08': '',
-    })
+  it('returns false when breakdowns cover only some workweeks', () => {
+    expect(
+      hasBreakdownsMatchingWorkweeks(
+        [
+          {
+            jobUuid: 'job-1',
+            name: 'Regular Hours',
+            hours: '40',
+            breakdowns: [matchingBreakdowns[0]!],
+          },
+        ],
+        [WEEK_ONE, WEEK_TWO],
+      ),
+    ).toBe(false)
   })
 
-  it('seeds overtime-affecting additional earnings the same way', () => {
-    const additionalEarnings = {
-      'job-1': { Bonus: { '2024-01-01': '', '2024-01-08': '' } },
-    }
-    const result = seedRevealedWeekMaps({}, additionalEarnings, compensation, [WEEK_ONE, WEEK_TWO])
-
-    expect(result.additionalEarnings['job-1']!.Bonus).toEqual({
-      '2024-01-01': '250',
-      '2024-01-08': '250',
-    })
+  it('returns false when a breakdown start matches but its end date does not line up', () => {
+    expect(
+      hasBreakdownsMatchingWorkweeks(
+        [
+          {
+            jobUuid: 'job-1',
+            name: 'Regular Hours',
+            hours: '60',
+            breakdowns: [
+              {
+                startDate: new RFCDate('2024-01-01'),
+                endDate: new RFCDate('2024-01-06'),
+                hours: '40',
+              },
+              {
+                startDate: new RFCDate('2024-01-08'),
+                endDate: new RFCDate('2024-01-14'),
+                hours: '20',
+              },
+            ],
+          },
+        ],
+        [WEEK_ONE, WEEK_TWO],
+      ),
+    ).toBe(false)
   })
 
-  it('splits an odd total without losing a cent to rounding', () => {
-    const oddCompensation: PayrollEmployeeCompensationsType = {
-      ...compensation,
-      hourlyCompensations: [{ jobUuid: 'job-1', name: 'Regular Hours', hours: '81' }],
-    }
-    const hours = {
-      'job-1': { 'Regular Hours': { '2024-01-01': '', '2024-01-08': '' } },
-    }
-    const result = seedRevealedWeekMaps(hours, {}, oddCompensation, [WEEK_ONE, WEEK_TWO])
-
-    const weekValues = Object.values(result.hours['job-1']!['Regular Hours']!).map(Number)
-    expect(weekValues.reduce((sum, value) => sum + value, 0)).toBe(81)
+  it('returns false when there are no breakdowns', () => {
+    expect(
+      hasBreakdownsMatchingWorkweeks(
+        [{ jobUuid: 'job-1', name: 'Regular Hours', hours: '60', breakdowns: [] }],
+        [WEEK_ONE, WEEK_TWO],
+      ),
+    ).toBe(false)
+    expect(hasBreakdownsMatchingWorkweeks(undefined, [WEEK_ONE, WEEK_TWO])).toBe(false)
   })
 })
 
@@ -371,7 +380,7 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
     ])
   })
 
-  it('tiles every workweek with breakdowns once a split job is edited', () => {
+  it('tiles every workweek with breakdowns when a split line is fully filled', () => {
     const formData: PayrollEditEmployeeFormData = {
       ...emptyFormData,
       hours: { 'job-1': { 'Regular Hours': { '2024-01-01': '40', '2024-01-08': '20' } } },
@@ -415,7 +424,7 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
     expect(bonus.amount).toBe('0.3')
   })
 
-  it('resends the original total with no breakdowns when a split job is untouched', () => {
+  it('resends the original total with no breakdowns when a split line is entirely blank', () => {
     const formData: PayrollEditEmployeeFormData = {
       ...emptyFormData,
       hours: { 'job-1': { 'Regular Hours': { '2024-01-01': '', '2024-01-08': '' } } },
@@ -435,7 +444,47 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
     ])
   })
 
-  it('sends the flat total with no breakdowns when overtime-eligible but not revealed, regardless of workweek count', () => {
+  it('decides breakdowns per line: a filled line tiles while a blank sibling stays flat', () => {
+    const twoLineCompensation: PayrollEmployeeCompensationsType = {
+      ...compensation,
+      hourlyCompensations: [
+        { jobUuid: 'job-1', name: 'Regular Hours', hours: '80' },
+        { jobUuid: 'job-1', name: 'Overtime', hours: '0' },
+      ],
+    }
+    const formData: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: {
+        'job-1': {
+          // Overtime is fully filled -> real breakdowns.
+          Overtime: { '2024-01-01': '5', '2024-01-08': '3' },
+          // Regular Hours is entirely blank -> stays its flat original total.
+          'Regular Hours': { '2024-01-01': '', '2024-01-08': '' },
+        },
+      },
+    }
+
+    const result = buildPayrollUpdateEmployeeCompensation(
+      formData,
+      twoLineCompensation,
+      [WEEK_ONE, WEEK_TWO],
+      PayrollCategory.Regular,
+      true,
+      true,
+    )
+
+    const overtime = result.hourlyCompensations!.find(line => line.name === 'Overtime')!
+    expect(overtime.hours).toBe('8')
+    expect(overtime.breakdowns).toEqual([
+      { startDate: new RFCDate('2024-01-01'), endDate: new RFCDate('2024-01-07'), hours: '5' },
+      { startDate: new RFCDate('2024-01-08'), endDate: new RFCDate('2024-01-14'), hours: '3' },
+    ])
+
+    const regularHours = result.hourlyCompensations!.find(line => line.name === 'Regular Hours')!
+    expect(regularHours).toEqual({ jobUuid: 'job-1', name: 'Regular Hours', hours: '80' })
+  })
+
+  it('sends the flat total with no breakdowns when overtime is off, regardless of workweek count', () => {
     const formData: PayrollEditEmployeeFormData = {
       ...emptyFormData,
       hours: { 'job-1': { 'Regular Hours': { '2024-01-01': '55' } } },

@@ -26,10 +26,10 @@ import {
   buildPayrollUpdateEmployeeCompensation,
   collectOvertimeEarningNames,
   derivePayrollEditEmployeeDefaults,
+  hasBreakdownsMatchingWorkweeks,
   hasExistingOvertimeHours,
   normalizeWorkweeks,
   resolveEditableFixedCompensations,
-  seedRevealedWeekMaps,
 } from './payrollEditEmployeeHelpers'
 import {
   createPayrollEditEmployeeFields,
@@ -130,6 +130,16 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     isMultipleWorkweeks: boolean
     /** Whether the employee is overtime-eligible (nonexempt family). Drives whether hours split by workweek. */
     isOvertimeEligible: boolean
+    /**
+     * The single, global overtime-mode signal. When `true`, hours and
+     * overtime-affecting earnings render as the per-workweek split (for an
+     * overtime-eligible employee on a multi-workweek payroll) and the
+     * Overtime/Double-overtime rows are visible. When `false`, the form is
+     * collapsed to a single flat column with those rows hidden. Show the
+     * "Add overtime" affordance (wired to `actions.addOvertime`) exactly when
+     * `!withOvertime && isOvertimeEligible`.
+     */
+    withOvertime: boolean
     /** Whether the employee has a direct-deposit bank account set up. */
     hasDirectDepositSetup: boolean
     /**
@@ -147,14 +157,15 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     /** Validates and submits the form, resolving to the updated prepared payroll on success or `undefined` when validation blocked the submit. */
     onSubmit: () => Promise<HookSubmitResult<PayrollPrepared> | undefined>
     /**
-     * Reveals the workweek split: shows any hidden Overtime/Double-overtime
-     * rows and switches hours/overtime-affecting earnings to per-workweek
-     * columns for jobs whose `hasHiddenOvertime` flag is `true`.
-     * One-directional — there's no corresponding "hide" action. Discards
-     * (rather than seeds) the newly-split cells, since a pre-reveal flat total
-     * represents the whole pay period, not any single week.
+     * Turns overtime mode on (sets the single global `withOvertime` flag to
+     * `true`): shows the Overtime/Double-overtime rows and switches hours and
+     * overtime-affecting earnings to per-workweek columns. Each line's total
+     * seeds its first workweek cell and every other cell is left blank (no even
+     * split or distribution); per-row validation then requires the remaining
+     * cells before submit. One-directional — there's no corresponding "remove
+     * overtime" action.
      */
-    revealOvertime: () => void
+    addOvertime: () => void
     /** Reveals the draft reimbursement row. Present only when reimbursement controls are exposed. */
     beginAddReimbursement?: () => void
     /** Validates the draft and commits it to the reimbursement list, or flags the draft amount if invalid. Present only when reimbursement controls are exposed. */
@@ -190,11 +201,14 @@ export type UsePayrollEditEmployeeFormResult = HookLoadingResult | UsePayrollEdi
  *
  * @remarks
  * Prepares the payroll for the target employee, then exposes a workweek-keyed
- * form whose submit builds a `PayrollUpdate`. Single-workweek pay periods send
- * totals without `breakdowns`; multi-workweek pay periods send `breakdowns`
- * tiling every workweek exactly. Overtime-eligible (nonexempt) employees split
- * hours and overtime-affecting earnings per workweek; everyone else edits flat
- * totals.
+ * form whose submit builds a `PayrollUpdate`. A single global `withOvertime`
+ * flag drives overtime mode: overtime-eligible (nonexempt) employees on a
+ * multi-workweek payroll split hours and overtime-affecting earnings per
+ * workweek once it is on; everyone else edits flat totals. On submit, a flat or
+ * collapsed line sends its total without `breakdowns`; a split line sends
+ * `breakdowns` tiling every workweek only when all its cells are filled (a
+ * partial row is blocked by validation, an all-blank row resends its flat
+ * total).
  *
  * @param props - Hook options.
  * @returns A loading result while data is fetching, or a ready result with data,
@@ -288,12 +302,16 @@ export function usePayrollEditEmployeeForm({
   }, [employeeCompensation, employee])
   const isOvertimeEligible = isOvertimeEligibleFlsaStatus(flsaStatus)
 
-  // Starts revealed when the employee already has real overtime hours (nothing
-  // to hide), otherwise starts collapsed until the user opts in via
-  // `actions.revealOvertime`. One-directional: there's no "hide overtime" action.
-  const [overtimeRevealedByUser, setOvertimeRevealedByUser] = useState(false)
-  const isOvertimeRevealed =
-    overtimeRevealedByUser || hasExistingOvertimeHours(employeeCompensation?.hourlyCompensations)
+  // The single, global overtime-mode signal. Starts on when the employee already
+  // has real overtime hours or per-workweek breakdowns matching this pay period
+  // (nothing to add — show what's there), otherwise starts off until the user
+  // opts in via `actions.addOvertime`. One-directional: there's no "remove
+  // overtime" action.
+  const [overtimeAddedByUser, setOvertimeAddedByUser] = useState(false)
+  const withOvertime =
+    overtimeAddedByUser ||
+    hasExistingOvertimeHours(employeeCompensation?.hourlyCompensations) ||
+    hasBreakdownsMatchingWorkweeks(employeeCompensation?.hourlyCompensations, workweeks)
 
   const primaryJobUuid = useMemo(() => employee?.jobs?.find(job => job.primary)?.uuid, [employee])
 
@@ -322,45 +340,26 @@ export function usePayrollEditEmployeeForm({
 
   const schema = useMemo(() => createPayrollEditEmployeeSchema(), [])
 
-  // Shared by the reactive `values` sync below and by `revealOvertime`: any
-  // hourly/earning line left entirely blank (no real breakdown to seed from)
-  // is evenly split across weeks rather than left blank, so a line the user
-  // never touches still reports its real total once the job activates. Both
-  // call sites must apply the same seeding, or the reactive `values` sync
-  // would immediately overwrite `revealOvertime`'s one-off `setValue` with an
-  // unseeded (blank) recomputation on the very next render.
-  const deriveSeededDefaults = useCallback(
-    (revealed: boolean) => {
-      const defaults = derivePayrollEditEmployeeDefaults(
+  const resolvedDefaults = useMemo(
+    () =>
+      derivePayrollEditEmployeeDefaults(
         employeeCompensation,
         workweeks,
         hasDirectDepositSetup,
         overtimeEarningNames,
         isOvertimeEligible,
-        revealed,
+        withOvertime,
         resolvedFixedCompensations,
-      )
-      const seeded = seedRevealedWeekMaps(
-        defaults.hours,
-        defaults.additionalEarnings,
-        employeeCompensation,
-        workweeks,
-      )
-      return { ...defaults, hours: seeded.hours, additionalEarnings: seeded.additionalEarnings }
-    },
+      ),
     [
       employeeCompensation,
       workweeks,
       hasDirectDepositSetup,
       overtimeEarningNames,
       isOvertimeEligible,
+      withOvertime,
       resolvedFixedCompensations,
     ],
-  )
-
-  const resolvedDefaults = useMemo(
-    () => deriveSeededDefaults(isOvertimeRevealed),
-    [deriveSeededDefaults, isOvertimeRevealed],
   )
 
   const formMethods = useForm<PayrollEditEmployeeFormData, unknown, PayrollEditEmployeeFormOutputs>(
@@ -471,7 +470,7 @@ export function usePayrollEditEmployeeForm({
         hasDirectDepositSetup,
         overtimeEarningNames,
         isOvertimeEligible,
-        isOvertimeRevealed,
+        withOvertime,
         jobTitlesByUuid,
       }),
     [
@@ -482,27 +481,18 @@ export function usePayrollEditEmployeeForm({
       hasDirectDepositSetup,
       overtimeEarningNames,
       isOvertimeEligible,
-      isOvertimeRevealed,
+      withOvertime,
       jobTitlesByUuid,
     ],
   )
 
-  // Discarding rather than seeding the pre-reveal flat total directly into a
-  // single week's cell is deliberate: the flat total represents the whole pay
-  // period, not any single week, so carrying it as-is would silently
-  // misattribute it. Instead, any line left entirely blank (no real breakdown
-  // to seed from) is evenly split across weeks via `seedRevealedWeekMaps` —
-  // otherwise, editing only one line (e.g. Overtime) while leaving a sibling
-  // line (e.g. Regular Hours) untouched would silently zero that sibling's
-  // total on save, since the job's breakdown submission is all-or-nothing.
-  // `setValue` (not `resetField`) is used so this overwrites even a value the
-  // user already typed into the collapsed input.
-  const revealOvertime = useCallback(() => {
-    setOvertimeRevealedByUser(true)
-    const revealedDefaults = deriveSeededDefaults(true)
-    formMethods.setValue('hours', revealedDefaults.hours)
-    formMethods.setValue('additionalEarnings', revealedDefaults.additionalEarnings)
-  }, [deriveSeededDefaults, formMethods])
+  // Flipping the single `withOvertime` flag is all that's needed: it feeds
+  // `resolvedDefaults`, which is wired to the form's reactive `values`, so the
+  // switch to the per-workweek split (each line's total in its first cell, the
+  // rest blank) applies on the next render. No `setValue`, no seeding.
+  const addOvertime = useCallback(() => {
+    setOvertimeAddedByUser(true)
+  }, [])
   const fieldsMetadata = useMemo<PayrollEditEmployeeFieldsMetadata>(
     () => ({
       paymentMethod: withOptions(
@@ -545,7 +535,7 @@ export function usePayrollEditEmployeeForm({
               workweeks,
               payrollCategory,
               isOvertimeEligible,
-              isOvertimeRevealed,
+              withOvertime,
             )
 
             const response = await updatePayroll({
@@ -588,13 +578,14 @@ export function usePayrollEditEmployeeForm({
       paySchedule: payScheduleQuery.data?.payScheduleShow,
       isMultipleWorkweeks: workweeks.length > 1,
       isOvertimeEligible,
+      withOvertime,
       hasDirectDepositSetup,
       ...(showReimbursements ? { reimbursements: reimbursementRows } : {}),
     },
     status: { isPending, mode: 'update' as const },
     actions: {
       onSubmit,
-      revealOvertime,
+      addOvertime,
       ...(showReimbursements
         ? {
             beginAddReimbursement,

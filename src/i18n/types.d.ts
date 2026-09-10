@@ -8502,6 +8502,8 @@ export namespace Translations {
       reimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Enter a value for each week"` */
+      requiredWorkweek: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
