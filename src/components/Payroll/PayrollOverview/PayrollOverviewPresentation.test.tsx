@@ -462,7 +462,7 @@ describe('PayrollOverviewPresentation', () => {
     expect(screen.getByText('John Smith')).toBeInTheDocument()
   })
 
-  it('derives the compensation type column from each compensation flsaStatus', async () => {
+  it('derives the compensation type column from employeeFlsaStatusByUuid, including for salaried employees with no hourlyCompensations', async () => {
     const user = userEvent.setup()
     const payrollWithFlsa: PayrollShow = {
       ...mockPayrollData,
@@ -472,10 +472,8 @@ describe('PayrollOverviewPresentation', () => {
           firstName: 'Patricia',
           lastName: 'Churchland',
           excluded: false,
-          fixedCompensations: [],
-          hourlyCompensations: [
-            { name: 'Regular Hours', hours: '40.0', amount: '2000.0', flsaStatus: 'Exempt' },
-          ],
+          fixedCompensations: [{ name: 'Salary', amount: '2000.0' }],
+          hourlyCompensations: [],
           paidTimeOff: [],
           grossPay: '2000',
           netPay: '1600',
@@ -489,9 +487,7 @@ describe('PayrollOverviewPresentation', () => {
           lastName: 'Berlin',
           excluded: false,
           fixedCompensations: [],
-          hourlyCompensations: [
-            { name: 'Regular Hours', hours: '40.0', amount: '800.0', flsaStatus: 'Nonexempt' },
-          ],
+          hourlyCompensations: [{ name: 'Regular Hours', hours: '40.0', amount: '800.0' }],
           paidTimeOff: [],
           grossPay: '800',
           netPay: '640',
@@ -503,13 +499,52 @@ describe('PayrollOverviewPresentation', () => {
     }
 
     renderWithProviders(
-      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithFlsa} />,
+      <PayrollOverviewPresentation
+        {...defaultProps}
+        payrollData={payrollWithFlsa}
+        employeeFlsaStatusByUuid={{
+          'emp-exempt': 'Exempt',
+          'emp-nonexempt': 'Nonexempt',
+        }}
+      />,
     )
 
     await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
 
     expect(await screen.findByText('Salaried / Exempt')).toBeInTheDocument()
     expect(screen.getByText('Hourly / Nonexempt')).toBeInTheDocument()
+  })
+
+  it('includes reimbursements in the employee take-home Payment total', async () => {
+    const user = userEvent.setup()
+    const payrollWithReimbursement: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          reimbursements: [{ description: 'Travel', amount: '75.00' }],
+          grossPay: '5000',
+          netPay: '4000',
+          checkAmount: '4000',
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithReimbursement} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Employee take home/i }))
+
+    expect(await screen.findByText('$4,075.00')).toBeInTheDocument()
   })
 
   it('renders a pagination control for the per-employee tables when pagination is provided', async () => {

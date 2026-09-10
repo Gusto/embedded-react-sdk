@@ -75,7 +75,7 @@ const validBusinessSelfOnboarding = {
   email: 'billing@acme.com',
 }
 
-const { REQUIRED, INVALID_NAME, INVALID_EMAIL, INVALID_SSN, INVALID_EIN } =
+const { REQUIRED, INVALID_NAME, INVALID_EMAIL, INVALID_SSN, INVALID_EIN, MAX_HOURLY_RATE } =
   ContractorDetailsErrorCodes
 
 describe('createContractorDetailsSchema', () => {
@@ -105,6 +105,18 @@ describe('createContractorDetailsSchema', () => {
         { mode: 'create' },
       )
       expect(issueFor(result, 'firstName')?.message).toBe(INVALID_NAME)
+    })
+
+    it('trims surrounding whitespace from firstName/lastName instead of rejecting it', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, firstName: 'John ', lastName: ' Doe' },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.firstName).toBe('John')
+        expect(result.data.lastName).toBe('Doe')
+      }
     })
 
     it('treats ssn as optional by default (API contract)', () => {
@@ -279,6 +291,23 @@ describe('createContractorDetailsSchema', () => {
     it('ignores hourlyRate when wageType is Fixed (field excluded)', () => {
       const result = parse(
         { ...validIndividualEmployerLed, wageType: WageType.Fixed, hourlyRate: undefined },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(true)
+    })
+
+    it('rejects an hourlyRate above the server cap (regression for SDK-1297)', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Hourly, hourlyRate: 1_000_000_000_001 },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(false)
+      expect(issueFor(result, 'hourlyRate')?.message).toBe(MAX_HOURLY_RATE)
+    })
+
+    it('accepts an hourlyRate at the server cap', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Hourly, hourlyRate: 1_000_000_000_000 },
         { mode: 'create' },
       )
       expect(result.success).toBe(true)

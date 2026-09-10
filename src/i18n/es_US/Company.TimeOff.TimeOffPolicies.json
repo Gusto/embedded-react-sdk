@@ -1,0 +1,42 @@
+{
+  "actions": {
+    "deletePolicy": "Eliminar póliza",
+    "menuFor": "Acciones para {{name}}",
+    "menuTrigger": "Acciones para {{name}}",
+    "viewPolicy": "Ver póliza"
+  },
+  "allEmployeesLabel": "Todos los empleados",
+  "createPolicyCta": "Crear política",
+  "deleteHolidayDialog": {
+    "description": "Esto eliminará la política de pago de días festivos de la empresa.",
+    "title": "¿Estás seguro de que quieres eliminar la política de pago de días festivos de la empresa?"
+  },
+  "deletePolicyDialog": {
+    "confirmCta": "Eliminar política",
+    "description": "Esto eliminará la política \"{{name}}\" y todas las solicitudes de tiempo libre asociadas.",
+    "title": "¿Estás seguro de que quieres eliminar la política \"{{name}}\"?"
+  },
+  "employeeCount_one": "{{count}} empleado",
+  "employeeCount_other": "{{count}} empleados",
+  "emptyState": {
+    "body": "Administra el tiempo libre de los empleados creando una política.",
+    "heading": "No tienes ninguna política de tiempo libre"
+  },
+  "enrolledDash": "–",
+  "errors": {
+    "deleteFailed": "No se puede eliminar esta póliza. Inténtalo de nuevo.",
+    "pendingRequestsBlockDeletion": "\"{{name}}\" tiene solicitudes de tiempo libre pendientes o aprobadas. Rechaza o cancela esas solicitudes antes de eliminar esta política."
+  },
+  "finishSetupCta": "Finalizar configuración",
+  "flash": {
+    "holidayDeleted": "La política de pago de días festivos se eliminó correctamente",
+    "policyDeleted": "La póliza \"{{name}}\" se eliminó correctamente"
+  },
+  "holidayPayPolicy": "Política de pago por días festivos",
+  "incompleteBadge": "Incompleta",
+  "pageTitle": "Políticas de tiempo libre",
+  "tableHeaders": {
+    "enrolled": "Inscrito"
+  },
+  "tableLabel": "Políticas de tiempo libre"
+}

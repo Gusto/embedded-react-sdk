@@ -1,0 +1,12 @@
+{
+  "emptyPlaceholder": "–",
+  "emptyState": {
+    "title": "Aún no hay documentos"
+  },
+  "listLabel": "Documentos del contratista",
+  "signingStatus": {
+    "notSigned": "No firmado",
+    "signed": "Firmado"
+  },
+  "signingStatusColumn": "Estado de firma"
+}

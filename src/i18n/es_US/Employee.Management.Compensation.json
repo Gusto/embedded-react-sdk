@@ -1,0 +1,126 @@
+{
+  "addAnotherJobTitle": "Agregar otro puesto",
+  "addJobTitle": "Agregar un puesto",
+  "adjustForMinimumWage": "Ajustar por salario mínimo",
+  "adjustForMinimumWageDescription": "Determina si la compensación debe ajustarse al salario mínimo. Solo se aplica a empleados no exentos.",
+  "alerts": {
+    "jobAdded": "Puesto agregado correctamente."
+  },
+  "card": {
+    "addAnotherJobCta": "Agregar otro puesto",
+    "addJobCta": "Agregar puesto",
+    "columns": {
+      "effectiveDate": "Fecha de vigencia",
+      "payType": "Tipo de pago"
+    },
+    "deleteJobDialog": {
+      "description": "{{jobTitle}} se eliminará permanentemente.",
+      "title": "¿Eliminar puesto?"
+    },
+    "effectiveDate": "Fecha de vigencia",
+    "emptyState": {
+      "description": "La compensación aparecerá aquí una vez que se agregue",
+      "title": "Sin compensación"
+    },
+    "hamburgerTitle": "Acciones del puesto",
+    "listEmptyPlaceholder": "Sin valor",
+    "pendingChange": {
+      "alertLabel": "La compensación cambiará el {{date}}.",
+      "alertLabelWithJob": "La compensación para {{jobTitle}} cambiará el {{date}}.",
+      "cancelCta": "Cancelar cambio",
+      "details": {
+        "flsaChange": "El tipo de empleado cambiará a {{flsaLabel}}",
+        "minWageChanged": "La tarifa de ajuste al salario mínimo cambiará a {{formattedWage}}",
+        "minWageChangedNoRate": "El ajuste al salario mínimo cambiará",
+        "minWageDisabled": "Se eliminará el ajuste al salario mínimo",
+        "minWageEnabled": "El ajuste al salario mínimo se habilitará en {{formattedWage}}",
+        "minWageEnabledNoRate": "Se habilitará el ajuste al salario mínimo",
+        "newJob": "{{name}} comenzará un trabajo adicional como {{title}} a {{formattedRate}}",
+        "newJobMinimal": "{{name}} comenzará un trabajo adicional",
+        "newJobNoRate": "{{name}} comenzará un puesto adicional como {{title}}",
+        "newJobNoTitle": "{{name}} comenzará un trabajo adicional con un salario de {{formattedRate}}",
+        "payChange": "El pago cambiará a {{formattedRate}}",
+        "titleChange": "El título del puesto cambiará a {{title}}"
+      },
+      "modal": {
+        "closeCta": "Cerrar",
+        "description": "Estos cambios en la compensación están programados para entrar en vigor en las fechas indicadas a continuación. Cancela cualquier cambio para eliminarlo.",
+        "title": "Revisar cambios pendientes"
+      },
+      "reviewCta": "Revisión",
+      "summaryLabel": "Hay varios cambios pendientes en la compensación de {{name}}."
+    },
+    "pendingStatus": "Pendiente",
+    "tableLabel": "Lista de puestos",
+    "title": "Compensación",
+    "types": {
+      "hourly": "Por hora\/Con derecho a horas extra",
+      "salary": "Salario\/Sin horas extra"
+    },
+    "wage": "Salario"
+  },
+  "classificationLink": "<ClassificationLink href=\"https:\/\/support.gusto.com\/team-management\/team-payments\/pay-rates\/1001671771\/Employee-classification-options.htm\" target=\"_blank\">Obtén más información sobre las clasificaciones de empleados.<\/ClassificationLink>",
+  "commissionAlerts": {
+    "federalMinimumPay": {
+      "body": "Las leyes federales establecen que los empleados sin derecho a horas extra deben recibir al menos $684 por semana ($35,568 por año). Usted ha clasificado a este empleado como sin derecho a horas extra; asegúrese de que cumpla con la definición de empleado exento del Departamento de Trabajo.",
+      "label": "Los empleados que solo trabajan por comisión deben ganar el salario mínimo federal"
+    },
+    "minimumWage": {
+      "body": "Para mantenerse en cumplimiento, <minimumWageLink>revise sus regulaciones locales<\/minimumWageLink>.",
+      "label": "Los empleados que trabajan solo por comisión deben ganar al menos el salario mínimo"
+    },
+    "ownerSalary": {
+      "label": "El IRS requiere que los dueños de corporaciones S se paguen a sí mismos un salario razonable, similar al de otras personas en el mismo puesto, antes de tomar cualquier distribución."
+    }
+  },
+  "editCompensationTitle": "Editar compensación",
+  "effectiveDate": "Fecha de vigencia",
+  "effectiveDateLabel": "Fecha de vigencia",
+  "employeeClassification": "Tipo de empleado",
+  "flsaStatusLabels": {
+    "Commission Only Exempt": "Solo comisión\/Sin horas extra",
+    "Commission Only Nonexempt": "Solo comisión\/Con derecho a horas extra",
+    "Exempt": "Sueldo\/Sin horas extra",
+    "Nonexempt": "Pagado por hora",
+    "Owner": "Retiro del propietario",
+    "Salaried Nonexempt": "Salario\/Con derecho a horas extra"
+  },
+  "flsaStatusPlaceholder": "Seleccionar clasificación...",
+  "hireDateLabel": "Fecha de contratación",
+  "jobTitle": "Título del puesto",
+  "minimumWageDescription": "¿A qué requisito de salario mínimo se debe ajustar la compensación?",
+  "minimumWageLabel": "Salario mínimo",
+  "minimumWagePlaceholder": "Selecciona el salario mínimo...",
+  "paymentUnitDescription": "El período durante el cual se registra el monto de la compensación (por ejemplo, por hora, diario, semanal, mensual, anual).",
+  "paymentUnitOptions": {
+    "Paycheck": "Cheque de pago",
+    "Week": "Semana"
+  },
+  "paymentUnitPlaceholder": "Seleccionar frecuencia salarial...",
+  "saveNewJobCta": "Guardar puesto",
+  "stateWcClassCodeLabel": "Código de clase de riesgo",
+  "stateWcCoveredDescription": "Washington administra el <wcLink>seguro de compensación para trabajadores<\/wcLink> para proteger a los trabajadores y a los empleadores del impacto financiero de una lesión relacionada con el trabajo. Indica aquí si este empleado está exento del impuesto de compensación para trabajadores.",
+  "stateWcCoveredOptions": {
+    "no": "No, este empleado no está cubierto",
+    "yes": "Sí, este empleado está cubierto"
+  },
+  "twoPercentShareholderLabel": "Este empleado es accionista del 2 %",
+  "validations": {
+    "classificationChangeNotification": "Cambiar la clasificación de este empleado eliminará de inmediato sus trabajos adicionales.",
+    "classificationChangeRemovesSecondaryJobs": "Solo los empleados que se pagan por hora pueden tener múltiples trabajos.",
+    "effectiveDate": "La fecha de vigencia es un campo obligatorio",
+    "effectiveDateBeforeHire": "La fecha de vigencia no puede ser anterior a la fecha de contratación del empleado.",
+    "effectiveDateBeforeMin": "La fecha de vigencia debe ser en el futuro",
+    "exemptThreshold": "La mayoría de los empleados que ganan menos de {{limit}}\/año deberían tener derecho a horas extra.",
+    "hireDate": "La fecha de inicio es obligatoria",
+    "jobTitleSentence": "El título del puesto es un campo obligatorio",
+    "minimumWage": "Seleccione el salario mínimo para el ajuste",
+    "nonZeroRate": "El monto debe ser de al menos $1.00",
+    "rate": "El monto es un campo obligatorio",
+    "rateExemptThreshold": "Los empleados exentos según la FLSA deben cumplir con el umbral salarial de {{limit}}\/año",
+    "stateWcClassCode": "Seleccione un código de clase de riesgo",
+    "title": "El título es un campo obligatorio"
+  },
+  "wageFrequencyLabel": "Frecuencia del salario",
+  "wageLabel": "Salario"
+}
