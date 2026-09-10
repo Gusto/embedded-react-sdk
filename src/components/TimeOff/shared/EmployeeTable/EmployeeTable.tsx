@@ -100,7 +100,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   } as useDataViewProp<T>)
 
   return (
-    <div className={styles.root} data-has-menu={itemMenu ? true : undefined}>
+    <div className={styles.root}>
       {!hideSearch && (
         <div className={styles.searchContainer}>
           <Components.TextInput

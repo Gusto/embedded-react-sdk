@@ -1625,6 +1625,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | `form.title` | `"Edit compensation"` |
 | `form.validations` | |
 | `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `form.wageTypeLabel` | `"Compensation type"` |
 | <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
 | <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
@@ -1645,6 +1646,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-contractormanagementcontractorlistaddcontractorcta"></a> `addContractorCta` | `"Add contractor"` |
+| <a id="property-contractormanagementcontractorlistbacktolistcta"></a> `backToListCta` | `"Back to contractors"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissalcta"></a> `cancelDismissalCta` | `"Cancel dismissal"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissaldialog"></a> `cancelDismissalDialog` | |
 | `cancelDismissalDialog.cancelCta` | `"No, go back"` |
@@ -1808,8 +1810,8 @@ Translation keys for the `Contractor.Management.Profile` i18n namespace.
 | `form.validations.businessName` | `"Business name is required"` |
 | `form.validations.ein` | `"The EIN must be exactly 9 digits long."` |
 | `form.validations.email` | `"Enter a valid email address"` |
-| `form.validations.firstName` | `"First name is required"` |
-| `form.validations.lastName` | `"Last name is required"` |
+| `form.validations.firstName` | `"Enter a valid first name"` |
+| `form.validations.lastName` | `"Enter a valid last name"` |
 | `form.validations.ssn` | `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` |
 | `form.validations.startDate` | `"Start date is required"` |
 | <a id="property-contractormanagementprofilelegalname"></a> `legalName` | `"Legal name"` |
@@ -2368,6 +2370,7 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.firstName` | `"First name is required for individual contractors"` |
 | `validations.firstNameFormat` | `"First name is not valid"` |
 | `validations.hourlyRate` | `"Hourly rate is required for hourly contractors"` |
+| `validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `validations.lastName` | `"Last name is required for individual contractors"` |
 | `validations.lastNameFormat` | `"Last name is not valid"` |
 | `validations.ssn` | `"SSN is required for individual contractors"` |

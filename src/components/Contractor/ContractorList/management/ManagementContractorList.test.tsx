@@ -332,6 +332,59 @@ describe('ManagementContractorList — tab switching', () => {
     })
   })
 
+  it("keeps the previous tab's columns and rows rendered until the next tab's data resolves, then swaps both together", async () => {
+    mockList([{ ...baseContractor }])
+
+    let resolveOnboardingFetch: (() => void) | undefined
+    const resolver: HttpResponseResolver = ({ request }) => {
+      if (!request.url.includes('onboarded=false')) {
+        return HttpResponse.json([{ ...baseContractor }], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        })
+      }
+
+      return new Promise(resolve => {
+        resolveOnboardingFetch = () => {
+          resolve(
+            HttpResponse.json(
+              [
+                {
+                  ...baseContractor,
+                  uuid: 'contractor-456',
+                  first_name: 'Grace',
+                  last_name: 'Hopper',
+                  onboarded: false,
+                  onboarding_status: 'admin_onboarding_incomplete',
+                },
+              ],
+              { headers: { 'x-total-pages': '1', 'x-total-count': '1' } },
+            ),
+          )
+        }
+      })
+    }
+    server.use(handleGetContractorsList(resolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={() => {}} />)
+
+    await screen.findByText('Ada Lovelace')
+    expect(screen.getByText('Hourly — $50.00/hr')).toBeInTheDocument()
+
+    await user.click(await screen.findByRole('tab', { name: 'Onboarding' }))
+
+    // The Onboarding fetch is still pending: the Active tab's row and rate column stay
+    // fully rendered rather than half-swapping to the Onboarding tab's column shape.
+    expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    expect(screen.getByText('Hourly — $50.00/hr')).toBeInTheDocument()
+
+    resolveOnboardingFetch?.()
+
+    await screen.findByText('Grace Hopper')
+    expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument()
+    expect(screen.queryByText('Hourly — $50.00/hr')).not.toBeInTheDocument()
+  })
+
   it('honors the initialTab prop', async () => {
     mockList([
       {

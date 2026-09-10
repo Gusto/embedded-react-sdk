@@ -1,14 +1,16 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payrollsSubmit'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { usePayrollsGet } from '@gusto/embedded-api/react-query/payrollsGet'
+import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
+import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type {
   PayrollCreditBlockerType,
@@ -23,6 +25,7 @@ import { canCancelPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
+import { useSubmissionPoll, type PayrollShow } from './useSubmissionPoll'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
   componentEvents,
@@ -153,7 +156,6 @@ const Root = ({
   useI18n('Payroll.PayrollOverview')
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
-  const [isPolling, setIsPolling] = useState(false)
   const [hasSubmittedInSession, setHasSubmittedInSession] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
@@ -166,20 +168,27 @@ const Root = ({
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
     defaultItemsPerPage: 25,
   })
-  const { data, isFetching } = usePayrollsGet(
-    {
+  const gustoEmbedded = useGustoEmbeddedContext()
+
+  const payrollRequest = useMemo<GetV1CompaniesCompanyIdPayrollsPayrollIdRequest>(
+    () => ({
       companyId,
-      payrollId: payrollId,
+      payrollId,
       include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
       page: currentPage,
       per: itemsPerPage,
       sortBy: 'last_name',
-    },
-    {
-      refetchInterval: isPolling ? 5_000 : false,
-      placeholderData: keepPreviousData,
-    },
+    }),
+    [companyId, payrollId, currentPage, itemsPerPage],
   )
+
+  const {
+    data,
+    isFetching,
+    refetch: refetchPayroll,
+  } = usePayrollsGet(payrollRequest, {
+    placeholderData: keepPreviousData,
+  })
   const payrollData = data?.payrollShow
   const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData?.submissionBlockers)
   const wireInId = findWireInRequestUuid(payrollData?.creditBlockers)
@@ -191,6 +200,24 @@ const Root = ({
     { enabled: !!wireInId },
   )
   const wireInRequest = wireInRequestData?.wireInRequest
+
+  // Scoped to the current page's employees so this stays bounded regardless of company size,
+  // since `flsaStatus` (compensation type) isn't available on employeeCompensations for
+  // employees without an hourlyCompensations line item (e.g. salaried employees).
+  const employeeUuids = (payrollData?.employeeCompensations ?? [])
+    .map(employeeCompensation => employeeCompensation.employeeUuid)
+    .filter((uuid): uuid is string => !!uuid)
+
+  const { data: employeesData } = useEmployeesList(
+    { companyId, uuids: employeeUuids },
+    { enabled: employeeUuids.length > 0 },
+  )
+  const employeeFlsaStatusByUuid = (employeesData?.showEmployees ?? []).reduce<
+    Record<string, string | undefined>
+  >((acc, employee) => {
+    acc[employee.uuid] = employee.flsaStatus
+    return acc
+  }, {})
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
@@ -243,79 +270,63 @@ const Root = ({
     }
   }, [showWireDetailsConfirmation, checkDate, t, dateFormatter, Text])
 
-  useEffect(() => {
-    if (!payrollData) return
-    // Start polling when payroll is submitting and not already polling
-    if (
-      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submitting &&
-      !isPolling
-    ) {
-      setIsPolling(true)
-    }
-    if (
-      isPolling &&
-      (payrollData.processed === true ||
-        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success)
-    ) {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSED, {
-        payPeriod: payrollData.payPeriod,
-        payrollUuid: payrollId,
-      })
-      setInternalAlerts([
-        {
-          type: 'success',
-          title: t('alerts.payrollProcessedTitle'),
-          content: t('alerts.payrollProcessedMessage', {
-            amount: formatCurrency(Number(payrollData.totals?.companyDebit)),
-            date: dateFormatter.formatShortWithYear(
-              payrollData.payrollStatusMeta?.expectedDebitTime ?? payrollData.payrollDeadline,
-            ),
-          }),
-        },
-      ])
-      setShowWireDetailsConfirmation(false)
-      setIsPolling(false)
-      setHasSubmittedInSession(false)
-    }
-    // If we are polling and payroll is in failed state, stop polling, and emit failure event
-    if (
-      isPolling &&
-      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.processing_failed
-    ) {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-      setInternalAlerts([
-        {
-          type: 'error',
-          title: t('alerts.payrollProcessingFailedTitle'),
-          content: (
-            <Flex flexDirection="column" gap={16}>
-              <UnorderedList items={renderErrorList(payrollData.processingRequest.errors ?? [])} />
-              {!readOnly && (
-                <Button variant="secondary" onClick={onEdit}>
-                  {t('alerts.payrollProcessingFailedCtaLabel')}
-                </Button>
-              )}
-            </Flex>
+  const emitProcessed = (payroll: PayrollShow | undefined) => {
+    onEvent(componentEvents.RUN_PAYROLL_PROCESSED, {
+      payPeriod: payroll?.payPeriod,
+      payrollUuid: payrollId,
+    })
+    setInternalAlerts([
+      {
+        type: 'success',
+        title: t('alerts.payrollProcessedTitle'),
+        content: t('alerts.payrollProcessedMessage', {
+          amount: formatCurrency(Number(payroll?.totals?.companyDebit)),
+          date: dateFormatter.formatShortWithYear(
+            payroll?.payrollStatusMeta?.expectedDebitTime ?? payroll?.payrollDeadline,
           ),
-        },
-      ])
-      setShowWireDetailsConfirmation(false)
-      setIsPolling(false)
-      setHasSubmittedInSession(false)
-    }
-  }, [
-    payrollData?.processingRequest?.status,
-    payrollData?.processed,
-    isPolling,
-    onEvent,
-    t,
-    dateFormatter,
-    formatCurrency,
-    payrollData?.totals?.companyDebit,
-    payrollData?.payrollStatusMeta?.expectedDebitTime,
-    payrollData?.payrollDeadline,
-    readOnly,
-  ])
+        }),
+      },
+    ])
+    setShowWireDetailsConfirmation(false)
+    setHasSubmittedInSession(false)
+  }
+
+  const emitProcessingFailed = (payroll: PayrollShow | undefined) => {
+    onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+    setInternalAlerts([
+      {
+        type: 'error',
+        title: t('alerts.payrollProcessingFailedTitle'),
+        content: (
+          <Flex flexDirection="column" gap={16}>
+            <UnorderedList items={renderErrorList(payroll?.processingRequest?.errors ?? [])} />
+            {!readOnly && (
+              <Button variant="secondary" onClick={onEdit}>
+                {t('alerts.payrollProcessingFailedCtaLabel')}
+              </Button>
+            )}
+          </Flex>
+        ),
+      },
+    ])
+    setShowWireDetailsConfirmation(false)
+    setHasSubmittedInSession(false)
+  }
+
+  const { start: startPayrollPoll, isPolling } = useSubmissionPoll({
+    refetch: refetchPayroll,
+    onProcessed: emitProcessed,
+    onProcessingFailed: emitProcessingFailed,
+  })
+
+  // Always poll from mount, not just after Submit: the initial read is a non-suspense query, so
+  // if its notification never arrives the component is stuck on `!payrollData` forever with no
+  // other render source. This also doubles as picking up a submission already in flight
+  // (another tab, another admin) — the poll's own evaluate rules keep the loop going for as long
+  // as it reads `submitting`, regardless of why the loop started.
+  useEffect(() => {
+    startPayrollPoll({ baseline: null, sawSubmitting: false })
+  }, [startPayrollPoll])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
     companyId,
@@ -328,7 +339,6 @@ const Root = ({
 
   const { mutateAsync: cancelPayroll } = usePayrollsCancelMutation()
 
-  const gustoEmbedded = useGustoEmbeddedContext()
   const nonce = useNonce()
 
   const [downloadingEmployeeIds, setDownloadingEmployeeIds] = useState<ReadonlySet<string>>(
@@ -431,7 +441,13 @@ const Root = ({
       })
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
-      setIsPolling(true)
+      startPayrollPoll({
+        baseline: {
+          processed: payrollData.processed ?? false,
+          status: payrollData.processingRequest?.status,
+        },
+        sawSubmitting: false,
+      })
       setHasSubmittedInSession(true)
     })
   }
@@ -474,6 +490,7 @@ const Root = ({
       canCancel={canCancelPayroll(payrollData) && !readOnly}
       canEdit={!readOnly}
       payrollData={payrollData}
+      employeeFlsaStatusByUuid={employeeFlsaStatusByUuid}
       bankAccount={bankAccount}
       taxes={taxes}
       alerts={combinedAlerts}
