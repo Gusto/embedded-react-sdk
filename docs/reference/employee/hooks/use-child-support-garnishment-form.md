@@ -528,7 +528,7 @@ Shape of the values managed by the child support garnishment form.
 
 ### ChildSupportGarnishmentFormErrorCode
 
-> **ChildSupportGarnishmentFormErrorCode** = `"NEGATIVE_AMOUNT"` \| `"REQUIRED"` \| `"PERCENT_OUT_OF_RANGE"`
+> **ChildSupportGarnishmentFormErrorCode** = `"REQUIRED"` \| `"NEGATIVE_AMOUNT"` \| `"PERCENT_OUT_OF_RANGE"`
 
 Union of validation error code strings emitted by the child support
 garnishment form schema.
