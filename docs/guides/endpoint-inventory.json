@@ -2514,6 +2514,13 @@
         "EmployeeOnboarding.OnboardingFlow"
       ]
     },
+    "ContractorManagement.ContractorListFlow": {
+      "blocks": [
+        "ContractorManagement.ContractorList",
+        "ContractorManagement.DashboardFlow",
+        "ContractorOnboarding.OnboardingFlow"
+      ]
+    },
     "ContractorManagement.CreatePaymentFlow": {
       "blocks": [
         "ContractorManagement.CreatePayment",

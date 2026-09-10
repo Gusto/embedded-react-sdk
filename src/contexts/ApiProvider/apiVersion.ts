@@ -1,3 +1,5 @@
+import { name, version } from '../../../package.json'
+
 /**
  * Single source of truth for the pinned Gusto Embedded API version.
  *
@@ -10,6 +12,18 @@
  * @internal
  */
 export const API_VERSION = '2026-06-15'
+
+/**
+ * SDK package name and version, sent on every request via the `X-Gusto-SDK-Version`
+ * header so backend traffic can be attributed to a specific SDK release.
+ *
+ * @remarks
+ * Read directly from `package.json` so it always matches the published package —
+ * no manual bump required.
+ *
+ * @internal
+ */
+export const SDK_VERSION = `${name} ${version}`
 
 /**
  * TanStack Query namespace the embedded-api client prefixes onto every generated

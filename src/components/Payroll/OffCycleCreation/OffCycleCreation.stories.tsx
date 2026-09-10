@@ -25,6 +25,8 @@ const mockEmployees = [
 const mockDateBounds = {
   minCheckDate: new Date(2026, 8, 4),
   minCheckOnlyDate: new Date(2026, 8, 2),
+  maxDate: new Date(2027, 8, 2),
+  minPayPeriodDate: new Date(2025, 8, 2),
 }
 
 const defaultFormValues = {
