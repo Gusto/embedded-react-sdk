@@ -32,6 +32,8 @@ export interface Resources {
   /** */
   'Company.Locations': Translations.CompanyLocations
   /** */
+  'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -937,6 +939,31 @@ export namespace Translations {
       zip: string
       /** @defaultValue `"Please provide valid phone number"` */
       phone: string
+    }
+  }
+  /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
+  export interface CompanyManagementPaySchedule {
+    /** @defaultValue `"Pay schedule"` */
+    title: string
+    /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
+    description: string
+    /** @defaultValue `"Manage"` */
+    manageCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    labels: {
+      /** @defaultValue `"Name"` */
+      name: string
+      /** @defaultValue `"Frequency"` */
+      frequency: string
+    }
+    autoPilot: {
+      /** @defaultValue `"AutoPilot"` */
+      label: string
+      /** @defaultValue `"Enabled"` */
+      enabled: string
+      /** @defaultValue `"Disabled"` */
+      disabled: string
     }
   }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
