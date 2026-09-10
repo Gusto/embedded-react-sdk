@@ -530,3 +530,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | Flow | Blocks included |
 | --- | --- |
 | **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyConfigurationForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.TimeOffPolicyDetail, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule |
+
+## CompanyManagement
+
+### Components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **CompanyManagement.PaySchedule** | GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
