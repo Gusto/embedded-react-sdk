@@ -10,16 +10,13 @@ import { useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { coerceNaN } from '@/partner-hook-utils/form/preprocessors'
 import { FieldCaption } from '@/components/Common/FieldCaption'
 
-type GrossUpFormValues = { netPay: number }
-
-// netPay is wrapped in z.preprocess, which makes z.input infer `unknown`. Cast
-// back to the real shape so zodResolver infers a matching Resolver<GrossUpFormValues>.
 const GrossUpFormSchema = z.object({
-  netPay: z.preprocess(coerceNaN(0), z.number().positive()),
-}) as z.ZodType<GrossUpFormValues, GrossUpFormValues>
+  netPay: z.number().positive(),
+})
+
+type GrossUpFormValues = z.infer<typeof GrossUpFormSchema>
 
 /** @internal */
 export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: GrossUpModalProps) {
@@ -36,12 +33,12 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
 
   const formHandlers = useForm<GrossUpFormValues>({
     resolver: zodResolver(GrossUpFormSchema),
-    defaultValues: { netPay: NaN },
+    defaultValues: { netPay: 0 },
   })
 
   useEffect(() => {
     if (!isOpen) {
-      formHandlers.reset({ netPay: NaN })
+      formHandlers.reset({ netPay: 0 })
       setCalculatedGrossUp(null)
       setErrorMessage(null)
     }
