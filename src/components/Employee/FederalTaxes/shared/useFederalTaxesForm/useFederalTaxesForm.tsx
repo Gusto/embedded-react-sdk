@@ -289,7 +289,7 @@ export function useFederalTaxesForm({
       void formMethods.handleSubmit(
         async (data: FederalTaxesFormOutputs) => {
           await baseSubmitHandler(data, async payload => {
-            if (!employeeFederalTax) {
+            if (!employeeFederalTax || !('version' in employeeFederalTax)) {
               throw new SDKInternalError('Federal taxes record was not loaded before submit')
             }
 
