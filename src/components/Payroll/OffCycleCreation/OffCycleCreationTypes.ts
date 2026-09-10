@@ -45,6 +45,10 @@ export interface OffCycleCreationPresentationProps {
   minCheckDate: Date
   /** Earliest selectable payment date when the payroll is check-only (today). */
   minCheckOnlyDate: Date
+  /** Latest selectable date for start date, end date, and payment date (1 year from today). */
+  maxDate: Date
+  /** Earliest selectable start/end date for the pay period (1 year before today). */
+  minPayPeriodDate: Date
   /** Current tax withholding configuration shown in the table. */
   taxWithholdingConfig: OffCycleTaxWithholdingConfig
   /** Whether the tax withholding edit modal is open. */

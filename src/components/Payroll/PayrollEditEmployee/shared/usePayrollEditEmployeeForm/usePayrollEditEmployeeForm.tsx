@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useFieldArray, useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -38,6 +39,7 @@ import {
 } from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { derivePayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
+import { PREPARE_QUERY_KEY } from '@/components/Payroll/PayrollConfiguration/usePayrollConfigurationData'
 import { isOvertimeEligibleFlsaStatus } from '@/components/Payroll/helpers'
 import { retryAsync } from '@/helpers/retryAsync'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -204,6 +206,7 @@ export function usePayrollEditEmployeeForm({
   })
   const { data: earningTypesData } = useEarningTypesListSuspense({ companyId })
 
+  const queryClient = useQueryClient()
   const { mutateAsync: preparePayroll } = usePayrollsPrepareMutation()
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
@@ -503,6 +506,15 @@ export function usePayrollEditEmployeeForm({
             }
 
             setPreparedPayroll(updated)
+
+            // The payroll configuration surface caches its prepared payroll under a hand-written
+            // key, which the global SDK auto-invalidation (namespaced to @gusto/embedded-api
+            // queries only) does not touch. Invalidate it explicitly so configuration reflects
+            // this edit without a manual refresh.
+            await queryClient.invalidateQueries({
+              queryKey: [PREPARE_QUERY_KEY, payrollId],
+            })
+
             submitResult = { mode: 'update', data: updated }
           })
           resolve()

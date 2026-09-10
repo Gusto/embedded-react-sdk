@@ -66,7 +66,11 @@ function ProfileCardContent({ contractorId, onEvent, LoaderComponent }: ProfileC
   const legalName = contractor
     ? isBusiness
       ? contractor.businessName
-      : firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
+      : firstLastName({
+          first_name: contractor.firstName,
+          middle_initial: contractor.middleInitial,
+          last_name: contractor.lastName,
+        })
     : undefined
   const startDate = contractor ? formatDateLongWithYear(contractor.startDate) : undefined
   const maskedSsn = contractor?.hasSsn ? 'XXX-XX-XXXX' : undefined

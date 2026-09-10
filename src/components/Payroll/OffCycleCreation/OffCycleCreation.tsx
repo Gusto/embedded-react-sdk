@@ -11,10 +11,7 @@ import {
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
-import {
-  createOffCyclePayPeriodDateFormSchema,
-  type OffCyclePayrollDateType,
-} from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
+import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { OffCycleCreationFormData, OffCycleCreationProps } from './OffCycleCreationTypes'
@@ -75,7 +72,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
-  const { minCheckDate, today } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
+  const { minCheckDate, maxDate, minPayPeriodDate, today } =
+    useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
@@ -126,14 +124,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     t(key as any, options as any) as string
 
   const dynamicResolver: Resolver<OffCycleCreationFormData> = (values, context, options) => {
-    const reason = values.reason
     const isCheckOnly = values.isCheckOnly
-    const resolvedPayrollType: OffCyclePayrollDateType =
-      reason === 'correction' ? 'correction' : payrollType
 
     const dateSchema = createOffCyclePayPeriodDateFormSchema(
       translateValidation,
-      resolvedPayrollType,
       isCheckOnly ? today : minCheckDate,
       paymentSpeedDays,
     )
@@ -234,6 +228,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
           isPending={isPending}
           minCheckDate={minCheckDate}
           minCheckOnlyDate={today}
+          maxDate={maxDate}
+          minPayPeriodDate={minPayPeriodDate}
           taxWithholdingConfig={taxWithholdingConfig}
           isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
           onTaxWithholdingEditClick={handleTaxWithholdingEditClick}
