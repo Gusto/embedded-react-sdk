@@ -25,11 +25,11 @@ type FixedCompensationEntry = NonNullable<
 >[number]
 
 /**
- * Internal normalized form of a workweek: the API exposes
+ * Normalized form of a workweek: the API exposes
  * `{ startDate?: RFCDate; endDate?: RFCDate }`, but the hook keys week-maps by
  * `YYYY-MM-DD` strings and builds breakdowns from them, so both boundaries are
- * required strings here. Not part of the public surface — partners read the raw
- * workweeks off `data.preparedPayroll.workweeks` (the API type).
+ * required strings here. Surfaced on the hook's `data.workweeks` so the UI can
+ * label each per-workweek column without re-parsing the raw API workweeks.
  *
  * @internal
  */

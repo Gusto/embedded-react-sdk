@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { useWatch, type Control } from 'react-hook-form'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { usePayrollEditEmployeeForm } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm'
@@ -8,10 +7,7 @@ import {
   type HourEntry,
   type TimeOffEntry,
 } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/fields'
-import {
-  PayrollEditEmployeeErrorCodes,
-  type PayrollEditEmployeeFormData,
-} from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
+import { PayrollEditEmployeeErrorCodes } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
 import styles from './UNSTABLE_PayrollEditEmployee.module.scss'
 import { useFieldErrorMessage } from '@/partner-hook-utils/form/useFieldErrorMessage'
 import {
@@ -73,31 +69,23 @@ export function UNSTABLE_PayrollEditEmployee({
 }
 
 /**
- * The "Type" cell for a time-off row: the policy name plus a live remaining balance that
- * decrements as the user enters hours used. Presentational only (no submit impact), which is
- * the one sanctioned use of `useWatch` in this component.
+ * The "Type" cell for a time-off row: the policy name plus a live remaining
+ * balance that decrements as the user enters hours used. The watch and the
+ * accrual-balance lookup live inside the hook's `entry.RemainingBalance`; this
+ * cell just supplies the copy for whatever `remaining` value it yields.
  */
-function TimeOffTypeCell({
-  entry,
-  accrualBalance,
-  control,
-}: {
-  entry: TimeOffEntry
-  accrualBalance?: string | null
-  control: Control<PayrollEditEmployeeFormData>
-}) {
+function TimeOffTypeCell({ entry }: { entry: TimeOffEntry }) {
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const { Text } = useComponentContext()
-  const entered = useWatch({ control, name: `timeOff.${entry.name}` })
-  const remaining =
-    accrualBalance != null ? parseFloat(accrualBalance) - (parseFloat(entered) || 0) : undefined
 
   return (
     <Flex flexDirection="column" gap={2}>
       <span>{entry.name}</span>
-      {remaining != null ? (
-        <Text variant="supporting">{t('timeOffBalance.remaining', { balance: remaining })}</Text>
-      ) : null}
+      <entry.RemainingBalance>
+        {remaining => (
+          <Text variant="supporting">{t('timeOffBalance.remaining', { balance: remaining })}</Text>
+        )}
+      </entry.RemainingBalance>
     </Flex>
   )
 }
@@ -174,7 +162,6 @@ const Root = ({
 
   const { employee, employeeCompensation } = form.data
   const Fields = form.form.Fields
-  const control = form.form.hookFormInternals.formMethods.control
 
   const employeeName = firstLastName({
     first_name: employee.firstName,
@@ -216,19 +203,6 @@ const Root = ({
     }
   }
 
-  const weekEndByStart = new Map(
-    (form.data.preparedPayroll.workweeks ?? []).flatMap(week =>
-      week.startDate && week.endDate
-        ? [[week.startDate.toString(), week.endDate.toString()] as const]
-        : [],
-    ),
-  )
-
-  const weekRangeLabel = (startDate: string) =>
-    dateFormatter.formatPayPeriodRange(startDate, weekEndByStart.get(startDate) ?? startDate, {
-      useShortMonth: true,
-    })
-
   const renderBreakdownSection = (
     pathPrefix: 'hours' | 'additionalEarnings',
     section: HourEntry[] | Record<string, HourEntry[]>,
@@ -254,8 +228,8 @@ const Root = ({
       footer,
     } = options
     const split = isSplitByWorkweek(section)
-    const weekStarts = split ? Object.keys(section) : []
-    const rows = split ? (section[weekStarts[0] ?? ''] ?? []) : section
+    const firstWeekStart = form.data.workweeks[0]?.startDate ?? ''
+    const rows = split ? (section[firstWeekStart] ?? []) : section
     if (rows.length === 0 && !footer) return null
 
     const renderField = (entry: HourEntry, fieldLabel: string) => (
@@ -274,19 +248,24 @@ const Root = ({
       render: row => renderField(row, labelFor(row.name)),
     }
 
-    const workweekColumns: useDataViewPropReturn<HourEntry>['columns'] = weekStarts.map(
-      startDate => ({
-        title: weekRangeLabel(startDate),
-        justify: 'end',
-        render: row => {
-          const cell = (section as Record<string, HourEntry[]>)[startDate]?.find(
-            entry => entry.jobUuid === row.jobUuid && entry.name === row.name,
-          )
-          return cell
-            ? renderField(cell, `${labelFor(row.name)} ${weekRangeLabel(startDate)}`)
-            : null
-        },
-      }),
+    // Columns come straight from the hook's normalized workweeks, so each header
+    // has both boundary dates without re-deriving them from the raw payroll.
+    const workweekColumns: useDataViewPropReturn<HourEntry>['columns'] = form.data.workweeks.map(
+      ({ startDate, endDate }) => {
+        const rangeLabel = dateFormatter.formatPayPeriodRange(startDate, endDate, {
+          useShortMonth: true,
+        })
+        return {
+          title: rangeLabel,
+          justify: 'end',
+          render: row => {
+            const cell = (section as Record<string, HourEntry[]>)[startDate]?.find(
+              entry => entry.jobUuid === row.jobUuid && entry.name === row.name,
+            )
+            return cell ? renderField(cell, `${labelFor(row.name)} ${rangeLabel}`) : null
+          },
+        }
+      },
     )
 
     const columns: useDataViewPropReturn<HourEntry>['columns'] = [
@@ -303,26 +282,15 @@ const Root = ({
 
   const renderTimeOffSection = (
     entries: TimeOffEntry[],
-    options: { title: string; description?: string; showBalance?: boolean },
+    options: { title: string; description?: string },
   ) => {
     if (entries.length === 0) return null
-    const { title, description, showBalance } = options
+    const { title, description } = options
 
     const columns: useDataViewPropReturn<TimeOffEntry>['columns'] = [
       {
         title: t('typeColumn'),
-        render: entry => (
-          <TimeOffTypeCell
-            entry={entry}
-            control={control}
-            accrualBalance={
-              showBalance
-                ? employee.eligiblePaidTimeOff?.find(policy => policy.name === entry.name)
-                    ?.accrualBalance
-                : undefined
-            }
-          />
-        ),
+        render: entry => <TimeOffTypeCell entry={entry} />,
       },
       {
         title: t('hoursColumn'),
@@ -442,7 +410,6 @@ const Root = ({
 
             {renderTimeOffSection(Fields.timeOff, {
               title: Fields.finalPayout ? t('timeOffTitleDismissal') : t('timeOffTitle'),
-              showBalance: true,
             })}
 
             {Fields.finalPayout

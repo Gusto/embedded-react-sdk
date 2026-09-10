@@ -31,6 +31,7 @@ import {
   hasExistingOvertimeHours,
   normalizeWorkweeks,
   resolveEditableFixedCompensations,
+  type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import {
   createPayrollEditEmployeeFields,
@@ -130,6 +131,13 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     paySchedule?: PayScheduleShow
     /** Whether the pay period spans more than one workweek. Raw workweeks are on `preparedPayroll.workweeks`. */
     isMultipleWorkweeks: boolean
+    /**
+     * The pay period's normalized workweeks (`{ startDate, endDate }` strings),
+     * in order — one entry, spanning the pay period, when it's a single
+     * workweek. The per-workweek split fields are keyed by start date only, so
+     * this is the source for each column's date range.
+     */
+    workweeks: NormalizedWorkweek[]
     /** Whether the employee is overtime-eligible (nonexempt family). Drives whether hours split by workweek. */
     isOvertimeEligible: boolean
     /**
@@ -341,6 +349,19 @@ export function usePayrollEditEmployeeForm({
     return titles
   }, [employee])
 
+  // Accrual balance per time-off policy, owned by the hook (rather than looked
+  // up in the consumer) so the time-off field can render its own live remaining
+  // balance.
+  const timeOffAccrualByName = useMemo(() => {
+    const balances = new Map<string, string>()
+    for (const policy of employee?.eligiblePaidTimeOff ?? []) {
+      if (policy.name && policy.accrualBalance != null) {
+        balances.set(policy.name, policy.accrualBalance)
+      }
+    }
+    return balances
+  }, [employee])
+
   const schema = useMemo(() => createPayrollEditEmployeeSchema(), [])
 
   const resolvedDefaults = useMemo(
@@ -475,6 +496,7 @@ export function usePayrollEditEmployeeForm({
         isOvertimeEligible,
         withOvertime,
         jobTitlesByUuid,
+        timeOffAccrualByName,
       }),
     [
       employeeCompensation,
@@ -486,6 +508,7 @@ export function usePayrollEditEmployeeForm({
       isOvertimeEligible,
       withOvertime,
       jobTitlesByUuid,
+      timeOffAccrualByName,
     ],
   )
 
@@ -495,8 +518,10 @@ export function usePayrollEditEmployeeForm({
   // `derivePayrollEditEmployeeDefaults`/`buildWeekMap`). The per-row validation
   // then requires the user to fill in the rest before they can submit.
   // `setValue` (not `resetField`) is used so this overwrites even a value the
-  // user already typed into the collapsed input.
-  const addOvertime = useCallback(() => {
+  // user already typed into the collapsed input. Plain function (not memoized):
+  // it only runs on a user click, and its inputs are recomputed each render, so
+  // a `useCallback` here would never actually hold a stable reference.
+  const addOvertime = () => {
     setWithOvertimeSetByUser(true)
     const revealedDefaults = derivePayrollEditEmployeeDefaults(
       employeeCompensation,
@@ -509,15 +534,7 @@ export function usePayrollEditEmployeeForm({
     )
     formMethods.setValue('hours', revealedDefaults.hours)
     formMethods.setValue('additionalEarnings', revealedDefaults.additionalEarnings)
-  }, [
-    employeeCompensation,
-    workweeks,
-    hasDirectDepositSetup,
-    overtimeEarningNames,
-    isOvertimeEligible,
-    resolvedFixedCompensations,
-    formMethods,
-  ])
+  }
   const fieldsMetadata = useMemo<PayrollEditEmployeeFieldsMetadata>(
     () => ({
       paymentMethod: withOptions(
@@ -611,6 +628,7 @@ export function usePayrollEditEmployeeForm({
       preparedPayroll,
       paySchedule: payScheduleQuery.data?.payScheduleShow,
       isMultipleWorkweeks: workweeks.length > 1,
+      workweeks,
       isOvertimeEligible,
       withOvertime,
       hasDirectDepositSetup,
