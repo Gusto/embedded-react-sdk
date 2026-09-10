@@ -1,4 +1,5 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
+import { useWatch } from 'react-hook-form'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { NormalizedWorkweek } from './payrollEditEmployeeHelpers'
@@ -8,6 +9,7 @@ import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/
 import type { HookFieldProps } from '@/partner-hook-utils/types'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
+import { COMPENSATION_NAME_DOUBLE_OVERTIME, COMPENSATION_NAME_OVERTIME } from '@/shared/constants'
 
 /**
  * Presentation props accepted by a bound numeric field in the payroll editor.
@@ -106,6 +108,15 @@ export interface TimeOffEntry {
   name: string
   /** Field component pre-bound to this entry's form path. */
   Field: PayrollEditEmployeeFieldComponent
+  /**
+   * Renders this policy's live remaining balance as the user edits hours,
+   * exposing the computed `remaining` number to a render prop so the consumer
+   * supplies its own copy. Renders nothing when the policy has no tracked
+   * accrual balance (e.g. final-payout rows). Pre-bound by the hook — it watches
+   * the entered value and does the accrual-balance lookup internally, so it must
+   * render inside the form provider.
+   */
+  RemainingBalance: ComponentType<{ children: (remaining: number) => ReactNode }>
 }
 
 /**
@@ -146,7 +157,10 @@ export interface JobFields {
   jobUuid: string
   /** The job's display title, when available, for a per-job heading. */
   title?: string
-  /** Hours inputs for this job. */
+  /**
+   * Hours inputs for this job. Excludes Overtime/Double-overtime rows while
+   * `data.withOvertime` is `false`.
+   */
   hours: HourEntry[] | Record<string, HourEntry[]>
   /** Overtime-affecting earnings for this job. */
   additionalEarnings: EarningEntry[] | Record<string, EarningEntry[]>
@@ -285,6 +299,24 @@ function createTextField(name: string): ComponentType<ReimbursementDescriptionFi
   }
 }
 
+function createTimeOffRemainingBalance(
+  name: string,
+  accrualBalance: string | undefined,
+): TimeOffEntry['RemainingBalance'] {
+  return function BoundRemainingBalance({
+    children,
+  }: {
+    children: (remaining: number) => ReactNode
+  }) {
+    // Reads the live entered value off the form context (no `control` passed in
+    // from the consumer) and subtracts it from the policy's accrual balance.
+    const entered = useWatch({ name: `timeOff.${name}` }) as string | undefined
+    if (accrualBalance == null) return null
+    const remaining = parseFloat(accrualBalance) - (parseFloat(entered ?? '') || 0)
+    return <>{children(remaining)}</>
+  }
+}
+
 /**
  * Builds the draft "add reimbursement" field group, binding its Description and
  * Amount fields to the `reimbursementDraft` form path.
@@ -316,8 +348,16 @@ export interface CreatePayrollEditEmployeeFieldsOptions {
   overtimeEarningNames: Set<string>
   /** Whether the employee is overtime-eligible (nonexempt family). Gates per-workweek splitting. */
   isOvertimeEligible: boolean
+  /**
+   * Gates per-workweek splitting
+   * alongside `isOvertimeEligible`, and whether Overtime/Double-overtime rows
+   * are included in `hours`.
+   */
+  withOvertime: boolean
   /** Job title lookup by job UUID, for per-job section headings. */
   jobTitlesByUuid: Map<string, string>
+  /** Accrual balance by time-off policy name, for the live remaining-balance display. */
+  timeOffAccrualByName: Map<string, string>
 }
 
 function buildBreakdownSection(
@@ -325,6 +365,7 @@ function buildBreakdownSection(
   workweeks: NormalizedWorkweek[],
   pathPrefix: 'hours' | 'additionalEarnings',
   isOvertimeEligible: boolean,
+  withOvertime: boolean,
 ): HourEntry[] | Record<string, HourEntry[]> {
   const rows = compensations.filter(
     (compensation): compensation is { jobUuid: string; name: string } =>
@@ -343,10 +384,11 @@ function buildBreakdownSection(
     Field: createNumberField(`${pathPrefix}.${row.jobUuid}.${row.name}.${weekStart}`),
   })
 
-  // Split into per-workweek columns only for overtime-eligible employees; workweek
-  // breakdowns exist solely to compute overtime premiums, so an ineligible
-  // employee renders flat even on a multi-workweek payroll.
-  if (workweeks.length > 1 && isOvertimeEligible) {
+  // Split into per-workweek columns only for overtime-eligible employees while
+  // `withOvertime` is on; workweek breakdowns exist solely to compute overtime
+  // premiums, so an ineligible employee renders flat even on a multi-workweek
+  // payroll, and an eligible one stays flat until `withOvertime` is set.
+  if (workweeks.length > 1 && isOvertimeEligible && withOvertime) {
     const byWeek: Record<string, HourEntry[]> = {}
     for (const workweek of workweeks) {
       byWeek[workweek.startDate] = rows.map(row => toEntry(row, workweek.startDate, true))
@@ -372,7 +414,7 @@ function buildBreakdownSection(
  * final payout is added only for dismissal payrolls, and the payment-method
  * selector appears only when direct deposit is set up.
  *
- * @param options - The prepared compensation, normalized workweeks, payroll category, direct-deposit flag, overtime earning names, eligibility, and job titles.
+ * @param options - The prepared compensation, normalized workweeks, payroll category, direct-deposit flag, overtime earning names, eligibility, the `withOvertime` flag, job titles, and time-off accrual balances.
  * @returns The populated field collections.
  * @internal
  */
@@ -384,7 +426,9 @@ export function createPayrollEditEmployeeFields({
   hasDirectDepositSetup,
   overtimeEarningNames,
   isOvertimeEligible,
+  withOvertime,
   jobTitlesByUuid,
+  timeOffAccrualByName,
 }: CreatePayrollEditEmployeeFieldsOptions): PayrollEditEmployeeFields {
   const hourlyCompensations = employeeCompensation?.hourlyCompensations ?? []
   const overtimeAffecting = fixedCompensations.filter(
@@ -403,22 +447,41 @@ export function createPayrollEditEmployeeFields({
     }
   }
 
-  const jobs: JobFields[] = jobUuids.map(jobUuid => ({
-    jobUuid,
-    title: jobTitlesByUuid.get(jobUuid),
-    hours: buildBreakdownSection(
-      hourlyCompensations.filter(compensation => compensation.jobUuid === jobUuid),
-      workweeks,
-      'hours',
-      isOvertimeEligible,
-    ),
-    additionalEarnings: buildBreakdownSection(
-      overtimeAffecting.filter(compensation => compensation.jobUuid === jobUuid),
-      workweeks,
-      'additionalEarnings',
-      isOvertimeEligible,
-    ),
-  }))
+  const isOvertimeName = (name: string | null | undefined) =>
+    name === COMPENSATION_NAME_OVERTIME || name === COMPENSATION_NAME_DOUBLE_OVERTIME
+
+  const jobs: JobFields[] = jobUuids.map(jobUuid => {
+    const jobHourlyCompensations = hourlyCompensations.filter(
+      compensation => compensation.jobUuid === jobUuid,
+    )
+    // Overtime/Double-overtime rows stay out of `hours` entirely while
+    // `withOvertime` is off — their underlying form values are untouched
+    // (still whatever the prepared compensation carried), so hiding the row
+    // can't lose or corrupt data. Driven by the single, employee-level flag —
+    // no per-job hidden state.
+    const visibleHourlyCompensations = withOvertime
+      ? jobHourlyCompensations
+      : jobHourlyCompensations.filter(compensation => !isOvertimeName(compensation.name))
+
+    return {
+      jobUuid,
+      title: jobTitlesByUuid.get(jobUuid),
+      hours: buildBreakdownSection(
+        visibleHourlyCompensations,
+        workweeks,
+        'hours',
+        isOvertimeEligible,
+        withOvertime,
+      ),
+      additionalEarnings: buildBreakdownSection(
+        overtimeAffecting.filter(compensation => compensation.jobUuid === jobUuid),
+        workweeks,
+        'additionalEarnings',
+        isOvertimeEligible,
+        withOvertime,
+      ),
+    }
+  })
 
   const other: OtherEntry[] = nonOvertime
     .filter(
@@ -436,14 +499,21 @@ export function createPayrollEditEmployeeFields({
     key: `timeOff:${entry.name!}`,
     name: entry.name!,
     Field: createNumberField(`timeOff.${entry.name!}`),
+    RemainingBalance: createTimeOffRemainingBalance(
+      entry.name!,
+      timeOffAccrualByName.get(entry.name!),
+    ),
   }))
 
+  // Final-payout rows never show a remaining balance, so their RemainingBalance
+  // is bound with no accrual balance and renders nothing.
   const finalPayout =
     payrollCategory === PayrollCategory.Dismissal
       ? timeOffRows.map(entry => ({
           key: `finalPayout:${entry.name!}`,
           name: entry.name!,
           Field: createNumberField(`finalPayout.${entry.name!}`),
+          RemainingBalance: createTimeOffRemainingBalance(entry.name!, undefined),
         }))
       : undefined
 
