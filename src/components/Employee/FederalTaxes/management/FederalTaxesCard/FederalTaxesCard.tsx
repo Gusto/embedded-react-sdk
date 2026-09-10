@@ -65,7 +65,8 @@ function FederalTaxesCardContent({ employeeId, onEvent, LoaderComponent }: Feder
     ? [
         {
           term: t('card.filingStatus'),
-          description: federalTaxes.filingStatus || emptyPlaceholder,
+          description:
+            ('filingStatus' in federalTaxes && federalTaxes.filingStatus) || emptyPlaceholder,
         },
         {
           term: t('card.multipleJobs'),
