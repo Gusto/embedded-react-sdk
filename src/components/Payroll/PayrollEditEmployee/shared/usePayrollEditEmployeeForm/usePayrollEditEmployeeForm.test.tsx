@@ -971,4 +971,53 @@ describe('usePayrollEditEmployeeForm', () => {
 
     expect(updateBody!.employee_compensations[0]!.payment_method).toBe('Check')
   })
+
+  it('exposes a live remaining time-off balance on each entry, and null for final-payout rows', async () => {
+    server.use(
+      handleGetEmployee(() =>
+        HttpResponse.json({
+          ...EMPLOYEE_RESPONSE,
+          eligible_paid_time_off: [{ name: 'Vacation Hours', accrual_balance: '40' }],
+        }),
+      ),
+    )
+    // Dismissal payroll so the final-payout rows are present alongside time off.
+    const prepare = {
+      ...SINGLE_WORKWEEK_PREPARE,
+      off_cycle: true,
+      off_cycle_reason: 'Dismissed employee',
+      employee_compensations: [
+        {
+          ...SINGLE_WORKWEEK_PREPARE.employee_compensations[0],
+          paid_time_off: [{ name: 'Vacation Hours', hours: '0' }],
+        },
+      ],
+    }
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+
+    expect(result.current.form.Fields.timeOff[0]).toMatchObject({
+      name: 'Vacation Hours',
+      remaining: 40,
+    })
+    expect(result.current.form.Fields.finalPayout?.[0]).toMatchObject({
+      name: 'Vacation Hours',
+      remaining: null,
+    })
+
+    act(() => {
+      assertReady(result.current)
+      result.current.form.hookFormInternals.formMethods.setValue('timeOff.Vacation Hours', '8')
+    })
+
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(result.current.form.Fields.timeOff[0]!.remaining).toBe(32)
+    })
+  })
 })

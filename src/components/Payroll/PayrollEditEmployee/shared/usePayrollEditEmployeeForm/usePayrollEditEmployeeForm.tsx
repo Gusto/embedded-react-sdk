@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
@@ -34,8 +34,10 @@ import {
   type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import {
+  computeTimeOffRemaining,
   createPayrollEditEmployeeFields,
   createReimbursementDraftFields,
+  type PayrollEditEmployeeErrorMessages,
   type PayrollEditEmployeeFields,
   type ReimbursementDraftFields,
   type ReimbursementRow,
@@ -91,6 +93,13 @@ export interface UsePayrollEditEmployeeFormProps {
   validationMode?: UseFormProps['mode']
   /** Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. */
   shouldFocusError?: boolean
+  /**
+   * Display copy for each validation error code, baked into every bound field so
+   * it resolves and renders its own message. Supply it once, keyed by
+   * {@link PayrollEditEmployeeErrorCodes}; a missing code falls back to the raw
+   * code. Omit it to render raw codes.
+   */
+  errorMessages?: PayrollEditEmployeeErrorMessages
 }
 
 /**
@@ -127,6 +136,8 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     employeeCompensation?: PayrollEmployeeCompensationsType
     /** The prepared payroll (server-calculated totals and workweeks). */
     preparedPayroll: PayrollPrepared
+    /** The employee's server-calculated gross pay for this payroll (excluding reimbursements), as a number. `0` when absent. */
+    grossPay: number
     /** The pay schedule for the payroll, if loaded. */
     paySchedule?: PayScheduleShow
     /** Whether the pay period spans more than one workweek. Raw workweeks are on `preparedPayroll.workweeks`. */
@@ -233,6 +244,7 @@ export function usePayrollEditEmployeeForm({
   withReimbursements = true,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  errorMessages,
 }: UsePayrollEditEmployeeFormProps): UsePayrollEditEmployeeFormResult {
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
   const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
@@ -397,6 +409,12 @@ export function usePayrollEditEmployeeForm({
     },
   )
 
+  // Watched so each `Fields.timeOff[i].remaining` stays live as the user edits
+  // hours. The whole form re-renders on keystroke regardless of who owns this
+  // watch, so there's no cost to owning it here rather than in a per-row
+  // subcomponent.
+  const watchedTimeOff = useWatch({ control: formMethods.control, name: 'timeOff' })
+
   // Off-cycle payrolls write reimbursements via the legacy fixed-compensation path
   // (the itemized array is rejected server-side), so itemized reimbursement controls
   // are exposed only for regular payrolls and only when the partner opts in.
@@ -416,8 +434,8 @@ export function usePayrollEditEmployeeForm({
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
 
   const reimbursementDraftFields = useMemo<ReimbursementDraftFields>(
-    () => createReimbursementDraftFields(),
-    [],
+    () => createReimbursementDraftFields(errorMessages),
+    [errorMessages],
   )
 
   // Committed rows for the consumer's table. A removed existing row (one with a
@@ -497,6 +515,7 @@ export function usePayrollEditEmployeeForm({
         withOvertime,
         jobTitlesByUuid,
         timeOffAccrualByName,
+        errorMessages,
       }),
     [
       employeeCompensation,
@@ -509,7 +528,23 @@ export function usePayrollEditEmployeeForm({
       withOvertime,
       jobTitlesByUuid,
       timeOffAccrualByName,
+      errorMessages,
     ],
+  )
+
+  // Overlay the live remaining balance onto each time-off entry every render, so
+  // it tracks the watched entered values without rebuilding (and remounting) the
+  // bound field components the `fields` memo owns.
+  const timeOffFields = useMemo(
+    () =>
+      fields.timeOff.map(entry => ({
+        ...entry,
+        remaining: computeTimeOffRemaining(
+          timeOffAccrualByName.get(entry.name),
+          watchedTimeOff[entry.name],
+        ),
+      })),
+    [fields.timeOff, timeOffAccrualByName, watchedTimeOff],
   )
 
   // Re-derives with `withOvertime` forced `true` and pushes the result straight
@@ -626,6 +661,7 @@ export function usePayrollEditEmployeeForm({
       employee,
       employeeCompensation,
       preparedPayroll,
+      grossPay: Number(employeeCompensation?.grossPay ?? 0),
       paySchedule: payScheduleQuery.data?.payScheduleShow,
       isMultipleWorkweeks: workweeks.length > 1,
       workweeks,
@@ -651,6 +687,7 @@ export function usePayrollEditEmployeeForm({
     form: {
       Fields: {
         ...fields,
+        timeOff: timeOffFields,
         reimbursementDraft: showReimbursements ? reimbursementDraftFields : undefined,
       },
       fieldsMetadata,
