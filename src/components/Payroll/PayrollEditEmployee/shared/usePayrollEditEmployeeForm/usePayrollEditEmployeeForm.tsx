@@ -567,8 +567,34 @@ export function usePayrollEditEmployeeForm({
       true,
       resolvedFixedCompensations,
     )
-    formMethods.setValue('hours', revealedDefaults.hours)
-    formMethods.setValue('additionalEarnings', revealedDefaults.additionalEarnings)
+    // Keep the user's edited collapsed value on the first workweek cell rather
+    // than the seeded API total.
+    const firstWeekStart = workweeks[0]?.startDate ?? ''
+    const currentValues = formMethods.getValues()
+    const overlayLiveFirstWeek = (
+      revealed: PayrollEditEmployeeFormData['hours'],
+      live: PayrollEditEmployeeFormData['hours'] | undefined,
+    ) => {
+      for (const [jobUuid, names] of Object.entries(revealed)) {
+        for (const [name, weekMap] of Object.entries(names)) {
+          const liveValue = live?.[jobUuid]?.[name]?.[firstWeekStart]
+          if (liveValue !== undefined) weekMap[firstWeekStart] = liveValue
+        }
+      }
+      return revealed
+    }
+    // `shouldDirty` so the form's `values`-prop reset (triggered by flipping
+    // `withOvertimeSetByUser`) keeps these via `keepDirtyValues`.
+    formMethods.setValue(
+      'hours',
+      overlayLiveFirstWeek(revealedDefaults.hours, currentValues.hours),
+      { shouldDirty: true },
+    )
+    formMethods.setValue(
+      'additionalEarnings',
+      overlayLiveFirstWeek(revealedDefaults.additionalEarnings, currentValues.additionalEarnings),
+      { shouldDirty: true },
+    )
   }
   const fieldsMetadata = useMemo<PayrollEditEmployeeFieldsMetadata>(
     () => ({

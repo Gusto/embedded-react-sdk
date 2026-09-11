@@ -639,6 +639,55 @@ describe('usePayrollEditEmployeeForm', () => {
     ])
   })
 
+  it('persists a live-edited collapsed value into the first workweek cell when addOvertime is called', async () => {
+    const prepare = {
+      ...MULTI_WORKWEEK_PREPARE,
+      employee_compensations: [
+        {
+          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
+          hourly_compensations: [
+            { job_uuid: 'job-1', name: 'Regular Hours', hours: '40', flsa_status: 'Nonexempt' },
+            { job_uuid: 'job-1', name: 'Overtime', hours: '0', flsa_status: 'Nonexempt' },
+          ],
+        },
+      ],
+    }
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+    expect(result.current.data.withOvertime).toBe(false)
+    const ready = result.current
+
+    // Edit the collapsed Regular Hours value before revealing overtime.
+    act(() => {
+      ready.form.hookFormInternals.formMethods.setValue(
+        'hours.job-1.Regular Hours.2024-01-01',
+        '32',
+      )
+    })
+
+    act(() => {
+      assertReady(result.current)
+      result.current.actions.addOvertime()
+    })
+    await waitFor(() => {
+      assertReady(result.current)
+      expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
+    })
+
+    // The edited value persists into the first workweek cell rather than
+    // reverting to the API total of 40.
+    expect(
+      result.current.form.hookFormInternals.formMethods.getValues(
+        'hours.job-1.Regular Hours.2024-01-01',
+      ),
+    ).toBe('32')
+  })
+
   it('blocks submit and does not call the update endpoint when an amount is negative', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(SINGLE_WORKWEEK_PREPARE)))
     const updateResolver = vi.fn<HttpResponseResolver>(() =>
