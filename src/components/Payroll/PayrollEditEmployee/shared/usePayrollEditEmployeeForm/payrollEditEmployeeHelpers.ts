@@ -168,7 +168,8 @@ function buildWeekMap(
       return
     }
     const breakdown = breakdowns?.find(
-      entry => entry.startDate && formatWireDateToStringDate(entry.startDate) === workweek.startDate,
+      entry =>
+        entry.startDate && formatWireDateToStringDate(entry.startDate) === workweek.startDate,
     )
     weekMap[workweek.startDate] = formatAmountInput(breakdown?.hours ?? breakdown?.amount)
   })
