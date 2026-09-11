@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   formatPendingHomeAddressLine,
   getPendingFutureHomeAddress,
 } from './getPendingFutureHomeAddress'
 
+// `effectiveDate` fixtures use `new Date('YYYY-MM-DD')` deliberately, to mimic the SDK's own
+// wire-parsing (`new Date(wireString)`, landing at UTC midnight) rather than a locally-safe
+// construction — the implementation must handle that UTC framing correctly.
 const base = (overrides: Partial<EmployeeAddress>): EmployeeAddress => ({
   active: false,
   uuid: 'u',
@@ -27,22 +29,22 @@ describe('getPendingFutureHomeAddress', () => {
     const past = base({
       uuid: '1',
       active: false,
-      effectiveDate: new RFCDate('2026-01-01'),
+      effectiveDate: new Date('2026-01-01'),
     })
     const futureA = base({
       uuid: '2',
       active: false,
-      effectiveDate: new RFCDate('2026-04-24'),
+      effectiveDate: new Date('2026-04-24'),
     })
     const futureB = base({
       uuid: '3',
       active: false,
-      effectiveDate: new RFCDate('2026-06-01'),
+      effectiveDate: new Date('2026-06-01'),
     })
     const active = base({
       uuid: '4',
       active: true,
-      effectiveDate: new RFCDate('2026-03-02'),
+      effectiveDate: new Date('2026-03-02'),
     })
 
     expect(getPendingFutureHomeAddress([past, futureB, futureA, active], now)).toEqual(futureA)
@@ -53,12 +55,12 @@ describe('getPendingFutureHomeAddress', () => {
     const past = base({
       uuid: '1',
       active: false,
-      effectiveDate: new RFCDate('2026-03-10'),
+      effectiveDate: new Date('2026-03-10'),
     })
     const today = base({
       uuid: '2',
       active: false,
-      effectiveDate: new RFCDate('2026-03-15'),
+      effectiveDate: new Date('2026-03-15'),
     })
 
     expect(getPendingFutureHomeAddress([past, today], now)).toBeUndefined()

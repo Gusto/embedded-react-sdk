@@ -3,7 +3,6 @@ import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
 import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useTranslation } from 'react-i18next'
 import { DismissalPayPeriodSelectionPresentation } from './DismissalPayPeriodSelectionPresentation'
 import { BaseComponent } from '@/components/Base/Base'
@@ -12,7 +11,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { formatPayPeriodRange } from '@/helpers/dateFormatting'
+import { formatPayPeriodRange, normalizeToDate } from '@/helpers/dateFormatting'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
 /**
@@ -119,8 +118,8 @@ function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeri
           requestBody: {
             offCycle: true,
             offCycleReason: OffCycleReason.DismissedEmployee,
-            startDate: new RFCDate(period.startDate),
-            endDate: new RFCDate(period.endDate),
+            startDate: normalizeToDate(period.startDate)!,
+            endDate: normalizeToDate(period.endDate)!,
             employeeUuids: [resolvedEmployeeId],
           },
         },

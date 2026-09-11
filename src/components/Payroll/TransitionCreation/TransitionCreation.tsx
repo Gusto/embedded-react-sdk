@@ -7,7 +7,6 @@ import {
   OffCycleReason,
   WithholdingPayPeriod,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
@@ -21,6 +20,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 /**
  * Creation form for transition payrolls covering the gap between an old and new pay schedule.
@@ -124,9 +124,9 @@ function Root({
           requestBody: {
             offCycle: true,
             offCycleReason: OffCycleReason.TransitionFromOldPaySchedule,
-            startDate: new RFCDate(startDate),
-            endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(data.checkDate!),
+            startDate: normalizeToDate(startDate)!,
+            endDate: normalizeToDate(endDate)!,
+            checkDate: data.checkDate!,
             payScheduleUuid,
             skipRegularDeductions: data.skipRegularDeductions,
             withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,

@@ -7,7 +7,6 @@ import type { EmployeeAddress } from '@gusto/embedded-api/models/components/empl
 import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveHomeAddress'
 import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createHomeAddressSchema,
   type HomeAddressOptionalFieldsToRequire,
@@ -37,6 +36,7 @@ import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInter
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { formatWireDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 import type {
   BaseFormHookReady,
   FieldMetadata,
@@ -262,7 +262,10 @@ export function useHomeAddressForm({
       courtesyWithholding:
         fetchedHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
       effectiveDate:
-        fetchedHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
+        (fetchedHomeAddress?.effectiveDate &&
+          formatWireDateToStringDate(fetchedHomeAddress.effectiveDate)) ??
+        partnerDefaults?.effectiveDate ??
+        '',
     }),
     [fetchedHomeAddress, partnerDefaults],
   )
@@ -314,11 +317,12 @@ export function useHomeAddressForm({
                 ? payload.effectiveDate
                 : (options?.effectiveDate ??
                   (!withEffectiveDateField && !isCreateMode
-                    ? fetchedHomeAddress?.effectiveDate?.toString()
+                    ? fetchedHomeAddress?.effectiveDate &&
+                      formatWireDateToStringDate(fetchedHomeAddress.effectiveDate)
                     : undefined))
 
             const effectiveDateParam = resolvedEffectiveDate
-              ? new RFCDate(new Date(resolvedEffectiveDate))
+              ? normalizeToDate(resolvedEffectiveDate)!
               : undefined
 
             let updatedHomeAddress: EmployeeAddress

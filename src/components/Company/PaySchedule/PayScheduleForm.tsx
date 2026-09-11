@@ -11,7 +11,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
-import { normalizeToDate } from '@/helpers/dateFormatting'
+import { formatWireDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 import type { LoaderComponentType } from '@/components/Base'
 
 interface PayScheduleFormProps extends UsePayScheduleFormProps {
@@ -20,10 +20,11 @@ interface PayScheduleFormProps extends UsePayScheduleFormProps {
   LoaderComponent?: LoaderComponentType
 }
 
-// Pay period preview dates are RFCDate (`YYYY-MM-DD`) instances; normalizeToDate parses
-// them as local midnight instead of new Date's UTC midnight, which CalendarPreview would
-// otherwise roll back a day for timezones behind UTC. The format is always valid here.
-const toLocalDate = (rfcDate: { toString(): string }): Date => normalizeToDate(rfcDate.toString())!
+// Pay period preview dates parse off the wire at UTC midnight (see formatWireDateToStringDate);
+// re-normalizing through the UTC-safe YYYY-MM-DD string gets back to local midnight, which
+// CalendarPreview needs — reading the Date directly would roll the day back for timezones
+// behind UTC.
+const toLocalDate = (date: Date): Date => normalizeToDate(formatWireDateToStringDate(date))!
 
 /** @internal */
 export function PayScheduleForm({ onEvent, LoaderComponent, ...hookProps }: PayScheduleFormProps) {
@@ -159,8 +160,8 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                           options={payPeriodPreview.map((period, index) => ({
                             value: String(index),
                             label: dateFormatter.formatPayPeriodRange(
-                              period.startDate.toString(),
-                              period.endDate.toString(),
+                              formatWireDateToStringDate(period.startDate),
+                              formatWireDateToStringDate(period.endDate),
                             ),
                           }))}
                           value={String(selectedPayPeriodIndex)}
