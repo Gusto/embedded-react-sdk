@@ -54,28 +54,26 @@ export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPres
   })
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={32}>
-        {!isViewMode && (
-          <Flex flexDirection="column" gap={4}>
-            <Heading as="h2">{t('title')}</Heading>
-            <Text variant="supporting">{t('description')}</Text>
-          </Flex>
-        )}
+    <Flex className={className} flexDirection="column" gap={32}>
+      {!isViewMode && (
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('title')}</Heading>
+          <Text variant="supporting">{t('description')}</Text>
+        </Flex>
+      )}
 
-        <DataView label={t('tableLabel')} {...dataViewProps} />
+      <DataView label={t('tableLabel')} {...dataViewProps} />
 
-        {!isViewMode && (
-          <ActionsLayout>
-            <Button variant="secondary" onClick={props.onBack} isDisabled={props.isPending}>
-              {t('backCta')}
-            </Button>
-            <Button variant="primary" onClick={props.onContinue} isLoading={props.isPending}>
-              {t('continueCta')}
-            </Button>
-          </ActionsLayout>
-        )}
-      </Flex>
-    </div>
+      {!isViewMode && (
+        <ActionsLayout>
+          <Button variant="secondary" onClick={props.onBack} isDisabled={props.isPending}>
+            {t('backCta')}
+          </Button>
+          <Button variant="primary" onClick={props.onContinue} isLoading={props.isPending}>
+            {t('continueCta')}
+          </Button>
+        </ActionsLayout>
+      )}
+    </Flex>
   )
 }

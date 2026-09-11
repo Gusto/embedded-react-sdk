@@ -316,29 +316,27 @@ export function ManagementContractorListView({
 
   return (
     <>
-      <div className={className}>
-        <Flex flexDirection="column" gap={32}>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onAddContractor}>
-              {t('addContractorCta')}
-            </Components.Button>
-          </Flex>
-
-          <Flex flexDirection="column" gap={0}>
-            <Components.Tabs
-              tabs={tabs}
-              selectedId={selectedTab}
-              onSelectionChange={id => {
-                onTabChange(id as ContractorTab)
-              }}
-              aria-label={t('tabsLabel')}
-            />
-
-            <DataView label={t('contractorListLabel')} {...dataViewProps} />
-          </Flex>
+      <Flex className={className} flexDirection="column" gap={32}>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Components.Heading as="h2">{t('title')}</Components.Heading>
+          <Components.Button variant="secondary" onClick={onAddContractor}>
+            {t('addContractorCta')}
+          </Components.Button>
         </Flex>
-      </div>
+
+        <Flex flexDirection="column" gap={0}>
+          <Components.Tabs
+            tabs={tabs}
+            selectedId={selectedTab}
+            onSelectionChange={id => {
+              onTabChange(id as ContractorTab)
+            }}
+            aria-label={t('tabsLabel')}
+          />
+
+          <DataView label={t('contractorListLabel')} {...dataViewProps} />
+        </Flex>
+      </Flex>
 
       <Components.Dialog
         isOpen={!!contractorToRemove}

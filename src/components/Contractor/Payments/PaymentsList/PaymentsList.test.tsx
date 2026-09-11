@@ -62,10 +62,12 @@ describe('PaymentsList', () => {
       ),
     )
 
-    renderWithProviders(<PaymentsList {...defaultProps} className="custom-class" />)
+    const { container } = renderWithProviders(
+      <PaymentsList {...defaultProps} className="custom-class" />,
+    )
 
     await waitFor(() => {
-      expect(screen.getByTestId('payments-list')).toHaveClass('custom-class')
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
   })
 

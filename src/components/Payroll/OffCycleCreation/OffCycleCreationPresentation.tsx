@@ -81,93 +81,91 @@ export function OffCycleCreationPresentation({
   ]
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={32}>
-        <Flex flexDirection="column" gap={4}>
-          <Heading as="h2">{t('pageTitle')}</Heading>
-          <Text variant="supporting">{t('pageDescription')}</Text>
-        </Flex>
-
-        <Flex flexDirection="column" gap={20}>
-          <Flex flexDirection="column" gap={4}>
-            <Heading as="h3">{t('payPeriodSectionTitle')}</Heading>
-            <Text variant="supporting">{t('payPeriodSectionDescription')}</Text>
-          </Flex>
-          <OffCyclePayPeriodDateFormPresentation
-            minCheckDate={minCheckDate}
-            minCheckOnlyDate={minCheckOnlyDate}
-          />
-        </Flex>
-
-        <hr className={styles.divider} />
-
-        <Flex flexDirection="column" gap={20}>
-          <OffCycleReasonSelectionPresentation name="reason" />
-        </Flex>
-
-        <hr className={styles.divider} />
-
-        <Flex flexDirection="column" gap={12}>
-          <Heading as="h3">{tEmployees('sectionTitle')}</Heading>
-          <SwitchField
-            name="includeAllEmployees"
-            label={t('includeAllEmployeesLabel')}
-            onChange={handleToggleIncludeAll}
-          />
-          {!includeAllEmployees && (
-            <MultiSelectComboBoxField
-              name="selectedEmployeeUuids"
-              label={tEmployees('sectionTitle')}
-              shouldVisuallyHideLabel
-              placeholder={tEmployees('searchPlaceholder')}
-              options={employees}
-            />
-          )}
-        </Flex>
-
-        <hr className={styles.divider} />
-
-        <Flex flexDirection="column" gap={20}>
-          <RadioGroupField<boolean>
-            name="skipRegularDeductions"
-            label={tDeductions('title')}
-            description={tDeductions('description')}
-            options={deductionsOptions}
-            convertValueToString={value => String(value)}
-          />
-        </Flex>
-
-        <hr className={styles.divider} />
-
-        <Flex flexDirection="column" gap={12}>
-          <Text variant="supporting">
-            <Trans
-              t={t}
-              i18nKey="taxWithholdingDisclaimer"
-              components={{ bold: <Text as="span" weight="bold" /> }}
-            />
-          </Text>
-          <OffCycleTaxWithholdingTable
-            wageTypeGroups={wageTypeGroups}
-            config={taxWithholdingConfig}
-            onEditClick={onTaxWithholdingEditClick}
-          />
-          {isTaxWithholdingModalOpen && (
-            <OffCycleTaxWithholdingModal
-              isOpen
-              defaultConfig={taxWithholdingConfig}
-              onDone={onTaxWithholdingModalDone}
-              onCancel={onTaxWithholdingModalCancel}
-            />
-          )}
-        </Flex>
-
-        <Flex justifyContent="flex-end" gap={12}>
-          <Button type="submit" isLoading={isPending} isDisabled={isPending}>
-            {t('continueCta')}
-          </Button>
-        </Flex>
+    <Flex className={className} flexDirection="column" gap={32}>
+      <Flex flexDirection="column" gap={4}>
+        <Heading as="h2">{t('pageTitle')}</Heading>
+        <Text variant="supporting">{t('pageDescription')}</Text>
       </Flex>
-    </div>
+
+      <Flex flexDirection="column" gap={20}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h3">{t('payPeriodSectionTitle')}</Heading>
+          <Text variant="supporting">{t('payPeriodSectionDescription')}</Text>
+        </Flex>
+        <OffCyclePayPeriodDateFormPresentation
+          minCheckDate={minCheckDate}
+          minCheckOnlyDate={minCheckOnlyDate}
+        />
+      </Flex>
+
+      <hr className={styles.divider} />
+
+      <Flex flexDirection="column" gap={20}>
+        <OffCycleReasonSelectionPresentation name="reason" />
+      </Flex>
+
+      <hr className={styles.divider} />
+
+      <Flex flexDirection="column" gap={12}>
+        <Heading as="h3">{tEmployees('sectionTitle')}</Heading>
+        <SwitchField
+          name="includeAllEmployees"
+          label={t('includeAllEmployeesLabel')}
+          onChange={handleToggleIncludeAll}
+        />
+        {!includeAllEmployees && (
+          <MultiSelectComboBoxField
+            name="selectedEmployeeUuids"
+            label={tEmployees('sectionTitle')}
+            shouldVisuallyHideLabel
+            placeholder={tEmployees('searchPlaceholder')}
+            options={employees}
+          />
+        )}
+      </Flex>
+
+      <hr className={styles.divider} />
+
+      <Flex flexDirection="column" gap={20}>
+        <RadioGroupField<boolean>
+          name="skipRegularDeductions"
+          label={tDeductions('title')}
+          description={tDeductions('description')}
+          options={deductionsOptions}
+          convertValueToString={value => String(value)}
+        />
+      </Flex>
+
+      <hr className={styles.divider} />
+
+      <Flex flexDirection="column" gap={12}>
+        <Text variant="supporting">
+          <Trans
+            t={t}
+            i18nKey="taxWithholdingDisclaimer"
+            components={{ bold: <Text as="span" weight="bold" /> }}
+          />
+        </Text>
+        <OffCycleTaxWithholdingTable
+          wageTypeGroups={wageTypeGroups}
+          config={taxWithholdingConfig}
+          onEditClick={onTaxWithholdingEditClick}
+        />
+        {isTaxWithholdingModalOpen && (
+          <OffCycleTaxWithholdingModal
+            isOpen
+            defaultConfig={taxWithholdingConfig}
+            onDone={onTaxWithholdingModalDone}
+            onCancel={onTaxWithholdingModalCancel}
+          />
+        )}
+      </Flex>
+
+      <Flex justifyContent="flex-end" gap={12}>
+        <Button type="submit" isLoading={isPending} isDisabled={isPending}>
+          {t('continueCta')}
+        </Button>
+      </Flex>
+    </Flex>
   )
 }

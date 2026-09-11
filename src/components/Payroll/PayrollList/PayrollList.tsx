@@ -220,32 +220,31 @@ const Root = ({
   const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
 
   return (
-    <div className={className}>
-      <PayrollListPresentation
-        payrolls={payrollList}
-        pagination={paginationProps}
-        paySchedules={paySchedulesList}
-        onRunPayroll={onRunPayroll}
-        onSubmitPayroll={onSubmitPayroll}
-        onSkipPayroll={onSkipPayroll}
-        onDeletePayroll={onDeletePayroll}
-        onRunOffCyclePayroll={onRunOffCyclePayroll}
-        showSkipSuccessAlert={showSkipSuccessAlert}
-        onDismissSkipSuccessAlert={() => {
-          setShowSkipSuccessAlert(false)
-        }}
-        showDeleteSuccessAlert={showDeleteSuccessAlert}
-        onDismissDeleteSuccessAlert={() => {
-          setShowDeleteSuccessAlert(false)
-        }}
-        skippingPayrollId={skippingPayrollId}
-        deletingPayrollId={deletingPayrollId}
-        blockers={blockers}
-        wireInRequests={wireInRequests}
-        dateRangeFilter={dateRangeFilter}
-        hasUnprocessedTransitions={hasUnprocessedTransitions}
-        withOffcyclePayroll={withOffcyclePayroll}
-      />
-    </div>
+    <PayrollListPresentation
+      className={className}
+      payrolls={payrollList}
+      pagination={paginationProps}
+      paySchedules={paySchedulesList}
+      onRunPayroll={onRunPayroll}
+      onSubmitPayroll={onSubmitPayroll}
+      onSkipPayroll={onSkipPayroll}
+      onDeletePayroll={onDeletePayroll}
+      onRunOffCyclePayroll={onRunOffCyclePayroll}
+      showSkipSuccessAlert={showSkipSuccessAlert}
+      onDismissSkipSuccessAlert={() => {
+        setShowSkipSuccessAlert(false)
+      }}
+      showDeleteSuccessAlert={showDeleteSuccessAlert}
+      onDismissDeleteSuccessAlert={() => {
+        setShowDeleteSuccessAlert(false)
+      }}
+      skippingPayrollId={skippingPayrollId}
+      deletingPayrollId={deletingPayrollId}
+      blockers={blockers}
+      wireInRequests={wireInRequests}
+      dateRangeFilter={dateRangeFilter}
+      hasUnprocessedTransitions={hasUnprocessedTransitions}
+      withOffcyclePayroll={withOffcyclePayroll}
+    />
   )
 }

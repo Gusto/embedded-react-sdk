@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import style from './Flex.module.scss'
 import {
   setResponsiveCustomProperties,
@@ -8,6 +9,8 @@ import {
 /** @internal */
 export interface FlexProps {
   children: React.ReactNode
+  /** CSS class name applied to the root element. */
+  className?: string
   flexDirection?: Responsive<'row' | 'column'>
   justifyContent?: Responsive<
     | 'space-between'
@@ -26,6 +29,7 @@ export interface FlexProps {
 /** @internal */
 export function Flex({
   children,
+  className,
   flexDirection = 'row',
   justifyContent = 'normal',
   alignItems = 'flex-start',
@@ -41,7 +45,7 @@ export function Flex({
   })
 
   return (
-    <div className={style.flexContainer}>
+    <div className={classNames(style.flexContainer, className)}>
       <div className={style.flex} style={properties}>
         {children}
       </div>

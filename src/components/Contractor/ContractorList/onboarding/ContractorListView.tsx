@@ -124,27 +124,25 @@ export function ContractorListView({
 
   return (
     <>
-      <div className={className}>
-        <Flex flexDirection="column">
-          {successMessage && <Components.Alert label={successMessage} status="success" />}
+      <Flex className={className} flexDirection="column">
+        {successMessage && <Components.Alert label={successMessage} status="success" />}
 
-          <Flex alignItems="center" justifyContent="space-between">
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Components.Heading as="h2">{t('title')}</Components.Heading>
 
-            {contractors.length > 0 && (
-              <Components.Button variant="secondary" onClick={onAddContractor}>
-                {t('addAnotherCta')}
-              </Components.Button>
-            )}
-          </Flex>
-
-          <DataView label={t('contractorListLabel')} {...dataViewProps} />
-
-          <ActionsLayout>
-            <Components.Button onClick={onContinue}>{t('continueCta')}</Components.Button>
-          </ActionsLayout>
+          {contractors.length > 0 && (
+            <Components.Button variant="secondary" onClick={onAddContractor}>
+              {t('addAnotherCta')}
+            </Components.Button>
+          )}
         </Flex>
-      </div>
+
+        <DataView label={t('contractorListLabel')} {...dataViewProps} />
+
+        <ActionsLayout>
+          <Components.Button onClick={onContinue}>{t('continueCta')}</Components.Button>
+        </ActionsLayout>
+      </Flex>
 
       <Components.Dialog
         isOpen={!!contractorToDelete}

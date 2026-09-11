@@ -65,60 +65,58 @@ export const CreatePaymentPresentation = ({
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={32}>
-        <Flex justifyContent="flex-end" gap={16}>
-          <Flex flexDirection="column" gap={4}>
-            <Heading as="h2">{t('title')}</Heading>
-            <Text variant="supporting">
-              {t('paymentSpeedNotice', {
-                count: paymentSpeedDays,
-              })}
-            </Text>
-          </Flex>
-          <FlexItem>
-            <Button onClick={onSaveAndContinue} variant="primary" isLoading={isLoading}>
-              {t('continueCta')}
-            </Button>
-          </FlexItem>
+    <Flex className={className} flexDirection="column" gap={32}>
+      <Flex justifyContent="flex-end" gap={16}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('title')}</Heading>
+          <Text variant="supporting">
+            {t('paymentSpeedNotice', {
+              count: paymentSpeedDays,
+            })}
+          </Text>
         </Flex>
+        <FlexItem>
+          <Button onClick={onSaveAndContinue} variant="primary" isLoading={isLoading}>
+            {t('continueCta')}
+          </Button>
+        </FlexItem>
+      </Flex>
 
-        {payrollBlockers.length > 0 && (
-          <PayrollBlockerAlerts blockers={payrollBlockers} onViewBlockersClick={onViewBlockers} />
-        )}
+      {payrollBlockers.length > 0 && (
+        <PayrollBlockerAlerts blockers={payrollBlockers} onViewBlockersClick={onViewBlockers} />
+      )}
 
-        {Object.values(alerts).map(alert => (
-          <Alert
-            key={alert.title}
-            label={alert.title}
-            onDismiss={alert.onDismiss}
-            status={alert.type}
-          >
-            {alert.content ?? null}
-          </Alert>
-        ))}
+      {Object.values(alerts).map(alert => (
+        <Alert
+          key={alert.title}
+          label={alert.title}
+          onDismiss={alert.onDismiss}
+          status={alert.type}
+        >
+          {alert.content ?? null}
+        </Alert>
+      ))}
 
-        <Flex flexDirection="column" gap={8}>
-          <DatePicker
-            value={paymentDate ? normalizeToDate(paymentDate) : null}
-            onChange={date => {
-              const normalized = normalizeDateToLocal(date)
-              onPaymentDateChange(normalized ? (formatDateToStringDate(normalized) ?? '') : '')
-            }}
-            label={t('dateLabel')}
-            isRequired
-          />
-        </Flex>
-
-        <SetPaymentAmounts
-          contractors={contractors}
-          contractorPayments={contractorPayments}
-          totals={totals}
-          allowedPaymentMethods={allowedPaymentMethods}
-          editModal={editModal}
-          dictionary={paymentAmountsDictionary}
+      <Flex flexDirection="column" gap={8}>
+        <DatePicker
+          value={paymentDate ? normalizeToDate(paymentDate) : null}
+          onChange={date => {
+            const normalized = normalizeDateToLocal(date)
+            onPaymentDateChange(normalized ? (formatDateToStringDate(normalized) ?? '') : '')
+          }}
+          label={t('dateLabel')}
+          isRequired
         />
       </Flex>
-    </div>
+
+      <SetPaymentAmounts
+        contractors={contractors}
+        contractorPayments={contractorPayments}
+        totals={totals}
+        allowedPaymentMethods={allowedPaymentMethods}
+        editModal={editModal}
+        dictionary={paymentAmountsDictionary}
+      />
+    </Flex>
   )
 }

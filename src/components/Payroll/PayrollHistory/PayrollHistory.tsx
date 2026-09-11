@@ -152,22 +152,21 @@ const Root = ({
   const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
 
   return (
-    <div className={className}>
-      <PayrollHistoryPresentation
-        payrollHistory={payrollHistory}
-        wireInRequests={wireInRequests}
-        pagination={paginationProps}
-        onViewSummary={handleViewSummary}
-        onViewReceipt={handleViewReceipt}
-        onCancelPayroll={handleCancelPayroll}
-        cancelDialogItem={cancelDialogItem}
-        onCancelDialogOpen={setCancelDialogItem}
-        onCancelDialogClose={() => {
-          setCancelDialogItem(null)
-        }}
-        isLoading={isCancelling}
-        dateRangeFilter={dateRangeFilter}
-      />
-    </div>
+    <PayrollHistoryPresentation
+      className={className}
+      payrollHistory={payrollHistory}
+      wireInRequests={wireInRequests}
+      pagination={paginationProps}
+      onViewSummary={handleViewSummary}
+      onViewReceipt={handleViewReceipt}
+      onCancelPayroll={handleCancelPayroll}
+      cancelDialogItem={cancelDialogItem}
+      onCancelDialogOpen={setCancelDialogItem}
+      onCancelDialogClose={() => {
+        setCancelDialogItem(null)
+      }}
+      isLoading={isCancelling}
+      dateRangeFilter={dateRangeFilter}
+    />
   )
 }

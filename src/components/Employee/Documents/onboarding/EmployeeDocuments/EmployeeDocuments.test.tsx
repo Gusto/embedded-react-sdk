@@ -10,12 +10,12 @@ describe('EmployeeDocuments', () => {
   })
 
   it('applies custom className', async () => {
-    renderWithProviders(
+    const { container } = renderWithProviders(
       <EmployeeDocuments employeeId="employee-123" onEvent={vi.fn()} className="custom-class" />,
     )
 
     await screen.findByRole('heading', { name: 'Employee documents' })
 
-    expect(screen.getByTestId('employee-documents')).toHaveClass('custom-class')
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
   })
 })

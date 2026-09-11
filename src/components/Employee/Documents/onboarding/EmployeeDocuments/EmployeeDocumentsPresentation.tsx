@@ -137,27 +137,25 @@ export const EmployeeDocumentsPresentation = ({
   )
 
   return (
-    <div className={className} data-testid="employee-documents">
-      <Flex flexDirection="column" gap={16}>
-        {isEmployeeSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
+    <Flex className={className} flexDirection="column" gap={16}>
+      {isEmployeeSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
 
-        <Flex justifyContent="flex-end" gap={12}>
-          {isEmployeeSelfOnboarding ? (
-            <Button
-              variant="primary"
-              type="submit"
-              form={EMPLOYEE_DOCUMENTS_FORM_ID}
-              isLoading={isPending}
-            >
-              {t('continueCta')}
-            </Button>
-          ) : (
-            <Button variant="primary" onClick={onDone}>
-              {t('continueCta')}
-            </Button>
-          )}
-        </Flex>
+      <Flex justifyContent="flex-end" gap={12}>
+        {isEmployeeSelfOnboarding ? (
+          <Button
+            variant="primary"
+            type="submit"
+            form={EMPLOYEE_DOCUMENTS_FORM_ID}
+            isLoading={isPending}
+          >
+            {t('continueCta')}
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={onDone}>
+            {t('continueCta')}
+          </Button>
+        )}
       </Flex>
-    </div>
+    </Flex>
   )
 }

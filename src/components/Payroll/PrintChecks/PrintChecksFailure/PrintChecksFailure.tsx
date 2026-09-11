@@ -26,21 +26,19 @@ const Root = ({ dictionary, errorMessage, onEvent, className }: PrintChecksFailu
   const { Alert, Button } = useComponentContext()
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={16}>
-        <Alert status="error" disableScrollIntoView label={t('failedTitle')}>
-          {errorMessage}
-        </Alert>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            onEvent(printChecksEvents.PRINT_CHECKS_RETRY)
-          }}
-        >
-          {t('retryCta')}
-        </Button>
-      </Flex>
-    </div>
+    <Flex className={className} flexDirection="column" gap={16}>
+      <Alert status="error" disableScrollIntoView label={t('failedTitle')}>
+        {errorMessage}
+      </Alert>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          onEvent(printChecksEvents.PRINT_CHECKS_RETRY)
+        }}
+      >
+        {t('retryCta')}
+      </Button>
+    </Flex>
   )
 }
 

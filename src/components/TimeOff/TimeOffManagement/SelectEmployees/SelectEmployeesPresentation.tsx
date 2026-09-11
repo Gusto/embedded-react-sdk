@@ -38,72 +38,70 @@ export function SelectEmployeesPresentation({
   const balanceColHeaderId = useId()
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" alignItems="stretch" gap={32}>
-        <Flex flexDirection="column" gap={4}>
-          <Heading as="h2">{t('title')}</Heading>
-          <Text variant="supporting">
-            {isHolidayPolicy ? t('holidayDescription') : t('description')}
-          </Text>
-        </Flex>
-
-        {!isHolidayPolicy && <Alert status="warning" label={t('reassignmentWarning')} />}
-
-        <EmployeeTable<EmployeeItem>
-          data={employees}
-          searchValue={searchValue}
-          onSearchChange={onSearchChange}
-          onSearchClear={onSearchClear}
-          hideSearch={employees.length === 0 && searchValue.length === 0}
-          selectionMode="multiple"
-          onSelect={onSelect}
-          onSelectAll={onSelectAll}
-          getIsItemSelected={item => selectedUuids.has(item.uuid)}
-          isFetching={isFetching}
-          pagination={pagination}
-          emptyState={() => <EmptyData title={t('emptyState')} />}
-          additionalColumns={[
-            {
-              key: 'department' as keyof EmployeeItem,
-              title: t('departmentColumn'),
-            },
-            ...(onBalanceChange
-              ? [
-                  {
-                    key: 'balance' as keyof EmployeeItem,
-                    title: t('startingBalanceColumn'),
-                    justify: 'end' as const,
-                    render: (employee: EmployeeItem) => (
-                      <div className={styles.balanceInput}>
-                        <Components.TextInput
-                          name={`balance-${employee.uuid}`}
-                          label={t('startingBalanceColumn')}
-                          shouldVisuallyHideLabel
-                          aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                          value={balances?.[employee.uuid] ?? ''}
-                          onChange={(value: string) => {
-                            if (value !== '' && !isNumericInput(value)) return
-                            onBalanceChange(employee.uuid, value)
-                          }}
-                          placeholder="0"
-                        />
-                      </div>
-                    ),
-                  },
-                ]
-              : []),
-          ]}
-        />
-
-        <ActionsLayout>
-          <Button variant="secondary" onClick={onBack} isDisabled={isPending}>
-            {t('backCta')}
-          </Button>
-          <Button variant="primary" onClick={onContinue} isLoading={isPending}>
-            {t('continueCta')}
-          </Button>
-        </ActionsLayout>
+    <Flex className={className} flexDirection="column" alignItems="stretch" gap={32}>
+      <Flex flexDirection="column" gap={4}>
+        <Heading as="h2">{t('title')}</Heading>
+        <Text variant="supporting">
+          {isHolidayPolicy ? t('holidayDescription') : t('description')}
+        </Text>
       </Flex>
-    </div>
+
+      {!isHolidayPolicy && <Alert status="warning" label={t('reassignmentWarning')} />}
+
+      <EmployeeTable<EmployeeItem>
+        data={employees}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        onSearchClear={onSearchClear}
+        hideSearch={employees.length === 0 && searchValue.length === 0}
+        selectionMode="multiple"
+        onSelect={onSelect}
+        onSelectAll={onSelectAll}
+        getIsItemSelected={item => selectedUuids.has(item.uuid)}
+        isFetching={isFetching}
+        pagination={pagination}
+        emptyState={() => <EmptyData title={t('emptyState')} />}
+        additionalColumns={[
+          {
+            key: 'department' as keyof EmployeeItem,
+            title: t('departmentColumn'),
+          },
+          ...(onBalanceChange
+            ? [
+                {
+                  key: 'balance' as keyof EmployeeItem,
+                  title: t('startingBalanceColumn'),
+                  justify: 'end' as const,
+                  render: (employee: EmployeeItem) => (
+                    <div className={styles.balanceInput}>
+                      <Components.TextInput
+                        name={`balance-${employee.uuid}`}
+                        label={t('startingBalanceColumn')}
+                        shouldVisuallyHideLabel
+                        aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
+                        value={balances?.[employee.uuid] ?? ''}
+                        onChange={(value: string) => {
+                          if (value !== '' && !isNumericInput(value)) return
+                          onBalanceChange(employee.uuid, value)
+                        }}
+                        placeholder="0"
+                      />
+                    </div>
+                  ),
+                },
+              ]
+            : []),
+        ]}
+      />
+
+      <ActionsLayout>
+        <Button variant="secondary" onClick={onBack} isDisabled={isPending}>
+          {t('backCta')}
+        </Button>
+        <Button variant="primary" onClick={onContinue} isLoading={isPending}>
+          {t('continueCta')}
+        </Button>
+      </ActionsLayout>
+    </Flex>
   )
 }

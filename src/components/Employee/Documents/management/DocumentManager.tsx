@@ -72,40 +72,38 @@ function DocumentManagerRoot({
   if (!form) return null
 
   return (
-    <div className={className} data-testid="document-manager">
-      <Flex flexDirection="column" gap={16}>
-        {form.title && <Components.Heading as="h2">{form.title}</Components.Heading>}
-        {pdfUrl && (
-          <Components.Text>
-            <Trans
-              t={t}
-              i18nKey="downloadDocumentCta"
-              components={{
-                downloadLink: (
-                  <Components.Link
-                    href={pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download={`${form.title || 'form'}.pdf`}
-                  />
-                ),
-              }}
-            />
-          </Components.Text>
-        )}
-        <DocumentViewer url={pdfUrl} title={form.title} viewDocumentLabel={t('viewDocumentCta')} />
-
-        <ActionsLayout>
-          <Components.Button
-            variant="secondary"
-            onClick={() => {
-              onEvent(componentEvents.CANCEL)
+    <Flex className={className} flexDirection="column" gap={16}>
+      {form.title && <Components.Heading as="h2">{form.title}</Components.Heading>}
+      {pdfUrl && (
+        <Components.Text>
+          <Trans
+            t={t}
+            i18nKey="downloadDocumentCta"
+            components={{
+              downloadLink: (
+                <Components.Link
+                  href={pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={`${form.title || 'form'}.pdf`}
+                />
+              ),
             }}
-          >
-            {t('backCta')}
-          </Components.Button>
-        </ActionsLayout>
-      </Flex>
-    </div>
+          />
+        </Components.Text>
+      )}
+      <DocumentViewer url={pdfUrl} title={form.title} viewDocumentLabel={t('viewDocumentCta')} />
+
+      <ActionsLayout>
+        <Components.Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(componentEvents.CANCEL)
+          }}
+        >
+          {t('backCta')}
+        </Components.Button>
+      </ActionsLayout>
+    </Flex>
   )
 }

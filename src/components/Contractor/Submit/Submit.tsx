@@ -125,30 +125,28 @@ const Root = ({ contractorId, selfOnboarding, dictionary, className }: Contracto
   }
 
   return (
-    <div className={className} data-testid="contractor-submit">
-      <Flex flexDirection="column" gap={24}>
-        <FlexItem>
-          <Heading as="h2">{t('heading')}</Heading>
-        </FlexItem>
+    <Flex className={className} flexDirection="column" gap={24}>
+      <FlexItem>
+        <Heading as="h2">{t('heading')}</Heading>
+      </FlexItem>
 
-        <ContractorSubmitDocuments
-          contractorId={contractorId}
-          documentsToCollect={documentsToCollect}
-          contractorName={contractorName}
-          hasW9={hasW9}
-        />
-        <Flex flexDirection="column" gap={8}>
-          <Alert status="warning" label={t('title')}>
-            <UnorderedList items={items} />
-          </Alert>
-          <ActionsLayout justifyContent="end">
-            <Button title={t('submitCta')} onClick={onSubmit} isLoading={isPending}>
-              {t('submitCta')}
-            </Button>
-          </ActionsLayout>
-        </Flex>
+      <ContractorSubmitDocuments
+        contractorId={contractorId}
+        documentsToCollect={documentsToCollect}
+        contractorName={contractorName}
+        hasW9={hasW9}
+      />
+      <Flex flexDirection="column" gap={8}>
+        <Alert status="warning" label={t('title')}>
+          <UnorderedList items={items} />
+        </Alert>
+        <ActionsLayout justifyContent="end">
+          <Button title={t('submitCta')} onClick={onSubmit} isLoading={isPending}>
+            {t('submitCta')}
+          </Button>
+        </ActionsLayout>
       </Flex>
-    </div>
+    </Flex>
   )
 }
 
@@ -268,29 +266,27 @@ const InviteContractor = ({
   const contractor = contractorData.contractor
 
   return (
-    <div className={className} data-testid="contractor-invite">
+    <Flex className={className} flexDirection="column">
+      <Heading as="h2">{t('title')}</Heading>
+      <Text>{t('description')}</Text>
       <Flex flexDirection="column">
-        <Heading as="h2">{t('title')}</Heading>
-        <Text>{t('description')}</Text>
-        <Flex flexDirection="column">
-          <div>
-            <Text>
-              {firstLastName({
-                first_name: contractor?.firstName,
-                last_name: contractor?.lastName,
-              })}
-            </Text>
-            <Text>{contractor?.email}</Text>
-          </div>
-          <div>
-            <Text>{t('startDateLabel')}</Text>
-            <Text>{contractor?.startDate}</Text>
-          </div>
-        </Flex>
-        <Button title={t('inviteCta')} onClick={onSubmit}>
-          {t('inviteCta')}
-        </Button>
+        <div>
+          <Text>
+            {firstLastName({
+              first_name: contractor?.firstName,
+              last_name: contractor?.lastName,
+            })}
+          </Text>
+          <Text>{contractor?.email}</Text>
+        </div>
+        <div>
+          <Text>{t('startDateLabel')}</Text>
+          <Text>{contractor?.startDate}</Text>
+        </div>
       </Flex>
-    </div>
+      <Button title={t('inviteCta')} onClick={onSubmit}>
+        {t('inviteCta')}
+      </Button>
+    </Flex>
   )
 }

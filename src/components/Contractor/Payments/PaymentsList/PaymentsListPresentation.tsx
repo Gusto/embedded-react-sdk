@@ -102,105 +102,103 @@ export const PaymentsListPresentation = ({
   })
 
   return (
-    <div className={className} data-testid="payments-list">
-      <Flex flexDirection="column" gap={24}>
-        <Flex flexDirection="column" gap={16}>
-          <Heading as="h1" styledAs="h2">
-            {t('title')}
-          </Heading>
-        </Flex>
-
-        {hasUnresolvedWireInRequests && (
-          <ConfirmWireDetails companyId={companyId} onEvent={onEvent} />
-        )}
-
-        {alerts.length > 0 && (
-          <Flex flexDirection="column" gap={16}>
-            {alerts.map((alert, index) => (
-              <Alert
-                key={`${alert.type}-${alert.title}-${index}`}
-                label={t(`alerts.${alert.title}` as never, alert.translationParams)}
-                status={alert.type}
-                onDismiss={alert.onDismiss}
-              >
-                <Flex flexDirection="column" gap={12}>
-                  {typeof alert.content === 'string'
-                    ? t(`alerts.${alert.content}` as never)
-                    : (alert.content ?? null)}
-                  {alert.onAction && alert.actionLabel && (
-                    <div>
-                      <Button variant="secondary" onClick={alert.onAction}>
-                        {t(`alerts.${alert.actionLabel}` as never)}
-                      </Button>
-                    </div>
-                  )}
-                </Flex>
-              </Alert>
-            ))}
-          </Flex>
-        )}
-
-        <Flex
-          flexDirection={{
-            base: 'column',
-            small: 'row',
-          }}
-          gap={16}
-          alignItems={{
-            base: 'stretch',
-            small: 'center',
-          }}
-          justifyContent="space-between"
-        >
-          <Heading as="h2" styledAs="h4">
-            {t('subtitle')}
-          </Heading>
-          <div className={styles.actionsContainer}>
-            <Select
-              id="date-range-select"
-              value={numberOfMonths.toString()}
-              onChange={value => {
-                onDateRangeChange(Number(value))
-              }}
-              options={dateRangeOptions}
-              isRequired
-              label={t('startDate')}
-              placeholder=""
-              shouldVisuallyHideLabel
-            />
-            {contractorPayments.length > 0 && (
-              <Button
-                onClick={onCreatePayment}
-                variant="secondary"
-                icon={<PlusCircleIcon aria-hidden />}
-                className={styles.nowrap}
-              >
-                {t('createPaymentCta')}
-              </Button>
-            )}
-          </div>
-        </Flex>
-
-        <DataView label={t('subtitle')} {...dataViewProps} />
-
-        <WithUnstableFeature feature="historicalPayments">
-          <div className={styles.historicalPaymentCta}>
-            <Box
-              header={
-                <Flex flexDirection="column" gap={4}>
-                  <Text weight="semibold">{t('historicalPaymentCta.title')}</Text>
-                  <Text variant="supporting">{t('historicalPaymentCta.description')}</Text>
-                </Flex>
-              }
-              footer={
-                <Button variant="secondary" onClick={onCreateHistoricalPayment}>
-                  {t('historicalPaymentCta.button')}
-                </Button>
-              }
-            />
-          </div>
-        </WithUnstableFeature>
+    <Flex className={className} flexDirection="column" gap={24}>
+      <Flex flexDirection="column" gap={16}>
+        <Heading as="h1" styledAs="h2">
+          {t('title')}
+        </Heading>
       </Flex>
-    </div>
+
+      {hasUnresolvedWireInRequests && (
+        <ConfirmWireDetails companyId={companyId} onEvent={onEvent} />
+      )}
+
+      {alerts.length > 0 && (
+        <Flex flexDirection="column" gap={16}>
+          {alerts.map((alert, index) => (
+            <Alert
+              key={`${alert.type}-${alert.title}-${index}`}
+              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              status={alert.type}
+              onDismiss={alert.onDismiss}
+            >
+              <Flex flexDirection="column" gap={12}>
+                {typeof alert.content === 'string'
+                  ? t(`alerts.${alert.content}` as never)
+                  : (alert.content ?? null)}
+                {alert.onAction && alert.actionLabel && (
+                  <div>
+                    <Button variant="secondary" onClick={alert.onAction}>
+                      {t(`alerts.${alert.actionLabel}` as never)}
+                    </Button>
+                  </div>
+                )}
+              </Flex>
+            </Alert>
+          ))}
+        </Flex>
+      )}
+
+      <Flex
+        flexDirection={{
+          base: 'column',
+          small: 'row',
+        }}
+        gap={16}
+        alignItems={{
+          base: 'stretch',
+          small: 'center',
+        }}
+        justifyContent="space-between"
+      >
+        <Heading as="h2" styledAs="h4">
+          {t('subtitle')}
+        </Heading>
+        <div className={styles.actionsContainer}>
+          <Select
+            id="date-range-select"
+            value={numberOfMonths.toString()}
+            onChange={value => {
+              onDateRangeChange(Number(value))
+            }}
+            options={dateRangeOptions}
+            isRequired
+            label={t('startDate')}
+            placeholder=""
+            shouldVisuallyHideLabel
+          />
+          {contractorPayments.length > 0 && (
+            <Button
+              onClick={onCreatePayment}
+              variant="secondary"
+              icon={<PlusCircleIcon aria-hidden />}
+              className={styles.nowrap}
+            >
+              {t('createPaymentCta')}
+            </Button>
+          )}
+        </div>
+      </Flex>
+
+      <DataView label={t('subtitle')} {...dataViewProps} />
+
+      <WithUnstableFeature feature="historicalPayments">
+        <div className={styles.historicalPaymentCta}>
+          <Box
+            header={
+              <Flex flexDirection="column" gap={4}>
+                <Text weight="semibold">{t('historicalPaymentCta.title')}</Text>
+                <Text variant="supporting">{t('historicalPaymentCta.description')}</Text>
+              </Flex>
+            }
+            footer={
+              <Button variant="secondary" onClick={onCreateHistoricalPayment}>
+                {t('historicalPaymentCta.button')}
+              </Button>
+            }
+          />
+        </div>
+      </WithUnstableFeature>
+    </Flex>
   )
 }

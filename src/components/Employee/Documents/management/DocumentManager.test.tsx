@@ -60,10 +60,12 @@ describe('DocumentManager', () => {
     })
 
     it('applies custom className', async () => {
-      renderWithProviders(<DocumentManager {...defaultProps} className="custom-class" />)
+      const { container } = renderWithProviders(
+        <DocumentManager {...defaultProps} className="custom-class" />,
+      )
 
       await waitFor(() => {
-        expect(screen.getByTestId('document-manager')).toHaveClass('custom-class')
+        expect(container.querySelector('.custom-class')).toBeInTheDocument()
       })
     })
 

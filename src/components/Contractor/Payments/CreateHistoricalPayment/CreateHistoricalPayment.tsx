@@ -121,37 +121,35 @@ function Root({ companyId, dictionary, onEvent, className }: CreateHistoricalPay
 
   if (!selection) {
     return (
-      <div className={className}>
-        <Flex flexDirection="column" gap={32}>
-          <Flex flexDirection="column" gap={4}>
-            <Heading as="h2">{t('select.heading')}</Heading>
-            <Text variant="supporting">{t('select.subtitle')}</Text>
-          </Flex>
-
-          <DatePicker
-            label={t('select.dateLabel')}
-            isRequired
-            value={checkDate}
-            onChange={setCheckDate}
-            minDate={minDate}
-            maxDate={maxDate}
-            isInvalid={dateError !== null}
-            errorMessage={dateError ?? undefined}
-          />
-
-          <SelectContractors
-            companyId={companyId}
-            onSelectionChange={setSelectedIds}
-            initialSelectedIds={selectedIds}
-          />
-
-          <ActionsLayout>
-            <Button onClick={handleContinue} variant="primary" isDisabled={!canContinue}>
-              {t('select.continueButton')}
-            </Button>
-          </ActionsLayout>
+      <Flex className={className} flexDirection="column" gap={32}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('select.heading')}</Heading>
+          <Text variant="supporting">{t('select.subtitle')}</Text>
         </Flex>
-      </div>
+
+        <DatePicker
+          label={t('select.dateLabel')}
+          isRequired
+          value={checkDate}
+          onChange={setCheckDate}
+          minDate={minDate}
+          maxDate={maxDate}
+          isInvalid={dateError !== null}
+          errorMessage={dateError ?? undefined}
+        />
+
+        <SelectContractors
+          companyId={companyId}
+          onSelectionChange={setSelectedIds}
+          initialSelectedIds={selectedIds}
+        />
+
+        <ActionsLayout>
+          <Button onClick={handleContinue} variant="primary" isDisabled={!canContinue}>
+            {t('select.continueButton')}
+          </Button>
+        </ActionsLayout>
+      </Flex>
     )
   }
 
@@ -284,79 +282,75 @@ function AmountsAndReview({
 
   if (previewData) {
     return (
-      <div className={className}>
-        <Flex flexDirection="column" gap={32}>
-          {!isCreated && <BackButton onClick={handleBackToEdit} />}
+      <Flex className={className} flexDirection="column" gap={32}>
+        {!isCreated && <BackButton onClick={handleBackToEdit} />}
 
-          <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
-            <Flex flexDirection="column" gap={4}>
-              <Heading as="h2">{t('review.title')}</Heading>
-              <Text variant="supporting">
-                {t('review.subtitle', {
-                  checkDate: formatLongWithYear(previewData.checkDate ?? ''),
-                })}
-              </Text>
-            </Flex>
-            {!isCreated && (
-              <Button onClick={handleSubmit} variant="primary" isLoading={isCreating}>
-                {t('review.submitButton')}
-              </Button>
-            )}
+        <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
+          <Flex flexDirection="column" gap={4}>
+            <Heading as="h2">{t('review.title')}</Heading>
+            <Text variant="supporting">
+              {t('review.subtitle', {
+                checkDate: formatLongWithYear(previewData.checkDate ?? ''),
+              })}
+            </Text>
           </Flex>
-
-          {isCreated && (
-            <Alert status="success" label={t('review.successTitle')}>
-              <Text>{t('review.successMessage')}</Text>
-            </Alert>
+          {!isCreated && (
+            <Button onClick={handleSubmit} variant="primary" isLoading={isCreating}>
+              {t('review.submitButton')}
+            </Button>
           )}
-
-          <PaymentSummaryBlock
-            contractorPaymentGroup={previewData}
-            contractors={contractors}
-            showDebitColumns={false}
-            dictionary={reviewDictionary}
-          />
         </Flex>
-      </div>
+
+        {isCreated && (
+          <Alert status="success" label={t('review.successTitle')}>
+            <Text>{t('review.successMessage')}</Text>
+          </Alert>
+        )}
+
+        <PaymentSummaryBlock
+          contractorPaymentGroup={previewData}
+          contractors={contractors}
+          showDebitColumns={false}
+          dictionary={reviewDictionary}
+        />
+      </Flex>
     )
   }
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={32}>
-        <BackButton
-          onClick={() => {
-            onBack(virtualContractorPayments)
-          }}
-        />
+    <Flex className={className} flexDirection="column" gap={32}>
+      <BackButton
+        onClick={() => {
+          onBack(virtualContractorPayments)
+        }}
+      />
 
-        <Flex justifyContent="flex-end" gap={16}>
-          <Flex flexDirection="column" gap={4}>
-            <Heading as="h2">{t('amounts.heading')}</Heading>
-            <Text variant="supporting">{t('amounts.subtitle')}</Text>
-          </Flex>
-          <FlexItem>
-            <Button
-              onClick={handleContinue}
-              variant="primary"
-              isDisabled={!canContinue}
-              isLoading={isPreviewing}
-            >
-              {t('amounts.continueButton')}
-            </Button>
-          </FlexItem>
+      <Flex justifyContent="flex-end" gap={16}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('amounts.heading')}</Heading>
+          <Text variant="supporting">{t('amounts.subtitle')}</Text>
         </Flex>
-
-        <SetPaymentAmounts
-          contractors={contractors}
-          contractorPayments={virtualContractorPayments}
-          totals={totals}
-          allowedPaymentMethods={ALLOWED_PAYMENT_METHODS}
-          editModal={editModal}
-          dictionary={paymentAmountsDictionary}
-        />
+        <FlexItem>
+          <Button
+            onClick={handleContinue}
+            variant="primary"
+            isDisabled={!canContinue}
+            isLoading={isPreviewing}
+          >
+            {t('amounts.continueButton')}
+          </Button>
+        </FlexItem>
       </Flex>
-    </div>
+
+      <SetPaymentAmounts
+        contractors={contractors}
+        contractorPayments={virtualContractorPayments}
+        totals={totals}
+        allowedPaymentMethods={ALLOWED_PAYMENT_METHODS}
+        editModal={editModal}
+        dictionary={paymentAmountsDictionary}
+      />
+    </Flex>
   )
 }
 

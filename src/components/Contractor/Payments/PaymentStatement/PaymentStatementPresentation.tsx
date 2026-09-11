@@ -114,96 +114,92 @@ export const PaymentStatementPresentation = ({
   }, [payment, isHourly, hours, hourlyRate, bonus, reimbursement, t, currencyFormatter])
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={32}>
-        <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={8}>
-            <Heading as="h2">{t('title', { contractorName })}</Heading>
-            <Text variant="supporting">{formatLongWithYear(checkDate)}</Text>
-          </Flex>
+    <Flex className={className} flexDirection="column" gap={32}>
+      <Flex flexDirection="column" gap={16}>
+        <Flex flexDirection="column" gap={8}>
+          <Heading as="h2">{t('title', { contractorName })}</Heading>
+          <Text variant="supporting">{formatLongWithYear(checkDate)}</Text>
         </Flex>
+      </Flex>
 
-        {shouldShowReceipt && (
-          <div className={styles.receiptCard}>
-            <Flex flexDirection="column" gap={24}>
-              <Flex flexDirection="column" alignItems="center" gap={16}>
-                <div className={styles.receiptIcon} aria-hidden>
-                  <ReceiptCheck className={styles.checkmarkIcon} />
-                </div>
+      {shouldShowReceipt && (
+        <div className={styles.receiptCard}>
+          <Flex flexDirection="column" gap={24}>
+            <Flex flexDirection="column" alignItems="center" gap={16}>
+              <div className={styles.receiptIcon} aria-hidden>
+                <ReceiptCheck className={styles.checkmarkIcon} />
+              </div>
 
-                <Flex flexDirection="column" alignItems="center" gap={8}>
-                  <Text size="sm" variant="supporting">
-                    {t('receipt.totalLabel')}
-                  </Text>
-                  <Heading as="h1" styledAs="h2" className={styles.totalAmount}>
-                    {currencyFormatter(Number(receiptTotal))}
-                  </Heading>
-                </Flex>
-              </Flex>
-
-              <Components.DescriptionList
-                layout="horizontal"
-                showSeparators={false}
-                items={receiptDetailsConfig.map(({ label, value }): DescriptionListItem => ({
-                  term: (
-                    <Text size="sm" variant="supporting">
-                      {label}
-                    </Text>
-                  ),
-                  description: <Text size="sm">{value}</Text>,
-                }))}
-              />
-              <hr />
-              <Flex flexDirection="column" alignItems="center" gap={12}>
-                <Text size="sm" variant="supporting" className={styles.disclaimer}>
-                  <Trans
-                    i18nKey="receipt.disclaimer"
-                    t={t}
-                    components={{
-                      licensesLink: (
-                        <Link href={paymentReceipt?.licenseUri || ''} target="_blank" />
-                      ),
-                    }}
-                  />
+              <Flex flexDirection="column" alignItems="center" gap={8}>
+                <Text size="sm" variant="supporting">
+                  {t('receipt.totalLabel')}
                 </Text>
-                <hr />
-
-                <Text size="sm" variant="supporting" className={styles.companyInfo}>
-                  {paymentReceipt?.licensee?.name || ''}
-                </Text>
-                <Text size="sm" variant="supporting" className={styles.address}>
-                  {addressInline({
-                    street1: paymentReceipt?.licensee?.address || '',
-                    city: paymentReceipt?.licensee?.city || '',
-                    state: paymentReceipt?.licensee?.state || '',
-                    zip: paymentReceipt?.licensee?.postalCode || '',
-                    country: '',
-                    uuid: '',
-                  })}
-                  {' | '}
-                  {formatPhoneNumber(paymentReceipt?.licensee?.phoneNumber)}
-                </Text>
+                <Heading as="h1" styledAs="h2" className={styles.totalAmount}>
+                  {currencyFormatter(Number(receiptTotal))}
+                </Heading>
               </Flex>
             </Flex>
-          </div>
-        )}
 
-        <DataView
-          columns={[
-            {
-              title: t('debitedColumn'),
-              render: ({ label }) => label,
-            },
-            {
-              title: t('amountColumn'),
-              justify: 'end',
-              render: ({ amount }) => amount || '',
-            },
-          ]}
-          data={statementRows}
-          label={t('title', { contractorName })}
-        />
-      </Flex>
-    </div>
+            <Components.DescriptionList
+              layout="horizontal"
+              showSeparators={false}
+              items={receiptDetailsConfig.map(({ label, value }): DescriptionListItem => ({
+                term: (
+                  <Text size="sm" variant="supporting">
+                    {label}
+                  </Text>
+                ),
+                description: <Text size="sm">{value}</Text>,
+              }))}
+            />
+            <hr />
+            <Flex flexDirection="column" alignItems="center" gap={12}>
+              <Text size="sm" variant="supporting" className={styles.disclaimer}>
+                <Trans
+                  i18nKey="receipt.disclaimer"
+                  t={t}
+                  components={{
+                    licensesLink: <Link href={paymentReceipt?.licenseUri || ''} target="_blank" />,
+                  }}
+                />
+              </Text>
+              <hr />
+
+              <Text size="sm" variant="supporting" className={styles.companyInfo}>
+                {paymentReceipt?.licensee?.name || ''}
+              </Text>
+              <Text size="sm" variant="supporting" className={styles.address}>
+                {addressInline({
+                  street1: paymentReceipt?.licensee?.address || '',
+                  city: paymentReceipt?.licensee?.city || '',
+                  state: paymentReceipt?.licensee?.state || '',
+                  zip: paymentReceipt?.licensee?.postalCode || '',
+                  country: '',
+                  uuid: '',
+                })}
+                {' | '}
+                {formatPhoneNumber(paymentReceipt?.licensee?.phoneNumber)}
+              </Text>
+            </Flex>
+          </Flex>
+        </div>
+      )}
+
+      <DataView
+        columns={[
+          {
+            title: t('debitedColumn'),
+            render: ({ label }) => label,
+          },
+          {
+            title: t('amountColumn'),
+            justify: 'end',
+            render: ({ amount }) => amount || '',
+          },
+        ]}
+        data={statementRows}
+        label={t('title', { contractorName })}
+      />
+    </Flex>
   )
 }

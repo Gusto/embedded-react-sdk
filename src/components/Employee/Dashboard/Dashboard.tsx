@@ -62,48 +62,46 @@ function DashboardRoot({
   ]
 
   return (
-    <div className={className} data-testid="employee-dashboard">
-      <Flex flexDirection="column" gap={32}>
-        <Suspense fallback={null}>
-          <DashboardHeader employeeId={employeeId} />
-        </Suspense>
+    <Flex className={className} flexDirection="column" gap={32}>
+      <Suspense fallback={null}>
+        <DashboardHeader employeeId={employeeId} />
+      </Suspense>
 
-        <Flex flexDirection="column" gap={8}>
-          <Components.Tabs
-            tabs={tabs}
-            selectedId={selectedTab}
-            onSelectionChange={id => {
-              const next = id as DashboardTab
-              setInternalTab(next)
-              onEvent(componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE, { tab: next })
-            }}
-            aria-label={t('tabsLabel')}
-          />
+      <Flex flexDirection="column" gap={8}>
+        <Components.Tabs
+          tabs={tabs}
+          selectedId={selectedTab}
+          onSelectionChange={id => {
+            const next = id as DashboardTab
+            setInternalTab(next)
+            onEvent(componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE, { tab: next })
+          }}
+          aria-label={t('tabsLabel')}
+        />
 
-          <Flex flexDirection="column" gap={24}>
-            {selectedTab === 'basicDetails' && (
-              <BasicDetailsView employeeId={employeeId} onEvent={onEvent} />
-            )}
+        <Flex flexDirection="column" gap={24}>
+          {selectedTab === 'basicDetails' && (
+            <BasicDetailsView employeeId={employeeId} onEvent={onEvent} />
+          )}
 
-            {selectedTab === 'jobAndPay' && (
-              <JobAndPayView employeeId={employeeId} onEvent={onEvent} />
-            )}
+          {selectedTab === 'jobAndPay' && (
+            <JobAndPayView employeeId={employeeId} onEvent={onEvent} />
+          )}
 
-            {selectedTab === 'taxes' && (
-              <TaxesViewWithData employeeId={employeeId} onEvent={onEvent} />
-            )}
+          {selectedTab === 'taxes' && (
+            <TaxesViewWithData employeeId={employeeId} onEvent={onEvent} />
+          )}
 
-            {selectedTab === 'documents' && (
-              <DocumentsCard
-                employeeId={employeeId}
-                onEvent={onEvent}
-                LoaderComponent={LoaderComponent}
-              />
-            )}
-          </Flex>
+          {selectedTab === 'documents' && (
+            <DocumentsCard
+              employeeId={employeeId}
+              onEvent={onEvent}
+              LoaderComponent={LoaderComponent}
+            />
+          )}
         </Flex>
       </Flex>
-    </div>
+    </Flex>
   )
 }
 

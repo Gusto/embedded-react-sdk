@@ -127,49 +127,47 @@ export function PolicyListPresentation({
   })
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={16}>
-        {deleteSuccessAlert && (
-          <Alert status="success" label={deleteSuccessAlert} onDismiss={onDismissDeleteAlert} />
-        )}
+    <Flex className={className} flexDirection="column" gap={16}>
+      {deleteSuccessAlert && (
+        <Alert status="success" label={deleteSuccessAlert} onDismiss={onDismissDeleteAlert} />
+      )}
 
-        <Flex
-          flexDirection={{ base: 'column', medium: 'row' }}
-          justifyContent="space-between"
-          alignItems="flex-start"
-          gap={{ base: 12, medium: 24 }}
-        >
-          <Heading as="h2">{t('pageTitle')}</Heading>
-          <Button variant="primary" onClick={onCreatePolicy}>
-            {t('createPolicyCta')}
-          </Button>
-        </Flex>
-
-        <DataView label={t('tableLabel')} {...dataViewProps} />
-
-        <Dialog
-          isOpen={deletePolicyDialogState.isOpen}
-          onClose={handleCloseDeleteDialog}
-          onPrimaryActionClick={handleConfirmDelete}
-          isPrimaryActionLoading={isPending}
-          isDestructive
-          title={
-            deletePolicyDialogState.policy?.isHoliday
-              ? t('deleteHolidayDialog.title')
-              : t('deletePolicyDialog.title', {
-                  name: deletePolicyDialogState.policy?.name ?? '',
-                })
-          }
-          primaryActionLabel={t('deletePolicyDialog.confirmCta')}
-          closeActionLabel={t('deletePolicyDialog.cancelCta')}
-        >
-          {deletePolicyDialogState.policy?.isHoliday
-            ? t('deleteHolidayDialog.description')
-            : t('deletePolicyDialog.description', {
-                name: deletePolicyDialogState.policy?.name ?? '',
-              })}
-        </Dialog>
+      <Flex
+        flexDirection={{ base: 'column', medium: 'row' }}
+        justifyContent="space-between"
+        alignItems="flex-start"
+        gap={{ base: 12, medium: 24 }}
+      >
+        <Heading as="h2">{t('pageTitle')}</Heading>
+        <Button variant="primary" onClick={onCreatePolicy}>
+          {t('createPolicyCta')}
+        </Button>
       </Flex>
-    </div>
+
+      <DataView label={t('tableLabel')} {...dataViewProps} />
+
+      <Dialog
+        isOpen={deletePolicyDialogState.isOpen}
+        onClose={handleCloseDeleteDialog}
+        onPrimaryActionClick={handleConfirmDelete}
+        isPrimaryActionLoading={isPending}
+        isDestructive
+        title={
+          deletePolicyDialogState.policy?.isHoliday
+            ? t('deleteHolidayDialog.title')
+            : t('deletePolicyDialog.title', {
+                name: deletePolicyDialogState.policy?.name ?? '',
+              })
+        }
+        primaryActionLabel={t('deletePolicyDialog.confirmCta')}
+        closeActionLabel={t('deletePolicyDialog.cancelCta')}
+      >
+        {deletePolicyDialogState.policy?.isHoliday
+          ? t('deleteHolidayDialog.description')
+          : t('deletePolicyDialog.description', {
+              name: deletePolicyDialogState.policy?.name ?? '',
+            })}
+      </Dialog>
+    </Flex>
   )
 }

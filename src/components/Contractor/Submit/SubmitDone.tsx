@@ -16,16 +16,14 @@ export const SubmitDone = ({ onDone, className }: SubmitDoneProps) => {
   const { t } = useTranslation('Contractor.Submit')
 
   return (
-    <div className={className} data-testid="contractor-submit-done">
-      <Flex flexDirection="column" gap={20} alignItems="center">
-        <Flex flexDirection="column" gap={4} alignItems="center">
-          <Heading as="h2">{t('doneTitle')}</Heading>
-          <Text variant="supporting">{t('doneDescription')}</Text>
-        </Flex>
-        <Button variant="secondary" onClick={onDone}>
-          {t('doneCta')}
-        </Button>
+    <Flex className={className} flexDirection="column" gap={20} alignItems="center">
+      <Flex flexDirection="column" gap={4} alignItems="center">
+        <Heading as="h2">{t('doneTitle')}</Heading>
+        <Text variant="supporting">{t('doneDescription')}</Text>
       </Flex>
-    </div>
+      <Button variant="secondary" onClick={onDone}>
+        {t('doneCta')}
+      </Button>
+    </Flex>
   )
 }

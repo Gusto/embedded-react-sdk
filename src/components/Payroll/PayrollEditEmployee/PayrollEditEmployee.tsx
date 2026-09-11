@@ -167,20 +167,19 @@ const Root = ({
   }
 
   return (
-    <div className={className}>
-      <PayrollEditEmployeePresentation
-        onSave={onSave}
-        onCancel={onCancel}
-        employee={employee}
-        isPending={isPending}
-        employeeCompensation={employeeCompensation}
-        fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
-        payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
-        paySchedule={paySchedule}
-        payrollCategory={payrollCategory}
-        withReimbursements={withReimbursements}
-        hasDirectDepositSetup={hasDirectDepositSetup}
-      />
-    </div>
+    <PayrollEditEmployeePresentation
+      className={className}
+      onSave={onSave}
+      onCancel={onCancel}
+      employee={employee}
+      isPending={isPending}
+      employeeCompensation={employeeCompensation}
+      fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
+      payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
+      paySchedule={paySchedule}
+      payrollCategory={payrollCategory}
+      withReimbursements={withReimbursements}
+      hasDirectDepositSetup={hasDirectDepositSetup}
+    />
   )
 }

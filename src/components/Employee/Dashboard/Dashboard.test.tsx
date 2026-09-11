@@ -200,12 +200,12 @@ describe('Dashboard', () => {
   })
 
   it('applies custom className', async () => {
-    renderWithProviders(
+    const { container } = renderWithProviders(
       <Dashboard employeeId="employee-123" onEvent={onEvent} className="custom-class" />,
     )
 
     await waitFor(() => {
-      expect(screen.getByTestId('employee-dashboard')).toHaveClass('custom-class')
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
   })
 

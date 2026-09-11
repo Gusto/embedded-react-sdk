@@ -1,5 +1,5 @@
 import { describe, test, expect, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { HttpResponse } from 'msw'
 import { ContractorSubmit } from './Submit'
 import { server } from '@/test/mocks/server'
@@ -108,7 +108,7 @@ describe('ContractorSubmit', () => {
       handleGetContractorDocuments(() => HttpResponse.json([])),
     )
 
-    renderWithProviders(
+    const { container } = renderWithProviders(
       <ContractorSubmit
         contractorId="contractor-uuid"
         onEvent={mockOnEvent}
@@ -116,7 +116,9 @@ describe('ContractorSubmit', () => {
       />,
     )
 
-    expect(await screen.findByTestId('contractor-submit')).toHaveClass('custom-class')
+    await waitFor(() => {
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   test('hides documents section when there are no documents to collect', () => {

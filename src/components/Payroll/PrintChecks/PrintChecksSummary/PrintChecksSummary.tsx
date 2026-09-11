@@ -26,17 +26,15 @@ const Root = ({ dictionary, documentUrl, className }: PrintChecksSummaryProps) =
   const { Heading, Text, Link } = useComponentContext()
 
   return (
-    <div className={className}>
-      <Flex flexDirection="column" gap={16}>
-        <Heading as="h2">{t('succeededTitle')}</Heading>
-        <Text variant="supporting">{t('succeededDescription')}</Text>
-        {documentUrl && (
-          <Link href={documentUrl} target="_blank" rel="noreferrer">
-            {t('viewChecksCta')}
-          </Link>
-        )}
-      </Flex>
-    </div>
+    <Flex className={className} flexDirection="column" gap={16}>
+      <Heading as="h2">{t('succeededTitle')}</Heading>
+      <Text variant="supporting">{t('succeededDescription')}</Text>
+      {documentUrl && (
+        <Link href={documentUrl} target="_blank" rel="noreferrer">
+          {t('viewChecksCta')}
+        </Link>
+      )}
+    </Flex>
   )
 }
 

@@ -500,21 +500,21 @@ const Root = ({
     }
 
     return (
-      <div className={className}>
-        <PayrollOverview
-          companyId={companyId}
-          payrollId={payrollId}
-          onEvent={onAlreadyProcessedOverviewEvent}
-          withReimbursements={withReimbursements}
-          alerts={[alreadyProcessedAlert]}
-        />
-      </div>
+      <PayrollOverview
+        className={className}
+        companyId={companyId}
+        payrollId={payrollId}
+        onEvent={onAlreadyProcessedOverviewEvent}
+        withReimbursements={withReimbursements}
+        alerts={[alreadyProcessedAlert]}
+      />
     )
   }
 
   return (
-    <div className={className}>
+    <>
       <PayrollConfigurationPresentation
+        className={className}
         onCalculatePayroll={onCalculatePayroll}
         isCalculateDisabled={blockersFromApi.length > 0}
         onEdit={onEdit}
@@ -545,6 +545,6 @@ const Root = ({
           }}
         />
       )}
-    </div>
+    </>
   )
 }
