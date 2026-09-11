@@ -11,5 +11,8 @@
     "label": "AutoPilot",
     "enabled": "Enabled",
     "disabled": "Disabled"
+  },
+  "alerts": {
+    "assignmentUpdated": "Pay schedule assignment updated."
   }
 }

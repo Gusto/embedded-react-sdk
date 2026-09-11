@@ -11,6 +11,8 @@ import {
   getPaySchedules,
   getPaySchedulePreview,
   updatePaySchedule,
+  previewPayScheduleAssignment,
+  assignPaySchedules,
 } from '@/test/mocks/apis/payschedule'
 import { API_BASE_URL } from '@/test/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -57,6 +59,8 @@ describe('PaySchedule (management)', () => {
       getPaySchedulePreview,
       createPaySchedule,
       updatePaySchedule,
+      previewPayScheduleAssignment,
+      assignPaySchedules,
     )
   })
 
@@ -134,7 +138,7 @@ describe('PaySchedule (management)', () => {
     expect(screen.queryByText('Unassigned Monthly Schedule')).not.toBeInTheDocument()
   })
 
-  it('fires PAY_SCHEDULE_MANAGE_ASSIGNMENT when Manage is clicked, without navigating away', async () => {
+  it('fires PAY_SCHEDULE_MANAGE_ASSIGNMENT and opens the assignment flow when Manage is clicked', async () => {
     const user = userEvent.setup()
     const { onEvent } = renderPaySchedule({ enableMultipleSchedules: true })
 
@@ -145,7 +149,95 @@ describe('PaySchedule (management)', () => {
     await user.click(screen.getByRole('button', { name: /manage/i }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_MANAGE_ASSIGNMENT, undefined)
-    expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+    })
+  })
+
+  it('returns to the overview when the assignment flow is cancelled', async () => {
+    const user = userEvent.setup()
+    renderPaySchedule({ enableMultipleSchedules: true })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /manage/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /manage/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /back/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /pay schedule/i })).toBeInTheDocument()
+    })
+  })
+
+  it('keeps the assignment draft on the schedule step when Add pay schedule is cancelled', async () => {
+    const user = userEvent.setup()
+    renderPaySchedule({ enableMultipleSchedules: true })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /manage/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /manage/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /add pay schedule/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /cancel/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
+    })
+  })
+
+  it('returns to the overview after submitting the assignment', async () => {
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableMultipleSchedules: true })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /manage/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /manage/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: /there are no changes to review/i }),
+      ).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /submit/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_ASSIGNED, {
+        type: 'single',
+        defaultPayScheduleUuid: 'schedule-1',
+        employeeChanges: [],
+      })
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /pay schedule/i })).toBeInTheDocument()
+    })
   })
 
   it('fires AUTO_PILOT_EDIT when the AutoPilot Edit button is clicked, without navigating away', async () => {

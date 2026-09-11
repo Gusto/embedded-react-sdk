@@ -5,6 +5,7 @@ import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUn
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.PaySchedule': ['companyId'],
+  'CompanyManagement.PayScheduleAssignment': ['companyId'],
   'CompanyOnboarding.AssignSignatory': ['companyId'],
   'CompanyOnboarding.BankAccount': ['companyId'],
   'CompanyOnboarding.CreateSignatory': ['companyId'],
