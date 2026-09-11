@@ -198,7 +198,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Box, BoxHeader, Button, Heading, Text } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()
 
   // Error copy keyed by code, supplied to the hook once. Every bound field
   // resolves and renders its own message from this — the consumer never
@@ -444,10 +444,22 @@ const Root = ({
               // job -- attach it to the first job's hours box only.
               const showAddOvertime =
                 index === 0 && !form.data.withOvertime && form.data.isOvertimeEligible
+              // Its counterpart once overtime is on: a single employee-level alert
+              // explaining the workweek split, gated the same way but on the
+              // opposite side of the withOvertime flag.
+              const showOvertimeWorkweekAlert =
+                index === 0 && form.data.withOvertime && form.data.isOvertimeEligible
 
               return (
                 <Flex key={job.jobUuid} flexDirection="column" gap={16}>
                   {isMultiJob ? <Heading as="h3">{genericHoursTitle}</Heading> : null}
+                  {showOvertimeWorkweekAlert ? (
+                    <Alert
+                      status="info"
+                      label={t('overtimeWorkweekAlert', { employeeName })}
+                      disableScrollIntoView
+                    />
+                  ) : null}
                   {renderBreakdownSection(job.hours, {
                     title: isMultiJob ? (job.title ?? genericHoursTitle) : genericHoursTitle,
                     label: genericHoursTitle,
