@@ -9,7 +9,11 @@ import { HolidaySelectionForm } from '../HolidaySelectionForm/HolidaySelectionFo
 import { AddEmployeesHoliday } from '../AddEmployeesHoliday/AddEmployeesHoliday'
 import { ViewHolidayEmployees } from '../ViewHolidayEmployees/ViewHolidayEmployees'
 import { ViewHolidaySchedule } from '../ViewHolidaySchedule/ViewHolidaySchedule'
-import { assertCreatablePolicyType, type TimeOffPolicyType } from './timeOffPolicyTypes'
+import {
+  assertCreatablePolicyType,
+  isEditableTimeOffPolicyType,
+  type TimeOffPolicyType,
+} from './timeOffPolicyTypes'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -73,10 +77,7 @@ export function SelectPolicyTypeContextual() {
   const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
 
-  const selectorDefault =
-    policyType === 'sick' || policyType === 'vacation' || policyType === 'holiday'
-      ? policyType
-      : undefined
+  const selectorDefault = isEditableTimeOffPolicyType(policyType) ? policyType : undefined
 
   return (
     <Flex flexDirection="column" gap={8}>

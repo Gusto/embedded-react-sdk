@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { EmployeeOnboardingStatus1 } from '@gusto/embedded-api/models/components/employee'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView, Flex } from '@/components/Common'
@@ -10,6 +11,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /** @internal */
 export interface EmployeeListViewProps extends Pick<
@@ -64,7 +66,11 @@ export function EmployeeListView({
         render: (employee: EmployeeWithActions) => (
           <EmployeeOnboardingStatusBadge
             onboarded={employee.onboarded}
-            onboardingStatus={employee.onboardingStatus}
+            onboardingStatus={toKnownEnumValue(
+              employee.onboardingStatus,
+              EmployeeOnboardingStatus1,
+              undefined,
+            )}
           />
         ),
       },
@@ -76,7 +82,10 @@ export function EmployeeListView({
         menuItems.push({
           label: t('editCta'),
           onClick: () => {
-            onEdit(employee.uuid, employee.onboardingStatus ?? undefined)
+            onEdit(
+              employee.uuid,
+              toKnownEnumValue(employee.onboardingStatus, EmployeeOnboardingStatus1, undefined),
+            )
           },
           icon: <PencilSvg aria-hidden />,
         })

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { ContractorType, type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
 import {
@@ -28,6 +28,7 @@ import type {
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for {@link useContractorPayForm}.
@@ -144,7 +145,7 @@ export function useContractorPayForm({
 
   const resolvedDefaults: ContractorPayFormData = useMemo(
     () => ({
-      wageType: contractor?.wageType ?? WageType.Fixed,
+      wageType: toKnownEnumValue(contractor?.wageType, WageType, WageType.Fixed),
       hourlyRate: contractor?.hourlyRate ? Number(contractor.hourlyRate) : 0,
     }),
     [contractor],
@@ -181,7 +182,7 @@ export function useContractorPayForm({
       throw new SDKInternalError('Cannot submit pay form before contractor data is loaded')
     }
     const contractorVersion = contractor.version
-    const contractorType = contractor.type
+    const contractorType = toKnownEnumValue(contractor.type, ContractorType, undefined)
     let submitResult: HookSubmitResult<Contractor> | undefined
 
     await new Promise<void>(resolve => {

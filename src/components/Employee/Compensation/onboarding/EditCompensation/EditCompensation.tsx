@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import classNames from 'classnames'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { CompensationDefaultValues } from '../Compensation'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm } from '../../shared/useCompensationForm'
@@ -12,6 +13,7 @@ import { Form } from '@/components/Common/Form'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 import { componentEvents, type EventType } from '@/shared/constants'
 
 /**
@@ -136,7 +138,7 @@ function Root({
     // here to preserve the existing UX (no "(optional)" labels).
     optionalFieldsToRequire: { update: ['flsaStatus', 'rate', 'paymentUnit'] },
     defaultValues: {
-      flsaStatus: partnerDefaultValues?.flsaStatus,
+      flsaStatus: toKnownEnumValue(partnerDefaultValues?.flsaStatus, FlsaStatusType, undefined),
       rate:
         typeof partnerDefaultValues?.rate === 'number'
           ? partnerDefaultValues.rate

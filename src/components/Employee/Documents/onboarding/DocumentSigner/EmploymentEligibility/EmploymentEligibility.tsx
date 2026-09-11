@@ -1,4 +1,8 @@
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
+import {
+  AuthorizationStatus,
+  DocumentType,
+} from '@gusto/embedded-api/models/components/i9authorization'
 import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
 import { useI9VerificationUpdateMutation } from '@gusto/embedded-api/react-query/i9VerificationUpdate'
 import { EmploymentEligibilityPresentation } from './EmploymentEligibilityPresentation'
@@ -12,6 +16,7 @@ import { useBase } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { normalizeToDate } from '@/helpers/dateFormatting'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for {@link EmploymentEligibility}.
@@ -98,10 +103,16 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
     })
   }
 
+  const existingDocumentType = existingAuth?.documentType ?? undefined
+
   const defaultValues: Partial<EmploymentEligibilityInputs> = existingAuth
     ? {
-        authorizationStatus: existingAuth.authorizationStatus,
-        documentType: existingAuth.documentType ?? undefined,
+        authorizationStatus: toKnownEnumValue(
+          existingAuth.authorizationStatus,
+          AuthorizationStatus,
+          undefined,
+        ),
+        documentType: toKnownEnumValue(existingDocumentType, DocumentType, undefined),
         expirationDate: normalizeToDate(existingAuth.expirationDate) ?? undefined,
         country: existingAuth.country ?? undefined,
       }

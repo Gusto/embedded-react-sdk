@@ -7,7 +7,11 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api/react-query/payrollsCalculateGrossUp'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import {
+  PayrollEmployeeCompensationsTypeAmountType,
+  PayrollEmployeeCompensationsTypePaymentMethod,
+  type PayrollEmployeeCompensationsType,
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
@@ -25,6 +29,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { SDKInternalError } from '@/types/sdkError'
+import { isKnownEnumValue, toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for {@link PayrollConfiguration}.
@@ -390,6 +395,11 @@ const Root = ({
     compensation: PayrollEmployeeCompensationsType,
   ): PayrollUpdateEmployeeCompensations => {
     const { paymentMethod } = compensation
+    const resolvedPaymentMethod =
+      isKnownEnumValue(paymentMethod, PayrollEmployeeCompensationsTypePaymentMethod) &&
+      paymentMethod !== 'Historical'
+        ? paymentMethod
+        : undefined
     return {
       employeeUuid: compensation.employeeUuid,
       version: compensation.version,
@@ -397,8 +407,17 @@ const Root = ({
       fixedCompensations: compensation.fixedCompensations,
       hourlyCompensations: compensation.hourlyCompensations,
       paidTimeOff: compensation.paidTimeOff,
-      deductions: compensation.deductions,
-      ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
+      deductions: compensation.deductions?.map(({ name, amount, uuid, amountType }) => ({
+        name,
+        amount,
+        uuid,
+        amountType: toKnownEnumValue(
+          amountType,
+          PayrollEmployeeCompensationsTypeAmountType,
+          undefined,
+        ),
+      })),
+      ...(resolvedPaymentMethod ? { paymentMethod: resolvedPaymentMethod } : {}),
       memo: compensation.memo || undefined,
     }
   }

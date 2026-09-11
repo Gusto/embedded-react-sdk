@@ -3,10 +3,8 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  type Garnishment,
-  type GarnishmentType,
-} from '@gusto/embedded-api/models/components/garnishment'
+import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
 import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
@@ -54,6 +52,7 @@ import type {
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 const PAYMENT_PERIOD_OPTIONS = [
   { value: PaymentPeriod.EveryWeek, label: PaymentPeriod.EveryWeek },
@@ -319,10 +318,11 @@ export function useChildSupportGarnishmentForm({
       payPeriodMaximum: fetchedDeduction?.payPeriodMaximum
         ? Number(fetchedDeduction.payPeriodMaximum)
         : (partnerDefaults?.payPeriodMaximum ?? 0),
-      paymentPeriod:
-        (fetchedDeduction?.childSupport?.paymentPeriod as PaymentPeriod | undefined) ??
-        partnerDefaults?.paymentPeriod ??
-        PaymentPeriod.Monthly,
+      paymentPeriod: toKnownEnumValue(
+        fetchedDeduction?.childSupport?.paymentPeriod,
+        PaymentPeriod,
+        partnerDefaults?.paymentPeriod ?? PaymentPeriod.Monthly,
+      ),
     }),
     [fetchedDeduction, partnerDefaults],
   )
@@ -480,7 +480,7 @@ export function useChildSupportGarnishmentForm({
               amount: amountStr,
               description,
               courtOrdered: true,
-              garnishmentType: 'child_support' as GarnishmentType,
+              garnishmentType: GarnishmentType.ChildSupport,
               times: null,
               deductAsPercentage: true,
               payPeriodMaximum: payPeriodMaximumStr,
