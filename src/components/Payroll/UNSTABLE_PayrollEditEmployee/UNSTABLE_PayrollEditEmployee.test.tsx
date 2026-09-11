@@ -138,6 +138,31 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     expect(screen.queryByRole('button', { name: 'Add overtime' })).not.toBeInTheDocument()
   })
 
+  it('shows the workweek info alert only once overtime is on', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
+    const user = userEvent.setup()
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    await screen.findByRole('button', { name: 'Add overtime' })
+    expect(screen.queryByText(/record hours and earnings by work week/)).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Add overtime' }))
+
+    expect(
+      screen.getByText(
+        "When adding overtime hours, you must record hours and earnings by work week so John Doe's pay is calculated correctly.",
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('does not show the workweek info alert for an overtime-ineligible employee', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(exemptSingleWorkweekPrepare())))
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    await screen.findByRole('spinbutton', { name: /^Salary/ })
+    expect(screen.queryByText(/record hours and earnings by work week/)).not.toBeInTheDocument()
+  })
+
   it('never shows Add overtime and stays flat for an overtime-ineligible employee', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(exemptSingleWorkweekPrepare())))
     renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)

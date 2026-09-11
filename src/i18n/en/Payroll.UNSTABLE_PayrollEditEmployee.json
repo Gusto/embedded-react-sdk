@@ -6,6 +6,7 @@
   "regularHoursTitle": "Regular and overtime hours",
   "regularHoursTitleWithoutOvertime": "Regular hours",
   "addOvertimeCta": "Add overtime",
+  "overtimeWorkweekAlert": "When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly.",
   "hoursUnit": "Hours",
   "saveCta": "Save",
   "cancelCta": "Cancel",
