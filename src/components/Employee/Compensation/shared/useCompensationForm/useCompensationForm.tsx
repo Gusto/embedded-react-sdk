@@ -3,9 +3,10 @@ import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
@@ -55,6 +56,7 @@ import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/share
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addDays, formatDateToStringDate } from '@/helpers/dateFormatting'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Optional values supplied to {@link useCompensationForm}'s `actions.onSubmit` at submit time.
@@ -587,19 +589,24 @@ export function useCompensationForm({
       // When adding a secondary, the FLSA must match the primary's — force it
       // here (overriding any partner default) so the form submits the right
       // value even though `Fields.FlsaStatus` is hidden.
-      flsaStatus: isAddingSecondaryJob
-        ? primaryFlsaStatus
-        : (currentCompensation?.flsaStatus ??
-          partnerDefaults?.flsaStatus ??
-          primaryFlsaStatus ??
-          undefined),
+      flsaStatus: (() => {
+        const resolved =
+          (isAddingSecondaryJob
+            ? primaryFlsaStatus
+            : (currentCompensation?.flsaStatus ??
+              partnerDefaults?.flsaStatus ??
+              primaryFlsaStatus)) ?? undefined
+        return toKnownEnumValue(resolved, FlsaStatusType, undefined)
+      })(),
       rate: Number(currentCompensation?.rate ?? partnerDefaults?.rate ?? 0),
       adjustForMinimumWage:
         currentCompensation?.adjustForMinimumWage ?? partnerDefaults?.adjustForMinimumWage ?? false,
       minimumWageId:
         currentCompensation?.minimumWages?.[0]?.uuid ?? partnerDefaults?.minimumWageId ?? '',
-      paymentUnit:
-        currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
+      paymentUnit: (() => {
+        const resolved = currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit
+        return toKnownEnumValue(resolved, PaymentUnit, PAY_PERIODS.HOUR)
+      })(),
       effectiveDate: currentCompensation?.effectiveDate ?? partnerDefaults?.effectiveDate ?? null,
     }),
     [currentCompensation, currentJob, partnerDefaults, primaryFlsaStatus, isAddingSecondaryJob],

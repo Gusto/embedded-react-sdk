@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api/models/components/job'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import {
   useCompensationManagement,
   type UseCompensationManagementReady,
@@ -17,6 +18,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 import { useI18n } from '@/i18n'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -255,7 +257,10 @@ function CompensationCardReady({
         const flsaStatus = job.compensations?.find(
           comp => comp.uuid === job.currentCompensationUuid,
         )?.flsaStatus
-        return flsaStatus !== undefined ? t(`flsaStatusLabels.${flsaStatus}`) : '-'
+        if (flsaStatus === undefined) return '-'
+        return isKnownEnumValue(flsaStatus, FlsaStatusType)
+          ? t(`flsaStatusLabels.${flsaStatus}`)
+          : flsaStatus
       },
     },
     {

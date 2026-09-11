@@ -1,9 +1,6 @@
 import { useFederalTaxDetailsUpdateMutation } from '@gusto/embedded-api/react-query/federalTaxDetailsUpdate'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
-import type {
-  FilingForm,
-  TaxPayerType,
-} from '@gusto/embedded-api/models/components/federaltaxdetails'
+import { FilingForm, TaxPayerType } from '@gusto/embedded-api/models/components/federaltaxdetails'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -23,6 +20,7 @@ import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for the {@link FederalTaxes} component.
@@ -91,8 +89,8 @@ function Root({ companyId, children, className, defaultValues, dictionary }: Fed
           companyId: companyId,
           federalTaxDetailsUpdate: {
             ein: payload.federalEin,
-            taxPayerType: payload.taxPayerType as TaxPayerType | undefined,
-            filingForm: payload.filingForm as FilingForm | undefined,
+            taxPayerType: toKnownEnumValue(payload.taxPayerType, TaxPayerType, undefined),
+            filingForm: toKnownEnumValue(payload.filingForm, FilingForm, undefined),
             legalName: payload.legalName,
             version: federalTaxDetails.version as string,
           },

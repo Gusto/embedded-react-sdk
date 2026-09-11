@@ -1,11 +1,12 @@
 import { Trans, useTranslation } from 'react-i18next'
-import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
-import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import type { UseJobFormReady } from './useJobForm'
 import type { UseCompensationFormReady } from './useCompensationForm'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 import { FLSA_OVERTIME_SALARY_LIMIT } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -103,7 +104,9 @@ export function AddCompensationFormBody({
                   limit: format(FLSA_OVERTIME_SALARY_LIMIT),
                 }),
               }}
-              getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
+              getOptionLabel={(status: FlsaStatusType) =>
+                isKnownEnumValue(status, FlsaStatusType) ? t(`flsaStatusLabels.${status}`) : status
+              }
               formHookResult={compensationForm}
             />
             {(compensationForm.status.showCommissionFederalMinimumPayAlert ||
@@ -181,7 +184,9 @@ export function AddCompensationFormBody({
             placeholder={t('paymentUnitPlaceholder')}
             description={t('paymentUnitDescription')}
             validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-            getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
+            getOptionLabel={(unit: PaymentUnit) =>
+              isKnownEnumValue(unit, PaymentUnit) ? t(`paymentUnitOptions.${unit}`) : unit
+            }
             formHookResult={compensationForm}
           />
         )}

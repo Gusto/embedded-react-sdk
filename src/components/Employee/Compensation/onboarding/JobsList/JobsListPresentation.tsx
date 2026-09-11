@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { type Job } from '@gusto/embedded-api/models/components/job'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 import { useI18n } from '@/i18n'
 import { FlsaStatus } from '@/shared/constants'
 
@@ -60,7 +62,9 @@ export function JobsListPresentation({
           const flsaStatus = job.compensations?.find(
             comp => comp.uuid === job.currentCompensationUuid,
           )?.flsaStatus
-          return flsaStatus !== undefined ? t(`flsaStatusLabels.${flsaStatus}`) : null
+          return isKnownEnumValue(flsaStatus, FlsaStatusType)
+            ? t(`flsaStatusLabels.${flsaStatus}`)
+            : flsaStatus
         },
       },
       {

@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'react-i18next'
-import type { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
+import { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
 import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
 import { useSignEmployeeForm, type PreparerFieldGroup } from '../../../shared/useSignEmployeeForm'
 import styles from './I9SignatureForm.module.scss'
@@ -13,6 +13,7 @@ import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { Form } from '@/components/Common/Form'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for {@link I9SignatureForm}.
@@ -122,7 +123,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
                 </Components.Text>
               </section>
 
-              {authorizationStatus && (
+              {isKnownEnumValue(authorizationStatus, AuthorizationStatus) && (
                 <EligibilityStatusAlert
                   authorizationStatus={authorizationStatus}
                   onChangeStatus={handleChangeEligibility}
@@ -200,7 +201,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
 }
 
 interface EligibilityStatusAlertProps {
-  authorizationStatus: AuthorizationStatus
+  authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus]
   onChangeStatus: () => void
 }
 
@@ -216,14 +217,20 @@ function EligibilityStatusAlert({
     permanent_resident: 'eligibilityAlertLabel_permanent_resident',
     noncitizen: 'eligibilityAlertLabel_noncitizen',
     alien: 'eligibilityAlertLabel_alien',
-  } as const satisfies Record<AuthorizationStatus, string>
+  } as const satisfies Record<
+    (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus],
+    string
+  >
 
   const alertDescriptionKeys = {
     citizen: 'eligibilityAlertDescription_citizen',
     permanent_resident: 'eligibilityAlertDescription_permanent_resident',
     noncitizen: 'eligibilityAlertDescription_noncitizen',
     alien: 'eligibilityAlertDescription_alien',
-  } as const satisfies Record<AuthorizationStatus, string>
+  } as const satisfies Record<
+    (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus],
+    string
+  >
 
   return (
     <Components.Alert

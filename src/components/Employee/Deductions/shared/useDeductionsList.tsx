@@ -1,8 +1,10 @@
 import { useGarnishmentsList } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
+import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 
 /** @internal */
@@ -59,6 +61,7 @@ export function useDeductionsList({ employeeId }: UseDeductionsListProps): UseDe
             totalAmount: payload.totalAmount ?? undefined,
             active: false,
             version: payload.version as string,
+            garnishmentType: toKnownEnumValue(payload.garnishmentType, GarnishmentType, undefined),
           },
         },
       })

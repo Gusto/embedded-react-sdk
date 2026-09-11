@@ -6,10 +6,12 @@ import type {
   PostV1CompaniesCompanyIdContractorPaymentGroupsPaymentMethod as ContractorPaymentMethod,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { ContractorWageType } from '@gusto/embedded-api/models/components/contractor'
 import {
   createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
 } from './SetPaymentAmounts/EditContractorPaymentFormSchema'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /** @internal */
 export type VirtualContractorPayment = ContractorPayments & { isTouched: boolean }
@@ -142,7 +144,7 @@ export function usePaymentAmountsEditor({
 
     formMethods.reset(
       {
-        wageType: contractor?.wageType || 'Hourly',
+        wageType: toKnownEnumValue(contractor?.wageType, ContractorWageType, 'Hourly'),
         hours: Number(contractorPayment?.hours || '0'),
         wage: Number(contractorPayment?.wage || '0'),
         bonus: Number(contractorPayment?.bonus || '0'),
