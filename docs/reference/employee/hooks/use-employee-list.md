@@ -158,7 +158,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `garnishments?` | [`Garnishment`](../../APIModels/index.md#garnishment)[] | - |
 | `hasSsn?` | `boolean` | Indicates whether the employee has an SSN in Gusto. |
 | `hiddenSsn?` | `string` | - |
-| `hiredAt?` | `RFCDate` | The date when the employee was hired to the company |
+| `hiredAt?` | `Date` | The date when the employee was hired to the company |
 | `historical?` | `boolean` | - |
 | `jobs?` | [`Job`](../../APIModels/index.md#job)[] | - |
 | `managerUuid?` | `string` \| `null` | The UUID of the employee's manager. |
