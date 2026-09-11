@@ -232,7 +232,9 @@ export function HomeAddressView({
       {
         title: t('columns.startDate'),
         render: (row: EmployeeAddress) =>
-          row.effectiveDate ? formatDateLongWithYear(formatWireDateToStringDate(row.effectiveDate)) : '—',
+          row.effectiveDate
+            ? formatDateLongWithYear(formatWireDateToStringDate(row.effectiveDate))
+            : '—',
       },
       {
         title: t('columns.endDate'),

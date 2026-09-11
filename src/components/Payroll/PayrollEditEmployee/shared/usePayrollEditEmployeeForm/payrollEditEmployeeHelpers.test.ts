@@ -45,10 +45,7 @@ describe('normalizeWorkweeks', () => {
 
   it('drops workweeks missing a boundary', () => {
     const result = normalizeWorkweeks(
-      [
-        { startDate: normalizeToDate('2024-01-01')! },
-        { endDate: normalizeToDate('2024-01-14')! },
-      ],
+      [{ startDate: normalizeToDate('2024-01-01')! }, { endDate: normalizeToDate('2024-01-14')! }],
       { startDate: '2024-01-01', endDate: '2024-01-14' },
     )
 
@@ -298,9 +295,9 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
     const line = result.hourlyCompensations![0]!
     expect(line.hours).toBe('60')
     expect(line.breakdowns).toHaveLength(2)
-    expect(
-      line.breakdowns!.map(breakdown => formatDateToStringDate(breakdown.startDate!)),
-    ).toEqual(['2024-01-01', '2024-01-08'])
+    expect(line.breakdowns!.map(breakdown => formatDateToStringDate(breakdown.startDate!))).toEqual(
+      ['2024-01-01', '2024-01-08'],
+    )
     expect(line.breakdowns!.map(breakdown => breakdown.hours)).toEqual(['40', '20'])
   })
 
