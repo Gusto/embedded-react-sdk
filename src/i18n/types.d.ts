@@ -8395,6 +8395,8 @@ export namespace Translations {
     regularHoursTitleWithoutOvertime: string
     /** @defaultValue `"Add overtime"` */
     addOvertimeCta: string
+    /** @defaultValue `"When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly."` */
+    overtimeWorkweekAlert: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */
