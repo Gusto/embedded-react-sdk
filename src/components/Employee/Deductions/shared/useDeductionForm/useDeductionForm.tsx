@@ -3,10 +3,8 @@ import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  type Garnishment,
-  type GarnishmentType,
-} from '@gusto/embedded-api/models/components/garnishment'
+import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { useGarnishmentsList } from '@gusto/embedded-api/react-query/garnishmentsList'
@@ -48,6 +46,7 @@ import type {
 } from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 
 export type { DeductionFormOptionalFieldsToRequire } from './deductionFormSchema'
 
@@ -55,10 +54,11 @@ export type { DeductionFormOptionalFieldsToRequire } from './deductionFormSchema
 // The hook's `withOptions` entries below carry the raw enum values so the
 // consumer can supply translated labels via `getOptionLabel` on the field.
 //
-// `'child_support'` is intentionally omitted — child-support garnishments
-// require agency-keyed required attributes (case number, order number,
-// remittance number, county) that this hook doesn't model. Use
+// `'child_support'` is intentionally excluded below — child-support
+// garnishments require agency-keyed required attributes (case number, order
+// number, remittance number, county) that this hook doesn't model. Use
 // `useChildSupportGarnishmentForm` for those.
+
 const GARNISHMENT_TYPES: readonly GarnishmentType[] = [
   'federal_tax_lien',
   'state_tax_lien',
@@ -321,6 +321,12 @@ export function useDeductionForm({
     [schemaMode, courtOrdered, optionalFieldsToRequire],
   )
 
+  const resolvedFetchedGarnishmentType =
+    isKnownEnumValue(fetchedDeduction?.garnishmentType, GarnishmentType) &&
+    fetchedDeduction.garnishmentType !== GarnishmentType.ChildSupport
+      ? fetchedDeduction.garnishmentType
+      : undefined
+
   const resolvedDefaults: DeductionFormData = useMemo(
     () => ({
       description: fetchedDeduction?.description ?? partnerDefaults?.description ?? '',
@@ -339,13 +345,13 @@ export function useDeductionForm({
         ? Number(fetchedDeduction.annualMaximum)
         : (partnerDefaults?.annualMaximum ?? 0),
       garnishmentType:
-        fetchedDeduction?.garnishmentType ??
+        resolvedFetchedGarnishmentType ??
         partnerDefaults?.garnishmentType ??
         // First non-child-support type — partners typically pick via the
         // GarnishmentType select before saving.
         'federal_tax_lien',
     }),
-    [fetchedDeduction, partnerDefaults],
+    [resolvedFetchedGarnishmentType, fetchedDeduction, partnerDefaults],
   )
 
   const formMethods = useForm<DeductionFormData, unknown, DeductionFormOutputs>({
