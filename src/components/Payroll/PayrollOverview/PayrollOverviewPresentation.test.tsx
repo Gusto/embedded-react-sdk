@@ -141,6 +141,16 @@ describe('PayrollOverviewPresentation', () => {
       expect(onSubmit).toHaveBeenCalledTimes(1)
     })
 
+    it('keeps the lone Submit action full-width when editing is disabled', async () => {
+      renderWithProviders(<PayrollOverviewPresentation {...defaultProps} canEdit={false} />)
+
+      const submitButton = await screen.findByRole('button', { name: /^Submit$/i })
+      const actionGrid = submitButton.parentElement
+
+      expect(screen.queryByRole('button', { name: /^Edit$/i })).toBeNull()
+      expect(actionGrid?.style.getPropertyValue('--g-grid-template-columns-base')).toBe('1fr')
+    })
+
     it('keeps Submit visible and disabled while a blocker has no selected resolution', async () => {
       renderWithProviders(
         <PayrollOverviewPresentation
