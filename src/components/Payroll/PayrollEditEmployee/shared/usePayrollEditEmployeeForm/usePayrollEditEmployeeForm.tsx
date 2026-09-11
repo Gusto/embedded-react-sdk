@@ -567,11 +567,8 @@ export function usePayrollEditEmployeeForm({
       true,
       resolvedFixedCompensations,
     )
-    // The revealed first-workweek cell is seeded from the API total, which would
-    // clobber a value the user already edited in the collapsed input. Overlay the
-    // live collapsed value (the single key of a not-yet-split row) onto the first
-    // workweek cell so the edit persists into the split view instead of reverting
-    // to the server value.
+    // Keep the user's edited collapsed value on the first workweek cell rather
+    // than the seeded API total.
     const firstWeekStart = workweeks[0]?.startDate ?? ''
     const currentValues = formMethods.getValues()
     const overlayLiveFirstWeek = (
@@ -586,10 +583,8 @@ export function usePayrollEditEmployeeForm({
       }
       return revealed
     }
-    // Flipping `withOvertimeSetByUser` recomputes `resolvedDefaults` and the
-    // `values` prop resets the form to it (keeping only dirty fields). Mark the
-    // seeded values dirty so that reset preserves them instead of reverting the
-    // overlaid live edit back to the API total.
+    // `shouldDirty` so the form's `values`-prop reset (triggered by flipping
+    // `withOvertimeSetByUser`) keeps these via `keepDirtyValues`.
     formMethods.setValue(
       'hours',
       overlayLiveFirstWeek(revealedDefaults.hours, currentValues.hours),
