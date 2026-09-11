@@ -6,8 +6,10 @@ import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { ContractorType } from '@gusto/embedded-api/models/components/contractor'
 import type { NewHireReportProps } from './types'
 import { useI18n } from '@/i18n'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 import { BaseComponent, useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
@@ -105,7 +107,7 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
         request: {
           contractorUuid: contractorId,
           contractorUpdateRequestBody: {
-            type: contractorDetails.type,
+            type: toKnownEnumValue(contractorDetails.type, ContractorType, undefined),
             selfOnboarding: selfOnboarding,
             fileNewHireReport: payload.fileNewHireReport,
             workState: 'state' in payload ? payload.state : null,

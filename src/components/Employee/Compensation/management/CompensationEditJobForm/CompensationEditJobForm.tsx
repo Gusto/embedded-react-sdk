@@ -1,6 +1,8 @@
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm, type CompensationFormData } from '../../shared/useCompensationForm'
 import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
@@ -12,6 +14,7 @@ import { Form } from '@/components/Common/Form'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 import { componentEvents, type EventType } from '@/shared/constants'
 
 /**
@@ -84,9 +87,9 @@ function CompensationDefaultsLoader({
         // behind comp-level edits on secondaries, so seed directly from
         // the comp.
         title: currentComp.title ?? undefined,
-        flsaStatus: currentComp.flsaStatus ?? undefined,
+        flsaStatus: toKnownEnumValue(currentComp.flsaStatus, FlsaStatusType, undefined),
         rate: Number(currentComp.rate),
-        paymentUnit: currentComp.paymentUnit ?? undefined,
+        paymentUnit: toKnownEnumValue(currentComp.paymentUnit, PaymentUnit, undefined),
         adjustForMinimumWage: currentComp.adjustForMinimumWage ?? false,
         minimumWageId: currentComp.minimumWages?.[0]?.uuid ?? '',
         // effectiveDate intentionally omitted — user must choose a future date

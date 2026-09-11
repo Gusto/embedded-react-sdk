@@ -177,5 +177,7 @@ function paymentPeriodLabel(
       return t('childSupport.paymentPeriod.twicePerMonth')
     case 'Monthly':
       return t('childSupport.paymentPeriod.monthly')
+    default:
+      return value
   }
 }

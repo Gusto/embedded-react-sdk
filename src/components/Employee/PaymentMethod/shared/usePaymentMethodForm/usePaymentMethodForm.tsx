@@ -3,7 +3,10 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
+import {
+  EmployeePaymentMethodSplitBy,
+  type EmployeePaymentMethod,
+} from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { useEmployeePaymentMethodGet } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import {
@@ -31,6 +34,7 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for {@link usePaymentMethodForm}.
@@ -213,7 +217,11 @@ export function usePaymentMethodForm({
                 : {
                     ...currentPaymentMethod,
                     version,
-                    splitBy: currentPaymentMethod.splitBy ?? SPLIT_BY.percentage,
+                    splitBy: toKnownEnumValue(
+                      currentPaymentMethod.splitBy,
+                      EmployeePaymentMethodSplitBy,
+                      SPLIT_BY.percentage,
+                    ),
                     splits: currentPaymentMethod.splits ?? [],
                   }
 

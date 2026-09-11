@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import type {
-  RecoveryCase,
+import {
   RecoveryCaseStatus,
+  type RecoveryCase,
 } from '@gusto/embedded-api/models/components/recoverycase'
 import { useRecoveryCasesGetSuspense } from '@gusto/embedded-api/react-query/recoveryCasesGet'
 import { useRecoveryCaseErrorCode } from '../useRecoveryCaseErrorCode'
@@ -15,6 +15,7 @@ import { EmptyData, Flex, FlexItem } from '@/components/Common'
 import { recoveryCasesEvents } from '@/shared/constants'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 
 interface RecoveryCasesListProps extends BaseComponentInterface<'Payroll.RecoveryCasesList'> {
   companyId: string
@@ -68,7 +69,7 @@ function StatusCell({ status }: { status: RecoveryCaseStatus | undefined }) {
   }
 
   const badgeStatus = getStatusBadgeStatus(status)
-  const statusLabel = t(`status.${status}`)
+  const statusLabel = isKnownEnumValue(status, RecoveryCaseStatus) ? t(`status.${status}`) : status
 
   return <Badge status={badgeStatus}>{statusLabel}</Badge>
 }

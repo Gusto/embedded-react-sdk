@@ -3,11 +3,13 @@ import {
   SetupStatus,
   type TaxRequirementStatesList,
 } from '@gusto/embedded-api/models/components/taxrequirementstateslist'
+import type { ClosedEnum } from '@gusto/embedded-api/types/enums'
 import { useStateTaxesList } from './context'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 type BadgeStatus = 'success' | 'warning' | 'info'
 
@@ -29,8 +31,8 @@ const ctaLabelMap = {
   [SetupStatus.Complete]: 'editStateTaxCta',
 } as const satisfies Record<SetupStatus, string>
 
-function getSetupStatus(req: TaxRequirementStatesList): SetupStatus {
-  return req.setupStatus ?? SetupStatus.InProgress
+function getSetupStatus(req: TaxRequirementStatesList): ClosedEnum<typeof SetupStatus> {
+  return toKnownEnumValue(req.setupStatus, SetupStatus, SetupStatus.InProgress)
 }
 
 /** @internal */

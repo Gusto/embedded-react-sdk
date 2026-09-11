@@ -1,9 +1,11 @@
+import { Id } from '@gusto/embedded-api/models/components/companyonboardingstatus'
 import { useTranslation } from 'react-i18next'
 import { useOnboardingOverview } from './context'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { RequirementsList } from '@/components/Common/RequirementsList/RequirementsList'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 
 /** @internal */
 export const MissingRequirements = () => {
@@ -49,11 +51,16 @@ export const MissingRequirements = () => {
                 completed: boolean
               } => step.id !== undefined && step.completed !== undefined,
             )
-            .map(step => ({
-              completed: step.completed,
-              title: t(`stepTitles.${step.id}`),
-              description: t(`stepDescriptions.${step.id}`),
-            }))}
+            .map(step => {
+              const stepId = String(step.id)
+              return {
+                completed: step.completed,
+                title: isKnownEnumValue(stepId, Id)
+                  ? t(`stepTitles.${stepId}`)
+                  : (step.title ?? stepId),
+                description: isKnownEnumValue(stepId, Id) ? t(`stepDescriptions.${stepId}`) : '',
+              }
+            })}
         />
       )}
     </Components.Box>

@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { PendingChangeDetail } from './getPendingCompensationChanges'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Renders a single `PendingChangeDetail` produced by `getPendingCompensationChanges`
@@ -31,7 +33,9 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
         })
       case 'flsaChange':
         return t('card.pendingChange.details.flsaChange', {
-          flsaLabel: t(`flsaStatusLabels.${detail.flsaStatus}`),
+          flsaLabel: isKnownEnumValue(detail.flsaStatus, FlsaStatusType)
+            ? t(`flsaStatusLabels.${detail.flsaStatus}`)
+            : detail.flsaStatus,
           ...interpolation,
         })
       case 'newJob': {

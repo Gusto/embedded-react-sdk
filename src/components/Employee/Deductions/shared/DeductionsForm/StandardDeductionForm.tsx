@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
-import type {
-  Garnishment,
-  GarnishmentType,
-} from '@gusto/embedded-api/models/components/garnishment'
+import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { Control } from 'react-hook-form'
 import { useDeductionForm } from '../useDeductionForm'
 import type { DeductionFormData } from '../useDeductionForm'
@@ -14,6 +12,7 @@ import { BaseLayout } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { LoaderComponentType } from '@/components/Base'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 
 interface StandardDeductionFormProps {
   employeeId: string
@@ -50,7 +49,10 @@ export function StandardDeductionForm({
     employeeId,
     garnishmentId: deduction?.uuid,
     courtOrdered,
-    defaultValues: courtOrdered && garnishmentType ? { garnishmentType } : undefined,
+    defaultValues:
+      courtOrdered && isKnownEnumValue(garnishmentType, GarnishmentType)
+        ? { garnishmentType }
+        : undefined,
   })
 
   if (form.isLoading) {

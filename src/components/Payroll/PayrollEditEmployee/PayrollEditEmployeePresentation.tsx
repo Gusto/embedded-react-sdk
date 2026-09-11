@@ -28,6 +28,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
 import { formatNumberAsCurrency, firstLastName } from '@/helpers/formattedStrings'
+import { isKnownEnumValue } from '@/helpers/openEnum'
 import { getAdditionalEarningsCompensations, calculateGrossPay } from '@/components/Payroll/helpers'
 import { PayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
 import {
@@ -330,7 +331,7 @@ export const PayrollEditEmployeePresentation = ({
   const resolveDefaultPaymentMethod = () => {
     const preparedPaymentMethod = employeeCompensation?.paymentMethod
 
-    if (!preparedPaymentMethod) {
+    if (!isKnownEnumValue(preparedPaymentMethod, PayrollEmployeeCompensationsTypePaymentMethod)) {
       return hasDirectDepositSetup
         ? PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
         : PayrollEmployeeCompensationsTypePaymentMethod.Check

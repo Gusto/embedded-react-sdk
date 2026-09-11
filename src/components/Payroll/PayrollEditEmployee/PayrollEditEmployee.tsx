@@ -1,7 +1,11 @@
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import {
+  PayrollEmployeeCompensationsTypeAmountType,
+  PayrollEmployeeCompensationsTypePaymentMethod,
+  type PayrollEmployeeCompensationsType,
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -17,6 +21,7 @@ import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
 import { useBase } from '@/components/Base/useBase'
+import { isKnownEnumValue, toKnownEnumValue } from '@/helpers/openEnum'
 
 /**
  * Props for {@link PayrollEditEmployee}.
@@ -117,11 +122,27 @@ const Root = ({
     paymentMethod,
     reimbursements,
     customWithholdings,
+    deductions,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
+    const resolvedPaymentMethod =
+      isKnownEnumValue(paymentMethod, PayrollEmployeeCompensationsTypePaymentMethod) &&
+      paymentMethod !== 'Historical'
+        ? paymentMethod
+        : undefined
     return {
       ...compensation,
-      ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
+      deductions: deductions?.map(({ name, amount, uuid, amountType }) => ({
+        name,
+        amount,
+        uuid,
+        amountType: toKnownEnumValue(
+          amountType,
+          PayrollEmployeeCompensationsTypeAmountType,
+          undefined,
+        ),
+      })),
+      ...(resolvedPaymentMethod ? { paymentMethod: resolvedPaymentMethod } : {}),
       memo: compensation.memo || undefined,
       // Off-cycle payrolls write reimbursements via the legacy fixed_compensations field; the
       // itemized array gets rejected by the `emb_off_cycle_disable_named_reimbursements` backend

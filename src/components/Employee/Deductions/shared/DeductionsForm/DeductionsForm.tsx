@@ -211,5 +211,7 @@ function garnishmentTypeLabel(
       return t('types.federalLoan')
     case 'other_garnishment':
       return t('types.otherGarnishment')
+    default:
+      return value
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { EmployeeOnboardingStatus1 } from '@gusto/embedded-api/models/components/employee'
 import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -11,6 +12,7 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
@@ -118,7 +120,11 @@ export function ManagementEmployeeListView({
           render: (employee: EmployeeWithActions) => (
             <EmployeeOnboardingStatusBadge
               onboarded={employee.onboarded}
-              onboardingStatus={employee.onboardingStatus}
+              onboardingStatus={toKnownEnumValue(
+                employee.onboardingStatus,
+                EmployeeOnboardingStatus1,
+                undefined,
+              )}
             />
           ),
         },

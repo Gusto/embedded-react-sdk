@@ -69,6 +69,7 @@ import {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { removeNonDigits } from '@/helpers/formattedStrings'
+import { toKnownEnumValue } from '@/helpers/openEnum'
 
 export type { ContractorDetailsOptionalFieldsToRequire } from './contractorDetailsSchema'
 
@@ -350,8 +351,16 @@ export function useContractorDetailsForm({
 
   const resolvedDefaults: ContractorDetailsFormData = useMemo(
     () => ({
-      type: contractor?.type ?? partnerDefaults?.type ?? ContractorType.Individual,
-      wageType: contractor?.wageType ?? partnerDefaults?.wageType ?? WageType.Fixed,
+      type: toKnownEnumValue(
+        contractor?.type,
+        ContractorType,
+        partnerDefaults?.type ?? ContractorType.Individual,
+      ),
+      wageType: toKnownEnumValue(
+        contractor?.wageType,
+        WageType,
+        partnerDefaults?.wageType ?? WageType.Fixed,
+      ),
       startDate:
         contractor?.startDate ??
         partnerDefaults?.startDate ??
