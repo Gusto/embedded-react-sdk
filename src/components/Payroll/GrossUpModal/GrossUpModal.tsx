@@ -10,6 +10,7 @@ import { useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { FieldCaption } from '@/components/Common/FieldCaption'
 
 const GrossUpFormSchema = z.object({
   netPay: z.number().positive(),
@@ -118,23 +119,29 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             <Alert label={t('warning')} status="warning" disableScrollIntoView />
           </div>
 
-          <Flex flexDirection="row" gap={8}>
-            <NumberInputField
-              name="netPay"
-              label={t('netPayLabel')}
-              format="currency"
-              errorMessage={t('validations.netPay')}
-              min={0}
-              isRequired
-            />
-            <Button
-              variant="secondary"
-              className={styles.calculateButton}
-              isDisabled={isCalculating}
-              onClick={formHandlers.handleSubmit(handleCalculate)}
-            >
-              {isCalculating ? t('calculatingCta') : t('calculateCta')}
-            </Button>
+          <Flex flexDirection="column" gap={4}>
+            <div aria-hidden="true">
+              <FieldCaption isRequired>{t('netPayLabel')}</FieldCaption>
+            </div>
+            <Flex flexDirection="row" gap={8} alignItems="flex-start">
+              <NumberInputField
+                name="netPay"
+                label={t('netPayLabel')}
+                shouldVisuallyHideLabel
+                format="currency"
+                errorMessage={t('validations.netPay')}
+                min={0}
+                isRequired
+              />
+              <Button
+                variant="secondary"
+                className={styles.calculateButton}
+                isLoading={isCalculating}
+                onClick={formHandlers.handleSubmit(handleCalculate)}
+              >
+                {t('calculateCta')}
+              </Button>
+            </Flex>
           </Flex>
 
           {calculatedGrossUp && (
