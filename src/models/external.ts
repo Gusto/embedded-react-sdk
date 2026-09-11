@@ -396,6 +396,18 @@ export {
   PayrollUpdateOverrideType,
   PayrollUpdatePaymentMethod,
 } from '@gusto/embedded-api/models/components/payrollupdate'
+/** `Departments` entity from the Gusto Embedded API. */
+export type { Departments } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentBody` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentBody } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentBodyEmployees` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentBodyEmployees } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentBodyType` entity from the Gusto Embedded API. */
+export { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentEmployeeChange` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange'
+export type { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod'
+export type { PayScheduleAssignmentTransitionPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmenttransitionpayperiod'
 export type {
   PayScheduleAutoPayrollEnablementBlocker,
   PayScheduleAutoPayrollEnablementBlockerMetadata,
