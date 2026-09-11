@@ -40,8 +40,8 @@ import InfoIcon from '@/assets/icons/info.svg?react'
  * @remarks
  * Gated behind the `payrollRegularRateOfPay` unstable feature flag and not part of the public
  * SDK surface. `PayrollEditEmployee` renders this in place of the stable editor when the flag is
- * enabled. Consumes {@link usePayrollEditEmployeeForm} and renders the header, server-provided
- * gross pay, the hours / additional-earnings / time-off / other / payment-method sections, and the
+ * enabled. Consumes {@link usePayrollEditEmployeeForm} and renders the header, the hours /
+ * additional-earnings / time-off / other / payment-method sections, and the
  * `Cancel`/`Save` controls, performing a real payroll update on save. For an overtime-eligible
  * employee on a multi-workweek payroll, Overtime/Double-overtime rows start hidden behind a single,
  * employee-level "Add overtime" control (`form.data.withOvertime` / `form.actions.addOvertime`)
@@ -118,9 +118,6 @@ const Root = ({
     first_name: employee.firstName,
     last_name: employee.lastName,
   })
-  // Server-authoritative gross pay off the hook, matching PayrollConfigurationPresentation's use
-  // of the same field when this flag is on -- not recomputed client-side here.
-  const grossPay = formatNumberAsCurrency(form.data.grossPay)
 
   const hoursLabel = (name: string) => {
     switch (name) {
@@ -298,10 +295,6 @@ const Root = ({
                 <Heading as="h1" styledAs="h2">
                   {t('pageTitle', { employeeName })}
                 </Heading>
-                <Heading as="h2" styledAs="h3">
-                  {grossPay}
-                </Heading>
-                <Text>{t('grossPayLabel')}</Text>
               </Flex>
               <Flex justifyContent="flex-end" gap={12}>
                 <Button variant="secondary" onClick={handleCancel} title={t('cancelCta')}>

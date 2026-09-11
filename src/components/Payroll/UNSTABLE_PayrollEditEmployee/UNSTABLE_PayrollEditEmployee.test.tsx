@@ -171,13 +171,6 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     expect(screen.queryByRole('button', { name: 'Add overtime' })).not.toBeInTheDocument()
   })
 
-  it('displays the server-provided gross pay', async () => {
-    server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('5'))))
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
-
-    expect(await screen.findByText('$2,130.88')).toBeInTheDocument()
-  })
-
   it('shows the remaining time-off balance as hours are entered', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const user = userEvent.setup()
