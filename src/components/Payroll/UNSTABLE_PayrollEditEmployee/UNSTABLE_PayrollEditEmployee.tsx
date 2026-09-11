@@ -1,5 +1,5 @@
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
@@ -11,6 +11,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
+import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 /**
  * In-development regular-rate-of-pay rebuild of {@link PayrollEditEmployee}.
@@ -45,6 +46,10 @@ const Root = ({
   const { LoadingIndicator } = useBase()
   const { Button, Heading, Text } = useComponentContext()
 
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
+  const isSmallOrGreater = breakpoints.includes('small')
+
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
   const memoizedEmployeeId = useMemo(() => [employeeId], [employeeId])
   const { preparedPayroll, isLoading } = usePreparedPayrollData({
@@ -77,11 +82,32 @@ const Root = ({
     last_name: employee.lastName,
   })
 
+  const actions = (
+    <Flex
+      flexDirection={isSmallOrGreater ? 'row' : 'column'}
+      justifyContent={isSmallOrGreater ? 'flex-end' : 'normal'}
+      alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+      gap={12}
+    >
+      <Button variant="secondary" onClick={onCancel} title={t('cancelCta')}>
+        {t('cancelCta')}
+      </Button>
+      <Button onClick={onSave} title={t('saveCta')}>
+        {t('saveCta')}
+      </Button>
+    </Flex>
+  )
+
   return (
-    <div className={styles.container}>
-      <Flex justifyContent="space-between" alignItems="flex-start" gap={12}>
-        <Flex flexDirection="column" gap={8}>
-          <Heading as="h1" styledAs="h2">
+    <div ref={containerRef} className={styles.container}>
+      <Flex
+        flexDirection={isSmallOrGreater ? 'row' : 'column'}
+        justifyContent="space-between"
+        alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+        gap={12}
+      >
+        <Flex flexDirection="column" alignItems="stretch" gap={8}>
+          <Heading as="h1" styledAs={isSmallOrGreater ? 'h2' : 'h4'}>
             {t('pageTitle', { employeeName })}
           </Heading>
           <Heading as="h2" styledAs="h3">
@@ -90,15 +116,9 @@ const Root = ({
           </Heading>
           <Text>{t('grossPayLabel')}</Text>
         </Flex>
-        <Flex justifyContent="flex-end" gap={12}>
-          <Button variant="secondary" onClick={onCancel} title={t('cancelCta')}>
-            {t('cancelCta')}
-          </Button>
-          <Button onClick={onSave} title={t('saveCta')}>
-            {t('saveCta')}
-          </Button>
-        </Flex>
+        {isSmallOrGreater && actions}
       </Flex>
+      {!isSmallOrGreater && actions}
     </div>
   )
 }

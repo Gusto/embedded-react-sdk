@@ -637,7 +637,7 @@ export const PayrollEditEmployeePresentation = ({
         className={`${styles.headerSection} ${!isSmallOrGreater ? styles.headerSectionSticky : ''}`}
       >
         <Flex justifyContent="space-between">
-          <Flex flexDirection="column" gap={isSmallOrGreater ? 8 : 2}>
+          <Flex flexDirection="column" alignItems="stretch" gap={isSmallOrGreater ? 8 : 2}>
             <Heading as="h1" styledAs={isSmallOrGreater ? 'h2' : 'h4'}>
               {t('pageTitle', { employeeName })}
             </Heading>
