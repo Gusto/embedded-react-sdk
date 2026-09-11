@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
@@ -9,7 +10,6 @@ import {
 } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/fields'
 import { PayrollEditEmployeeErrorCodes } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
 import styles from './UNSTABLE_PayrollEditEmployee.module.scss'
-import { useFieldErrorMessage } from '@/partner-hook-utils/form/useFieldErrorMessage'
 import {
   componentEvents,
   COMPENSATION_NAME_REGULAR_HOURS,
@@ -68,74 +68,6 @@ export function UNSTABLE_PayrollEditEmployee({
   )
 }
 
-/**
- * The "Type" cell for a time-off row: the policy name plus a live remaining
- * balance that decrements as the user enters hours used. The watch and the
- * accrual-balance lookup live inside the hook's `entry.RemainingBalance`; this
- * cell just supplies the copy for whatever `remaining` value it yields.
- */
-function TimeOffTypeCell({ entry }: { entry: TimeOffEntry }) {
-  const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
-  const { Text } = useComponentContext()
-
-  return (
-    <Flex flexDirection="column" gap={2}>
-      <span>{entry.name}</span>
-      <entry.RemainingBalance>
-        {remaining => (
-          <Text variant="supporting">{t('timeOffBalance.remaining', { balance: remaining })}</Text>
-        )}
-      </entry.RemainingBalance>
-    </Flex>
-  )
-}
-
-/**
- * One bound hours/earnings cell that resolves its own validation message from
- * the field's current error code. A split cell (one with `workweekStart`) can
- * fail either the negative-amount or required-workweek check; a collapsed cell
- * binds to a single workweek key, so only the negative-amount check can fire
- * (the per-row completeness rule is a structural no-op there). Rendered inside
- * the form provider so `useFieldErrorMessage` can read the react-hook-form error.
- */
-function BreakdownCell({
-  entry,
-  pathPrefix,
-  label,
-  adornmentStart,
-  adornmentEnd,
-}: {
-  entry: HourEntry
-  pathPrefix: 'hours' | 'additionalEarnings'
-  label: string
-  adornmentStart?: string
-  adornmentEnd?: string
-}) {
-  const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
-  const negativeAmount = t('validations.negativeAmount')
-  const resolvedError = useFieldErrorMessage(
-    entry.workweekStart
-      ? `${pathPrefix}.${entry.jobUuid}.${entry.name}.${entry.workweekStart}`
-      : '',
-    {
-      [PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT]: negativeAmount,
-      [PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK]: t('validations.requiredWorkweek'),
-    },
-  )
-
-  return (
-    <div className={styles.inputContainer}>
-      <entry.Field
-        label={label}
-        shouldVisuallyHideLabel
-        adornmentStart={adornmentStart}
-        adornmentEnd={adornmentEnd}
-        errorMessage={resolvedError ?? negativeAmount}
-      />
-    </div>
-  )
-}
-
 const Root = ({
   employeeId,
   companyId,
@@ -152,7 +84,26 @@ const Root = ({
 
   const { Box, BoxHeader, Button, ButtonIcon, Heading, Text } = useComponentContext()
 
-  const form = usePayrollEditEmployeeForm({ employeeId, companyId, payrollId, withReimbursements })
+  // Error copy keyed by code, supplied to the hook once. Every bound field
+  // resolves and renders its own message from this — the consumer never
+  // reconstructs form paths or picks which rule a field can fail. Memoized so
+  // the hook's fields aren't rebuilt each render.
+  const errorMessages = useMemo(
+    () => ({
+      [PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT]: t('validations.negativeAmount'),
+      [PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK]: t('validations.requiredWorkweek'),
+      [PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT]: t('validations.reimbursementAmount'),
+    }),
+    [t],
+  )
+
+  const form = usePayrollEditEmployeeForm({
+    employeeId,
+    companyId,
+    payrollId,
+    withReimbursements,
+    errorMessages,
+  })
 
   if (form.isLoading) {
     return (
@@ -160,16 +111,16 @@ const Root = ({
     )
   }
 
-  const { employee, employeeCompensation } = form.data
+  const { employee } = form.data
   const Fields = form.form.Fields
 
   const employeeName = firstLastName({
     first_name: employee.firstName,
     last_name: employee.lastName,
   })
-  // Server-authoritative, matching PayrollConfigurationPresentation's use of the same field
-  // when this flag is on -- gross pay isn't recomputed client-side here.
-  const grossPay = formatNumberAsCurrency(Number(employeeCompensation?.grossPay ?? 0))
+  // Server-authoritative gross pay off the hook, matching PayrollConfigurationPresentation's use
+  // of the same field when this flag is on -- not recomputed client-side here.
+  const grossPay = formatNumberAsCurrency(form.data.grossPay)
 
   const hoursLabel = (name: string) => {
     switch (name) {
@@ -204,7 +155,6 @@ const Root = ({
   }
 
   const renderBreakdownSection = (
-    pathPrefix: 'hours' | 'additionalEarnings',
     section: HourEntry[] | Record<string, HourEntry[]>,
     options: {
       title: string
@@ -233,13 +183,14 @@ const Root = ({
     if (rows.length === 0 && !footer) return null
 
     const renderField = (entry: HourEntry, fieldLabel: string) => (
-      <BreakdownCell
-        entry={entry}
-        pathPrefix={pathPrefix}
-        label={fieldLabel}
-        adornmentStart={adornmentStart}
-        adornmentEnd={adornmentEnd}
-      />
+      <div className={styles.inputContainer}>
+        <entry.Field
+          label={fieldLabel}
+          shouldVisuallyHideLabel
+          adornmentStart={adornmentStart}
+          adornmentEnd={adornmentEnd}
+        />
+      </div>
     )
 
     const valueColumn: useDataViewPropReturn<HourEntry>['columns'][number] = {
@@ -290,7 +241,7 @@ const Root = ({
     const columns: useDataViewPropReturn<TimeOffEntry>['columns'] = [
       {
         title: t('typeColumn'),
-        render: entry => <TimeOffTypeCell entry={entry} />,
+        render: entry => entry.name,
       },
       {
         title: t('hoursColumn'),
@@ -301,7 +252,11 @@ const Root = ({
               label={entry.name}
               shouldVisuallyHideLabel
               adornmentEnd={t('hoursUnit')}
-              errorMessage={t('validations.negativeAmount')}
+              description={
+                entry.remaining !== null
+                  ? t('timeOffBalance.remaining', { balance: entry.remaining })
+                  : undefined
+              }
             />
           </div>
         ),
@@ -377,7 +332,7 @@ const Root = ({
               return (
                 <Flex key={job.jobUuid} flexDirection="column" gap={16}>
                   {isMultiJob ? <Heading as="h3">{genericHoursTitle}</Heading> : null}
-                  {renderBreakdownSection('hours', job.hours, {
+                  {renderBreakdownSection(job.hours, {
                     title: isMultiJob ? (job.title ?? genericHoursTitle) : genericHoursTitle,
                     label: genericHoursTitle,
                     rowHeader: t('hourTypeColumn'),
@@ -396,7 +351,7 @@ const Root = ({
                       </Button>
                     ) : undefined,
                   })}
-                  {renderBreakdownSection('additionalEarnings', job.additionalEarnings, {
+                  {renderBreakdownSection(job.additionalEarnings, {
                     title: t('additionalEarningsTitle'),
                     label: t('additionalEarningsTitle'),
                     rowHeader: t('typeColumn'),
@@ -432,7 +387,6 @@ const Root = ({
                             label={earningLabel(entry.id)}
                             shouldVisuallyHideLabel
                             adornmentStart="$"
-                            errorMessage={t('validations.negativeAmount')}
                           />
                         </div>
                       ),
@@ -520,7 +474,6 @@ const Root = ({
                           <ReimbursementDraft.Amount
                             label={t('reimbursementAmountLabel')}
                             adornmentStart="$"
-                            errorMessage={t('validations.reimbursementAmount')}
                           />
                         </Grid>
                         <Flex gap={12}>
