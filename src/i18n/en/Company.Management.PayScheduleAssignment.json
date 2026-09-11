@@ -1,0 +1,32 @@
+{
+  "typeStep": {
+    "heading": "Choose schedule type",
+    "description": "After you choose, you can create a pay schedule for each group.",
+    "options": {
+      "single": {
+        "label": "Everyone on one schedule",
+        "description": "Choose one pay schedule for all your employees"
+      }
+    }
+  },
+  "scheduleStep": {
+    "heading": "Assign employees",
+    "payScheduleLabel": "Pay schedule",
+    "payScheduleDescription": "The pay schedule to use for all employees.",
+    "addPayScheduleCta": "Add pay schedule"
+  },
+  "reviewStep": {
+    "heading": "Review changes",
+    "noChangesHeading": "There are no changes to review.",
+    "noChangesDescription": "If you intended to make changes, please go back and make them.",
+    "employeeChangesHeading": "Employees affected",
+    "nameLabel": "Name",
+    "transitionPayPeriodLabel": "Transition pay period",
+    "payFrequencyLabel": "New pay frequency",
+    "firstPayPeriodLabel": "First pay period",
+    "noTransitionNeeded": "No transition needed"
+  },
+  "backCta": "Back",
+  "continueCta": "Continue",
+  "submitCta": "Submit"
+}

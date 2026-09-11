@@ -34,6 +34,8 @@ export interface Resources {
   /** */
   'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
   /** */
+  'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -965,6 +967,63 @@ export namespace Translations {
       /** @defaultValue `"Disabled"` */
       disabled: string
     }
+    alerts: {
+      /** @defaultValue `"Pay schedule assignment updated."` */
+      assignmentUpdated: string
+    }
+  }
+  /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
+  export interface CompanyManagementPayScheduleAssignment {
+    typeStep: {
+      /** @defaultValue `"Choose schedule type"` */
+      heading: string
+      /** @defaultValue `"After you choose, you can create a pay schedule for each group."` */
+      description: string
+      options: {
+        single: {
+          /** @defaultValue `"Everyone on one schedule"` */
+          label: string
+          /** @defaultValue `"Choose one pay schedule for all your employees"` */
+          description: string
+        }
+      }
+    }
+    scheduleStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Pay schedule"` */
+      payScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for all employees."` */
+      payScheduleDescription: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
+    reviewStep: {
+      /** @defaultValue `"Review changes"` */
+      heading: string
+      /** @defaultValue `"There are no changes to review."` */
+      noChangesHeading: string
+      /** @defaultValue `"If you intended to make changes, please go back and make them."` */
+      noChangesDescription: string
+      /** @defaultValue `"Employees affected"` */
+      employeeChangesHeading: string
+      /** @defaultValue `"Name"` */
+      nameLabel: string
+      /** @defaultValue `"Transition pay period"` */
+      transitionPayPeriodLabel: string
+      /** @defaultValue `"New pay frequency"` */
+      payFrequencyLabel: string
+      /** @defaultValue `"First pay period"` */
+      firstPayPeriodLabel: string
+      /** @defaultValue `"No transition needed"` */
+      noTransitionNeeded: string
+    }
+    /** @defaultValue `"Back"` */
+    backCta: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    /** @defaultValue `"Submit"` */
+    submitCta: string
   }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {

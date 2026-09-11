@@ -75,6 +75,7 @@ function Root({
           companyId,
           enableAutoPilot,
           enableMultipleSchedules,
+          successAlert: null,
         }),
       ),
     [companyId, enableAutoPilot, enableMultipleSchedules],
