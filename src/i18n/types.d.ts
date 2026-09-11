@@ -8393,6 +8393,8 @@ export namespace Translations {
     regularHoursTitle: string
     /** @defaultValue `"Regular hours"` */
     regularHoursTitleWithoutOvertime: string
+    /** @defaultValue `"Add overtime"` */
+    addOvertimeCta: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */
@@ -8500,6 +8502,8 @@ export namespace Translations {
       reimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Enter an amount for every workweek"` */
+      requiredWorkweek: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */

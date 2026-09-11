@@ -5,6 +5,7 @@
   "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular and overtime hours",
   "regularHoursTitleWithoutOvertime": "Regular hours",
+  "addOvertimeCta": "Add overtime",
   "hoursUnit": "Hours",
   "saveCta": "Save",
   "cancelCta": "Cancel",
@@ -62,6 +63,7 @@
   },
   "validations": {
     "reimbursementAmount": "Amount must be greater than zero",
-    "negativeAmount": "Amount cannot be negative"
+    "negativeAmount": "Amount cannot be negative",
+    "requiredWorkweek": "Enter an amount for every workweek"
   }
 }
