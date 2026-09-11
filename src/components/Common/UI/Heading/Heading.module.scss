@@ -1,6 +1,7 @@
 :global(.GSDK) {
   .root {
     text-wrap: balance;
+    overflow-wrap: break-word;
     margin: 0;
     font-weight: var(--g-fontWeightSemibold);
     line-height: 1.2;
