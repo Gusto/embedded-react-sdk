@@ -32,6 +32,7 @@ export function PolicyConfigurationFormPresentation({
   editingPolicyName,
   isPending = false,
   lockedAccrualCategory,
+  className,
 }: PolicyConfigurationFormPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -171,7 +172,11 @@ export function PolicyConfigurationFormPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm
+        aria-labelledby={headingId}
+        onSubmit={formMethods.handleSubmit(handleSubmit)}
+        className={className}
+      >
         <Flex flexDirection="column" gap={32}>
           <Heading as="h2" id={headingId}>
             {editingPolicyName

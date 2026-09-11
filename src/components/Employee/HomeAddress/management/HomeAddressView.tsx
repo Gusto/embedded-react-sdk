@@ -75,6 +75,8 @@ export interface HomeAddressViewProps {
   onConfirmDelete: (homeAddressUuid: string) => Promise<boolean>
   onBack: () => void
   isDeletePending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -89,6 +91,7 @@ export function HomeAddressView({
   onConfirmDelete,
   onBack,
   isDeletePending = false,
+  className,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.Management.HomeAddress')
   const Components = useComponentContext()
@@ -326,310 +329,314 @@ export function HomeAddressView({
   const modalPending = addressModalSession?.isPending ?? false
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={4} alignItems="flex-start">
-        <Components.Heading as="h1" styledAs="h2">
-          {t('title')}
-        </Components.Heading>
-        <Components.Text variant="supporting">{t('description')}</Components.Text>
-      </Flex>
+    <section className={className}>
+      <Flex flexDirection="column" gap={24}>
+        <Flex flexDirection="column" gap={4} alignItems="flex-start">
+          <Components.Heading as="h1" styledAs="h2">
+            {t('title')}
+          </Components.Heading>
+          <Components.Text variant="supporting">{t('description')}</Components.Text>
+        </Flex>
 
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('currentSectionTitle')}
-            action={
-              currentHomeAddress ? (
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    onEditAddressTargetChange(undefined)
-                    setAddressModal('edit')
-                  }}
-                  isLoading={editStatus.isPending}
-                >
-                  {t('editCta')}
-                </Components.Button>
-              ) : undefined
-            }
-          />
-        }
-        footer={
-          <Components.Button
-            variant="secondary"
-            onClick={() => {
-              onEditAddressTargetChange(undefined)
-              setAddressModal('create')
-            }}
-            isLoading={createStatus.isPending}
-          >
-            {t('changeCta')}
-          </Components.Button>
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          {currentHomeAddress ? (
-            <Flex flexDirection="column" gap={4}>
-              <FlexItem>
-                <Components.Text weight="medium">
-                  {formatStreetForDisplay(currentHomeAddress)}
-                </Components.Text>
-                <Components.Text weight="medium">
-                  {getCityStateZip(currentHomeAddress)}
-                </Components.Text>
-              </FlexItem>
-              {currentHomeAddress.effectiveDate ? (
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title={t('currentSectionTitle')}
+              action={
+                currentHomeAddress ? (
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      onEditAddressTargetChange(undefined)
+                      setAddressModal('edit')
+                    }}
+                    isLoading={editStatus.isPending}
+                  >
+                    {t('editCta')}
+                  </Components.Button>
+                ) : undefined
+              }
+            />
+          }
+          footer={
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                onEditAddressTargetChange(undefined)
+                setAddressModal('create')
+              }}
+              isLoading={createStatus.isPending}
+            >
+              {t('changeCta')}
+            </Components.Button>
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            {currentHomeAddress ? (
+              <Flex flexDirection="column" gap={4}>
+                <FlexItem>
+                  <Components.Text weight="medium">
+                    {formatStreetForDisplay(currentHomeAddress)}
+                  </Components.Text>
+                  <Components.Text weight="medium">
+                    {getCityStateZip(currentHomeAddress)}
+                  </Components.Text>
+                </FlexItem>
+                {currentHomeAddress.effectiveDate ? (
+                  <Components.Text variant="supporting">
+                    {t('currentSince', {
+                      date: formatDateLongWithYear(currentHomeAddress.effectiveDate.toString()),
+                    })}
+                  </Components.Text>
+                ) : null}
+              </Flex>
+            ) : (
+              <Components.Text>{t('form.noCurrentAddress')}</Components.Text>
+            )}
+            {pendingFutureAddress ? (
+              <Components.Alert status="warning" label={t('changePendingTitle')}>
                 <Components.Text variant="supporting">
-                  {t('currentSince', {
-                    date: formatDateLongWithYear(currentHomeAddress.effectiveDate.toString()),
+                  {t('changePendingDescription', {
+                    possessiveLabel: changePendingPossessiveLabel,
+                    newAddress: formatPendingHomeAddressLine(pendingFutureAddress),
+                    effectiveDate: pendingFutureAddress.effectiveDate
+                      ? formatDateLongWithYear(pendingFutureAddress.effectiveDate.toString())
+                      : '—',
+                    interpolation: { escapeValue: false },
                   })}
                 </Components.Text>
-              ) : null}
-            </Flex>
-          ) : (
-            <Components.Text>{t('form.noCurrentAddress')}</Components.Text>
-          )}
-          {pendingFutureAddress ? (
-            <Components.Alert status="warning" label={t('changePendingTitle')}>
-              <Components.Text variant="supporting">
-                {t('changePendingDescription', {
-                  possessiveLabel: changePendingPossessiveLabel,
-                  newAddress: formatPendingHomeAddressLine(pendingFutureAddress),
-                  effectiveDate: pendingFutureAddress.effectiveDate
-                    ? formatDateLongWithYear(pendingFutureAddress.effectiveDate.toString())
-                    : '—',
-                  interpolation: { escapeValue: false },
-                })}
-              </Components.Text>
-            </Components.Alert>
-          ) : null}
-        </Flex>
-      </Components.Box>
-
-      <Flex flexDirection="column" gap={12}>
-        <Components.Heading as="h2" styledAs="h4">
-          {t('historySectionTitle')}
-        </Components.Heading>
-        <DataView label={t('historySectionTitle')} {...historyDataView} />
-      </Flex>
-
-      <ActionsLayout>
-        <Components.Button variant="secondary" onClick={onBack}>
-          {t('backCta')}
-        </Components.Button>
-      </ActionsLayout>
-
-      <Components.Modal
-        isOpen={addressModal !== null}
-        onClose={closeAddressModal}
-        shouldCloseOnBackdropClick={false}
-        containerRef={addressModalContainerRef}
-        footer={
-          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                closeAddressModal()
-              }}
-            >
-              {t('cancelCta')}
-            </Components.Button>
-            <Components.Button
-              variant="primary"
-              onClick={() => {
-                void handleSave()
-              }}
-              isLoading={modalPending}
-            >
-              {t('submitCta')}
-            </Components.Button>
+              </Components.Alert>
+            ) : null}
           </Flex>
-        }
-      >
-        <Flex flexDirection="column" gap={32}>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">
-              {addressModal === 'edit' ? t('editModalTitle') : t('createModalTitle')}
-            </Components.Heading>
+        </Components.Box>
+
+        <Flex flexDirection="column" gap={12}>
+          <Components.Heading as="h2" styledAs="h4">
+            {t('historySectionTitle')}
+          </Components.Heading>
+          <DataView label={t('historySectionTitle')} {...historyDataView} />
+        </Flex>
+
+        <ActionsLayout>
+          <Components.Button variant="secondary" onClick={onBack}>
+            {t('backCta')}
+          </Components.Button>
+        </ActionsLayout>
+
+        <Components.Modal
+          isOpen={addressModal !== null}
+          onClose={closeAddressModal}
+          shouldCloseOnBackdropClick={false}
+          containerRef={addressModalContainerRef}
+          footer={
+            <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  closeAddressModal()
+                }}
+              >
+                {t('cancelCta')}
+              </Components.Button>
+              <Components.Button
+                variant="primary"
+                onClick={() => {
+                  void handleSave()
+                }}
+                isLoading={modalPending}
+              >
+                {t('submitCta')}
+              </Components.Button>
+            </Flex>
+          }
+        >
+          <Flex flexDirection="column" gap={32}>
+            <Flex flexDirection="column" gap={4}>
+              <Components.Heading as="h2">
+                {addressModal === 'edit' ? t('editModalTitle') : t('createModalTitle')}
+              </Components.Heading>
+              <Components.Text variant="supporting">
+                {addressModal === 'edit' ? t('editModalDescription') : t('createModalDescription')}
+              </Components.Text>
+            </Flex>
+            {addressModalSession && addressModalSession.errorHandling.errors.length > 0 ? (
+              <Components.Alert status="error" label={t('submitErrorAlertTitle')}>
+                <Components.UnorderedList
+                  items={addressModalSession.errorHandling.errors.flatMap(
+                    (submitError, errorIndex) => {
+                      const visibleFieldErrors = submitError.fieldErrors.filter(
+                        fieldError => fieldError.message,
+                      )
+                      if (visibleFieldErrors.length > 0) {
+                        return visibleFieldErrors.map(fieldError => (
+                          <span key={`${errorIndex}-${fieldError.field}`}>
+                            {fieldError.message}
+                          </span>
+                        ))
+                      }
+                      const message = submitError.message || t('submitErrorAlertFallback')
+                      return [<span key={errorIndex}>{message}</span>]
+                    },
+                  )}
+                />
+                <Components.Text variant="supporting">{t('submitErrorAlertHelp')}</Components.Text>
+              </Components.Alert>
+            ) : null}
+            {addressModal === 'edit' ? (
+              <SDKFormProvider formHookResult={editHomeAddressForm}>
+                <Grid
+                  gridTemplateColumns={{
+                    base: '1fr',
+                    small: '1fr',
+                  }}
+                  gap={20}
+                >
+                  {EditEffectiveDate ? (
+                    <EditEffectiveDate
+                      label={t('columns.startDate')}
+                      description={t('startDateHelper')}
+                      validationMessages={startDateValidation}
+                      portalContainer={addressModalPortal}
+                    />
+                  ) : null}
+                  <EditStreet1
+                    label={t('form.street1')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
+                    }}
+                  />
+                  <EditStreet2
+                    label={t('form.street2')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
+                    }}
+                  />
+                  <EditCity
+                    label={t('form.city')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.city'),
+                    }}
+                  />
+                  <EditState
+                    label={t('form.state')}
+                    placeholder={t('form.statePlaceholder')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
+                    }}
+                    portalContainer={addressModalPortal}
+                  />
+                  <EditZip label={t('form.zip')} validationMessages={zipValidation} />
+                  <HomeAddressCourtesyWithholdingBlock
+                    CourtesyWithholding={EditCourtesyWithholding}
+                    formHook={editHomeAddressForm}
+                    t={t}
+                  />
+                </Grid>
+              </SDKFormProvider>
+            ) : null}
+            {addressModal === 'create' ? (
+              <SDKFormProvider formHookResult={createHomeAddressForm}>
+                <Grid
+                  gridTemplateColumns={{
+                    base: '1fr',
+                    small: '1fr',
+                  }}
+                  gap={20}
+                >
+                  {CreateEffectiveDate ? (
+                    <CreateEffectiveDate
+                      label={t('columns.startDate')}
+                      description={t('startDateHelper')}
+                      validationMessages={startDateValidation}
+                      portalContainer={addressModalPortal}
+                    />
+                  ) : null}
+                  <CreateStreet1
+                    label={t('form.street1')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
+                    }}
+                  />
+                  <CreateStreet2
+                    label={t('form.street2')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
+                    }}
+                  />
+                  <CreateCity
+                    label={t('form.city')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.city'),
+                    }}
+                  />
+                  <CreateState
+                    label={t('form.state')}
+                    placeholder={t('form.statePlaceholder')}
+                    validationMessages={{
+                      [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
+                    }}
+                    portalContainer={addressModalPortal}
+                  />
+                  <CreateZip label={t('form.zip')} validationMessages={zipValidation} />
+                  <HomeAddressCourtesyWithholdingBlock
+                    CourtesyWithholding={CreateCourtesyWithholding}
+                    formHook={createHomeAddressForm}
+                    t={t}
+                  />
+                </Grid>
+              </SDKFormProvider>
+            ) : null}
+          </Flex>
+        </Components.Modal>
+
+        <Components.Modal
+          isOpen={deleteConfirmUuid !== null}
+          onClose={() => {
+            setDeleteConfirmUuid(null)
+          }}
+          shouldCloseOnBackdropClick={false}
+          footer={
+            <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  setDeleteConfirmUuid(null)
+                }}
+              >
+                {t('cancelCta')}
+              </Components.Button>
+              <Components.Button
+                variant="error"
+                onClick={() => {
+                  void handleDeleteModalConfirm()
+                }}
+                isLoading={isDeletePending}
+              >
+                {t('deleteModalConfirmCta')}
+              </Components.Button>
+            </Flex>
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            <Components.Heading as="h2">{t('deleteModalTitle')}</Components.Heading>
             <Components.Text variant="supporting">
-              {addressModal === 'edit' ? t('editModalDescription') : t('createModalDescription')}
+              {addressForDeleteModal ? (
+                <Trans
+                  t={t}
+                  i18nKey="deleteModalDescription"
+                  values={{
+                    address: formatPendingHomeAddressLine(addressForDeleteModal),
+                  }}
+                  components={{
+                    strong: <Components.Text weight="medium" as="span" />,
+                  }}
+                  tOptions={{ interpolation: { escapeValue: false } }}
+                />
+              ) : null}
             </Components.Text>
           </Flex>
-          {addressModalSession && addressModalSession.errorHandling.errors.length > 0 ? (
-            <Components.Alert status="error" label={t('submitErrorAlertTitle')}>
-              <Components.UnorderedList
-                items={addressModalSession.errorHandling.errors.flatMap(
-                  (submitError, errorIndex) => {
-                    const visibleFieldErrors = submitError.fieldErrors.filter(
-                      fieldError => fieldError.message,
-                    )
-                    if (visibleFieldErrors.length > 0) {
-                      return visibleFieldErrors.map(fieldError => (
-                        <span key={`${errorIndex}-${fieldError.field}`}>{fieldError.message}</span>
-                      ))
-                    }
-                    const message = submitError.message || t('submitErrorAlertFallback')
-                    return [<span key={errorIndex}>{message}</span>]
-                  },
-                )}
-              />
-              <Components.Text variant="supporting">{t('submitErrorAlertHelp')}</Components.Text>
-            </Components.Alert>
-          ) : null}
-          {addressModal === 'edit' ? (
-            <SDKFormProvider formHookResult={editHomeAddressForm}>
-              <Grid
-                gridTemplateColumns={{
-                  base: '1fr',
-                  small: '1fr',
-                }}
-                gap={20}
-              >
-                {EditEffectiveDate ? (
-                  <EditEffectiveDate
-                    label={t('columns.startDate')}
-                    description={t('startDateHelper')}
-                    validationMessages={startDateValidation}
-                    portalContainer={addressModalPortal}
-                  />
-                ) : null}
-                <EditStreet1
-                  label={t('form.street1')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
-                  }}
-                />
-                <EditStreet2
-                  label={t('form.street2')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
-                  }}
-                />
-                <EditCity
-                  label={t('form.city')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.city'),
-                  }}
-                />
-                <EditState
-                  label={t('form.state')}
-                  placeholder={t('form.statePlaceholder')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
-                  }}
-                  portalContainer={addressModalPortal}
-                />
-                <EditZip label={t('form.zip')} validationMessages={zipValidation} />
-                <HomeAddressCourtesyWithholdingBlock
-                  CourtesyWithholding={EditCourtesyWithholding}
-                  formHook={editHomeAddressForm}
-                  t={t}
-                />
-              </Grid>
-            </SDKFormProvider>
-          ) : null}
-          {addressModal === 'create' ? (
-            <SDKFormProvider formHookResult={createHomeAddressForm}>
-              <Grid
-                gridTemplateColumns={{
-                  base: '1fr',
-                  small: '1fr',
-                }}
-                gap={20}
-              >
-                {CreateEffectiveDate ? (
-                  <CreateEffectiveDate
-                    label={t('columns.startDate')}
-                    description={t('startDateHelper')}
-                    validationMessages={startDateValidation}
-                    portalContainer={addressModalPortal}
-                  />
-                ) : null}
-                <CreateStreet1
-                  label={t('form.street1')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
-                  }}
-                />
-                <CreateStreet2
-                  label={t('form.street2')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
-                  }}
-                />
-                <CreateCity
-                  label={t('form.city')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.city'),
-                  }}
-                />
-                <CreateState
-                  label={t('form.state')}
-                  placeholder={t('form.statePlaceholder')}
-                  validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
-                  }}
-                  portalContainer={addressModalPortal}
-                />
-                <CreateZip label={t('form.zip')} validationMessages={zipValidation} />
-                <HomeAddressCourtesyWithholdingBlock
-                  CourtesyWithholding={CreateCourtesyWithholding}
-                  formHook={createHomeAddressForm}
-                  t={t}
-                />
-              </Grid>
-            </SDKFormProvider>
-          ) : null}
-        </Flex>
-      </Components.Modal>
-
-      <Components.Modal
-        isOpen={deleteConfirmUuid !== null}
-        onClose={() => {
-          setDeleteConfirmUuid(null)
-        }}
-        shouldCloseOnBackdropClick={false}
-        footer={
-          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                setDeleteConfirmUuid(null)
-              }}
-            >
-              {t('cancelCta')}
-            </Components.Button>
-            <Components.Button
-              variant="error"
-              onClick={() => {
-                void handleDeleteModalConfirm()
-              }}
-              isLoading={isDeletePending}
-            >
-              {t('deleteModalConfirmCta')}
-            </Components.Button>
-          </Flex>
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">{t('deleteModalTitle')}</Components.Heading>
-          <Components.Text variant="supporting">
-            {addressForDeleteModal ? (
-              <Trans
-                t={t}
-                i18nKey="deleteModalDescription"
-                values={{
-                  address: formatPendingHomeAddressLine(addressForDeleteModal),
-                }}
-                components={{
-                  strong: <Components.Text weight="medium" as="span" />,
-                }}
-                tOptions={{ interpolation: { escapeValue: false } }}
-              />
-            ) : null}
-          </Components.Text>
-        </Flex>
-      </Components.Modal>
-    </Flex>
+        </Components.Modal>
+      </Flex>
+    </section>
   )
 }

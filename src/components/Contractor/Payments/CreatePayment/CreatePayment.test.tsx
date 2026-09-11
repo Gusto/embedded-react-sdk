@@ -66,10 +66,16 @@ const listContractors = (contractors: Array<Record<string, unknown>>) =>
     }),
   )
 
-const renderCreatePayment = (contractors: Array<Record<string, unknown>>, onEvent = vi.fn()) => {
+const renderCreatePayment = (
+  contractors: Array<Record<string, unknown>>,
+  onEvent = vi.fn(),
+  className?: string,
+) => {
   server.use(listContractors(contractors), paymentConfigsMock)
-  renderWithProviders(<CreatePayment companyId={COMPANY_ID} onEvent={onEvent} />)
-  return { onEvent }
+  const { container } = renderWithProviders(
+    <CreatePayment companyId={COMPANY_ID} onEvent={onEvent} className={className} />,
+  )
+  return { onEvent, container }
 }
 
 /** Opens the edit modal for the contractor at `rowIndex` via its hamburger menu. */
@@ -135,6 +141,17 @@ describe('CreatePayment', () => {
       expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
       expect(screen.getByText('Grace Hopper')).toBeInTheDocument()
       expect(screen.getByText('Payment date')).toBeInTheDocument()
+    })
+
+    it('applies custom className', async () => {
+      const { container } = renderCreatePayment(
+        [hourlyContractor, fixedContractor],
+        vi.fn(),
+        'custom-class',
+      )
+
+      expect(await screen.findByRole('heading', { name: 'Pay contractors' })).toBeInTheDocument()
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
 
     it('shows the empty state when no eligible contractors exist', async () => {

@@ -43,6 +43,7 @@ export function TimeOffPolicyDetailPresentation({
   removeDialog,
   successAlert,
   onDismissAlert,
+  className,
 }: TimeOffPolicyDetailPresentationProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
@@ -93,6 +94,7 @@ export function TimeOffPolicyDetailPresentation({
       removeDialog={removeDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}
+      className={className}
     />
   )
 }

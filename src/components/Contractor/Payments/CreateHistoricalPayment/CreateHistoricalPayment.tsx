@@ -85,7 +85,7 @@ interface ContractorSelection {
   checkDate: string
 }
 
-function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) {
+function Root({ companyId, dictionary, onEvent, className }: CreateHistoricalPaymentProps) {
   useUnstableFeature('historicalPayments', { throwIfDisabled: true })
   useI18n('Contractor.Payments.CreateHistoricalPayment')
   useComponentDictionary('Contractor.Payments.CreateHistoricalPayment', dictionary)
@@ -121,7 +121,7 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
 
   if (!selection) {
     return (
-      <Flex flexDirection="column" gap={32}>
+      <Flex className={className} flexDirection="column" gap={32}>
         <Flex flexDirection="column" gap={4}>
           <Heading as="h2">{t('select.heading')}</Heading>
           <Text variant="supporting">{t('select.subtitle')}</Text>
@@ -155,6 +155,7 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
 
   return (
     <AmountsAndReview
+      className={className}
       companyId={companyId}
       contractorIds={selection.contractorIds}
       checkDate={selection.checkDate}
@@ -169,6 +170,8 @@ function Root({ companyId, dictionary, onEvent }: CreateHistoricalPaymentProps) 
 }
 
 interface AmountsAndReviewProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   companyId: string
   contractorIds: string[]
   checkDate: string
@@ -178,6 +181,7 @@ interface AmountsAndReviewProps {
 }
 
 function AmountsAndReview({
+  className,
   companyId,
   contractorIds,
   checkDate,
@@ -278,7 +282,7 @@ function AmountsAndReview({
 
   if (previewData) {
     return (
-      <Flex flexDirection="column" gap={32}>
+      <Flex className={className} flexDirection="column" gap={32}>
         {!isCreated && <BackButton onClick={handleBackToEdit} />}
 
         <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
@@ -314,7 +318,7 @@ function AmountsAndReview({
   }
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <BackButton
         onClick={() => {
           onBack(virtualContractorPayments)

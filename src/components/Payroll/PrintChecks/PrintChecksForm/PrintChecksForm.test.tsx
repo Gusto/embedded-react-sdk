@@ -278,6 +278,17 @@ describe('PrintChecksForm', () => {
     expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_CANCEL)
   })
 
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <FlowContext.Provider value={flowContextValue}>
+        <PrintChecksForm payrollId="payroll-1" onEvent={onEvent} className="custom-class" />
+      </FlowContext.Provider>,
+    )
+
+    await screen.findByRole('radio', { name: 'Custom check stock' })
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   describe('polling deadline', () => {
     beforeEach(() => {
       vi.useFakeTimers({ shouldAdvanceTime: true })

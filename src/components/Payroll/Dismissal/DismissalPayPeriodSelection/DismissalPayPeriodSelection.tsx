@@ -59,7 +59,13 @@ type RequiredPayPeriod = UnprocessedTerminationPayPeriod &
 
 const payPeriodKey = (period: RequiredPayPeriod) => `${period.startDate}__${period.endDate}`
 
-function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeriodSelectionProps) {
+function Root({
+  companyId,
+  employeeId,
+  payrollId,
+  dictionary,
+  className,
+}: DismissalPayPeriodSelectionProps) {
   useComponentDictionary('Payroll.Dismissal', dictionary)
   useI18n('Payroll.Dismissal')
   const { t } = useTranslation('Payroll.Dismissal')
@@ -148,6 +154,7 @@ function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeri
       onSelectPeriod={setSelectedPeriodKey}
       onSubmit={handleSubmit}
       isPending={isPending}
+      className={className}
     />
   )
 }

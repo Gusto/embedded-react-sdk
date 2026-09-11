@@ -52,6 +52,7 @@ export function CompensationEditForm({
   onEvent,
   dictionary,
   LoaderComponent,
+  className,
 }: CompensationEditFormProps) {
   const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId }, { enabled: !!employeeId })
 
@@ -78,6 +79,7 @@ export function CompensationEditForm({
         onEvent={onEvent}
         dictionary={dictionary}
         LoaderComponent={LoaderComponent}
+        className={className}
       />
     )
   }
@@ -89,6 +91,7 @@ export function CompensationEditForm({
       onEvent={onEvent}
       dictionary={dictionary}
       LoaderComponent={LoaderComponent}
+      className={className}
     />
   )
 }

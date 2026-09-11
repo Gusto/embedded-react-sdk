@@ -85,6 +85,24 @@ describe('TerminationSummary', () => {
 
       expect(screen.getByText('Last pay day')).toBeInTheDocument()
     })
+
+    it('applies custom className', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+      )
+
+      const { container } = renderWithProviders(
+        <TerminationSummary {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Termination summary')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   describe('accessibility', () => {

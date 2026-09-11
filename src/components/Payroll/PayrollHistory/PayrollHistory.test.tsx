@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
@@ -93,6 +93,18 @@ describe('PayrollHistory', () => {
       ).toBeInTheDocument()
 
       expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+    })
+
+    test('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <PayrollHistory {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
   })
 

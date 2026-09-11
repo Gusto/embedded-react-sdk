@@ -66,7 +66,13 @@ const getDefaultStartDate = (): Date => {
 
 const getDefaultEndDate = (): Date => new Date()
 
-const Root = ({ onEvent, companyId, dictionary, LoaderComponent }: PayrollHistoryProps) => {
+const Root = ({
+  onEvent,
+  companyId,
+  dictionary,
+  LoaderComponent,
+  className,
+}: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
 
@@ -147,6 +153,7 @@ const Root = ({ onEvent, companyId, dictionary, LoaderComponent }: PayrollHistor
 
   return (
     <PayrollHistoryPresentation
+      className={className}
       payrollHistory={payrollHistory}
       wireInRequests={wireInRequests}
       pagination={paginationProps}

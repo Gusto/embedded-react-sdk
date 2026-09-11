@@ -87,6 +87,7 @@ const Root = ({
   onEvent,
   dictionary,
   withReimbursements = true,
+  className,
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
@@ -167,6 +168,7 @@ const Root = ({
 
   return (
     <PayrollEditEmployeePresentation
+      className={className}
       onSave={onSave}
       onCancel={onCancel}
       employee={employee}

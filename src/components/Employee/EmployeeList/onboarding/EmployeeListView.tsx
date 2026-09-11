@@ -25,6 +25,8 @@ export interface EmployeeListViewProps extends Pick<
   onAddEmployee: () => void
   onSkip: () => void
   showContinueButton: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -40,6 +42,7 @@ export function EmployeeListView({
   onAddEmployee,
   onSkip,
   showContinueButton,
+  className,
 }: EmployeeListViewProps) {
   const { t } = useTranslation('Employee.EmployeeList')
   const Components = useComponentContext()
@@ -134,29 +137,31 @@ export function EmployeeListView({
 
   return (
     <>
-      <Flex flexDirection="column" gap={24}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Components.Heading as="h2">{t('title')}</Components.Heading>
+      <section className={className}>
+        <Flex flexDirection="column" gap={24}>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Components.Heading as="h2">{t('title')}</Components.Heading>
 
-          {employees.length > 0 && (
-            <Components.Button
-              variant="secondary"
-              onClick={onAddEmployee}
-              icon={<PlusCircleIcon />}
-            >
-              {t('addAnotherCta')}
-            </Components.Button>
+            {employees.length > 0 && (
+              <Components.Button
+                variant="secondary"
+                onClick={onAddEmployee}
+                icon={<PlusCircleIcon />}
+              >
+                {t('addAnotherCta')}
+              </Components.Button>
+            )}
+          </Flex>
+
+          <DataView label={t('employeeListLabel')} {...dataViewProps} />
+
+          {showContinueButton && employees.length > 0 && (
+            <ActionsLayout>
+              <Components.Button onClick={onSkip}>{t('continueCta')}</Components.Button>
+            </ActionsLayout>
           )}
         </Flex>
-
-        <DataView label={t('employeeListLabel')} {...dataViewProps} />
-
-        {showContinueButton && employees.length > 0 && (
-          <ActionsLayout>
-            <Components.Button onClick={onSkip}>{t('continueCta')}</Components.Button>
-          </ActionsLayout>
-        )}
-      </Flex>
+      </section>
 
       <Components.Dialog
         isOpen={!!employeeToDelete}

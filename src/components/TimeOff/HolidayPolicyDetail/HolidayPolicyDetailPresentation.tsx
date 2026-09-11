@@ -23,6 +23,7 @@ export function HolidayPolicyDetailPresentation({
   removeDialog,
   successAlert,
   onDismissAlert,
+  className,
 }: HolidayPolicyDetailPresentationProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
@@ -48,6 +49,7 @@ export function HolidayPolicyDetailPresentation({
       removeDialog={removeDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}
+      className={className}
     />
   )
 }

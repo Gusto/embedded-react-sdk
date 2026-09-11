@@ -29,6 +29,7 @@ export function SelectEmployeesPresentation({
   pagination,
   isFetching,
   isPending = false,
+  className,
 }: SelectEmployeesPresentationProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
@@ -37,7 +38,7 @@ export function SelectEmployeesPresentation({
   const balanceColHeaderId = useId()
 
   return (
-    <Flex flexDirection="column" alignItems="stretch" gap={32}>
+    <Flex className={className} flexDirection="column" alignItems="stretch" gap={32}>
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('title')}</Heading>
         <Text variant="supporting">

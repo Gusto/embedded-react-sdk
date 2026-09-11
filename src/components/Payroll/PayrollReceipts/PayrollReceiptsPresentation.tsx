@@ -16,12 +16,14 @@ import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useCont
 import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
 
 interface PayrollReceiptsPresentationProps {
+  className?: string
   receiptData: PayrollReceipt
   withReimbursements?: boolean
 }
 
 /** @internal */
 export const PayrollReceiptsPresentation = ({
+  className,
   receiptData,
   withReimbursements = true,
 }: PayrollReceiptsPresentationProps) => {
@@ -296,7 +298,7 @@ export const PayrollReceiptsPresentation = ({
   }
 
   return (
-    <div className={styles.container} ref={containerRef}>
+    <div className={classNames(styles.container, className)} ref={containerRef}>
       <Flex flexDirection="column" gap={24}>
         {renderReceiptHeader()}
         {renderBreakdownSection()}

@@ -94,16 +94,23 @@ const listContractors = (contractors: Array<Record<string, unknown>>) =>
     }),
   )
 
-const renderScreen = (contractors: Array<Record<string, unknown>>, onEvent = vi.fn()) => {
+const renderScreen = (
+  contractors: Array<Record<string, unknown>>,
+  onEvent = vi.fn(),
+  className?: string,
+) => {
   server.use(
     listContractors(contractors),
     handlePreviewContractorPaymentGroup(previewResolver),
     handleCreateContractorPaymentGroup(createResolver),
   )
-  renderWithProviders(<CreateHistoricalPayment companyId={COMPANY_ID} onEvent={onEvent} />, {
-    unstableFeatures: { historicalPayments: true },
-  })
-  return { onEvent }
+  const { container } = renderWithProviders(
+    <CreateHistoricalPayment companyId={COMPANY_ID} onEvent={onEvent} className={className} />,
+    {
+      unstableFeatures: { historicalPayments: true },
+    },
+  )
+  return { onEvent, container }
 }
 
 async function typeDate(
@@ -168,6 +175,15 @@ describe('CreateHistoricalPayment', () => {
     })
     expect(screen.queryByText('Grace Hopper')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Record a historical payment' })).toBeInTheDocument()
+  })
+
+  it('applies custom className', async () => {
+    const { container } = renderScreen([hourlyContractor], vi.fn(), 'custom-class')
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    })
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
   })
 
   it('renders the default empty state when there are no eligible contractors', async () => {

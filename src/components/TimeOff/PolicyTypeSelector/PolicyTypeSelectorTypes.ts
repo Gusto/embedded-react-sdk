@@ -15,4 +15,6 @@ export interface PolicyTypeSelectorPresentationProps {
   defaultPolicyType?: PolicyType
   /** When true, the holiday option is omitted because the company already has a holiday pay policy. */
   holidayPolicyExists?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }

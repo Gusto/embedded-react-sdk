@@ -14,7 +14,7 @@ export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPres
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { Heading, Text, Button } = useComponentContext()
 
-  const { holidays } = props
+  const { holidays, className } = props
   const isViewMode = props.mode === 'view'
 
   const columns = useMemo(
@@ -54,7 +54,7 @@ export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPres
   })
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       {!isViewMode && (
         <Flex flexDirection="column" gap={4}>
           <Heading as="h2">{t('title')}</Heading>

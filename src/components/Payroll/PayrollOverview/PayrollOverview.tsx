@@ -151,6 +151,7 @@ const Root = ({
   withReimbursements = true,
   ConfirmWireDetailsComponent = ConfirmWireDetails,
   readOnly = false,
+  className,
 }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
@@ -477,6 +478,7 @@ const Root = ({
 
   return (
     <PayrollOverviewPresentation
+      className={className}
       onEdit={onEdit}
       onSubmit={onSubmit}
       onCancel={onCancel}

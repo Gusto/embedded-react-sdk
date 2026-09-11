@@ -43,6 +43,8 @@ export interface WorkAddressViewProps {
   onWorkAddressSaved: (result: HookSubmitResult<EmployeeWorkAddress>) => void
   onBack: () => void
   isDeletePending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 function resolveLocation(
@@ -82,6 +84,7 @@ export function WorkAddressView({
   onWorkAddressSaved,
   onBack,
   isDeletePending = false,
+  className,
 }: WorkAddressViewProps) {
   const { t } = useTranslation('Employee.Management.WorkAddress')
   const Components = useComponentContext()
@@ -281,248 +284,253 @@ export function WorkAddressView({
     workAddress && companyLocations ? resolveLocation(workAddress, companyLocations) : undefined
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={4} alignItems="flex-start">
-        <Components.Heading as="h1" styledAs="h2">
-          {t('title')}
-        </Components.Heading>
-        <Components.Text variant="supporting">{t('description')}</Components.Text>
-      </Flex>
-
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('currentSectionTitle')}
-            action={
-              workAddress ? (
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    onEditTargetUuidChange(undefined)
-                    setAddressModal('edit')
-                  }}
-                  isLoading={editStatus.isPending}
-                >
-                  {t('editCta')}
-                </Components.Button>
-              ) : undefined
-            }
-          />
-        }
-        footer={
-          <Components.Button
-            variant="secondary"
-            onClick={() => {
-              onEditTargetUuidChange(undefined)
-              setAddressModal('create')
-            }}
-            isLoading={createStatus.isPending}
-          >
-            {t('changeCta')}
-          </Components.Button>
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          {workAddress && currentLines ? (
-            <Flex flexDirection="column" gap={4}>
-              <FlexItem>
-                {currentLocation ? (
-                  <>
-                    <Components.Text weight="medium">
-                      {getStreet(currentLocation).trim()}
-                    </Components.Text>
-                    <Components.Text weight="medium">
-                      {getCityStateZip(currentLocation)}
-                    </Components.Text>
-                  </>
-                ) : (
-                  <>
-                    <Components.Text weight="medium">{currentLines.primary}</Components.Text>
-                    <Components.Text weight="medium">{currentLines.secondary}</Components.Text>
-                  </>
-                )}
-              </FlexItem>
-              {workAddress.effectiveDate ? (
-                <Components.Text variant="supporting">
-                  {t('currentSince', {
-                    date: formatDateLongWithYear(workAddress.effectiveDate),
-                  })}
-                </Components.Text>
-              ) : null}
-            </Flex>
-          ) : (
-            <Components.Text>{t('currentEmpty')}</Components.Text>
-          )}
-          {pendingFutureAddress ? (
-            <Components.Alert status="warning" label={t('changePendingTitle')}>
-              <Components.Text variant="supporting">
-                {t('changePendingDescription', {
-                  possessiveLabel: changePendingPossessiveLabel,
-                  newAddress: formatPendingWorkAddressLine(pendingFutureAddress, companyLocations),
-                  effectiveDate: pendingFutureAddress.effectiveDate
-                    ? formatDateLongWithYear(pendingFutureAddress.effectiveDate)
-                    : '—',
-                  // Values are inserted into JSX text, so the browser already
-                  // escapes them. Telling i18next to escape too produces
-                  // double-encoded entities like `&#39;` showing as text.
-                  interpolation: { escapeValue: false },
-                })}
-              </Components.Text>
-            </Components.Alert>
-          ) : null}
-        </Flex>
-      </Components.Box>
-
-      <Flex flexDirection="column" gap={12}>
-        <Components.Heading as="h2" styledAs="h4">
-          {t('historySectionTitle')}
-        </Components.Heading>
-        <DataView label={t('historySectionTitle')} {...historyDataView} />
-      </Flex>
-
-      <ActionsLayout>
-        <Components.Button variant="secondary" onClick={onBack}>
-          {t('backCta')}
-        </Components.Button>
-      </ActionsLayout>
-
-      <Components.Modal
-        isOpen={addressModal !== null}
-        onClose={closeAddressModal}
-        shouldCloseOnBackdropClick={false}
-        containerRef={addressModalContainerRef}
-        footer={
-          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
-            <Components.Button variant="secondary" onClick={closeAddressModal}>
-              {t('cancelCta')}
-            </Components.Button>
-            <Components.Button
-              variant="primary"
-              onClick={() => {
-                void handleSave()
-              }}
-              isLoading={modalPending}
-            >
-              {t('submitCta')}
-            </Components.Button>
-          </Flex>
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">
-            {addressModal === 'edit' ? t('editModalTitle') : t('changeModalTitle')}
+    <section className={className}>
+      <Flex flexDirection="column" gap={24}>
+        <Flex flexDirection="column" gap={4} alignItems="flex-start">
+          <Components.Heading as="h1" styledAs="h2">
+            {t('title')}
           </Components.Heading>
-          <Components.Text variant="supporting">
-            {addressModal === 'edit' ? t('editModalDescription') : t('changeModalDescription')}
-          </Components.Text>
-          {addressModal === 'edit' && editShowsEffectiveDateField ? (
-            <Components.Alert status="warning" label={t('editPastAddressAlertTitle')} />
-          ) : null}
-          {addressModal === 'edit' ? (
-            <SDKFormProvider formHookResult={editWorkAddressForm}>
-              <Grid
-                gridTemplateColumns={{
-                  base: '1fr',
-                  small: '1fr',
-                }}
-                gap={20}
-              >
-                <LocationField
-                  label={
-                    editShowsEffectiveDateField
-                      ? t('form.editInactiveLocationLabel')
-                      : t('form.editLocationLabel')
-                  }
-                  description={t('form.editLocationDescription')}
-                  placeholder={t('form.selectPlaceholder')}
-                  validationMessages={locationValidation}
-                  portalContainer={addressModalPortal}
-                />
-                {editShowsEffectiveDateField ? (
-                  <EffectiveDateField
-                    label={t('form.startDateLabel')}
-                    description={t('form.editInactiveStartDateDescription')}
-                    validationMessages={startDateValidation}
-                    portalContainer={addressModalPortal}
-                  />
-                ) : null}
-              </Grid>
-            </SDKFormProvider>
-          ) : null}
-          {addressModal === 'create' ? (
-            <SDKFormProvider formHookResult={changeWorkAddressForm}>
-              <Grid
-                gridTemplateColumns={{
-                  base: '1fr',
-                  small: '1fr',
-                }}
-                gap={20}
-              >
-                <LocationField
-                  label={t('form.newWorkAddressLabel')}
-                  description={t('form.newWorkAddressDescription')}
-                  placeholder={t('form.selectPlaceholder')}
-                  validationMessages={locationValidation}
-                  portalContainer={addressModalPortal}
-                />
-                <EffectiveDateField
-                  label={t('form.startDateLabel')}
-                  description={t('form.startDateDescription')}
-                  validationMessages={startDateValidation}
-                  portalContainer={addressModalPortal}
-                />
-              </Grid>
-            </SDKFormProvider>
-          ) : null}
+          <Components.Text variant="supporting">{t('description')}</Components.Text>
         </Flex>
-      </Components.Modal>
 
-      <Components.Modal
-        isOpen={deleteConfirmUuid !== null}
-        onClose={() => {
-          setDeleteConfirmUuid(null)
-        }}
-        shouldCloseOnBackdropClick={false}
-        footer={
-          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title={t('currentSectionTitle')}
+              action={
+                workAddress ? (
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      onEditTargetUuidChange(undefined)
+                      setAddressModal('edit')
+                    }}
+                    isLoading={editStatus.isPending}
+                  >
+                    {t('editCta')}
+                  </Components.Button>
+                ) : undefined
+              }
+            />
+          }
+          footer={
             <Components.Button
               variant="secondary"
               onClick={() => {
-                setDeleteConfirmUuid(null)
+                onEditTargetUuidChange(undefined)
+                setAddressModal('create')
               }}
+              isLoading={createStatus.isPending}
             >
-              {t('cancelCta')}
+              {t('changeCta')}
             </Components.Button>
-            <Components.Button
-              variant="error"
-              onClick={() => {
-                void handleDeleteModalConfirm()
-              }}
-              isLoading={isDeletePending && deleteConfirmUuid !== null}
-            >
-              {t('deleteModalConfirmCta')}
-            </Components.Button>
-          </Flex>
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">{t('deleteModalTitle')}</Components.Heading>
-          <Components.Text variant="supporting">
-            {addressForDeleteModal ? (
-              <Trans
-                t={t}
-                i18nKey="deleteModalDescription"
-                values={{
-                  address: formatPendingWorkAddressLine(addressForDeleteModal, companyLocations),
-                }}
-                components={{
-                  strong: <Components.Text weight="medium" as="span" />,
-                }}
-              />
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            {workAddress && currentLines ? (
+              <Flex flexDirection="column" gap={4}>
+                <FlexItem>
+                  {currentLocation ? (
+                    <>
+                      <Components.Text weight="medium">
+                        {getStreet(currentLocation).trim()}
+                      </Components.Text>
+                      <Components.Text weight="medium">
+                        {getCityStateZip(currentLocation)}
+                      </Components.Text>
+                    </>
+                  ) : (
+                    <>
+                      <Components.Text weight="medium">{currentLines.primary}</Components.Text>
+                      <Components.Text weight="medium">{currentLines.secondary}</Components.Text>
+                    </>
+                  )}
+                </FlexItem>
+                {workAddress.effectiveDate ? (
+                  <Components.Text variant="supporting">
+                    {t('currentSince', {
+                      date: formatDateLongWithYear(workAddress.effectiveDate),
+                    })}
+                  </Components.Text>
+                ) : null}
+              </Flex>
+            ) : (
+              <Components.Text>{t('currentEmpty')}</Components.Text>
+            )}
+            {pendingFutureAddress ? (
+              <Components.Alert status="warning" label={t('changePendingTitle')}>
+                <Components.Text variant="supporting">
+                  {t('changePendingDescription', {
+                    possessiveLabel: changePendingPossessiveLabel,
+                    newAddress: formatPendingWorkAddressLine(
+                      pendingFutureAddress,
+                      companyLocations,
+                    ),
+                    effectiveDate: pendingFutureAddress.effectiveDate
+                      ? formatDateLongWithYear(pendingFutureAddress.effectiveDate)
+                      : '—',
+                    // Values are inserted into JSX text, so the browser already
+                    // escapes them. Telling i18next to escape too produces
+                    // double-encoded entities like `&#39;` showing as text.
+                    interpolation: { escapeValue: false },
+                  })}
+                </Components.Text>
+              </Components.Alert>
             ) : null}
-          </Components.Text>
+          </Flex>
+        </Components.Box>
+
+        <Flex flexDirection="column" gap={12}>
+          <Components.Heading as="h2" styledAs="h4">
+            {t('historySectionTitle')}
+          </Components.Heading>
+          <DataView label={t('historySectionTitle')} {...historyDataView} />
         </Flex>
-      </Components.Modal>
-    </Flex>
+
+        <ActionsLayout>
+          <Components.Button variant="secondary" onClick={onBack}>
+            {t('backCta')}
+          </Components.Button>
+        </ActionsLayout>
+
+        <Components.Modal
+          isOpen={addressModal !== null}
+          onClose={closeAddressModal}
+          shouldCloseOnBackdropClick={false}
+          containerRef={addressModalContainerRef}
+          footer={
+            <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+              <Components.Button variant="secondary" onClick={closeAddressModal}>
+                {t('cancelCta')}
+              </Components.Button>
+              <Components.Button
+                variant="primary"
+                onClick={() => {
+                  void handleSave()
+                }}
+                isLoading={modalPending}
+              >
+                {t('submitCta')}
+              </Components.Button>
+            </Flex>
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            <Components.Heading as="h2">
+              {addressModal === 'edit' ? t('editModalTitle') : t('changeModalTitle')}
+            </Components.Heading>
+            <Components.Text variant="supporting">
+              {addressModal === 'edit' ? t('editModalDescription') : t('changeModalDescription')}
+            </Components.Text>
+            {addressModal === 'edit' && editShowsEffectiveDateField ? (
+              <Components.Alert status="warning" label={t('editPastAddressAlertTitle')} />
+            ) : null}
+            {addressModal === 'edit' ? (
+              <SDKFormProvider formHookResult={editWorkAddressForm}>
+                <Grid
+                  gridTemplateColumns={{
+                    base: '1fr',
+                    small: '1fr',
+                  }}
+                  gap={20}
+                >
+                  <LocationField
+                    label={
+                      editShowsEffectiveDateField
+                        ? t('form.editInactiveLocationLabel')
+                        : t('form.editLocationLabel')
+                    }
+                    description={t('form.editLocationDescription')}
+                    placeholder={t('form.selectPlaceholder')}
+                    validationMessages={locationValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                  {editShowsEffectiveDateField ? (
+                    <EffectiveDateField
+                      label={t('form.startDateLabel')}
+                      description={t('form.editInactiveStartDateDescription')}
+                      validationMessages={startDateValidation}
+                      portalContainer={addressModalPortal}
+                    />
+                  ) : null}
+                </Grid>
+              </SDKFormProvider>
+            ) : null}
+            {addressModal === 'create' ? (
+              <SDKFormProvider formHookResult={changeWorkAddressForm}>
+                <Grid
+                  gridTemplateColumns={{
+                    base: '1fr',
+                    small: '1fr',
+                  }}
+                  gap={20}
+                >
+                  <LocationField
+                    label={t('form.newWorkAddressLabel')}
+                    description={t('form.newWorkAddressDescription')}
+                    placeholder={t('form.selectPlaceholder')}
+                    validationMessages={locationValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                  <EffectiveDateField
+                    label={t('form.startDateLabel')}
+                    description={t('form.startDateDescription')}
+                    validationMessages={startDateValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                </Grid>
+              </SDKFormProvider>
+            ) : null}
+          </Flex>
+        </Components.Modal>
+
+        <Components.Modal
+          isOpen={deleteConfirmUuid !== null}
+          onClose={() => {
+            setDeleteConfirmUuid(null)
+          }}
+          shouldCloseOnBackdropClick={false}
+          footer={
+            <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  setDeleteConfirmUuid(null)
+                }}
+              >
+                {t('cancelCta')}
+              </Components.Button>
+              <Components.Button
+                variant="error"
+                onClick={() => {
+                  void handleDeleteModalConfirm()
+                }}
+                isLoading={isDeletePending && deleteConfirmUuid !== null}
+              >
+                {t('deleteModalConfirmCta')}
+              </Components.Button>
+            </Flex>
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            <Components.Heading as="h2">{t('deleteModalTitle')}</Components.Heading>
+            <Components.Text variant="supporting">
+              {addressForDeleteModal ? (
+                <Trans
+                  t={t}
+                  i18nKey="deleteModalDescription"
+                  values={{
+                    address: formatPendingWorkAddressLine(addressForDeleteModal, companyLocations),
+                  }}
+                  components={{
+                    strong: <Components.Text weight="medium" as="span" />,
+                  }}
+                />
+              ) : null}
+            </Components.Text>
+          </Flex>
+        </Components.Modal>
+      </Flex>
+    </section>
   )
 }

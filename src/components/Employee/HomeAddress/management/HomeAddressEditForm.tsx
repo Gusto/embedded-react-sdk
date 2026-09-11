@@ -24,6 +24,7 @@ function HomeAddressEditFormRoot({
   onEvent,
   dictionary,
   LoaderComponent,
+  className,
 }: HomeAddressEditFormProps) {
   useI18n('Employee.Management.HomeAddress')
   useComponentDictionary('Employee.Management.HomeAddress', dictionary)
@@ -67,6 +68,7 @@ function HomeAddressEditFormRoot({
           onEvent(componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED)
         }}
         isDeletePending={management.status.isDeletePending}
+        className={className}
       />
     </BaseLayout>
   )

@@ -257,6 +257,28 @@ describe('PayrollOverview submit-in-progress overlay', () => {
   })
 })
 
+describe('PayrollOverview className', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+    mockIsFetching = false
+  })
+
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <PayrollOverview
+        companyId="company-uuid"
+        payrollId="payroll-uuid"
+        onEvent={vi.fn()}
+        className="custom-class"
+      />,
+    )
+
+    await screen.findByText(/Review payroll/i)
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+})
+
 describe('PayrollOverview tax totals', () => {
   beforeEach(() => {
     vi.clearAllMocks()

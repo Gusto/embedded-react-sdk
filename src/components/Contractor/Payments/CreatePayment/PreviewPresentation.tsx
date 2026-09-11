@@ -19,6 +19,8 @@ import { PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES } from '@/shared/constants'
 const ZERO_HOURS_DISPLAY = '0.000'
 
 interface PreviewPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   contractorPaymentGroup: ContractorPaymentGroupPreview
   contractors: Contractor[]
   onBackToEdit: () => void
@@ -32,6 +34,7 @@ interface PreviewPresentationProps {
 
 /** @internal */
 export const PreviewPresentation = ({
+  className,
   contractorPaymentGroup,
   contractors,
   onBackToEdit,
@@ -90,7 +93,7 @@ export const PreviewPresentation = ({
     (submissionBlockers.length > 0 && (hasUnresolvableBlockers || hasUnselectedBlockers))
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Flex justifyContent="flex-end" gap={16}>
         <Flex flexDirection="column" gap={2}>
           <Heading as="h2">{t('reviewAndSubmitTitle')}</Heading>

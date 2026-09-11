@@ -49,7 +49,7 @@ export function ContractorSubmit(props: ContractorSubmitProps) {
   )
 }
 
-const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
+const Root = ({ contractorId, selfOnboarding, dictionary, className }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
   useComponentDictionary('Contractor.Submit', dictionary)
   const { Alert, Button, Heading, UnorderedList } = useComponentContext()
@@ -109,17 +109,23 @@ const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProp
   }
 
   if (onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
-    return <SubmitDone onDone={handleSubmitDone} />
+    return <SubmitDone onDone={handleSubmitDone} className={className} />
   }
   if (
     onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED &&
     selfOnboarding
   ) {
-    return <InviteContractor onSubmit={handleInviteContractor} contractorId={contractorId} />
+    return (
+      <InviteContractor
+        onSubmit={handleInviteContractor}
+        contractorId={contractorId}
+        className={className}
+      />
+    )
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <FlexItem>
         <Heading as="h2">{t('heading')}</Heading>
       </FlexItem>
@@ -246,9 +252,12 @@ const DocumentRequirementItem = ({
 const InviteContractor = ({
   onSubmit,
   contractorId,
+  className,
 }: {
   onSubmit: () => void
   contractorId: string
+  /** CSS class name applied to the root element. */
+  className?: string
 }) => {
   const { t } = useTranslation('Contractor.Submit', { keyPrefix: 'inviteContractor' })
   const { Button, Heading, Text } = useComponentContext()
@@ -257,7 +266,7 @@ const InviteContractor = ({
   const contractor = contractorData.contractor
 
   return (
-    <Flex flexDirection="column">
+    <Flex className={className} flexDirection="column">
       <Heading as="h2">{t('title')}</Heading>
       <Text>{t('description')}</Text>
       <Flex flexDirection="column">

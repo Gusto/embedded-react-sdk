@@ -228,7 +228,13 @@ function buildUpdateRequestBody(
   }
 }
 
-function Root({ companyId, policyType, defaultValues, policyId }: PolicyConfigurationFormProps) {
+function Root({
+  companyId,
+  policyType,
+  defaultValues,
+  policyId,
+  className,
+}: PolicyConfigurationFormProps) {
   if (policyId) {
     return (
       <EditRoot
@@ -236,19 +242,29 @@ function Root({ companyId, policyType, defaultValues, policyId }: PolicyConfigur
         policyType={policyType}
         policyId={policyId}
         defaultValues={defaultValues}
+        className={className}
       />
     )
   }
-  return <CreateRoot companyId={companyId} policyType={policyType} defaultValues={defaultValues} />
+  return (
+    <CreateRoot
+      companyId={companyId}
+      policyType={policyType}
+      defaultValues={defaultValues}
+      className={className}
+    />
+  )
 }
 
 interface CreateRootProps {
   companyId: string
   policyType: 'sick' | 'vacation'
   defaultValues?: Partial<PolicyConfigurationFormData>
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
-function CreateRoot({ companyId, policyType, defaultValues }: CreateRootProps) {
+function CreateRoot({ companyId, policyType, defaultValues, className }: CreateRootProps) {
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { mutateAsync: createTimeOffPolicy, isPending } = useTimeOffPoliciesCreateMutation()
@@ -284,6 +300,7 @@ function CreateRoot({ companyId, policyType, defaultValues }: CreateRootProps) {
       onCancel={handleCancel}
       defaultValues={defaultValues}
       isPending={isPending}
+      className={className}
     />
   )
 }
@@ -293,9 +310,11 @@ interface EditRootProps {
   policyType: 'sick' | 'vacation'
   policyId: string
   defaultValues?: Partial<PolicyConfigurationFormData>
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
-function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootProps) {
+function EditRoot({ companyId, policyType, policyId, defaultValues, className }: EditRootProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
 
@@ -355,6 +374,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
       editingPolicyName={policy.name}
       isPending={isPending}
       lockedAccrualCategory={lockedAccrualCategory}
+      className={className}
     />
   )
 }

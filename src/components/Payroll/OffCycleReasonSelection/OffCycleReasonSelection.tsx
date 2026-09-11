@@ -35,7 +35,7 @@ export function OffCycleReasonSelection(props: OffCycleReasonSelectionProps) {
   )
 }
 
-function Root({ dictionary }: OffCycleReasonSelectionProps) {
+function Root({ dictionary, className }: OffCycleReasonSelectionProps) {
   useComponentDictionary('Payroll.OffCycleReasonSelection', dictionary)
   useI18n('Payroll.OffCycleReasonSelection')
 
@@ -57,7 +57,11 @@ function Root({ dictionary }: OffCycleReasonSelectionProps) {
 
   return (
     <FormProvider {...methods}>
-      <OffCycleReasonSelectionPresentation name="reason" onChange={handleReasonChange} />
+      <OffCycleReasonSelectionPresentation
+        name="reason"
+        onChange={handleReasonChange}
+        className={className}
+      />
     </FormProvider>
   )
 }

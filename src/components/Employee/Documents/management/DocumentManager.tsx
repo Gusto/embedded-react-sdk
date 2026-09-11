@@ -41,7 +41,11 @@ export interface DocumentManagerProps extends BaseComponentInterface<'Employee.D
 export function DocumentManager(props: DocumentManagerProps) {
   return (
     <BaseComponent {...props} componentName="Employee.DocumentManager">
-      <DocumentManagerRoot employeeId={props.employeeId} formId={props.formId} />
+      <DocumentManagerRoot
+        employeeId={props.employeeId}
+        formId={props.formId}
+        className={props.className}
+      />
     </BaseComponent>
   )
 }
@@ -49,6 +53,7 @@ export function DocumentManager(props: DocumentManagerProps) {
 function DocumentManagerRoot({
   employeeId,
   formId,
+  className,
 }: Omit<DocumentManagerProps, BaseComponentKeys>) {
   useI18n('Employee.DocumentManager')
   const { t } = useTranslation('Employee.DocumentManager')
@@ -67,7 +72,7 @@ function DocumentManagerRoot({
   if (!form) return null
 
   return (
-    <Flex flexDirection="column" gap={16}>
+    <Flex className={className} flexDirection="column" gap={16}>
       {form.title && <Components.Heading as="h2">{form.title}</Components.Heading>}
       {pdfUrl && (
         <Components.Text>

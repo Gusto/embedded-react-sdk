@@ -65,7 +65,7 @@ export function PolicyList({ FallbackComponent, LoaderComponent, ...props }: Pol
   )
 }
 
-function Root({ companyId, onEvent, LoaderComponent }: PolicyListProps) {
+function Root({ companyId, onEvent, LoaderComponent, className }: PolicyListProps) {
   useI18n('Company.TimeOff.TimeOffPolicies')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicies')
   const queryClient = useQueryClient()
@@ -214,6 +214,7 @@ function Root({ companyId, onEvent, LoaderComponent }: PolicyListProps) {
         }}
         isDeletingPolicyId={isDeletingPolicyId}
         isPending={isPending}
+        className={className}
       />
     </BaseLayout>
   )
