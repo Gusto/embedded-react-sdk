@@ -1264,6 +1264,17 @@ export const PayrollOverviewWithWireFunds = () => {
   )
 }
 
+export const NarrowReflow320x256 = () => {
+  return (
+    <div
+      data-testid="narrow-payroll-overview"
+      style={{ width: 320, height: 256, overflow: 'auto' }}
+    >
+      <PayrollOverviewWithWireFunds />
+    </div>
+  )
+}
+
 export const PayrollOverviewWith4DayDirectDeposit = () => {
   return (
     <PayrollOverviewPresentation
