@@ -418,7 +418,8 @@ export const PayrollEditEmployeePresentation = ({
   isRropEnabled = false,
   workweeks = [],
 }: PayrollEditEmployeeProps) => {
-  const { Box, BoxHeader, Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, ButtonIcon, Heading, Text, TextInput } =
+    useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -804,6 +805,13 @@ export const PayrollEditEmployeePresentation = ({
           {hourlyJobs.length > 0 && (
             <div className={styles.fieldGroup}>
               {hourlyJobs.length > 1 && <Heading as="h3">Regular and overtime hours</Heading>}
+              {isWorkweekSplit && (
+                <Alert
+                  status="info"
+                  label={`When adding overtime hours, you must record hours and earnings by work week so ${employeeName}'s pay is calculated correctly.`}
+                  disableScrollIntoView
+                />
+              )}
               {hourlyJobs.map(hourlyJob => {
                 const rows: HourRow[] = HOURS_COMPENSATION_NAMES.flatMap(compensationName => {
                   const match = findMatchingCompensation(hourlyJob.uuid, compensationName)
