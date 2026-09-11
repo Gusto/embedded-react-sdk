@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
@@ -27,12 +27,17 @@ import {
   buildPayrollUpdateEmployeeCompensation,
   collectOvertimeEarningNames,
   derivePayrollEditEmployeeDefaults,
+  hasBreakdownsMatchingWorkweeks,
+  hasExistingOvertimeHours,
   normalizeWorkweeks,
   resolveEditableFixedCompensations,
+  type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import {
+  computeTimeOffRemaining,
   createPayrollEditEmployeeFields,
   createReimbursementDraftFields,
+  type PayrollEditEmployeeErrorMessages,
   type PayrollEditEmployeeFields,
   type ReimbursementDraftFields,
   type ReimbursementRow,
@@ -88,6 +93,13 @@ export interface UsePayrollEditEmployeeFormProps {
   validationMode?: UseFormProps['mode']
   /** Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. */
   shouldFocusError?: boolean
+  /**
+   * Display copy for each validation error code, baked into every bound field so
+   * it resolves and renders its own message. Supply it once, keyed by
+   * {@link PayrollEditEmployeeErrorCodes}; a missing code falls back to the raw
+   * code. Omit it to render raw codes.
+   */
+  errorMessages?: PayrollEditEmployeeErrorMessages
 }
 
 /**
@@ -124,12 +136,32 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     employeeCompensation?: PayrollEmployeeCompensationsType
     /** The prepared payroll (server-calculated totals and workweeks). */
     preparedPayroll: PayrollPrepared
+    /** The employee's server-calculated gross pay for this payroll (excluding reimbursements), as a number. `0` when absent. */
+    grossPay: number
     /** The pay schedule for the payroll, if loaded. */
     paySchedule?: PayScheduleShow
     /** Whether the pay period spans more than one workweek. Raw workweeks are on `preparedPayroll.workweeks`. */
     isMultipleWorkweeks: boolean
+    /**
+     * The pay period's normalized workweeks (`{ startDate, endDate }` strings),
+     * in order — one entry, spanning the pay period, when it's a single
+     * workweek. The per-workweek split fields are keyed by start date only, so
+     * this is the source for each column's date range.
+     */
+    workweeks: NormalizedWorkweek[]
     /** Whether the employee is overtime-eligible (nonexempt family). Drives whether hours split by workweek. */
     isOvertimeEligible: boolean
+    /**
+     * The single, form-wide overtime-mode flag. `false` renders one flat
+     * column per line with Overtime/Double-overtime rows hidden; `true`
+     * splits hours and overtime-affecting earnings into per-workweek columns
+     * (for overtime-eligible employees on a multi-workweek payroll) and
+     * un-hides those rows. Starts `true` when the employee already has real
+     * overtime hours or matching per-workweek breakdowns (see
+     * `hasExistingOvertimeHours`, `hasBreakdownsMatchingWorkweeks`), or after
+     * `actions.addOvertime` is called; otherwise starts `false`.
+     */
+    withOvertime: boolean
     /** Whether the employee has a direct-deposit bank account set up. */
     hasDirectDepositSetup: boolean
     /**
@@ -146,6 +178,17 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
   actions: {
     /** Validates and submits the form, resolving to the updated prepared payroll on success or `undefined` when validation blocked the submit. */
     onSubmit: () => Promise<HookSubmitResult<PayrollPrepared> | undefined>
+    /**
+     * Sets `data.withOvertime` to `true`, switching the whole form to the
+     * workweek split: un-hides Overtime/Double-overtime rows and splits hours
+     * and overtime-affecting earnings into per-workweek columns. Populates
+     * only the first workweek cell of each line with that line's current
+     * total, leaving every other cell blank — no auto distribution — so the
+     * per-row validation then requires the user to fill in the rest. One
+     * affordance for the whole employee, not one per job. One-directional —
+     * there's no corresponding "remove overtime" action.
+     */
+    addOvertime: () => void
     /** Reveals the draft reimbursement row. Present only when reimbursement controls are exposed. */
     beginAddReimbursement?: () => void
     /** Validates the draft and commits it to the reimbursement list, or flags the draft amount if invalid. Present only when reimbursement controls are exposed. */
@@ -182,10 +225,12 @@ export type UsePayrollEditEmployeeFormResult = HookLoadingResult | UsePayrollEdi
  * @remarks
  * Prepares the payroll for the target employee, then exposes a workweek-keyed
  * form whose submit builds a `PayrollUpdate`. Single-workweek pay periods send
- * totals without `breakdowns`; multi-workweek pay periods send `breakdowns`
- * tiling every workweek exactly. Overtime-eligible (nonexempt) employees split
- * hours and overtime-affecting earnings per workweek; everyone else edits flat
- * totals.
+ * totals without `breakdowns`; multi-workweek pay periods send `breakdowns` per
+ * line once that line's every workweek cell is filled. Overtime-eligible
+ * (nonexempt) employees split hours and overtime-affecting earnings per
+ * workweek while the single `data.withOvertime` flag is on (see
+ * `actions.addOvertime`); everyone else, and every line while `withOvertime` is
+ * off, edits flat totals.
  *
  * @param props - Hook options.
  * @returns A loading result while data is fetching, or a ready result with data,
@@ -199,6 +244,7 @@ export function usePayrollEditEmployeeForm({
   withReimbursements = true,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  errorMessages,
 }: UsePayrollEditEmployeeFormProps): UsePayrollEditEmployeeFormResult {
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
   const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
@@ -280,6 +326,16 @@ export function usePayrollEditEmployeeForm({
   }, [employeeCompensation, employee])
   const isOvertimeEligible = isOvertimeEligibleFlsaStatus(flsaStatus)
 
+  // Starts on when the employee already has real overtime hours, or already has
+  // per-workweek breakdowns matching the current pay period's workweeks (nothing
+  // to hide either way), otherwise starts off until the user opts in via
+  // `actions.addOvertime`. One-directional: there's no "remove overtime" action.
+  const [withOvertimeSetByUser, setWithOvertimeSetByUser] = useState(false)
+  const withOvertime =
+    withOvertimeSetByUser ||
+    hasExistingOvertimeHours(employeeCompensation?.hourlyCompensations) ||
+    hasBreakdownsMatchingWorkweeks(employeeCompensation?.hourlyCompensations, workweeks)
+
   const primaryJobUuid = useMemo(() => employee?.jobs?.find(job => job.primary)?.uuid, [employee])
 
   // Seed a blank input for every payroll fixed-compensation type (like the stable
@@ -305,6 +361,19 @@ export function usePayrollEditEmployeeForm({
     return titles
   }, [employee])
 
+  // Accrual balance per time-off policy, owned by the hook (rather than looked
+  // up in the consumer) so the time-off field can render its own live remaining
+  // balance.
+  const timeOffAccrualByName = useMemo(() => {
+    const balances = new Map<string, string>()
+    for (const policy of employee?.eligiblePaidTimeOff ?? []) {
+      if (policy.name && policy.accrualBalance != null) {
+        balances.set(policy.name, policy.accrualBalance)
+      }
+    }
+    return balances
+  }, [employee])
+
   const schema = useMemo(() => createPayrollEditEmployeeSchema(), [])
 
   const resolvedDefaults = useMemo(
@@ -315,6 +384,7 @@ export function usePayrollEditEmployeeForm({
         hasDirectDepositSetup,
         overtimeEarningNames,
         isOvertimeEligible,
+        withOvertime,
         resolvedFixedCompensations,
       ),
     [
@@ -323,6 +393,7 @@ export function usePayrollEditEmployeeForm({
       hasDirectDepositSetup,
       overtimeEarningNames,
       isOvertimeEligible,
+      withOvertime,
       resolvedFixedCompensations,
     ],
   )
@@ -337,6 +408,12 @@ export function usePayrollEditEmployeeForm({
       resetOptions: { keepDirtyValues: true },
     },
   )
+
+  // Watched so each `Fields.timeOff[i].remaining` stays live as the user edits
+  // hours. The whole form re-renders on keystroke regardless of who owns this
+  // watch, so there's no cost to owning it here rather than in a per-row
+  // subcomponent.
+  const watchedTimeOff = useWatch({ control: formMethods.control, name: 'timeOff' })
 
   // Off-cycle payrolls write reimbursements via the legacy fixed-compensation path
   // (the itemized array is rejected server-side), so itemized reimbursement controls
@@ -357,8 +434,8 @@ export function usePayrollEditEmployeeForm({
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
 
   const reimbursementDraftFields = useMemo<ReimbursementDraftFields>(
-    () => createReimbursementDraftFields(),
-    [],
+    () => createReimbursementDraftFields(errorMessages),
+    [errorMessages],
   )
 
   // Committed rows for the consumer's table. A removed existing row (one with a
@@ -435,7 +512,10 @@ export function usePayrollEditEmployeeForm({
         hasDirectDepositSetup,
         overtimeEarningNames,
         isOvertimeEligible,
+        withOvertime,
         jobTitlesByUuid,
+        timeOffAccrualByName,
+        errorMessages,
       }),
     [
       employeeCompensation,
@@ -445,9 +525,51 @@ export function usePayrollEditEmployeeForm({
       hasDirectDepositSetup,
       overtimeEarningNames,
       isOvertimeEligible,
+      withOvertime,
       jobTitlesByUuid,
+      timeOffAccrualByName,
+      errorMessages,
     ],
   )
+
+  // Overlay the live remaining balance onto each time-off entry every render, so
+  // it tracks the watched entered values without rebuilding (and remounting) the
+  // bound field components the `fields` memo owns.
+  const timeOffFields = useMemo(
+    () =>
+      fields.timeOff.map(entry => ({
+        ...entry,
+        remaining: computeTimeOffRemaining(
+          timeOffAccrualByName.get(entry.name),
+          watchedTimeOff[entry.name],
+        ),
+      })),
+    [fields.timeOff, timeOffAccrualByName, watchedTimeOff],
+  )
+
+  // Re-derives with `withOvertime` forced `true` and pushes the result straight
+  // into the form: every line's first workweek cell gets that line's current
+  // total, every other cell is left blank (never auto-distributed — see
+  // `derivePayrollEditEmployeeDefaults`/`buildWeekMap`). The per-row validation
+  // then requires the user to fill in the rest before they can submit.
+  // `setValue` (not `resetField`) is used so this overwrites even a value the
+  // user already typed into the collapsed input. Plain function (not memoized):
+  // it only runs on a user click, and its inputs are recomputed each render, so
+  // a `useCallback` here would never actually hold a stable reference.
+  const addOvertime = () => {
+    setWithOvertimeSetByUser(true)
+    const revealedDefaults = derivePayrollEditEmployeeDefaults(
+      employeeCompensation,
+      workweeks,
+      hasDirectDepositSetup,
+      overtimeEarningNames,
+      isOvertimeEligible,
+      true,
+      resolvedFixedCompensations,
+    )
+    formMethods.setValue('hours', revealedDefaults.hours)
+    formMethods.setValue('additionalEarnings', revealedDefaults.additionalEarnings)
+  }
   const fieldsMetadata = useMemo<PayrollEditEmployeeFieldsMetadata>(
     () => ({
       paymentMethod: withOptions(
@@ -490,6 +612,7 @@ export function usePayrollEditEmployeeForm({
               workweeks,
               payrollCategory,
               isOvertimeEligible,
+              withOvertime,
             )
 
             const response = await updatePayroll({
@@ -538,15 +661,19 @@ export function usePayrollEditEmployeeForm({
       employee,
       employeeCompensation,
       preparedPayroll,
+      grossPay: Number(employeeCompensation?.grossPay ?? 0),
       paySchedule: payScheduleQuery.data?.payScheduleShow,
       isMultipleWorkweeks: workweeks.length > 1,
+      workweeks,
       isOvertimeEligible,
+      withOvertime,
       hasDirectDepositSetup,
       ...(showReimbursements ? { reimbursements: reimbursementRows } : {}),
     },
     status: { isPending, mode: 'update' as const },
     actions: {
       onSubmit,
+      addOvertime,
       ...(showReimbursements
         ? {
             beginAddReimbursement,
@@ -560,6 +687,7 @@ export function usePayrollEditEmployeeForm({
     form: {
       Fields: {
         ...fields,
+        timeOff: timeOffFields,
         reimbursementDraft: showReimbursements ? reimbursementDraftFields : undefined,
       },
       fieldsMetadata,
