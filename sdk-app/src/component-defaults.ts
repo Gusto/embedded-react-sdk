@@ -12,6 +12,10 @@ type PropValue = string | number | boolean | string[] | null
 type PropValueOrFactory = PropValue | (() => PropValue)
 
 export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrFactory>> = {
+  'CompanyManagement.PaySchedule': {
+    enableAutoPilot: true,
+    enableMultipleSchedules: true,
+  },
   'EmployeeOnboarding.Profile': {
     isAdmin: true,
   },

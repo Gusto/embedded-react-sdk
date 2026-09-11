@@ -73,6 +73,19 @@ export * as EmployeeManagement from './Employee/exports/employeeManagement'
 export * as CompanyOnboarding from './Company/exports/companyOnboarding'
 
 /**
+ * Flows and blocks for managing a company's pay schedule after onboarding.
+ *
+ * @remarks
+ * ```ts
+ * import { CompanyManagement } from '@gusto/embedded-react-sdk'
+ * ```
+ *
+ * @group Component namespaces
+ * @alpha
+ */
+export * as CompanyManagement from './Company/exports/companyManagement'
+
+/**
  * Flows and blocks for onboarding contractors.
  *
  * @remarks

@@ -624,6 +624,30 @@ Translation keys for the `Company.Locations` i18n namespace.
 
 ***
 
+<a id="companymanagementpayschedule"></a>
+
+### CompanyManagementPaySchedule
+
+Translation keys for the `Company.Management.PaySchedule` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementpayscheduleautopilot"></a> `autoPilot` | |
+| `autoPilot.disabled` | `"Disabled"` |
+| `autoPilot.enabled` | `"Enabled"` |
+| `autoPilot.label` | `"AutoPilot"` |
+| <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
+| <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
+| `labels.frequency` | `"Frequency"` |
+| `labels.name` | `"Name"` |
+| <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
+| <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
+
+***
+
 <a id="companyonboardingoverview"></a>
 
 ### CompanyOnboardingOverview
@@ -5750,6 +5774,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
+| <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
 | <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |
