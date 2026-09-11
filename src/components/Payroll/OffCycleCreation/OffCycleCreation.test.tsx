@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
@@ -11,10 +11,31 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: [
-        { uuid: 'emp-1', firstName: 'John', lastName: 'Smith', department: 'Sales' },
-        { uuid: 'emp-2', firstName: 'Jane', lastName: 'Doe', department: 'Engineering' },
+        {
+          uuid: 'emp-1',
+          firstName: 'John',
+          lastName: 'Smith',
+          department: 'Sales',
+          jobs: [{ primary: true, title: 'Sales Manager' }],
+        },
+        {
+          uuid: 'emp-2',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          department: 'Engineering',
+          jobs: [
+            { primary: false, title: 'Account Manager' },
+            { primary: true, title: 'Engineering Lead' },
+          ],
+        },
         { uuid: 'emp-3', firstName: 'Alice', lastName: 'Smith', department: 'Marketing' },
-        { uuid: 'emp-4', firstName: 'Bob', lastName: 'Adams', department: 'Engineering' },
+        {
+          uuid: 'emp-4',
+          firstName: 'Bob',
+          lastName: 'Adams',
+          department: 'Engineering',
+          jobs: [{ primary: true, title: null }],
+        },
       ],
     },
     isLoading: false,
@@ -108,6 +129,61 @@ describe('OffCycleCreation', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
       })
+    })
+  })
+
+  // The payment date carried no minDate, so the ACH lead-time rule existed only as a
+  // submit-time error while legacy gws-flows disables invalid dates in the picker
+  // (SDK-1274). System time is pinned because the bound is derived from today.
+  describe('payment date minimum', () => {
+    // Wed Sep 2 2026 + 2 business days (the mocked paymentSpeedDays) = Fri Sep 4 2026.
+    const TODAY = new Date(2026, 8, 2)
+
+    beforeEach(() => {
+      vi.useFakeTimers({ shouldAdvanceTime: true })
+      vi.setSystemTime(TODAY)
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    const openPaymentDateCalendar = async (user: ReturnType<typeof userEvent.setup>) => {
+      const group = await waitFor(() => screen.getByRole('group', { name: 'Payment date' }))
+      await user.click(within(group).getByRole('button'))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+      return screen.getAllByRole('gridcell')
+    }
+
+    const cellFor = (cells: HTMLElement[], day: string) =>
+      cells.find(cell => cell.textContent.trim() === day)
+
+    it('disables dates before the ACH lead time', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      renderComponent()
+
+      const cells = await openPaymentDateCalendar(user)
+
+      expect(cellFor(cells, '3')).toHaveAttribute('aria-disabled', 'true')
+      expect(cellFor(cells, '4')).not.toHaveAttribute('aria-disabled')
+    })
+
+    it('relaxes the minimum to today when check-only is selected', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      renderComponent()
+
+      const checkOnly = await waitFor(() =>
+        screen.getByRole('checkbox', { name: /check-only payroll/i }),
+      )
+      await user.click(checkOnly)
+
+      const cells = await openPaymentDateCalendar(user)
+
+      // Today becomes selectable; the day before it stays out of range.
+      expect(cellFor(cells, '2')).not.toHaveAttribute('aria-disabled')
+      expect(cellFor(cells, '1')).toHaveAttribute('aria-disabled', 'true')
     })
   })
 
@@ -224,7 +300,7 @@ describe('OffCycleCreation', () => {
       today.setHours(0, 0, 0, 0)
 
       const pastDate = new Date('2020-01-01')
-      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, 'bonus', today)
+      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, today)
 
       const result = schema.safeParse({
         isCheckOnly: true,
@@ -240,6 +316,27 @@ describe('OffCycleCreation', () => {
         )
         expect(checkDateErrors.length).toBeGreaterThan(0)
       }
+    })
+
+    // Legacy allows a future pay-period start date for both Bonus and Correction (SDK-1275) --
+    // the schema no longer takes a payrollType to branch on, so this covers both.
+    it('allows a future start date (schema)', () => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      const futureDate = new Date(today)
+      futureDate.setDate(futureDate.getDate() + 30)
+
+      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, today)
+
+      const result = schema.safeParse({
+        isCheckOnly: false,
+        startDate: futureDate,
+        endDate: futureDate,
+        checkDate: futureDate,
+      })
+
+      expect(result.success).toBe(true)
     })
 
     it('does not emit an event when form has validation errors', async () => {
@@ -277,9 +374,49 @@ describe('OffCycleCreation', () => {
       })
 
       const options = screen.getAllByRole('option')
-      const optionLabels = options.map(option => option.textContent)
+      const optionLabels = options.map(option => option.firstElementChild?.textContent)
 
       expect(optionLabels).toEqual(['Bob Adams', 'Jane Doe', 'Alice Smith', 'John Smith'])
+    })
+
+    it("shows the employee's primary job title as the option description", async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('combobox'))
+
+      await waitFor(() => {
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Sales Manager')).toBeInTheDocument()
+      expect(screen.getByText('Engineering Lead')).toBeInTheDocument()
+      expect(screen.queryByText('Account Manager')).not.toBeInTheDocument()
+    })
+
+    it('omits the description when the employee has no job or the primary job has no title', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('combobox'))
+
+      await waitFor(() => {
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      })
+
+      const aliceOption = screen.getByRole('option', { name: 'Alice Smith' })
+      const bobOption = screen.getByRole('option', { name: 'Bob Adams' })
+
+      expect(aliceOption.firstElementChild?.textContent).toBe(aliceOption.textContent)
+      expect(bobOption.firstElementChild?.textContent).toBe(bobOption.textContent)
     })
 
     it('renders the include all employees switch defaulted to off with picker visible', async () => {
@@ -402,6 +539,23 @@ describe('OffCycleCreation', () => {
       expect(screen.getByText('Regular hours, regular wages, and tips')).toBeInTheDocument()
       expect(screen.getByText('Supplemental wages, bonus wages, commission')).toBeInTheDocument()
       expect(screen.getByText('Reimbursements')).toBeInTheDocument()
+      expect(screen.getByText(/standard tax tables for this pay frequency/i)).toBeInTheDocument()
+      expect(screen.getByText(/aren't taxable wages/i)).toBeInTheDocument()
+    })
+
+    it('renders the off-cycle tax withholding disclaimer', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(
+        screen.getByText(
+          /off-cycle payrolls are meant to supplement the standard payroll schedule/i,
+        ),
+      ).toBeInTheDocument()
+      expect(screen.getByText('and pay frequency,')).toBeInTheDocument()
     })
 
     it('opens the modal when Edit is clicked', async () => {

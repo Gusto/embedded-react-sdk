@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
-import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { keepPreviousData } from '@tanstack/react-query'
+import { usePayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import {
@@ -10,7 +11,7 @@ import {
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
-import { BaseComponent } from '@/components/Base/Base'
+import { BaseComponent, BaseLayout } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -65,7 +66,7 @@ const getDefaultStartDate = (): Date => {
 
 const getDefaultEndDate = (): Date => new Date()
 
-const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
+const Root = ({ onEvent, companyId, dictionary, LoaderComponent }: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
 
@@ -82,25 +83,27 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   })
   const dateFilterParams = dateRangeFilter.getApiDateParams()
 
-  const { data: payrollsData } = usePayrollsListSuspense({
-    companyId,
-    processingStatuses: [ProcessingStatuses.Processed],
-    payrollTypes: [
-      QueryParamPayrollTypes.Regular,
-      QueryParamPayrollTypes.OffCycle,
-      QueryParamPayrollTypes.External,
-    ],
-    includeOffCycle: true,
-    include: ['totals', 'payroll_status_meta'],
-    sortOrder: SortOrder.Desc,
-    startDate: dateFilterParams.startDate,
-    endDate: dateFilterParams.endDate,
-    page: currentPage,
-    per: itemsPerPage,
-  })
+  const { data: payrollsData, isFetching } = usePayrollsList(
+    {
+      companyId,
+      processingStatuses: [ProcessingStatuses.Processed],
+      payrollTypes: [
+        QueryParamPayrollTypes.Regular,
+        QueryParamPayrollTypes.OffCycle,
+        QueryParamPayrollTypes.External,
+      ],
+      includeOffCycle: true,
+      include: ['totals', 'payroll_status_meta'],
+      sortOrder: SortOrder.Desc,
+      startDate: dateFilterParams.startDate,
+      endDate: dateFilterParams.endDate,
+      page: currentPage,
+      per: itemsPerPage,
+    },
+    { placeholderData: keepPreviousData, throwOnError: true },
+  )
 
-  const payrollHistory = payrollsData.payrollList || []
-  const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers)
+  const payrollHistory = payrollsData?.payrollList || []
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
@@ -135,6 +138,12 @@ const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
       setCancelDialogItem(null)
     }
   }
+
+  if (!payrollsData) {
+    return <BaseLayout isLoading LoaderComponent={LoaderComponent} />
+  }
+
+  const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers, isFetching)
 
   return (
     <PayrollHistoryPresentation

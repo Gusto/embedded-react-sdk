@@ -1,5 +1,94 @@
 # Changelog
 
+## [0.55.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.5...v0.55.6) (2026-09-08)
+
+### Fixes
+
+- Default the payment method to check when an employee has no bank account on file ([#2683](https://github.com/Gusto/embedded-react-sdk/issues/2683))
+- Give contractor row action-menu buttons a row-specific accessible name ([#2647](https://github.com/Gusto/embedded-react-sdk/issues/2647))
+- Add an accessible label to the completed-step checkmark icon ([#2672](https://github.com/Gusto/embedded-react-sdk/issues/2672))
+- Freeze `PaySchedule`'s initial routing decision so it no longer changes mid-flow ([#2703](https://github.com/Gusto/embedded-react-sdk/issues/2703))
+- Right-align numeric `DataView` columns (currency, hours, tax rate) that aren't the last column in the table ([#2648](https://github.com/Gusto/embedded-react-sdk/issues/2648))
+- Add helper text under the off-cycle Payment date ([#2701](https://github.com/Gusto/embedded-react-sdk/issues/2701))
+- Recover from a failed payroll calculation instead of stalling forever ([#2700](https://github.com/Gusto/embedded-react-sdk/issues/2700))
+- Include reimbursements in the employee take-home Payment total ([#2699](https://github.com/Gusto/embedded-react-sdk/issues/2699))
+- Persist `0` when an additional-earning field is cleared instead of dropping it ([#2649](https://github.com/Gusto/embedded-react-sdk/issues/2649))
+- Make the cancel payroll dialog describe cancelling ([#2652](https://github.com/Gusto/embedded-react-sdk/issues/2652))
+- Fix payroll calculation, submission, and check-generation screens getting stuck (e.g. an unresolving "Loading payroll..." state) when a status update was missed ([#2715](https://github.com/Gusto/embedded-react-sdk/issues/2715))
+- Cap the hourly rate input at the server's inline validation limit ([#2710](https://github.com/Gusto/embedded-react-sdk/issues/2710))
+- Save a contractor's email address when edited from the management Profile form ([#2696](https://github.com/Gusto/embedded-react-sdk/issues/2696))
+
+### Chores & Maintenance
+
+- Bump `@gusto/embedded-api` to `0.3.0-rc.2` ([#2678](https://github.com/Gusto/embedded-react-sdk/issues/2678))
+- Bump dependencies (`react-error-boundary`, `react-hook-form`)
+- Bump dev dependencies (`react-router-dom`, `@typescript-eslint/parser`, `typescript-eslint`, `json-schema-to-typescript`, `lint-staged`, `tsx`)
+
+## [0.55.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.4...v0.55.5) (2026-08-31)
+
+### Fixes
+
+- Fix `InformationRequests` modal visibility so it is driven by the component's state machine ([#2662](https://github.com/Gusto/embedded-react-sdk/issues/2662))
+
+## [0.55.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.3...v0.55.4) (2026-08-31)
+
+### Features & Enhancements
+
+- Add explanatory copy for tax withholding and a disclaimer note for off-cycle payrolls ([#2618](https://github.com/Gusto/embedded-react-sdk/issues/2618))
+
+### Fixes
+
+- Add Suspense boundaries so components no longer throw a React error while i18n resources are loading ([#2654](https://github.com/Gusto/embedded-react-sdk/issues/2654))
+- Fix reimbursement amount validation ([#2630](https://github.com/Gusto/embedded-react-sdk/issues/2630))
+- Fix duplicate requirement keys colliding in the tax rate history so each entry is handled independently ([#2637](https://github.com/Gusto/embedded-react-sdk/issues/2637))
+- Correctly evaluate conditional (`applicable_if`) fields against non-editable sibling fields ([#2636](https://github.com/Gusto/embedded-react-sdk/issues/2636))
+- Show a loading indicator during data grid pagination transitions ([#2638](https://github.com/Gusto/embedded-react-sdk/issues/2638))
+- Show a loading indicator while a paystub downloads in `PayrollOverview` ([#2653](https://github.com/Gusto/embedded-react-sdk/issues/2653))
+- Prevent re-preparing a payroll from wiping an already-completed calculation ([#2656](https://github.com/Gusto/embedded-react-sdk/issues/2656))
+- Keep the current page visible during paginated list navigation instead of showing a loading fallback on every page change ([#2639](https://github.com/Gusto/embedded-react-sdk/issues/2639))
+- Disable invalid payment dates in the off-cycle payroll date picker ([#2650](https://github.com/Gusto/embedded-react-sdk/issues/2650))
+- Reject negative additional-earning amounts before submit ([#2651](https://github.com/Gusto/embedded-react-sdk/issues/2651))
+
+### Chores & Maintenance
+
+- Bump dependencies (`react-hook-form`, `react-i18next`, `dompurify`, `sass-embedded`, `@storybook/*`, `@testing-library/*`, `@types/react-dom`, `@typescript-eslint/*`, `eslint-plugin-storybook`, `cspell`)
+
+## [0.55.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.2...v0.55.3) (2026-08-24)
+
+### Features & Enhancements
+
+- Add a `readOnly` prop to `PayrollOverview` to hide the edit and cancel actions while keeping submit and receipt/paystub actions available, for read-only payroll review deep links ([#2616](https://github.com/Gusto/embedded-react-sdk/issues/2616))
+- Increase the default pagination page size from 10 to 25 in `PayrollConfiguration` and `PayrollOverview` employee tables ([#2614](https://github.com/Gusto/embedded-react-sdk/issues/2614))
+- Add partner dictionary overrides for form descriptions ([#2613](https://github.com/Gusto/embedded-react-sdk/issues/2613))
+- Show employee job titles in the off-cycle payroll employee picker ([#2617](https://github.com/Gusto/embedded-react-sdk/issues/2617))
+
+### Fixes
+
+- Always show the payroll deadline banner, regardless of payment method ([#2611](https://github.com/Gusto/embedded-react-sdk/issues/2611))
+- Fix a validation error when updating an employee's hire date while a secondary job has a future-dated effective date ([#2628](https://github.com/Gusto/embedded-react-sdk/issues/2628))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@microsoft/api-extractor`, `@storybook/addon-a11y`, `@vitest/coverage-v8`)
+
+## [0.55.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.1...v0.55.2) (2026-08-21)
+
+### Features & Enhancements
+
+- Add `PrintChecks` component for generating and printing payroll checks, embedded in `PayrollOverview` with a banner prompt and full form/summary/failure screens ([#2584](https://github.com/Gusto/embedded-react-sdk/issues/2584), [#2585](https://github.com/Gusto/embedded-react-sdk/issues/2585), [#2586](https://github.com/Gusto/embedded-react-sdk/issues/2586), [#2587](https://github.com/Gusto/embedded-react-sdk/issues/2587), [#2588](https://github.com/Gusto/embedded-react-sdk/issues/2588))
+- Add `withOffcyclePayroll` prop to control off-cycle payroll CTA visibility in `PayrollLanding` ([#2612](https://github.com/Gusto/embedded-react-sdk/issues/2612))
+- Make license text in payroll receipts a clickable link ([#2606](https://github.com/Gusto/embedded-react-sdk/issues/2606))
+
+### Fixes
+
+- Fix form validation incorrectly running base validators on dynamically excluded fields ([#2602](https://github.com/Gusto/embedded-react-sdk/issues/2602))
+- Show an already-processed banner and cancel-only overview in `PayrollConfiguration` when the payroll has already been processed ([#2605](https://github.com/Gusto/embedded-react-sdk/issues/2605))
+- Sort payroll employee lists alphabetically by last name ([#2607](https://github.com/Gusto/embedded-react-sdk/issues/2607))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@hookform/resolvers`)
+
 ## [0.55.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.0...v0.55.1) (2026-08-20)
 
 ### Features & Enhancements

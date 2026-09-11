@@ -1,0 +1,21 @@
+{
+  "alerts": {
+    "profileUpdated": "Perfil actualizado"
+  },
+  "form": {
+    "firstName": "Nombre legal",
+    "lastName": "Apellido legal",
+    "middleInitial": "Inicial del segundo nombre",
+    "ssnLabel": "Número de Seguro Social (9 dígitos)",
+    "successAlert": "Perfil actualizado correctamente",
+    "title": "Información básica",
+    "validations": {
+      "email": "Se requiere un correo electrónico válido",
+      "firstName": "Ingresa un nombre válido",
+      "lastName": "Ingresa un apellido válido"
+    }
+  },
+  "legalName": "Nombre legal",
+  "listEmptyPlaceholder": "Sin valor",
+  "title": "Detalles básicos"
+}

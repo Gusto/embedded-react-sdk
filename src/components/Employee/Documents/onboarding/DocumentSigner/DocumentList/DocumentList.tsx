@@ -6,7 +6,7 @@ import { Actions } from './Actions'
 import { DocumentListProvider } from './useDocumentList'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
 
@@ -27,6 +27,10 @@ export interface DocumentListProps extends BaseComponentInterface<'Employee.Docu
  * Fetches the employee's forms and renders the list of documents that still
  * require signing along with a continue action once everything is signed.
  *
+ * Each form's description is rendered as returned by the API, unless the `dictionary` prop
+ * supplies a `forms.<name>.description` override for that form's `name` (e.g.
+ * `forms.employee_direct_deposit.description`).
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -45,7 +49,8 @@ export function DocumentList(props: DocumentListProps) {
   )
 }
 
-function Root({ employeeId, className, children }: DocumentListProps) {
+function Root({ employeeId, className, children, dictionary }: DocumentListProps) {
+  useComponentDictionary('Employee.DocumentSigner', dictionary)
   useI18n('Employee.DocumentSigner')
   const { onEvent } = useBase()
 

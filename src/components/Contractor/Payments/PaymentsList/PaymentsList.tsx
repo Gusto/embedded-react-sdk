@@ -1,11 +1,12 @@
 import { useState, useMemo, useCallback } from 'react'
-import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
+import { keepPreviousData } from '@tanstack/react-query'
+import { useContractorPaymentGroupsGetList } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
 import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
 import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
 import type { InternalAlert } from '../types'
 import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
@@ -79,7 +80,13 @@ const calculateDateRange = (months: number = 3) => {
   }
 }
 
-const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListInternalProps) => {
+const Root = ({
+  companyId,
+  dictionary,
+  onEvent,
+  alerts,
+  LoaderComponent,
+}: PaymentsListInternalProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)
@@ -87,15 +94,17 @@ const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListInternalPr
 
   const { startDate, endDate } = useMemo(() => calculateDateRange(numberOfMonths), [numberOfMonths])
 
-  const { data } = useContractorPaymentGroupsGetListSuspense({
-    companyId,
-    startDate,
-    endDate,
-    page: currentPage,
-    per: itemsPerPage,
-  })
-  const contractorPayments = data.contractorPaymentGroupWithBlockers || []
-  const paginationProps = getPaginationProps(data.httpMeta.response.headers)
+  const { data, isFetching } = useContractorPaymentGroupsGetList(
+    {
+      companyId,
+      startDate,
+      endDate,
+      page: currentPage,
+      per: itemsPerPage,
+    },
+    { placeholderData: keepPreviousData, throwOnError: true },
+  )
+  const contractorPayments = data?.contractorPaymentGroupWithBlockers || []
 
   const { data: informationRequestsData } = useInformationRequestsGetInformationRequestsSuspense({
     companyUuid: companyId,
@@ -167,6 +176,12 @@ const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListInternalPr
   const allAlerts = useMemo(() => {
     return [...rfiAlerts, ...(alerts || [])]
   }, [rfiAlerts, alerts])
+
+  if (!data) {
+    return <BaseLayout isLoading LoaderComponent={LoaderComponent} />
+  }
+
+  const paginationProps = getPaginationProps(data.httpMeta.response.headers, isFetching)
 
   return (
     <PaymentsListPresentation

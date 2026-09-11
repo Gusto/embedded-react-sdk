@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { createMachine } from 'robot3'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { payScheduleStateMachine } from './payScheduleStateMachine'
@@ -83,9 +83,18 @@ function Root({ companyId, defaultValues, dictionary }: Omit<PayScheduleProps, B
   const { onEvent } = useBase()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
 
-  const hasSchedules = (paySchedules.payScheduleShowResponse?.length ?? 0) > 0
-  const initialState = hasSchedules ? 'listSchedules' : 'addSchedule'
-  const initialComponent = hasSchedules ? PayScheduleListContextual : PayScheduleFormContextual
+  // Freeze the initial routing decision. Recomputing it after a later refetch (e.g. once
+  // the first schedule is created) would re-seat the machine and orphan its interpreter.
+  const [{ initialState, initialComponent }] = useState<{
+    initialState: keyof typeof payScheduleStateMachine
+    initialComponent: typeof PayScheduleListContextual | typeof PayScheduleFormContextual
+  }>(() => {
+    const hasSchedules = (paySchedules.payScheduleShowResponse?.length ?? 0) > 0
+    return {
+      initialState: hasSchedules ? 'listSchedules' : 'addSchedule',
+      initialComponent: hasSchedules ? PayScheduleListContextual : PayScheduleFormContextual,
+    }
+  })
 
   const machine = useMemo(
     () =>

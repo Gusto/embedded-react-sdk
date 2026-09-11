@@ -31,6 +31,7 @@ import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 interface PayrollConfigurationPresentationProps {
   employeeCompensations: PayrollEmployeeCompensationsType[]
@@ -95,6 +96,7 @@ export const PayrollConfigurationPresentation = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const dateFormatter = useDateFormatter()
   const formatEmployeePayRate = useFormatEmployeePayRate()
+  const isRegularRateOfPayEnabled = useUnstableFeature('payrollRegularRateOfPay')
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
@@ -216,6 +218,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.hours'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const hours = getRegularHours(item)
                       const overtimeHours = getOvertimeHours(item)
@@ -224,6 +227,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.timeOff'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const ptoHours = getTotalPtoHours(item)
                       return formatHoursDisplay(ptoHours)
@@ -231,6 +235,7 @@ export const PayrollConfigurationPresentation = ({
                   },
                   {
                     title: t('tableColumns.additionalEarnings'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       const earnings = getAdditionalEarnings(item)
                       return formatNumberAsCurrency(earnings)
@@ -240,6 +245,7 @@ export const PayrollConfigurationPresentation = ({
                     ? [
                         {
                           title: t('tableColumns.reimbursements'),
+                          justify: 'end' as const,
                           render: (item: PayrollEmployeeCompensationsType) => {
                             const reimbursements = getReimbursements(item)
                             return formatNumberAsCurrency(reimbursements)
@@ -249,7 +255,11 @@ export const PayrollConfigurationPresentation = ({
                     : []),
                   {
                     title: t('tableColumns.totalPay'),
+                    justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
+                      if (isRegularRateOfPayEnabled) {
+                        return formatNumberAsCurrency(Number(item.grossPay ?? 0))
+                      }
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const calculatedGrossPay = employee
                         ? calculateGrossPay(

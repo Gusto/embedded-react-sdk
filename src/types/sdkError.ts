@@ -1,4 +1,5 @@
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { HTTPClientError } from '@gusto/embedded-api/models/errors/httpclienterrors'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
@@ -33,6 +34,14 @@ export const SDKErrorCategories = {
  * @public
  */
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories]
+
+/**
+ * Fallback message used when an API error response carries no extractable field errors
+ * (e.g. a non-JSON or unrecognized 5xx body) — never surfaces the raw response body.
+ *
+ * @internal
+ */
+export const GENERIC_API_ERROR_MESSAGE = 'Something went wrong. Please try again.'
 
 /**
  * An error thrown by internal SDK logic that should be caught and normalized
@@ -278,9 +287,11 @@ export function normalizeToSDKError(error: unknown): SDKError {
       ? extractFieldErrors(error.errors)
       : tryExtractFieldErrorsFromBody(error.httpMeta.body)
 
+    const fallbackMessage = error instanceof APIError ? GENERIC_API_ERROR_MESSAGE : error.message
+
     return {
       category: 'api_error',
-      message: buildApiErrorMessage(fieldErrors, error.message),
+      message: buildApiErrorMessage(fieldErrors, fallbackMessage),
       httpStatus,
       fieldErrors,
       raw: error,

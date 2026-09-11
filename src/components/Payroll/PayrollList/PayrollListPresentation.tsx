@@ -9,7 +9,14 @@ import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
-import { DataView, Flex, HamburgerMenu, DateRangeFilter, EmptyData } from '@/components/Common'
+import {
+  DataView,
+  Flex,
+  HamburgerMenu,
+  DateRangeFilter,
+  EmptyData,
+  VisuallyHidden,
+} from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import { useI18n } from '@/i18n'
@@ -71,6 +78,7 @@ interface PayrollListPresentationProps {
   wireInRequests: WireInRequest[]
   dateRangeFilter: UseDateRangeFilterResult
   hasUnprocessedTransitions?: boolean
+  withOffcyclePayroll?: boolean
 }
 
 /** @internal */
@@ -93,6 +101,7 @@ export const PayrollListPresentation = ({
   wireInRequests,
   dateRangeFilter,
   hasUnprocessedTransitions = false,
+  withOffcyclePayroll = true,
 }: PayrollListPresentationProps) => {
   const { Box, BoxHeader, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -271,6 +280,7 @@ export const PayrollListPresentation = ({
         <DataView
           breakAt="large"
           pagination={pagination}
+          isFetching={pagination?.isFetching}
           emptyState={() =>
             dateRangeFilter.isModified ? (
               <EmptyData
@@ -318,7 +328,7 @@ export const PayrollListPresentation = ({
                 dateFormatter.formatShortWithWeekdayAndYear(payrollDeadline),
             },
             {
-              title: t('tableHeaders.4'),
+              title: <VisuallyHidden>{t('tableHeaders.4')}</VisuallyHidden>,
               render: payroll => {
                 const wireInRequest = wireInRequests.find(
                   wire => wire.paymentUuid === payroll.payrollUuid,
@@ -461,21 +471,23 @@ export const PayrollListPresentation = ({
         >
           {t('deletePayrollDialog.body')}
         </Dialog>
-        <div className={styles.offCycleCta}>
-          <Box
-            header={
-              <BoxHeader
-                title={t('offCycleCta.title')}
-                description={t('offCycleCta.description')}
-              />
-            }
-            footer={
-              <Button variant="secondary" onClick={onRunOffCyclePayroll}>
-                {t('offCycleCta.button')}
-              </Button>
-            }
-          />
-        </div>
+        {withOffcyclePayroll && (
+          <div className={styles.offCycleCta}>
+            <Box
+              header={
+                <BoxHeader
+                  title={t('offCycleCta.title')}
+                  description={t('offCycleCta.description')}
+                />
+              }
+              footer={
+                <Button variant="secondary" onClick={onRunOffCyclePayroll}>
+                  {t('offCycleCta.button')}
+                </Button>
+              }
+            />
+          </div>
+        )}
       </Flex>
     </div>
   )

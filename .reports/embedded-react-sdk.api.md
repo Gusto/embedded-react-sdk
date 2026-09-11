@@ -23,6 +23,7 @@ import { BeforeCreateRequestHook } from '@gusto/embedded-api/hooks/types';
 import { BeforeRequestContext } from '@gusto/embedded-api/hooks/types';
 import { BeforeRequestHook } from '@gusto/embedded-api/hooks/types';
 import { Blockers } from '@gusto/embedded-api/models/components/employeeonboardingstatus';
+import { Breakdowns } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { ButtonHTMLAttributes } from 'react';
 import { ChildSupportDataKey } from '@gusto/embedded-api/models/components/childsupportdata';
 import { ChristmasDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
@@ -82,6 +83,9 @@ import { DocumentSignedFields } from '@gusto/embedded-api/models/components/docu
 import { DocumentSignedPages } from '@gusto/embedded-api/models/components/documentsigned';
 import { DocumentSignedRecipientType } from '@gusto/embedded-api/models/components/documentsigned';
 import { DocumentType as DocumentType_2 } from '@gusto/embedded-api/models/components/i9authorization';
+import { EarningType } from '@gusto/embedded-api/models/components/earningtype';
+import { EarningTypeCategory } from '@gusto/embedded-api/models/components/earningtype';
+import { EarningTypeList } from '@gusto/embedded-api/models/components/earningtypelist';
 import { EinVerification } from '@gusto/embedded-api/models/components/federaltaxdetails';
 import { Employee } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress';
@@ -164,6 +168,7 @@ import { Options } from '@gusto/embedded-api/models/components/taxrequirementmet
 import { OverrideType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Pages } from '@gusto/embedded-api/models/components/document';
 import { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff';
+import { PayAdjustments } from '@gusto/embedded-api/models/components/payrollshow';
 import { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount';
 import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs';
@@ -186,6 +191,7 @@ import { PayrollCreditBlockerUnblockOptionWaitForReverseWire } from '@gusto/embe
 import { PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata } from '@gusto/embedded-api/models/components/payrollcreditblockerunblockoptionwaitforreversewire';
 import { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypeAmountType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeBreakdowns } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypeCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypeOverrideType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -205,9 +211,11 @@ import { PayrollReceiptTotals } from '@gusto/embedded-api/models/components/payr
 import { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowAmountType } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowBenefits } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollShowBreakdowns } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowCustomWithholdings } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowDeductions } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowEmployeeCompensationsAmountType } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollShowEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowEmployeeCompensationsCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowEmployeeCompensationsOverrideType } from '@gusto/embedded-api/models/components/payrollshow';
 import { PayrollShowFederal } from '@gusto/embedded-api/models/components/payrollshow';
@@ -225,10 +233,12 @@ import { PayrollTaxesType } from '@gusto/embedded-api/models/components/payrollt
 import { PayrollTotalsType } from '@gusto/embedded-api/models/components/payrolltotalstype';
 import { PayrollType } from '@gusto/embedded-api/models/components/payperiod';
 import { PayrollUpdateAmountType } from '@gusto/embedded-api/models/components/payrollupdate';
+import { PayrollUpdateBreakdowns } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateCustomWithholdings } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateDeductions } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensationsAmountType } from '@gusto/embedded-api/models/components/payrollupdate';
+import { PayrollUpdateEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensationsCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateEmployeeCompensationsOverrideType } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateFederal } from '@gusto/embedded-api/models/components/payrollupdate';
@@ -245,6 +255,7 @@ import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
 import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod';
 import { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow';
+import { PayScheduleWorkweekStartDay } from '@gusto/embedded-api/models/components/payscheduleshow';
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
@@ -299,8 +310,10 @@ import { VerificationStatus } from '@gusto/embedded-api/models/components/compan
 import { VerificationType } from '@gusto/embedded-api/models/components/companybankaccount';
 import { VeteransDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { WageType as WageType_2 } from '@gusto/embedded-api/models/components/contractorpaymentforgrouppreview';
+import { WarningObject } from '@gusto/embedded-api/models/components/warningobject';
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
+import { Workweeks } from '@gusto/embedded-api/models/components/payrollshow';
 
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
@@ -496,6 +509,9 @@ declare namespace APIModels {
         DocumentSignedFields,
         DocumentSignedPages,
         DocumentSignedRecipientType,
+        EarningType,
+        EarningTypeCategory,
+        EarningTypeList,
         CurrentEmploymentStatus,
         EmployeeOnboardingStatus1,
         Employee,
@@ -586,10 +602,12 @@ declare namespace APIModels {
         PayrollCreditBlockerUnblockOptionSubmitWire,
         PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata,
         PayrollCreditBlockerUnblockOptionWaitForReverseWire,
+        Breakdowns,
         Deductions,
         FixedCompensations,
         HourlyCompensations,
         PayrollEmployeeCompensationsType,
+        PayrollEmployeeCompensationsTypeBreakdowns,
         PayrollEmployeeCompensationsTypePaidTimeOff,
         PayrollEmployeeCompensationsTypePaymentMethod,
         Reimbursements,
@@ -615,10 +633,13 @@ declare namespace APIModels {
         PayrollReceiptPaymentMethod,
         EmployeeCompensations,
         OffCycleReasonType,
+        PayAdjustments,
         Payroll_2 as Payroll,
         PayrollShow,
         PayrollShowBenefits,
+        PayrollShowBreakdowns,
         PayrollShowDeductions,
+        PayrollShowEmployeeCompensationsBreakdowns,
         PayrollShowFixedCompensations,
         PayrollShowHourlyCompensations,
         PayrollShowPaidTimeOff,
@@ -627,6 +648,7 @@ declare namespace APIModels {
         PayrollShowState,
         PayrollShowTaxes,
         PayrollWithholdingPayPeriodType,
+        Workweeks,
         PayrollPrepared,
         PayrollShowCustomWithholdings,
         PayrollShowFederal,
@@ -640,7 +662,9 @@ declare namespace APIModels {
         PayrollSubmissionBlockerTypeStatus,
         PayrollTaxesType,
         PayrollTotalsType,
+        PayrollUpdateBreakdowns,
         PayrollUpdateEmployeeCompensations,
+        PayrollUpdateEmployeeCompensationsBreakdowns,
         PayrollUpdatePaidTimeOff,
         PayrollUpdateReimbursements,
         PayrollUpdateState,
@@ -659,6 +683,7 @@ declare namespace APIModels {
         PayScheduleAutoPayrollEnablementBlockerMetadata,
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
+        PayScheduleWorkweekStartDay,
         PayScheduleShow,
         PrintablePayrollChecksBody,
         PrintingFormat,
@@ -688,6 +713,7 @@ declare namespace APIModels {
         AccrualMethod,
         TimeOffPolicyRequestPolicyType,
         UnprocessedTerminationPayPeriod,
+        WarningObject,
         WireInRequest,
         PaymentType,
         WireInRequestStatus
@@ -1377,6 +1403,7 @@ export const componentEvents: {
     readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly CONTRACTOR_VIEW: "contractor/view";
+    readonly CONTRACTOR_RETURN_TO_LIST: "contractor/returnToList";
     readonly CONTRACTOR_DISMISS: "contractor/dismiss";
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
@@ -1794,6 +1821,7 @@ export const ContractorDetailsErrorCodes: {
     readonly INVALID_EMAIL: "INVALID_EMAIL";
     readonly INVALID_SSN: "INVALID_SSN";
     readonly INVALID_EIN: "INVALID_EIN";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -1819,6 +1847,9 @@ export interface ContractorDetailsFormFields {
     WageType: ComponentType<ContractorWageTypeFieldProps>;
     WorkState: ComponentType<ContractorWorkStateFieldProps> | undefined;
 }
+
+// @public
+export type ContractorDetailsMaxHourlyRateValidation = typeof ContractorDetailsErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
@@ -1853,13 +1884,21 @@ export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFie
 export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
-export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation | ContractorDetailsMaxHourlyRateValidation>>;
 
 // @public
 export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
 function ContractorList(input: ContractorListProps): JSX;
+
+// @public
+const ContractorListFlow: (input: ContractorListFlowProps) => JSX;
+
+// @public
+interface ContractorListFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
 
 // @public
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
@@ -1872,6 +1911,8 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        ContractorListFlow,
+        ContractorListFlowProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,
@@ -1984,6 +2025,7 @@ export type ContractorPayErrorCode = (typeof ContractorPayErrorCodes)[keyof type
 // @public
 export const ContractorPayErrorCodes: {
     readonly REQUIRED: "REQUIRED";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -2002,7 +2044,10 @@ export interface ContractorPayFormFields {
 }
 
 // @public
-export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation>>;
+export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation | ContractorPayMaxHourlyRateValidation>>;
+
+// @public
+export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
@@ -3729,6 +3774,7 @@ export interface ModalProps {
 
 // @public
 export interface MultiSelectComboBoxOption {
+    description?: string;
     label: string;
     value: string;
 }
@@ -3844,7 +3890,7 @@ interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.OffCycle
 }
 
 // @public
-function OffCycleDeductionsSetting(input: OffCycleDeductionsSettingProps): JSX;
+function OffCycleDeductionsSetting(props: OffCycleDeductionsSettingProps): JSX;
 
 // @public
 interface OffCycleDeductionsSettingChangePayload {
@@ -4239,6 +4285,8 @@ declare namespace Payroll {
         PayrollBlockerListProps,
         RecoveryCases,
         RecoveryCasesProps,
+        PrintChecks,
+        PrintChecksProps,
         OffCyclePayPeriodDateFormData,
         OffCyclePayrollDateType,
         OffCycleCreation,
@@ -4322,6 +4370,7 @@ type PayrollFlowAlert = {
 interface PayrollFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
+    withOffcyclePayroll?: boolean;
     withReimbursements?: boolean;
 }
 
@@ -4341,6 +4390,7 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     showPayrollCancelledAlert?: boolean;
+    withOffcyclePayroll?: boolean;
     withReimbursements?: boolean;
 }
 
@@ -4350,6 +4400,7 @@ function PayrollList(props: PayrollListBlockProps): JSX;
 // @public
 interface PayrollListBlockProps extends BaseComponentInterface<never> {
     companyId: string;
+    withOffcyclePayroll?: boolean;
 }
 
 // @public
@@ -4370,6 +4421,7 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     payrollId: string;
+    readOnly?: boolean;
     withReimbursements?: boolean;
 }
 
@@ -4589,6 +4641,16 @@ export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignE
 
 // @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
+
+// @public
+function PrintChecks(input: PrintChecksProps): JSX;
+
+// @public
+interface PrintChecksProps extends Omit<BaseComponentInterface<never>, 'onEvent'> {
+    companyId: string;
+    onEvent?: BaseComponentInterface['onEvent'];
+    payrollId: string;
+}
 
 // @public
 function Profile(input: ProfileProps): JSX;
@@ -5027,6 +5089,8 @@ export interface Resources {
     'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
     // (undocumented)
     'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+    // @internal (undocumented)
+    'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
     // (undocumented)
     'Payroll.WireInstructions': Translations.PayrollWireInstructions
     // (undocumented)
@@ -5836,6 +5900,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     historicalPayments?: boolean;
+    payrollRegularRateOfPay?: boolean;
 }
 
 // @public

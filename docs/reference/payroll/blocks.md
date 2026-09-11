@@ -429,6 +429,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
+| GET | [`/v1/companies/:companyId/earning_types`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-earning_types) |
 | GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
@@ -510,6 +511,7 @@ Props for [PayrollLanding](#payrolllanding).
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component that replaces the default wire details confirmation UI. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollLanding`](../Translations/index.md#payrollpayrolllanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `showPayrollCancelledAlert?` | `boolean` | When `true`, displays a dismissible success alert indicating a payroll was cancelled. |
+| `withOffcyclePayroll?` | `boolean` | Whether to show the off-cycle payroll call-to-action. Defaults to `true`. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
@@ -590,6 +592,7 @@ Props for [PayrollList](#payrolllist).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `withOffcyclePayroll?` | `boolean` | Whether to show the off-cycle payroll call-to-action. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
@@ -635,7 +638,8 @@ The payroll referenced by `payrollId` must already be calculated; rendering with
 uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
 wire-in funding) are surfaced inline and the submit action stays disabled until each
 blocker has a selected unblock option. While the payroll is processing, the component
-polls until success or failure and emits the corresponding event.
+polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
+the edit and cancel actions while keeping submit available.
 
 <br />
 
@@ -653,6 +657,7 @@ Props for [PayrollOverview](#payrolloverview).
 | `alerts?` | [`PayrollFlowAlert`](#payrollflowalert)[] | Alert banners to display above the payroll summary. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollOverview`](../Translations/index.md#payrollpayrolloverview)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `readOnly?` | `boolean` | Hides the edit and cancel actions, leaving submit and receipt/paystub actions available. Use for a deep link to a specific payroll where editing shouldn't be offered. Defaults to `false`. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
@@ -672,6 +677,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+| `payroll/printChecks/start` | User opened the print-checks modal from the embedded print-checks banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed check generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the print-checks failure or summary screen | — |
 
 <br />
 
@@ -680,6 +692,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
@@ -733,6 +746,55 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/payrolls/:payrollUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-payment-receipts-payrolls-payroll_uuid) |
+
+***
+
+<a id="printchecks"></a>
+
+## PrintChecks
+
+Displays a banner prompting the user to print checks for employees paid by check on a
+processed payroll, and walks them through choosing check stock and generating the check PDF.
+
+<br />
+
+### PrintChecksProps
+
+<a id="printchecksprops"></a>
+
+Props for [PrintChecks](#printchecks).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company that owns the payroll. |
+| `payrollId` | `string` | Identifier of the payroll to generate printable checks for. |
+| `onEvent?` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `payroll/printChecks/start` | User opened the print-checks modal from the banner | — |
+| `payroll/printChecks/generate/start` | User submitted the print-checks form | — |
+| `payroll/printChecks/generate/succeeded` | Printable checks finished generating | `{ documentUrl }` |
+| `payroll/printChecks/generate/failed` | The print-checks request was rejected or generation failed | `{ errorMessage }` |
+| `payroll/printChecks/retry` | User retried after a failed generation | — |
+| `payroll/printChecks/cancel` | User cancelled the print-checks form | — |
+| `payroll/printChecks/close` | User closed the failure or summary screen | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
+| POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
 
 ***
 
@@ -892,7 +954,7 @@ Form values collected by the [OffCycleCreation](#offcyclecreation) component.
 | `reason` | [`OffCycleReason`](#offcyclereason) | The off-cycle reason — `'bonus'` or `'correction'`. |
 | `selectedEmployeeUuids` | `string`[] | Employee UUIDs to include. Only consulted when `includeAllEmployees` is `false`. |
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
-| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
+| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and must be on or before `endDate`. |
 
 ***
 
@@ -927,7 +989,7 @@ Pay-period date selections collected for an off-cycle payroll.
 | `checkDate` | `Date` \| `null` | Date employees will be paid; must be at least the company's ACH lead time of business days from today for direct deposit, unless `isCheckOnly` is true. |
 | `endDate` | `Date` \| `null` | End of the pay period; required unless `isCheckOnly` is true, and must be on or after `startDate`. |
 | `isCheckOnly` | `boolean` | When true, all employees are paid by check rather than direct deposit; start and end dates become optional and the check date may be today or any future date. |
-| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
+| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and must be on or before `endDate`. |
 
 ***
 
@@ -937,11 +999,13 @@ Pay-period date selections collected for an off-cycle payroll.
 
 > **OffCyclePayrollDateType** = `"bonus"` \| `"correction"`
 
-Off-cycle payroll reason that drives pay-period date validation rules.
+Off-cycle payroll reason, used to pick default withholding/deduction settings.
 
 #### Remarks
 
-`'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
+`'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a
+correction payment. Legacy gws-flows treats both identically for pay-period date validation --
+see `createOffCyclePayPeriodDateFormSchema`, which no longer branches on this type.
 
 ***
 

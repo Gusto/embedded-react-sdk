@@ -2,3 +2,11 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.tableWrapper {
+  transition: opacity 0.2s ease-in-out;
+
+  &.isFetching {
+    opacity: 0.5;
+  }
+}

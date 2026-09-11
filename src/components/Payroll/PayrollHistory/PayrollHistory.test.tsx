@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { PayrollHistory } from './PayrollHistory'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -794,6 +794,78 @@ describe('PayrollHistory', () => {
       })
 
       expect(screen.queryByTestId('pagination-control')).not.toBeInTheDocument()
+    })
+
+    it('keeps the current page visible and marks the grid busy instead of re-suspending while the next page loads', async () => {
+      const mockPayrollData = await getFixture('payroll-history-test-data')
+      let resolveSecondPage: (() => void) | undefined
+      const payrollsResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const url = new URL(request.url)
+        const headers = { 'x-total-pages': '2', 'x-total-count': '10' }
+
+        if (url.searchParams.get('page') === '2') {
+          await new Promise<void>(resolve => {
+            resolveSecondPage = resolve
+          })
+          return HttpResponse.json(
+            [
+              {
+                payroll_uuid: 'payroll-page-2',
+                company_uuid: 'company-123',
+                processed: true,
+                check_date: '2024-09-20',
+                external: false,
+                off_cycle: false,
+                payroll_deadline: '2024-09-19T23:30:00Z',
+                payroll_status_meta: {
+                  cancellable: false,
+                  expected_check_date: '2024-09-20',
+                  initial_check_date: '2024-09-20',
+                  expected_debit_time: '2024-09-19T23:30:00Z',
+                  payroll_late: false,
+                  initial_debit_cutoff_time: '2024-09-19T23:30:00Z',
+                },
+                pay_period: {
+                  start_date: '2024-09-01',
+                  end_date: '2024-09-15',
+                  pay_schedule_uuid: 'schedule-1',
+                },
+              },
+            ],
+            { headers },
+          )
+        }
+
+        return HttpResponse.json(mockPayrollData, { headers })
+      })
+      server.use(http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, payrollsResolver))
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByTestId('pagination-next'))
+
+      // The page-2 request is still pending (held open above). The previous page's data
+      // stays on screen and the grid is marked busy, instead of the whole component
+      // re-suspending to the SDK's full-page loading skeleton.
+      expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      expect(
+        document.querySelectorAll(
+          '[role="status"][aria-busy="true"][aria-label="Loading component..."]',
+        ),
+      ).toHaveLength(0)
+      await waitFor(() => {
+        expect(screen.getByRole('status', { name: 'Fetching data...' })).toBeInTheDocument()
+      })
+
+      resolveSecondPage?.()
+
+      await waitFor(() => {
+        expect(screen.getByText('September 1–September 15, 2024')).toBeInTheDocument()
+      })
     })
   })
 })

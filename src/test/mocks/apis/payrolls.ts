@@ -164,13 +164,14 @@ const cancelPayroll = http.put(
   },
 )
 
-const updatePayroll = http.put(
-  `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
-    return HttpResponse.json(responseFixture)
-  },
-)
+export function handlePayrollsUpdate(resolver: HttpResponseResolver) {
+  return http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, resolver)
+}
+
+const updatePayroll = handlePayrollsUpdate(async () => {
+  const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+  return HttpResponse.json(responseFixture)
+})
 
 const getPayrollReceipt = http.get(
   `${API_BASE_URL}/v1/payrolls/:payroll_uuid/receipt`,

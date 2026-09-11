@@ -79,23 +79,21 @@ export const useI18n = (
   if (!namespaces) return
   const nsMap = Array.isArray(namespaces) ? namespaces : [namespaces]
   for (const ns of nsMap) {
-    const key = `${i18nInstance.resolvedLanguage}:${ns}`
+    // `language` (the requested language) rather than `resolvedLanguage` (the language i18next has
+    // already loaded translations for) - resolvedLanguage stays pinned to whatever language already
+    // has resources (typically 'en', preloaded in SDKI18next) until a resource bundle is registered
+    // under the newly requested language, which is exactly what this loop is trying to do.
+    const key = `${i18nInstance.language}:${ns}`
     //Skip loading default resource if it is already in cache
     if (resourceCache.get(key) === null) {
       //If resource not in cache, initiate loading and add getter to cache
-      resourceCache.put(key, loadResource({ lng: i18nInstance.resolvedLanguage, ns: ns }))
+      resourceCache.put(key, loadResource({ lng: i18nInstance.language, ns: ns }))
     }
     //Get resourceGetter from cache
     const resourceGetter = resourceCache.get(key)
     if (resourceGetter) {
       const resource = resourceGetter()
-      i18nInstance.addResourceBundle(
-        i18nInstance.resolvedLanguage ?? 'en',
-        ns,
-        resource,
-        true,
-        false,
-      ) //Last argument is set to false to prevent override of keys provided by partners on GustoProvider level through dictionary prop
+      i18nInstance.addResourceBundle(i18nInstance.language, ns, resource, true, false) //Last argument is set to false to prevent override of keys provided by partners on GustoProvider level through dictionary prop
     }
   }
 }

@@ -17,126 +17,249 @@ declare module 'i18next' {
  * @group Utility types
  */
 export interface Resources {
+  /** */
   'Company.Addresses': Translations.CompanyAddresses
+  /** */
   'Company.AssignSignatory': Translations.CompanyAssignSignatory
+  /** */
   'Company.BankAccount': Translations.CompanyBankAccount
+  /** */
   'Company.DocumentList': Translations.CompanyDocumentList
+  /** */
   'Company.FederalTaxes': Translations.CompanyFederalTaxes
+  /** */
   'Company.Industry': Translations.CompanyIndustry
+  /** */
   'Company.Locations': Translations.CompanyLocations
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
+  /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
+  /** */
   'Company.SignatureForm': Translations.CompanySignatureForm
+  /** */
   'Company.StateTaxes': Translations.CompanyStateTaxes
+  /** */
   'Company.TimeOff.CreateTimeOffPolicy': Translations.CompanyTimeOffCreateTimeOffPolicy
+  /** */
   'Company.TimeOff.EmployeeTable': Translations.CompanyTimeOffEmployeeTable
+  /** */
   'Company.TimeOff.HolidayPolicy': Translations.CompanyTimeOffHolidayPolicy
+  /** */
   'Company.TimeOff.PolicyDetail': Translations.CompanyTimeOffPolicyDetail
+  /** */
   'Company.TimeOff.SelectEmployees': Translations.CompanyTimeOffSelectEmployees
+  /** */
   'Company.TimeOff.SelectPolicyType': Translations.CompanyTimeOffSelectPolicyType
+  /** */
   'Company.TimeOff.TimeOffPolicies': Translations.CompanyTimeOffTimeOffPolicies
+  /** */
   'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
+  /** */
   'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
+  /** */
   'Contractor.Address': Translations.ContractorAddress
+  /** */
   'Contractor.BankAccountFields': Translations.ContractorBankAccountFields
+  /** */
   'Contractor.ContractorList': Translations.ContractorContractorList
+  /** */
   'Contractor.Dashboard': Translations.ContractorDashboard
+  /** */
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
+  /** */
   'Contractor.Landing': Translations.ContractorLanding
+  /** */
   'Contractor.Management.Address': Translations.ContractorManagementAddress
+  /** */
   'Contractor.Management.Compensation': Translations.ContractorManagementCompensation
+  /** */
   'Contractor.Management.Documents': Translations.ContractorManagementDocuments
+  /** */
   'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
+  /** */
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
+  /** */
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
+  /** */
   'Contractor.NewHireReport': Translations.ContractorNewHireReport
+  /** */
   'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
+  /** */
   'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
+  /** */
   'Contractor.Payments.CreateHistoricalPayment': Translations.ContractorPaymentsCreateHistoricalPayment
+  /** */
   'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+  /** */
   'Contractor.Payments.HistoricalPaymentSummary': Translations.ContractorPaymentsHistoricalPaymentSummary
+  /** */
   'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
+  /** */
   'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
+  /** */
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
+  /** */
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
+  /** */
   'Contractor.Profile': Translations.ContractorProfile
+  /** */
   'Contractor.SelectContractors': Translations.ContractorSelectContractors
+  /** */
   'Contractor.SignatureForm': Translations.ContractorSignatureForm
+  /** */
   'Contractor.Submit': Translations.ContractorSubmit
+  /** */
   'Employee.BankAccount': Translations.EmployeeBankAccount
+  /** */
   'Employee.BankFormBody': Translations.EmployeeBankFormBody
+  /** */
   'Employee.Compensation': Translations.EmployeeCompensation
+  /** */
   'Employee.Dashboard': Translations.EmployeeDashboard
+  /** */
   'Employee.Deductions': Translations.EmployeeDeductions
+  /** */
   'Employee.DeductionsForm': Translations.EmployeeDeductionsForm
+  /** */
   'Employee.DocumentManager': Translations.EmployeeDocumentManager
+  /** */
   'Employee.DocumentSigner': Translations.EmployeeDocumentSigner
+  /** */
   'Employee.EmployeeDocuments': Translations.EmployeeEmployeeDocuments
+  /** */
   'Employee.EmployeeList': Translations.EmployeeEmployeeList
+  /** */
   'Employee.EmploymentEligibility': Translations.EmployeeEmploymentEligibility
+  /** */
   'Employee.FederalTaxes': Translations.EmployeeFederalTaxes
+  /** */
   'Employee.FederalTaxesView': Translations.EmployeeFederalTaxesView
+  /** */
   'Employee.HomeAddress': Translations.EmployeeHomeAddress
+  /** */
   'Employee.I9SignatureForm': Translations.EmployeeI9SignatureForm
+  /** */
   'Employee.Landing': Translations.EmployeeLanding
+  /** */
   'Employee.Management.Compensation': Translations.EmployeeManagementCompensation
+  /** */
   'Employee.Management.Deductions': Translations.EmployeeManagementDeductions
+  /** */
   'Employee.Management.Documents': Translations.EmployeeManagementDocuments
+  /** */
   'Employee.Management.FederalTaxes': Translations.EmployeeManagementFederalTaxes
+  /** */
   'Employee.Management.HomeAddress': Translations.EmployeeManagementHomeAddress
+  /** */
   'Employee.Management.PaymentMethod': Translations.EmployeeManagementPaymentMethod
+  /** */
   'Employee.Management.PaymentMethodBankForm': Translations.EmployeeManagementPaymentMethodBankForm
+  /** */
   'Employee.Management.PaymentMethodSplitForm': Translations.EmployeeManagementPaymentMethodSplitForm
+  /** */
   'Employee.Management.Paystubs': Translations.EmployeeManagementPaystubs
+  /** */
   'Employee.Management.Profile': Translations.EmployeeManagementProfile
+  /** */
   'Employee.Management.StateTaxes': Translations.EmployeeManagementStateTaxes
+  /** */
   'Employee.Management.WorkAddress': Translations.EmployeeManagementWorkAddress
+  /** */
   'Employee.ManagementEmployeeList': Translations.EmployeeManagementEmployeeList
+  /** */
   'Employee.OnboardingSummary': Translations.EmployeeOnboardingSummary
+  /** */
   'Employee.PaySchedules': Translations.EmployeePaySchedules
+  /** */
   'Employee.PaymentMethod': Translations.EmployeePaymentMethod
+  /** */
   'Employee.Profile': Translations.EmployeeProfile
+  /** */
   'Employee.SplitPaycheck': Translations.EmployeeSplitPaycheck
+  /** */
   'Employee.SplitPaymentsFormBody': Translations.EmployeeSplitPaymentsFormBody
+  /** */
   'Employee.StateTaxes': Translations.EmployeeStateTaxes
+  /** */
   'Employee.StateTaxesView': Translations.EmployeeStateTaxesView
+  /** */
   'Employee.Terminations.TerminateEmployee': Translations.EmployeeTerminationsTerminateEmployee
+  /** */
   'Employee.Terminations.TerminationFlow': Translations.EmployeeTerminationsTerminationFlow
+  /** */
   'Employee.Terminations.TerminationSummary': Translations.EmployeeTerminationsTerminationSummary
+  /** */
   'InformationRequests.InformationRequestForm': Translations.InformationRequestsInformationRequestForm
+  /** */
   'InformationRequests.InformationRequestList': Translations.InformationRequestsInformationRequestList
+  /** */
   InformationRequests: Translations.InformationRequests
+  /** */
   'Payroll.Common': Translations.PayrollCommon
+  /** */
   'Payroll.ConfirmWireDetailsBanner': Translations.PayrollConfirmWireDetailsBanner
+  /** */
   'Payroll.ConfirmWireDetailsForm': Translations.PayrollConfirmWireDetailsForm
+  /** */
   'Payroll.Dismissal': Translations.PayrollDismissal
+  /** */
   'Payroll.EmployeeSelection': Translations.PayrollEmployeeSelection
+  /** */
   'Payroll.GrossUpModal': Translations.PayrollGrossUpModal
+  /** */
   'Payroll.OffCycle': Translations.PayrollOffCycle
+  /** */
   'Payroll.OffCycleCreation': Translations.PayrollOffCycleCreation
+  /** */
   'Payroll.OffCycleDeductionsSetting': Translations.PayrollOffCycleDeductionsSetting
+  /** */
   'Payroll.OffCyclePayPeriodDateForm': Translations.PayrollOffCyclePayPeriodDateForm
+  /** */
   'Payroll.OffCycleReasonSelection': Translations.PayrollOffCycleReasonSelection
+  /** */
   'Payroll.OffCycleTaxWithholding': Translations.PayrollOffCycleTaxWithholding
+  /** */
   'Payroll.PayrollBlocker': Translations.PayrollPayrollBlocker
+  /** */
   'Payroll.PayrollConfiguration': Translations.PayrollPayrollConfiguration
+  /** */
   'Payroll.PayrollEditEmployee': Translations.PayrollPayrollEditEmployee
+  /** */
   'Payroll.PayrollFlow': Translations.PayrollPayrollFlow
+  /** */
   'Payroll.PayrollHistory': Translations.PayrollPayrollHistory
+  /** */
   'Payroll.PayrollLanding': Translations.PayrollPayrollLanding
+  /** */
   'Payroll.PayrollList': Translations.PayrollPayrollList
+  /** */
   'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
+  /** */
   'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+  /** */
   'Payroll.PrintChecksBanner': Translations.PayrollPrintChecksBanner
+  /** */
   'Payroll.PrintChecksFailure': Translations.PayrollPrintChecksFailure
+  /** */
   'Payroll.PrintChecksForm': Translations.PayrollPrintChecksForm
+  /** */
   'Payroll.PrintChecksSummary': Translations.PayrollPrintChecksSummary
+  /** */
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
+  /** */
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+  /** */
   'Payroll.Transition': Translations.PayrollTransition
+  /** */
   'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
+  /** */
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+  /** @internal */
+  'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
+  /** */
   'Payroll.WireInstructions': Translations.PayrollWireInstructions
+  /** */
   common: Translations.common
 }
 
@@ -374,6 +497,292 @@ export namespace Translations {
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
     continueCta: string
+    forms: {
+      US_8655: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_8655_MODIFIED: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_8821: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_8974: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_940: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_940c: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_941: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_941_SCHEDULE_B: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_941X: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_944: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_944X: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ACH_Reversal: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      amended_package: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'CA_DE-9': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'CA_DE-9ADJ': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'CA_DE-9C': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'BENEFITS_ANNOTATED_CA_DE-9C': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      co_employee_refund_instructions: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      company_direct_deposit: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_Company_W-2': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_Company_W-2 (Corrected)': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_Company_W-2_Cover_Sheet': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      DC_DOES_UC30: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'FL_RT-6': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      IL_DOR_941: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      IL_DOR_941X: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'IL_UI-340': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'IL_UI-40C': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ky_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ky_unemployment_amendment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      MA_941: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      ma_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      md_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      md_unemployment_amendment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      mt_tax_coupon: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_MTA-305': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_MTA-305c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_NYS-45': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_NYS-45-X': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_TR-2000': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'NY_TR-579-WT': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-3': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-3c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-501': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-941': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_IT-941c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_SD-101': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_SD-141': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'OHIO_SD-141c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      OHIO_SUTA: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      OHIO_SUTA_CORRECTION: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      quarterly_package: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'Benefits Annotated QWR': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'Incomplete Benefits Annotated QWR': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      sc_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      TEXAS_SUTA: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      TEXAS_SUTA_AMENDMENT: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      vt_unemployment: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-2': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-2_Employer_Copy': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_W2_Employer_Printable_Copy: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-2c': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-3': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      WA_LNI: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      WA_LNI_AMENDMENT: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'WA_EMS-5208': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'WA_EMS-5208D': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_1099: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_1099 (Corrected)': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      US_1099_Employer_Printable_Copy: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      SYMMETRY_PAYROLL_FORM: {
+        /** @defaultValue `""` */
+        description: string
+      }
+    }
   }
   /** Translation keys for the `Company.FederalTaxes` i18n namespace. */
   export interface CompanyFederalTaxes {
@@ -800,6 +1209,10 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Effective: {{date}}"` */
       effectiveFromLabel: string
+      /** @defaultValue `"No editable requirements"` */
+      noEditableRequirementsTitle: string
+      /** @defaultValue `"This state does not have any editable tax requirements."` */
+      noEditableRequirementsDescription: string
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string
@@ -1857,6 +2270,8 @@ export namespace Translations {
     deleteCta: string
     /** @defaultValue `"Cancel self-onboarding"` */
     cancelSelfOnboardingCta: string
+    /** @defaultValue `"Actions for {{name}}"` */
+    hamburgerTitle: string
     /** @defaultValue `"Add contractors to get them setup for payroll."` */
     emptyTableDescription: string
     /** @defaultValue `"You haven't added any contractors yet"` */
@@ -2058,6 +2473,8 @@ export namespace Translations {
       validations: {
         /** @defaultValue `"Enter a valid hourly rate"` */
         hourlyRate: string
+        /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+        hourlyRateMax: string
       }
     }
   }
@@ -2217,9 +2634,9 @@ export namespace Translations {
       /** @defaultValue `"Profile updated"` */
       successAlert: string
       validations: {
-        /** @defaultValue `"First name is required"` */
+        /** @defaultValue `"Enter a valid first name"` */
         firstName: string
-        /** @defaultValue `"Last name is required"` */
+        /** @defaultValue `"Enter a valid last name"` */
         lastName: string
         /** @defaultValue `"Business name is required"` */
         businessName: string
@@ -2240,6 +2657,8 @@ export namespace Translations {
     title: string
     /** @defaultValue `"Add contractor"` */
     addContractorCta: string
+    /** @defaultValue `"Back to contractors"` */
+    backToListCta: string
     /** @defaultValue `"Contractor status tabs"` */
     tabsLabel: string
     tabs: {
@@ -2286,7 +2705,7 @@ export namespace Translations {
     cancelDismissalCta: string
     /** @defaultValue `"Cancel rehire"` */
     cancelRehireCta: string
-    /** @defaultValue `"Contractor actions menu"` */
+    /** @defaultValue `"Actions for {{name}}"` */
     hamburgerTitle: string
     /** @defaultValue `"List of contractors"` */
     contractorListLabel: string
@@ -3190,6 +3609,8 @@ export namespace Translations {
       einFormat: string
       /** @defaultValue `"Hourly rate is required for hourly contractors"` */
       hourlyRate: string
+      /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+      hourlyRateMax: string
       /** @defaultValue `"Start date is required"` */
       startDate: string
     }
@@ -4150,6 +4571,28 @@ export namespace Translations {
     viewDocumentCta: string
     /** @defaultValue `"Please review the document. When you're finished, sign below."` */
     downloadAndReviewInstructions: string
+    forms: {
+      employee_direct_deposit: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_I-9': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      'US_W-4': {
+        /** @defaultValue `""` */
+        description: string
+      }
+      or_w4: {
+        /** @defaultValue `""` */
+        description: string
+      }
+      Or_Portland_Multnomah: {
+        /** @defaultValue `""` */
+        description: string
+      }
+    }
   }
   /** Translation keys for the `Employee.EmployeeDocuments` i18n namespace. */
   export interface EmployeeEmployeeDocuments {
@@ -6547,6 +6990,8 @@ export namespace Translations {
     continueCta: string
     /** @defaultValue `"Include all employees in this payroll"` */
     includeAllEmployeesLabel: string
+    /** @defaultValue `"Note: Off-cycle payrolls are meant to supplement the standard payroll schedule, not replace it. Since payroll taxes depend on wages, hours worked, <bold>and pay frequency,</bold> exclusively using off-cycle payrolls to pay your team can lead to taxes being omitted."` */
+    taxWithholdingDisclaimer: string
     errors: {
       /** @defaultValue `"Off-cycle payroll was created but no payroll ID was returned"` */
       missingPayrollId: string
@@ -6583,6 +7028,8 @@ export namespace Translations {
     endDateLabel: string
     /** @defaultValue `"Payment date"` */
     checkDateLabel: string
+    /** @defaultValue `"Enter the date you'd like your employees to receive payment."` */
+    checkDateDescription: string
     validations: {
       /** @defaultValue `"Start date is required"` */
       startDateRequired: string
@@ -6592,8 +7039,6 @@ export namespace Translations {
       checkDateRequired: string
       /** @defaultValue `"End date must be on or after start date"` */
       endDateAfterStart: string
-      /** @defaultValue `"Start date cannot be in the future for correction payrolls"` */
-      startDateNotFuture: string
       /** @defaultValue `"Payment date must be at least {{count}} business day from today for direct deposit"` */
       checkDateAchLeadTime_one: string
       /** @defaultValue `"Payment date must be at least {{count}} business days from today for direct deposit"` */
@@ -6653,16 +7098,22 @@ export namespace Translations {
         label: string
         /** @defaultValue `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` */
         description: string
+        /** @defaultValue `"Federal and state income taxes are withheld using the standard tax tables for this pay frequency."` */
+        taxedAsDescription: string
       }
       supplemental: {
         /** @defaultValue `"Supplemental wages, bonus wages, commission"` */
         label: string
         /** @defaultValue `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` */
         description: string
+        /** @defaultValue `"Taxed either at the IRS's flat 22% supplemental rate or under your regular pay schedule, depending on the rate you select above."` */
+        taxedAsDescription: string
       }
       reimbursement: {
         /** @defaultValue `"Reimbursements"` */
         label: string
+        /** @defaultValue `"Reimbursements for business expenses aren't taxable wages, so no federal or state income tax is withheld."` */
+        taxedAsDescription: string
       }
     }
     modal: {
@@ -7166,6 +7617,12 @@ export namespace Translations {
       /** @defaultValue `"Check"` */
       check: string
     }
+    validations: {
+      /** @defaultValue `"Amount must be greater than zero"` */
+      reimbursementAmount: string
+      /** @defaultValue `"Amount cannot be negative"` */
+      negativeAmount: string
+    }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
   export interface PayrollPayrollFlow {
@@ -7237,9 +7694,9 @@ export namespace Translations {
     cancelDialog: {
       /** @defaultValue `"Cancel {{payPeriod}} payroll?"` */
       title: string
-      /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+      /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
       body: string
-      /** @defaultValue `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` */
+      /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
       deadline: string
       /** @defaultValue `"Yes, cancel payroll"` */
       primaryAction: string
@@ -7399,11 +7856,11 @@ export namespace Translations {
     cancelDialogTitle: string
     /** @defaultValue `"Cancel payroll?"` */
     cancelDialogTitleDismissal: string
-    /** @defaultValue `"Any changes you have made to this payroll will be saved."` */
+    /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
     cancelDialogDescription: string
-    /** @defaultValue `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` */
+    /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
     cancelDialogDescriptionDeadline: string
-    /** @defaultValue `" Yes, cancel payroll"` */
+    /** @defaultValue `"Yes, cancel payroll"` */
     confirmCancelCta: string
     /** @defaultValue `"No, go back"` */
     declineCancelCta: string
@@ -7411,6 +7868,8 @@ export namespace Translations {
     payrollReceiptCta: string
     /** @defaultValue `"Download paystub pdf"` */
     downloadPaystubLabel: string
+    /** @defaultValue `"Generating paystub…"` */
+    downloadLoadingMessage: string
     /** @defaultValue `"Submitting payroll..."` */
     loadingTitle: string
     /** @defaultValue `"This may take a minute or two. You can navigate away while this happens."` */
@@ -7426,16 +7885,12 @@ export namespace Translations {
     alerts: {
       /** @defaultValue `"Payroll is not calculated"` */
       payrollNotCalculated: string
-      /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` */
+      /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
       directDepositDeadline: string
+      /** @defaultValue `"Make sure to submit before the deadline to ensure timely payments."` */
+      directDepositDeadlineText: string
       /** @defaultValue `"There was an issue generating the paystub PDF. Please try again later."` */
       paystubPdfError: string
-      /** @defaultValue `"You noted {{count}} employee who should be paid by check."` */
-      checkPaymentWarning_one: string
-      /** @defaultValue `"You noted {{count}} employees who should be paid by check."` */
-      checkPaymentWarning_other: string
-      /** @defaultValue `"Employees with this payment method will need their checks delivered to them."` */
-      checkPaymentWarningDescription: string
       /** @defaultValue `"Payroll submitted"` */
       payrollProcessedTitle: string
       /** @defaultValue `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` */
@@ -7924,6 +8379,129 @@ export namespace Translations {
       cancelCta: string
     }
   }
+  /** Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace. @internal */
+  export interface PayrollUNSTABLE_PayrollEditEmployee {
+    /** @defaultValue `"Edit payroll for {{employeeName}}"` */
+    pageTitle: string
+    /** @defaultValue `"{{firstName}} {{lastName}}"` */
+    breadcrumbLabel: string
+    /** @defaultValue `"Gross pay (excluding reimbursements)"` */
+    grossPayLabel: string
+    /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
+    grossPayLabelMobile: string
+    /** @defaultValue `"Regular and overtime hours"` */
+    regularHoursTitle: string
+    /** @defaultValue `"Regular hours"` */
+    regularHoursTitleWithoutOvertime: string
+    /** @defaultValue `"Hours"` */
+    hoursUnit: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    /** @defaultValue `"Hour type"` */
+    hourTypeColumn: string
+    /** @defaultValue `"Type"` */
+    typeColumn: string
+    /** @defaultValue `"Amount"` */
+    amountColumn: string
+    /** @defaultValue `"Hours"` */
+    hoursColumn: string
+    /** @defaultValue `"Other"` */
+    otherTitle: string
+    compensationNames: {
+      /** @defaultValue `"Regular Hours"` */
+      regularHours: string
+      /** @defaultValue `"Overtime"` */
+      overtime: string
+      /** @defaultValue `"Double overtime"` */
+      doubleOvertime: string
+    }
+    /** @defaultValue `"Time off"` */
+    timeOffTitle: string
+    /** @defaultValue `"Time off hours used this pay period"` */
+    timeOffTitleDismissal: string
+    /** @defaultValue `"Unused time off payout"` */
+    finalPayoutTitle: string
+    /** @defaultValue `"Enter the unused hours to pay out on the final paycheck. This is separate from time off hours used during the pay period."` */
+    finalPayoutDescription: string
+    timeOffBalance: {
+      /** @defaultValue `"{{balance}} remaining"` */
+      remaining: string
+    }
+    /** @defaultValue `"Additional earnings"` */
+    additionalEarningsTitle: string
+    /** @defaultValue `"Reimbursements"` */
+    reimbursementTitle: string
+    /** @defaultValue `"Description"` */
+    reimbursementDescriptionLabel: string
+    /** @defaultValue `"e.g., Office supplies"` */
+    reimbursementDescriptionPlaceholder: string
+    /** @defaultValue `"Amount"` */
+    reimbursementAmountLabel: string
+    /** @defaultValue `"Reimbursement"` */
+    reimbursementUnnamedFallback: string
+    /** @defaultValue `"Reimbursements"` */
+    reimbursementsTableLabel: string
+    /** @defaultValue `"Description"` */
+    reimbursementDescriptionColumn: string
+    /** @defaultValue `"Amount"` */
+    reimbursementAmountColumn: string
+    /** @defaultValue `"Type"` */
+    reimbursementTypeColumn: string
+    /** @defaultValue `"Recurring"` */
+    reimbursementTypeRecurring: string
+    /** @defaultValue `"One-time"` */
+    reimbursementTypeOneTime: string
+    /** @defaultValue `"No reimbursements"` */
+    reimbursementEmptyTitle: string
+    /** @defaultValue `"Add one-time reimbursement"` */
+    addReimbursementCta: string
+    /** @defaultValue `"Add one-time reimbursement"` */
+    addReimbursementLink: string
+    /** @defaultValue `"Save reimbursement"` */
+    saveReimbursementCta: string
+    /** @defaultValue `"Cancel reimbursement"` */
+    cancelReimbursementCta: string
+    /** @defaultValue `"Remove {{description}} reimbursement"` */
+    removeReimbursementLabel: string
+    /** @defaultValue `"{{description}} (recurring reimbursement)"` */
+    recurringReimbursementLabel: string
+    /** @defaultValue `"Recurring reimbursements are managed outside of payroll."` */
+    recurringReimbursementTooltip: string
+    fixedCompensationNames: {
+      /** @defaultValue `"Bonus"` */
+      bonus: string
+      /** @defaultValue `"Paycheck tips"` */
+      paycheckTips: string
+      /** @defaultValue `"Correction payment"` */
+      correctionPayment: string
+      /** @defaultValue `"Commission"` */
+      commission: string
+      /** @defaultValue `"Cash tips"` */
+      cashTips: string
+      /** @defaultValue `"Reimbursement"` */
+      reimbursement: string
+    }
+    /** @defaultValue `"Payment"` */
+    paymentMethodTitle: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodLabel: string
+    /** @defaultValue `"Changing the default payment method will only apply to this payroll."` */
+    paymentMethodDescription: string
+    paymentMethodOptions: {
+      /** @defaultValue `"Direct deposit"` */
+      directDeposit: string
+      /** @defaultValue `"Check"` */
+      check: string
+    }
+    validations: {
+      /** @defaultValue `"Amount must be greater than zero"` */
+      reimbursementAmount: string
+      /** @defaultValue `"Amount cannot be negative"` */
+      negativeAmount: string
+    }
+  }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
   export interface PayrollWireInstructions {
     /** @defaultValue `"Wire instructions"` */
@@ -8028,6 +8606,8 @@ export namespace Translations {
       ensureRequired: string
     }
     icons: {
+      /** @defaultValue `"Completed step"` */
+      completedStep: string
       /** @defaultValue `"Show options"` */
       selectArrow: string
       /** @defaultValue `"Show calendar"` */

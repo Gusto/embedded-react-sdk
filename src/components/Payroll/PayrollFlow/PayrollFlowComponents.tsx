@@ -26,6 +26,8 @@ export interface PayrollFlowProps extends BaseComponentInterface<never> {
   companyId: string
   /** Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. */
   withReimbursements?: boolean
+  /** Whether to show the off-cycle payroll call-to-action. Defaults to `true`. */
+  withOffcyclePayroll?: boolean
   /** Optional custom component that replaces the default wire-details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
@@ -60,6 +62,7 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   breadcrumbs?: BreadcrumbTrail
   payPeriod?: PayrollPayPeriodType
   withReimbursements: boolean
+  withOffcyclePayroll: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   showPayrollCancelledAlert?: boolean
   hasPayrollSubmissionStarted?: boolean
@@ -75,6 +78,7 @@ export function PayrollLandingContextual() {
     companyId,
     onEvent,
     withReimbursements,
+    withOffcyclePayroll,
     ConfirmWireDetailsComponent,
     showPayrollCancelledAlert,
   } = useFlow<PayrollFlowContextInterface>()
@@ -83,6 +87,7 @@ export function PayrollLandingContextual() {
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       withReimbursements={withReimbursements}
+      withOffcyclePayroll={withOffcyclePayroll}
       ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
       showPayrollCancelledAlert={showPayrollCancelledAlert}
     />

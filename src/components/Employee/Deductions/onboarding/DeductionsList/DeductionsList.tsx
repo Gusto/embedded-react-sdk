@@ -60,6 +60,7 @@ export function DeductionsList({
       {
         key: 'amount',
         title: t('withheldColumn'),
+        justify: 'end',
         render: deduction =>
           formatDeductionAmount(deduction, {
             formatCurrency,

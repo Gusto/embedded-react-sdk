@@ -145,6 +145,7 @@ export const PayrollHistoryPresentation = ({
       <DataView
         label={t('dataView.label')}
         pagination={pagination}
+        isFetching={pagination.isFetching}
         emptyState={() =>
           dateRangeFilter.isModified ? (
             <EmptyData
@@ -186,6 +187,7 @@ export const PayrollHistoryPresentation = ({
           },
           {
             title: t('columns.totalPayroll'),
+            justify: 'end',
             render: (item: Payroll) => formatNumberAsCurrency(calculateTotalPayroll(item)),
           },
         ]}

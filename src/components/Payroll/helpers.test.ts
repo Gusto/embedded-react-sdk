@@ -12,6 +12,7 @@ import {
   getPayrollTypeLabel,
   getAdditionalEarningsCompensations,
   canCancelPayroll,
+  isOvertimeEligibleFlsaStatus,
 } from './helpers'
 import { PayrollCategory } from './payrollTypes'
 import {
@@ -1556,6 +1557,27 @@ describe('Payroll helpers', () => {
           expect(canCancelPayroll(payroll)).toBe(false)
         },
       )
+    })
+  })
+
+  describe('isOvertimeEligibleFlsaStatus', () => {
+    it.each(['Nonexempt', 'Salaried Nonexempt', 'Commission Only Nonexempt'])(
+      'returns true for the nonexempt status %s',
+      status => {
+        expect(isOvertimeEligibleFlsaStatus(status)).toBe(true)
+      },
+    )
+
+    it.each(['Exempt', 'Owner', 'Commission Only Exempt'])(
+      'returns false for the non-eligible status %s',
+      status => {
+        expect(isOvertimeEligibleFlsaStatus(status)).toBe(false)
+      },
+    )
+
+    it('returns false for an unknown or undefined status', () => {
+      expect(isOvertimeEligibleFlsaStatus('Something Else')).toBe(false)
+      expect(isOvertimeEligibleFlsaStatus(undefined)).toBe(false)
     })
   })
 })

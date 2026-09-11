@@ -527,7 +527,7 @@ describe('PayrollOverviewPresentation', () => {
     expect(screen.getByText('John Smith')).toBeInTheDocument()
   })
 
-  it('derives the compensation type column from each compensation flsaStatus', async () => {
+  it('derives the compensation type column from employeeFlsaStatusByUuid, including for salaried employees with no hourlyCompensations', async () => {
     const user = userEvent.setup()
     const payrollWithFlsa: PayrollShow = {
       ...mockPayrollData,
@@ -537,10 +537,8 @@ describe('PayrollOverviewPresentation', () => {
           firstName: 'Patricia',
           lastName: 'Churchland',
           excluded: false,
-          fixedCompensations: [],
-          hourlyCompensations: [
-            { name: 'Regular Hours', hours: '40.0', amount: '2000.0', flsaStatus: 'Exempt' },
-          ],
+          fixedCompensations: [{ name: 'Salary', amount: '2000.0' }],
+          hourlyCompensations: [],
           paidTimeOff: [],
           grossPay: '2000',
           netPay: '1600',
@@ -554,9 +552,7 @@ describe('PayrollOverviewPresentation', () => {
           lastName: 'Berlin',
           excluded: false,
           fixedCompensations: [],
-          hourlyCompensations: [
-            { name: 'Regular Hours', hours: '40.0', amount: '800.0', flsaStatus: 'Nonexempt' },
-          ],
+          hourlyCompensations: [{ name: 'Regular Hours', hours: '40.0', amount: '800.0' }],
           paidTimeOff: [],
           grossPay: '800',
           netPay: '640',
@@ -568,13 +564,52 @@ describe('PayrollOverviewPresentation', () => {
     }
 
     renderWithProviders(
-      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithFlsa} />,
+      <PayrollOverviewPresentation
+        {...defaultProps}
+        payrollData={payrollWithFlsa}
+        employeeFlsaStatusByUuid={{
+          'emp-exempt': 'Exempt',
+          'emp-nonexempt': 'Nonexempt',
+        }}
+      />,
     )
 
     await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
 
     expect(await screen.findByText('Salaried / Exempt')).toBeInTheDocument()
     expect(screen.getByText('Hourly / Nonexempt')).toBeInTheDocument()
+  })
+
+  it('includes reimbursements in the employee take-home Payment total', async () => {
+    const user = userEvent.setup()
+    const payrollWithReimbursement: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          reimbursements: [{ description: 'Travel', amount: '75.00' }],
+          grossPay: '5000',
+          netPay: '4000',
+          checkAmount: '4000',
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithReimbursement} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Employee take home/i }))
+
+    expect(await screen.findByText('$4,075.00')).toBeInTheDocument()
   })
 
   it('renders a pagination control for the per-employee tables when pagination is provided', async () => {
@@ -654,10 +689,10 @@ describe('PayrollOverviewPresentation', () => {
       await user.click(screen.getByRole('button', { name: /Cancel payroll/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/Any changes you have made/i)).toBeInTheDocument()
+        expect(screen.getByText(/Your changes will be saved/i)).toBeInTheDocument()
       })
 
-      expect(screen.queryByText(/ensure your employees are paid on time/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/pay your employees on time/i)).not.toBeInTheDocument()
     })
 
     it('shows ACH deadline message for direct deposit payrolls', async () => {
@@ -692,7 +727,66 @@ describe('PayrollOverviewPresentation', () => {
       await user.click(screen.getByRole('button', { name: /Cancel payroll/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/ensure your employees are paid on time/i)).toBeInTheDocument()
+        expect(screen.getByText(/pay your employees on time/i)).toBeInTheDocument()
+      })
+    })
+
+    // The dialog previously led with "Any changes you have made to this payroll will be
+    // saved.", which says nothing about what cancelling does -- it read as stray help text.
+    // Legacy gws-flows opens with the run-it-again-later clause (SDK-1286).
+    it('explains that the payroll can be run again later', async () => {
+      const user = userEvent.setup()
+
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={true} canCancel={true} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /Cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/You may cancel this payroll and run it again later/i),
+        ).toBeInTheDocument()
+      })
+    })
+
+    // Only `time` was interpolated, so the deadline rendered with no date at all.
+    it('includes the run-by date alongside the time in the deadline line', async () => {
+      const user = userEvent.setup()
+      const ddPayroll: PayrollShow = {
+        ...mockPayrollData,
+        employeeCompensations: [
+          {
+            paymentMethod: 'Direct Deposit',
+            excluded: false,
+            fixedCompensations: [],
+            hourlyCompensations: [],
+            paidTimeOff: [],
+            employeeUuid: 'emp-1',
+          },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          payrollData={ddPayroll}
+          isProcessed={true}
+          canCancel={true}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /Cancel payroll/i }))
+
+      // "<time> on <date>", matching how PayrollHistory renders the same deadline.
+      await waitFor(() => {
+        expect(screen.getByText(/Run this payroll by .+ on \w{3}, \w{3} \d+/i)).toBeInTheDocument()
       })
     })
   })
@@ -729,6 +823,15 @@ describe('PayrollOverviewPresentation', () => {
 
       expect(await screen.findByRole('button', { name: /^Edit$/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
+    })
+
+    it('hides Edit but keeps Submit when canEdit is false on an unprocessed payroll', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={false} canEdit={false} />,
+      )
+
+      expect(await screen.findByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^Edit$/i })).not.toBeInTheDocument()
     })
   })
 })

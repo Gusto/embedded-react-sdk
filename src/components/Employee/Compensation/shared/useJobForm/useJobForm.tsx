@@ -407,16 +407,20 @@ export function useJobForm({
 
             // When a primary job's hire_date is PUT and the value actually
             // changes, the API unconditionally overwrites every secondary's
-            // current-compensation effective_date to match the new hire_date —
-            // even when the secondary's original effective_date was already on
-            // or after the new hire_date. Read those originals now so we can
-            // PUT them back below; by the time we re-fetch they'll be gone.
+            // current-compensation effective_date to match the new hire_date.
+            // That's already the outcome we want for a secondary whose
+            // effective_date was before the new hire_date, so there's nothing
+            // to correct there. It's only wrong for a secondary whose
+            // effective_date was already on or after the new hire_date — the
+            // API clobbers that one too, erasing a deliberately future-dated
+            // comp. Read those originals now so we can restore them below; by
+            // the time we re-fetch they'll be gone.
             const shouldCorrectSecondaries =
               !isCreateMode &&
               currentJob?.primary === true &&
               !!resolvedHireDate &&
               resolvedHireDate !== currentJob.hireDate
-            const secondaryJobEffectiveDates = shouldCorrectSecondaries
+            const secondariesNeedingRestore = shouldCorrectSecondaries
               ? (employeeJobs ?? [])
                   .filter(j => !j.primary && j.currentCompensationUuid)
                   .map(j => ({
@@ -424,6 +428,10 @@ export function useJobForm({
                     effectiveDate: j.compensations?.find(c => c.uuid === j.currentCompensationUuid)
                       ?.effectiveDate,
                   }))
+                  .filter(
+                    (entry): entry is { compId: string; effectiveDate: string } =>
+                      !!entry.effectiveDate && entry.effectiveDate > resolvedHireDate,
+                  )
               : []
 
             let updatedJob: Job
@@ -479,14 +487,15 @@ export function useJobForm({
               }
               updatedJob = result.job
 
-              // The primary PUT above clobbered each secondary's
-              // current-compensation effective_date. Refetch jobs for the
-              // bumped versions, then PUT each secondary back to
-              // max(originalEffectiveDate, newHireDate) in parallel — the
-              // requests are independent (different compensation_id, separate
-              // versions), and `Promise.all` still surfaces the first
-              // rejection through the surrounding baseSubmitHandler's catch.
-              if (shouldCorrectSecondaries && secondaryJobEffectiveDates.length > 0) {
+              // The primary PUT above clobbered every secondary's
+              // current-compensation effective_date to the new hire_date,
+              // including the ones that needed to stay where they were.
+              // Refetch jobs for the bumped versions, then restore just those
+              // secondaries in parallel — the requests are independent
+              // (different compensation_id, separate versions), and
+              // `Promise.all` still surfaces the first rejection through the
+              // surrounding baseSubmitHandler's catch.
+              if (secondariesNeedingRestore.length > 0) {
                 setIsCorrectingSecondaries(true)
                 try {
                   const refreshed = await jobsQuery.refetch()
@@ -494,14 +503,9 @@ export function useJobForm({
                     j => j.compensations ?? [],
                   )
                   await Promise.all(
-                    secondaryJobEffectiveDates.flatMap(entry => {
+                    secondariesNeedingRestore.flatMap(entry => {
                       const freshComp = freshComps.find(c => c.uuid === entry.compId)
                       if (!freshComp?.version) return []
-
-                      const desired =
-                        !entry.effectiveDate || entry.effectiveDate < resolvedHireDate
-                          ? resolvedHireDate
-                          : entry.effectiveDate
 
                       return [
                         updateSecondaryCompMutation.mutateAsync({
@@ -509,7 +513,7 @@ export function useJobForm({
                             compensationId: entry.compId,
                             compensationsUpdateRequestBody: {
                               version: freshComp.version,
-                              effectiveDate: desired,
+                              effectiveDate: entry.effectiveDate,
                             },
                           },
                         }),

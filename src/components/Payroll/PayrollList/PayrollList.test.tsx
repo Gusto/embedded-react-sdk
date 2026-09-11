@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { PayrollList } from './PayrollList'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -180,6 +181,68 @@ describe('PayrollList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
+    })
+  })
+
+  it('keeps the current page visible and marks the grid busy instead of re-suspending while the next page loads', async () => {
+    const user = userEvent.setup()
+    const regularPayroll = {
+      payroll_uuid: 'payroll-page-1',
+      processed: false,
+      off_cycle: false,
+      payroll_type: 'Regular',
+      check_date: '2025-01-15',
+      payroll_deadline: '2025-01-14T23:30:00Z',
+      pay_period: {
+        start_date: '2025-01-01',
+        end_date: '2025-01-15',
+        pay_schedule_uuid: 'schedule-1',
+      },
+    }
+
+    let resolveSecondPage: (() => void) | undefined
+    const payrollsResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      const url = new URL(request.url)
+      const headers = { 'x-total-pages': '2', 'x-total-count': '10' }
+
+      if (url.searchParams.get('page') === '2') {
+        await new Promise<void>(resolve => {
+          resolveSecondPage = resolve
+        })
+        return HttpResponse.json([], { headers })
+      }
+
+      return HttpResponse.json([regularPayroll], { headers })
+    })
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, payrollsResolver),
+      ...sharedHandlers,
+    )
+
+    renderWithProviders(<PayrollList {...defaultProps} />)
+
+    const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
+
+    await user.click(screen.getByTestId('pagination-next'))
+
+    // The page-2 request is still pending (held open above). The previous page's row and
+    // chrome stay in place instead of the whole component re-suspending to the SDK's
+    // full-page loading skeleton.
+    expect(runPayrollButton).toBeInTheDocument()
+    expect(
+      document.querySelectorAll(
+        '[role="status"][aria-busy="true"][aria-label="Loading component..."]',
+      ),
+    ).toHaveLength(0)
+    await waitFor(() => {
+      expect(screen.getByRole('status', { name: 'Fetching data...' })).toBeInTheDocument()
+    })
+    expect(payrollsResolver).toHaveBeenCalledTimes(2)
+
+    resolveSecondPage?.()
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Run Payroll' })).not.toBeInTheDocument()
     })
   })
 })

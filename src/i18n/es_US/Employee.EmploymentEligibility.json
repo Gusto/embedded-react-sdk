@@ -1,0 +1,49 @@
+{
+  "authorizationDocument": {
+    "label": "Documento de autorización",
+    "options": {
+      "form_i94": "Formulario I-94"
+    }
+  },
+  "country": {
+    "description": "El país que emite su pasaporte",
+    "label": "País de emisión",
+    "placeholder": "Busque o escriba un país..."
+  },
+  "documentNumber": {
+    "foreign_passport": {
+      "label": "Número de pasaporte extranjero",
+      "placeholder": "**********"
+    },
+    "form_i94": {
+      "description": "Escriba su número de admisión I-94 de 11 caracteres",
+      "placeholder": "***********"
+    },
+    "uscis_alien_registration_number": {
+      "description": "Escriba un Número USCIS o Número A de 7 a 9 dígitos (incluya la \"A\")",
+      "placeholder": "********"
+    }
+  },
+  "expirationDate": {
+    "label": "Autorizado para trabajar hasta"
+  },
+  "select": {
+    "description": "Esta información se usará para completar el Formulario I-9, que demuestra que está legalmente autorizado para trabajar en los Estados Unidos.",
+    "label": "Yo soy...",
+    "options": {
+      "alien": "un no ciudadano autorizado para trabajar",
+      "citizen": "un ciudadano de los Estados Unidos",
+      "noncitizen": "un nacional no ciudadano",
+      "permanent_resident": "un residente permanente legal"
+    },
+    "placeholder": "Seleccione el estado..."
+  },
+  "statusDescriptions": {
+    "alien": "Un no ciudadano autorizado para trabajar incluye a cualquier persona que esté autorizada para trabajar en los Estados Unidos pero que no sea ciudadano estadounidense, nacional estadounidense ni residente permanente legal.",
+    "citizen": "Un ciudadano es alguien que nació o se naturalizó en los EE. UU., o que nació en el extranjero de padre(s) ciudadano(s) estadounidense(s), o que ha obtenido la ciudadanía a través de la naturalización de un padre según los requisitos legales.",
+    "noncitizen": "Un nacional no ciudadano es alguien nacido en Samoa Americana, ciertos exciudadanos del antiguo Territorio en Fideicomiso de las Islas del Pacífico y ciertos hijos de nacionales no ciudadanos nacidos en el extranjero.",
+    "permanent_resident": "Un residente permanente legal es alguien que no es ciudadano estadounidense y que reside en el país con un estatus de residencia permanente reconocido legalmente y registrado conforme a la ley como inmigrante."
+  },
+  "subtitle": "El gobierno federal requiere la verificación de su elegibilidad para trabajar en los Estados Unidos. Para más información, consulte el <formI9Link href=\"https:\/\/www.uscis.gov\/i-9\" target=\"_blank\">Formulario I-9<\/formI9Link>",
+  "title": "Elegibilidad de empleo"
+}

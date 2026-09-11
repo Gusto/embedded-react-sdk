@@ -45,5 +45,6 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 | [PayrollList](blocks.md#payrolllist) | Lists upcoming payrolls and lets users start running them. |
 | [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
 | [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [PrintChecks](blocks.md#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
 | [RecoveryCases](blocks.md#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
 | [TransitionCreation](blocks.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |

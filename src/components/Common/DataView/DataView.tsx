@@ -71,6 +71,7 @@ export const DataView = <T,>({
           isWithinBox={isWithinBox}
           emptyState={emptyState}
           selectionMode={selectionMode}
+          isFetching={isFetching}
         />
       )}
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}

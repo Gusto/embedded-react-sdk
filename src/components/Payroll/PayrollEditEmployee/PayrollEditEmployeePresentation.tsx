@@ -68,11 +68,32 @@ const ReimbursementFormSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
+const DraftReimbursementSchema = z.object({
+  description: z.string(),
+  amount: z.string().refine(
+    val => {
+      const num = parseFloat(val)
+      return !Number.isNaN(num) && num > 0
+    },
+    { message: 'validations.reimbursementAmount' },
+  ),
+})
+
+// A native `min={0}` only constrains the stepper: it does not stop a typed "-50", and the
+// SDK's <form> is noValidate so the browser never enforces it either. Negative amounts
+// therefore reached the platform and came back only as a submit-time error (SDK-1285).
+// Applied via z.record below, this covers every additional earning -- correction payment
+// included -- because they all share the fixedCompensations record.
+const nonNegativeAmountSchema = z
+  .string()
+  .optional()
+  .refine(val => !val || parseFloat(val) >= 0, { message: 'validations.negativeAmount' })
+
 const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   finalPayoutCompensations: z.record(z.string(), z.string().optional()),
-  fixedCompensations: z.record(z.string(), z.string().optional()),
+  fixedCompensations: z.record(z.string(), nonNegativeAmountSchema),
   reimbursements: z.array(ReimbursementFormSchema),
   paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
@@ -151,18 +172,25 @@ const buildCompensationFromFormData = (
         fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
     )
 
-    if (formAmount !== undefined && formAmount !== '') {
+    // Clearing the field means "no additional earning". For an entry that already has a
+    // saved amount we have to send an explicit 0: omitting it leaves the previously saved
+    // value in place server-side, so the box looked empty while the old amount survived
+    // the save (SDK-1284). This makes clearing behave exactly like typing 0. An entry with
+    // no saved compensation stays omitted -- there is nothing to zero out.
+    const resolvedAmount = formAmount === '' && existingFixedCompensation ? '0' : formAmount
+
+    if (resolvedAmount !== undefined && resolvedAmount !== '') {
       if (existingFixedCompensation) {
         updatedFixedCompensations.push({
           name: existingFixedCompensation.name,
           jobUuid: existingFixedCompensation.jobUuid,
-          amount: formAmount,
+          amount: resolvedAmount,
         })
-      } else if (parseFloat(formAmount) !== 0) {
+      } else if (parseFloat(resolvedAmount) !== 0) {
         updatedFixedCompensations.push({
           name: fixedCompensationName,
           jobUuid: primaryJobUuid,
-          amount: formAmount,
+          amount: resolvedAmount,
         })
       }
     }
@@ -200,7 +228,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
+  const { Button, ButtonIcon, Heading, Text } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -299,6 +327,25 @@ export const PayrollEditEmployeePresentation = ({
     }
   }
 
+  const resolveDefaultPaymentMethod = () => {
+    const preparedPaymentMethod = employeeCompensation?.paymentMethod
+
+    if (!preparedPaymentMethod) {
+      return hasDirectDepositSetup
+        ? PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
+        : PayrollEmployeeCompensationsTypePaymentMethod.Check
+    }
+
+    if (
+      !hasDirectDepositSetup &&
+      preparedPaymentMethod === PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit
+    ) {
+      return PayrollEmployeeCompensationsTypePaymentMethod.Check
+    }
+
+    return preparedPaymentMethod
+  }
+
   const defaultValues = {
     hourlyCompensations: (() => {
       const hourlyCompensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
@@ -364,9 +411,7 @@ export const PayrollEditEmployeePresentation = ({
       recurring: reimbursement.recurring ?? false,
     })),
 
-    paymentMethod:
-      employeeCompensation?.paymentMethod ||
-      PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
+    paymentMethod: resolveDefaultPaymentMethod(),
   }
 
   const formHandlers = useForm<PayrollEditEmployeeFormValues>({
@@ -404,25 +449,24 @@ export const PayrollEditEmployeePresentation = ({
     .filter(row => parseFloat(row.amount || '0') !== 0)
 
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
-  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
-  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+
+  type DraftReimbursementValues = z.infer<typeof DraftReimbursementSchema>
+
+  const draftForm = useForm<DraftReimbursementValues>({
+    resolver: zodResolver(DraftReimbursementSchema),
+    defaultValues: { description: '', amount: '' },
+  })
 
   const resetReimbursementDraft = () => {
     setIsAddingReimbursement(false)
-    setDraftReimbursementDescription('')
-    setDraftReimbursementAmount('')
+    draftForm.reset()
   }
 
-  const handleSaveReimbursementDraft = () => {
-    const trimmedAmount = draftReimbursementAmount.trim()
-    const parsedAmount = parseFloat(trimmedAmount || '0')
-    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      return
-    }
-
+  const onDraftReimbursementValid = (data: DraftReimbursementValues) => {
+    const parsedAmount = parseFloat(data.amount)
     appendReimbursement({
       uuid: null,
-      description: draftReimbursementDescription.trim(),
+      description: data.description.trim(),
       amount: parsedAmount.toFixed(2),
       recurring: false,
     })
@@ -440,6 +484,7 @@ export const PayrollEditEmployeePresentation = ({
       {
         key: 'amount',
         title: t('reimbursementAmountColumn'),
+        justify: 'end',
         render: row => formatNumberAsCurrency(parseFloat(row.amount || '0')),
       },
       {
@@ -700,6 +745,9 @@ export const PayrollEditEmployeePresentation = ({
                     isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
+                    // useField only surfaces this once react-hook-form has flagged the
+                    // field, and the schema's only rule here is the negative-amount check.
+                    errorMessage={t('validations.negativeAmount')}
                   />
                 ))}
               </Grid>
@@ -718,6 +766,7 @@ export const PayrollEditEmployeePresentation = ({
                   isRequired
                   label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
                   name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
+                  errorMessage={t('validations.negativeAmount')}
                 />
               </Grid>
             </div>
@@ -731,35 +780,34 @@ export const PayrollEditEmployeePresentation = ({
                 <DataView label={t('reimbursementsTableLabel')} {...reimbursementDataViewProps} />
               )}
               {isAddingReimbursement ? (
-                <Flex flexDirection="column" gap={12}>
-                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                    <TextInput
-                      name="newReimbursementDescription"
-                      label={t('reimbursementDescriptionLabel')}
-                      placeholder={t('reimbursementDescriptionPlaceholder')}
-                      value={draftReimbursementDescription}
-                      onChange={setDraftReimbursementDescription}
-                    />
-                    <TextInput
-                      name="newReimbursementAmount"
-                      type="number"
-                      min={0}
-                      adornmentStart="$"
-                      isRequired
-                      label={t('reimbursementAmountLabel')}
-                      value={draftReimbursementAmount}
-                      onChange={setDraftReimbursementAmount}
-                    />
-                  </Grid>
-                  <Flex gap={12}>
-                    <Button onClick={handleSaveReimbursementDraft}>
-                      {t('saveReimbursementCta')}
-                    </Button>
-                    <Button variant="secondary" onClick={resetReimbursementDraft}>
-                      {t('cancelReimbursementCta')}
-                    </Button>
+                <FormProvider {...draftForm}>
+                  <Flex flexDirection="column" gap={12}>
+                    <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                      <TextInputField
+                        name="description"
+                        label={t('reimbursementDescriptionLabel')}
+                        placeholder={t('reimbursementDescriptionPlaceholder')}
+                      />
+                      <TextInputField
+                        name="amount"
+                        type="number"
+                        min={0}
+                        adornmentStart="$"
+                        isRequired
+                        label={t('reimbursementAmountLabel')}
+                        errorMessage={t('validations.reimbursementAmount')}
+                      />
+                    </Grid>
+                    <Flex gap={12}>
+                      <Button onClick={draftForm.handleSubmit(onDraftReimbursementValid)}>
+                        {t('saveReimbursementCta')}
+                      </Button>
+                      <Button variant="secondary" onClick={resetReimbursementDraft}>
+                        {t('cancelReimbursementCta')}
+                      </Button>
+                    </Flex>
                   </Flex>
-                </Flex>
+                </FormProvider>
               ) : (
                 visibleReimbursementRows.length > 0 && (
                   <div>

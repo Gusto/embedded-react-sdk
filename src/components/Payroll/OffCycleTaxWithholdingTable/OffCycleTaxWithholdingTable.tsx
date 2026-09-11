@@ -51,7 +51,14 @@ export function OffCycleTaxWithholdingTable({
       },
       {
         key: `${group.category}-taxed-as`,
-        content: taxedAsByCategory[group.category],
+        content: (
+          <div className={styles.taxedAsCell}>
+            <Text>{taxedAsByCategory[group.category]}</Text>
+            {group.taxedAsDescription && (
+              <Text variant="supporting">{group.taxedAsDescription}</Text>
+            )}
+          </div>
+        ),
       },
     ],
   }))

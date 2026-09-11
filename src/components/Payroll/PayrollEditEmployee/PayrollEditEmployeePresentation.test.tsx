@@ -1115,6 +1115,126 @@ describe('PayrollEditEmployeePresentation', () => {
         }),
       )
     })
+
+    // Clearing the field used to omit the entry entirely, so the API kept the previously
+    // saved amount: the box looked empty while the old value survived the save (SDK-1284).
+    // Clearing now behaves exactly like typing 0, as in the test above.
+    it('zeroes an existing compensation when its field is cleared', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // findBy, not getBy: the labels are translated, so a getBy here only passes when an
+      // earlier test in the file has already warmed the i18n namespace.
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+
+      const saveButton = screen.getByRole('button', { name: /save/i })
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fixedCompensations: expect.arrayContaining([
+            expect.objectContaining({ name: 'Bonus', amount: '0', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '50.00', jobUuid: 'job-1' }),
+          ]),
+        }),
+      )
+    })
+
+    it('still omits an earning type that never had a saved amount', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // 'Paycheck tips' is an available type with no saved compensation, so there is
+      // nothing to zero out and it must stay out of the payload.
+      const tipsInput = await screen.findByLabelText('Paycheck tips')
+      await user.type(tipsInput, '10')
+      await user.clear(tipsInput)
+
+      const saveButton = screen.getByRole('button', { name: /save/i })
+      await user.click(saveButton)
+
+      const saved = onSave.mock.calls[0]![0] as PayrollEmployeeCompensationsType
+      expect(saved.fixedCompensations?.map(compensation => compensation.name)).not.toContain(
+        'Paycheck Tips',
+      )
+    })
+
+    // A native min={0} only constrains the stepper, and the SDK form is noValidate, so a
+    // typed negative reached the platform and only came back as a submit-time error
+    // (SDK-1285).
+    it('blocks save and flags the field when a correction amount is negative', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      // Clear first: the field defaults to '0.00', and appending to that yields
+      // '0.00-50', which a number input rejects outright and blanks.
+      const correctionInput = await screen.findByLabelText('Correction payment')
+      await user.clear(correctionInput)
+      await user.type(correctionInput, '-50')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount cannot be negative')).toBeInTheDocument()
+      })
+      expect(onSave).not.toHaveBeenCalled()
+    })
+
+    it('flags a negative amount on any additional earning, not just corrections', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+      await user.type(bonusInput, '-1')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount cannot be negative')).toBeInTheDocument()
+      })
+      expect(onSave).not.toHaveBeenCalled()
+    })
+
+    it('does not flag empty or zero amounts as negative', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} onSave={onSave} />,
+      )
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+
+      const commissionInput = screen.getByLabelText('Commission')
+      await user.clear(commissionInput)
+      await user.type(commissionInput, '0')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(onSave).toHaveBeenCalled()
+      })
+      expect(screen.queryByText('Amount cannot be negative')).not.toBeInTheDocument()
+    })
   })
 
   describe('Payment Method', () => {
@@ -1395,6 +1515,58 @@ describe('PayrollEditEmployeePresentation', () => {
         }),
       )
     })
+
+    it('submits Check when no payment method is prepared and the employee has no direct deposit', async () => {
+      const compensationWithoutPaymentMethod = {
+        ...mockEmployeeCompensation,
+        paymentMethod: undefined,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithoutPaymentMethod}
+        />,
+      )
+
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            paymentMethod: PaymentMethods.Check,
+          }),
+        )
+      })
+    })
+
+    it('submits Check when Direct Deposit is prepared but the employee has no direct deposit', async () => {
+      const compensationWithDirectDeposit = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.DirectDeposit,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithDirectDeposit}
+        />,
+      )
+
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            paymentMethod: PaymentMethods.Check,
+          }),
+        )
+      })
+    })
   })
 
   describe('Itemized Reimbursements', () => {
@@ -1506,6 +1678,52 @@ describe('PayrollEditEmployeePresentation', () => {
       await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
 
       expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
+    })
+
+    it('shows a validation error when a negative amount is entered', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const descriptionInput = await screen.findByLabelText(/Description/i)
+      await user.type(descriptionInput, 'Office supplies')
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '-50')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
+    })
+
+    it('clears the validation error after entering a valid amount and saving', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '-10')
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+      })
+
+      await user.clear(amountInput)
+      await user.type(amountInput, '25')
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(screen.queryByText('Amount must be greater than zero')).not.toBeInTheDocument()
+      })
+      expect(screen.getByText('$25.00')).toBeInTheDocument()
     })
 
     it('soft-deletes an existing reimbursement on Remove (keeps uuid, sets amount to 0)', async () => {

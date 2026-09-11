@@ -974,6 +974,7 @@ Option entry for a [MultiSelectComboBox](#multiselectcomboboxprops) dropdown lis
 | ------ | ------ | ------ |
 | `label` | `string` | Display text for the option |
 | `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `string` | Optional secondary text rendered beneath the label in the option list |
 
 ***
 

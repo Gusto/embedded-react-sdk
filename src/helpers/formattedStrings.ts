@@ -9,24 +9,26 @@ import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 
 /**
- * Joins a first and last name into a single capitalized display string.
+ * Joins a first, middle initial, and last name into a single capitalized display string.
  *
  * @remarks Each name part is capitalized at its first character. A space is
- * inserted between the parts only when the last name is present. Missing
- * parts are treated as empty.
+ * inserted before the middle initial and last name only when that part is
+ * present. Missing parts are treated as empty.
  *
- * @param name - Object with optional `first_name` and `last_name` fields.
- * @returns The combined name, e.g. `Jane Doe`, `Jane`, or `''`.
+ * @param name - Object with optional `first_name`, `middle_initial`, and `last_name` fields.
+ * @returns The combined name, e.g. `Jane M Doe`, `Jane Doe`, `Jane`, or `''`.
  * @internal
  */
 export const firstLastName = ({
   first_name,
+  middle_initial,
   last_name,
 }: {
   first_name?: string | null
+  middle_initial?: string | null
   last_name?: string | null
 }) =>
-  `${first_name ? capitalize(first_name) : ''}${last_name ? maybeString(capitalize(last_name)) : ''}`
+  `${first_name ? capitalize(first_name) : ''}${middle_initial ? maybeString(capitalize(middle_initial)) : ''}${last_name ? maybeString(capitalize(last_name)) : ''}`
 
 const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''

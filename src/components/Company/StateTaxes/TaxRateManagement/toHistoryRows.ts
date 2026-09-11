@@ -1,4 +1,5 @@
 import type { TaxRequirementSet } from '@gusto/embedded-api/models/components/taxrequirementset'
+import { getUniqueRhfKey } from '../shared/rhfKey'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 /** @internal */
@@ -43,13 +44,14 @@ export function toHistoryRows(sets: TaxRequirementSet[]): HistoryRow[] {
 
   return sorted.map((set, idx) => {
     const values: Record<string, string> = {}
-    for (const requirement of set.requirements ?? []) {
-      if (!requirement.key || requirement.editable === false) continue
-      values[requirement.key] =
+    const requirements = set.requirements ?? []
+    requirements.forEach((requirement, reqIndex) => {
+      if (!requirement.key || requirement.editable === false) return
+      values[getUniqueRhfKey(requirement, reqIndex, requirements)] =
         requirement.value === null || requirement.value === undefined
           ? ''
           : String(requirement.value)
-    }
+    })
     const status: HistoryRowStatus =
       idx === currentIndex ? 'current' : idx > currentIndex ? 'scheduled' : 'historical'
     return {
@@ -70,11 +72,14 @@ export function toHistoryRows(sets: TaxRequirementSet[]): HistoryRow[] {
 export function extractRequirementColumns(sets: TaxRequirementSet[]): RequirementColumn[] {
   const seen = new Map<string, RequirementColumn>()
   for (const set of sets) {
-    for (const requirement of set.requirements ?? []) {
-      if (requirement.key && requirement.editable !== false && !seen.has(requirement.key)) {
-        seen.set(requirement.key, { key: requirement.key, label: requirement.label })
+    const requirements = set.requirements ?? []
+    requirements.forEach((requirement, index) => {
+      if (!requirement.key || requirement.editable === false) return
+      const columnKey = getUniqueRhfKey(requirement, index, requirements)
+      if (!seen.has(columnKey)) {
+        seen.set(columnKey, { key: columnKey, label: requirement.label })
       }
-    }
+    })
   }
   return Array.from(seen.values())
 }

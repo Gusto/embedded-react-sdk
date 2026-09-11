@@ -810,6 +810,71 @@ describe('useJobForm', () => {
       return { result, submitResult }
     }
 
+    // Reproduces the onboarding call shape from EditCompensation.tsx, where
+    // withHireDateField is false and hireDate is supplied at submit time via
+    // JobSubmitOptions rather than through the schema-validated form field.
+    // JobSubmitOptions.hireDate is typed `string` with no runtime coercion —
+    // unlike the form field's `coerceToISODate` preprocessor. A caller that
+    // passes a full ISO timestamp (e.g. from `Date.toISOString()` instead of
+    // `formatDateToStringDate()`) previously had that timestamp forwarded
+    // straight into a secondary-compensation-correction PUT, which the API
+    // rejects with a 422. Restoring a secondary only ever uses its own
+    // server-sourced effective_date, never the caller-supplied hireDate, so
+    // the unvalidated value has no path onto the wire here anymore.
+    it('never forwards options.hireDate into a secondary correction PUT, even when it is a timestamp', async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-08-01T00:00:00')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-08-01T00:00:00')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            withHireDateField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit({ hireDate: '2099-08-01T00:00:00' })
+      })
+
+      const aCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-a')
+      const bCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-b')
+
+      // A's original effective_date (2099-08-16) is still after the new hire
+      // date, so it's restored from its own clean, server-sourced value. B's
+      // original (2099-07-01) is before it, so the API's own clobber already
+      // landed on the right answer — no PUT needed, and so no path exists for
+      // the timestamp to reach the wire.
+      expect(aCall?.body.effective_date).toBe('2099-08-16')
+      expect(bCall).toBeUndefined()
+    })
+
+    it('does not restore a secondary whose effective_date exactly equals the new hire date', async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-08-16')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-08-16')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      // A's original effective_date (2099-08-16) exactly equals the new hire
+      // date, so the API's own clobber already lands on that same value — a
+      // no-op restore, just like the "before" case. No PUT should fire.
+      await renderAndSubmit('2099-08-16')
+
+      expect(compCalls).toHaveLength(0)
+    })
+
     it('does not PUT any secondary compensation when the hire date is unchanged', async () => {
       const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
       server.use(
@@ -852,19 +917,17 @@ describe('useJobForm', () => {
       const bCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-b')
 
       // A's original effective_date (2099-08-16) is still after the new hire
-      // date (2099-08-01), so it stays put. B's original (2099-07-01) is
-      // before the new hire date, so it advances.
+      // date (2099-08-01), so it's restored. B's original (2099-07-01) is
+      // before the new hire date — the API's own clobber already advanced it
+      // to the right answer, so no correction PUT is needed.
       expect(aCall?.body).toMatchObject({
         effective_date: '2099-08-16',
         version: 'compensation-version-secondary-a-next',
       })
-      expect(bCall?.body).toMatchObject({
-        effective_date: '2099-08-01',
-        version: 'compensation-version-secondary-b-next',
-      })
+      expect(bCall).toBeUndefined()
     })
 
-    it('advances every secondary effective_date when the new hire date passes them all', async () => {
+    it('does not PUT any secondary when the new hire date advances past all of them', async () => {
       const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
       server.use(
         handleGetEmployeeJobs(getJobsResolver('2099-09-01')),
@@ -874,11 +937,10 @@ describe('useJobForm', () => {
 
       await renderAndSubmit('2099-09-01')
 
-      const aCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-a')
-      const bCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-b')
-
-      expect(aCall?.body).toMatchObject({ effective_date: '2099-09-01' })
-      expect(bCall?.body).toMatchObject({ effective_date: '2099-09-01' })
+      // Both secondaries' original effective_dates (2099-08-16, 2099-07-01)
+      // are before the new hire date, so the API's own clobber already lands
+      // on the right answer for both — no restore PUTs needed.
+      expect(compCalls).toHaveLength(0)
     })
 
     it('surfaces a secondary PUT failure through errorHandling and skips submitResult', async () => {
@@ -890,12 +952,15 @@ describe('useJobForm', () => {
         return HttpResponse.json(buildCompensation({ uuid: compensationId }))
       })
       server.use(
-        handleGetEmployeeJobs(getJobsResolver('2099-09-01')),
-        handleUpdateEmployeeJob(() => jobPutResponse('2099-09-01')),
+        handleGetEmployeeJobs(getJobsResolver('2099-08-01')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-08-01')),
         handleUpdateEmployeeCompensation(updateCompResolver),
       )
 
-      const { result, submitResult } = await renderAndSubmit('2099-09-01')
+      // Secondary A needs restoring at this hire date (its 2099-08-16
+      // effective_date is still after 2099-08-01), so its PUT actually fires
+      // and the simulated 500 is reachable.
+      const { result, submitResult } = await renderAndSubmit('2099-08-01')
 
       expect(submitResult).toBeUndefined()
       expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)

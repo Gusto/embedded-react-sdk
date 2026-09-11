@@ -39,6 +39,10 @@ export interface DocumentListProps extends BaseComponentInterface<'Company.Docum
  * When `signatoryId` matches the currently saved signatory's id, the user is treated as the
  * signatory and is allowed to sign documents.
  *
+ * Each form's description is rendered as returned by the API, unless the `dictionary` prop
+ * supplies a `forms.<name>.description` override for that form's `name` (e.g.
+ * `forms.US_8655.description`).
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |

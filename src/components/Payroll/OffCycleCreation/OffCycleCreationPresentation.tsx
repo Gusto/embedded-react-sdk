@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
 import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
@@ -22,6 +22,10 @@ import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/
 export function OffCycleCreationPresentation({
   employees,
   isPending,
+  minCheckDate,
+  minCheckOnlyDate,
+  maxDate,
+  minPayPeriodDate,
   taxWithholdingConfig,
   isTaxWithholdingModalOpen,
   onTaxWithholdingEditClick,
@@ -44,6 +48,7 @@ export function OffCycleCreationPresentation({
         const group: WageTypeGroup = {
           category,
           label: tWithholding(`wageTypeGroups.${category}.label`),
+          taxedAsDescription: tWithholding(`wageTypeGroups.${category}.taxedAsDescription`),
         }
         if (category === 'regular' || category === 'supplemental') {
           group.description = tWithholding(`wageTypeGroups.${category}.description`)
@@ -88,7 +93,12 @@ export function OffCycleCreationPresentation({
           <Heading as="h3">{t('payPeriodSectionTitle')}</Heading>
           <Text variant="supporting">{t('payPeriodSectionDescription')}</Text>
         </Flex>
-        <OffCyclePayPeriodDateFormPresentation />
+        <OffCyclePayPeriodDateFormPresentation
+          minCheckDate={minCheckDate}
+          minCheckOnlyDate={minCheckOnlyDate}
+          maxDate={maxDate}
+          minPayPeriodDate={minPayPeriodDate}
+        />
       </Flex>
 
       <hr className={styles.divider} />
@@ -131,19 +141,28 @@ export function OffCycleCreationPresentation({
 
       <hr className={styles.divider} />
 
-      <OffCycleTaxWithholdingTable
-        wageTypeGroups={wageTypeGroups}
-        config={taxWithholdingConfig}
-        onEditClick={onTaxWithholdingEditClick}
-      />
-      {isTaxWithholdingModalOpen && (
-        <OffCycleTaxWithholdingModal
-          isOpen
-          defaultConfig={taxWithholdingConfig}
-          onDone={onTaxWithholdingModalDone}
-          onCancel={onTaxWithholdingModalCancel}
+      <Flex flexDirection="column" gap={12}>
+        <Text variant="supporting">
+          <Trans
+            t={t}
+            i18nKey="taxWithholdingDisclaimer"
+            components={{ bold: <Text as="span" weight="bold" /> }}
+          />
+        </Text>
+        <OffCycleTaxWithholdingTable
+          wageTypeGroups={wageTypeGroups}
+          config={taxWithholdingConfig}
+          onEditClick={onTaxWithholdingEditClick}
         />
-      )}
+        {isTaxWithholdingModalOpen && (
+          <OffCycleTaxWithholdingModal
+            isOpen
+            defaultConfig={taxWithholdingConfig}
+            onDone={onTaxWithholdingModalDone}
+            onCancel={onTaxWithholdingModalCancel}
+          />
+        )}
+      </Flex>
 
       <Flex justifyContent="flex-end" gap={12}>
         <Button type="submit" isLoading={isPending} isDisabled={isPending}>

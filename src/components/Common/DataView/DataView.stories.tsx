@@ -327,6 +327,26 @@ export const DataViewSelectableWithPagination = () => {
   )
 }
 
+export const DataViewLoading = () => {
+  const dataProps = useDataView({
+    data: compensationData.slice(0, 5),
+    columns: compensationColumns,
+    isFetching: true,
+    pagination: {
+      currentPage: 2,
+      totalPages: 4,
+      itemsPerPage: 5,
+      totalCount: compensationData.length,
+      handleFirstPage: () => {},
+      handlePreviousPage: () => {},
+      handleNextPage: () => {},
+      handleLastPage: () => {},
+      handleItemsPerPageChange: () => {},
+    },
+  })
+  return <DataView label="Data View Loading" {...dataProps} />
+}
+
 export const DataViewWithFooter = () => {
   const sampleData = [
     { jobTitle: 'Software Engineer', hourlyRate: 45, hoursWorked: 40 },
@@ -352,4 +372,23 @@ export const DataViewWithFooter = () => {
   })
 
   return <DataView label="Data View with Footer" {...dataProps} />
+}
+
+// Alignment is driven entirely by column.justify: the numeric "Amount" column
+// right-aligns (header, body, and footer), while text columns stay left. The
+// injected row-menu column is always flush-right.
+export const DataViewWithJustifiedColumns = () => {
+  const justifiedColumns: useDataViewProp<CompensationRow>['columns'] = [
+    { key: 'jobTitle', title: 'Job Title' },
+    { key: 'payType', title: 'Pay Type' },
+    { key: 'amount', title: 'Amount', justify: 'end' },
+    { key: 'payTimePeriod', title: 'Pay Time Period' },
+  ]
+  const dataProps = useDataView({
+    data: compensationData,
+    columns: justifiedColumns,
+    itemMenu: renderItemMenu,
+    footer: () => ({ jobTitle: 'Total', amount: '$1,050.15' }),
+  })
+  return <DataView label="Data View with Justified Columns" {...dataProps} />
 }

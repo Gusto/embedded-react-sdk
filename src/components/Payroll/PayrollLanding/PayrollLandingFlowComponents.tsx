@@ -29,6 +29,8 @@ export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll
   /** @internal */
   withReimbursements?: boolean
   /** @internal */
+  withOffcyclePayroll?: boolean
+  /** @internal */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   /** @internal */
   showPayrollCancelledAlert?: boolean
@@ -49,6 +51,8 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
   /** @internal */
   withReimbursements: boolean
   /** @internal */
+  withOffcyclePayroll: boolean
+  /** @internal */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   /** @internal */
   startDate?: string
@@ -64,6 +68,7 @@ export function PayrollLandingTabsContextual() {
     companyId,
     onEvent,
     selectedTab = 'run-payroll',
+    withOffcyclePayroll,
     ConfirmWireDetailsComponent = ConfirmWireDetails,
     showPayrollCancelledAlert,
   } = useFlow<PayrollLandingFlowContextInterface>()
@@ -106,7 +111,13 @@ export function PayrollLandingTabsContextual() {
     {
       id: 'run-payroll',
       label: t('tabs.runPayroll'),
-      content: <PayrollList companyId={ensureRequired(companyId)} onEvent={onEvent} />,
+      content: (
+        <PayrollList
+          companyId={ensureRequired(companyId)}
+          onEvent={onEvent}
+          withOffcyclePayroll={withOffcyclePayroll}
+        />
+      ),
     },
     {
       id: 'payroll-history',

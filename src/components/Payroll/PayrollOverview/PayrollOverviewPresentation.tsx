@@ -32,22 +32,24 @@ import {
   compensationTypeLabels,
   FlsaStatus,
   PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
-  PAYMENT_METHODS,
 } from '@/shared/constants'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
+  employeeFlsaStatusByUuid?: Record<string, string | undefined>
   bankAccount?: CompanyBankAccount
   taxes: Record<string, { employee: number; employer: number }>
   status?: PayrollOverviewStatus
   isProcessed: boolean
   canCancel?: boolean
+  canEdit?: boolean
   alerts?: PayrollFlowAlert[]
   submissionBlockers?: PayrollSubmissionBlockerType[]
   selectedUnblockOptions?: Record<string, string>
   wireInConfirmationRequest?: React.ReactNode
+  printChecksBanner?: React.ReactNode
   pagination?: PaginationControlProps
   onEdit: () => void
   onSubmit: () => void
@@ -57,6 +59,7 @@ interface PayrollOverviewProps {
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
   paymentSpeed?: PaymentSpeed
+  downloadingEmployeeIds?: ReadonlySet<string>
 }
 
 const getPayrollOverviewTitle = (
@@ -77,19 +80,23 @@ export const PayrollOverviewPresentation = ({
   onPayrollReceipt,
   onPaystubDownload,
   payrollData,
+  employeeFlsaStatusByUuid = {},
   bankAccount,
   taxes,
   status = PayrollOverviewStatus.Viewing,
   isProcessed,
   canCancel = false,
+  canEdit = true,
   alerts = [],
   submissionBlockers = [],
   selectedUnblockOptions = {},
   onUnblockOptionChange,
   wireInConfirmationRequest,
+  printChecksBanner,
   withReimbursements = true,
   paymentSpeed,
   pagination,
+  downloadingEmployeeIds = new Set<string>(),
 }: PayrollOverviewProps) => {
   const { Alert, Badge, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -109,6 +116,14 @@ export const PayrollOverviewPresentation = ({
     <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
   )
   const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
+
+  // formatWithTime returns { time, date }, and the cancel dialog used to interpolate only
+  // `time` -- so it read "Run this payroll by 4:00 PM PDT" with no date at all (SDK-1286).
+  // Rendered as "<time> on <date>" to match how PayrollHistory shows the same deadline.
+  const cancelDeadline = (() => {
+    const { time, date } = dateFormatter.formatWithTime(payrollData.payrollDeadline)
+    return date ? `${time} on ${date}` : time
+  })()
 
   const pageSubtitle = (
     <Text>
@@ -212,15 +227,10 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
-  const checkPaymentsCount =
-    payrollData.employeeCompensations?.reduce(
-      (acc, comp) =>
-        !comp.excluded && comp.paymentMethod === PAYMENT_METHODS.check ? acc + 1 : acc,
-      0,
-    ) ?? 0
   const companyPaysColumns: Array<{
     key: string
     title: string
+    justify?: 'start' | 'end'
     render: (item: EmployeeCompensations) => React.ReactNode
   }> = [
     {
@@ -239,6 +249,7 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
+      justify: 'end',
       render: (employeeCompensations: EmployeeCompensations) =>
         formatCurrency(Number(employeeCompensations.grossPay!)),
     },
@@ -247,6 +258,7 @@ export const PayrollOverviewPresentation = ({
           {
             key: 'reimbursements',
             title: t('tableHeaders.reimbursements'),
+            justify: 'end' as const,
             render: (employeeCompensation: EmployeeCompensations) =>
               formatCurrency(getReimbursements(employeeCompensation)),
           },
@@ -255,18 +267,21 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyTaxes(employeeCompensation)),
     },
     {
       key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyBenefits(employeeCompensation)),
     },
     {
       key: 'companyPays',
       title: t('tableHeaders.companyPays'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyCost(employeeCompensation)),
     },
@@ -275,21 +290,27 @@ export const PayrollOverviewPresentation = ({
     companyPaysColumns.push({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
-      render: (employeeCompensations: EmployeeCompensations) => (
-        <Flex justifyContent="flex-end">
-          <ButtonIcon
-            aria-label={t('downloadPaystubLabel')}
-            variant="tertiary"
-            onClick={() => {
-              if (employeeCompensations.employeeUuid) {
-                onPaystubDownload(employeeCompensations.employeeUuid)
-              }
-            }}
-          >
-            <DownloadIcon />
-          </ButtonIcon>
-        </Flex>
-      ),
+      render: (employeeCompensations: EmployeeCompensations) => {
+        const isDownloading =
+          !!employeeCompensations.employeeUuid &&
+          downloadingEmployeeIds.has(employeeCompensations.employeeUuid)
+        return (
+          <Flex justifyContent="flex-end">
+            <ButtonIcon
+              aria-label={t('downloadPaystubLabel')}
+              variant="tertiary"
+              isLoading={isDownloading}
+              onClick={() => {
+                if (employeeCompensations.employeeUuid) {
+                  onPaystubDownload(employeeCompensations.employeeUuid)
+                }
+              }}
+            >
+              <DownloadIcon />
+            </ButtonIcon>
+          </Flex>
+        )
+      },
     })
   }
   const tabs = [
@@ -304,19 +325,25 @@ export const PayrollOverviewPresentation = ({
           pagination={pagination}
           itemMenu={
             isProcessed && !isDesktop
-              ? (employeeCompensations: EmployeeCompensations) => (
-                  <ButtonIcon
-                    aria-label={t('downloadPaystubLabel')}
-                    variant="tertiary"
-                    onClick={() => {
-                      if (employeeCompensations.employeeUuid) {
-                        onPaystubDownload(employeeCompensations.employeeUuid)
-                      }
-                    }}
-                  >
-                    <DownloadIcon />
-                  </ButtonIcon>
-                )
+              ? (employeeCompensations: EmployeeCompensations) => {
+                  const isDownloading =
+                    !!employeeCompensations.employeeUuid &&
+                    downloadingEmployeeIds.has(employeeCompensations.employeeUuid)
+                  return (
+                    <ButtonIcon
+                      aria-label={t('downloadPaystubLabel')}
+                      variant="tertiary"
+                      isLoading={isDownloading}
+                      onClick={() => {
+                        if (employeeCompensations.employeeUuid) {
+                          onPaystubDownload(employeeCompensations.employeeUuid)
+                        }
+                      }}
+                    >
+                      <DownloadIcon />
+                    </ButtonIcon>
+                  )
+                }
               : undefined
           }
           footer={() => ({
@@ -365,9 +392,9 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.compensationType'),
               render: (employeeCompensations: EmployeeCompensations) => {
-                const flsaStatus = employeeCompensations.hourlyCompensations?.find(
-                  compensation => compensation.flsaStatus,
-                )?.flsaStatus
+                const flsaStatus = employeeCompensations.employeeUuid
+                  ? employeeFlsaStatusByUuid[employeeCompensations.employeeUuid]
+                  : undefined
 
                 switch (flsaStatus) {
                   case FlsaStatus.EXEMPT:
@@ -490,7 +517,10 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.payment'),
               render: (employeeCompensations: EmployeeCompensations) =>
-                formatCurrency(Number(employeeCompensations.netPay ?? 0)),
+                formatCurrency(
+                  Number(employeeCompensations.netPay ?? 0) +
+                    getReimbursements(employeeCompensations),
+                ),
             },
           ]}
           data={payrollData.employeeCompensations!}
@@ -587,9 +617,11 @@ export const PayrollOverviewPresentation = ({
     </>
   ) : (
     <>
-      <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
-        {t('editCta')}
-      </Button>
+      {canEdit && (
+        <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
+          {t('editCta')}
+        </Button>
+      )}
       <Button
         onClick={onSubmit}
         isDisabled={
@@ -783,14 +815,7 @@ export const PayrollOverviewPresentation = ({
                 data={[{}]}
               />
             )}
-            {checkPaymentsCount > 0 && (
-              <Alert
-                status="warning"
-                label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
-              >
-                {t('alerts.checkPaymentWarningDescription')}
-              </Alert>
-            )}
+            {printChecksBanner}
             <Tabs
               onSelectionChange={setSelectedTab}
               selectedId={selectedTab}
@@ -818,7 +843,7 @@ export const PayrollOverviewPresentation = ({
                   {Number(payrollData.totals?.netPayDebit ?? 0) > 0 && (
                     <Text>
                       {t('cancelDialogDescriptionDeadline', {
-                        deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
+                        deadline: cancelDeadline,
                       })}
                     </Text>
                   )}

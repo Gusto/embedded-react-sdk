@@ -19,16 +19,22 @@ const DEFAULT_WAGE_TYPE_GROUPS: WageTypeGroup[] = [
     label: 'Regular hours, regular wages, and tips',
     description:
       "These earnings should be taxed at a rate that matches your employees' regular pay schedule.",
+    taxedAsDescription:
+      'Federal and state income taxes are withheld using the standard tax tables for this pay frequency.',
   },
   {
     category: 'supplemental',
     label: 'Supplemental wages, bonus wages, commission',
     description:
       'These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes.',
+    taxedAsDescription:
+      "Taxed either at the IRS's flat 22% supplemental rate or under your regular pay schedule, depending on the rate you select above.",
   },
   {
     category: 'reimbursement',
     label: 'Reimbursements',
+    taxedAsDescription:
+      "Reimbursements for business expenses aren't taxable wages, so no federal or state income tax is withheld.",
   },
 ]
 

@@ -1,0 +1,57 @@
+{
+  "form": {
+    "cancelCta": "Cancelar",
+    "effectiveFromLabel": "Válido desde: {{date}}",
+    "saveCta": "Guardar",
+    "title": "Requisitos de impuestos de {{state}}",
+    "validations": {
+      "maxValue": "El valor máximo es {{max}}%",
+      "minValue": "El valor mínimo es {{min}}%",
+      "oneOf": "El valor debe ser uno de los siguientes: {{values}}",
+      "required": "Este campo es obligatorio"
+    }
+  },
+  "list": {
+    "completeBadge": "Completar",
+    "continueCta": "Continuar",
+    "continueStateTaxSetupCta": "Seguir con la configuración",
+    "defaultRatesAppliedText": "Se aplicaron las tasas de impuestos predeterminadas",
+    "editStateTaxCta": "Editar configuraciones de impuestos",
+    "emptyTableDescription": "Agrega la ubicación de la empresa o un empleado para comenzar.",
+    "emptyTableTitle": "Sin requisitos de impuestos estatales",
+    "hamburgerTitle": "Acciones para {{state}}",
+    "inProgressBadge": "En progreso",
+    "incompleteBadge": "Información faltante",
+    "manageRatesCta": "Administrar tasas de impuestos",
+    "notStartedBadge": "No iniciado",
+    "readyToRunPayrollBadge": "Listo para procesar la nómina",
+    "requirementsListCol1": "Estado",
+    "requirementsListCol2": "Estado",
+    "requirementsListLabel": "Requisitos de impuestos estatales",
+    "selfOnboardingWarningDescription": "Si tus empleados realizan la integración por cuenta propia e introducen detalles que modifiquen los requisitos impositivos estatales de tu empresa (por ejemplo, el domicilio en un nuevo estado), puede que debas efectuar nuevamente la configuración de impuestos estatales.",
+    "selfOnboardingWarningLabel": "Los empleados que realizan la integración por cuenta propia pueden cambiar los requisitos fiscales de tu empresa",
+    "startStateTaxSetupCta": "Comenzar configuración"
+  },
+  "manageRates": {
+    "addRateCta": "Agregar tasa de impuesto",
+    "addRateDialogDescription": "Programa una nueva configuración de impuestos para que entre en vigor en una fecha futura.",
+    "addRateDialogTitle": "Agregar tasa de impuesto para {{state}}",
+    "backCta": "Volver a estados",
+    "cancelCta": "Cancelar",
+    "currentBadge": "Actual",
+    "effectiveDateColumnLabel": "Fecha de vigencia",
+    "effectiveDateLabel": "Fecha de vigencia",
+    "effectiveDatePlaceholder": "Selecciona una fecha de vigencia",
+    "emptyHistoryDescription": "Agrega una tasa de impuesto para programar una configuración con fecha futura.",
+    "emptyHistoryTitle": "Aún no hay tasas con fecha de vigencia",
+    "historicalBadge": "Histórico",
+    "noEditableFieldsDescription": "Este estado no muestra requisitos de impuestos editables con fecha de vigencia.",
+    "noEditableFieldsTitle": "No hay campos editables",
+    "rateScheduledSuccess": "La tasa de impuesto está programada para entrar en vigor el {{date}}.",
+    "saveRateCta": "Guardar tasa de impuesto",
+    "scheduledBadge": "Programado",
+    "statusColumnLabel": "Estado",
+    "subtitle": "Historial de tasas de impuestos por fecha de vigencia y tasas programadas a futuro.",
+    "title": "Tasas de impuestos para {{state}}"
+  }
+}

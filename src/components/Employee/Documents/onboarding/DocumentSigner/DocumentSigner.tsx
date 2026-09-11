@@ -34,6 +34,10 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Employee.Do
  * signed, the flow starts on the I-9 employment eligibility step before
  * presenting the document list.
  *
+ * Each form's description is rendered as returned by the API, unless the `dictionary` prop
+ * supplies a `forms.<name>.description` override for that form's `name` (e.g.
+ * `forms.employee_direct_deposit.description`).
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |

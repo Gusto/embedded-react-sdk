@@ -58,6 +58,7 @@ Translation keys for the `common` i18n namespace.
 | `fileInput.uploadInstructions` | `"<clickToUpload>Click to upload</clickToUpload> or drag and drop"` |
 | <a id="property-commonicons"></a> `icons` | |
 | `icons.calendarArrow` | `"Show calendar"` |
+| `icons.completedStep` | `"Completed step"` |
 | `icons.nextMonth` | `"Show next month"` |
 | `icons.paginationFirst` | `"Navigate to first page"` |
 | `icons.paginationLast` | `"Navigate to last page"` |
@@ -357,6 +358,149 @@ Translation keys for the `Company.DocumentList` i18n namespace.
 | <a id="property-companydocumentlistdocumentlisttitle"></a> `documentListTitle` | `"Documents"` |
 | <a id="property-companydocumentlistemptytabletitle"></a> `emptyTableTitle` | `"No documents found"` |
 | <a id="property-companydocumentlistformcolumnlabel"></a> `formColumnLabel` | `"Form"` |
+| <a id="property-companydocumentlistforms"></a> `forms` | |
+| `forms.ACH_Reversal` | |
+| `forms.ACH_Reversal.description` | `""` |
+| `forms.amended_package` | |
+| `forms.amended_package.description` | `""` |
+| `forms.Benefits Annotated QWR` | |
+| `forms.Benefits Annotated QWR.description` | `""` |
+| `forms.BENEFITS_ANNOTATED_CA_DE-9C` | |
+| `forms.BENEFITS_ANNOTATED_CA_DE-9C.description` | `""` |
+| `forms.CA_DE-9` | |
+| `forms.CA_DE-9.description` | `""` |
+| `forms.CA_DE-9ADJ` | |
+| `forms.CA_DE-9ADJ.description` | `""` |
+| `forms.CA_DE-9C` | |
+| `forms.CA_DE-9C.description` | `""` |
+| `forms.co_employee_refund_instructions` | |
+| `forms.co_employee_refund_instructions.description` | `""` |
+| `forms.company_direct_deposit` | |
+| `forms.company_direct_deposit.description` | `""` |
+| `forms.DC_DOES_UC30` | |
+| `forms.DC_DOES_UC30.description` | `""` |
+| `forms.FL_RT-6` | |
+| `forms.FL_RT-6.description` | `""` |
+| `forms.IL_DOR_941` | |
+| `forms.IL_DOR_941.description` | `""` |
+| `forms.IL_DOR_941X` | |
+| `forms.IL_DOR_941X.description` | `""` |
+| `forms.IL_UI-340` | |
+| `forms.IL_UI-340.description` | `""` |
+| `forms.IL_UI-40C` | |
+| `forms.IL_UI-40C.description` | `""` |
+| `forms.Incomplete Benefits Annotated QWR` | |
+| `forms.Incomplete Benefits Annotated QWR.description` | `""` |
+| `forms.ky_unemployment` | |
+| `forms.ky_unemployment.description` | `""` |
+| `forms.ky_unemployment_amendment` | |
+| `forms.ky_unemployment_amendment.description` | `""` |
+| `forms.MA_941` | |
+| `forms.MA_941.description` | `""` |
+| `forms.ma_unemployment` | |
+| `forms.ma_unemployment.description` | `""` |
+| `forms.md_unemployment` | |
+| `forms.md_unemployment.description` | `""` |
+| `forms.md_unemployment_amendment` | |
+| `forms.md_unemployment_amendment.description` | `""` |
+| `forms.mt_tax_coupon` | |
+| `forms.mt_tax_coupon.description` | `""` |
+| `forms.NY_MTA-305` | |
+| `forms.NY_MTA-305.description` | `""` |
+| `forms.NY_MTA-305c` | |
+| `forms.NY_MTA-305c.description` | `""` |
+| `forms.NY_NYS-45` | |
+| `forms.NY_NYS-45.description` | `""` |
+| `forms.NY_NYS-45-X` | |
+| `forms.NY_NYS-45-X.description` | `""` |
+| `forms.NY_TR-2000` | |
+| `forms.NY_TR-2000.description` | `""` |
+| `forms.NY_TR-579-WT` | |
+| `forms.NY_TR-579-WT.description` | `""` |
+| `forms.OHIO_IT-3` | |
+| `forms.OHIO_IT-3.description` | `""` |
+| `forms.OHIO_IT-3c` | |
+| `forms.OHIO_IT-3c.description` | `""` |
+| `forms.OHIO_IT-501` | |
+| `forms.OHIO_IT-501.description` | `""` |
+| `forms.OHIO_IT-941` | |
+| `forms.OHIO_IT-941.description` | `""` |
+| `forms.OHIO_IT-941c` | |
+| `forms.OHIO_IT-941c.description` | `""` |
+| `forms.OHIO_SD-101` | |
+| `forms.OHIO_SD-101.description` | `""` |
+| `forms.OHIO_SD-141` | |
+| `forms.OHIO_SD-141.description` | `""` |
+| `forms.OHIO_SD-141c` | |
+| `forms.OHIO_SD-141c.description` | `""` |
+| `forms.OHIO_SUTA` | |
+| `forms.OHIO_SUTA.description` | `""` |
+| `forms.OHIO_SUTA_CORRECTION` | |
+| `forms.OHIO_SUTA_CORRECTION.description` | `""` |
+| `forms.quarterly_package` | |
+| `forms.quarterly_package.description` | `""` |
+| `forms.sc_unemployment` | |
+| `forms.sc_unemployment.description` | `""` |
+| `forms.SYMMETRY_PAYROLL_FORM` | |
+| `forms.SYMMETRY_PAYROLL_FORM.description` | `""` |
+| `forms.TEXAS_SUTA` | |
+| `forms.TEXAS_SUTA.description` | `""` |
+| `forms.TEXAS_SUTA_AMENDMENT` | |
+| `forms.TEXAS_SUTA_AMENDMENT.description` | `""` |
+| `forms.US_1099` | |
+| `forms.US_1099.description` | `""` |
+| `forms.US_1099 (Corrected)` | |
+| `forms.US_1099 (Corrected).description` | `""` |
+| `forms.US_1099_Employer_Printable_Copy` | |
+| `forms.US_1099_Employer_Printable_Copy.description` | `""` |
+| `forms.US_8655` | |
+| `forms.US_8655.description` | `""` |
+| `forms.US_8655_MODIFIED` | |
+| `forms.US_8655_MODIFIED.description` | `""` |
+| `forms.US_8821` | |
+| `forms.US_8821.description` | `""` |
+| `forms.US_8974` | |
+| `forms.US_8974.description` | `""` |
+| `forms.US_940` | |
+| `forms.US_940.description` | `""` |
+| `forms.US_940c` | |
+| `forms.US_940c.description` | `""` |
+| `forms.US_941` | |
+| `forms.US_941.description` | `""` |
+| `forms.US_941_SCHEDULE_B` | |
+| `forms.US_941_SCHEDULE_B.description` | `""` |
+| `forms.US_941X` | |
+| `forms.US_941X.description` | `""` |
+| `forms.US_944` | |
+| `forms.US_944.description` | `""` |
+| `forms.US_944X` | |
+| `forms.US_944X.description` | `""` |
+| `forms.US_Company_W-2` | |
+| `forms.US_Company_W-2.description` | `""` |
+| `forms.US_Company_W-2 (Corrected)` | |
+| `forms.US_Company_W-2 (Corrected).description` | `""` |
+| `forms.US_Company_W-2_Cover_Sheet` | |
+| `forms.US_Company_W-2_Cover_Sheet.description` | `""` |
+| `forms.US_W-2` | |
+| `forms.US_W-2.description` | `""` |
+| `forms.US_W-2_Employer_Copy` | |
+| `forms.US_W-2_Employer_Copy.description` | `""` |
+| `forms.US_W-2c` | |
+| `forms.US_W-2c.description` | `""` |
+| `forms.US_W-3` | |
+| `forms.US_W-3.description` | `""` |
+| `forms.US_W2_Employer_Printable_Copy` | |
+| `forms.US_W2_Employer_Printable_Copy.description` | `""` |
+| `forms.vt_unemployment` | |
+| `forms.vt_unemployment.description` | `""` |
+| `forms.WA_EMS-5208` | |
+| `forms.WA_EMS-5208.description` | `""` |
+| `forms.WA_EMS-5208D` | |
+| `forms.WA_EMS-5208D.description` | `""` |
+| `forms.WA_LNI` | |
+| `forms.WA_LNI.description` | `""` |
+| `forms.WA_LNI_AMENDMENT` | |
+| `forms.WA_LNI_AMENDMENT.description` | `""` |
 | <a id="property-companydocumentlistnosignatorydescription"></a> `noSignatoryDescription` | `"A signatory has not yet been assigned"` |
 | <a id="property-companydocumentlistnotsigned"></a> `notSigned` | `"Not signed"` |
 | <a id="property-companydocumentlistothersignatorydescription"></a> `otherSignatoryDescription` | `"Your signatory is {{signatory}}, {{title}}."` |
@@ -637,6 +781,8 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | <a id="property-companystatetaxesform"></a> `form` |
 | `form.cancelCta` |
 | `form.effectiveFromLabel` |
+| `form.noEditableRequirementsDescription` |
+| `form.noEditableRequirementsTitle` |
 | `form.saveCta` |
 | `form.title` |
 | `form.validations` |
@@ -1332,6 +1478,7 @@ Translation keys for the `Contractor.ContractorList` i18n namespace.
 | <a id="property-contractorcontractorlisteditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-contractorcontractorlistemptytabledescription"></a> `emptyTableDescription` | `"Add contractors to get them setup for payroll."` |
 | <a id="property-contractorcontractorlistemptytabletitle"></a> `emptyTableTitle` | `"You haven't added any contractors yet"` |
+| <a id="property-contractorcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Actions for {{name}}"` |
 | <a id="property-contractorcontractorlistlistheaders"></a> `listHeaders` | |
 | `listHeaders.name` | `"Name"` |
 | `listHeaders.status` | `"Status"` |
@@ -1478,6 +1625,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | `form.title` | `"Edit compensation"` |
 | `form.validations` | |
 | `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `form.wageTypeLabel` | `"Compensation type"` |
 | <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
 | <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
@@ -1498,6 +1646,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-contractormanagementcontractorlistaddcontractorcta"></a> `addContractorCta` | `"Add contractor"` |
+| <a id="property-contractormanagementcontractorlistbacktolistcta"></a> `backToListCta` | `"Back to contractors"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissalcta"></a> `cancelDismissalCta` | `"Cancel dismissal"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissaldialog"></a> `cancelDismissalDialog` | |
 | `cancelDismissalDialog.cancelCta` | `"No, go back"` |
@@ -1526,7 +1675,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | `emptyState.onboarding` | |
 | `emptyState.onboarding.description` | `"Contractors currently being onboarded will appear here"` |
 | `emptyState.onboarding.title` | `"There are no contractors onboarding"` |
-| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Contractor actions menu"` |
+| <a id="property-contractormanagementcontractorlisthamburgertitle"></a> `hamburgerTitle` | `"Actions for {{name}}"` |
 | <a id="property-contractormanagementcontractorlistlastdaybadge"></a> `lastDayBadge` | `"Last day {{date}}"` |
 | <a id="property-contractormanagementcontractorlistnamelabel"></a> `nameLabel` | `"Contractor name"` |
 | <a id="property-contractormanagementcontractorlistonboardingstatuslabel"></a> `onboardingStatusLabel` | `"Onboarding status"` |
@@ -1661,8 +1810,8 @@ Translation keys for the `Contractor.Management.Profile` i18n namespace.
 | `form.validations.businessName` | `"Business name is required"` |
 | `form.validations.ein` | `"The EIN must be exactly 9 digits long."` |
 | `form.validations.email` | `"Enter a valid email address"` |
-| `form.validations.firstName` | `"First name is required"` |
-| `form.validations.lastName` | `"Last name is required"` |
+| `form.validations.firstName` | `"Enter a valid first name"` |
+| `form.validations.lastName` | `"Enter a valid last name"` |
 | `form.validations.ssn` | `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` |
 | `form.validations.startDate` | `"Start date is required"` |
 | <a id="property-contractormanagementprofilelegalname"></a> `legalName` | `"Legal name"` |
@@ -2221,6 +2370,7 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.firstName` | `"First name is required for individual contractors"` |
 | `validations.firstNameFormat` | `"First name is not valid"` |
 | `validations.hourlyRate` | `"Hourly rate is required for hourly contractors"` |
+| `validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `validations.lastName` | `"Last name is required for individual contractors"` |
 | `validations.lastNameFormat` | `"Last name is not valid"` |
 | `validations.ssn` | `"SSN is required for individual contractors"` |
@@ -2819,6 +2969,17 @@ Translation keys for the `Employee.DocumentSigner` i18n namespace.
 | <a id="property-employeedocumentsignerdownloadprompt"></a> `downloadPrompt` | `"{{description}} You may also <downloadLink>download this document</downloadLink>."` |
 | <a id="property-employeedocumentsigneremptytabletitle"></a> `emptyTableTitle` | `"No documents found"` |
 | <a id="property-employeedocumentsignerformcolumnlabel"></a> `formColumnLabel` | `"Form"` |
+| <a id="property-employeedocumentsignerforms"></a> `forms` | |
+| `forms.employee_direct_deposit` | |
+| `forms.employee_direct_deposit.description` | `""` |
+| `forms.Or_Portland_Multnomah` | |
+| `forms.Or_Portland_Multnomah.description` | `""` |
+| `forms.or_w4` | |
+| `forms.or_w4.description` | `""` |
+| `forms.US_I-9` | |
+| `forms.US_I-9.description` | `""` |
+| `forms.US_W-4` | |
+| `forms.US_W-4.description` | `""` |
 | <a id="property-employeedocumentsignernotsigned"></a> `notSigned` | `"Not signed"` |
 | <a id="property-employeedocumentsignersignaturefielddescription"></a> `signatureFieldDescription` | `"Type your full, legal name."` |
 | <a id="property-employeedocumentsignersignaturefielderror"></a> `signatureFieldError` | `"Signature is required"` |
@@ -4524,6 +4685,7 @@ Translation keys for the `Payroll.OffCycleCreation` i18n namespace.
 | <a id="property-payrolloffcyclecreationpagetitle"></a> `pageTitle` | `"New Off-Cycle Payroll"` |
 | <a id="property-payrolloffcyclecreationpayperiodsectiondescription"></a> `payPeriodSectionDescription` | `"Enter a work period to show on your employees' pay stubs."` |
 | <a id="property-payrolloffcyclecreationpayperiodsectiontitle"></a> `payPeriodSectionTitle` | `"Pay period and payment date"` |
+| <a id="property-payrolloffcyclecreationtaxwithholdingdisclaimer"></a> `taxWithholdingDisclaimer` | `"Note: Off-cycle payrolls are meant to supplement the standard payroll schedule, not replace it. Since payroll taxes depend on wages, hours worked, <bold>and pay frequency,</bold> exclusively using off-cycle payrolls to pay your team can lead to taxes being omitted."` |
 
 ***
 
@@ -4557,6 +4719,7 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 
 | Property | Default value |
 | ------ | ------ |
+| <a id="property-payrolloffcyclepayperioddateformcheckdatedescription"></a> `checkDateDescription` | `"Enter the date you'd like your employees to receive payment."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckdatelabel"></a> `checkDateLabel` | `"Payment date"` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlydescription"></a> `checkOnlyDescription` | `"Select this option if all employees will be paid by check only. This allows you to set the check date to today or any future date."` |
 | <a id="property-payrolloffcyclepayperioddateformcheckonlylabel"></a> `checkOnlyLabel` | `"Check-only payroll"` |
@@ -4569,7 +4732,6 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 | `validations.checkDateRequired` | `"Payment date is required"` |
 | `validations.endDateAfterStart` | `"End date must be on or after start date"` |
 | `validations.endDateRequired` | `"End date is required"` |
-| `validations.startDateNotFuture` | `"Start date cannot be in the future for correction payrolls"` |
 | `validations.startDateRequired` | `"Start date is required"` |
 
 ***
@@ -4645,11 +4807,14 @@ Translation keys for the `Payroll.OffCycleTaxWithholding` i18n namespace.
 | `wageTypeGroups.regular` | |
 | `wageTypeGroups.regular.description` | `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` |
 | `wageTypeGroups.regular.label` | `"Regular hours, regular wages, and tips"` |
+| `wageTypeGroups.regular.taxedAsDescription` | `"Federal and state income taxes are withheld using the standard tax tables for this pay frequency."` |
 | `wageTypeGroups.reimbursement` | |
 | `wageTypeGroups.reimbursement.label` | `"Reimbursements"` |
+| `wageTypeGroups.reimbursement.taxedAsDescription` | `"Reimbursements for business expenses aren't taxable wages, so no federal or state income tax is withheld."` |
 | `wageTypeGroups.supplemental` | |
 | `wageTypeGroups.supplemental.description` | `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` |
 | `wageTypeGroups.supplemental.label` | `"Supplemental wages, bonus wages, commission"` |
+| `wageTypeGroups.supplemental.taxedAsDescription` | `"Taxed either at the IRS's flat 22% supplemental rate or under your regular pay schedule, depending on the rate you select above."` |
 
 ***
 
@@ -4911,6 +5076,9 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | `timeOffBalance.remaining` | `"{{balance}} remaining"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
+| <a id="property-payrollpayrolleditemployeevalidations"></a> `validations` | |
+| `validations.negativeAmount` | `"Amount cannot be negative"` |
+| `validations.reimbursementAmount` | `"Amount must be greater than zero"` |
 
 ***
 
@@ -4939,8 +5107,8 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrollhistorycanceldialog"></a> `cancelDialog` | |
-| `cancelDialog.body` | `"Any changes you have made to this payroll will be saved."` |
-| `cancelDialog.deadline` | `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` |
+| `cancelDialog.body` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
+| `cancelDialog.deadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
 | `cancelDialog.primaryAction` | `"Yes, cancel payroll"` |
 | `cancelDialog.secondaryAction` | `"No, go back"` |
 | `cancelDialog.title` | `"Cancel {{payPeriod}} payroll?"` |
@@ -5074,10 +5242,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
-| `alerts.checkPaymentWarning_one` | `"You noted {{count}} employee who should be paid by check."` |
-| `alerts.checkPaymentWarning_other` | `"You noted {{count}} employees who should be paid by check."` |
-| `alerts.checkPaymentWarningDescription` | `"Employees with this payment method will need their checks delivered to them."` |
-| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}"` |
+| `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
+| `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
@@ -5089,8 +5255,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewbackcta"></a> `backCta` | `"Back"` |
 | <a id="property-payrollpayrolloverviewbreadcrumblabel"></a> `breadcrumbLabel` | `"Submit"` |
 | <a id="property-payrollpayrolloverviewcancelcta"></a> `cancelCta` | `"Cancel payroll"` |
-| <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"Any changes you have made to this payroll will be saved."` |
-| <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to ensure your employees are paid on time."` |
+| <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
+| <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{startDate}} - {{endDate}} payroll?"` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitledismissal"></a> `cancelDialogTitleDismissal` | `"Cancel payroll?"` |
 | <a id="property-payrollpayrolloverviewcancelledemptystate"></a> `cancelledEmptyState` | `"This payroll has been cancelled."` |
@@ -5098,7 +5264,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewcompensationtypelabels"></a> `compensationTypeLabels` | |
 | `compensationTypeLabels.exempt` | `"Salaried / Exempt"` |
 | `compensationTypeLabels.nonexempt` | `"Hourly / Nonexempt"` |
-| <a id="property-payrollpayrolloverviewconfirmcancelcta"></a> `confirmCancelCta` | `" Yes, cancel payroll"` |
+| <a id="property-payrollpayrolloverviewconfirmcancelcta"></a> `confirmCancelCta` | `"Yes, cancel payroll"` |
 | <a id="property-payrollpayrolloverviewdataloadingtitle"></a> `dataLoadingTitle` | `"Loading payroll..."` |
 | <a id="property-payrollpayrolloverviewdataviews"></a> `dataViews` | |
 | `dataViews.companyPaysTab` | `"Company pays"` |
@@ -5113,6 +5279,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `dataViews.taxesTable` | `"Taxes breakdown"` |
 | <a id="property-payrollpayrolloverviewdeclinecancelcta"></a> `declineCancelCta` | `"No, go back"` |
 | <a id="property-payrollpayrolloverviewdirectdepositlabel"></a> `directDepositLabel` | `"Direct deposits"` |
+| <a id="property-payrollpayrolloverviewdownloadloadingmessage"></a> `downloadLoadingMessage` | `"Generating paystub…"` |
 | <a id="property-payrollpayrolloverviewdownloadpaystublabel"></a> `downloadPaystubLabel` | `"Download paystub pdf"` |
 | <a id="property-payrollpayrollovervieweditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-payrollpayrolloverviewexitflowcta"></a> `exitFlowCta` | `"Save and exit"` |

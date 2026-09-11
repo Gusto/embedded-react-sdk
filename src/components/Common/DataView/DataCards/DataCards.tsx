@@ -22,6 +22,7 @@ export type DataCardsProps<T> = {
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
   isWithinBox?: TableProps['isWithinBox']
+  isFetching?: useDataViewPropReturn<T>['isFetching']
 }
 
 /** @internal */
@@ -38,6 +39,7 @@ export const DataCards = <T,>({
   footer,
   selectionMode = 'multiple',
   isWithinBox,
+  isFetching,
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -76,7 +78,11 @@ export const DataCards = <T,>({
   }
 
   return (
-    <div className={cn(styles.root, isWithinBox && styles.withinBox)} data-testid="data-cards">
+    <div
+      className={cn(styles.root, isWithinBox && styles.withinBox, isFetching && styles.isFetching)}
+      data-testid="data-cards"
+      aria-busy={Boolean(isFetching)}
+    >
       {onSelect &&
         getIsItemSelected &&
         selectionMode === 'multiple' &&

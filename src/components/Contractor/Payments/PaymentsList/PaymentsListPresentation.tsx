@@ -95,6 +95,7 @@ export const PaymentsListPresentation = ({
       </EmptyData>
     ),
     pagination: paginationProps,
+    isFetching: paginationProps?.isFetching,
   })
 
   return (

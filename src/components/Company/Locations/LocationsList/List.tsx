@@ -23,6 +23,7 @@ export const List = () => {
     handlePreviousPage,
     handleAddLocation,
     itemsPerPage,
+    isFetching,
   } = useLocationsList()
 
   const { t } = useTranslation('Company.Locations')
@@ -99,6 +100,7 @@ export const List = () => {
         </Components.Button>
       </EmptyData>
     ),
+    isFetching,
   })
   return <DataView label={t('locationListLabel')} {...dataViewProps} />
 }

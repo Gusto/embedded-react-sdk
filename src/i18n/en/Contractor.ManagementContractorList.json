@@ -1,6 +1,7 @@
 {
   "title": "Contractors",
   "addContractorCta": "Add contractor",
+  "backToListCta": "Back to contractors",
   "tabsLabel": "Contractor status tabs",
   "tabs": {
     "active": "Active",
@@ -25,7 +26,7 @@
   "cancelSelfOnboardingCta": "Cancel self-onboarding",
   "cancelDismissalCta": "Cancel dismissal",
   "cancelRehireCta": "Cancel rehire",
-  "hamburgerTitle": "Contractor actions menu",
+  "hamburgerTitle": "Actions for {{name}}",
   "contractorListLabel": "List of contractors",
   "emptyState": {
     "active": {

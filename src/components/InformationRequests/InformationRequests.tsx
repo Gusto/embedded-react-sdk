@@ -21,6 +21,117 @@ interface SubmissionAlertState {
   alerts: SubmissionAlert[]
 }
 
+const ALERT_TYPE = 'informationRequestResponded' as const
+
+function InformationRequestsFlowRoot({
+  companyId,
+  dictionary,
+  withAlert = true,
+  onEvent = () => {},
+  LoaderComponent,
+}: InformationRequestsFlowProps) {
+  useComponentDictionary('InformationRequests', dictionary)
+  useI18n('InformationRequests')
+  const { t } = useTranslation('InformationRequests')
+  const { Modal, LoadingSpinner, Alert, Text } = useComponentContext()
+  const [alertState, setAlertState] = useState<SubmissionAlertState>({
+    nextAlertId: 0,
+    alerts: [],
+  })
+
+  const handleDismissAlert = useCallback((alertId: number) => {
+    setAlertState(prev => ({
+      ...prev,
+      alerts: prev.alerts.filter(alert => alert.id !== alertId),
+    }))
+  }, [])
+
+  const addSubmissionAlert = useCallback(() => {
+    setAlertState(prev => ({
+      nextAlertId: prev.nextAlertId + 1,
+      alerts: [{ id: prev.nextAlertId }, ...prev.alerts],
+    }))
+  }, [])
+
+  const informationRequestsMachineInstance = useMemo(
+    () =>
+      createMachine(
+        'list',
+        informationRequestsMachine,
+        (): InformationRequestsContextInterface => ({
+          component: null,
+          companyId,
+          onEvent: handleEvent,
+          LoaderComponent,
+        }),
+      ),
+    [companyId, LoaderComponent],
+  )
+  const [current, send] = useMachine(informationRequestsMachineInstance)
+
+  const CurrentComponent = current.context.component
+  const Footer = CurrentComponent?.Footer || undefined
+  // Derived from the machine, not separate state, so it can't drift out of sync
+  // when the modal is dismissed without a state-machine event (e.g. Escape).
+  const isModalOpen = CurrentComponent !== null
+
+  function handleEvent(type: EventType, data?: unknown) {
+    send({ type, payload: data })
+
+    if (type === informationRequestEvents.INFORMATION_REQUEST_FORM_DONE && withAlert) {
+      addSubmissionAlert()
+    }
+
+    onEvent(type, data)
+  }
+
+  return (
+    <FlowContext.Provider
+      value={{
+        ...current.context,
+        onEvent: handleEvent,
+      }}
+    >
+      <Flex flexDirection="column" gap={32}>
+        {withAlert &&
+          alertState.alerts.map(alert => (
+            <Alert
+              key={alert.id}
+              status="success"
+              label={t(`alerts.${ALERT_TYPE}.title`)}
+              onDismiss={() => {
+                handleDismissAlert(alert.id)
+              }}
+            >
+              <Text>{t(`alerts.${ALERT_TYPE}.description`)}</Text>
+            </Alert>
+          ))}
+
+        <Suspense fallback={<LoadingSpinner />}>
+          <InformationRequestList companyId={companyId} onEvent={handleEvent} />
+        </Suspense>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => {
+            handleEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL)
+          }}
+          footer={
+            Footer && (
+              <BaseBoundaries LoaderComponent={LoaderComponent}>
+                <Suspense fallback={<LoadingSpinner size="sm" />}>
+                  <Footer onEvent={handleEvent} />
+                </Suspense>
+              </BaseBoundaries>
+            )
+          }
+        >
+          {CurrentComponent && <CurrentComponent />}
+        </Modal>
+      </Flex>
+    </FlowContext.Provider>
+  )
+}
+
 /**
  * Props for {@link InformationRequestsFlow}.
  *
@@ -40,8 +151,6 @@ export interface InformationRequestsFlowProps extends Omit<
   /** Callback invoked when the flow or its blocks emit an event. */
   onEvent?: BaseComponentInterface['onEvent']
 }
-
-const ALERT_TYPE = 'informationRequestResponded' as const
 
 /**
  * Hub for viewing and responding to outstanding information requests from Gusto.
@@ -89,121 +198,17 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * ```
  */
 export function InformationRequestsFlow({
-  companyId,
-  dictionary,
-  withAlert = true,
-  onEvent = () => {},
+  FallbackComponent,
   LoaderComponent,
+  ...props
 }: InformationRequestsFlowProps) {
-  useComponentDictionary('InformationRequests', dictionary)
-  useI18n('InformationRequests')
-  const { t } = useTranslation('InformationRequests')
-  const { Modal, LoadingSpinner, Alert, Text } = useComponentContext()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [alertState, setAlertState] = useState<SubmissionAlertState>({
-    nextAlertId: 0,
-    alerts: [],
-  })
-
-  const handleDismissAlert = useCallback((alertId: number) => {
-    setAlertState(prev => ({
-      ...prev,
-      alerts: prev.alerts.filter(alert => alert.id !== alertId),
-    }))
-  }, [])
-
-  const addSubmissionAlert = useCallback(() => {
-    setAlertState(prev => ({
-      nextAlertId: prev.nextAlertId + 1,
-      alerts: [{ id: prev.nextAlertId }, ...prev.alerts],
-    }))
-  }, [])
-
-  const informationRequestsMachineInstance = useMemo(
-    () =>
-      createMachine(
-        'list',
-        informationRequestsMachine,
-        (): InformationRequestsContextInterface => ({
-          component: null,
-          companyId,
-          onEvent: handleEvent,
-          LoaderComponent,
-        }),
-      ),
-    [companyId, LoaderComponent],
-  )
-  const [current, send] = useMachine(informationRequestsMachineInstance)
-
-  function handleEvent(type: EventType, data?: unknown) {
-    send({ type, payload: data })
-
-    if (type === informationRequestEvents.INFORMATION_REQUEST_RESPOND) {
-      setIsModalOpen(true)
-    }
-
-    if (
-      type === informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL ||
-      type === informationRequestEvents.INFORMATION_REQUEST_FORM_DONE
-    ) {
-      setIsModalOpen(false)
-    }
-
-    if (type === informationRequestEvents.INFORMATION_REQUEST_FORM_DONE && withAlert) {
-      addSubmissionAlert()
-    }
-
-    onEvent(type, data)
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const CurrentComponent = current.context.component
-  const Footer = CurrentComponent?.Footer || undefined
-
   return (
-    <FlowContext.Provider
-      value={{
-        ...current.context,
-        onEvent: handleEvent,
-      }}
+    <BaseBoundaries
+      componentName="InformationRequests"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
     >
-      <Flex flexDirection="column" gap={32}>
-        {withAlert &&
-          alertState.alerts.map(alert => (
-            <Alert
-              key={alert.id}
-              status="success"
-              label={t(`alerts.${ALERT_TYPE}.title`)}
-              onDismiss={() => {
-                handleDismissAlert(alert.id)
-              }}
-            >
-              <Text>{t(`alerts.${ALERT_TYPE}.description`)}</Text>
-            </Alert>
-          ))}
-
-        <Suspense fallback={<LoadingSpinner />}>
-          <InformationRequestList companyId={companyId} onEvent={handleEvent} />
-        </Suspense>
-        <Modal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          footer={
-            Footer && (
-              <BaseBoundaries LoaderComponent={LoaderComponent}>
-                <Suspense fallback={<LoadingSpinner size="sm" />}>
-                  <Footer onEvent={handleEvent} />
-                </Suspense>
-              </BaseBoundaries>
-            )
-          }
-        >
-          {CurrentComponent && <CurrentComponent />}
-        </Modal>
-      </Flex>
-    </FlowContext.Provider>
+      <InformationRequestsFlowRoot LoaderComponent={LoaderComponent} {...props} />
+    </BaseBoundaries>
   )
 }

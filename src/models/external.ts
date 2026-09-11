@@ -114,6 +114,9 @@ export type { DocumentSignedFields } from '@gusto/embedded-api/models/components
 /** `DocumentSignedPages` entity from the Gusto Embedded API. */
 export type { DocumentSignedPages } from '@gusto/embedded-api/models/components/documentsigned'
 export { DocumentSignedRecipientType } from '@gusto/embedded-api/models/components/documentsigned'
+export type { EarningType } from '@gusto/embedded-api/models/components/earningtype'
+export { EarningTypeCategory } from '@gusto/embedded-api/models/components/earningtype'
+export type { EarningTypeList } from '@gusto/embedded-api/models/components/earningtypelist'
 /** `CurrentEmploymentStatus` entity from the Gusto Embedded API. */
 export { CurrentEmploymentStatus } from '@gusto/embedded-api/models/components/employee'
 /** `EmployeeOnboardingStatus1` entity from the Gusto Embedded API. */
@@ -260,6 +263,8 @@ export type { PayrollCreditBlockerUnblockOptionSubmitWire } from '@gusto/embedde
 /** `PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata` entity from the Gusto Embedded API. */
 export type { PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata } from '@gusto/embedded-api/models/components/payrollcreditblockerunblockoptionwaitforreversewire'
 export type { PayrollCreditBlockerUnblockOptionWaitForReverseWire } from '@gusto/embedded-api/models/components/payrollcreditblockerunblockoptionwaitforreversewire'
+/** `Breakdowns` entity from the Gusto Embedded API. */
+export type { Breakdowns } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 /** `Deductions` entity from the Gusto Embedded API. */
 export type { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 /** `FixedCompensations` entity from the Gusto Embedded API. */
@@ -268,6 +273,8 @@ export type { FixedCompensations } from '@gusto/embedded-api/models/components/p
 export type { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 /** `PayrollEmployeeCompensationsType` entity from the Gusto Embedded API. */
 export type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+/** `PayrollEmployeeCompensationsTypeBreakdowns` entity from the Gusto Embedded API. */
+export type { PayrollEmployeeCompensationsTypeBreakdowns } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 /** `PayrollEmployeeCompensationsTypePaidTimeOff` entity from the Gusto Embedded API. */
 export type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 /** `PayrollEmployeeCompensationsTypePaymentMethod` entity from the Gusto Embedded API. */
@@ -311,14 +318,20 @@ export { PayrollReceiptPaymentMethod } from '@gusto/embedded-api/models/componen
 export type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 /** `OffCycleReasonType` entity from the Gusto Embedded API. */
 export { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
+/** `PayAdjustments` entity from the Gusto Embedded API. */
+export type { PayAdjustments } from '@gusto/embedded-api/models/components/payrollshow'
 /** `Payroll` entity from the Gusto Embedded API. */
 export type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 /** `PayrollShow` entity from the Gusto Embedded API. */
 export type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 /** `PayrollShowBenefits` entity from the Gusto Embedded API. */
 export type { PayrollShowBenefits } from '@gusto/embedded-api/models/components/payrollshow'
+/** `PayrollShowBreakdowns` entity from the Gusto Embedded API. */
+export type { PayrollShowBreakdowns } from '@gusto/embedded-api/models/components/payrollshow'
 /** `PayrollShowDeductions` entity from the Gusto Embedded API. */
 export type { PayrollShowDeductions } from '@gusto/embedded-api/models/components/payrollshow'
+/** `PayrollShowEmployeeCompensationsBreakdowns` entity from the Gusto Embedded API. */
+export type { PayrollShowEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollshow'
 /** `PayrollShowFixedCompensations` entity from the Gusto Embedded API. */
 export type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 /** `PayrollShowHourlyCompensations` entity from the Gusto Embedded API. */
@@ -335,6 +348,8 @@ export type { PayrollShowState } from '@gusto/embedded-api/models/components/pay
 export type { PayrollShowTaxes } from '@gusto/embedded-api/models/components/payrollshow'
 /** `PayrollWithholdingPayPeriodType` entity from the Gusto Embedded API. */
 export { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/payrollshow'
+/** `Workweeks` entity from the Gusto Embedded API. */
+export type { Workweeks } from '@gusto/embedded-api/models/components/payrollshow'
 export type {
   PayrollPrepared,
   PayrollShowCustomWithholdings,
@@ -354,8 +369,12 @@ export { PayrollSubmissionBlockerTypeStatus } from '@gusto/embedded-api/models/c
 /** `PayrollTaxesType` entity from the Gusto Embedded API. */
 export type { PayrollTaxesType } from '@gusto/embedded-api/models/components/payrolltaxestype'
 export type { PayrollTotalsType } from '@gusto/embedded-api/models/components/payrolltotalstype'
+/** `PayrollUpdateBreakdowns` entity from the Gusto Embedded API. */
+export type { PayrollUpdateBreakdowns } from '@gusto/embedded-api/models/components/payrollupdate'
 /** `PayrollUpdateEmployeeCompensations` entity from the Gusto Embedded API. */
 export type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+/** `PayrollUpdateEmployeeCompensationsBreakdowns` entity from the Gusto Embedded API. */
+export type { PayrollUpdateEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollupdate'
 /** `PayrollUpdatePaidTimeOff` entity from the Gusto Embedded API. */
 export type { PayrollUpdatePaidTimeOff } from '@gusto/embedded-api/models/components/payrollupdate'
 /** `PayrollUpdateReimbursements` entity from the Gusto Embedded API. */
@@ -383,6 +402,8 @@ export type {
 } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker'
 export { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
 export type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
+/** `PayScheduleWorkweekStartDay` entity from the Gusto Embedded API. */
+export { PayScheduleWorkweekStartDay } from '@gusto/embedded-api/models/components/payscheduleshow'
 export type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 export type { PrintablePayrollChecksBody } from '@gusto/embedded-api/models/components/printablepayrollchecksbody'
 export { PrintingFormat } from '@gusto/embedded-api/models/components/printablepayrollchecksbody'
@@ -426,6 +447,8 @@ export {
   TimeOffPolicyRequestPolicyType,
 } from '@gusto/embedded-api/models/components/timeoffpolicyrequest'
 export type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
+/** `WarningObject` entity from the Gusto Embedded API. */
+export type { WarningObject } from '@gusto/embedded-api/models/components/warningobject'
 export type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 export {
   PaymentType,

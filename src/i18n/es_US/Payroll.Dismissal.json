@@ -1,0 +1,11 @@
+{
+  "breadcrumbLabel": "Período de pago",
+  "emptyState": "No hay períodos de pago por terminación sin procesar disponibles.",
+  "errors": {
+    "invalidPayPeriod": "El periodo de pago seleccionado ya no está disponible",
+    "missingPayrollId": "Se creó la nómina de despido, pero no se devolvió ningún ID de nómina",
+    "noPayPeriodSelected": "Selecciona un período de pago antes de continuar"
+  },
+  "pageDescription": "Selecciona el período de pago para la nómina final del empleado dado de baja.",
+  "selectPlaceholder": "Selecciona un período de pago"
+}

@@ -39,6 +39,7 @@ Props accepted by PayrollFlow.
 | `companyId` | `string` | Identifier of the company whose payroll is being run. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
+| `withOffcyclePayroll?` | `boolean` | Whether to show the off-cycle payroll call-to-action. Defaults to `true`. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
@@ -108,6 +109,7 @@ When any run path finishes processing (`runPayroll/processed`), the flow lands o
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyId/earning_types`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-earning_types) |
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | GET | [`/v1/companies/:companyId/pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_periods) |
 | GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |

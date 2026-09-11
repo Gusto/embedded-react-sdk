@@ -363,6 +363,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Flow | Blocks included |
 | --- | --- |
+| **ContractorManagement.ContractorListFlow** | ContractorManagement.ContractorList, ContractorManagement.DashboardFlow, ContractorOnboarding.OnboardingFlow |
 | **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
 | **ContractorManagement.DashboardFlow** | ContractorManagement.Address, ContractorManagement.Compensation, ContractorManagement.DocumentsCard, ContractorManagement.PaymentMethod, ContractorManagement.Profile |
 | **ContractorManagement.HistoricalPaymentFlow** | ContractorManagement.CreateHistoricalPayment, ContractorManagement.HistoricalPaymentSummary |
@@ -408,7 +409,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
 |  | GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
 |  | POST | [`/v1/payrolls/:payrollUuid/gross_up`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-payrolls-gross-up-payroll_uuid) |
-| **Payroll.PayrollEditEmployee** | GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| **Payroll.PayrollEditEmployee** | GET | [`/v1/companies/:companyId/earning_types`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-earning_types) |
+|  | GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
 |  | PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls) |
 |  | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
 |  | GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
@@ -429,6 +431,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | [`/v1/companies/:companyUuid/payrolls/skip`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-companies-payroll-skip-company_uuid) |
 |  | GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid) |
 | **Payroll.PayrollOverview** | GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+|  | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 |  | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
 |  | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 |  | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
@@ -447,6 +450,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases) |
 | **Payroll.RecoveryCases** | GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases) |
 |  | PUT | [`/v1/recovery_cases/:recoveryCaseUuid/redebit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/redebit-recovery-case) |
+| **Payroll.PrintChecks** | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+|  | GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
+|  | POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
 | **Payroll.OffCycleCreation** | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 |  | POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
 |  | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |

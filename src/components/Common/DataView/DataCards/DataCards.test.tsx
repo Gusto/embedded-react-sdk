@@ -130,6 +130,22 @@ describe('DataCards', () => {
     expect(screen.getByText('No data available')).toBeInTheDocument()
   })
 
+  describe('isFetching', () => {
+    test('marks the cards region as busy and dims it while fetching', () => {
+      renderCards({ isFetching: true })
+      const cards = screen.getByTestId('data-cards')
+      expect(cards).toHaveAttribute('aria-busy', 'true')
+      expect(cards.className).toMatch(/isFetching/)
+    })
+
+    test('does not mark the cards region as busy when not fetching', () => {
+      renderCards()
+      const cards = screen.getByTestId('data-cards')
+      expect(cards).toHaveAttribute('aria-busy', 'false')
+      expect(cards.className).not.toMatch(/isFetching/)
+    })
+  })
+
   describe('isWithinBox', () => {
     test('renders without data-within-box attribute', () => {
       renderCards({ isWithinBox: true })

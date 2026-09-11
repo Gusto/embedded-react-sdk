@@ -59,8 +59,12 @@ async function main() {
     const namespace = basename(file, '.json')
     const sanitizedName = namespace.replace(/\./g, '')
     const json = await readFile(resolve(dirPath, file), 'utf-8')
-    mapEntries += `'${namespace}': Translations.${sanitizedName};\n`
-    namespaceMembers += `/** Translation keys for the \`${namespace}\` i18n namespace. */\nexport interface ${sanitizedName}{\n${generateKeys(JSON.parse(json))}\n}\n`
+    // Namespaces for components still gated behind an unstable feature flag (prefixed `UNSTABLE_`)
+    // are marked `@internal` so typedoc (`excludeInternal: true`) keeps them out of the public
+    // reference until the component graduates and the prefix is dropped.
+    const internalTag = namespace.includes('UNSTABLE_') ? ' @internal' : ''
+    mapEntries += `/**${internalTag} */\n'${namespace}': Translations.${sanitizedName};\n`
+    namespaceMembers += `/** Translation keys for the \`${namespace}\` i18n namespace.${internalTag} */\nexport interface ${sanitizedName}{\n${generateKeys(JSON.parse(json))}\n}\n`
   }
 
   const content = `

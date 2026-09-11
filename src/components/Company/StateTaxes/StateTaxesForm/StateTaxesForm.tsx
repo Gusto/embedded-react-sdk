@@ -7,6 +7,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getUniqueRhfKey } from '../shared/rhfKey'
 import { isRequirementApplicable, type StateTaxesFormValues } from '../shared/applicableIf'
+import { prepareRequirements } from '../shared/prepareRequirements'
 import { buildRequirementSchema } from '../shared/buildRequirementSchema'
 import { stringifyRequirementValue } from '../shared/requirementValue'
 import { Head } from './Head'
@@ -98,7 +99,8 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
       if (!requirementSet.key) return
 
       const requirementSetPath = getUniqueRhfKey(requirementSet, index, requirementSets)
-      const { shape, defaults } = buildRequirementSchema(requirementSet.requirements, t)
+      const preparedRequirements = prepareRequirements(requirementSet.requirements ?? [])
+      const { shape, defaults } = buildRequirementSchema(preparedRequirements, t)
 
       if (Object.keys(shape).length > 0) {
         schemaShape[requirementSetPath] = z.object(shape)
@@ -138,11 +140,10 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           const requirementSetKey = requirementSet.key as string
           const requirementSetPath = getUniqueRhfKey(requirementSet, setIndex, allRequirementSets)
           const payloadSet = payload[requirementSetPath] as Record<string, unknown>
-          const requirements = requirementSet.requirements ?? []
+          const preparedRequirements = prepareRequirements(requirementSet.requirements ?? [])
 
-          const applicableRequirements = requirements
+          const applicableRequirements = preparedRequirements
             .map((req, index) => ({ req, index }))
-            .filter(({ req }) => req.editable !== false)
             .filter(({ req }) => isRequirementApplicable(req, requirementSetPath, formValues))
 
           return {
@@ -152,7 +153,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
             requirements: applicableRequirements.map(({ req, index }) => ({
               key: req.key as string,
               value: stringifyRequirementValue(
-                payloadSet[getUniqueRhfKey(req, index, requirements)],
+                payloadSet[getUniqueRhfKey(req, index, preparedRequirements)],
               ),
             })),
           }

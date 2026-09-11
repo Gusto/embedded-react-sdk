@@ -12,8 +12,62 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - name: Run manual translations check
-        uses: Gusto/embedded-i18n-actions/manual_translations_check@main
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
-          file_patterns: |
-            **/i18n/es_US/**
+          fetch-depth: 0
+
+      - name: Check for lokalise-translation label
+        id: label_check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # peter-evans/create-pull-request attaches labels in a follow-up API call
+          # after creating the PR, so the `opened` webhook payload (github.event.pull_request.labels)
+          # is a stale snapshot from before the label existed. Query the live label state instead.
+          labels=$(gh pr view "${{ github.event.pull_request.number }}" --json labels --jq '.labels[].name')
+          if echo "$labels" | grep -qx 'lokalise-translation'; then
+            echo "skip_validation=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping validation: lokalise-translation label found"
+          else
+            echo "skip_validation=false" >> "$GITHUB_OUTPUT"
+            echo "Proceeding with validation: no lokalise-translation label found"
+          fi
+
+      - name: Validate for manual translation edits
+        if: steps.label_check.outputs.skip_validation == 'false'
+        id: validator
+        run: |
+          base_branch_ref="${{ github.event.pull_request.base.ref }}"
+          git fetch origin "$base_branch_ref"
+          changed_files=$(git diff --name-only "origin/$base_branch_ref"..."${{ github.event.pull_request.head.sha }}")
+
+          if echo "$changed_files" | grep -qE 'i18n/es_US/'; then
+            echo "Files changed in this PR:"
+            echo "$changed_files"
+            echo "---"
+            echo "Validation failed: Found manual translation edits to protected files."
+            echo "is_valid=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Validation passed: no edits to protected translation files found."
+            echo "is_valid=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comment on PR
+        if: steps.label_check.outputs.skip_validation == 'false' && steps.validator.outputs.is_valid == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file - <<'EOF'
+          ### ❌ Manual Translation(s) Detected on Protected Files
+
+          Edits to protected translation files were detected in this PR under `src/i18n/es_US/`.
+
+          **Action Required:**
+          Please remove changes to protected files before merging.
+          Reach out to your i18n/devex team if you have any questions.
+          EOF
+
+      - name: Fail the workflow
+        if: steps.label_check.outputs.skip_validation == 'false' && steps.validator.outputs.is_valid == 'false'
+        run: exit 1

@@ -55,6 +55,7 @@ export const Flow = <M extends Machine<object, FlowContextInterface>>({
   onEvent,
   machine,
 }: FlowProps<M>) => {
+  const { LoadingIndicator } = useLoadingIndicator()
   const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
@@ -86,7 +87,7 @@ export const Flow = <M extends Machine<object, FlowContextInterface>>({
           <Suspense fallback={<FlowHeaderFallback />}>
             <FlowHeader />
           </Suspense>
-          {Component && <Component />}
+          <Suspense fallback={<LoadingIndicator />}>{Component && <Component />}</Suspense>
         </Flex>
       </FlowContext.Provider>
     </Flex>

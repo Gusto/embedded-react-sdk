@@ -4,12 +4,12 @@
   "startDateLabel": "Start date",
   "endDateLabel": "End date",
   "checkDateLabel": "Payment date",
+  "checkDateDescription": "Enter the date you'd like your employees to receive payment.",
   "validations": {
     "startDateRequired": "Start date is required",
     "endDateRequired": "End date is required",
     "checkDateRequired": "Payment date is required",
     "endDateAfterStart": "End date must be on or after start date",
-    "startDateNotFuture": "Start date cannot be in the future for correction payrolls",
     "checkDateAchLeadTime_one": "Payment date must be at least {{count}} business day from today for direct deposit",
     "checkDateAchLeadTime_other": "Payment date must be at least {{count}} business days from today for direct deposit",
     "checkDateNotPast": "Payment date must be today or a future date"

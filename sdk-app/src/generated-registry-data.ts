@@ -30,6 +30,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.CompensationCard': ['contractorId'],
   'ContractorManagement.CompensationEditForm': ['contractorId'],
   'ContractorManagement.ContractorList': ['companyId'],
+  'ContractorManagement.ContractorListFlow': ['companyId'],
   'ContractorManagement.CreateHistoricalPayment': ['companyId'],
   'ContractorManagement.CreatePayment': ['companyId'],
   'ContractorManagement.CreatePaymentFlow': ['companyId'],
@@ -141,6 +142,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.PayrollList': ['companyId'],
   'Payroll.PayrollOverview': ['companyId', 'payrollId'],
   'Payroll.PayrollReceipts': ['payrollId'],
+  'Payroll.PrintChecks': ['companyId', 'payrollId'],
   'Payroll.RecoveryCases': ['companyId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
@@ -196,4 +198,5 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
+  payrollRegularRateOfPay: false,
 }

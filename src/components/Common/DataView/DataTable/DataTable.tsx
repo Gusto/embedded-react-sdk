@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
 import { useSelectionState } from '../useSelectionState'
@@ -26,6 +27,7 @@ export type DataTableProps<T> = {
   footer?: useDataViewPropReturn<T>['footer']
   isWithinBox?: TableProps['isWithinBox']
   selectionMode?: SelectionMode
+  isFetching?: useDataViewPropReturn<T>['isFetching']
 }
 
 function getCellContent<T>(
@@ -58,6 +60,7 @@ export const DataTable = <T,>({
   footer,
   isWithinBox,
   selectionMode = 'multiple',
+  isFetching,
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -113,7 +116,10 @@ export const DataTable = <T,>({
       ? [
           {
             key: 'actions-header',
-            content: <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>,
+            content: withJustify(
+              <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>,
+              'end',
+            ),
           },
         ]
       : []),
@@ -173,7 +179,7 @@ export const DataTable = <T,>({
         ? [
             {
               key: `menu-${rowIndex}`,
-              content: itemMenu(item),
+              content: withJustify(itemMenu(item), 'end'),
             },
           ]
         : []),
@@ -222,15 +228,20 @@ export const DataTable = <T,>({
   const footerData = buildFooterData()
 
   return (
-    <Components.Table
-      aria-label={label}
-      data-testid="data-table"
-      headers={headers}
-      rows={rows}
-      footer={footerData}
-      emptyState={emptyState ? emptyState() : undefined}
-      isWithinBox={isWithinBox}
-      hasCheckboxColumn={!!onSelect}
-    />
+    <div
+      className={cn(styles.tableWrapper, isFetching && styles.isFetching)}
+      aria-busy={Boolean(isFetching)}
+    >
+      <Components.Table
+        aria-label={label}
+        data-testid="data-table"
+        headers={headers}
+        rows={rows}
+        footer={footerData}
+        emptyState={emptyState ? emptyState() : undefined}
+        isWithinBox={isWithinBox}
+        hasCheckboxColumn={!!onSelect}
+      />
+    </div>
   )
 }
