@@ -281,8 +281,8 @@ describe('TaxRateManagement', () => {
     await user.click(addRateButton)
 
     const dialog = await screen.findByRole('dialog')
-    const fieldAInput = within(dialog).getByLabelText('Field A')
-    const fieldBInput = within(dialog).getByLabelText('Field B')
+    const fieldAInput = within(dialog).getByLabelText(/^Field A *\*?$/)
+    const fieldBInput = within(dialog).getByLabelText(/^Field B *\*?$/)
     expect(fieldAInput).not.toBe(fieldBInput)
 
     await user.clear(fieldAInput)

@@ -150,7 +150,7 @@ describe('CreatePayment', () => {
       renderCreatePayment([hourlyContractor])
       await openEditModal(user)
 
-      expect(screen.getByLabelText('Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Hours *\*?$/)).toBeInTheDocument()
       expect(within(getModal()).getByText('Bonus')).toBeInTheDocument()
       expect(within(getModal()).getByText('Reimbursement')).toBeInTheDocument()
     })
@@ -221,7 +221,7 @@ describe('CreatePayment', () => {
       renderCreatePayment([hourlyContractor])
       await openEditModal(user)
 
-      await user.type(screen.getByLabelText('Hours'), '10')
+      await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
       await saveEditModal(user)
 
       // 10 hours x $50/hr = $500 in the totals footer
@@ -250,7 +250,7 @@ describe('CreatePayment', () => {
 
       // Hourly (row 0): 4 hours x $50 = $200
       await openEditModal(user, 0)
-      await user.type(screen.getByLabelText('Hours'), '4')
+      await user.type(screen.getByLabelText(/^Hours *\*?$/), '4')
       await saveEditModal(user)
       await waitFor(() => {
         expect(
@@ -276,7 +276,7 @@ describe('CreatePayment', () => {
       const { onEvent } = renderCreatePayment([hourlyContractor])
       await openEditModal(user)
 
-      await user.type(screen.getByLabelText('Hours'), '8')
+      await user.type(screen.getByLabelText(/^Hours *\*?$/), '8')
       await user.type(getMoneyInput('Bonus'), '25')
       await saveEditModal(user)
 
@@ -341,7 +341,7 @@ describe('CreatePayment', () => {
 
       // First open: enter 8 hours and a $25 bonus, save
       await openEditModal(user)
-      await user.type(screen.getByLabelText('Hours'), '8')
+      await user.type(screen.getByLabelText(/^Hours *\*?$/), '8')
       await user.type(getMoneyInput('Bonus'), '25')
       await saveEditModal(user)
 
@@ -354,7 +354,7 @@ describe('CreatePayment', () => {
       // Re-open the same contractor
       await openEditModal(user)
 
-      expect(screen.getByLabelText('Hours')).toHaveValue('8')
+      expect(screen.getByLabelText(/^Hours *\*?$/)).toHaveValue('8')
       expect(getMoneyInput('Bonus')).toHaveValue('25.00')
     })
   })
@@ -399,7 +399,7 @@ describe('CreatePayment', () => {
 
       // Touch only the hourly contractor
       await openEditModal(user)
-      await user.type(screen.getByLabelText('Hours'), '8')
+      await user.type(screen.getByLabelText(/^Hours *\*?$/), '8')
       await saveEditModal(user)
       await waitFor(() => {
         expect(
@@ -455,7 +455,7 @@ describe('CreatePayment', () => {
       server.use(handlePreviewContractorPaymentGroup(previewResolver))
 
       await openEditModal(user)
-      await user.type(screen.getByLabelText('Hours'), '8')
+      await user.type(screen.getByLabelText(/^Hours *\*?$/), '8')
       await saveEditModal(user)
       await waitFor(() => {
         expect(

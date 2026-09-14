@@ -27,7 +27,7 @@ describe('I9SignatureForm', () => {
     renderWithProviders(<I9SignatureForm {...defaultProps} />)
 
     await screen.findByRole('heading', { name: 'Sign I-9 document' })
-    expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
     expect(screen.getByText('Did you use a preparer/translator?')).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'No, I completed this myself' })).toBeInTheDocument()
     expect(
@@ -47,8 +47,8 @@ describe('I9SignatureForm', () => {
         name: 'Preparer and/or translator certification',
       }),
     ).toBeInTheDocument()
-    expect(screen.getByLabelText('First name')).toBeInTheDocument()
-    expect(screen.getByLabelText('Last name')).toBeInTheDocument()
+    expect(screen.getByLabelText(/^First name *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Last name *\*?$/)).toBeInTheDocument()
 
     await user.click(screen.getByRole('radio', { name: 'No, I completed this myself' }))
 
@@ -57,7 +57,7 @@ describe('I9SignatureForm', () => {
         name: 'Preparer and/or translator certification',
       }),
     ).not.toBeInTheDocument()
-    expect(screen.queryByLabelText('First name')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/^First name *\*?$/)).not.toBeInTheDocument()
   })
 
   it('validates preparer fields when a preparer is added but incomplete', async () => {
@@ -65,7 +65,7 @@ describe('I9SignatureForm', () => {
     renderWithProviders(<I9SignatureForm {...defaultProps} />)
 
     await screen.findByRole('heading', { name: 'Sign I-9 document' })
-    await user.type(screen.getByLabelText('Signature'), 'Test User')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Test User')
     await user.click(screen.getByRole('checkbox', { name: /I agree to electronically sign/i }))
     await user.click(screen.getByRole('radio', { name: 'Yes, I used a preparer/translator' }))
     await screen.findByRole('heading', {
@@ -86,7 +86,7 @@ describe('I9SignatureForm', () => {
     renderWithProviders(<I9SignatureForm {...defaultProps} />)
 
     await screen.findByRole('heading', { name: 'Sign I-9 document' })
-    await user.type(screen.getByLabelText('Signature'), 'Test User')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Test User')
     await user.click(screen.getByRole('checkbox', { name: /I agree to electronically sign/i }))
     await user.click(screen.getByRole('button', { name: 'Sign' }))
 
@@ -143,18 +143,18 @@ describe('I9SignatureForm', () => {
     renderWithProviders(<I9SignatureForm {...defaultProps} />)
 
     await screen.findByRole('heading', { name: 'Sign I-9 document' })
-    await user.type(screen.getByLabelText('Signature'), 'Test User')
+    await user.type(screen.getByLabelText(/^Signature *\*?$/), 'Test User')
     await user.click(screen.getByRole('checkbox', { name: /I agree to electronically sign/i }))
     await user.click(screen.getByRole('radio', { name: 'Yes, I used a preparer/translator' }))
     await screen.findByRole('heading', { name: 'Preparer and/or translator certification' })
 
-    await user.type(screen.getByLabelText('First name'), 'Jane')
-    await user.type(screen.getByLabelText('Last name'), 'Prep')
-    await user.type(screen.getByLabelText('Street 1'), '123 Main St')
-    await user.type(screen.getByLabelText('City'), 'Anytown')
-    await user.type(screen.getByLabelText('Zip'), '90210')
+    await user.type(screen.getByLabelText(/^First name *\*?$/), 'Jane')
+    await user.type(screen.getByLabelText(/^Last name *\*?$/), 'Prep')
+    await user.type(screen.getByLabelText(/^Street 1 *\*?$/), '123 Main St')
+    await user.type(screen.getByLabelText(/^City *\*?$/), 'Anytown')
+    await user.type(screen.getByLabelText(/^Zip *\*?$/), '90210')
     // Both the employee and preparer sections have a "Signature" label — target the second one
-    await user.type(screen.getAllByLabelText('Signature')[1]!, 'Jane Prep')
+    await user.type(screen.getAllByLabelText(/^Signature *\*?$/)[1]!, 'Jane Prep')
     await user.click(
       screen.getAllByRole('checkbox', { name: /I agree to electronically sign/i })[1]!,
     )

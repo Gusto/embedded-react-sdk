@@ -46,10 +46,10 @@ describe('FederalTaxes', () => {
 
       await screen.findByText('Federal Tax Information')
 
-      const einInput = screen.getByLabelText('Federal EIN')
+      const einInput = screen.getByLabelText(/^Federal EIN *\*?$/)
       await user.type(einInput, '123456789')
 
-      const taxPayerTypeSelect = screen.getByLabelText('Taxpayer type')
+      const taxPayerTypeSelect = screen.getByLabelText(/^Taxpayer type *\*?$/)
       await user.click(taxPayerTypeSelect)
 
       const corporationOption = screen.getByRole('option', {
@@ -57,7 +57,7 @@ describe('FederalTaxes', () => {
       })
       await user.click(corporationOption)
 
-      const filingFormSelect = screen.getByLabelText('Federal filing form')
+      const filingFormSelect = screen.getByLabelText(/^Federal filing form *\*?$/)
       await user.click(filingFormSelect)
 
       const ninetyFourOneOption = screen.getByRole('option', {
@@ -65,7 +65,7 @@ describe('FederalTaxes', () => {
       })
       await user.click(ninetyFourOneOption)
 
-      const legalNameInput = screen.getByLabelText('Legal entity name')
+      const legalNameInput = screen.getByLabelText(/^Legal entity name *\*?$/)
       await user.type(legalNameInput, 'Test Company')
 
       const continueButton = screen.getByRole('button', {
@@ -98,7 +98,7 @@ describe('FederalTaxes', () => {
 
       await screen.findByText('Federal Tax Information')
 
-      const einInput = screen.getByLabelText('Federal EIN')
+      const einInput = screen.getByLabelText(/^Federal EIN *\*?$/)
       expect(einInput).toHaveValue('')
 
       expect(
@@ -115,7 +115,7 @@ describe('FederalTaxes', () => {
         }),
       ).toBeInTheDocument()
 
-      const legalNameInput = screen.getByLabelText('Legal entity name')
+      const legalNameInput = screen.getByLabelText(/^Legal entity name *\*?$/)
       expect(legalNameInput).toHaveValue('Default Company')
     })
 
@@ -167,7 +167,7 @@ describe('FederalTaxes', () => {
 
       await screen.findByText('Federal Tax Information')
 
-      const einInput = screen.getByLabelText('Federal EIN')
+      const einInput = screen.getByLabelText(/^Federal EIN *\*?$/)
       expect(einInput).toHaveValue('')
 
       expect(
@@ -184,7 +184,7 @@ describe('FederalTaxes', () => {
         }),
       ).toBeInTheDocument()
 
-      const legalNameInput = screen.getByLabelText('Legal entity name')
+      const legalNameInput = screen.getByLabelText(/^Legal entity name *\*?$/)
       expect(legalNameInput).toHaveValue('Test Company')
     })
   })

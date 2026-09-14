@@ -23,16 +23,16 @@ describe('InviteSignatory', () => {
       expect(screen.getByText('Invite a signatory')).toBeInTheDocument()
     })
 
-    const emailInput = screen.getByLabelText('Signatory email')
+    const emailInput = screen.getByLabelText(/^Signatory email *\*?$/)
     await user.type(emailInput, 'test@example.com')
 
-    const confirmEmailInput = screen.getByLabelText('Confirm signatory email')
+    const confirmEmailInput = screen.getByLabelText(/^Confirm signatory email *\*?$/)
     await user.type(confirmEmailInput, 'different@example.com')
 
-    const firstNameInput = screen.getByLabelText('First name')
+    const firstNameInput = screen.getByLabelText(/^First name *\*?$/)
     await user.type(firstNameInput, 'John')
 
-    const lastNameInput = screen.getByLabelText('Last name')
+    const lastNameInput = screen.getByLabelText(/^Last name *\*?$/)
     await user.type(lastNameInput, 'Doe')
 
     const titleControl = screen.getByRole('button', {
@@ -72,10 +72,10 @@ describe('InviteSignatory', () => {
       expect(screen.getByText('Invite a signatory')).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('First name'), 'John')
-    await user.type(screen.getByLabelText('Last name'), 'Doe')
-    await user.type(screen.getByLabelText('Signatory email'), 'john.doe@example.com')
-    await user.type(screen.getByLabelText('Confirm signatory email'), 'john.doe@example.com')
+    await user.type(screen.getByLabelText(/^First name *\*?$/), 'John')
+    await user.type(screen.getByLabelText(/^Last name *\*?$/), 'Doe')
+    await user.type(screen.getByLabelText(/^Signatory email *\*?$/), 'john.doe@example.com')
+    await user.type(screen.getByLabelText(/^Confirm signatory email *\*?$/), 'john.doe@example.com')
 
     const titleControl = screen.getByRole('button', {
       name: /Select title/i,

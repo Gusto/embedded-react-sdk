@@ -144,7 +144,7 @@ describe('EditContractorPaymentPresentation allowedPaymentMethods', () => {
     renderWithProviders(<Harness />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Hours *\*?$/)).toBeInTheDocument()
     })
     expect(screen.queryByText('Payment Method')).toBeNull()
   })
@@ -185,7 +185,7 @@ describe('EditContractorPaymentPresentation hours pay hint initialization', () =
       expect(screen.getByText(content => content.includes('$0.00'))).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Hours'), '20')
+    await user.type(screen.getByLabelText(/^Hours *\*?$/), '20')
 
     await waitFor(() => {
       expect(screen.getByText(content => content.includes('$500.00'))).toBeInTheDocument()

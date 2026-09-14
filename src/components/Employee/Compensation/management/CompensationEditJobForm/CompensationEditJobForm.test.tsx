@@ -15,7 +15,7 @@ import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
 
 async function fillEffectiveDate(user: ReturnType<typeof userEvent.setup>, date: string) {
   const [year, month, day] = date.split('-')
-  const dateInput = screen.getByLabelText('Effective date')
+  const dateInput = screen.getByLabelText(/^Effective date *\*?$/)
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^month/i }), month!)
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^day/i }), day!)
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^year/i }), year!)
@@ -40,8 +40,8 @@ describe('management/CompensationEditJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    expect(screen.getByLabelText('Job title')).toHaveValue('My Job')
-    expect(screen.getByLabelText('Wage')).toHaveValue('100.00')
+    expect(screen.getByLabelText(/^Job title *\*?$/)).toHaveValue('My Job')
+    expect(screen.getByLabelText(/^Wage *\*?$/)).toHaveValue('100.00')
     expect(
       screen.getByRole('button', { name: /Paid by the hour/i, expanded: false }),
     ).toBeInTheDocument()
@@ -64,7 +64,7 @@ describe('management/CompensationEditJobForm', () => {
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
     // An empty date spinbutton reports value 0 (no year selected).
-    const dateInput = screen.getByLabelText('Effective date')
+    const dateInput = screen.getByLabelText(/^Effective date *\*?$/)
     expect(within(dateInput).getByRole('spinbutton', { name: /^year/i })).toHaveValue(0)
   })
 
@@ -84,7 +84,7 @@ describe('management/CompensationEditJobForm', () => {
     // Only the compensation-form title field is rendered, never the job-form one.
     // useJobForm with withTitleField:false produces undefined for Fields.Title,
     // so just one labelled input should exist.
-    expect(screen.getAllByLabelText('Job title')).toHaveLength(1)
+    expect(screen.getAllByLabelText(/^Job title *\*?$/)).toHaveLength(1)
   })
 
   it('submits PUT /v1/jobs/:id before POST /v1/jobs/:jobId/compensations', async () => {
@@ -144,7 +144,7 @@ describe('management/CompensationEditJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const rateInput = screen.getByLabelText('Wage')
+    const rateInput = screen.getByLabelText(/^Wage *\*?$/)
     await user.clear(rateInput)
     await user.type(rateInput, '125')
     await user.tab()
@@ -210,7 +210,7 @@ describe('management/CompensationEditJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const rateInput = screen.getByLabelText('Wage')
+    const rateInput = screen.getByLabelText(/^Wage *\*?$/)
     await user.clear(rateInput)
     await user.type(rateInput, '125')
     await user.tab()
@@ -300,7 +300,7 @@ describe('management/CompensationEditJobForm', () => {
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
     await fillEffectiveDate(user, '2099-01-01')
-    await user.click(screen.getByLabelText('This employee is a 2% shareholder'))
+    await user.click(screen.getByLabelText(/^This employee is a 2% shareholder *\*?$/))
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -369,7 +369,7 @@ describe('management/CompensationEditJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const titleInput = screen.getByLabelText('Job title')
+    const titleInput = screen.getByLabelText(/^Job title *\*?$/)
     await user.clear(titleInput)
     await user.type(titleInput, 'Senior Engineer')
 
@@ -415,7 +415,7 @@ describe('management/CompensationEditJobForm', () => {
 
     // Effective date must remain editable — the deletion happens at the future
     // date the user picks, not immediately.
-    const dateInput = screen.getByLabelText('Effective date')
+    const dateInput = screen.getByLabelText(/^Effective date *\*?$/)
     expect(dateInput).not.toHaveAttribute('aria-disabled', 'true')
   })
 })

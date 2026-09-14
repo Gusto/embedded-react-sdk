@@ -62,12 +62,12 @@ describe('ComboBox Component', () => {
 
   test('renders as required', () => {
     renderComboBox({ isRequired: true })
-    expect(screen.queryByText('(optional)')).not.toBeInTheDocument()
+    expect(screen.getByText('*')).toBeInTheDocument()
   })
 
   test('renders as optional', () => {
     renderComboBox()
-    expect(screen.getByText('(optional)')).toBeInTheDocument()
+    expect(screen.queryByText('*')).not.toBeInTheDocument()
   })
 
   test('calls onBlur when focus is lost', () => {

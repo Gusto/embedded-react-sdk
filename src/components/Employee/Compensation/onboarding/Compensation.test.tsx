@@ -39,7 +39,7 @@ describe('Compensation', () => {
 
       await screen.findByRole('heading', { name: 'Compensation' })
 
-      const jobTitleInput = screen.getByLabelText('Job Title')
+      const jobTitleInput = screen.getByLabelText(/^Job Title *\*?$/)
       expect(jobTitleInput).toBeInTheDocument()
       expect(jobTitleInput).toHaveValue('')
 
@@ -49,7 +49,7 @@ describe('Compensation', () => {
       })
       expect(employmentTypeControl).toBeInTheDocument()
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       expect(compensationAmountInput).toBeInTheDocument()
       expect(compensationAmountInput).toHaveValue('0.00')
 
@@ -92,7 +92,7 @@ describe('Compensation', () => {
 
       await screen.findByRole('heading', { name: 'Compensation' })
 
-      const jobTitleInput = screen.getByLabelText('Job Title')
+      const jobTitleInput = screen.getByLabelText(/^Job Title *\*?$/)
       await user.type(jobTitleInput, 'My Job')
 
       const employmentTypeControl = screen.getByRole('button', {
@@ -106,7 +106,7 @@ describe('Compensation', () => {
       })
       await user.click(hourlyOption)
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '50000')
       await user.tab()
@@ -130,7 +130,7 @@ describe('Compensation', () => {
 
       await screen.findByRole('heading', { name: 'Compensation' })
 
-      const jobTitleInput = screen.getByLabelText('Job Title')
+      const jobTitleInput = screen.getByLabelText(/^Job Title *\*?$/)
       await user.type(jobTitleInput, 'My Job')
 
       const employmentTypeControl = screen.getByRole('button', {
@@ -144,7 +144,7 @@ describe('Compensation', () => {
       })
       await user.click(exemptOption)
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '60000')
       await user.tab()
@@ -224,10 +224,10 @@ describe('Compensation', () => {
 
       await screen.findByRole('heading', { name: 'Add job' })
 
-      const jobTitleInput = screen.getByLabelText('Job Title')
+      const jobTitleInput = screen.getByLabelText(/^Job Title *\*?$/)
       await user.type(jobTitleInput, 'My Job')
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '50')
       await user.tab()
@@ -333,7 +333,7 @@ describe('Compensation', () => {
         expect(screen.getByText('Compensation')).toBeInTheDocument()
       })
 
-      const jobTitleInput = screen.getByLabelText('Job Title')
+      const jobTitleInput = screen.getByLabelText(/^Job Title *\*?$/)
       expect(jobTitleInput).toBeInTheDocument()
       expect(jobTitleInput).toHaveValue('My Job')
 
@@ -343,7 +343,7 @@ describe('Compensation', () => {
       })
       expect(employmentTypeControl).toBeInTheDocument()
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       expect(compensationAmountInput).toBeInTheDocument()
       expect(compensationAmountInput).toHaveValue('100,000.00')
 
@@ -814,7 +814,9 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Select if employee is a 2% shareholder')).toBeInTheDocument()
+        expect(
+          screen.getByLabelText(/^Select if employee is a 2% shareholder *\*?$/),
+        ).toBeInTheDocument()
       })
     })
 
@@ -872,7 +874,7 @@ describe('Compensation', () => {
       })
 
       expect(
-        screen.queryByLabelText('Select if employee is a 2% shareholder'),
+        screen.queryByLabelText(/^Select if employee is a 2% shareholder *\*?$/),
       ).not.toBeInTheDocument()
     })
   })
@@ -903,7 +905,7 @@ describe('Compensation', () => {
       })
       await user.click(exemptOption)
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(compensationAmountInput)
 
       const continueButton = screen.getByRole('button', {
@@ -935,7 +937,7 @@ describe('Compensation', () => {
       })
       await user.click(exemptOption)
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '0')
 
@@ -968,7 +970,7 @@ describe('Compensation', () => {
       })
       await user.click(exemptOption)
 
-      const compensationAmountInput = screen.getByLabelText('Wage')
+      const compensationAmountInput = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '0')
 
@@ -1039,10 +1041,10 @@ describe('Compensation', () => {
       )
 
       await screen.findByRole('heading', { name: 'Compensation' })
-      await user.type(screen.getByLabelText('Job Title'), 'My Job')
+      await user.type(screen.getByLabelText(/^Job Title *\*?$/), 'My Job')
       await user.click(screen.getByRole('button', { name: /Select classification/i }))
       await user.click(screen.getByRole('option', { name: 'Paid by the hour' }))
-      const amount = screen.getByLabelText('Wage')
+      const amount = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(amount)
       await user.type(amount, '50')
       await user.tab()
@@ -1257,8 +1259,8 @@ describe('Compensation', () => {
       await user.click(screen.getByRole('button', { name: /Add another job/i }))
       await screen.findByRole('heading', { name: 'Add job' })
 
-      await user.type(screen.getByLabelText('Job Title'), 'My Job')
-      const amount = screen.getByLabelText('Wage')
+      await user.type(screen.getByLabelText(/^Job Title *\*?$/), 'My Job')
+      const amount = screen.getByLabelText(/^Wage *\*?$/)
       await user.clear(amount)
       await user.type(amount, '50')
       await user.tab()

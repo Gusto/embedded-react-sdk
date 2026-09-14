@@ -1,10 +1,10 @@
 import classNames from 'classnames'
 import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
-import { FieldCaption } from '../FieldCaption/FieldCaption'
 import styles from './FieldLayout.module.scss'
 import type { FieldLayoutProps } from './FieldLayoutTypes'
 import { getDataProps } from '@/helpers/getDataProps'
+import { FieldCaption } from '@/components/Common/FieldCaption'
 
 /**
  * Wraps a form control with its label, description, and error message in a consistent vertical layout.

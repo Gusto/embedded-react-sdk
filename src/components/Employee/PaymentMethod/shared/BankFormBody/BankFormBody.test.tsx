@@ -19,10 +19,10 @@ describe('BankFormBody', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
-    expect(screen.getByLabelText('Account number')).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Routing number *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Account number *\*?$/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
   })
@@ -52,12 +52,12 @@ describe('BankFormBody', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Account nickname'), 'Test Account')
-    await user.type(screen.getByLabelText('Routing number'), '011401533')
-    await user.type(screen.getByLabelText('Account number'), '123456789')
+    await user.type(screen.getByLabelText(/^Account nickname *\*?$/), 'Test Account')
+    await user.type(screen.getByLabelText(/^Routing number *\*?$/), '011401533')
+    await user.type(screen.getByLabelText(/^Account number *\*?$/), '123456789')
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
@@ -89,7 +89,7 @@ describe('BankFormBody', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
     })
 
     await user.click(screen.getByRole('button', { name: 'Save' }))
@@ -120,7 +120,7 @@ describe('BankFormBody', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Bank nickname')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Bank nickname *\*?$/)).toBeInTheDocument()
     })
     expect(screen.getByRole('button', { name: 'Add account' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Go back' })).toBeInTheDocument()

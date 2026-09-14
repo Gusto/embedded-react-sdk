@@ -121,16 +121,16 @@ describe('EmployeeOnboardingFlow', () => {
       }
 
       // Dates
-      const hasStartDate = screen.queryByLabelText('Start date')
+      const hasStartDate = screen.queryByLabelText(/^Start date *\*?$/)
       if (hasStartDate) {
         await fillDate({ date: { month: 1, day: 1, year: 2025 }, name: 'Start date', user })
       }
       await fillDate({ date: { month: 1, day: 1, year: 2000 }, name: 'Date of birth', user })
 
       // Home address
-      await user.type(await screen.findByLabelText('Street 1'), '123 Any St')
+      await user.type(await screen.findByLabelText(/^Street 1 *\*?$/), '123 Any St')
       await user.type(await screen.findByLabelText(/city/i), 'Redmond')
-      await user.click(await screen.findByLabelText('State'))
+      await user.click(await screen.findByLabelText(/^State *\*?$/))
       await user.click(await screen.findByRole('option', { name: 'Washington' }))
       const zip = await screen.findByLabelText(/zip/i)
       await user.clear(zip)
@@ -143,9 +143,9 @@ describe('EmployeeOnboardingFlow', () => {
 
       await screen.findByRole('heading', { name: 'Compensation' })
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
-      await user.click(await screen.findByLabelText('Employee type'))
+      await user.click(await screen.findByLabelText(/^Employee type *\*?$/))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
-      await user.type(await screen.findByLabelText(/^wage$/i), '100')
+      await user.type(await screen.findByLabelText(/^wage *\*?$/i), '100')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation pt 2

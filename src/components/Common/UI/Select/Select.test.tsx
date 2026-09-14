@@ -65,12 +65,12 @@ describe('Select Component', () => {
 
   test('renders as required', () => {
     renderSelect({ isRequired: true })
-    expect(screen.queryByText('(optional)')).not.toBeInTheDocument()
+    expect(screen.getByText('*')).toBeInTheDocument()
   })
 
   test('renders as optional', () => {
     renderSelect()
-    expect(screen.getByText('(optional)')).toBeInTheDocument()
+    expect(screen.queryByText('*')).not.toBeInTheDocument()
   })
 
   test('opens dropdown when clicked', async () => {

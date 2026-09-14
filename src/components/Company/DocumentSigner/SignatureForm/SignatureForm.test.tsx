@@ -52,7 +52,7 @@ describe('SignatureForm', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Signature *\*?$/)).toBeInTheDocument()
       })
     })
 
@@ -63,7 +63,7 @@ describe('SignatureForm', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByLabelText('I am the signatory and I agree to sign electronically'),
+          screen.getByLabelText(/^I am the signatory and I agree to sign electronically *\*?$/),
         ).toBeInTheDocument()
       })
     })
@@ -102,7 +102,7 @@ describe('SignatureForm', () => {
         expect(screen.getByText(/Signature required for/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Signature'), 'John Doe')
+      await user.type(screen.getByLabelText(/^Signature *\*?$/), 'John Doe')
 
       const checkbox = screen.getByLabelText(
         'I am the signatory and I agree to sign electronically',
@@ -160,7 +160,7 @@ describe('SignatureForm', () => {
         expect(screen.getByText(/Signature required for/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Signature'), 'John Doe')
+      await user.type(screen.getByLabelText(/^Signature *\*?$/), 'John Doe')
 
       await user.click(screen.getByRole('button', { name: 'Sign form' }))
 

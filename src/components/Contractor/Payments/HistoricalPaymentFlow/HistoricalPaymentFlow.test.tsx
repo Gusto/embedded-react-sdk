@@ -111,7 +111,7 @@ const walkToSummary = async (user: ReturnType<typeof userEvent.setup>) => {
   await screen.findByRole('heading', { name: 'Enter payment amounts' })
   await user.click(screen.getByRole('button', { name: 'Edit contractor payment' }))
   await user.click(await screen.findByRole('menuitem', { name: 'Edit contractor payment' }))
-  await user.type(screen.getByLabelText('Hours'), '10')
+  await user.type(screen.getByLabelText(/^Hours *\*?$/), '10')
   await user.click(screen.getByRole('button', { name: 'Done' }))
 
   await waitFor(() => {

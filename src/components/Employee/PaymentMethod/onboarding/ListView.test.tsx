@@ -135,7 +135,7 @@ describe('PaymentMethod onboarding ListView', () => {
     await user.click(screen.getByRole('button', { name: /add another bank account/i }))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
     })
     expect(screen.queryByText('Chase')).not.toBeInTheDocument()
   })
@@ -193,13 +193,13 @@ describe('PaymentMethod onboarding ListView', () => {
 
       await waitFor(
         () => {
-          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+          expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
         },
         { timeout: 5000 },
       )
 
-      expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
-      expect(screen.getByLabelText('Account number')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Routing number *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Account number *\*?$/)).toBeInTheDocument()
     })
 
     it('does not show a Cancel button on the inline bank form', async () => {
@@ -207,7 +207,7 @@ describe('PaymentMethod onboarding ListView', () => {
 
       await waitFor(
         () => {
-          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+          expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
         },
         { timeout: 5000 },
       )
@@ -220,7 +220,7 @@ describe('PaymentMethod onboarding ListView', () => {
 
       await waitFor(
         () => {
-          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+          expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
         },
         { timeout: 5000 },
       )
@@ -234,7 +234,7 @@ describe('PaymentMethod onboarding ListView', () => {
 
       await waitFor(
         () => {
-          expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+          expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
         },
         { timeout: 5000 },
       )
@@ -242,7 +242,7 @@ describe('PaymentMethod onboarding ListView', () => {
       // Use exact name to avoid matching "Checking" in the account type radio group
       await user.click(screen.getByRole('radio', { name: 'Check' }))
 
-      expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Account nickname *\*?$/)).not.toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
     })
 
@@ -283,7 +283,7 @@ describe('PaymentMethod onboarding ListView', () => {
 
       await user.click(screen.getByRole('button', { name: /add another bank account/i }))
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole('button', { name: 'Save' }))
@@ -310,12 +310,12 @@ describe('PaymentMethod onboarding ListView', () => {
 
       await user.click(screen.getByRole('button', { name: /add another bank account/i }))
       await waitFor(() => {
-        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Account nickname *\*?$/)).toBeInTheDocument()
       })
 
-      await user.type(screen.getByLabelText('Account nickname'), 'Test Account')
-      await user.type(screen.getByLabelText('Routing number'), '123')
-      await user.type(screen.getByLabelText('Account number'), 'abc')
+      await user.type(screen.getByLabelText(/^Account nickname *\*?$/), 'Test Account')
+      await user.type(screen.getByLabelText(/^Routing number *\*?$/), '123')
+      await user.type(screen.getByLabelText(/^Account number *\*?$/), 'abc')
       await user.click(screen.getByRole('button', { name: 'Save' }))
 
       await waitFor(() => {
@@ -349,7 +349,7 @@ describe('PaymentMethod onboarding ListView', () => {
       await waitFor(() => {
         expect(screen.getByText('Chase')).toBeInTheDocument()
       })
-      expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Account nickname *\*?$/)).not.toBeInTheDocument()
     })
   })
 

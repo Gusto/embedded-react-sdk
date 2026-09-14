@@ -30,8 +30,8 @@ describe('Company BankAccounts Form', () => {
 
     const submitButton = await screen.findByTestId('bank-account-submit')
     expect(submitButton).toBeInTheDocument()
-    await user.type(screen.getByLabelText('Routing number'), '123123123')
-    await user.type(screen.getByLabelText('Account number'), '123456789')
+    await user.type(screen.getByLabelText(/^Routing number *\*?$/), '123123123')
+    await user.type(screen.getByLabelText(/^Account number *\*?$/), '123456789')
     await user.click(submitButton)
 
     await waitFor(() => {

@@ -7,7 +7,6 @@
   line-height: 1.3;
 }
 
-.optionalLabel {
-  font-size: smaller;
-  color: var(--g-inputPlaceholderColor);
+.requiredIndicator {
+  color: var(--g-colorError);
 }

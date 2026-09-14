@@ -63,12 +63,12 @@ describe('DatePicker Component', () => {
 
   test('renders as required', () => {
     renderDatePicker({ isRequired: true })
-    expect(screen.queryByText('(optional)')).not.toBeInTheDocument()
+    expect(screen.getByText('*')).toBeInTheDocument()
   })
 
   test('renders as optional', () => {
     renderDatePicker()
-    expect(screen.getByText('(optional)')).toBeInTheDocument()
+    expect(screen.queryByText('*')).not.toBeInTheDocument()
   })
 
   test('calls onBlur when focus is lost', () => {

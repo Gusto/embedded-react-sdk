@@ -40,11 +40,11 @@ describe('Contractor profile component behavior', () => {
 
       await screen.findByText('Contractor profile')
 
-      expect(screen.getByLabelText('Business Name')).toBeInTheDocument()
-      expect(screen.getByLabelText('EIN')).toBeInTheDocument()
-      expect(screen.queryByLabelText('First Name')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Hourly Rate')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText("Contractor's email address")).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/^Business Name *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^EIN *\*?$/)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/^First Name *\*?$/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Hourly Rate *\*?$/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Contractor's email address *\*?$/)).not.toBeInTheDocument()
     })
 
     it('swaps to individual fields when the Individual type is selected', async () => {
@@ -54,10 +54,10 @@ describe('Contractor profile component behavior', () => {
       await screen.findByText('Contractor profile')
       await user.click(screen.getByRole('radio', { name: 'Individual' }))
 
-      expect(screen.getByLabelText('First Name')).toBeInTheDocument()
-      expect(screen.getByLabelText('Last Name')).toBeInTheDocument()
-      expect(screen.getByLabelText('Social Security Number')).toBeInTheDocument()
-      expect(screen.queryByLabelText('Business Name')).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/^First Name *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Last Name *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Social Security Number *\*?$/)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Business Name *\*?$/)).not.toBeInTheDocument()
     })
 
     it('reveals the hourly rate when the Hourly wage type is selected', async () => {
@@ -65,11 +65,11 @@ describe('Contractor profile component behavior', () => {
       renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
 
       await screen.findByText('Contractor profile')
-      expect(screen.queryByLabelText('Hourly Rate')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Hourly Rate *\*?$/)).not.toBeInTheDocument()
 
       await user.click(screen.getByRole('radio', { name: 'Hourly' }))
 
-      expect(screen.getByLabelText('Hourly Rate')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Hourly Rate *\*?$/)).toBeInTheDocument()
     })
 
     it('reveals email and hides SSN/EIN when self-onboarding is enabled', async () => {
@@ -78,12 +78,12 @@ describe('Contractor profile component behavior', () => {
 
       await screen.findByText('Contractor profile')
       await user.click(screen.getByRole('radio', { name: 'Individual' }))
-      expect(screen.getByLabelText('Social Security Number')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Social Security Number *\*?$/)).toBeInTheDocument()
 
       await user.click(screen.getByRole('switch'))
 
-      expect(screen.getByLabelText("Contractor's email address")).toBeInTheDocument()
-      expect(screen.queryByLabelText('Social Security Number')).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/^Contractor's email address *\*?$/)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Social Security Number *\*?$/)).not.toBeInTheDocument()
     })
 
     it('shows SSN for an individual under admin review of self-onboarding, with no toggle', async () => {
@@ -171,7 +171,7 @@ describe('Contractor profile component behavior', () => {
       )
 
       await screen.findByText('Contractor profile')
-      expect(screen.getByLabelText('First Name')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^First Name *\*?$/)).toBeInTheDocument()
       expect(screen.queryByLabelText(/Social Security Number/)).not.toBeInTheDocument()
       expect(screen.queryByRole('switch')).not.toBeInTheDocument()
     })
@@ -268,9 +268,9 @@ describe('Contractor profile component behavior', () => {
 
       await screen.findByText('Contractor profile')
       await user.click(screen.getByRole('radio', { name: 'Individual' }))
-      await user.type(screen.getByLabelText('First Name'), 'John')
-      await user.type(screen.getByLabelText('Last Name'), 'Doe')
-      await user.type(screen.getByLabelText('Social Security Number'), '123-45-678')
+      await user.type(screen.getByLabelText(/^First Name *\*?$/), 'John')
+      await user.type(screen.getByLabelText(/^Last Name *\*?$/), 'Doe')
+      await user.type(screen.getByLabelText(/^Social Security Number *\*?$/), '123-45-678')
       await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
 
       expect(await screen.findByText('SSN must be valid format')).toBeInTheDocument()
@@ -287,8 +287,8 @@ describe('Contractor profile component behavior', () => {
       renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
 
       await screen.findByText('Contractor profile')
-      await user.type(screen.getByLabelText('Business Name'), 'Acme LLC')
-      await user.type(screen.getByLabelText('EIN'), '12-345')
+      await user.type(screen.getByLabelText(/^Business Name *\*?$/), 'Acme LLC')
+      await user.type(screen.getByLabelText(/^EIN *\*?$/), '12-345')
       await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
 
       expect(await screen.findByText('EIN must be valid format (XX-XXXXXXX)')).toBeInTheDocument()
@@ -315,8 +315,8 @@ describe('Contractor profile component behavior', () => {
       renderWithProviders(<ContractorProfile companyId={companyId} onEvent={onEvent} />)
 
       await screen.findByText('Contractor profile')
-      await user.type(screen.getByLabelText('Business Name'), 'Acme LLC')
-      await user.type(screen.getByLabelText('EIN'), '12-3456789')
+      await user.type(screen.getByLabelText(/^Business Name *\*?$/), 'Acme LLC')
+      await user.type(screen.getByLabelText(/^EIN *\*?$/), '12-3456789')
       await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
 
       await waitFor(() => {
@@ -374,7 +374,7 @@ describe('Contractor profile component behavior', () => {
       )
 
       await screen.findByText('Contractor profile')
-      expect(screen.getByLabelText('First Name')).toHaveValue('John')
+      expect(screen.getByLabelText(/^First Name *\*?$/)).toHaveValue('John')
 
       await user.click(screen.getByRole('button', { name: 'Continue' }))
 
@@ -519,10 +519,10 @@ describe('Contractor profile component behavior', () => {
 
       await screen.findByText('Complete your profile')
 
-      expect(screen.getByLabelText('First Name')).toBeInTheDocument()
-      expect(screen.getByLabelText('Last Name')).toBeInTheDocument()
-      expect(screen.getByLabelText('Social Security Number')).toBeInTheDocument()
-      expect(screen.queryByLabelText('Business Name')).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/^First Name *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Last Name *\*?$/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Social Security Number *\*?$/)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Business Name *\*?$/)).not.toBeInTheDocument()
       expect(screen.queryByRole('switch')).not.toBeInTheDocument()
     })
 
@@ -552,7 +552,7 @@ describe('Contractor profile component behavior', () => {
       )
 
       await screen.findByText('Complete your profile')
-      await user.type(screen.getByLabelText('Social Security Number'), '123-45-6789')
+      await user.type(screen.getByLabelText(/^Social Security Number *\*?$/), '123-45-6789')
       await user.click(screen.getByRole('button', { name: 'Continue' }))
 
       await waitFor(() => {
@@ -591,10 +591,10 @@ describe('Contractor profile component behavior', () => {
       )
 
       await screen.findByText('Complete your profile')
-      expect(screen.getByLabelText('Business Name')).toBeInTheDocument()
-      expect(screen.queryByLabelText('First Name')).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/^Business Name *\*?$/)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/^First Name *\*?$/)).not.toBeInTheDocument()
 
-      await user.type(screen.getByLabelText('EIN'), '12-3456789')
+      await user.type(screen.getByLabelText(/^EIN *\*?$/), '12-3456789')
       await user.click(screen.getByRole('button', { name: 'Continue' }))
 
       await waitFor(() => {

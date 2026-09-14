@@ -75,7 +75,7 @@ describe('management/CompensationEditPendingJobForm', () => {
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
     // Rate pre-filled from the pending comp ($125/hr)
-    expect(screen.getByLabelText('Wage')).toHaveValue('125.00')
+    expect(screen.getByLabelText(/^Wage *\*?$/)).toHaveValue('125.00')
     expect(
       screen.getByRole('button', { name: /Paid by the hour/i, expanded: false }),
     ).toBeInTheDocument()
@@ -96,7 +96,7 @@ describe('management/CompensationEditPendingJobForm', () => {
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
     // The pending comp's effective date (2099-01-01) should be pre-filled
-    const dateInput = screen.getByLabelText('Effective date')
+    const dateInput = screen.getByLabelText(/^Effective date *\*?$/)
     expect(within(dateInput).getByRole('spinbutton', { name: /^year/i })).toHaveValue(2099)
   })
 
@@ -117,7 +117,7 @@ describe('management/CompensationEditPendingJobForm', () => {
     // For steady-state edits, `useJobForm` runs with `withTitleField: false`
     // and `useCompensationForm` owns the title field — exactly one Job title
     // input is rendered (the comp form's).
-    expect(screen.getAllByLabelText('Job title')).toHaveLength(1)
+    expect(screen.getAllByLabelText(/^Job title *\*?$/)).toHaveLength(1)
   })
 
   it('submits PUT /v1/jobs/:id before PUT /v1/compensations/:id (not POST)', async () => {
@@ -151,7 +151,7 @@ describe('management/CompensationEditPendingJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const rateInput = screen.getByLabelText('Wage')
+    const rateInput = screen.getByLabelText(/^Wage *\*?$/)
     await user.clear(rateInput)
     await user.type(rateInput, '150')
     await user.tab()
@@ -287,7 +287,7 @@ describe('management/CompensationEditPendingJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const titleInput = screen.getByLabelText('Job title')
+    const titleInput = screen.getByLabelText(/^Job title *\*?$/)
     await user.clear(titleInput)
     await user.type(titleInput, 'Senior Engineer')
 
@@ -327,8 +327,8 @@ describe('management/CompensationEditPendingJobForm — primary new job (isNewJo
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    expect(screen.getByLabelText('Hire date')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Effective date')).toBeNull()
+    expect(screen.getByLabelText(/^Hire date *\*?$/)).toBeInTheDocument()
+    expect(screen.queryByLabelText(/^Effective date *\*?$/)).toBeNull()
   })
 
   it('prefills the Hire date field from the job hire_date', async () => {
@@ -345,7 +345,7 @@ describe('management/CompensationEditPendingJobForm — primary new job (isNewJo
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const dateInput = screen.getByLabelText('Hire date')
+    const dateInput = screen.getByLabelText(/^Hire date *\*?$/)
     expect(within(dateInput).getByRole('spinbutton', { name: /^year/i })).toHaveValue(2099)
     expect(within(dateInput).getByRole('spinbutton', { name: /^month/i })).toHaveValue(6)
     expect(within(dateInput).getByRole('spinbutton', { name: /^day/i })).toHaveValue(1)
@@ -420,8 +420,8 @@ describe('management/CompensationEditPendingJobForm — secondary new job (isNew
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    expect(screen.getByLabelText('Effective date')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Hire date')).toBeNull()
+    expect(screen.getByLabelText(/^Effective date *\*?$/)).toBeInTheDocument()
+    expect(screen.queryByLabelText(/^Hire date *\*?$/)).toBeNull()
   })
 
   it('prefills the Job title from the loaded compensation and the wage from the pending compensation', async () => {
@@ -438,7 +438,7 @@ describe('management/CompensationEditPendingJobForm — secondary new job (isNew
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    expect(screen.getByLabelText('Job title')).toHaveValue('My Secondary Job')
-    expect(screen.getByLabelText('Wage')).toHaveValue('50.00')
+    expect(screen.getByLabelText(/^Job title *\*?$/)).toHaveValue('My Secondary Job')
+    expect(screen.getByLabelText(/^Wage *\*?$/)).toHaveValue('50.00')
   })
 })

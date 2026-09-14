@@ -130,10 +130,10 @@ describe('PolicyConfigurationFormPresentation', () => {
       renderWithProviders(<PolicyConfigurationFormPresentation {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Based on hours worked'))
+      await user.click(screen.getByLabelText(/^Based on hours worked *\*?$/))
 
       await waitFor(() => {
         expect(screen.getByText('Employees will accrue')).toBeInTheDocument()
@@ -169,10 +169,10 @@ describe('PolicyConfigurationFormPresentation', () => {
       renderWithProviders(<PolicyConfigurationFormPresentation {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Fixed amount per year')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Fixed amount per year'))
+      await user.click(screen.getByLabelText(/^Fixed amount per year *\*?$/))
 
       await waitFor(() => {
         expect(screen.getByText('Total hours per year')).toBeInTheDocument()
@@ -206,13 +206,13 @@ describe('PolicyConfigurationFormPresentation', () => {
       renderWithProviders(<PolicyConfigurationFormPresentation {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Unlimited')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Unlimited *\*?$/)).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Unlimited'))
+      await user.click(screen.getByLabelText(/^Unlimited *\*?$/))
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Unlimited')).toBeChecked()
+        expect(screen.getByLabelText(/^Unlimited *\*?$/)).toBeChecked()
       })
 
       expect(screen.queryByText('Employees will accrue')).not.toBeInTheDocument()
@@ -235,7 +235,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Reset date')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Custom date'))
+      await user.click(screen.getByLabelText(/^Custom date *\*?$/))
 
       await waitFor(() => {
         expect(screen.getByText('Month')).toBeInTheDocument()
@@ -259,7 +259,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Month')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText("Each employee's start date"))
+      await user.click(screen.getByLabelText(/^Each employee's start date *\*?$/))
 
       await waitFor(() => {
         expect(screen.queryByText('Month')).not.toBeInTheDocument()
@@ -288,7 +288,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Day')).toBeInTheDocument()
       })
 
-      const dayButton = screen.getByLabelText('Day')
+      const dayButton = screen.getByLabelText(/^Day *\*?$/)
       await user.click(dayButton)
 
       await waitFor(() => {
@@ -316,7 +316,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Day')).toBeInTheDocument()
       })
 
-      const dayButton = screen.getByLabelText('Day')
+      const dayButton = screen.getByLabelText(/^Day *\*?$/)
       await user.click(dayButton)
 
       await waitFor(() => {
@@ -344,7 +344,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Day')).toBeInTheDocument()
       })
 
-      const dayButton = screen.getByLabelText('Day')
+      const dayButton = screen.getByLabelText(/^Day *\*?$/)
       await user.click(dayButton)
 
       await waitFor(() => {
@@ -371,7 +371,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Day')).toBeInTheDocument()
       })
 
-      const monthButton = screen.getByLabelText('Month')
+      const monthButton = screen.getByLabelText(/^Month *\*?$/)
       await user.click(monthButton)
 
       await waitFor(() => {
@@ -381,7 +381,7 @@ describe('PolicyConfigurationFormPresentation', () => {
       await user.click(screen.getByRole('option', { name: 'February' }))
 
       await waitFor(() => {
-        const dayButton = screen.getByLabelText('Day')
+        const dayButton = screen.getByLabelText(/^Day *\*?$/)
         expect(dayButton).toHaveTextContent('28')
       })
     })
@@ -401,7 +401,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Employees will accrue')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Fixed amount per year'))
+      await user.click(screen.getByLabelText(/^Fixed amount per year *\*?$/))
 
       await waitFor(() => {
         expect(screen.getByText('Total hours per year')).toBeInTheDocument()
@@ -423,7 +423,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Total hours per year')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Unlimited'))
+      await user.click(screen.getByLabelText(/^Unlimited *\*?$/))
 
       await waitFor(() => {
         expect(screen.queryByText('Total hours per year')).not.toBeInTheDocument()
@@ -497,7 +497,7 @@ describe('PolicyConfigurationFormPresentation', () => {
         expect(screen.getByText('Employees will accrue')).toBeInTheDocument()
       })
 
-      expect(screen.getByLabelText('Based on hours worked')).toBeChecked()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeChecked()
       expect(screen.getByText('For every')).toBeInTheDocument()
       expect(screen.getByText('Include overtime hours')).toBeInTheDocument()
       expect(screen.getByText('Month')).toBeInTheDocument()
@@ -519,18 +519,18 @@ describe('PolicyConfigurationFormPresentation', () => {
       renderWithProviders(<PolicyConfigurationFormPresentation {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeInTheDocument()
       })
 
       await user.tab()
       await user.tab()
-      expect(screen.getByLabelText('Based on hours worked')).toHaveFocus()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toHaveFocus()
 
       await user.keyboard('{ArrowDown}')
-      expect(screen.getByLabelText('Fixed amount per year')).toHaveFocus()
+      expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toHaveFocus()
 
       await user.keyboard('{ArrowDown}')
-      expect(screen.getByLabelText('Unlimited')).toHaveFocus()
+      expect(screen.getByLabelText(/^Unlimited *\*?$/)).toHaveFocus()
     })
   })
 })
@@ -575,11 +575,11 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Unlimited')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Unlimited *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'My Unlimited PTO')
-    await user.click(screen.getByLabelText('Unlimited'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'My Unlimited PTO')
+    await user.click(screen.getByLabelText(/^Unlimited *\*?$/))
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
     await waitFor(() => {
@@ -609,20 +609,20 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'Hourly Policy')
-    await user.click(screen.getByLabelText('Based on hours worked'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'Hourly Policy')
+    await user.click(screen.getByLabelText(/^Based on hours worked *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Employees will accrue')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Employees will accrue *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Employees will accrue'), '1')
-    await user.type(screen.getByLabelText('For every'), '40')
+    await user.type(screen.getByLabelText(/^Employees will accrue *\*?$/), '1')
+    await user.type(screen.getByLabelText(/^For every *\*?$/), '40')
 
-    await user.click(screen.getByLabelText("Each employee's start date"))
+    await user.click(screen.getByLabelText(/^Each employee's start date *\*?$/))
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
@@ -648,18 +648,18 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'No Reset Date')
-    await user.click(screen.getByLabelText('Based on hours worked'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'No Reset Date')
+    await user.click(screen.getByLabelText(/^Based on hours worked *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Employees will accrue')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Employees will accrue *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Employees will accrue'), '1')
-    await user.type(screen.getByLabelText('For every'), '40')
+    await user.type(screen.getByLabelText(/^Employees will accrue *\*?$/), '1')
+    await user.type(screen.getByLabelText(/^For every *\*?$/), '40')
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
@@ -684,22 +684,22 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'Paid Overtime Policy')
-    await user.click(screen.getByLabelText('Based on hours worked'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'Paid Overtime Policy')
+    await user.click(screen.getByLabelText(/^Based on hours worked *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Employees will accrue')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Employees will accrue *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Employees will accrue'), '2')
-    await user.type(screen.getByLabelText('For every'), '30')
+    await user.type(screen.getByLabelText(/^Employees will accrue *\*?$/), '2')
+    await user.type(screen.getByLabelText(/^For every *\*?$/), '30')
 
-    await user.click(screen.getByLabelText('Include overtime hours'))
-    await user.click(screen.getByLabelText('Include all paid hours'))
-    await user.click(screen.getByLabelText("Each employee's start date"))
+    await user.click(screen.getByLabelText(/^Include overtime hours *\*?$/))
+    await user.click(screen.getByLabelText(/^Include all paid hours *\*?$/))
+    await user.click(screen.getByLabelText(/^Each employee's start date *\*?$/))
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
@@ -723,19 +723,19 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Fixed amount per year')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'Per Pay Period Policy')
-    await user.click(screen.getByLabelText('Fixed amount per year'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'Per Pay Period Policy')
+    await user.click(screen.getByLabelText(/^Fixed amount per year *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Total hours per year')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Total hours per year *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Total hours per year'), '120')
-    await user.click(screen.getByLabelText('Each pay period'))
-    await user.click(screen.getByLabelText("Each employee's start date"))
+    await user.type(screen.getByLabelText(/^Total hours per year *\*?$/), '120')
+    await user.click(screen.getByLabelText(/^Each pay period *\*?$/))
+    await user.click(screen.getByLabelText(/^Each employee's start date *\*?$/))
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
@@ -760,19 +760,19 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Fixed amount per year')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'Calendar Year Policy')
-    await user.click(screen.getByLabelText('Fixed amount per year'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'Calendar Year Policy')
+    await user.click(screen.getByLabelText(/^Fixed amount per year *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Total hours per year')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Total hours per year *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Total hours per year'), '80')
-    await user.click(screen.getByLabelText('All at once'))
-    await user.click(screen.getByLabelText('Custom date'))
+    await user.type(screen.getByLabelText(/^Total hours per year *\*?$/), '80')
+    await user.click(screen.getByLabelText(/^All at once *\*?$/))
+    await user.click(screen.getByLabelText(/^Custom date *\*?$/))
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
@@ -796,19 +796,19 @@ describe('PolicyConfigurationForm', () => {
     renderComponent()
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Fixed amount per year')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'Anniversary Policy')
-    await user.click(screen.getByLabelText('Fixed amount per year'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'Anniversary Policy')
+    await user.click(screen.getByLabelText(/^Fixed amount per year *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Total hours per year')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Total hours per year *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Total hours per year'), '60')
-    await user.click(screen.getByLabelText('All at once'))
-    await user.click(screen.getByLabelText("Each employee's start date"))
+    await user.type(screen.getByLabelText(/^Total hours per year *\*?$/), '60')
+    await user.click(screen.getByLabelText(/^All at once *\*?$/))
+    await user.click(screen.getByLabelText(/^Each employee's start date *\*?$/))
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
@@ -832,11 +832,11 @@ describe('PolicyConfigurationForm', () => {
     renderComponent({ policyType: 'sick' })
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Unlimited')).toBeInTheDocument()
+      expect(screen.getByLabelText(/^Unlimited *\*?$/)).toBeInTheDocument()
     })
 
-    await user.type(screen.getByLabelText('Policy name'), 'Sick Leave')
-    await user.click(screen.getByLabelText('Unlimited'))
+    await user.type(screen.getByLabelText(/^Policy name *\*?$/), 'Sick Leave')
+    await user.click(screen.getByLabelText(/^Unlimited *\*?$/))
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
 
     await waitFor(() => {
@@ -889,10 +889,12 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Based on hours worked')).toBeChecked()
-    expect((screen.getByLabelText('Employees will accrue') as HTMLInputElement).value).toBe('1.5')
-    expect((screen.getByLabelText('For every') as HTMLInputElement).value).toBe('40')
-    expect(screen.getByLabelText('Custom date')).toBeChecked()
+    expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeChecked()
+    expect((screen.getByLabelText(/^Employees will accrue *\*?$/) as HTMLInputElement).value).toBe(
+      '1.5',
+    )
+    expect((screen.getByLabelText(/^For every *\*?$/) as HTMLInputElement).value).toBe('40')
+    expect(screen.getByLabelText(/^Custom date *\*?$/)).toBeChecked()
   })
 
   it('pre-populates hourly policy without reset date (resetDateType left unset)', async () => {
@@ -906,9 +908,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('No Reset Hourly')).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Based on hours worked')).toBeChecked()
-    expect(screen.getByLabelText("Each employee's start date")).not.toBeChecked()
-    expect(screen.getByLabelText('Custom date')).not.toBeChecked()
+    expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Each employee's start date *\*?$/)).not.toBeChecked()
+    expect(screen.getByLabelText(/^Custom date *\*?$/)).not.toBeChecked()
   })
 
   it('pre-populates per_pay_period with policyResetDate as per_calendar_year', async () => {
@@ -922,9 +924,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('Per Pay Period')).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
-    expect(screen.getByLabelText('Each pay period')).toBeChecked()
-    expect(screen.getByLabelText('Custom date')).toBeChecked()
+    expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Each pay period *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Custom date *\*?$/)).toBeChecked()
   })
 
   it('pre-populates per_pay_period without policyResetDate as per_anniversary_year', async () => {
@@ -937,8 +939,8 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('Anniversary Pay Period')).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Each pay period')).toBeChecked()
-    expect(screen.getByLabelText("Each employee's start date")).toBeChecked()
+    expect(screen.getByLabelText(/^Each pay period *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Each employee's start date *\*?$/)).toBeChecked()
   })
 
   it('pre-populates per_anniversary_year correctly', async () => {
@@ -951,9 +953,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('Anniversary All At Once')).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
-    expect(screen.getByLabelText('All at once')).toBeChecked()
-    expect(screen.getByLabelText("Each employee's start date")).toBeChecked()
+    expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^All at once *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Each employee's start date *\*?$/)).toBeChecked()
   })
 
   it('pre-populates per_calendar_year with custom date fields', async () => {
@@ -967,9 +969,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('Calendar Year Policy')).toBeInTheDocument()
     })
-    expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
-    expect(screen.getByLabelText('All at once')).toBeChecked()
-    expect(screen.getByLabelText('Custom date')).toBeChecked()
+    expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^All at once *\*?$/)).toBeChecked()
+    expect(screen.getByLabelText(/^Custom date *\*?$/)).toBeChecked()
   })
 
   it('allows switching from hourly to unlimited for incomplete policies', async () => {
@@ -987,10 +989,10 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
       expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
     })
 
-    await user.click(screen.getByLabelText('Unlimited'))
+    await user.click(screen.getByLabelText(/^Unlimited *\*?$/))
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Unlimited')).toBeChecked()
+      expect(screen.getByLabelText(/^Unlimited *\*?$/)).toBeChecked()
     })
 
     await user.click(screen.getByRole('button', { name: 'Save & continue' }))
@@ -1022,9 +1024,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
         expect(screen.getByDisplayValue('Unlimited PTO')).toBeInTheDocument()
       })
 
-      expect(screen.queryByLabelText('Unlimited')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Based on hours worked')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Fixed amount per year')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Unlimited *\*?$/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Based on hours worked *\*?$/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/^Fixed amount per year *\*?$/)).not.toBeInTheDocument()
       expect(screen.getByText('Accrual method')).toBeInTheDocument()
       expect(screen.getByText('Unlimited')).toBeInTheDocument()
     })
@@ -1042,9 +1044,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
         expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
       })
 
-      expect(screen.queryByLabelText('Unlimited')).not.toBeInTheDocument()
-      expect(screen.getByLabelText('Based on hours worked')).toBeEnabled()
-      expect(screen.getByLabelText('Fixed amount per year')).toBeEnabled()
+      expect(screen.queryByLabelText(/^Unlimited *\*?$/)).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeEnabled()
+      expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeEnabled()
     })
 
     it('allows switching between accrual subtypes for a complete accrual-based policy', async () => {
@@ -1061,10 +1063,10 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
         expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByLabelText('Fixed amount per year'))
+      await user.click(screen.getByLabelText(/^Fixed amount per year *\*?$/))
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
+        expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeChecked()
       })
     })
 
@@ -1081,9 +1083,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
         expect(screen.getByDisplayValue('Incomplete Policy')).toBeInTheDocument()
       })
 
-      expect(screen.getByLabelText('Unlimited')).toBeEnabled()
-      expect(screen.getByLabelText('Based on hours worked')).toBeEnabled()
-      expect(screen.getByLabelText('Fixed amount per year')).toBeEnabled()
+      expect(screen.getByLabelText(/^Unlimited *\*?$/)).toBeEnabled()
+      expect(screen.getByLabelText(/^Based on hours worked *\*?$/)).toBeEnabled()
+      expect(screen.getByLabelText(/^Fixed amount per year *\*?$/)).toBeEnabled()
     })
   })
 })

@@ -18,7 +18,7 @@ import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
 
 async function fillEffectiveDate(user: ReturnType<typeof userEvent.setup>, date: string) {
   const [year, month, day] = date.split('-')
-  const dateInput = screen.getByLabelText('Effective date')
+  const dateInput = screen.getByLabelText(/^Effective date *\*?$/)
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^month/i }), month!)
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^day/i }), day!)
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^year/i }), year!)
@@ -69,11 +69,11 @@ describe('management/CompensationAddAnotherJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Add another job' })
 
-    expect(screen.getByLabelText('Job Title')).toBeInTheDocument()
-    expect(screen.getByLabelText('Wage')).toBeInTheDocument()
-    expect(screen.getByLabelText('Effective date')).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Job Title *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Wage *\*?$/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^Effective date *\*?$/)).toBeInTheDocument()
     // withHireDateField: false — a new secondary job inherits the primary's hire date.
-    expect(screen.queryByLabelText('Start date')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/^Start date *\*?$/)).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Save job' })).toBeInTheDocument()
   })
 
@@ -111,8 +111,8 @@ describe('management/CompensationAddAnotherJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Add another job' })
 
-    await user.type(screen.getByLabelText('Job Title'), 'Cashier')
-    const wage = screen.getByLabelText('Wage')
+    await user.type(screen.getByLabelText(/^Job Title *\*?$/), 'Cashier')
+    const wage = screen.getByLabelText(/^Wage *\*?$/)
     await user.clear(wage)
     await user.type(wage, '50')
     await user.tab()
@@ -162,8 +162,8 @@ describe('management/CompensationAddAnotherJobForm', () => {
 
     await screen.findByRole('heading', { name: 'Add another job' })
 
-    await user.type(screen.getByLabelText('Job Title'), 'Cashier')
-    const wage = screen.getByLabelText('Wage')
+    await user.type(screen.getByLabelText(/^Job Title *\*?$/), 'Cashier')
+    const wage = screen.getByLabelText(/^Wage *\*?$/)
     await user.clear(wage)
     await user.type(wage, '50')
     await user.tab()
