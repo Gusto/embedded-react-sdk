@@ -1,7 +1,6 @@
 {
   "applyCta": "Aplicar",
   "calculateCta": "Calcular",
-  "calculatingCta": "Calculando...",
   "description": "Ingresa el monto neto que quieres que reciba este empleado. Luego calcularemos automáticamente el monto bruto que debes pagar, incluyendo impuestos y deducciones.",
   "errorMessage": "No se puede calcular el incremento bruto. Inténtalo de nuevo.",
   "grossPayResult": "Pago bruto calculado",

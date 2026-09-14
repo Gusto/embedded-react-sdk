@@ -118,32 +118,22 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             <Alert label={t('warning')} status="warning" disableScrollIntoView />
           </div>
 
-          <Flex flexDirection="column" gap={4}>
-            {/* The input's own label is visually hidden so the input and Calculate button
-                boxes align at the top of the row; this shared caption labels the row visually
-                while the accessible name still comes from the hidden NumberInputField label. */}
-            <div aria-hidden="true">
-              <Text weight="medium">{t('netPayLabel')}</Text>
-            </div>
-            <Flex flexDirection="row" gap={8} alignItems="flex-start">
-              <NumberInputField
-                name="netPay"
-                label={t('netPayLabel')}
-                shouldVisuallyHideLabel
-                format="currency"
-                errorMessage={t('validations.netPay')}
-                min={0}
-                isRequired
-              />
-              <Button
-                variant="secondary"
-                className={styles.calculateButton}
-                isLoading={isCalculating}
-                onClick={formHandlers.handleSubmit(handleCalculate)}
-              >
-                {t('calculateCta')}
-              </Button>
-            </Flex>
+          <Flex flexDirection="row" gap={8} alignItems="flex-start">
+            <NumberInputField
+              name="netPay"
+              label={t('netPayLabel')}
+              format="currency"
+              errorMessage={t('validations.netPay')}
+              min={0}
+            />
+            <Button
+              variant="secondary"
+              className={styles.calculateButton}
+              isLoading={isCalculating}
+              onClick={formHandlers.handleSubmit(handleCalculate)}
+            >
+              {t('calculateCta')}
+            </Button>
           </Flex>
 
           {calculatedGrossUp && (
