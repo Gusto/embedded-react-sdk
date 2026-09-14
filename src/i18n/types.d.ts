@@ -8385,10 +8385,6 @@ export namespace Translations {
     pageTitle: string
     /** @defaultValue `"{{firstName}} {{lastName}}"` */
     breadcrumbLabel: string
-    /** @defaultValue `"Gross pay (excluding reimbursements)"` */
-    grossPayLabel: string
-    /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
-    grossPayLabelMobile: string
     /** @defaultValue `"Regular and overtime hours"` */
     regularHoursTitle: string
     /** @defaultValue `"Regular hours"` */

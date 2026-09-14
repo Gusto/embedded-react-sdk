@@ -136,8 +136,6 @@ export interface UsePayrollEditEmployeeFormReady extends BaseFormHookReady<
     employeeCompensation?: PayrollEmployeeCompensationsType
     /** The prepared payroll (server-calculated totals and workweeks). */
     preparedPayroll: PayrollPrepared
-    /** The employee's server-calculated gross pay for this payroll (excluding reimbursements), as a number. `0` when absent. */
-    grossPay: number
     /** The pay schedule for the payroll, if loaded. */
     paySchedule?: PayScheduleShow
     /** Whether the pay period spans more than one workweek. Raw workweeks are on `preparedPayroll.workweeks`. */
@@ -687,7 +685,6 @@ export function usePayrollEditEmployeeForm({
       employee,
       employeeCompensation,
       preparedPayroll,
-      grossPay: Number(employeeCompensation?.grossPay ?? 0),
       paySchedule: payScheduleQuery.data?.payScheduleShow,
       isMultipleWorkweeks: workweeks.length > 1,
       workweeks,
