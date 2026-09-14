@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
@@ -428,23 +428,21 @@ const Root = ({
               </Flex>
             </Flex>
 
-            {Fields.jobs.map((job, index) => {
+            {(() => {
               const isMultiJob = Fields.jobs.length > 1
               const genericHoursTitle = form.data.isOvertimeEligible
                 ? t('regularHoursTitle')
                 : t('regularHoursTitleWithoutOvertime')
-              // One "Add overtime" affordance for the whole employee, not one per
-              // job -- attach it to the first job's hours box only.
-              const showAddOvertime =
-                index === 0 && !form.data.withOvertime && form.data.isOvertimeEligible
+              // "Add overtime" is an employee-level action, but the design gives
+              // every job its own button so each job's hours box can trigger it.
+              const showAddOvertime = !form.data.withOvertime && form.data.isOvertimeEligible
               // Its counterpart once overtime is on: a single employee-level alert
-              // explaining the workweek split, gated the same way but on the
-              // opposite side of the withOvertime flag.
+              // explaining the workweek split, rendered once above all jobs.
               const showOvertimeWorkweekAlert =
-                index === 0 && form.data.withOvertime && form.data.isOvertimeEligible
+                form.data.withOvertime && form.data.isOvertimeEligible
 
               return (
-                <Flex key={job.jobUuid} flexDirection="column" gap={16}>
+                <Flex flexDirection="column" gap={16}>
                   {isMultiJob ? <Heading as="h3">{genericHoursTitle}</Heading> : null}
                   {showOvertimeWorkweekAlert ? (
                     <Alert
@@ -453,35 +451,40 @@ const Root = ({
                       disableScrollIntoView
                     />
                   ) : null}
-                  {renderBreakdownSection(job.hours, {
-                    title: isMultiJob ? (job.title ?? genericHoursTitle) : genericHoursTitle,
-                    label: genericHoursTitle,
-                    rowHeader: t('hourTypeColumn'),
-                    valueColumnLabel: t('hoursColumn'),
-                    labelFor: hoursLabel,
-                    adornmentEnd: t('hoursUnit'),
-                    footer: showAddOvertime ? (
-                      <Button
-                        variant="secondary"
-                        onClick={() => {
-                          form.actions.addOvertime()
-                        }}
-                        title={t('addOvertimeCta')}
-                      >
-                        {t('addOvertimeCta')}
-                      </Button>
-                    ) : undefined,
-                  })}
-                  {renderBreakdownSection(job.additionalEarnings, {
-                    title: t('additionalEarningsTitle'),
-                    label: t('additionalEarningsTitle'),
-                    rowHeader: t('typeColumn'),
-                    valueColumnLabel: t('amountColumn'),
-                    labelFor: earningLabel,
-                    adornmentStart: '$',
-                  })}
+                  {Fields.jobs.map(job => (
+                    <Fragment key={job.jobUuid}>
+                      {renderBreakdownSection(job.hours, {
+                        title: isMultiJob ? (job.title ?? genericHoursTitle) : genericHoursTitle,
+                        label: genericHoursTitle,
+                        rowHeader: t('hourTypeColumn'),
+                        valueColumnLabel: t('hoursColumn'),
+                        labelFor: hoursLabel,
+                        adornmentEnd: t('hoursUnit'),
+                        footer: showAddOvertime ? (
+                          <Button
+                            variant="secondary"
+                            onClick={() => {
+                              form.actions.addOvertime()
+                            }}
+                            title={t('addOvertimeCta')}
+                          >
+                            {t('addOvertimeCta')}
+                          </Button>
+                        ) : undefined,
+                      })}
+                    </Fragment>
+                  ))}
                 </Flex>
               )
+            })()}
+
+            {renderBreakdownSection(Fields.additionalEarnings, {
+              title: t('additionalEarningsTitle'),
+              label: t('additionalEarningsTitle'),
+              rowHeader: t('typeColumn'),
+              valueColumnLabel: t('amountColumn'),
+              labelFor: earningLabel,
+              adornmentStart: '$',
             })}
 
             {renderTimeOffSection(Fields.timeOff, {
@@ -495,9 +498,11 @@ const Root = ({
                 })
               : null}
 
-            {Fields.other.length > 0
+            {Fields.otherEarnings.length > 0
               ? (() => {
-                  const columns: useDataViewPropReturn<(typeof Fields.other)[number]>['columns'] = [
+                  const columns: useDataViewPropReturn<
+                    (typeof Fields.otherEarnings)[number]
+                  >['columns'] = [
                     { title: t('typeColumn'), render: entry => earningLabel(entry.id) },
                     {
                       title: t('amountColumn'),
@@ -519,7 +524,7 @@ const Root = ({
                         label={t('otherTitle')}
                         isWithinBox
                         columns={columns}
-                        data={Fields.other}
+                        data={Fields.otherEarnings}
                       />
                     </Box>
                   )
