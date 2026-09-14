@@ -10,7 +10,6 @@ import { useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { FieldCaption } from '@/components/Common/FieldCaption'
 
 const GrossUpFormSchema = z.object({
   netPay: z.number().positive(),
@@ -120,8 +119,11 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
           </div>
 
           <Flex flexDirection="column" gap={4}>
+            {/* The input's own label is visually hidden so the input and Calculate button
+                boxes align at the top of the row; this shared caption labels the row visually
+                while the accessible name still comes from the hidden NumberInputField label. */}
             <div aria-hidden="true">
-              <FieldCaption isRequired>{t('netPayLabel')}</FieldCaption>
+              <Text weight="medium">{t('netPayLabel')}</Text>
             </div>
             <Flex flexDirection="row" gap={8} alignItems="flex-start">
               <NumberInputField
