@@ -7,6 +7,8 @@ import {
   isSplitByWorkweek,
   type HourEntry,
   type TimeOffEntry,
+  type ReimbursementRow,
+  type ReimbursementDraftFields,
 } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/fields'
 import { PayrollEditEmployeeErrorCodes } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
 import styles from './UNSTABLE_PayrollEditEmployee.module.scss'
@@ -25,14 +27,13 @@ import {
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex, Grid, DataView } from '@/components/Common'
+import { Flex, Grid, DataView, useDataView, EmptyData } from '@/components/Common'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import InfoIcon from '@/assets/icons/info.svg?react'
 
 /**
  * In-development regular-rate-of-pay rebuild of {@link PayrollEditEmployee}.
@@ -68,6 +69,121 @@ export function UNSTABLE_PayrollEditEmployee({
   )
 }
 
+interface ReimbursementsSectionProps {
+  rows: ReimbursementRow[]
+  isAdding: boolean
+  draftFields: ReimbursementDraftFields
+  onBeginAdd: () => void
+  onSave: () => void
+  onCancel: () => void
+  onRemove: (index: number) => void
+}
+
+// Reimbursement UI duplicated from the stable PayrollEditEmployeePresentation for
+// visual parity while the RRoP editor is developed alongside legacy. Powered by
+// usePayrollEditEmployeeForm rather than a local field array/draft form.
+const ReimbursementsSection = ({
+  rows,
+  isAdding,
+  draftFields,
+  onBeginAdd,
+  onSave,
+  onCancel,
+  onRemove,
+}: ReimbursementsSectionProps) => {
+  const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
+  const { Button, ButtonIcon, Heading } = useComponentContext()
+  const { Description, Amount } = draftFields
+
+  const reimbursementDataViewProps = useDataView<ReimbursementRow>({
+    data: rows,
+    columns: [
+      {
+        key: 'description',
+        title: t('reimbursementDescriptionColumn'),
+        render: row => row.description.trim() || t('reimbursementUnnamedFallback'),
+      },
+      {
+        key: 'amount',
+        title: t('reimbursementAmountColumn'),
+        justify: 'end',
+        render: row => formatNumberAsCurrency(parseFloat(row.amount || '0')),
+      },
+      {
+        key: 'recurring',
+        title: t('reimbursementTypeColumn'),
+        render: row =>
+          row.recurring ? t('reimbursementTypeRecurring') : t('reimbursementTypeOneTime'),
+      },
+    ],
+    itemMenu: row => {
+      if (row.recurring) return null
+      const displayDescription = row.description.trim() || t('reimbursementUnnamedFallback')
+      return (
+        <ButtonIcon
+          variant="tertiary"
+          onClick={() => {
+            onRemove(row.index)
+          }}
+          aria-label={t('removeReimbursementLabel', { description: displayDescription })}
+        >
+          <TrashCanSvg aria-hidden />
+        </ButtonIcon>
+      )
+    },
+    emptyState: () => (
+      <EmptyData title={t('reimbursementEmptyTitle')}>
+        <Button variant="secondary" onClick={onBeginAdd} icon={<PlusCircleIcon aria-hidden />}>
+          {t('addReimbursementCta')}
+        </Button>
+      </EmptyData>
+    ),
+  })
+
+  return (
+    <Flex flexDirection="column" gap={12}>
+      <Heading as="h3" styledAs="h4">
+        {t('reimbursementTitle')}
+      </Heading>
+      {!(rows.length === 0 && isAdding) && (
+        <DataView label={t('reimbursementsTableLabel')} {...reimbursementDataViewProps} />
+      )}
+      {isAdding ? (
+        <Flex flexDirection="column" gap={12}>
+          <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+            <Description
+              label={t('reimbursementDescriptionLabel')}
+              placeholder={t('reimbursementDescriptionPlaceholder')}
+            />
+            <Amount label={t('reimbursementAmountLabel')} adornmentStart="$" isRequired />
+          </Grid>
+          <Flex gap={12}>
+            <Button onClick={onSave} title={t('saveReimbursementCta')}>
+              {t('saveReimbursementCta')}
+            </Button>
+            <Button variant="secondary" onClick={onCancel} title={t('cancelReimbursementCta')}>
+              {t('cancelReimbursementCta')}
+            </Button>
+          </Flex>
+        </Flex>
+      ) : (
+        rows.length > 0 && (
+          <div>
+            <Button
+              variant="secondary"
+              onClick={onBeginAdd}
+              title={t('addReimbursementLink')}
+              icon={<PlusCircleIcon aria-hidden />}
+            >
+              {t('addReimbursementLink')}
+            </Button>
+          </div>
+        )
+      )}
+    </Flex>
+  )
+}
+
 const Root = ({
   employeeId,
   companyId,
@@ -82,7 +198,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Alert, Box, BoxHeader, Button, ButtonIcon, Heading, Text } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()
 
   // Error copy keyed by code, supplied to the hook once. Every bound field
   // resolves and renders its own message from this — the consumer never
@@ -420,103 +536,15 @@ const Root = ({
             {PaymentMethodField ? (
               <Flex flexDirection="column" gap={24}>
                 {ReimbursementDraft ? (
-                  <Flex flexDirection="column" gap={12}>
-                    <Heading as="h3" styledAs="h4">
-                      {t('reimbursementTitle')}
-                    </Heading>
-                    {reimbursementRows?.map(row => {
-                      const displayDescription =
-                        row.description.trim() || t('reimbursementUnnamedFallback')
-                      const formattedAmount = formatNumberAsCurrency(parseFloat(row.amount || '0'))
-
-                      if (row.recurring) {
-                        return (
-                          <Flex
-                            key={row.key}
-                            alignItems="center"
-                            justifyContent="space-between"
-                            gap={12}
-                            aria-label={t('recurringReimbursementLabel', {
-                              description: displayDescription,
-                            })}
-                          >
-                            <Text>{displayDescription}</Text>
-                            <Flex alignItems="center" gap={8}>
-                              <Text>{formattedAmount}</Text>
-                              <InfoIcon
-                                aria-label={t('recurringReimbursementTooltip')}
-                                role="img"
-                              />
-                            </Flex>
-                          </Flex>
-                        )
-                      }
-
-                      return (
-                        <Flex
-                          key={row.key}
-                          alignItems="center"
-                          justifyContent="space-between"
-                          gap={12}
-                        >
-                          <Text>{displayDescription}</Text>
-                          <Flex alignItems="center" gap={12}>
-                            <Text>{formattedAmount}</Text>
-                            <ButtonIcon
-                              variant="tertiary"
-                              onClick={() => form.actions.removeReimbursement?.(row.index)}
-                              aria-label={t('removeReimbursementLabel', {
-                                description: displayDescription,
-                              })}
-                            >
-                              <TrashCanSvg aria-hidden />
-                            </ButtonIcon>
-                          </Flex>
-                        </Flex>
-                      )
-                    })}
-
-                    {isAddingReimbursement ? (
-                      <Flex flexDirection="column" gap={12}>
-                        <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                          <ReimbursementDraft.Description
-                            label={t('reimbursementDescriptionLabel')}
-                            placeholder={t('reimbursementDescriptionPlaceholder')}
-                          />
-                          <ReimbursementDraft.Amount
-                            label={t('reimbursementAmountLabel')}
-                            adornmentStart="$"
-                          />
-                        </Grid>
-                        <Flex gap={12}>
-                          <Button
-                            onClick={() => form.actions.saveReimbursement?.()}
-                            title={t('saveReimbursementCta')}
-                          >
-                            {t('saveReimbursementCta')}
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            onClick={() => form.actions.cancelReimbursement?.()}
-                            title={t('cancelReimbursementCta')}
-                          >
-                            {t('cancelReimbursementCta')}
-                          </Button>
-                        </Flex>
-                      </Flex>
-                    ) : (
-                      <div>
-                        <Button
-                          variant="tertiary"
-                          onClick={() => form.actions.beginAddReimbursement?.()}
-                          title={t('addReimbursementLink')}
-                          icon={<PlusCircleIcon aria-hidden />}
-                        >
-                          {t('addReimbursementLink')}
-                        </Button>
-                      </div>
-                    )}
-                  </Flex>
+                  <ReimbursementsSection
+                    rows={reimbursementRows ?? []}
+                    isAdding={isAddingReimbursement}
+                    draftFields={ReimbursementDraft}
+                    onBeginAdd={() => form.actions.beginAddReimbursement?.()}
+                    onSave={() => form.actions.saveReimbursement?.()}
+                    onCancel={() => form.actions.cancelReimbursement?.()}
+                    onRemove={index => form.actions.removeReimbursement?.(index)}
+                  />
                 ) : null}
 
                 <Flex flexDirection="column" gap={12}>
