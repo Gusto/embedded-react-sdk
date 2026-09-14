@@ -198,7 +198,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading } = useComponentContext()
 
   // Error copy keyed by code, supplied to the hook once. Every bound field
   // resolves and renders its own message from this — the consumer never
