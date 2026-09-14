@@ -1201,7 +1201,16 @@ describe('PayrollConfiguration', () => {
       await user.click(await screen.findByRole('menuitem', { name: 'Set employee net earnings' }))
 
       const netInput = await screen.findByLabelText('Net amount')
+      // Pointer-focus first so userEvent.clear's own focus() succeeds even while
+      // the just-closed row menu is still restoring focus, then clear the "0.00"
+      // default and type. Tab out so react-aria's NumberField commits the parsed
+      // value into the form before Calculate submits; otherwise the click can run
+      // handleSubmit against a stale 0 that fails zod .positive() and never fires
+      // the gross-up request.
+      await user.click(netInput)
+      await user.clear(netInput)
       await user.type(netInput, '1000')
+      await user.tab()
       await user.click(screen.getByRole('button', { name: 'Calculate' }))
 
       await waitFor(() => {
