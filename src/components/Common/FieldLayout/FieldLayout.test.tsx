@@ -36,7 +36,23 @@ describe('FieldLayout', () => {
     expect(screen.getByLabelText(/Test Label/)).toBeInTheDocument()
   })
 
-  it('shows optional label when isRequired is false', () => {
+  it('shows a required indicator when isRequired is true', () => {
+    renderWithProviders(
+      <FieldLayout
+        label="Test Label"
+        htmlFor="test-input"
+        errorMessageId="error-id"
+        isRequired
+        descriptionId="description-id"
+      >
+        <input id="test-input" />
+      </FieldLayout>,
+    )
+
+    expect(screen.getByText('Test Label')).toHaveAttribute('data-required')
+  })
+
+  it('renders no required indicator when isRequired is false', () => {
     renderWithProviders(
       <FieldLayout
         label="Test Label"
@@ -49,7 +65,7 @@ describe('FieldLayout', () => {
       </FieldLayout>,
     )
 
-    expect(screen.getByText('(optional)')).toBeInTheDocument()
+    expect(screen.getByText('Test Label')).not.toHaveAttribute('data-required')
   })
 
   it('renders error message with correct id when provided', () => {
