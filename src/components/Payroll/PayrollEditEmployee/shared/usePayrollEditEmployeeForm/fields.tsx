@@ -149,16 +149,17 @@ export interface OtherEntry {
 }
 
 /**
- * Per-job hours and additional-earnings sections.
+ * A single job's hours section.
  *
  * @remarks
- * An employee can hold multiple jobs, each with its own hourly and additional
- * earnings lines. Each section is either a flat `Entry[]` (single-workweek, or an
- * overtime-ineligible employee) OR a `Record<workweekStart, Entry[]>`
- * (multi-workweek and overtime-eligible). The value type is the signal — array is
- * flat, object is split by workweek; use {@link isSplitByWorkweek} to
- * discriminate. `title` is the job's display title (entity data, not copy) for
- * rendering a per-job heading.
+ * An employee can hold multiple jobs, each with its own hourly lines. `hours` is
+ * either a flat `Entry[]` (single-workweek, or an overtime-ineligible employee)
+ * OR a `Record<workweekStart, Entry[]>` (multi-workweek and overtime-eligible).
+ * The value type is the signal — array is flat, object is split by workweek; use
+ * {@link isSplitByWorkweek} to discriminate. `title` is the job's display title
+ * (entity data, not copy) for rendering a per-job heading. Earnings are not
+ * job-scoped: they live in the employee-level `additionalEarnings` and
+ * `otherEarnings` sections on {@link PayrollEditEmployeeFields}.
  *
  * @public
  */
@@ -172,8 +173,6 @@ export interface JobFields {
    * `data.withOvertime` is `false`.
    */
   hours: HourEntry[] | Record<string, HourEntry[]>
-  /** Overtime-affecting earnings for this job. */
-  additionalEarnings: EarningEntry[] | Record<string, EarningEntry[]>
 }
 
 /**
@@ -243,18 +242,25 @@ export interface ReimbursementRow {
  * The render-ready field collections exposed on `form.Fields`.
  *
  * @remarks
- * Job-scoped inputs (hours, additional earnings) are grouped under `jobs`, one
- * entry per job, so multi-job employees render correctly. Employee-scoped
- * sections (other earnings, time off, final payout, payment method,
- * reimbursements) stay top-level.
+ * Hours are grouped under `jobs`, one entry per job, so multi-job employees
+ * render correctly. All earnings and the remaining sections are employee-scoped
+ * and stay top-level: `additionalEarnings` (overtime-affecting) and
+ * `otherEarnings` (non-overtime) each render as a single section spanning every
+ * job, alongside time off, final payout, payment method, and reimbursements.
  *
  * @public
  */
 export interface PayrollEditEmployeeFields {
-  /** Per-job hours and additional-earnings sections; one entry per job. */
+  /** Per-job hours sections; one entry per job. */
   jobs: JobFields[]
+  /**
+   * Overtime-affecting earnings across all jobs, as a single employee-level
+   * section. Flat `Entry[]` when unsplit, or `Record<workweekStart, Entry[]>`
+   * when split by workweek; use {@link isSplitByWorkweek} to discriminate.
+   */
+  additionalEarnings: EarningEntry[] | Record<string, EarningEntry[]>
   /** Non-overtime earnings (e.g. tips), always flat; opaque render entries. */
-  other: OtherEntry[]
+  otherEarnings: OtherEntry[]
   /** Time-off inputs (never workweek-breakdown). */
   timeOff: TimeOffEntry[]
   /** Final-payout inputs, present only for dismissal payrolls. */
@@ -507,18 +513,23 @@ export function createPayrollEditEmployeeFields({
         withOvertime,
         errorMessages,
       ),
-      additionalEarnings: buildBreakdownSection(
-        overtimeAffecting.filter(compensation => compensation.jobUuid === jobUuid),
-        workweeks,
-        'additionalEarnings',
-        isOvertimeEligible,
-        withOvertime,
-        errorMessages,
-      ),
     }
   })
 
-  const other: OtherEntry[] = nonOvertime
+  // Overtime-affecting earnings render as one employee-level section spanning
+  // every job. Each entry keeps its per-job form path
+  // (`additionalEarnings.<jobUuid>.<name>`), so the flat section still binds and
+  // submits per job.
+  const additionalEarnings = buildBreakdownSection(
+    overtimeAffecting,
+    workweeks,
+    'additionalEarnings',
+    isOvertimeEligible,
+    withOvertime,
+    errorMessages,
+  )
+
+  const otherEarnings: OtherEntry[] = nonOvertime
     .filter(
       (compensation): compensation is { jobUuid: string; name: string } =>
         Boolean(compensation.jobUuid) && Boolean(compensation.name),
@@ -551,7 +562,8 @@ export function createPayrollEditEmployeeFields({
 
   return {
     jobs,
-    other,
+    additionalEarnings,
+    otherEarnings,
     timeOff,
     finalPayout,
     paymentMethod: hasDirectDepositSetup ? createPaymentMethodField() : undefined,
