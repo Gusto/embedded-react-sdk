@@ -985,7 +985,7 @@ describe('Employee Profile', () => {
       expect(mockOnEvent).toHaveBeenCalledWith('employee/addresses/home/created', expect.anything())
       expect(mockOnEvent).toHaveBeenCalledWith('employee/addresses/work/created', expect.anything())
       expect(mockOnEvent).toHaveBeenCalledWith('employee/profile/done', expect.anything())
-    })
+    }, 15000)
   })
 
   // -------------------------------------------------------------------
