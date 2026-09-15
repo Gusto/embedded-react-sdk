@@ -18,6 +18,8 @@ export interface UnstableFeatures {
   historicalPayments?: boolean
   /** Enables the in-development regular-rate-of-pay experience for editing an employee's payroll. */
   payrollRegularRateOfPay?: boolean
+  /** Enables the in-development `CompanyManagement.PaySchedule` flow for managing pay schedules and their assignments after onboarding. */
+  managePaySchedules?: boolean
 }
 
 /**

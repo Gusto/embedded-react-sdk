@@ -1,0 +1,15 @@
+{
+  "title": "Pay schedule",
+  "description": "You have assigned everyone to be on one pay schedule.",
+  "manageCta": "Manage",
+  "editCta": "Edit",
+  "labels": {
+    "name": "Name",
+    "frequency": "Frequency"
+  },
+  "autoPilot": {
+    "label": "AutoPilot",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  }
+}
