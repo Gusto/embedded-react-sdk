@@ -73,6 +73,19 @@ describe('TransitionCreation', () => {
         expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
       })
     })
+
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <TransitionCreation {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: /transition payroll/i, level: 2 }),
+        ).toBeInTheDocument()
+      })
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   describe('deductions and contributions', () => {

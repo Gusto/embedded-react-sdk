@@ -141,6 +141,18 @@ describe('TimeOffPolicyDetail', () => {
     })
   })
 
+  describe('custom className', () => {
+    it('applies custom className to the root element', async () => {
+      const { container } = renderComponent({ className: 'custom-class' })
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Vacation Policy' })).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+  })
+
   describe('navigation', () => {
     it('emits TIME_OFF_BACK_TO_LIST when back is clicked', async () => {
       const user = userEvent.setup()

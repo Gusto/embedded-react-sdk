@@ -243,6 +243,20 @@ describe('PolicyList', () => {
     })
   })
 
+  describe('custom className', () => {
+    it('applies custom className to the root element', async () => {
+      const { container } = renderWithProviders(
+        <PolicyList {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Time Off Policies')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+  })
+
   describe('empty state', () => {
     it('renders empty state when no policies exist', async () => {
       server.use(

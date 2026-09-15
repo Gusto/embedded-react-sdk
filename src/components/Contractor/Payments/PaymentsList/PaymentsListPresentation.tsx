@@ -15,6 +15,8 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import { WithUnstableFeature } from '@/contexts/UnstableFeaturesProvider/WithUnstableFeature'
 
 interface ContractorPaymentPaymentsListPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   numberOfMonths: number
   contractorPayments: ContractorPaymentGroupWithBlockers[]
   onCreatePayment: () => void
@@ -30,6 +32,7 @@ interface ContractorPaymentPaymentsListPresentationProps {
 
 /** @internal */
 export const PaymentsListPresentation = ({
+  className,
   contractorPayments,
   numberOfMonths,
   onCreatePayment,
@@ -99,7 +102,7 @@ export const PaymentsListPresentation = ({
   })
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1" styledAs="h2">
           {t('title')}

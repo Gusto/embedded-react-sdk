@@ -149,6 +149,39 @@ describe('ConfirmWireDetailsBanner', () => {
       })
     })
 
+    it('applies custom className', async () => {
+      const wireInRequest = createWireInRequest({
+        uuid: 'wire-1',
+        payment_uuid: 'payroll-uuid-1',
+      })
+
+      const payroll = createPayroll({
+        payroll_uuid: 'payroll-uuid-1',
+        pay_period: {
+          start_date: '2024-12-01',
+          end_date: '2024-12-15',
+          pay_schedule_uuid: 'schedule-1',
+        },
+      })
+
+      server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
+      server.use(handleGetPayrolls(() => HttpResponse.json([payroll])))
+
+      const { container } = renderWithProviders(
+        <ConfirmWireDetailsBanner {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Wire transfer details required for December 1.December 15, 2024 payroll/i,
+          ),
+        ).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+
     it('does not show unordered list for single payroll', async () => {
       const wireInRequest = createWireInRequest({
         uuid: 'wire-1',

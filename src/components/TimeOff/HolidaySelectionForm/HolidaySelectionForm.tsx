@@ -58,9 +58,9 @@ export function HolidaySelectionForm(props: HolidaySelectionFormProps) {
   return (
     <BaseComponent {...props}>
       {props.mode === 'edit' ? (
-        <EditRoot companyId={props.companyId} />
+        <EditRoot companyId={props.companyId} className={props.className} />
       ) : (
-        <CreateRoot companyId={props.companyId} />
+        <CreateRoot companyId={props.companyId} className={props.className} />
       )}
     </BaseComponent>
   )
@@ -68,6 +68,8 @@ export function HolidaySelectionForm(props: HolidaySelectionFormProps) {
 
 interface RootProps {
   companyId: string
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 function useHolidaySelection(initialKeys: Set<string>) {
@@ -114,7 +116,7 @@ function seedPolicyCache(
   )
 }
 
-function CreateRoot({ companyId }: RootProps) {
+function CreateRoot({ companyId, className }: RootProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
@@ -160,11 +162,12 @@ function CreateRoot({ companyId }: RootProps) {
       onContinue={handleContinue}
       onBack={handleBack}
       isPending={isPending}
+      className={className}
     />
   )
 }
 
-function EditRoot({ companyId }: RootProps) {
+function EditRoot({ companyId, className }: RootProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
@@ -231,6 +234,7 @@ function EditRoot({ companyId }: RootProps) {
       onContinue={handleContinue}
       onBack={handleBack}
       isPending={isPending}
+      className={className}
     />
   )
 }

@@ -91,6 +91,18 @@ describe('TerminateEmployee', () => {
 
       expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
     })
+
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <TerminateEmployee {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Terminate John Doe' })).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   describe('accessibility', () => {

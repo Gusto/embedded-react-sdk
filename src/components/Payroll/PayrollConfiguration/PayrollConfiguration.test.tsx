@@ -62,6 +62,18 @@ describe('PayrollConfiguration', () => {
         expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
       })
     })
+
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <PayrollConfiguration {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   describe('already processed payroll', () => {
