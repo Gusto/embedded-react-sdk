@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
@@ -32,6 +32,7 @@ import type { useDataViewPropReturn } from '@/components/Common/DataView/useData
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
@@ -199,6 +200,10 @@ const Root = ({
   const dateFormatter = useDateFormatter()
 
   const { Alert, Box, BoxHeader, Button, Heading } = useComponentContext()
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
+  const isSmallOrGreater = breakpoints.includes('small')
 
   // Error copy keyed by code, supplied to the hook once. Every bound field
   // resolves and renders its own message from this — the consumer never
@@ -401,32 +406,47 @@ const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
   }
 
+  const actions = (
+    <Flex
+      flexDirection={isSmallOrGreater ? 'row' : 'column'}
+      justifyContent={isSmallOrGreater ? 'flex-end' : 'normal'}
+      alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+      gap={12}
+    >
+      <Button variant="secondary" onClick={handleCancel} title={t('cancelCta')}>
+        {t('cancelCta')}
+      </Button>
+      <Button
+        onClick={() => {
+          void handleSave()
+        }}
+        title={t('saveCta')}
+        isLoading={form.status.isPending}
+      >
+        {t('saveCta')}
+      </Button>
+    </Flex>
+  )
+
   return (
-    <div className={styles.container}>
+    <div ref={containerRef} className={styles.container}>
       <BaseLayout error={form.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={form}>
           <Flex flexDirection="column" gap={24}>
-            <Flex justifyContent="space-between" alignItems="flex-start" gap={12}>
-              <Flex flexDirection="column" gap={8}>
+            <Flex
+              flexDirection={isSmallOrGreater ? 'row' : 'column'}
+              justifyContent="space-between"
+              alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+              gap={12}
+            >
+              <Flex flexDirection="column" alignItems="stretch" gap={8}>
                 <Heading as="h1" styledAs="h2">
                   {t('pageTitle', { employeeName })}
                 </Heading>
               </Flex>
-              <Flex justifyContent="flex-end" gap={12}>
-                <Button variant="secondary" onClick={handleCancel} title={t('cancelCta')}>
-                  {t('cancelCta')}
-                </Button>
-                <Button
-                  onClick={() => {
-                    void handleSave()
-                  }}
-                  title={t('saveCta')}
-                  isLoading={form.status.isPending}
-                >
-                  {t('saveCta')}
-                </Button>
-              </Flex>
+              {isSmallOrGreater && actions}
             </Flex>
+            {!isSmallOrGreater && actions}
 
             {(() => {
               const isMultiJob = Fields.jobs.length > 1
