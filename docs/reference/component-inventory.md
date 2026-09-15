@@ -24,7 +24,7 @@ replace specific components while keeping SDK defaults for the rest.
 
 To take full control of every UI component (and eliminate the React Aria dependency),
 pass a complete [ComponentsContextType](#componentscontexttype) to [GustoProviderCustomUIAdapter](providers.md#gustoprovidercustomuiadapter) instead.
-All properties are then required except `PaginationControl` and `PayrollLoading`,
+All properties are then required except `PaginationControl`, `PayrollLoading`, and `FieldCaption`,
 which fall back to built-in SDK implementations when omitted.
 
 ### Examples
@@ -115,6 +115,7 @@ function App() {
 | `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
 | `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
 | `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
+| `FieldCaption?` | `FunctionComponent`\<[`FieldCaptionProps`](#fieldcaptionprops)\> | Label or legend caption for form controls, including the optional/required indicator. Defaults to the SDK's built-in caption UI when omitted. |
 | `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
 | `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 
@@ -653,6 +654,26 @@ Renders a modal confirmation dialog with a primary action and a cancel action.
 | `onPrimaryActionClick?` | () => `void` | | Callback function called when the primary action button is clicked |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the dialog |
 | `title?` | `ReactNode` | | Optional title content to be displayed at the top of the dialog |
+
+***
+
+<a id="fieldcaptionprops"></a>
+
+### FieldCaptionProps
+
+Props your `FieldCaption` implementation must accept from the component adapter.
+Renders the label or legend caption for a form control, including the optional/required indicator.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children` | `ReactNode` | Caption content rendered inside the label or legend element. |
+| `as?` | `"label"` \| `"legend"` | HTML element to render as — `label` for individual inputs, `legend` for fieldsets. |
+| `className?` | `string` | Additional class names appended to the root element. |
+| `htmlFor?` | `string` | Associates a `label` with an input by id. Ignored when `as` is `legend`. |
+| `isRequired?` | `boolean` | When false, appends a localized optional indicator after the caption. |
+| `isVisuallyHidden?` | `boolean` | Visually hides the caption while keeping it available to assistive technology. |
 
 ***
 
