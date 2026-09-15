@@ -55,7 +55,7 @@ export function SignatureForm(props: SignatureFormProps) {
   )
 }
 
-function Root({ formId, children, dictionary }: SignatureFormProps) {
+function Root({ formId, children, dictionary, className }: SignatureFormProps) {
   useComponentDictionary('Company.SignatureForm', dictionary)
   useI18n('Company.SignatureForm')
   const { t } = useTranslation('Company.SignatureForm')
@@ -87,7 +87,7 @@ function Root({ formId, children, dictionary }: SignatureFormProps) {
   return (
     <BaseLayout error={hookResult.errorHandling.errors}>
       <SDKFormProvider formHookResult={hookResult}>
-        <FormLayout onSubmit={handleFormSubmit}>
+        <FormLayout onSubmit={handleFormSubmit} className={className}>
           <Flex flexDirection="column" gap={32} alignItems="stretch">
             {children ?? (
               <>

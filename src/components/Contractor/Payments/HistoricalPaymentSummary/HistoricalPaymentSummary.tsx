@@ -48,7 +48,13 @@ export function HistoricalPaymentSummary(props: HistoricalPaymentSummaryProps) {
   )
 }
 
-function Root({ paymentGroupId, companyId, dictionary, onEvent }: HistoricalPaymentSummaryProps) {
+function Root({
+  paymentGroupId,
+  companyId,
+  dictionary,
+  onEvent,
+  className,
+}: HistoricalPaymentSummaryProps) {
   useUnstableFeature('historicalPayments', { throwIfDisabled: true })
   useI18n('Contractor.Payments.HistoricalPaymentSummary')
   useComponentDictionary('Contractor.Payments.HistoricalPaymentSummary', dictionary)
@@ -78,7 +84,7 @@ function Root({ paymentGroupId, companyId, dictionary, onEvent }: HistoricalPaym
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <Alert status="success" label={t('successTitle')}>
         <Text>
           {t('successMessage', {

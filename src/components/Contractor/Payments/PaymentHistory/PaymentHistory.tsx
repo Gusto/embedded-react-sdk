@@ -55,7 +55,7 @@ export function PaymentHistory(props: PaymentHistoryProps) {
   )
 }
 
-const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) => {
+const Root = ({ paymentId, dictionary, onEvent, className }: PaymentHistoryProps) => {
   useComponentDictionary('Contractor.Payments.PaymentHistory', dictionary)
   const { t } = useTranslation('Contractor.Payments.PaymentHistory')
   const { baseSubmitHandler } = useBase()
@@ -96,14 +96,13 @@ const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) => {
   }
 
   return (
-    <>
-      <PaymentHistoryPresentation
-        paymentGroup={paymentGroupResponse.contractorPaymentGroup}
-        contractors={contractors}
-        isCancelling={isCancelling}
-        onViewPayment={handleViewPayment}
-        onCancelPayment={handleCancelPayment}
-      />
-    </>
+    <PaymentHistoryPresentation
+      className={className}
+      paymentGroup={paymentGroupResponse.contractorPaymentGroup}
+      contractors={contractors}
+      isCancelling={isCancelling}
+      onViewPayment={handleViewPayment}
+      onCancelPayment={handleCancelPayment}
+    />
   )
 }

@@ -47,7 +47,7 @@ interface RemoveDialogTarget {
   name: string
 }
 
-function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) {
+function Root({ companyId, defaultTab = 'holidays', className }: HolidayPolicyDetailProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
@@ -213,6 +213,7 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
       onDismissAlert={() => {
         setSuccessAlert(null)
       }}
+      className={className}
     />
   )
 }

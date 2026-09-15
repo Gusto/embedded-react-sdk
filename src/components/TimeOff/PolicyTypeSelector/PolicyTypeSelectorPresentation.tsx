@@ -17,6 +17,7 @@ export function PolicyTypeSelectorPresentation({
   onCancel,
   defaultPolicyType,
   holidayPolicyExists = false,
+  className,
 }: PolicyTypeSelectorPresentationProps) {
   useI18n('Company.TimeOff.SelectPolicyType')
   const { t } = useTranslation('Company.TimeOff.SelectPolicyType')
@@ -61,7 +62,11 @@ export function PolicyTypeSelectorPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm
+        aria-labelledby={headingId}
+        onSubmit={formMethods.handleSubmit(handleSubmit)}
+        className={className}
+      >
         <Flex flexDirection="column" gap={24}>
           <Flex flexDirection="column" gap={4}>
             <Heading as="h2" id={headingId}>

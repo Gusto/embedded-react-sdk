@@ -83,4 +83,6 @@ export interface PolicyConfigurationFormPresentationProps {
   isPending?: boolean
   /** Restricts the accrual method options when editing a completed policy. */
   lockedAccrualCategory?: LockedAccrualCategory
+  /** CSS class name applied to the root element. */
+  className?: string
 }

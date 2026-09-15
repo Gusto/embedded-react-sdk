@@ -56,6 +56,7 @@ function Root({
   startDate,
   endDate,
   payScheduleUuid,
+  className,
 }: TransitionCreationProps) {
   useComponentDictionary('Payroll.TransitionCreation', dictionary)
   useI18n('Payroll.TransitionCreation')
@@ -150,6 +151,7 @@ function Root({
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
         <TransitionCreationPresentation
+          className={className}
           startDate={startDate}
           endDate={endDate}
           payScheduleName={payScheduleName}

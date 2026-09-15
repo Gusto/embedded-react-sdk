@@ -88,6 +88,21 @@ describe('SignatureForm', () => {
         expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
       })
     })
+
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <SignatureForm
+          formId="form-123"
+          companyId="company-123"
+          onEvent={mockOnEvent}
+          className="custom-class"
+        />,
+      )
+
+      await waitFor(() => {
+        expect(container.querySelector('.custom-class')).toBeInTheDocument()
+      })
+    })
   })
 
   describe('submission', () => {

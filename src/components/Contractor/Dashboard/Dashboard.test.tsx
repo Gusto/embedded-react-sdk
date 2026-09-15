@@ -53,6 +53,15 @@ describe('Dashboard', () => {
     expect(await screen.findByText('Address')).toBeInTheDocument()
   })
 
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <Dashboard contractorId="contractor-123" onEvent={onEvent} className="custom-class" />,
+    )
+
+    await screen.findByRole('heading', { name: 'Ada Lovelace' })
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   it('includes the middle initial in the header when one is on file', async () => {
     server.use(
       handleGetContractor(() => HttpResponse.json({ ...contractorFixture, middle_initial: 'M' })),

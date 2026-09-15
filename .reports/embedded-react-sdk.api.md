@@ -337,7 +337,7 @@ type AccrualMethod_2 = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
 type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 
 // @public
-function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
+function AddEmployeesHoliday(input: AddEmployeesHolidayProps): JSX;
 
 // @public
 interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
@@ -345,7 +345,7 @@ interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
+function AddEmployeesToPolicy(input: AddEmployeesToPolicyProps): JSX;
 
 // @public
 interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
@@ -3340,6 +3340,7 @@ interface HolidayPolicyDetailEmployee extends EmployeeTableItem {
 interface HolidayPolicyDetailPresentationProps {
     actions?: ReactNode[];
     backLabel: string;
+    className?: string;
     employees: PolicyDetailEmployeeTableData<HolidayPolicyDetailEmployee>;
     holidays: HolidayItem[];
     onAddEmployee?: () => void;
@@ -4582,6 +4583,7 @@ function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX
 // @public
 interface PolicySettingsPresentationProps {
     accrualMethod: PolicySettingsAccrualMethod;
+    className?: string;
     defaultValues?: Partial<PolicySettingsFormData>;
     editingPolicyName?: string;
     isPending?: boolean;
@@ -5814,6 +5816,7 @@ function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationP
 interface TimeOffPolicyDetailPresentationBaseProps {
     actions?: ReactNode[];
     backLabel: string;
+    className?: string;
     employees: PolicyDetailEmployeeTableData<TimeOffPolicyDetailEmployee>;
     onAddEmployee?: () => void;
     onBack: () => void;

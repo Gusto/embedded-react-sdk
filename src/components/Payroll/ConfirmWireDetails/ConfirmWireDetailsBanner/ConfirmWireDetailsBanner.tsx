@@ -32,6 +32,7 @@ const Root = ({
   dictionary,
   confirmationAlert,
   onStartWireTransfer,
+  className,
 }: ConfirmWireDetailsBannerProps) => {
   useComponentDictionary('Payroll.ConfirmWireDetailsBanner', dictionary)
   useI18n('Payroll.ConfirmWireDetailsBanner')
@@ -148,29 +149,31 @@ const Root = ({
   }
 
   return (
-    <Flex flexDirection="column" gap={16}>
-      {shouldShowConfirmationAlert && (
-        <Alert
-          status="success"
-          label={confirmationAlert.title}
-          onDismiss={() => {
-            setIsConfirmationAlertDismissed(true)
-          }}
-        >
-          {confirmationAlert.content}
-        </Alert>
-      )}
-      {shouldShowBanner && (
-        <Banner status="warning" title={getBannerTitle()}>
-          <Flex flexDirection="column" gap={16} alignItems="flex-start">
-            <div>{t('banner.description')}</div>
-            {getBannerContent()}
-            <Button variant="secondary" onClick={onStartWireTransfer}>
-              {t('cta.startWireTransfer')}
-            </Button>
-          </Flex>
-        </Banner>
-      )}
-    </Flex>
+    <section className={className}>
+      <Flex flexDirection="column" gap={16}>
+        {shouldShowConfirmationAlert && (
+          <Alert
+            status="success"
+            label={confirmationAlert.title}
+            onDismiss={() => {
+              setIsConfirmationAlertDismissed(true)
+            }}
+          >
+            {confirmationAlert.content}
+          </Alert>
+        )}
+        {shouldShowBanner && (
+          <Banner status="warning" title={getBannerTitle()}>
+            <Flex flexDirection="column" gap={16} alignItems="flex-start">
+              <div>{t('banner.description')}</div>
+              {getBannerContent()}
+              <Button variant="secondary" onClick={onStartWireTransfer}>
+                {t('cta.startWireTransfer')}
+              </Button>
+            </Flex>
+          </Banner>
+        )}
+      </Flex>
+    </section>
   )
 }

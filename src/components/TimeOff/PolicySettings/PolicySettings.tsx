@@ -124,7 +124,7 @@ function buildUpdateRequestBody(
   }
 }
 
-function Root({ policyId, mode }: PolicySettingsProps) {
+function Root({ policyId, mode, className }: PolicySettingsProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
@@ -190,6 +190,7 @@ function Root({ policyId, mode }: PolicySettingsProps) {
       mode={mode}
       editingPolicyName={mode === 'edit' ? policy.name : undefined}
       isPending={isPending}
+      className={className}
     />
   )
 }

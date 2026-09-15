@@ -127,6 +127,8 @@ export interface TimeOffPolicyDetailPresentationBaseProps {
   successAlert?: string
   /** Called when the success alert is dismissed. */
   onDismissAlert?: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /**
@@ -154,6 +156,7 @@ export interface TimeOffPolicyDetailPresentationBaseProps {
  * | `removeDialog` | State for the employee removal confirmation dialog. |
  * | `successAlert` | Optional success message rendered as a dismissible alert. |
  * | `onDismissAlert` | Called when the success alert is dismissed. |
+ * | `className` | CSS class name applied to the root element. |
  *
  * @public
  */
