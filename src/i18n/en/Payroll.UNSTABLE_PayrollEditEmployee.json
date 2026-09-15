@@ -26,6 +26,7 @@
     "remaining": "{{balance}} remaining"
   },
   "additionalEarningsTitle": "Additional earnings",
+  "additionalEarningsWorkweekAlert": "Placeholder: additional earnings are entered by work week so overtime pay is calculated correctly.",
   "reimbursementTitle": "Reimbursements",
   "reimbursementDescriptionLabel": "Description",
   "reimbursementDescriptionPlaceholder": "e.g., Office supplies",

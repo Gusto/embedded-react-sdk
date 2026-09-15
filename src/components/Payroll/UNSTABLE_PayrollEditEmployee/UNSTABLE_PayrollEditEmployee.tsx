@@ -283,6 +283,7 @@ const Root = ({
       adornmentStart?: string
       adornmentEnd?: string
       footer?: React.ReactNode
+      splitAlert?: React.ReactNode
     },
   ) => {
     const {
@@ -294,6 +295,7 @@ const Root = ({
       adornmentStart,
       adornmentEnd,
       footer,
+      splitAlert,
     } = options
     const split = isSplitByWorkweek(section)
     const firstWeekStart = form.data.workweeks[0]?.startDate ?? ''
@@ -344,6 +346,7 @@ const Root = ({
 
     return (
       <Box header={<BoxHeader title={title} />} withPadding={false} footer={footer}>
+        {split && splitAlert ? <div className={styles.splitAlert}>{splitAlert}</div> : null}
         <DataView label={label} isWithinBox columns={columns} data={rows} />
       </Box>
     )
@@ -505,6 +508,13 @@ const Root = ({
               valueColumnLabel: t('amountColumn'),
               labelFor: earningLabel,
               adornmentStart: '$',
+              splitAlert: (
+                <Alert
+                  status="info"
+                  label={t('additionalEarningsWorkweekAlert')}
+                  disableScrollIntoView
+                />
+              ),
             })}
 
             {renderTimeOffSection(Fields.timeOff, {

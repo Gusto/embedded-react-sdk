@@ -8431,6 +8431,8 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
+    /** @defaultValue `"Placeholder: additional earnings are entered by work week so overtime pay is calculated correctly."` */
+    additionalEarningsWorkweekAlert: string
     /** @defaultValue `"Reimbursements"` */
     reimbursementTitle: string
     /** @defaultValue `"Description"` */
