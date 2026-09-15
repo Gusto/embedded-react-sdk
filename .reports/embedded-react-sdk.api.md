@@ -337,7 +337,7 @@ type AccrualMethod_2 = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
 type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 
 // @public
-function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
+function AddEmployeesHoliday(input: AddEmployeesHolidayProps): JSX;
 
 // @public
 interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
@@ -345,7 +345,7 @@ interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
+function AddEmployeesToPolicy(input: AddEmployeesToPolicyProps): JSX;
 
 // @public
 interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
@@ -1403,6 +1403,7 @@ export const componentEvents: {
     readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly CONTRACTOR_VIEW: "contractor/view";
+    readonly CONTRACTOR_RETURN_TO_LIST: "contractor/returnToList";
     readonly CONTRACTOR_DISMISS: "contractor/dismiss";
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
@@ -1611,6 +1612,7 @@ export interface ComponentsContextType {
     DateRangePicker: FunctionComponent<DateRangePickerProps>;
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
+    FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
     FormBoxHeader: FunctionComponent<FormBoxHeaderProps>;
@@ -1820,6 +1822,7 @@ export const ContractorDetailsErrorCodes: {
     readonly INVALID_EMAIL: "INVALID_EMAIL";
     readonly INVALID_SSN: "INVALID_SSN";
     readonly INVALID_EIN: "INVALID_EIN";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -1845,6 +1848,9 @@ export interface ContractorDetailsFormFields {
     WageType: ComponentType<ContractorWageTypeFieldProps>;
     WorkState: ComponentType<ContractorWorkStateFieldProps> | undefined;
 }
+
+// @public
+export type ContractorDetailsMaxHourlyRateValidation = typeof ContractorDetailsErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
@@ -1879,13 +1885,21 @@ export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFie
 export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
-export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation | ContractorDetailsMaxHourlyRateValidation>>;
 
 // @public
 export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
 function ContractorList(input: ContractorListProps): JSX;
+
+// @public
+const ContractorListFlow: (input: ContractorListFlowProps) => JSX;
+
+// @public
+interface ContractorListFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
 
 // @public
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
@@ -1898,6 +1912,8 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        ContractorListFlow,
+        ContractorListFlowProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,
@@ -2010,6 +2026,7 @@ export type ContractorPayErrorCode = (typeof ContractorPayErrorCodes)[keyof type
 // @public
 export const ContractorPayErrorCodes: {
     readonly REQUIRED: "REQUIRED";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -2028,7 +2045,10 @@ export interface ContractorPayFormFields {
 }
 
 // @public
-export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation>>;
+export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation | ContractorPayMaxHourlyRateValidation>>;
+
+// @public
+export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
@@ -3066,6 +3086,16 @@ interface FederalTaxesProps_3 extends BaseComponentInterface<'Company.FederalTax
 export type FederalTaxesRequiredValidation = typeof FederalTaxesErrorCodes.REQUIRED;
 
 // @public
+export interface FieldCaptionProps {
+    as?: 'label' | 'legend';
+    children: ReactNode;
+    className?: string;
+    htmlFor?: string;
+    isRequired?: boolean;
+    isVisuallyHidden?: boolean;
+}
+
+// @public
 export interface FieldMetadata {
     hasRedactedValue?: boolean;
     isDisabled?: boolean;
@@ -3321,6 +3351,7 @@ interface HolidayPolicyDetailEmployee extends EmployeeTableItem {
 interface HolidayPolicyDetailPresentationProps {
     actions?: ReactNode[];
     backLabel: string;
+    className?: string;
     employees: PolicyDetailEmployeeTableData<HolidayPolicyDetailEmployee>;
     holidays: HolidayItem[];
     onAddEmployee?: () => void;
@@ -4563,6 +4594,7 @@ function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX
 // @public
 interface PolicySettingsPresentationProps {
     accrualMethod: PolicySettingsAccrualMethod;
+    className?: string;
     defaultValues?: Partial<PolicySettingsFormData>;
     editingPolicyName?: string;
     isPending?: boolean;
@@ -5795,6 +5827,7 @@ function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationP
 interface TimeOffPolicyDetailPresentationBaseProps {
     actions?: ReactNode[];
     backLabel: string;
+    className?: string;
     employees: PolicyDetailEmployeeTableData<TimeOffPolicyDetailEmployee>;
     onAddEmployee?: () => void;
     onBack: () => void;

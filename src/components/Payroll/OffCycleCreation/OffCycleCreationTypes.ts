@@ -45,6 +45,10 @@ export interface OffCycleCreationPresentationProps {
   minCheckDate: Date
   /** Earliest selectable payment date when the payroll is check-only (today). */
   minCheckOnlyDate: Date
+  /** Latest selectable date for start date, end date, and payment date (1 year from today). */
+  maxDate: Date
+  /** Earliest selectable start/end date for the pay period (1 year before today). */
+  minPayPeriodDate: Date
   /** Current tax withholding configuration shown in the table. */
   taxWithholdingConfig: OffCycleTaxWithholdingConfig
   /** Whether the tax withholding edit modal is open. */
@@ -55,4 +59,6 @@ export interface OffCycleCreationPresentationProps {
   onTaxWithholdingModalDone: (config: OffCycleTaxWithholdingConfig) => void
   /** Fires when the user dismisses the tax withholding modal without saving. */
   onTaxWithholdingModalCancel: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }

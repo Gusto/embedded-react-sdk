@@ -5,6 +5,7 @@ import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { useBaseSubmit } from './useBaseSubmit'
+import { GENERIC_API_ERROR_MESSAGE } from '@/types/sdkError'
 
 const createMockHttpMeta = () => ({
   response: new Response('', { status: 404 }),
@@ -29,6 +30,28 @@ describe('useBaseSubmit', () => {
       expect(result.current.error?.category).toBe('api_error')
       expect(result.current.error?.raw).toBe(apiError)
       expect(result.current.error?.httpStatus).toBe(404)
+    })
+
+    it('sanitizes a raw HTML gateway body (502) into a generic message', async () => {
+      const { result } = renderHook(() => useBaseSubmit())
+
+      const htmlBody =
+        '<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>nginx</center></body></html>'
+      const apiError = new APIError('', {
+        response: new Response(htmlBody, { status: 502, headers: { 'content-type': 'text/html' } }),
+        request: new Request('https://api.gusto.com/test'),
+        body: htmlBody,
+      })
+
+      await act(async () => {
+        await result.current.baseSubmitHandler({}, () => {
+          throw apiError
+        })
+      })
+
+      expect(result.current.error?.category).toBe('api_error')
+      expect(result.current.error?.httpStatus).toBe(502)
+      expect(result.current.error?.message).toBe(GENERIC_API_ERROR_MESSAGE)
     })
 
     it('catches UnprocessableEntityError and extracts field errors', async () => {

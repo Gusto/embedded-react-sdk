@@ -5,6 +5,7 @@ import {
   PayrollEditEmployeeErrorCodes,
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_METHOD_VALUES,
+  reimbursementDraftSchema,
   type PayrollEditEmployeeFormData,
 } from './payrollEditEmployeeSchema'
 
@@ -15,6 +16,7 @@ const baseFormData: PayrollEditEmployeeFormData = {
   timeOff: {},
   finalPayout: {},
   reimbursements: [],
+  reimbursementDraft: { description: '', amount: '' },
 }
 
 describe('createPayrollEditEmployeeSchema', () => {
@@ -100,14 +102,95 @@ describe('createPayrollEditEmployeeSchema', () => {
     expect(result.success).toBe(false)
   })
 
-  it('rejects a negative reimbursement amount', () => {
+  it('treats committed reimbursement rows as presentational passthrough (no amount validation)', () => {
     const result = schema.safeParse({
       ...baseFormData,
       reimbursements: [{ uuid: 'r-1', description: 'Travel', amount: '-25', recurring: false }],
     })
 
+    expect(result.success).toBe(true)
+  })
+})
+
+describe('per-row workweek completeness', () => {
+  const schema = createPayrollEditEmployeeSchema()
+
+  it('is valid when a split row has every cell blank (untouched)', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '', '2025-01-08': '' } } },
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('is valid when a split row has every cell filled', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '40', '2025-01-08': '32.5' } } },
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a split row with some cells filled and others blank, flagging each blank cell', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '40', '2025-01-08': '' } } },
+    })
+
     expect(result.success).toBe(false)
-    expect(result.error?.issues[0]?.message).toBe(PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT)
+    const issue = result.error?.issues.find(
+      i => i.path.join('.') === 'hours.job-1.Regular Hours.2025-01-08',
+    )
+    expect(issue?.message).toBe(PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK)
+  })
+
+  it('applies the same rule to additionalEarnings', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      additionalEarnings: { 'job-1': { Bonus: { '2025-01-01': '', '2025-01-08': '100' } } },
+    })
+
+    expect(result.success).toBe(false)
+    const issue = result.error?.issues.find(
+      i => i.path.join('.') === 'additionalEarnings.job-1.Bonus.2025-01-01',
+    )
+    expect(issue?.message).toBe(PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK)
+  })
+
+  it('is a no-op for a collapsed row (a single workweek key), whether blank or filled', () => {
+    expect(
+      schema.safeParse({
+        ...baseFormData,
+        hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '' } } },
+      }).success,
+    ).toBe(true)
+    expect(
+      schema.safeParse({
+        ...baseFormData,
+        hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '40' } } },
+      }).success,
+    ).toBe(true)
+  })
+})
+
+describe('reimbursementDraftSchema', () => {
+  it('accepts a positive amount', () => {
+    const result = reimbursementDraftSchema.safeParse({ description: 'Travel', amount: '25' })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a zero, negative, or blank amount with the REIMBURSEMENT_AMOUNT code', () => {
+    for (const amount of ['0', '-25', '']) {
+      const result = reimbursementDraftSchema.safeParse({ description: 'Travel', amount })
+
+      expect(result.success).toBe(false)
+      expect(result.error?.issues[0]?.message).toBe(
+        PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
+      )
+    }
   })
 })
 

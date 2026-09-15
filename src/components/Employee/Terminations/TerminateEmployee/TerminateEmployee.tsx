@@ -96,7 +96,7 @@ export function TerminateEmployee(props: TerminateEmployeeProps) {
   )
 }
 
-const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => {
+const Root = ({ employeeId, companyId, dictionary, className }: TerminateEmployeeProps) => {
   useComponentDictionary('Employee.Terminations.TerminateEmployee', dictionary)
   useI18n('Employee.Terminations.TerminateEmployee')
 
@@ -260,6 +260,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
       onSubmit={handleSubmit}
       onCancel={handleCancel}
       isLoading={isPending}
+      className={className}
     />
   )
 }

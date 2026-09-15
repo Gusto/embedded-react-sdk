@@ -257,6 +257,7 @@ export type {
   ContractorDetailsErrorCode,
   ContractorDetailsFormData,
   ContractorDetailsRequiredValidation,
+  ContractorDetailsMaxHourlyRateValidation,
   ContractorDetailsNameValidation,
   ContractorDetailsEmailValidation,
   ContractorDetailsSsnValidation,
@@ -336,6 +337,7 @@ export type {
   ContractorPayFormData,
   ContractorPayFormField,
   RequiredValidation as ContractorPayRequiredValidation,
+  MaxHourlyRateValidation as ContractorPayMaxHourlyRateValidation,
   WageTypeFieldProps as ContractorPayWageTypeFieldProps,
   HourlyRateFieldProps as ContractorPayHourlyRateFieldProps,
 } from '@/components/Contractor/Compensation/shared/useContractorPayForm'

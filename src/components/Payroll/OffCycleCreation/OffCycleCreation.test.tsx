@@ -102,6 +102,16 @@ describe('OffCycleCreation', () => {
       expect(screen.getByText('Correction payment')).toBeInTheDocument()
     })
 
+    it('applies custom className', async () => {
+      const { container } = renderComponent({ className: 'custom-class' })
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /new off-cycle payroll/i })).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+
     it('renders the pay period date fields', async () => {
       renderComponent()
 
@@ -300,7 +310,7 @@ describe('OffCycleCreation', () => {
       today.setHours(0, 0, 0, 0)
 
       const pastDate = new Date('2020-01-01')
-      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, 'bonus', today)
+      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, today)
 
       const result = schema.safeParse({
         isCheckOnly: true,
@@ -316,6 +326,27 @@ describe('OffCycleCreation', () => {
         )
         expect(checkDateErrors.length).toBeGreaterThan(0)
       }
+    })
+
+    // Legacy allows a future pay-period start date for both Bonus and Correction (SDK-1275) --
+    // the schema no longer takes a payrollType to branch on, so this covers both.
+    it('allows a future start date (schema)', () => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      const futureDate = new Date(today)
+      futureDate.setDate(futureDate.getDate() + 30)
+
+      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, today)
+
+      const result = schema.safeParse({
+        isCheckOnly: false,
+        startDate: futureDate,
+        endDate: futureDate,
+        checkDate: futureDate,
+      })
+
+      expect(result.success).toBe(true)
     })
 
     it('does not emit an event when form has validation errors', async () => {

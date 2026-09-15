@@ -89,6 +89,34 @@ describe('CompensationEditForm', () => {
     )
   })
 
+  it('blocks an hourly rate above the server cap (regression for SDK-1297)', async () => {
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json({
+        uuid: 'contractor-123',
+        type: 'Individual',
+        is_active: true,
+        version: 'v2',
+        wage_type: 'Hourly',
+        hourly_rate: '50.00',
+        file_new_hire_report: false,
+      }),
+    )
+    server.use(handleUpdateContractor(updateResolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<CompensationEditForm contractorId="contractor-123" onEvent={onEvent} />)
+
+    const rateField = await screen.findByLabelText('Hourly rate')
+    await user.clear(rateField)
+    await user.type(rateField, '1000000000001')
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.getByText("Hourly rate can't exceed $1,000,000,000,000.00")).toBeInTheDocument()
+    })
+    expect(updateResolver).not.toHaveBeenCalled()
+  })
+
   it('fires CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED when Cancel is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<CompensationEditForm contractorId="contractor-123" onEvent={onEvent} />)

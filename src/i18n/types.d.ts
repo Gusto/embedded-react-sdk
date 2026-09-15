@@ -2473,6 +2473,8 @@ export namespace Translations {
       validations: {
         /** @defaultValue `"Enter a valid hourly rate"` */
         hourlyRate: string
+        /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+        hourlyRateMax: string
       }
     }
   }
@@ -2632,9 +2634,9 @@ export namespace Translations {
       /** @defaultValue `"Profile updated"` */
       successAlert: string
       validations: {
-        /** @defaultValue `"First name is required"` */
+        /** @defaultValue `"Enter a valid first name"` */
         firstName: string
-        /** @defaultValue `"Last name is required"` */
+        /** @defaultValue `"Enter a valid last name"` */
         lastName: string
         /** @defaultValue `"Business name is required"` */
         businessName: string
@@ -2655,6 +2657,8 @@ export namespace Translations {
     title: string
     /** @defaultValue `"Add contractor"` */
     addContractorCta: string
+    /** @defaultValue `"Back to contractors"` */
+    backToListCta: string
     /** @defaultValue `"Contractor status tabs"` */
     tabsLabel: string
     tabs: {
@@ -3605,6 +3609,8 @@ export namespace Translations {
       einFormat: string
       /** @defaultValue `"Hourly rate is required for hourly contractors"` */
       hourlyRate: string
+      /** @defaultValue `"Hourly rate can't exceed $1,000,000,000,000.00"` */
+      hourlyRateMax: string
       /** @defaultValue `"Start date is required"` */
       startDate: string
     }
@@ -7033,8 +7039,6 @@ export namespace Translations {
       checkDateRequired: string
       /** @defaultValue `"End date must be on or after start date"` */
       endDateAfterStart: string
-      /** @defaultValue `"Start date cannot be in the future for correction payrolls"` */
-      startDateNotFuture: string
       /** @defaultValue `"Payment date must be at least {{count}} business day from today for direct deposit"` */
       checkDateAchLeadTime_one: string
       /** @defaultValue `"Payment date must be at least {{count}} business days from today for direct deposit"` */
@@ -8381,14 +8385,14 @@ export namespace Translations {
     pageTitle: string
     /** @defaultValue `"{{firstName}} {{lastName}}"` */
     breadcrumbLabel: string
-    /** @defaultValue `"Gross pay (excluding reimbursements)"` */
-    grossPayLabel: string
-    /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
-    grossPayLabelMobile: string
     /** @defaultValue `"Regular and overtime hours"` */
     regularHoursTitle: string
     /** @defaultValue `"Regular hours"` */
     regularHoursTitleWithoutOvertime: string
+    /** @defaultValue `"Add overtime"` */
+    addOvertimeCta: string
+    /** @defaultValue `"When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly."` */
+    overtimeWorkweekAlert: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */
@@ -8496,6 +8500,8 @@ export namespace Translations {
       reimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Enter an amount for every workweek"` */
+      requiredWorkweek: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */

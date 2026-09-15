@@ -350,7 +350,7 @@ Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`.
 {form.Fields.HourlyRate && (
   <form.Fields.HourlyRate
     label="Hourly rate"
-    validationMessages={{ REQUIRED: '…' }}
+    validationMessages={{ REQUIRED: '…', MAX_HOURLY_RATE: '…' }}
   />
 )}
 ```
@@ -359,7 +359,7 @@ Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`.
 
 #### ContractorHourlyRateFieldProps
 
-> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../hooks.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation) \| [`ContractorDetailsMaxHourlyRateValidation`](#contractordetailsmaxhourlyratevalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
 
@@ -367,7 +367,7 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation) \| [`ContractorDetailsMaxHourlyRateValidation`](#contractordetailsmaxhourlyratevalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../hooks.md#numberinputhookfieldprops)._
 
@@ -683,7 +683,7 @@ Format-validation error code emitted by the `ssn` field of [useContractorDetails
 
 ### ContractorDetailsErrorCode
 
-> **ContractorDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"INVALID_EIN"`
+> **ContractorDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"INVALID_EIN"` \| `"MAX_HOURLY_RATE"`
 
 Union of validation error code strings emitted by the contractor details
 form schema.
@@ -708,6 +708,7 @@ hook.
 | `INVALID_EMAIL` | `"INVALID_EMAIL"` |
 | `INVALID_NAME` | `"INVALID_NAME"` |
 | `INVALID_SSN` | `"INVALID_SSN"` |
+| `MAX_HOURLY_RATE` | `"MAX_HOURLY_RATE"` |
 | `REQUIRED` | `"REQUIRED"` |
 
 ***
@@ -761,6 +762,16 @@ Shape of the values managed by the contractor details form.
 | `type` | `"Business"` \| `"Individual"` |
 | `wageType` | `"Fixed"` \| `"Hourly"` |
 | `workState` | `string` |
+
+***
+
+<a id="contractordetailsmaxhourlyratevalidation"></a>
+
+### ContractorDetailsMaxHourlyRateValidation
+
+> **ContractorDetailsMaxHourlyRateValidation** = `"MAX_HOURLY_RATE"`
+
+Validation code for an hourly rate above the server's maximum cap.
 
 ***
 

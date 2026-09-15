@@ -66,8 +66,6 @@ export function CodePanel({ onClose }: CodePanelProps) {
           <Highlight code={snippet} language="tsx" theme={prismTheme}>
             {({ className, style, tokens, getLineProps, getTokenProps }) => {
               const { background, backgroundColor, ...codeStyle } = style
-              void background
-              void backgroundColor
               return (
                 <pre className={`${styles.code} ${className}`} style={codeStyle}>
                   {tokens.map((line, i) => {

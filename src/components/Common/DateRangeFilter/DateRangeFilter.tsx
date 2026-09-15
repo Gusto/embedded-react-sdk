@@ -76,7 +76,10 @@ export const DateRangeFilter = ({
   }, [])
 
   const handleRangeChange = useCallback((range: DateRange | null) => {
-    setDraftRange(range)
+    // A custom DateRangePicker adapter could emit a one-sided range at runtime
+    // even though the type guarantees both sides -- never apply a partial one.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    setDraftRange(range?.start && range.end ? range : null)
   }, [])
 
   const filterDateLabel = useMemo(() => {

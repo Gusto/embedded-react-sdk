@@ -16,6 +16,8 @@ export interface DismissalPayPeriodSelectionPresentationProps {
   onSubmit: () => void
   /** Whether the submit action is in flight. */
   isPending: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -25,6 +27,7 @@ export function DismissalPayPeriodSelectionPresentation({
   onSelectPeriod,
   onSubmit,
   isPending,
+  className,
 }: DismissalPayPeriodSelectionPresentationProps) {
   useI18n('Payroll.Dismissal')
   const { t } = useTranslation('Payroll.Dismissal')
@@ -34,41 +37,45 @@ export function DismissalPayPeriodSelectionPresentation({
 
   if (hasNoPayPeriods) {
     return (
-      <Flex flexDirection="column" gap={24}>
-        <Flex flexDirection="column" gap={4}>
-          <Heading as="h2">{t('pageTitle')}</Heading>
+      <section className={className}>
+        <Flex flexDirection="column" gap={24}>
+          <Flex flexDirection="column" gap={4}>
+            <Heading as="h2">{t('pageTitle')}</Heading>
+          </Flex>
+          <Alert status="info" label={t('emptyState')} />
         </Flex>
-        <Alert status="info" label={t('emptyState')} />
-      </Flex>
+      </section>
     )
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={4}>
-        <Heading as="h2">{t('pageTitle')}</Heading>
-        <Text variant="supporting">{t('pageDescription')}</Text>
+    <section className={className}>
+      <Flex flexDirection="column" gap={24}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('pageTitle')}</Heading>
+          <Text variant="supporting">{t('pageDescription')}</Text>
+        </Flex>
+
+        <Select
+          label={t('selectLabel')}
+          options={payPeriodOptions}
+          value={selectedPeriodKey}
+          onChange={onSelectPeriod}
+          placeholder={t('selectPlaceholder')}
+          isRequired
+        />
+
+        <ActionsLayout>
+          <Button
+            variant="primary"
+            onClick={onSubmit}
+            isLoading={isPending}
+            isDisabled={isPending || selectedPeriodKey === undefined}
+          >
+            {t('continueCta')}
+          </Button>
+        </ActionsLayout>
       </Flex>
-
-      <Select
-        label={t('selectLabel')}
-        options={payPeriodOptions}
-        value={selectedPeriodKey}
-        onChange={onSelectPeriod}
-        placeholder={t('selectPlaceholder')}
-        isRequired
-      />
-
-      <ActionsLayout>
-        <Button
-          variant="primary"
-          onClick={onSubmit}
-          isLoading={isPending}
-          isDisabled={isPending || selectedPeriodKey === undefined}
-        >
-          {t('continueCta')}
-        </Button>
-      </ActionsLayout>
-    </Flex>
+    </section>
   )
 }

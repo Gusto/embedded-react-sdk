@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import type {
   EmployeeCompensations,
   PayrollShow,
@@ -37,7 +38,9 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
+  className?: string
   payrollData: PayrollShow
+  employeeFlsaStatusByUuid?: Record<string, string | undefined>
   bankAccount?: CompanyBankAccount
   taxes: Record<string, { employee: number; employer: number }>
   status?: PayrollOverviewStatus
@@ -73,12 +76,14 @@ const getPayrollOverviewTitle = (
 
 /** @internal */
 export const PayrollOverviewPresentation = ({
+  className,
   onEdit,
   onSubmit,
   onCancel,
   onPayrollReceipt,
   onPaystubDownload,
   payrollData,
+  employeeFlsaStatusByUuid = {},
   bankAccount,
   taxes,
   status = PayrollOverviewStatus.Viewing,
@@ -139,7 +144,7 @@ export const PayrollOverviewPresentation = ({
 
   if (status === PayrollOverviewStatus.Cancelled) {
     return (
-      <div ref={containerRef} className={styles.container}>
+      <div ref={containerRef} className={classNames(styles.container, className)}>
         <Flex flexDirection="column" alignItems="stretch">
           <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
             <Flex flexDirection="column" gap={4}>
@@ -228,6 +233,7 @@ export const PayrollOverviewPresentation = ({
   const companyPaysColumns: Array<{
     key: string
     title: string
+    justify?: 'start' | 'end'
     render: (item: EmployeeCompensations) => React.ReactNode
   }> = [
     {
@@ -246,6 +252,7 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
+      justify: 'end',
       render: (employeeCompensations: EmployeeCompensations) =>
         formatCurrency(Number(employeeCompensations.grossPay!)),
     },
@@ -254,6 +261,7 @@ export const PayrollOverviewPresentation = ({
           {
             key: 'reimbursements',
             title: t('tableHeaders.reimbursements'),
+            justify: 'end' as const,
             render: (employeeCompensation: EmployeeCompensations) =>
               formatCurrency(getReimbursements(employeeCompensation)),
           },
@@ -262,18 +270,21 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyTaxes(employeeCompensation)),
     },
     {
       key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyBenefits(employeeCompensation)),
     },
     {
       key: 'companyPays',
       title: t('tableHeaders.companyPays'),
+      justify: 'end',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyCost(employeeCompensation)),
     },
@@ -384,9 +395,9 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.compensationType'),
               render: (employeeCompensations: EmployeeCompensations) => {
-                const flsaStatus = employeeCompensations.hourlyCompensations?.find(
-                  compensation => compensation.flsaStatus,
-                )?.flsaStatus
+                const flsaStatus = employeeCompensations.employeeUuid
+                  ? employeeFlsaStatusByUuid[employeeCompensations.employeeUuid]
+                  : undefined
 
                 switch (flsaStatus) {
                   case FlsaStatus.EXEMPT:
@@ -634,7 +645,7 @@ export const PayrollOverviewPresentation = ({
   )
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={classNames(styles.container, className)}>
       <Flex flexDirection="column" alignItems="stretch">
         <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
           <Flex flexDirection="column" gap={4}>

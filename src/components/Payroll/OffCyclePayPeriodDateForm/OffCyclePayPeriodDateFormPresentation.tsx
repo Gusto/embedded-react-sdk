@@ -11,12 +11,18 @@ export interface OffCyclePayPeriodDateFormPresentationProps {
   minCheckDate: Date
   /** Earliest selectable payment date when the payroll is check-only (today). */
   minCheckOnlyDate: Date
+  /** Latest selectable date for start date, end date, and payment date (1 year from today). */
+  maxDate: Date
+  /** Earliest selectable start/end date for the pay period (1 year before today). */
+  minPayPeriodDate: Date
 }
 
 /** @internal */
 export function OffCyclePayPeriodDateFormPresentation({
   minCheckDate,
   minCheckOnlyDate,
+  maxDate,
+  minPayPeriodDate,
 }: OffCyclePayPeriodDateFormPresentationProps) {
   useI18n('Payroll.OffCyclePayPeriodDateForm')
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')
@@ -33,8 +39,20 @@ export function OffCyclePayPeriodDateFormPresentation({
   return (
     <div className={styles.root}>
       <div className={styles.dateFields}>
-        <DatePickerField name="startDate" label={t('startDateLabel')} isRequired />
-        <DatePickerField name="endDate" label={t('endDateLabel')} isRequired />
+        <DatePickerField
+          name="startDate"
+          label={t('startDateLabel')}
+          isRequired
+          minDate={minPayPeriodDate}
+          maxDate={maxDate}
+        />
+        <DatePickerField
+          name="endDate"
+          label={t('endDateLabel')}
+          isRequired
+          minDate={minPayPeriodDate}
+          maxDate={maxDate}
+        />
       </div>
 
       <div className={styles.checkDateField}>
@@ -44,6 +62,7 @@ export function OffCyclePayPeriodDateFormPresentation({
           description={t('checkDateDescription')}
           isRequired
           minDate={checkDateMinimum}
+          maxDate={maxDate}
         />
       </div>
 

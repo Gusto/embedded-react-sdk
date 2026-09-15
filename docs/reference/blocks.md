@@ -268,6 +268,7 @@ shape mixed into every public SDK feature component.
 - [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
 - [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
+- [`ContractorListFlowProps`](contractor/management/contractor-list-flow.md#contractorlistflowprops)
 - [`DashboardFlowProps`](contractor/management/dashboard-flow.md#dashboardflowprops)
 - [`DashboardProps`](contractor/management/blocks.md#dashboardprops)
 - [`ProfileProps`](contractor/management/blocks.md#profileprops)

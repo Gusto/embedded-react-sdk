@@ -827,6 +827,16 @@ describe('PolicyConfigurationForm', () => {
     })
   })
 
+  it('applies custom className to the root element', async () => {
+    const { container } = renderComponent({ className: 'custom-class' })
+
+    await waitFor(() => {
+      expect(screen.getByText('Policy details')).toBeInTheDocument()
+    })
+
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   it('passes policyType from props to the API request', async () => {
     const user = userEvent.setup()
     renderComponent({ policyType: 'sick' })

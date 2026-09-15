@@ -142,7 +142,7 @@ describe('HistoricalPaymentFlow', () => {
     await walkToSummary(user)
 
     expect(await screen.findByRole('heading', { name: 'Payment summary' })).toBeInTheDocument()
-    expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
       expect.objectContaining({ uuid: 'created-group-uuid' }),

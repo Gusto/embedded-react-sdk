@@ -1,10 +1,12 @@
 import { z } from 'zod'
 
 /**
- * Off-cycle payroll reason that drives pay-period date validation rules.
+ * Off-cycle payroll reason, used to pick default withholding/deduction settings.
  *
  * @remarks
- * `'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
+ * `'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a
+ * correction payment. Legacy gws-flows treats both identically for pay-period date validation --
+ * see `createOffCyclePayPeriodDateFormSchema`, which no longer branches on this type.
  *
  * @public
  */
@@ -18,7 +20,7 @@ export type OffCyclePayrollDateType = 'bonus' | 'correction'
 export interface OffCyclePayPeriodDateFormData {
   /** When true, all employees are paid by check rather than direct deposit; start and end dates become optional and the check date may be today or any future date. */
   isCheckOnly: boolean
-  /** Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. */
+  /** Beginning of the pay period; required unless `isCheckOnly` is true, and must be on or before `endDate`. */
   startDate: Date | null
   /** End of the pay period; required unless `isCheckOnly` is true, and must be on or after `startDate`. */
   endDate: Date | null
@@ -29,7 +31,6 @@ export interface OffCyclePayPeriodDateFormData {
 /** @internal */
 export const createOffCyclePayPeriodDateFormSchema = (
   t: (key: string, options?: Record<string, unknown>) => string,
-  payrollType: OffCyclePayrollDateType,
   minCheckDate: Date,
   paymentSpeedDays?: number,
 ) => {
@@ -63,18 +64,6 @@ export const createOffCyclePayPeriodDateFormSchema = (
           path: ['endDate'],
           message: t('validations.endDateAfterStart'),
         })
-      }
-
-      if (payrollType === 'correction' && data.startDate) {
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        if (data.startDate > today) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['startDate'],
-            message: t('validations.startDateNotFuture'),
-          })
-        }
       }
 
       if (!data.checkDate) {

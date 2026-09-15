@@ -24,11 +24,14 @@ export function OffCycleCreationPresentation({
   isPending,
   minCheckDate,
   minCheckOnlyDate,
+  maxDate,
+  minPayPeriodDate,
   taxWithholdingConfig,
   isTaxWithholdingModalOpen,
   onTaxWithholdingEditClick,
   onTaxWithholdingModalDone,
   onTaxWithholdingModalCancel,
+  className,
 }: OffCycleCreationPresentationProps) {
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleDeductionsSetting')
@@ -80,7 +83,7 @@ export function OffCycleCreationPresentation({
   ]
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('pageTitle')}</Heading>
         <Text variant="supporting">{t('pageDescription')}</Text>
@@ -94,6 +97,8 @@ export function OffCycleCreationPresentation({
         <OffCyclePayPeriodDateFormPresentation
           minCheckDate={minCheckDate}
           minCheckOnlyDate={minCheckOnlyDate}
+          maxDate={maxDate}
+          minPayPeriodDate={minPayPeriodDate}
         />
       </Flex>
 

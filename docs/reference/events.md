@@ -145,6 +145,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` |
 | `CONTRACTOR_REHIRE` | `"contractor/rehire"` |
 | `CONTRACTOR_REHIRE_CANCELLED` | `"contractor/rehire/cancelled"` |
+| `CONTRACTOR_RETURN_TO_LIST` | `"contractor/returnToList"` |
 | `CONTRACTOR_SELF_ONBOARDING_CANCELLED` | `"contractor/selfOnboarding/cancelled"` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` |

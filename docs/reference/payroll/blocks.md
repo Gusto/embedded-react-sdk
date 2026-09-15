@@ -692,6 +692,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/cancel`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-api-v1-companies-company_id-payrolls-payroll_id-cancel) |
 | PUT | [`/v1/companies/:companyId/payrolls/:payrollId/submit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
@@ -953,7 +954,7 @@ Form values collected by the [OffCycleCreation](#offcyclecreation) component.
 | `reason` | [`OffCycleReason`](#offcyclereason) | The off-cycle reason — `'bonus'` or `'correction'`. |
 | `selectedEmployeeUuids` | `string`[] | Employee UUIDs to include. Only consulted when `includeAllEmployees` is `false`. |
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
-| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
+| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and must be on or before `endDate`. |
 
 ***
 
@@ -988,7 +989,7 @@ Pay-period date selections collected for an off-cycle payroll.
 | `checkDate` | `Date` \| `null` | Date employees will be paid; must be at least the company's ACH lead time of business days from today for direct deposit, unless `isCheckOnly` is true. |
 | `endDate` | `Date` \| `null` | End of the pay period; required unless `isCheckOnly` is true, and must be on or after `startDate`. |
 | `isCheckOnly` | `boolean` | When true, all employees are paid by check rather than direct deposit; start and end dates become optional and the check date may be today or any future date. |
-| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
+| `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and must be on or before `endDate`. |
 
 ***
 
@@ -998,11 +999,13 @@ Pay-period date selections collected for an off-cycle payroll.
 
 > **OffCyclePayrollDateType** = `"bonus"` \| `"correction"`
 
-Off-cycle payroll reason that drives pay-period date validation rules.
+Off-cycle payroll reason, used to pick default withholding/deduction settings.
 
 #### Remarks
 
-`'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
+`'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a
+correction payment. Legacy gws-flows treats both identically for pay-period date validation --
+see `createOffCyclePayPeriodDateFormSchema`, which no longer branches on this type.
 
 ***
 

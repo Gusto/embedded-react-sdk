@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ModeSwitcher } from './ModeSwitcher'
 import { ThemeSwitcher } from './ThemeSwitcher'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { useAppMode } from './useAppMode'
 import { useCompanyName } from './design/useCompanyName'
 import type { TokenStatus } from './useDemoManager'
@@ -151,6 +152,7 @@ export function TopBar({ companyId, tokenStatus, activePanel, onPanelToggle }: T
         </div>
 
         <div className={styles.actions}>
+          <LanguageSwitcher />
           <ThemeSwitcher />
           <ModeSwitcher />
           <div className={styles.panelBtnGroup}>

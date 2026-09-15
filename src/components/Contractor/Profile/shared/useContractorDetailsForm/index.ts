@@ -18,6 +18,7 @@ export {
 } from './contractorDetailsSchema'
 export type {
   RequiredValidation as ContractorDetailsRequiredValidation,
+  MaxHourlyRateValidation as ContractorDetailsMaxHourlyRateValidation,
   NameValidation as ContractorDetailsNameValidation,
   EmailValidation as ContractorDetailsEmailValidation,
   SsnValidation as ContractorDetailsSsnValidation,

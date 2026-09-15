@@ -1,5 +1,56 @@
 # Changelog
 
+## [0.55.7](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.6...v0.55.7) (2026-09-14)
+
+### Features & Enhancements
+
+- Add `ContractorListFlow`, a flow component for listing and managing a company's contractors ([#2694](https://github.com/Gusto/embedded-react-sdk/issues/2694))
+- Send an `X-Gusto-SDK-Version` header on every API request so the installed SDK version is visible server-side ([#2737](https://github.com/Gusto/embedded-react-sdk/issues/2737))
+- Continue building out the alpha `UNSTABLE_PayrollEditEmployee` component: rebuild the edit-employee UI on the new form hook, collapse overtime handling to a single flag, and add a workweek info alert ([#2748](https://github.com/Gusto/embedded-react-sdk/issues/2748), [#2747](https://github.com/Gusto/embedded-react-sdk/issues/2747), [#2755](https://github.com/Gusto/embedded-react-sdk/issues/2755), [#2757](https://github.com/Gusto/embedded-react-sdk/issues/2757))
+
+### Fixes
+
+- Fix an off-by-one week assignment where an unsplit whole-period payroll breakdown was pinned to week 1 ([#2740](https://github.com/Gusto/embedded-react-sdk/issues/2740))
+- Hide the redundant visible "Status" column header label in data tables ([#2719](https://github.com/Gusto/embedded-react-sdk/issues/2719))
+- Prevent an incomplete date range from being applied in the date range filter ([#2717](https://github.com/Gusto/embedded-react-sdk/issues/2717))
+- Match legacy date bounds when selecting off-cycle payroll pay periods ([#2702](https://github.com/Gusto/embedded-react-sdk/issues/2702))
+- Populate compensation type for employees who have no hourly line items ([#2722](https://github.com/Gusto/embedded-react-sdk/issues/2722))
+- Strip raw API error bodies out of user-facing error messages ([#2735](https://github.com/Gusto/embedded-react-sdk/issues/2735))
+- Commit the contractor list tab structure only once new data has loaded, avoiding a flash of stale tabs ([#2711](https://github.com/Gusto/embedded-react-sdk/issues/2711))
+- Show a contractor's middle initial on the `DashboardFlow` overview ([#2709](https://github.com/Gusto/embedded-react-sdk/issues/2709))
+- Accept a contractor first/last name that has surrounding whitespace instead of rejecting it ([#2707](https://github.com/Gusto/embedded-react-sdk/issues/2707))
+- Fixes to the alpha `UNSTABLE_PayrollEditEmployee` component: invalidate the prepared payroll cache after save, match the reimbursement UI to the stable version, persist edited regular hours when adding overtime, remove non-dynamic gross pay, and render additional earnings as a single employee-level section ([#2728](https://github.com/Gusto/embedded-react-sdk/issues/2728), [#2756](https://github.com/Gusto/embedded-react-sdk/issues/2756), [#2758](https://github.com/Gusto/embedded-react-sdk/issues/2758), [#2761](https://github.com/Gusto/embedded-react-sdk/issues/2761), [#2768](https://github.com/Gusto/embedded-react-sdk/issues/2768))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `@internationalized/date`, `@internationalized/number`)
+- Bump dev dependencies (`typescript-eslint`, `@playwright/test`, `@storybook/*`, `sass-embedded`, `cspell`, `lint-staged`, `vite-plugin-dts`, `globals`, `@testing-library/user-event`, `@types/react-dom`)
+- Apply grouped Dependabot security updates ([#2724](https://github.com/Gusto/embedded-react-sdk/issues/2724), [#2726](https://github.com/Gusto/embedded-react-sdk/issues/2726))
+
+## [0.55.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.5...v0.55.6) (2026-09-08)
+
+### Fixes
+
+- Default the payment method to check when an employee has no bank account on file ([#2683](https://github.com/Gusto/embedded-react-sdk/issues/2683))
+- Give contractor row action-menu buttons a row-specific accessible name ([#2647](https://github.com/Gusto/embedded-react-sdk/issues/2647))
+- Add an accessible label to the completed-step checkmark icon ([#2672](https://github.com/Gusto/embedded-react-sdk/issues/2672))
+- Freeze `PaySchedule`'s initial routing decision so it no longer changes mid-flow ([#2703](https://github.com/Gusto/embedded-react-sdk/issues/2703))
+- Right-align numeric `DataView` columns (currency, hours, tax rate) that aren't the last column in the table ([#2648](https://github.com/Gusto/embedded-react-sdk/issues/2648))
+- Add helper text under the off-cycle Payment date ([#2701](https://github.com/Gusto/embedded-react-sdk/issues/2701))
+- Recover from a failed payroll calculation instead of stalling forever ([#2700](https://github.com/Gusto/embedded-react-sdk/issues/2700))
+- Include reimbursements in the employee take-home Payment total ([#2699](https://github.com/Gusto/embedded-react-sdk/issues/2699))
+- Persist `0` when an additional-earning field is cleared instead of dropping it ([#2649](https://github.com/Gusto/embedded-react-sdk/issues/2649))
+- Make the cancel payroll dialog describe cancelling ([#2652](https://github.com/Gusto/embedded-react-sdk/issues/2652))
+- Fix payroll calculation, submission, and check-generation screens getting stuck (e.g. an unresolving "Loading payroll..." state) when a status update was missed ([#2715](https://github.com/Gusto/embedded-react-sdk/issues/2715))
+- Cap the hourly rate input at the server's inline validation limit ([#2710](https://github.com/Gusto/embedded-react-sdk/issues/2710))
+- Save a contractor's email address when edited from the management Profile form ([#2696](https://github.com/Gusto/embedded-react-sdk/issues/2696))
+
+### Chores & Maintenance
+
+- Bump `@gusto/embedded-api` to `0.3.0-rc.2` ([#2678](https://github.com/Gusto/embedded-react-sdk/issues/2678))
+- Bump dependencies (`react-error-boundary`, `react-hook-form`)
+- Bump dev dependencies (`react-router-dom`, `@typescript-eslint/parser`, `typescript-eslint`, `json-schema-to-typescript`, `lint-staged`, `tsx`)
+
 ## [0.55.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.4...v0.55.5) (2026-08-31)
 
 ### Fixes

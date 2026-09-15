@@ -34,7 +34,7 @@ export function PaymentStatement(props: PaymentStatementProps) {
   )
 }
 
-const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStatementProps) => {
+const Root = ({ paymentGroupId, contractorUuid, dictionary, className }: PaymentStatementProps) => {
   useComponentDictionary('Contractor.Payments.PaymentStatement', dictionary)
   const { t } = useTranslation('Contractor.Payments.PaymentStatement')
   // Fetching entire payment
@@ -82,6 +82,7 @@ const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStatementPr
 
   return (
     <PaymentStatementPresentation
+      className={className}
       payment={payment}
       contractor={contractor}
       paymentReceipt={paymentResponse?.contractorPaymentReceipt}

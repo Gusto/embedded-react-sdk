@@ -98,6 +98,16 @@ describe('DismissalPayPeriodSelection', () => {
       })
     })
 
+    it('applies custom className', async () => {
+      const { container } = renderComponent({ className: 'custom-class' })
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /run dismissal payroll/i })).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+
     it('filters pay periods to the specified employee', async () => {
       renderComponent()
 
