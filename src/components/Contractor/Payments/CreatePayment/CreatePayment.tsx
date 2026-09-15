@@ -105,7 +105,7 @@ export function CreatePayment(props: CreatePaymentProps) {
   )
 }
 
-const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
+const Root = ({ companyId, dictionary, onEvent, className }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const { baseSubmitHandler } = useBase()
@@ -271,6 +271,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
     <>
       {previewData && (
         <PreviewPresentation
+          className={className}
           contractorPaymentGroup={previewData}
           contractors={contractors}
           onBackToEdit={onBackToEdit}
@@ -284,6 +285,7 @@ const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
       )}
       {!previewData && (
         <CreatePaymentPresentation
+          className={className}
           contractors={contractors}
           contractorPayments={virtualContractorPayments}
           paymentDate={paymentDate}

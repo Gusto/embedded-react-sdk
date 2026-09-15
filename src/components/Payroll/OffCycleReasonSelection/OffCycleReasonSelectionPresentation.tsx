@@ -6,12 +6,15 @@ import { RadioGroupField } from '@/components/Common'
 interface OffCycleReasonSelectionPresentationProps {
   name: string
   onChange?: (value: OffCycleReason) => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
 export function OffCycleReasonSelectionPresentation({
   name,
   onChange,
+  className,
 }: OffCycleReasonSelectionPresentationProps) {
   const { t } = useTranslation('Payroll.OffCycleReasonSelection')
 
@@ -38,6 +41,7 @@ export function OffCycleReasonSelectionPresentation({
       options={options}
       isRequired
       onChange={onChange}
+      className={className}
     />
   )
 }

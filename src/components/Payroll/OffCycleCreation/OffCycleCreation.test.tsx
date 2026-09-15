@@ -102,6 +102,16 @@ describe('OffCycleCreation', () => {
       expect(screen.getByText('Correction payment')).toBeInTheDocument()
     })
 
+    it('applies custom className', async () => {
+      const { container } = renderComponent({ className: 'custom-class' })
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /new off-cycle payroll/i })).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+
     it('renders the pay period date fields', async () => {
       renderComponent()
 

@@ -1,10 +1,10 @@
 {
   "pageTitle": "Edit payroll for {{employeeName}}",
   "breadcrumbLabel": "{{firstName}} {{lastName}}",
-  "grossPayLabel": "Gross pay (excluding reimbursements)",
-  "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular and overtime hours",
   "regularHoursTitleWithoutOvertime": "Regular hours",
+  "addOvertimeCta": "Add overtime",
+  "overtimeWorkweekAlert": "When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly.",
   "hoursUnit": "Hours",
   "saveCta": "Save",
   "cancelCta": "Cancel",
@@ -62,6 +62,7 @@
   },
   "validations": {
     "reimbursementAmount": "Amount must be greater than zero",
-    "negativeAmount": "Amount cannot be negative"
+    "negativeAmount": "Amount cannot be negative",
+    "requiredWorkweek": "Enter an amount for every workweek"
   }
 }

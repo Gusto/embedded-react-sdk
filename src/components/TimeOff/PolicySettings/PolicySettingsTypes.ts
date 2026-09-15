@@ -52,4 +52,6 @@ export interface PolicySettingsPresentationProps {
   editingPolicyName?: string
   /** Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. */
   isPending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }

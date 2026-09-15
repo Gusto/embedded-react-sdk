@@ -355,6 +355,7 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | `accrualMethod` | [`PolicySettingsAccrualMethod`](#policysettingsaccrualmethod) | Accrual method category of the policy. Controls which fields are shown. |
 | `onBack` | () => `void` | Called when the user navigates back. |
 | `onContinue` | (`data`: [`PolicySettingsFormData`](#policysettingsformdata)) => `void` | Called with the form values when the user submits. |
+| `className?` | `string` | CSS class name applied to the root element. |
 | `defaultValues?` | `Partial`\<[`PolicySettingsFormData`](#policysettingsformdata)\> | Optional default values to prefill the form. |
 | `editingPolicyName?` | `string` | Name of the policy being edited. Shown in the heading when `mode` is `'edit'`. |
 | `isPending?` | `boolean` | Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. |
@@ -772,6 +773,7 @@ and an optional success alert.
 | `selectedTabId` | `string` | The currently active tab (`'holidays'` or `'employees'`). |
 | `title` | `string` | The policy name displayed as the page heading. |
 | `actions?` | `ReactNode`[] | Action buttons displayed in the header (e.g. add employees, edit policy). |
+| `className?` | `string` | CSS class name applied to the root element. |
 | `onAddEmployee?` | () => `void` | Called when the user triggers the add-employee action from the empty state. |
 | `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |
 | `subtitle?` | `string` | Secondary label shown beneath the title. |
@@ -1026,6 +1028,7 @@ Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpres
 | `selectedTabId` | `string` | The currently active tab id. |
 | `title` | `string` | Policy name displayed as the page heading. |
 | `actions?` | `ReactNode`[] | Optional action buttons rendered in the header. |
+| `className?` | `string` | CSS class name applied to the root element. |
 | `onAddEmployee?` | () => `void` | Called when the add-employee action is clicked. |
 | `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |
 | `subtitle?` | `string` | Secondary label, typically the policy type. |
@@ -1064,6 +1067,7 @@ and may provide `onChangeSettings` to enable the change-settings action.
 | `removeDialog` | State for the employee removal confirmation dialog. |
 | `successAlert` | Optional success message rendered as a dismissible alert. |
 | `onDismissAlert` | Called when the success alert is dismissed. |
+| `className` | CSS class name applied to the root element. |
 
 ***
 

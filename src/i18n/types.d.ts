@@ -8385,14 +8385,14 @@ export namespace Translations {
     pageTitle: string
     /** @defaultValue `"{{firstName}} {{lastName}}"` */
     breadcrumbLabel: string
-    /** @defaultValue `"Gross pay (excluding reimbursements)"` */
-    grossPayLabel: string
-    /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
-    grossPayLabelMobile: string
     /** @defaultValue `"Regular and overtime hours"` */
     regularHoursTitle: string
     /** @defaultValue `"Regular hours"` */
     regularHoursTitleWithoutOvertime: string
+    /** @defaultValue `"Add overtime"` */
+    addOvertimeCta: string
+    /** @defaultValue `"When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly."` */
+    overtimeWorkweekAlert: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */
@@ -8500,6 +8500,8 @@ export namespace Translations {
       reimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Enter an amount for every workweek"` */
+      requiredWorkweek: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */

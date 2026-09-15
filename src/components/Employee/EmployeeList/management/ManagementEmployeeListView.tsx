@@ -27,6 +27,8 @@ export interface ManagementEmployeeListViewProps extends Pick<
   onDismiss: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
   onAddEmployee: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -41,6 +43,7 @@ export function ManagementEmployeeListView({
   onDelete,
   onAddEmployee,
   pagination,
+  className,
 }: ManagementEmployeeListViewProps) {
   const { t } = useTranslation('Employee.ManagementEmployeeList')
   const Components = useComponentContext()
@@ -215,27 +218,33 @@ export function ManagementEmployeeListView({
 
   return (
     <>
-      <Flex flexDirection="column" gap={32}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Components.Heading as="h2">{t('title')}</Components.Heading>
-          <Components.Button variant="secondary" onClick={onAddEmployee} icon={<PlusCircleIcon />}>
-            {t('addEmployeeCta')}
-          </Components.Button>
-        </Flex>
+      <section className={className}>
+        <Flex flexDirection="column" gap={32}>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Components.Heading as="h2">{t('title')}</Components.Heading>
+            <Components.Button
+              variant="secondary"
+              onClick={onAddEmployee}
+              icon={<PlusCircleIcon />}
+            >
+              {t('addEmployeeCta')}
+            </Components.Button>
+          </Flex>
 
-        <Flex flexDirection="column" gap={0}>
-          <Components.Tabs
-            tabs={tabs}
-            selectedId={selectedTab}
-            onSelectionChange={id => {
-              onTabChange(id as EmployeeTab)
-            }}
-            aria-label={t('tabsLabel')}
-          />
+          <Flex flexDirection="column" gap={0}>
+            <Components.Tabs
+              tabs={tabs}
+              selectedId={selectedTab}
+              onSelectionChange={id => {
+                onTabChange(id as EmployeeTab)
+              }}
+              aria-label={t('tabsLabel')}
+            />
 
-          <DataView label={t('employeeListLabel')} {...dataViewProps} />
+            <DataView label={t('employeeListLabel')} {...dataViewProps} />
+          </Flex>
         </Flex>
-      </Flex>
+      </section>
 
       <Components.Dialog
         isOpen={!!employeeToDelete}

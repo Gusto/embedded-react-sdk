@@ -37,4 +37,13 @@ describe('PrintChecksFailure', () => {
 
     expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_CLOSE)
   })
+
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <PrintChecksFailure onEvent={vi.fn()} className="custom-class" />,
+    )
+
+    await screen.findByText("We couldn't generate your checks")
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
 })

@@ -44,6 +44,7 @@ export function PolicySettingsPresentation({
   mode,
   editingPolicyName,
   isPending = false,
+  className,
 }: PolicySettingsPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -84,7 +85,11 @@ export function PolicySettingsPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm
+        aria-labelledby={headingId}
+        onSubmit={formMethods.handleSubmit(handleSubmit)}
+        className={className}
+      >
         <div className={styles.policySettings}>
           <Flex flexDirection="column" gap={32}>
             <Heading as="h2" id={headingId}>

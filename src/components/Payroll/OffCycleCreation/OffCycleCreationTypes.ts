@@ -59,4 +59,6 @@ export interface OffCycleCreationPresentationProps {
   onTaxWithholdingModalDone: (config: OffCycleTaxWithholdingConfig) => void
   /** Fires when the user dismisses the tax withholding modal without saving. */
   onTaxWithholdingModalCancel: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }
