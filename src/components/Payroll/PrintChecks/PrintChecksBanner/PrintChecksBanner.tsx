@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { usePayrollsGet } from '@gusto/embedded-api/react-query/payrollsGet'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { PAYMENT_METHODS, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
@@ -30,7 +31,7 @@ const Root = ({
   useComponentDictionary('Payroll.PrintChecksBanner', dictionary)
   useI18n('Payroll.PrintChecksBanner')
   const { t } = useTranslation('Payroll.PrintChecksBanner')
-  const { Alert, Button } = useComponentContext()
+  const { Alert, Button, Text } = useComponentContext()
 
   const { data } = usePayrollsGet({
     companyId,
@@ -54,19 +55,17 @@ const Root = ({
   }
 
   return (
-    <Alert
-      status="info"
-      className={className}
-      label={t('title', { count: checkPaymentsCount })}
-      action={
-        isProcessed && (
-          <Button variant="secondary" onClick={onStartPrintChecks}>
-            {t('cta')}
-          </Button>
-        )
-      }
-    >
-      {t('description')}
+    <Alert status="info" className={className} label={t('title', { count: checkPaymentsCount })}>
+      <Flex flexDirection="column" gap={16}>
+        <Text>{t('description')}</Text>
+        {isProcessed && (
+          <div>
+            <Button variant="secondary" onClick={onStartPrintChecks}>
+              {t('cta')}
+            </Button>
+          </div>
+        )}
+      </Flex>
     </Alert>
   )
 }
