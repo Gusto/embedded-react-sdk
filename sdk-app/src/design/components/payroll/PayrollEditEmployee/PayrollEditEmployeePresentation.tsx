@@ -532,6 +532,7 @@ export const PayrollEditEmployeePresentation = ({
   const otherEarningRows: FixedAmountRow[] = additionalEarnings
     .filter(item => !PRIMARY_EARNING_NAMES.has((item.name ?? '').toLowerCase()))
     .map(toFixedAmountRow)
+  const allEarningRows: FixedAmountRow[] = [...primaryEarningRows, ...otherEarningRows]
 
   const defaultValues = {
     hourlyCompensations: (() => {
@@ -846,15 +847,55 @@ export const PayrollEditEmployeePresentation = ({
               })}
             </div>
           )}
-          {primaryEarningRows.length > 0 && (
+          {allEarningRows.length > 0 && (
             <div className={styles.fieldGroup}>
               <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
-                <FixedAmountsDataView
-                  rows={primaryEarningRows}
-                  label={t('additionalEarningsTitle')}
-                  isWorkweekSplit={isWorkweekSplit}
-                  workweeks={workweeks}
-                />
+                {isWorkweekSplit ? (
+                  <>
+                    {primaryEarningRows.length > 0 && (
+                      <>
+                        <div className={styles.earningsGroupAlert}>
+                          <Alert
+                            status="info"
+                            label={`Earnings entered here factor into the overtime multiplier used to calculate ${employeeName}'s total pay.`}
+                            disableScrollIntoView
+                          />
+                        </div>
+                        <div className={styles.earningsGroupLabel}>
+                          <Text size="sm" weight="semibold">
+                            Included in overtime multiplier calculation
+                          </Text>
+                        </div>
+                        <FixedAmountsDataView
+                          rows={primaryEarningRows}
+                          label="Additional earnings included in overtime multiplier calculation"
+                          isWorkweekSplit
+                          workweeks={workweeks}
+                        />
+                      </>
+                    )}
+                    {otherEarningRows.length > 0 && (
+                      <>
+                        <div
+                          className={`${styles.earningsGroupLabel} ${primaryEarningRows.length > 0 ? styles.earningsGroupLabelDivided : ''}`}
+                        >
+                          <Text size="sm" weight="semibold">
+                            Not a factor for overtime calculation
+                          </Text>
+                        </div>
+                        <FixedAmountsDataView
+                          rows={otherEarningRows}
+                          label="Additional earnings that are not a factor for overtime calculation"
+                        />
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <FixedAmountsDataView
+                    rows={allEarningRows}
+                    label={t('additionalEarningsTitle')}
+                  />
+                )}
               </Box>
             </div>
           )}
@@ -902,13 +943,6 @@ export const PayrollEditEmployeePresentation = ({
             </div>
           )}
 
-          {otherEarningRows.length > 0 && (
-            <div className={styles.fieldGroup}>
-              <Box header={<BoxHeader title="Other" />} withPadding={false}>
-                <FixedAmountsDataView rows={otherEarningRows} label="Other" />
-              </Box>
-            </div>
-          )}
           {showLegacyReimbursementField && (
             <div className={styles.fieldGroup}>
               <Heading as="h4">{t('reimbursementTitle')}</Heading>
