@@ -199,7 +199,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading } = useComponentContext()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
@@ -464,42 +464,34 @@ const Root = ({
     ]
 
     return (
-      <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
+      <>
         {included.hasRows ? (
-          <>
-            <div className={styles.earningsGroupAlert}>
-              <Alert
-                status="info"
-                label={t('overtimeMultiplierEarningsAlert', { employeeName })}
-                disableScrollIntoView
-              />
-            </div>
-            <div className={styles.earningsGroupLabel}>
-              <Text size="sm" weight="semibold">
-                {t('overtimeIncludedEarningsGroupLabel')}
-              </Text>
-            </div>
+          <Box
+            header={<BoxHeader title={t('overtimeIncludedEarningsGroupLabel')} />}
+            withPadding={false}
+          >
+            <Alert
+              status="info"
+              label={t('overtimeMultiplierEarningsAlert', { employeeName })}
+              disableScrollIntoView
+            />
             {included.element}
-          </>
+          </Box>
         ) : null}
         {hasExcluded ? (
-          <>
-            <div
-              className={`${styles.earningsGroupLabel}${included.hasRows ? ` ${styles.earningsGroupLabelDivided}` : ''}`}
-            >
-              <Text size="sm" weight="semibold">
-                {t('overtimeExcludedEarningsGroupLabel')}
-              </Text>
-            </div>
+          <Box
+            header={<BoxHeader title={t('overtimeExcludedEarningsGroupLabel')} />}
+            withPadding={false}
+          >
             <DataView
               label={t('overtimeExcludedEarningsGroupLabel')}
               isWithinBox
               columns={excludedColumns}
               data={excludedEarnings}
             />
-          </>
+          </Box>
         ) : null}
-      </Box>
+      </>
     )
   }
 
