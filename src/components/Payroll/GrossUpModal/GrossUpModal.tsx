@@ -118,22 +118,21 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             <Alert label={t('warning')} status="warning" disableScrollIntoView />
           </div>
 
-          <Flex flexDirection="row" gap={8}>
+          <Flex flexDirection="row" gap={8} alignItems="flex-start">
             <NumberInputField
               name="netPay"
               label={t('netPayLabel')}
               format="currency"
               errorMessage={t('validations.netPay')}
               min={0}
-              isRequired
             />
             <Button
               variant="secondary"
               className={styles.calculateButton}
-              isDisabled={isCalculating}
+              isLoading={isCalculating}
               onClick={formHandlers.handleSubmit(handleCalculate)}
             >
-              {isCalculating ? t('calculatingCta') : t('calculateCta')}
+              {t('calculateCta')}
             </Button>
           </Flex>
 
