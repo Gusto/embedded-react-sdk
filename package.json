@@ -166,7 +166,7 @@
     "vite-plugin-stylelint": "^6.3.0",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.10",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5",
