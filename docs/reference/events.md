@@ -49,7 +49,6 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 | Name | Type |
 | ------ | ------ |
-| `AUTO_PILOT_EDIT` | `"paySchedule/management/autoPilotEdit"` |
 | `BREADCRUMB_NAVIGATE` | `"breadcrumb/navigate"` |
 | `CANCEL` | `"CANCEL"` |
 | `COMPANY_ASSIGN_SIGNATORY_DONE` | `"company/signatory/assignSignatory/done"` |
@@ -291,6 +290,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `OFF_CYCLE_CREATED` | `"offCycle/created"` |
 | `OFF_CYCLE_DEDUCTIONS_CHANGE` | `"offCycle/deductionsChange"` |
 | `OFF_CYCLE_SELECT_REASON` | `"offCycle/selectReason"` |
+| `PAY_SCHEDULE_AUTO_PILOT_EDIT` | `"paySchedule/management/autoPilotEdit"` |
 | `PAY_SCHEDULE_CREATE` | `"paySchedule/create"` |
 | `PAY_SCHEDULE_CREATED` | `"paySchedule/created"` |
 | `PAY_SCHEDULE_DELETE` | `"paySchedule/delete"` |

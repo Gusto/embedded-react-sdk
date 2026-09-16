@@ -639,7 +639,9 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `autoPilot.enabled` | `"Enabled"` |
 | `autoPilot.label` | `"AutoPilot"` |
 | <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
+| <a id="property-companymanagementpayscheduleeditautopilotarialabel"></a> `editAutoPilotAriaLabel` | `"Edit AutoPilot"` |
 | <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |

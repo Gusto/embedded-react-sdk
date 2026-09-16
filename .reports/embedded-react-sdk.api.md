@@ -1445,7 +1445,7 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_DELETED: "paySchedule/deleted";
     readonly PAY_SCHEDULE_DONE: "paySchedule/done";
     readonly PAY_SCHEDULE_MANAGE_ASSIGNMENT: "paySchedule/management/manageAssignment";
-    readonly AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
+    readonly PAY_SCHEDULE_AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
     readonly COMPANY_INDUSTRY: "company/industry";
     readonly COMPANY_INDUSTRY_SELECTED: "company/industry/selected";
     readonly COMPANY_FEDERAL_TAXES_UPDATED: "company/federalTaxes/updated";
