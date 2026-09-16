@@ -199,7 +199,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Alert, Box, BoxHeader, Button, Heading } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
@@ -464,34 +464,34 @@ const Root = ({
     ]
 
     return (
-      <>
+      <Box header={<BoxHeader title={t('additionalEarningsTitle')} />}>
         {included.hasRows ? (
-          <Box
-            header={<BoxHeader title={t('overtimeIncludedEarningsGroupLabel')} />}
-            withPadding={false}
-          >
+          <>
             <Alert
               status="info"
               label={t('overtimeMultiplierEarningsAlert', { employeeName })}
               disableScrollIntoView
             />
+            <Text size="sm" weight="semibold">
+              {t('overtimeIncludedEarningsGroupLabel')}
+            </Text>
             {included.element}
-          </Box>
+          </>
         ) : null}
         {hasExcluded ? (
-          <Box
-            header={<BoxHeader title={t('overtimeExcludedEarningsGroupLabel')} />}
-            withPadding={false}
-          >
+          <>
+            <Text size="sm" weight="semibold">
+              {t('overtimeExcludedEarningsGroupLabel')}
+            </Text>
             <DataView
               label={t('overtimeExcludedEarningsGroupLabel')}
               isWithinBox
               columns={excludedColumns}
               data={excludedEarnings}
             />
-          </Box>
+          </>
         ) : null}
-      </>
+      </Box>
     )
   }
 
