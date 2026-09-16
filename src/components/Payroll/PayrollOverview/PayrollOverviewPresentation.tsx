@@ -293,6 +293,7 @@ export const PayrollOverviewPresentation = ({
     companyPaysColumns.push({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
+      justify: 'end',
       render: (employeeCompensations: EmployeeCompensations) => {
         const isDownloading =
           !!employeeCompensations.employeeUuid &&
