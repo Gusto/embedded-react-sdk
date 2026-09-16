@@ -479,7 +479,9 @@ const Root = ({
                 {t('overtimeIncludedEarningsGroupLabel')}
               </Text>
             </div>
-            {included.element}
+            <div className={hasExcluded ? styles.earningsIncludedDivider : undefined}>
+              {included.element}
+            </div>
           </>
         ) : null}
         {hasExcluded ? (

@@ -12,5 +12,9 @@
 }
 
 .earningsGroupLabel {
-  padding: toRem(16) toRem(20) toRem(8);
+  padding: toRem(20) toRem(20) toRem(12);
+}
+
+.earningsIncludedDivider {
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
 }
