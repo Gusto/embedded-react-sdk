@@ -369,7 +369,7 @@ export const payScheduleEvents = {
   PAY_SCHEDULE_DELETED: 'paySchedule/deleted',
   PAY_SCHEDULE_DONE: 'paySchedule/done',
   PAY_SCHEDULE_MANAGE_ASSIGNMENT: 'paySchedule/management/manageAssignment',
-  AUTO_PILOT_EDIT: 'paySchedule/management/autoPilotEdit',
+  PAY_SCHEDULE_AUTO_PILOT_EDIT: 'paySchedule/management/autoPilotEdit',
 } as const
 
 /**

@@ -1,8 +1,12 @@
 import { createMachine } from 'robot3'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { payScheduleManagementStateMachine } from './payScheduleManagementStateMachine'
 import type { PayScheduleManagementContextInterface } from './PayScheduleManagementComponents'
-import { PayScheduleOverviewContextual } from './PayScheduleManagementComponents'
+import {
+  PayScheduleOverviewContextual,
+  PayScheduleEditFormContextual,
+} from './PayScheduleManagementComponents'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import type { BaseComponentKeys } from '@/components/Base/Base'
@@ -27,6 +31,10 @@ export interface PayScheduleProps extends BaseComponentInterface<'Company.Manage
 
 /**
  * Manages a company's pay schedule after onboarding.
+ *
+ * @remarks
+ * Renders the overview when the company already has a pay schedule, or the create form
+ * directly when it doesn't.
  *
  * @alpha
  */
@@ -63,21 +71,39 @@ function Root({
   // live under its own namespace and are otherwise never loaded from this flow.
   useI18n('Company.PaySchedule')
   const { onEvent } = useBase()
+  const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
+
+  /**
+   * Freeze the initial routing decision. Recomputing it after a later refetch (e.g. once the
+   * first schedule is created) would re-seat the machine and orphan its interpreter.
+   */
+  const [{ initialState, initialComponent }] = useState<{
+    initialState: keyof typeof payScheduleManagementStateMachine
+    initialComponent: typeof PayScheduleOverviewContextual | typeof PayScheduleEditFormContextual
+  }>(() => {
+    const hasSchedules = (paySchedules.payScheduleShowResponse?.length ?? 0) > 0
+    return {
+      initialState: hasSchedules ? 'overview' : 'createSchedule',
+      initialComponent: hasSchedules
+        ? PayScheduleOverviewContextual
+        : PayScheduleEditFormContextual,
+    }
+  })
 
   const machine = useMemo(
     () =>
       createMachine(
-        'overview',
+        initialState,
         payScheduleManagementStateMachine,
         (initialContext: PayScheduleManagementContextInterface) => ({
           ...initialContext,
-          component: PayScheduleOverviewContextual,
+          component: initialComponent,
           companyId,
           enableAutoPilot,
           enableMultipleSchedules,
         }),
       ),
-    [companyId, enableAutoPilot, enableMultipleSchedules],
+    [companyId, enableAutoPilot, enableMultipleSchedules, initialState, initialComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />

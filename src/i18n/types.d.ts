@@ -951,6 +951,10 @@ export namespace Translations {
     manageCta: string
     /** @defaultValue `"Edit"` */
     editCta: string
+    /** @defaultValue `"Edit pay schedule"` */
+    editScheduleAriaLabel: string
+    /** @defaultValue `"Edit AutoPilot"` */
+    editAutoPilotAriaLabel: string
     labels: {
       /** @defaultValue `"Name"` */
       name: string

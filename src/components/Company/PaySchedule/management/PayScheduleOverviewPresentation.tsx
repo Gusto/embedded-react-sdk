@@ -3,13 +3,12 @@ import { useTranslation } from 'react-i18next'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import styles from './PayScheduleOverviewPresentation.module.scss'
 import { Flex } from '@/components/Common/Flex'
-import { Loading } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 /** @internal */
 export interface PayScheduleOverviewPresentationProps {
-  /** The company's single pay schedule, or `undefined` while it's loading. */
-  schedule: PayScheduleShow | undefined
+  /** The company's single pay schedule. */
+  schedule: PayScheduleShow
   /** Shows the AutoPilot row and its Edit action when `true`. */
   enableAutoPilot?: boolean
   /** Shows the Manage action when `true`. */
@@ -65,33 +64,37 @@ export function PayScheduleOverviewPresentation({
         />
       }
     >
-      {schedule ? (
-        <div className={styles.rows}>
+      <div className={styles.rows}>
+        <Row
+          label={t('labels.name')}
+          value={schedule.customName}
+          action={
+            <Components.Button
+              variant="secondary"
+              onClick={onEditSchedule}
+              aria-label={t('editScheduleAriaLabel')}
+            >
+              {t('editCta')}
+            </Components.Button>
+          }
+        />
+        <Row label={t('labels.frequency')} value={schedule.frequency} />
+        {enableAutoPilot ? (
           <Row
-            label={t('labels.name')}
-            value={schedule.customName ?? schedule.name}
+            label={t('autoPilot.label')}
+            value={schedule.autoPayroll ? t('autoPilot.enabled') : t('autoPilot.disabled')}
             action={
-              <Components.Button variant="secondary" onClick={onEditSchedule}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditAutoPilot}
+                aria-label={t('editAutoPilotAriaLabel')}
+              >
                 {t('editCta')}
               </Components.Button>
             }
           />
-          <Row label={t('labels.frequency')} value={schedule.frequency} />
-          {enableAutoPilot ? (
-            <Row
-              label={t('autoPilot.label')}
-              value={schedule.autoPayroll ? t('autoPilot.enabled') : t('autoPilot.disabled')}
-              action={
-                <Components.Button variant="secondary" onClick={onEditAutoPilot}>
-                  {t('editCta')}
-                </Components.Button>
-              }
-            />
-          ) : null}
-        </div>
-      ) : (
-        <Loading />
-      )}
+        ) : null}
+      </div>
     </Components.Box>
   )
 }

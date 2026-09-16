@@ -21,7 +21,7 @@ function StoryWrapper({
   enableAutoPilot = true,
   enableMultipleSchedules = true,
 }: {
-  schedule: PayScheduleShow | undefined
+  schedule: PayScheduleShow
   enableAutoPilot?: boolean
   enableMultipleSchedules?: boolean
 }) {
@@ -52,5 +52,3 @@ export const AutoPilotDisabledForCompany = () => (
 export const SingleScheduleOnly = () => (
   <StoryWrapper schedule={mockSchedule} enableMultipleSchedules={false} />
 )
-
-export const Loading = () => <StoryWrapper schedule={undefined} />

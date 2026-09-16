@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { PaySchedule } from './PaySchedule'
@@ -12,6 +12,7 @@ import {
   getPaySchedulePreview,
   updatePaySchedule,
 } from '@/test/mocks/apis/payschedule'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -134,6 +135,74 @@ describe('PaySchedule (management)', () => {
     expect(screen.queryByText('Unassigned Monthly Schedule')).not.toBeInTheDocument()
   })
 
+  it('navigates directly to the create form when the company has no pay schedules', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+        HttpResponse.json([]),
+      ),
+    )
+
+    renderPaySchedule()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+    })
+
+    expect(screen.queryByRole('heading', { name: /^pay schedule$/i })).not.toBeInTheDocument()
+  })
+
+  it('returns to the overview after creating the first pay schedule', async () => {
+    const user = userEvent.setup()
+
+    let scheduleCreated = false
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async () => {
+        if (!scheduleCreated) return HttpResponse.json([])
+        const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+        return HttpResponse.json(responseFixture.paySchedules)
+      }),
+      http.post(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async ({ request }) => {
+        const requestBody = (await request.json()) as Record<string, unknown>
+        const responseFixture = await getFixture('post-v1-companies-company_id-pay_schedules')
+        scheduleCreated = true
+        return HttpResponse.json({ ...responseFixture, ...requestBody }, { status: 201 })
+      }),
+    )
+
+    const { onEvent } = renderPaySchedule()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+    })
+
+    await user.type(screen.getByLabelText(/name/i), 'New Schedule')
+
+    const frequencySelect = screen.getByRole('button', { name: /frequency/i })
+    await user.click(frequencySelect)
+    await user.click(screen.getByRole('option', { name: /every week/i }))
+
+    const payDateInput = screen.getByRole('group', { name: 'First pay date' })
+    await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+    await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
+    await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
+
+    const endDateInput = screen.getByRole('group', { name: 'First pay period end date' })
+    await user.type(within(endDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+    await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '07')
+    await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
+
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATED, expect.any(Object))
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /^pay schedule$/i })).toBeInTheDocument()
+    })
+    expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+  }, 10000)
+
   it('fires PAY_SCHEDULE_MANAGE_ASSIGNMENT when Manage is clicked, without navigating away', async () => {
     const user = userEvent.setup()
     const { onEvent } = renderPaySchedule({ enableMultipleSchedules: true })
@@ -148,7 +217,7 @@ describe('PaySchedule (management)', () => {
     expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
   })
 
-  it('fires AUTO_PILOT_EDIT when the AutoPilot Edit button is clicked, without navigating away', async () => {
+  it('fires PAY_SCHEDULE_AUTO_PILOT_EDIT when the AutoPilot Edit button is clicked, without navigating away', async () => {
     const user = userEvent.setup()
     const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
 
@@ -160,7 +229,7 @@ describe('PaySchedule (management)', () => {
     await user.click(editButtons[editButtons.length - 1]!)
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.AUTO_PILOT_EDIT,
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT,
       expect.objectContaining({ uuid: expect.any(String) }),
     )
     expect(screen.getByText(/autopilot/i)).toBeInTheDocument()

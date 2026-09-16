@@ -10,6 +10,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_UPDATE]: { uuid: string }
+  [componentEvents.PAY_SCHEDULE_CREATED]: undefined
 }
 
 const toOverview = reduce(
@@ -41,5 +42,13 @@ export const payScheduleManagementStateMachine = {
   editSchedule: state<MachineTransition>(
     transition(componentEvents.PAY_SCHEDULE_UPDATED, 'overview', toOverview),
     transition(componentEvents.CANCEL, 'overview', toOverview),
+  ),
+  /**
+   * Entered directly from PaySchedule.tsx's initial routing when the company has no pay
+   * schedules yet — there's no overview to fall back to, so CANCEL isn't handled here; it
+   * still bubbles to the host via Flow's onEvent re-emit.
+   */
+  createSchedule: state<MachineTransition>(
+    transition(componentEvents.PAY_SCHEDULE_CREATED, 'overview', toOverview),
   ),
 }
