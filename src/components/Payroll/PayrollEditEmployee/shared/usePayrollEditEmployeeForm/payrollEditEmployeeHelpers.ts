@@ -76,7 +76,7 @@ export function normalizeWorkweeks(
 /**
  * Collects the names of earning types included in the regular-rate-of-pay
  * overtime calculation. These earnings render in the workweek-breakdown
- * additional-earnings section; all others fall into the flat `other` section.
+ * additional-earnings section; all others fall into the flat `overtimeExcludedEarnings` section.
  *
  * @param earningTypeList - The company's default and custom earning types.
  * @returns A set of earning-type names with `includedInOvertimePay` set.
@@ -110,7 +110,7 @@ export function collectOvertimeEarningNames(
  * handled elsewhere or never shown as additional earnings
  * ({@link EXCLUDED_ADDITIONAL_EARNINGS}) and inactive types are skipped. The
  * result is sorted alphabetically by name. The regular-rate-of-pay split between
- * additional earnings and `other` happens downstream via `overtimeEarningNames`;
+ * additional earnings and `overtimeExcludedEarnings` happens downstream via `overtimeEarningNames`;
  * this helper only decides which earning lines exist.
  *
  * @param existingFixedCompensations - The prepared compensation's fixed compensations.
@@ -323,14 +323,14 @@ export function derivePayrollEditEmployeeDefaults(
   }
 
   // Earnings whose earning type is included in the regular-rate-of-pay overtime
-  // calculation stay workweek-breakdown; the rest are flat and land in `other`.
+  // calculation stay workweek-breakdown; the rest are flat and land in `overtimeExcludedEarnings`.
   // The hook owns this bucketing so the UI just renders each section.
-  const additionalEarnings: PayrollEditEmployeeFormData['additionalEarnings'] = {}
-  const other: PayrollEditEmployeeFormData['other'] = {}
+  const overtimeIncludedEarnings: PayrollEditEmployeeFormData['overtimeIncludedEarnings'] = {}
+  const overtimeExcludedEarnings: PayrollEditEmployeeFormData['overtimeExcludedEarnings'] = {}
   for (const compensation of fixedCompensations) {
     if (!compensation.jobUuid || !compensation.name) continue
     if (overtimeEarningNames.has(compensation.name)) {
-      const jobEarnings = (additionalEarnings[compensation.jobUuid] ??= {})
+      const jobEarnings = (overtimeIncludedEarnings[compensation.jobUuid] ??= {})
       jobEarnings[compensation.name] = buildWeekMap(
         workweeks,
         compensation.amount,
@@ -338,7 +338,7 @@ export function derivePayrollEditEmployeeDefaults(
         isSplit,
       )
     } else {
-      const jobOther = (other[compensation.jobUuid] ??= {})
+      const jobOther = (overtimeExcludedEarnings[compensation.jobUuid] ??= {})
       jobOther[compensation.name] = formatAmountInput(compensation.amount)
     }
   }
@@ -362,8 +362,8 @@ export function derivePayrollEditEmployeeDefaults(
 
   return {
     hours,
-    additionalEarnings,
-    other,
+    overtimeIncludedEarnings,
+    overtimeExcludedEarnings,
     timeOff,
     finalPayout,
     reimbursements,
@@ -517,7 +517,7 @@ export function buildPayrollUpdateEmployeeCompensation(
     }),
   )
 
-  const breakdownEarnings = Object.entries(formData.additionalEarnings).flatMap(
+  const breakdownEarnings = Object.entries(formData.overtimeIncludedEarnings).flatMap(
     ([jobUuid, names]) =>
       Object.entries(names).flatMap(([name, weekMap]) => {
         if (!isSplit) {
@@ -542,12 +542,13 @@ export function buildPayrollUpdateEmployeeCompensation(
   )
 
   // Non-overtime earnings never carry breakdowns; they are sent as flat totals.
-  const flatEarnings = Object.entries(formData.other).flatMap(([jobUuid, names]) =>
-    Object.entries(names).map(([name, amount]) => ({
-      jobUuid,
-      name,
-      amount: hasValue(amount) ? amount : (originalAmounts.get(`${jobUuid}|${name}`) ?? '0'),
-    })),
+  const flatEarnings = Object.entries(formData.overtimeExcludedEarnings).flatMap(
+    ([jobUuid, names]) =>
+      Object.entries(names).map(([name, amount]) => ({
+        jobUuid,
+        name,
+        amount: hasValue(amount) ? amount : (originalAmounts.get(`${jobUuid}|${name}`) ?? '0'),
+      })),
   )
 
   const fixedCompensations = [...breakdownEarnings, ...flatEarnings]

@@ -6,3 +6,22 @@
 .inputContainer {
   max-width: toRem(160);
 }
+
+.earningsGroupAlert {
+  padding: toRem(20);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+
+  [role='alert'] {
+    margin-bottom: 0;
+  }
+}
+
+.earningsGroupLabel {
+  padding: toRem(20);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+}
+
+.earningsGroupLabelDivided {
+  border-top: 1px solid var(--g-colorBorderSecondary);
+  margin-top: toRem(8);
+}

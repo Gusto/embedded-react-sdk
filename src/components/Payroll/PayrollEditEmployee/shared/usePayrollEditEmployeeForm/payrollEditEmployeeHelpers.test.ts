@@ -21,8 +21,8 @@ const WEEK_TWO: NormalizedWorkweek = { startDate: '2024-01-08', endDate: '2024-0
 
 const emptyFormData: PayrollEditEmployeeFormData = {
   hours: {},
-  additionalEarnings: {},
-  other: {},
+  overtimeIncludedEarnings: {},
+  overtimeExcludedEarnings: {},
   timeOff: {},
   finalPayout: {},
   reimbursements: [],
@@ -146,8 +146,10 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     )
 
     expect(defaults.hours).toEqual({ 'job-1': { 'Regular Hours': { '2024-01-01': '40' } } })
-    expect(defaults.additionalEarnings).toEqual({ 'job-1': { Bonus: { '2024-01-01': '500' } } })
-    expect(defaults.other).toEqual({ 'job-1': { 'Cash Tips': '25' } })
+    expect(defaults.overtimeIncludedEarnings).toEqual({
+      'job-1': { Bonus: { '2024-01-01': '500' } },
+    })
+    expect(defaults.overtimeExcludedEarnings).toEqual({ 'job-1': { 'Cash Tips': '25' } })
   })
 
   it('emits only the first-workweek key when the line is not split (overtime-ineligible)', () => {
@@ -221,7 +223,7 @@ describe('derivePayrollEditEmployeeDefaults', () => {
       '2024-01-01': '40',
       '2024-01-08': '',
     })
-    expect(defaults.additionalEarnings['job-1']!['Bonus']).toEqual({
+    expect(defaults.overtimeIncludedEarnings['job-1']!['Bonus']).toEqual({
       '2024-01-01': '500',
       '2024-01-08': '',
     })
@@ -282,7 +284,7 @@ describe('derivePayrollEditEmployeeDefaults', () => {
     )
 
     expect(defaults.hours['job-1']!['Regular Hours']).toEqual({ '2024-01-01': '40' })
-    expect(defaults.additionalEarnings['job-1']!['Bonus']).toEqual({ '2024-01-01': '500' })
+    expect(defaults.overtimeIncludedEarnings['job-1']!['Bonus']).toEqual({ '2024-01-01': '500' })
   })
 })
 
@@ -430,7 +432,9 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
   it('rounds a summed earning amount to cents instead of leaking float error', () => {
     const formData: PayrollEditEmployeeFormData = {
       ...emptyFormData,
-      additionalEarnings: { 'job-1': { Bonus: { '2024-01-01': '0.1', '2024-01-08': '0.2' } } },
+      overtimeIncludedEarnings: {
+        'job-1': { Bonus: { '2024-01-01': '0.1', '2024-01-08': '0.2' } },
+      },
     }
 
     const result = buildPayrollUpdateEmployeeCompensation(

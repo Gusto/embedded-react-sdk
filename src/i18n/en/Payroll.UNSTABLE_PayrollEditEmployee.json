@@ -12,7 +12,6 @@
   "typeColumn": "Type",
   "amountColumn": "Amount",
   "hoursColumn": "Hours",
-  "otherTitle": "Other",
   "compensationNames": {
     "regularHours": "Regular Hours",
     "overtime": "Overtime",
@@ -26,6 +25,9 @@
     "remaining": "{{balance}} remaining"
   },
   "additionalEarningsTitle": "Additional earnings",
+  "overtimeMultiplierEarningsAlert": "Earnings entered here factor into the overtime multiplier used to calculate {{employeeName}}'s total pay.",
+  "overtimeIncludedEarningsGroupLabel": "Included in overtime multiplier calculation",
+  "overtimeExcludedEarningsGroupLabel": "Not a factor for overtime calculation",
   "reimbursementTitle": "Reimbursements",
   "reimbursementDescriptionLabel": "Description",
   "reimbursementDescriptionPlaceholder": "e.g., Office supplies",
