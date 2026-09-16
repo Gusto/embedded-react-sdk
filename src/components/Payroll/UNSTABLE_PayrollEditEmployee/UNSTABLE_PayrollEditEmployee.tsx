@@ -464,25 +464,31 @@ const Root = ({
     ]
 
     return (
-      <Box header={<BoxHeader title={t('additionalEarningsTitle')} />}>
+      <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
         {included.hasRows ? (
           <>
-            <Alert
-              status="info"
-              label={t('overtimeMultiplierEarningsAlert', { employeeName })}
-              disableScrollIntoView
-            />
-            <Text size="sm" weight="semibold">
-              {t('overtimeIncludedEarningsGroupLabel')}
-            </Text>
+            <div className={styles.earningsAlert}>
+              <Alert
+                status="info"
+                label={t('overtimeMultiplierEarningsAlert', { employeeName })}
+                disableScrollIntoView
+              />
+            </div>
+            <div className={styles.earningsGroupLabel}>
+              <Text size="sm" weight="semibold">
+                {t('overtimeIncludedEarningsGroupLabel')}
+              </Text>
+            </div>
             {included.element}
           </>
         ) : null}
         {hasExcluded ? (
           <>
-            <Text size="sm" weight="semibold">
-              {t('overtimeExcludedEarningsGroupLabel')}
-            </Text>
+            <div className={styles.earningsGroupLabel}>
+              <Text size="sm" weight="semibold">
+                {t('overtimeExcludedEarningsGroupLabel')}
+              </Text>
+            </div>
             <DataView
               label={t('overtimeExcludedEarningsGroupLabel')}
               isWithinBox
