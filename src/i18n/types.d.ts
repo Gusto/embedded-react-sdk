@@ -7502,7 +7502,7 @@ export namespace Translations {
         label: string
       }
       processingFailed: {
-        /** @defaultValue `"We couldn't calculate this payroll"` */
+        /** @defaultValue `"This payroll couldn't be calculated"` */
         label: string
         /** @defaultValue `"Please try calculating again."` */
         message: string
