@@ -399,10 +399,38 @@ const Root = ({
     )
   }
 
+  // A flat single-amount earnings table: one "type" column and one "$" input
+  // column. Used for the merged no-overtime list and the overtime-excluded group.
+  const renderAmountTable = (rows: { label: string; Field: HourEntry['Field'] }[], label: string) => {
+    const columns: useDataViewPropReturn<(typeof rows)[number]>['columns'] = [
+      { title: t('typeColumn'), render: row => row.label },
+      {
+        title: t('amountColumn'),
+        justify: 'end',
+        render: row => (
+          <div className={styles.inputContainer}>
+            <row.Field label={row.label} shouldVisuallyHideLabel adornmentStart="$" />
+          </div>
+        ),
+      },
+    ]
+    return <DataView label={label} isWithinBox columns={columns} data={rows} />
+  }
+
+  const renderGroupLabel = (label: string) => (
+    <div className={styles.earningsGroupLabel}>
+      <Text size="sm" weight="semibold">
+        {label}
+      </Text>
+    </div>
+  )
+
   const renderEarningsSection = () => {
     const includedEarnings = Fields.overtimeIncludedEarnings
-    const excludedEarnings = Fields.overtimeExcludedEarnings
-    const hasExcluded = excludedEarnings.length > 0
+    const excludedRows = Fields.overtimeExcludedEarnings.map(entry => ({
+      label: earningLabel(entry.id),
+      Field: entry.Field,
+    }))
 
     const included = buildBreakdownDataView(includedEarnings, {
       label: t('additionalEarningsTitle'),
@@ -411,57 +439,22 @@ const Root = ({
       labelFor: earningLabel,
       adornmentStart: '$',
     })
-    if (!included.hasRows && !hasExcluded) return null
+    if (!included.hasRows && excludedRows.length === 0) return null
 
-    // Only split earnings into per-workweek columns and overtime groups once
+    // Split into per-workweek columns and labeled overtime groups only once
     // overtime is added (the included section becomes workweek-keyed). Otherwise
     // included and excluded earnings render together as one flat list.
     if (!isSplitByWorkweek(includedEarnings)) {
-      type MergedRow = { label: string; Field: HourEntry['Field'] }
-      const mergedRows: MergedRow[] = [
+      const mergedRows = [
         ...includedEarnings.map(entry => ({ label: earningLabel(entry.name), Field: entry.Field })),
-        ...excludedEarnings.map(entry => ({ label: earningLabel(entry.id), Field: entry.Field })),
-      ]
-      const columns: useDataViewPropReturn<MergedRow>['columns'] = [
-        { title: t('typeColumn'), render: row => row.label },
-        {
-          title: t('amountColumn'),
-          justify: 'end',
-          render: row => (
-            <div className={styles.inputContainer}>
-              <row.Field label={row.label} shouldVisuallyHideLabel adornmentStart="$" />
-            </div>
-          ),
-        },
+        ...excludedRows,
       ]
       return (
         <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
-          <DataView
-            label={t('additionalEarningsTitle')}
-            isWithinBox
-            columns={columns}
-            data={mergedRows}
-          />
+          {renderAmountTable(mergedRows, t('additionalEarningsTitle'))}
         </Box>
       )
     }
-
-    const excludedColumns: useDataViewPropReturn<(typeof excludedEarnings)[number]>['columns'] = [
-      { title: t('typeColumn'), render: entry => earningLabel(entry.id) },
-      {
-        title: t('amountColumn'),
-        justify: 'end',
-        render: entry => (
-          <div className={styles.inputContainer}>
-            <entry.Field
-              label={earningLabel(entry.id)}
-              shouldVisuallyHideLabel
-              adornmentStart="$"
-            />
-          </div>
-        ),
-      },
-    ]
 
     return (
       <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
@@ -474,27 +467,14 @@ const Root = ({
                 disableScrollIntoView
               />
             </div>
-            <div className={styles.earningsGroupLabel}>
-              <Text size="sm" weight="semibold">
-                {t('overtimeIncludedEarningsGroupLabel')}
-              </Text>
-            </div>
+            {renderGroupLabel(t('overtimeIncludedEarningsGroupLabel'))}
             {included.element}
           </>
         ) : null}
-        {hasExcluded ? (
+        {excludedRows.length > 0 ? (
           <>
-            <div className={styles.earningsGroupLabel}>
-              <Text size="sm" weight="semibold">
-                {t('overtimeExcludedEarningsGroupLabel')}
-              </Text>
-            </div>
-            <DataView
-              label={t('overtimeExcludedEarningsGroupLabel')}
-              isWithinBox
-              columns={excludedColumns}
-              data={excludedEarnings}
-            />
+            {renderGroupLabel(t('overtimeExcludedEarningsGroupLabel'))}
+            {renderAmountTable(excludedRows, t('overtimeExcludedEarningsGroupLabel'))}
           </>
         ) : null}
       </Box>
