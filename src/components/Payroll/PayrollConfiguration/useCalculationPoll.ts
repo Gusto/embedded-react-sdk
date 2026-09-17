@@ -58,10 +58,10 @@ const isCalculatedStatus = (
   (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
     processingRequest == null)
 
-// A calculation that succeeded while we were waiting on the deadline must never be reported as a
-// failure — a false failure re-arms prepare, which would then wipe the result. Advancing on a
-// stale success is the safer of the two wrong answers: the next screen re-reads the payroll,
-// whereas a false failure destroys real data.
+// A calculation that succeeded must never be reported as a failure just because we stopped
+// reading it (deadline, or a non-retryable error) — a false failure re-arms prepare, which would
+// then wipe the result. Advancing on a stale success is the safer of the two wrong answers: the
+// next screen re-reads the payroll, whereas a false failure destroys real data.
 const verifiedCalculationOutcome = (lastData: PayrollsGetQueryData | null): CalculationOutcome => {
   const payroll = lastData?.payrollShow
   if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
@@ -75,9 +75,13 @@ const evaluateCalculationOutcome = (
   run: CalculationPollRun | null,
 ): PollTickResult<CalculationOutcome> => {
   if (!outcome.success) {
-    return isNonRetryablePollError(outcome.error)
-      ? { status: 'error', error: outcome.error }
-      : { status: 'polling' }
+    if (!isNonRetryablePollError(outcome.error)) return { status: 'polling' }
+    // Rescue a success the freshness check above missed (e.g. a same-tick calculatedAt match
+    // with baseline); never rescue a failure this way -- an unconfirmed read must stay 'error',
+    // not 'done', so it doesn't reset hasSeenCalculatingRef.
+    const verified = verifiedCalculationOutcome(outcome.lastData)
+    if (verified.type === 'calculated') return { status: 'done', value: verified }
+    return { status: 'error', error: outcome.error }
   }
 
   const payroll = outcome.data.payrollShow

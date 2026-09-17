@@ -811,6 +811,54 @@ describe('PayrollConfiguration', () => {
       expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
     })
 
+    it('advances instead of reporting failure when a non-retryable error follows a same-tick calculated read', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let showCallCount = 0
+
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: '2025-08-10T12:00:00Z',
+        processing_request: { status: 'calculate_success', errors: [] },
+      }
+
+      server.use(
+        // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
+        // shadow its handler.
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/payroll-uuid-1`, () => {
+          showCallCount++
+          // First two reads match baseline exactly, so the freshness check reports 'polling' not
+          // 'calculated'; the third 401s and must rescue that snapshot instead of a false failure.
+          if (showCallCount > 2) {
+            return new HttpResponse(null, { status: 401 })
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
+    })
+
     // Guardrail for the SDK-1231 gate: prepare resets a calculation, so reaching the poll
     // deadline must not re-enable it while a good calculation exists.
     it('keeps prepare gated after the poll deadline', async () => {
