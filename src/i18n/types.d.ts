@@ -7501,6 +7501,12 @@ export namespace Translations {
         /** @defaultValue `"{{employeeName}} updated successfully"` */
         label: string
       }
+      processingFailed: {
+        /** @defaultValue `"We couldn't calculate this payroll"` */
+        label: string
+        /** @defaultValue `"Please try calculating again."` */
+        message: string
+      }
     }
     /** @defaultValue `"Preparing payroll..."` */
     loadingTitle: string

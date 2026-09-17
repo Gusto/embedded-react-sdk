@@ -1,25 +1,35 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { usePollingTask, type PollTickResult, type UsePollingTaskOptions } from './usePollingTask'
+import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
+import {
+  usePollingTask,
+  isNonRetryablePollError,
+  type PollTickResult,
+  type UsePollingTaskOptions,
+} from './usePollingTask'
 
 const INTERVAL_MS = 5_000
 const DEADLINE_MS = 30_000
 
 const setup = (overrides: Partial<UsePollingTaskOptions<string, string>> = {}) => {
   const onDone = vi.fn()
+  const onError = vi.fn()
   const onDeadline = vi.fn()
   const options: UsePollingTaskOptions<string, string> = {
     fetch: vi.fn(() => Promise.resolve('pending')),
-    evaluate: (data): PollTickResult<string> =>
-      data === 'ready' ? { done: true, value: data } : { done: false },
+    evaluate: (outcome): PollTickResult<string> =>
+      outcome.success && outcome.data === 'ready'
+        ? { status: 'done', value: outcome.data }
+        : { status: 'polling' },
     onDone,
+    onError,
     onDeadline,
     intervalMs: INTERVAL_MS,
     deadlineMs: DEADLINE_MS,
     ...overrides,
   }
   const rendered = renderHook(() => usePollingTask(options))
-  return { ...rendered, options, onDone, onDeadline }
+  return { ...rendered, options, onDone, onError, onDeadline }
 }
 
 describe('usePollingTask', () => {
@@ -70,7 +80,7 @@ describe('usePollingTask', () => {
     expect(result.current.isPolling).toBe(false)
   })
 
-  it('treats a rejected read as a skipped tick, not a failed task', async () => {
+  it('treats a rejected read as a skipped tick when evaluate tolerates it, not a failed task', async () => {
     const read = vi
       .fn<() => Promise<string>>()
       .mockRejectedValueOnce(new Error('network blip'))
@@ -89,6 +99,63 @@ describe('usePollingTask', () => {
 
     expect(onDone).toHaveBeenCalledWith('ready')
     expect(onDeadline).not.toHaveBeenCalled()
+  })
+
+  it('passes a rejected read to evaluate as a failure outcome instead of throwing', async () => {
+    const readError = new Error('network blip')
+    const read = vi.fn<() => Promise<string>>().mockRejectedValue(readError)
+    const evaluate = vi.fn((): PollTickResult<string> => ({ status: 'polling' }))
+    const { result } = setup({ fetch: read, evaluate })
+
+    await act(async () => {
+      result.current.start()
+    })
+
+    expect(evaluate).toHaveBeenCalledWith({ success: false, error: readError, lastData: null })
+  })
+
+  it('includes the last successfully-read data alongside a later rejection', async () => {
+    const readError = new Error('network blip')
+    const read = vi
+      .fn<() => Promise<string>>()
+      .mockResolvedValueOnce('pending')
+      .mockRejectedValue(readError)
+    const evaluate = vi.fn((): PollTickResult<string> => ({ status: 'polling' }))
+    const { result } = setup({ fetch: read, evaluate })
+
+    await act(async () => {
+      result.current.start()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(INTERVAL_MS)
+    })
+
+    expect(evaluate).toHaveBeenLastCalledWith({
+      success: false,
+      error: readError,
+      lastData: 'pending',
+    })
+  })
+
+  it('calls onError, not onDone, when evaluate reports a rejected read as an error', async () => {
+    const readError = new SDKValidationError('bad shape', new Error('cause'), {})
+    const read = vi.fn<() => Promise<string>>().mockRejectedValue(readError)
+    const evaluate = vi.fn((outcome): PollTickResult<string> =>
+      !outcome.success && isNonRetryablePollError(outcome.error)
+        ? { status: 'error', error: outcome.error }
+        : { status: 'polling' },
+    )
+    const { result, onDone, onError, onDeadline } = setup({ fetch: read, evaluate })
+
+    await act(async () => {
+      result.current.start()
+    })
+
+    expect(read).toHaveBeenCalledTimes(1)
+    expect(onError).toHaveBeenCalledWith(readError)
+    expect(onDone).not.toHaveBeenCalled()
+    expect(onDeadline).not.toHaveBeenCalled()
+    expect(result.current.isPolling).toBe(false)
   })
 
   it('calls onDeadline with the last data it read', async () => {
@@ -207,8 +274,12 @@ describe('usePollingTask', () => {
       ({ onDone }: { onDone: (value: string) => void }) =>
         usePollingTask<string, string>({
           fetch: read,
-          evaluate: data => (data === 'ready' ? { done: true, value: data } : { done: false }),
+          evaluate: outcome =>
+            outcome.success && outcome.data === 'ready'
+              ? { status: 'done', value: outcome.data }
+              : { status: 'polling' },
           onDone,
+          onError: vi.fn(),
           onDeadline: vi.fn(),
           intervalMs: INTERVAL_MS,
           deadlineMs: DEADLINE_MS,
@@ -229,5 +300,17 @@ describe('usePollingTask', () => {
     expect(secondOnDone).toHaveBeenCalledWith('ready')
     expect(firstOnDone).not.toHaveBeenCalled()
     expect(read).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('isNonRetryablePollError', () => {
+  it('is true for an SDKValidationError', () => {
+    expect(
+      isNonRetryablePollError(new SDKValidationError('bad shape', new Error('cause'), {})),
+    ).toBe(true)
+  })
+
+  it('is false for a generic error', () => {
+    expect(isNonRetryablePollError(new Error('network blip'))).toBe(false)
   })
 })

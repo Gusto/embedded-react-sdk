@@ -318,6 +318,12 @@ const Root = ({
     refetch: refetchPayroll,
     onProcessed: emitProcessed,
     onProcessingFailed: emitProcessingFailed,
+    // Unlike the calculation poll, a second Submit click here is safe even if this fires on a
+    // payroll that actually did process successfully — payrollsSubmit only operates on an
+    // unprocessed payroll, so the API itself rejects a resubmit rather than double-running it.
+    onError: () => {
+      emitProcessingFailed(undefined)
+    },
   })
 
   // Always poll from mount, not just after Submit: the initial read is a non-suspense query, so
