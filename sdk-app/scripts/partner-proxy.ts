@@ -10,6 +10,7 @@
  * "create a new onboarded company" step here. Mint one first (via `POST /v1/partner_managed_companies`),
  * then put its `companyUuid`/`refreshToken` in `sdk-app/env/.env.partner`.
  */
+import { readFileSync, writeFileSync } from 'fs'
 import type { Connect, ViteDevServer } from 'vite'
 import { GustoEmbedded } from '@gusto/embedded-api'
 
@@ -37,10 +38,26 @@ function requireEnv(env: Record<string, string>, key: string): string {
 }
 
 /**
- * Mounts the direct-to-API partner proxy on the Vite dev server. Requires
- * `CLIENT_ID`, `CLIENT_SECRET`, and `REFRESH_TOKEN` in `env`.
+ * Gusto's OAuth server rotates refresh tokens on every use — the previous one
+ * is invalidated the moment a new one is issued. Without persisting the
+ * rotated value, the next `sdk-app:partner` process reads the now-dead token
+ * from disk and can never refresh again.
  */
-export function registerPartnerApiProxy(server: ViteDevServer, env: Record<string, string>): void {
+function persistRefreshToken(envPath: string, refreshToken: string): void {
+  const content = readFileSync(envPath, 'utf-8')
+  const updated = content.replace(/^REFRESH_TOKEN=.*$/m, `REFRESH_TOKEN=${refreshToken}`)
+  writeFileSync(envPath, updated)
+}
+
+/**
+ * Mounts the direct-to-API partner proxy on the Vite dev server. Requires
+ * `CLIENT_ID`, `CLIENT_SECRET`, and `REFRESH_TOKEN` in the env file at `envPath`.
+ */
+export function registerPartnerApiProxy(
+  server: ViteDevServer,
+  env: Record<string, string>,
+  envPath: string,
+): void {
   const clientId = requireEnv(env, 'CLIENT_ID')
   const clientSecret = requireEnv(env, 'CLIENT_SECRET')
   const refreshToken = requireEnv(env, 'REFRESH_TOKEN')
@@ -69,8 +86,12 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
     }
 
     cache.token = auth.accessToken
-    cache.refreshToken = auth.refreshToken ?? cache.refreshToken
     cache.expiresAt = now + auth.expiresIn * 1000
+
+    if (auth.refreshToken && auth.refreshToken !== cache.refreshToken) {
+      cache.refreshToken = auth.refreshToken
+      persistRefreshToken(envPath, auth.refreshToken)
+    }
 
     return cache.token
   }
