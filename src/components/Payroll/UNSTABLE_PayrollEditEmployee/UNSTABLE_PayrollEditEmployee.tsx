@@ -272,6 +272,11 @@ const Root = ({
     }
   }
 
+  // The visible rows for a section: the first workweek's rows drive the row set
+  // (workweek columns fan out from there), or the flat list when not split.
+  const getSectionRows = (section: HourEntry[] | Record<string, HourEntry[]>) =>
+    isSplitByWorkweek(section) ? (section[form.data.workweeks[0]?.startDate ?? ''] ?? []) : section
+
   const buildBreakdownDataView = (
     section: HourEntry[] | Record<string, HourEntry[]>,
     options: {
@@ -282,11 +287,10 @@ const Root = ({
       adornmentStart?: string
       adornmentEnd?: string
     },
-  ): { element: React.ReactNode; hasRows: boolean } => {
+  ) => {
     const { label, rowHeader, valueColumnLabel, labelFor, adornmentStart, adornmentEnd } = options
     const split = isSplitByWorkweek(section)
-    const firstWeekStart = form.data.workweeks[0]?.startDate ?? ''
-    const rows = split ? (section[firstWeekStart] ?? []) : section
+    const rows = getSectionRows(section)
 
     const renderField = (entry: HourEntry, fieldLabel: string) => (
       <div className={styles.inputContainer}>
@@ -330,10 +334,7 @@ const Root = ({
       ...(split ? workweekColumns : [valueColumn]),
     ]
 
-    return {
-      element: <DataView label={label} isWithinBox columns={columns} data={rows} />,
-      hasRows: rows.length > 0,
-    }
+    return <DataView label={label} isWithinBox columns={columns} data={rows} />
   }
 
   const renderBreakdownSection = (
@@ -350,12 +351,11 @@ const Root = ({
     },
   ) => {
     const { title, footer, ...viewOptions } = options
-    const { element, hasRows } = buildBreakdownDataView(section, viewOptions)
-    if (!hasRows && !footer) return null
+    if (getSectionRows(section).length === 0 && !footer) return null
 
     return (
       <Box header={<BoxHeader title={title} />} withPadding={false} footer={footer}>
-        {element}
+        {buildBreakdownDataView(section, viewOptions)}
       </Box>
     )
   }
@@ -435,14 +435,16 @@ const Root = ({
       Field: entry.Field,
     }))
 
-    const included = buildBreakdownDataView(includedEarnings, {
+    const hasIncluded = getSectionRows(includedEarnings).length > 0
+    if (!hasIncluded && excludedRows.length === 0) return null
+
+    const includedTable = buildBreakdownDataView(includedEarnings, {
       label: t('additionalEarningsTitle'),
       rowHeader: t('typeColumn'),
       valueColumnLabel: t('amountColumn'),
       labelFor: earningLabel,
       adornmentStart: '$',
     })
-    if (!included.hasRows && excludedRows.length === 0) return null
 
     // Split into per-workweek columns and labeled overtime groups only once
     // overtime is added (the included section becomes workweek-keyed). Otherwise
@@ -461,7 +463,7 @@ const Root = ({
 
     return (
       <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
-        {included.hasRows ? (
+        {hasIncluded ? (
           <>
             <div className={styles.earningsAlert}>
               <Alert
@@ -471,7 +473,7 @@ const Root = ({
               />
             </div>
             {renderGroupLabel(t('overtimeIncludedEarningsGroupLabel'))}
-            {included.element}
+            {includedTable}
           </>
         ) : null}
         {excludedRows.length > 0 ? (
