@@ -401,7 +401,10 @@ const Root = ({
 
   // A flat single-amount earnings table: one "type" column and one "$" input
   // column. Used for the merged no-overtime list and the overtime-excluded group.
-  const renderAmountTable = (rows: { label: string; Field: HourEntry['Field'] }[], label: string) => {
+  const renderAmountTable = (
+    rows: { label: string; Field: HourEntry['Field'] }[],
+    label: string,
+  ) => {
     const columns: useDataViewPropReturn<(typeof rows)[number]>['columns'] = [
       { title: t('typeColumn'), render: row => row.label },
       {
