@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 
 /**
  * The outcome of evaluating a single poll tick.
@@ -29,18 +30,25 @@ export type PollTickResult<TValue> =
 export type PollReadOutcome<TData> =
   { success: true; data: TData } | { success: false; error: unknown; lastData: TData | null }
 
+const NON_RETRYABLE_HTTP_STATUSES = new Set([401, 403])
+
 /**
  * Whether a poll read's error is not worth retrying.
  *
  * @remarks
- * `SDKValidationError` (also matches `ResponseValidationError`, via its duck-typed `instanceof`)
- * means the response failed schema validation — retrying won't help. Everything else (network
- * blips, timeouts, transient 5xx) may still succeed on the next tick.
+ * `SDKValidationError` (also matches `ResponseValidationError`) means the response failed schema
+ * validation. A 401/403 means the session that started the poll expired mid-poll (SDK-1291) --
+ * neither recovers by retrying. Everything else (network blips, timeouts, transient 5xx) may
+ * still succeed on the next tick.
  *
  * @internal
  */
 export function isNonRetryablePollError(error: unknown): boolean {
-  return error instanceof SDKValidationError
+  if (error instanceof SDKValidationError) return true
+  return (
+    error instanceof GustoEmbeddedError &&
+    NON_RETRYABLE_HTTP_STATUSES.has(error.httpMeta.response.status)
+  )
 }
 
 /**

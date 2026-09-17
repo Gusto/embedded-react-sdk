@@ -1,12 +1,21 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import {
   usePollingTask,
   isNonRetryablePollError,
   type PollTickResult,
   type UsePollingTaskOptions,
 } from './usePollingTask'
+
+function createHttpMeta(status: number) {
+  return {
+    response: new Response('', { status }),
+    request: new Request('https://api.gusto.com/v1/test'),
+    body: '',
+  }
+}
 
 const INTERVAL_MS = 5_000
 const DEADLINE_MS = 30_000
@@ -312,5 +321,13 @@ describe('isNonRetryablePollError', () => {
 
   it('is false for a generic error', () => {
     expect(isNonRetryablePollError(new Error('network blip'))).toBe(false)
+  })
+
+  it.each([401, 403])('is true for a %d APIError', status => {
+    expect(isNonRetryablePollError(new APIError('', createHttpMeta(status)))).toBe(true)
+  })
+
+  it('is false for a 500 APIError', () => {
+    expect(isNonRetryablePollError(new APIError('', createHttpMeta(500)))).toBe(false)
   })
 })
