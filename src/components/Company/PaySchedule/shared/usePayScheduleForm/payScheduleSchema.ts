@@ -39,6 +39,22 @@ const FREQUENCY_VALUES = ['Every week', 'Every other week', 'Twice per month', '
  */
 export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number]
 
+const WORKWEEK_START_DAY_VALUES = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+] as const
+/**
+ * Pay schedule workweek start day values accepted by {@link usePayScheduleForm}.
+ *
+ * @public
+ */
+export type PayScheduleWorkweekStartDay = (typeof WORKWEEK_START_DAY_VALUES)[number]
+
 const fieldValidators = {
   customName: z.string(),
   frequency: z.enum(FREQUENCY_VALUES),
@@ -47,6 +63,7 @@ const fieldValidators = {
   anchorEndOfPayPeriod: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   day1: z.preprocess(coerceNaN(0), z.number()),
   day2: z.preprocess(coerceNaN(0), z.number()),
+  workweekStartDay: z.enum(WORKWEEK_START_DAY_VALUES).nullable(),
 }
 
 /**
@@ -90,6 +107,8 @@ const requiredFieldsConfig = {
   customTwicePerMonth: needsCustomTwicePerMonth,
   day1: needsDay1,
   day2: needsDay2,
+  // Null on legacy pay schedules — editing one must not force a value just to save other fields.
+  workweekStartDay: 'never',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
 /**

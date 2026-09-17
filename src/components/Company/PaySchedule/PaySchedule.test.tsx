@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { PaySchedule } from './PaySchedule'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -361,6 +361,60 @@ describe('PaySchedule', () => {
       expect(yearInput).toHaveValue(2024)
       expect(monthInput).toHaveValue(1)
       expect(dayInput).toHaveValue(1)
+    })
+
+    it('renders the workweek start day field disabled and still submits its value when disableWorkweekStartDayEditing is true', async () => {
+      const user = userEvent.setup()
+      const requestBodies: Array<Record<string, unknown>> = []
+      const createPayScheduleResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const requestBody = (await request.json()) as Record<string, unknown>
+        requestBodies.push(requestBody)
+        const responseFixture = await getFixture('post-v1-companies-company_id-pay_schedules')
+        return HttpResponse.json({ ...responseFixture, ...requestBody }, { status: 201 })
+      })
+      server.use(
+        http.post(
+          `${API_BASE_URL}/v1/companies/:company_id/pay_schedules`,
+          createPayScheduleResolver,
+        ),
+      )
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule
+            companyId="123"
+            onEvent={() => {}}
+            defaultValues={{
+              frequency: 'Every week',
+              anchorPayDate: '2024-01-01',
+              anchorEndOfPayPeriod: '2024-01-07',
+              customName: 'Default Schedule',
+              workweekStartDay: 'Sunday',
+            }}
+            disableWorkweekStartDayEditing
+          />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
+
+      const workweekStartDaySelect = screen.getByRole('button', { name: /workweek start day/i })
+      expect(workweekStartDaySelect).toBeDisabled()
+      expect(workweekStartDaySelect).toHaveTextContent('Sunday')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(createPayScheduleResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(requestBodies[0]).toMatchObject({ workweek_start_day: 'Sunday' })
     })
   })
 

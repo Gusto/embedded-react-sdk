@@ -688,6 +688,7 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `descriptions.anchorPayDateDescription_one` | `"Please account for the {{count}} day it will take to process payroll."` |
 | `descriptions.anchorPayDateDescription_other` | `"Please account for the {{count}} days it will take to process payroll."` |
 | `descriptions.frequencyOptionsDescription` | `"Select the pay days for the month."` |
+| `descriptions.workweekStartDayDescription` | `"The day of the week this pay schedule's workweeks start on. Used for regular rate of pay overtime calculations."` |
 | <a id="property-companypayschedulefrequencies"></a> `frequencies` | |
 | `frequencies.everyOtherWeek` | `"Every other week"` |
 | `frequencies.everyWeek` | `"Every week"` |
@@ -713,6 +714,8 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `labels.name` | `"Name"` |
 | `labels.payfrequency` | `"Pay frequency"` |
 | `labels.preview` | `"Preview"` |
+| `labels.workweekStartDay` | `"Workweek start day"` |
+| `labels.workweekStartDayPlaceholder` | `"Select day..."` |
 | <a id="property-companypayschedulelistdescription"></a> `listDescription` | `"Pick what frequency you'd like to run payroll. If you need help, you can read more about <ScheduleLink href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</ScheduleLink>"` |
 | <a id="property-companypayschedulelistdescription2"></a> `listDescription2` | `"Why do we need to ask for this? We need to know when to pay your employees. Some states have <PaymentLawLink href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</PaymentLawLink> Please choose pay schedules that are legal for your employees."` |
 | <a id="property-companypayscheduleloading"></a> `loading` | `"Loading..."` |
@@ -741,6 +744,14 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `validations.frequencyOptions` | `"Please select the pay days for the month"` |
 | `validations.lastPayDayOfTheMonth` | `"Last pay day of the month is required"` |
 | `validations.name` | `"Pay schedule name is required"` |
+| <a id="property-companypayscheduleworkweekstartdayoptions"></a> `workweekStartDayOptions` | |
+| `workweekStartDayOptions.friday` | `"Friday"` |
+| `workweekStartDayOptions.monday` | `"Monday"` |
+| `workweekStartDayOptions.saturday` | `"Saturday"` |
+| `workweekStartDayOptions.sunday` | `"Sunday"` |
+| `workweekStartDayOptions.thursday` | `"Thursday"` |
+| `workweekStartDayOptions.tuesday` | `"Tuesday"` |
+| `workweekStartDayOptions.wednesday` | `"Wednesday"` |
 
 ***
 

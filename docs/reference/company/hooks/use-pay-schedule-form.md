@@ -94,6 +94,7 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company that owns the pay schedule. |
 | `defaultValues?` | `Partial`\<[`PayScheduleFormData`](#payscheduleformdata)\> | Pre-fill form values. Server data takes precedence on update. |
+| `disableWorkweekStartDayEditing?` | `boolean` | Renders `Fields.WorkweekStartDay` disabled while still submitting its current value, for partners that compute the workweek start day themselves and don't want end users editing it directly. Defaults to `false`. |
 | `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
 | `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
@@ -166,6 +167,7 @@ before rendering.
 | `AnchorPayDate` | `ComponentType`\<[`AnchorPayDateFieldProps`](#anchorpaydatefieldprops)\> | Bound to `anchorPayDate`. First pay date picker. Always available. |
 | `CustomName` | `ComponentType`\<[`CustomNameFieldProps`](#customnamefieldprops)\> | Bound to `customName`. Display name text input. Always available. |
 | `Frequency` | `ComponentType`\<[`FrequencyFieldProps`](#frequencyfieldprops)\> | Bound to `frequency`. Frequency selector. Always available. |
+| `WorkweekStartDay` | `ComponentType`\<[`WorkweekStartDayFieldProps`](#workweekstartdayfieldprops)\> | Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay overtime calculations. Always available. |
 | `CustomTwicePerMonth` | `ComponentType`\<[`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops)\> \| `undefined` | Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
 | `Day1` | `ComponentType`\<[`Day1FieldProps`](#day1fieldprops)\> \| `undefined` | Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
 | `Day2` | `ComponentType`\<[`Day2FieldProps`](#day2fieldprops)\> \| `undefined` | Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
@@ -382,6 +384,33 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.Frequency`
 
 _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
 
+***
+
+### WorkweekStartDay
+
+Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay overtime calculations. Always available.
+
+```tsx
+<form.Fields.WorkweekStartDay label="Workweek start day" />
+```
+
+<a id="workweekstartdayfieldprops"></a>
+
+#### WorkweekStartDayFieldProps
+
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`SelectHookFieldProps`](../../hooks.md#selecthookfieldprops)\<`never`, [`PayScheduleWorkweekStartDay`](#payscheduleworkweekstartday)\>\>
+
+Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.WorkweekStartDay` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `getOptionLabel?` | (`entry`: [`PayScheduleWorkweekStartDay`](#payscheduleworkweekstartday)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../hooks.md#selecthookfieldprops)._
+
 ## Validations
 
 <a id="dayvalidation"></a>
@@ -448,7 +477,7 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 
 ### PayScheduleField
 
-> **PayScheduleField** = `"frequency"` \| `"customName"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customTwicePerMonth"`
+> **PayScheduleField** = `"frequency"` \| `"workweekStartDay"` \| `"customName"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customTwicePerMonth"`
 
 Union of field names managed by the pay schedule form.
 
@@ -467,6 +496,7 @@ Union of field names managed by the pay schedule form.
 | `day1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 | `day2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 | `frequency` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`\> |
+| `workweekStartDay` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Sunday"` \| `"Monday"` \| `"Tuesday"` \| `"Wednesday"` \| `"Thursday"` \| `"Friday"` \| `"Saturday"`\> |
 
 Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
 
@@ -489,6 +519,7 @@ Shape of the values managed by the pay schedule form.
 | `day1` | `number` |
 | `day2` | `number` |
 | `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
+| `workweekStartDay` | `"Sunday"` \| `"Monday"` \| `"Tuesday"` \| `"Wednesday"` \| `"Thursday"` \| `"Friday"` \| `"Saturday"` \| `null` |
 
 ***
 
@@ -514,6 +545,18 @@ Configuration for promoting optional pay schedule fields to required in a given 
 
 Only fields that are optional by default can be promoted. Currently
 `customTwicePerMonth` is the only configurable field.
+
+***
+
+<a id="payscheduleworkweekstartday"></a>
+
+### PayScheduleWorkweekStartDay
+
+> **PayScheduleWorkweekStartDay** = `"Sunday"` \| `"Monday"` \| `"Tuesday"` \| `"Wednesday"` \| `"Thursday"` \| `"Friday"` \| `"Saturday"`
+
+Pay schedule workweek start day values accepted by [usePayScheduleForm](#usepayscheduleform).
+
+***
 
 ## Endpoints
 

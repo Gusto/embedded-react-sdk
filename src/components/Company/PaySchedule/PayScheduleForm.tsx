@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePayScheduleForm } from './shared/usePayScheduleForm'
-import type { UsePayScheduleFormProps, PayScheduleFrequency } from './shared/usePayScheduleForm'
+import type {
+  UsePayScheduleFormProps,
+  PayScheduleFrequency,
+  PayScheduleWorkweekStartDay,
+} from './shared/usePayScheduleForm'
 import style from './PayScheduleForm.module.scss'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
@@ -79,6 +83,16 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
     custom: t('frequencyOptions.custom'),
   }
 
+  const workweekStartDayLabels: Record<PayScheduleWorkweekStartDay, string> = {
+    Sunday: t('workweekStartDayOptions.sunday'),
+    Monday: t('workweekStartDayOptions.monday'),
+    Tuesday: t('workweekStartDayOptions.tuesday'),
+    Wednesday: t('workweekStartDayOptions.wednesday'),
+    Thursday: t('workweekStartDayOptions.thursday'),
+    Friday: t('workweekStartDayOptions.friday'),
+    Saturday: t('workweekStartDayOptions.saturday'),
+  }
+
   return (
     <BaseLayout error={paySchedule.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <SDKFormProvider formHookResult={paySchedule}>
@@ -146,6 +160,14 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                         }}
                       />
                     )}
+                    <Fields.WorkweekStartDay
+                      label={t('labels.workweekStartDay')}
+                      placeholder={t('labels.workweekStartDayPlaceholder')}
+                      description={t('descriptions.workweekStartDayDescription')}
+                      getOptionLabel={(entry: PayScheduleWorkweekStartDay) =>
+                        workweekStartDayLabels[entry]
+                      }
+                    />
                   </Flex>
                 </div>
                 <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">

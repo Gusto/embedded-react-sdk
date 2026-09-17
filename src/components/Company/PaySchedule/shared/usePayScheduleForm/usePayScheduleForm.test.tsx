@@ -235,6 +235,86 @@ describe('usePayScheduleForm', () => {
       assertReady(result.current)
       expect(result.current.data.paymentSpeedDays).toBe(2)
     })
+
+    it('sends workweekStartDay in the create request', async () => {
+      const { result } = renderHook(
+        () =>
+          usePayScheduleForm({
+            companyId: 'company-1',
+            defaultValues: {
+              customName: 'Weekly Test',
+              frequency: 'Every week',
+              anchorPayDate: '2026-05-01',
+              anchorEndOfPayPeriod: '2026-04-24',
+              workweekStartDay: 'Monday',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).not.toBeNull()
+      expect(createRequestBody?.workweek_start_day).toBe('Monday')
+    })
+
+    it('does not require workweekStartDay to submit', async () => {
+      const { result } = renderHook(
+        () =>
+          usePayScheduleForm({
+            companyId: 'company-1',
+            defaultValues: {
+              customName: 'Weekly Test',
+              frequency: 'Every week',
+              anchorPayDate: '2026-05-01',
+              anchorEndOfPayPeriod: '2026-04-24',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+      expect(readyResult.form.fieldsMetadata.workweekStartDay.isRequired).toBe(false)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).not.toBeNull()
+      expect(createRequestBody?.workweek_start_day).toBeUndefined()
+    })
+
+    it('disables the WorkweekStartDay field when disableWorkweekStartDayEditing is true', async () => {
+      const { result } = renderHook(
+        () =>
+          usePayScheduleForm({
+            companyId: 'company-1',
+            disableWorkweekStartDayEditing: true,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      assertReady(result.current)
+      expect(result.current.form.fieldsMetadata.workweekStartDay.isDisabled).toBe(true)
+    })
   })
 
   describe('update mode', () => {
@@ -350,6 +430,61 @@ describe('usePayScheduleForm', () => {
 
       expect(submitResult).toEqual(expect.objectContaining({ mode: 'update' }))
     })
+
+    it('updates a legacy schedule with no workweekStartDay set without blocking submission', async () => {
+      // Fixture schedule-1 has no workweek_start_day key at all (pre-dates the field).
+      const { result } = renderHook(
+        () =>
+          usePayScheduleForm({
+            companyId: 'company-1',
+            payScheduleId: 'schedule-1',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+      expect(readyResult.data.paySchedule?.workweekStartDay).toBeFalsy()
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(updateRequestBody).not.toBeNull()
+      expect(updateRequestBody?.workweek_start_day).toBeUndefined()
+    })
+
+    it('still submits the current workweekStartDay value while disabled for editing', async () => {
+      const { result } = renderHook(
+        () =>
+          usePayScheduleForm({
+            companyId: 'company-1',
+            payScheduleId: 'schedule-1',
+            defaultValues: { workweekStartDay: 'Sunday' },
+            disableWorkweekStartDayEditing: true,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+      expect(readyResult.form.fieldsMetadata.workweekStartDay.isDisabled).toBe(true)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(updateRequestBody).not.toBeNull()
+      expect(updateRequestBody?.workweek_start_day).toBe('Sunday')
+    })
   })
 })
 
@@ -397,6 +532,24 @@ describe('createPayScheduleSchema', () => {
     const result = schema.safeParse({ ...VALID_FORM_DATA, anchorEndOfPayPeriod: null })
     const errors = getFieldErrors(result)
     expect(errors.anchorEndOfPayPeriod).toBeDefined()
+  })
+
+  it('does not require workweekStartDay', () => {
+    const [schema] = createPayScheduleSchema({ mode: 'create' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, workweekStartDay: null })
+    expect(result.success).toBe(true)
+  })
+
+  it('accepts a valid workweekStartDay value', () => {
+    const [schema] = createPayScheduleSchema({ mode: 'create' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, workweekStartDay: 'Wednesday' })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects an invalid workweekStartDay value', () => {
+    const [schema] = createPayScheduleSchema({ mode: 'create' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, workweekStartDay: 'Someday' })
+    expect(result.success).toBe(false)
   })
 
   describe('day1/day2 conditional requirements', () => {

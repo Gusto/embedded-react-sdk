@@ -1065,6 +1065,10 @@ export namespace Translations {
       preview: string
       /** @defaultValue `"Legend"` */
       legend: string
+      /** @defaultValue `"Workweek start day"` */
+      workweekStartDay: string
+      /** @defaultValue `"Select day..."` */
+      workweekStartDayPlaceholder: string
     }
     /** @defaultValue `"Loading..."` */
     loading: string
@@ -1077,6 +1081,8 @@ export namespace Translations {
       anchorPayDateDescription_other: string
       /** @defaultValue `"The last date of the first pay period to help calculate future pay periods. This can be the same date as the first pay date."` */
       anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"The day of the week this pay schedule's workweeks start on. Used for regular rate of pay overtime calculations."` */
+      workweekStartDayDescription: string
     }
     payPreview: {
       /** @defaultValue `"Pay period"` */
@@ -1107,6 +1113,22 @@ export namespace Translations {
       '15thAndLast': string
       /** @defaultValue `"Custom"` */
       custom: string
+    }
+    workweekStartDayOptions: {
+      /** @defaultValue `"Sunday"` */
+      sunday: string
+      /** @defaultValue `"Monday"` */
+      monday: string
+      /** @defaultValue `"Tuesday"` */
+      tuesday: string
+      /** @defaultValue `"Wednesday"` */
+      wednesday: string
+      /** @defaultValue `"Thursday"` */
+      thursday: string
+      /** @defaultValue `"Friday"` */
+      friday: string
+      /** @defaultValue `"Saturday"` */
+      saturday: string
     }
     validations: {
       /** @defaultValue `"Pay schedule name is required"` */
