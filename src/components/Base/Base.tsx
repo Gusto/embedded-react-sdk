@@ -26,6 +26,15 @@ import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
 export type LoaderComponentType = ({ children }: { children?: ReactNode }) => JSX.Element
 
 /**
+ * A {@link LoaderComponentType} that renders nothing. Pass as `LoaderComponent` to suppress a
+ * component's own loading indicator — e.g. for supplementary chrome that should appear silently
+ * once its data resolves rather than flashing a skeleton next to content that has already painted.
+ *
+ * @internal
+ */
+export const HiddenLoader: LoaderComponentType = () => <></>
+
+/**
  * Props common to all SDK feature components, including children, an optional className, default form values, and an i18n resource dictionary override.
  *
  * @typeParam TResourceKey - The i18n resource namespace key whose dictionary entries can be overridden.

@@ -49,6 +49,35 @@ describe('TransitionPayrollAlert', () => {
     expect(onEvent).not.toHaveBeenCalledWith(componentEvents.ERROR, expect.anything())
   })
 
+  it('uses the provided LoaderComponent for its loading state instead of a default skeleton', async () => {
+    let releasePayPeriods: () => void = () => {}
+    const payPeriodsLoaded = new Promise<void>(resolve => {
+      releasePayPeriods = resolve
+    })
+    server.use(
+      http.get(payPeriodsPath, async () => {
+        await payPeriodsLoaded
+        return HttpResponse.json([transitionPayPeriod])
+      }),
+      http.get(paySchedulesPath, () => HttpResponse.json(paySchedulesResponse)),
+    )
+
+    renderWithProviders(
+      <TransitionPayrollAlert
+        companyId={COMPANY_ID}
+        onEvent={vi.fn()}
+        LoaderComponent={() => <div data-testid="transition-loader" />}
+      />,
+    )
+
+    // While its pay-periods request is pending, the boundary renders the supplied loader, not the
+    // SDK's default skeleton — this is how the landing keeps the alert from flashing a skeleton.
+    expect(await screen.findByTestId('transition-loader')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Loading component...')).toBeNull()
+
+    releasePayPeriods()
+  })
+
   it('renders the alert when an unprocessed transition pay period is returned', async () => {
     server.use(
       http.get(payPeriodsPath, () => HttpResponse.json([transitionPayPeriod])),

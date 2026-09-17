@@ -13,7 +13,7 @@ import {
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import { TransitionPayrollAlert } from '../TransitionPayrollAlert'
-import type { BaseComponentInterface, LoaderComponentType } from '@/components/Base/Base'
+import { HiddenLoader, type BaseComponentInterface } from '@/components/Base/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -21,11 +21,6 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
-
-// Renders no loading indicator. Handed to ConfirmWireDetails on the landing so its nested
-// Suspense boundary doesn't flash a second loader after the landing has already painted; the
-// wire banner simply appears once its data resolves.
-const HiddenLoader: LoaderComponentType = () => <></>
 
 /** @internal */
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
@@ -147,7 +142,11 @@ export function PayrollLandingTabsContextual() {
           LoaderComponent={HiddenLoader}
         />
       )}
-      <TransitionPayrollAlert companyId={ensureRequired(companyId)} onEvent={onEvent} />
+      <TransitionPayrollAlert
+        companyId={ensureRequired(companyId)}
+        onEvent={onEvent}
+        LoaderComponent={HiddenLoader}
+      />
       <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockers} />
       <Tabs
         tabs={tabs}
