@@ -338,7 +338,7 @@ export function usePayrollEditEmployeeForm({
 
   // Seed a blank input for every payroll fixed-compensation type (like the stable
   // editor), then let the field/defaults builders split them into additional
-  // earnings vs `other` by overtime inclusion. Without this, an employee whose
+  // earnings vs `overtimeExcludedEarnings` by overtime inclusion. Without this, an employee whose
   // prepared payroll carries no fixed compensations shows no earnings inputs.
   const resolvedFixedCompensations = useMemo(
     () =>
@@ -589,8 +589,11 @@ export function usePayrollEditEmployeeForm({
       { shouldDirty: true },
     )
     formMethods.setValue(
-      'additionalEarnings',
-      overlayLiveFirstWeek(revealedDefaults.additionalEarnings, currentValues.additionalEarnings),
+      'overtimeIncludedEarnings',
+      overlayLiveFirstWeek(
+        revealedDefaults.overtimeIncludedEarnings,
+        currentValues.overtimeIncludedEarnings,
+      ),
       { shouldDirty: true },
     )
   }

@@ -80,7 +80,7 @@ export const reimbursementDraftSchema = z.object({
 function addRequiredWorkweekIssues(
   ctx: z.RefinementCtx,
   section: Record<string, Record<string, Record<string, string>>>,
-  sectionKey: 'hours' | 'additionalEarnings',
+  sectionKey: 'hours' | 'overtimeIncludedEarnings',
 ): void {
   for (const [jobUuid, names] of Object.entries(section)) {
     for (const [name, weekMap] of Object.entries(names)) {
@@ -108,13 +108,13 @@ function addRequiredWorkweekIssues(
  * Overtime-affecting values are keyed by workweek internally: hours and
  * additional earnings are job-then-name-then-workweekStart records, so the
  * single-workweek (or not-yet-split) case is just the degenerate one-key form
- * of the multi-workweek shape. Non-overtime earnings (other) are flat
+ * of the multi-workweek shape. Non-overtime earnings (`overtimeExcludedEarnings`) are flat
  * job-then-name-to-amount records with no per-workweek breakdown, since they do
  * not feed the blended rate. Time off and final payout are keyed by
  * compensation name. This keeps one schema and one submit path.
  *
  * A `superRefine` enforces per-row completeness on `hours` and
- * `additionalEarnings`: once any workweek cell in a job+name row is filled, every
+ * `overtimeIncludedEarnings`: once any workweek cell in a job+name row is filled, every
  * other cell in that row must be filled too, surfaced per empty cell as
  * {@link PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK}. A row with nothing
  * filled is left alone (still submittable as untouched). This needs no
@@ -129,11 +129,11 @@ export function createPayrollEditEmployeeSchema() {
   return z
     .object({
       hours: z.record(z.string(), z.record(z.string(), z.record(z.string(), nonNegativeAmount))),
-      additionalEarnings: z.record(
+      overtimeIncludedEarnings: z.record(
         z.string(),
         z.record(z.string(), z.record(z.string(), nonNegativeAmount)),
       ),
-      other: z.record(z.string(), z.record(z.string(), nonNegativeAmount)),
+      overtimeExcludedEarnings: z.record(z.string(), z.record(z.string(), nonNegativeAmount)),
       timeOff: z.record(z.string(), nonNegativeAmount),
       finalPayout: z.record(z.string(), nonNegativeAmount),
       reimbursements: z.array(reimbursementSchema),
@@ -145,7 +145,7 @@ export function createPayrollEditEmployeeSchema() {
     })
     .superRefine((data, ctx) => {
       addRequiredWorkweekIssues(ctx, data.hours, 'hours')
-      addRequiredWorkweekIssues(ctx, data.additionalEarnings, 'additionalEarnings')
+      addRequiredWorkweekIssues(ctx, data.overtimeIncludedEarnings, 'overtimeIncludedEarnings')
     })
 }
 
