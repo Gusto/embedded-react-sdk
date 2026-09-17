@@ -55,6 +55,8 @@ export interface PayScheduleProps extends BaseComponentInterface<'Company.PaySch
    * Renders the workweek start day field disabled while still submitting its current value,
    * for partners that compute the workweek start day themselves and don't want end users
    * editing it directly. Defaults to `false`.
+   *
+   * @alpha
    */
   disableWorkweekStartDayEditing?: boolean
 }

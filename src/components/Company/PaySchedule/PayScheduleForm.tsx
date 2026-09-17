@@ -160,14 +160,16 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                         }}
                       />
                     )}
-                    <Fields.WorkweekStartDay
-                      label={t('labels.workweekStartDay')}
-                      placeholder={t('labels.workweekStartDayPlaceholder')}
-                      description={t('descriptions.workweekStartDayDescription')}
-                      getOptionLabel={(entry: PayScheduleWorkweekStartDay) =>
-                        workweekStartDayLabels[entry]
-                      }
-                    />
+                    {Fields.WorkweekStartDay && (
+                      <Fields.WorkweekStartDay
+                        label={t('labels.workweekStartDay')}
+                        placeholder={t('labels.workweekStartDayPlaceholder')}
+                        description={t('descriptions.workweekStartDayDescription')}
+                        getOptionLabel={(entry: PayScheduleWorkweekStartDay) =>
+                          workweekStartDayLabels[entry]
+                        }
+                      />
+                    )}
                   </Flex>
                 </div>
                 <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">

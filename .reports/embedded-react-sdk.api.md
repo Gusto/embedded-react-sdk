@@ -4484,7 +4484,8 @@ export interface PayScheduleFormFields {
     Day1: ComponentType<Day1FieldProps> | undefined;
     Day2: ComponentType<Day2FieldProps> | undefined;
     Frequency: ComponentType<FrequencyFieldProps>;
-    WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps>;
+    // @alpha
+    WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined;
 }
 
 // @public
@@ -4497,13 +4498,14 @@ export type PayScheduleOptionalFieldsToRequire = { create?: ("customTwicePerMont
 interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
     companyId: string;
     defaultValues?: PayScheduleDefaultValues;
+    // @alpha
     disableWorkweekStartDayEditing?: boolean;
 }
 
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
-// @public
+// @alpha
 export type PayScheduleWorkweekStartDay = "Friday" | "Monday" | "Saturday" | "Sunday" | "Thursday" | "Tuesday" | "Wednesday";
 
 // @public
@@ -6505,6 +6507,7 @@ export function usePayScheduleForm(input: UsePayScheduleFormProps): HookLoadingR
 export interface UsePayScheduleFormProps {
     companyId: string;
     defaultValues?: Partial<PayScheduleFormData>;
+    // @alpha
     disableWorkweekStartDayEditing?: boolean;
     optionalFieldsToRequire?: PayScheduleOptionalFieldsToRequire;
     payScheduleId?: string;
@@ -6797,7 +6800,7 @@ export interface WorkingSplit {
     uuid: string;
 }
 
-// @public
+// @alpha
 export type WorkweekStartDayFieldProps = HookFieldProps<SelectHookFieldProps<never, PayScheduleWorkweekStartDay>>;
 
 // @public

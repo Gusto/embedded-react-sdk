@@ -18,6 +18,14 @@ function assertReady(hookResult: UsePayScheduleFormResult): asserts hookResult i
   }
 }
 
+function withRegularRateOfPay({ children }: { children: React.ReactNode }) {
+  return (
+    <GustoTestProvider unstableFeatures={{ payrollRegularRateOfPay: true }}>
+      {children}
+    </GustoTestProvider>
+  )
+}
+
 function setupPaymentConfigsMock() {
   server.use(
     http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payment_configs`, () => {
@@ -249,7 +257,7 @@ describe('usePayScheduleForm', () => {
               workweekStartDay: 'Monday',
             },
           }),
-        { wrapper: GustoTestProvider },
+        { wrapper: withRegularRateOfPay },
       )
 
       await waitFor(() => {
@@ -265,6 +273,38 @@ describe('usePayScheduleForm', () => {
 
       expect(createRequestBody).not.toBeNull()
       expect(createRequestBody?.workweek_start_day).toBe('Monday')
+    })
+
+    it('hides Fields.WorkweekStartDay and omits it from the payload without the payrollRegularRateOfPay flag', async () => {
+      const { result } = renderHook(
+        () =>
+          usePayScheduleForm({
+            companyId: 'company-1',
+            defaultValues: {
+              customName: 'Weekly Test',
+              frequency: 'Every week',
+              anchorPayDate: '2026-05-01',
+              anchorEndOfPayPeriod: '2026-04-24',
+              workweekStartDay: 'Monday',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+      expect(readyResult.form.Fields.WorkweekStartDay).toBeUndefined()
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).not.toBeNull()
+      expect(createRequestBody?.workweek_start_day).toBeUndefined()
     })
 
     it('does not require workweekStartDay to submit', async () => {
@@ -467,7 +507,7 @@ describe('usePayScheduleForm', () => {
             defaultValues: { workweekStartDay: 'Sunday' },
             disableWorkweekStartDayEditing: true,
           }),
-        { wrapper: GustoTestProvider },
+        { wrapper: withRegularRateOfPay },
       )
 
       await waitFor(() => {

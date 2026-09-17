@@ -51,7 +51,7 @@ const WORKWEEK_START_DAY_VALUES = [
 /**
  * Pay schedule workweek start day values accepted by {@link usePayScheduleForm}.
  *
- * @public
+ * @alpha
  */
 export type PayScheduleWorkweekStartDay = (typeof WORKWEEK_START_DAY_VALUES)[number]
 

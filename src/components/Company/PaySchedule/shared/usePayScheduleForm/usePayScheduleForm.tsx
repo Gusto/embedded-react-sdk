@@ -55,6 +55,7 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 export type { PayScheduleOptionalFieldsToRequire } from './payScheduleSchema'
 
@@ -85,7 +86,10 @@ export interface UsePayScheduleFormProps {
   /**
    * Renders `Fields.WorkweekStartDay` disabled while still submitting its current value,
    * for partners that compute the workweek start day themselves and don't want end users
-   * editing it directly. Defaults to `false`.
+   * editing it directly. Defaults to `false`. Has no effect unless the `payrollRegularRateOfPay`
+   * unstable feature is enabled.
+   *
+   * @alpha
    */
   disableWorkweekStartDayEditing?: boolean
 }
@@ -115,8 +119,14 @@ export interface PayScheduleFormFields {
   Day1: ComponentType<Day1FieldProps> | undefined
   /** Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. */
   Day2: ComponentType<Day2FieldProps> | undefined
-  /** Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay overtime calculations. Always available. */
-  WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps>
+  /**
+   * Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay
+   * overtime calculations. `undefined` unless the `payrollRegularRateOfPay` unstable feature
+   * is enabled.
+   *
+   * @alpha
+   */
+  WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined
 }
 
 /**
@@ -313,6 +323,7 @@ export function usePayScheduleForm({
   shouldFocusError = true,
   disableWorkweekStartDayEditing = false,
 }: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady {
+  const isWorkweekStartDayEnabled = useUnstableFeature('payrollRegularRateOfPay')
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: payScheduleId ?? '' },
     { enabled: !!payScheduleId },
@@ -453,7 +464,9 @@ export function usePayScheduleForm({
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
-                    workweekStartDay: payload.workweekStartDay ?? undefined,
+                    workweekStartDay: isWorkweekStartDayEnabled
+                      ? (payload.workweekStartDay ?? undefined)
+                      : undefined,
                   },
                 },
               })
@@ -471,7 +484,9 @@ export function usePayScheduleForm({
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
-                    workweekStartDay: payload.workweekStartDay ?? undefined,
+                    workweekStartDay: isWorkweekStartDayEnabled
+                      ? (payload.workweekStartDay ?? undefined)
+                      : undefined,
                     version: currentPaySchedule.version!,
                   },
                 },
@@ -523,7 +538,7 @@ export function usePayScheduleForm({
         AnchorEndOfPayPeriod: AnchorEndOfPayPeriodField,
         Day1: showDay1 ? Day1Field : undefined,
         Day2: showDay2 ? Day2Field : undefined,
-        WorkweekStartDay: WorkweekStartDayField,
+        WorkweekStartDay: isWorkweekStartDayEnabled ? WorkweekStartDayField : undefined,
       },
       fieldsMetadata,
       hookFormInternals,

@@ -380,7 +380,10 @@ describe('PaySchedule', () => {
       )
 
       render(
-        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider
+          config={{ baseUrl: API_BASE_URL }}
+          unstableFeatures={{ payrollRegularRateOfPay: true }}
+        >
           <PaySchedule
             companyId="123"
             onEvent={() => {}}
@@ -415,6 +418,31 @@ describe('PaySchedule', () => {
         expect(createPayScheduleResolver).toHaveBeenCalledTimes(1)
       })
       expect(requestBodies[0]).toMatchObject({ workweek_start_day: 'Sunday' })
+    })
+
+    it('does not render the workweek start day field without the payrollRegularRateOfPay flag', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule
+            companyId="123"
+            onEvent={() => {}}
+            defaultValues={{ workweekStartDay: 'Sunday' }}
+          />
+        </GustoProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
+
+      expect(screen.queryByRole('button', { name: /workweek start day/i })).not.toBeInTheDocument()
     })
   })
 
