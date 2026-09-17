@@ -8429,8 +8429,10 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
-    /** @defaultValue `"Earnings entered here factor into the overtime multiplier used to calculate {{employeeName}}'s total pay."` */
+    /** @defaultValue `"These earnings raise {{employeeName}}'s overtime premium"` */
     overtimeMultiplierEarningsAlert: string
+    /** @defaultValue `"The amount you enter increases the overtime rate for the workweek it's assigned to. If an earning covers a longer stretch of work, like a quarterly commission, running it as an off-cycle payroll dated to that period spreads the overtime premium across those weeks. Enter it here if this pay period is where it belongs."` */
+    overtimeMultiplierEarningsAlertDescription: string
     /** @defaultValue `"Included in overtime multiplier calculation"` */
     overtimeIncludedEarningsGroupLabel: string
     /** @defaultValue `"Not a factor for overtime calculation"` */
