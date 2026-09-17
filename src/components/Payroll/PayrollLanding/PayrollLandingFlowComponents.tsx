@@ -13,7 +13,7 @@ import {
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import { TransitionPayrollAlert } from '../TransitionPayrollAlert'
-import { HiddenLoader, type BaseComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -139,13 +139,13 @@ export function PayrollLandingTabsContextual() {
         <ConfirmWireDetailsComponent
           companyId={ensureRequired(companyId)}
           onEvent={onEvent}
-          LoaderComponent={HiddenLoader}
+          LoaderComponent={() => <></>}
         />
       )}
       <TransitionPayrollAlert
         companyId={ensureRequired(companyId)}
         onEvent={onEvent}
-        LoaderComponent={HiddenLoader}
+        LoaderComponent={() => <></>}
       />
       <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockers} />
       <Tabs
