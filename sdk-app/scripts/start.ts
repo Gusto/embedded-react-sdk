@@ -24,6 +24,10 @@ function envIsUsable(env: Record<string, string>): boolean {
   return !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST && env.VITE_COMPANY_ID)
 }
 
+function partnerEnvIsUsable(env: Record<string, string>): boolean {
+  return !!(env.CLIENT_ID && env.CLIENT_SECRET && env.REFRESH_TOKEN && env.VITE_COMPANY_ID)
+}
+
 async function validateToken(env: Record<string, string>): Promise<boolean> {
   const companyId = env.VITE_COMPANY_ID
   if (!companyId || !env.FLOW_TOKEN || !env.GWS_FLOWS_HOST) return false
@@ -72,43 +76,62 @@ async function main() {
 
   const envPath = resolve(ENV_DIR, `.env.${zpEnv}`)
 
-  if (!existsSync(envPath) || !envIsUsable(loadEnvFile(envPath))) {
-    const setupOk = runSetup(zpEnv)
-    if (!setupOk || !existsSync(envPath)) {
+  if (zpEnv === 'partner') {
+    // Partner mode talks directly to the real API with a real partner's own
+    // credentials — there's no gws-flows demo to auto-provision here. The
+    // developer supplies an existing partner-managed company's tokens by hand.
+    if (!existsSync(envPath) || !partnerEnvIsUsable(loadEnvFile(envPath))) {
       console.error(
-        `\n  Auto-setup failed. You can try manually: npm run sdk-app:setup --env=${zpEnv}\n`,
+        `\n  Missing or incomplete ${envPath}.\n` +
+          `  Create it with CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, and VITE_COMPANY_ID\n` +
+          `  for an existing partner-managed company. See sdk-app/README.md ("Partner").\n`,
       )
       process.exit(1)
     }
-  }
 
-  const env = loadEnvFile(envPath)
-
-  if (!env.FLOW_TOKEN || !env.GWS_FLOWS_HOST) {
-    console.error(`  Error: Missing FLOW_TOKEN or GWS_FLOWS_HOST in ${envPath}`)
-    process.exit(1)
-  }
-
-  console.log(`  Target: ${env.GWS_FLOWS_HOST}`)
-
-  console.log(`  Validating token...`)
-  const isValid = await validateToken(env)
-  if (isValid) {
-    console.log(`  Token is valid\n`)
+    const env = loadEnvFile(envPath)
+    console.log(
+      `  Target: ${env.GUSTO_API_BASE_URL || 'https://api.gusto-demo.com'} (partner-direct)\n`,
+    )
   } else {
-    console.warn(`  Warning: Token validation failed. The token may be expired.`)
-    console.warn(`  Re-provisioning ${zpEnvInput} environment...\n`)
-    const reSetupOk = runSetup(zpEnv)
-    if (reSetupOk) {
-      const freshEnv = loadEnvFile(envPath)
-      const reValid = await validateToken(freshEnv)
-      if (reValid) {
-        console.log(`  Token refreshed successfully\n`)
-      } else {
-        console.warn(`  Token still invalid after refresh. Continuing anyway.\n`)
+    if (!existsSync(envPath) || !envIsUsable(loadEnvFile(envPath))) {
+      const setupOk = runSetup(zpEnv)
+      if (!setupOk || !existsSync(envPath)) {
+        console.error(
+          `\n  Auto-setup failed. You can try manually: npm run sdk-app:setup --env=${zpEnv}\n`,
+        )
+        process.exit(1)
       }
+    }
+
+    const env = loadEnvFile(envPath)
+
+    if (!env.FLOW_TOKEN || !env.GWS_FLOWS_HOST) {
+      console.error(`  Error: Missing FLOW_TOKEN or GWS_FLOWS_HOST in ${envPath}`)
+      process.exit(1)
+    }
+
+    console.log(`  Target: ${env.GWS_FLOWS_HOST}`)
+
+    console.log(`  Validating token...`)
+    const isValid = await validateToken(env)
+    if (isValid) {
+      console.log(`  Token is valid\n`)
     } else {
-      console.warn(`  Re-provisioning failed. Continuing with expired token.\n`)
+      console.warn(`  Warning: Token validation failed. The token may be expired.`)
+      console.warn(`  Re-provisioning ${zpEnvInput} environment...\n`)
+      const reSetupOk = runSetup(zpEnv)
+      if (reSetupOk) {
+        const freshEnv = loadEnvFile(envPath)
+        const reValid = await validateToken(freshEnv)
+        if (reValid) {
+          console.log(`  Token refreshed successfully\n`)
+        } else {
+          console.warn(`  Token still invalid after refresh. Continuing anyway.\n`)
+        }
+      } else {
+        console.warn(`  Re-provisioning failed. Continuing with expired token.\n`)
+      }
     }
   }
 
