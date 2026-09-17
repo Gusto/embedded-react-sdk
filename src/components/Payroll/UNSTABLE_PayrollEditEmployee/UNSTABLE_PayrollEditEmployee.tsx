@@ -228,7 +228,9 @@ const Root = ({
 
   if (form.isLoading) {
     return (
-      <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />
+      <div ref={containerRef} className={styles.container}>
+        <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />
+      </div>
     )
   }
 
