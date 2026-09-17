@@ -10,7 +10,8 @@
  * "create a new onboarded company" step here. Mint one first (via `POST /v1/partner_managed_companies`),
  * then put its `companyUuid`/`refreshToken` in `sdk-app/env/.env.partner`.
  */
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { resolve } from 'path'
 import type { Connect, ViteDevServer } from 'vite'
 import { GustoEmbedded } from '@gusto/embedded-api'
 
@@ -22,6 +23,33 @@ interface TokenCache {
 
 /** Refresh this far before actual expiry so an in-flight request never races expiry. */
 const TOKEN_EXPIRY_BUFFER_MS = 5 * 60 * 1000
+
+// Gusto's OAuth server rotates the refresh token on every use, so the rotated value
+// must persist across restarts — but never back into sdk-app/env/: Vite's `envDir`
+// watcher does a full config reload on any .env* change there, which re-primes the
+// token, rotating it again, looping forever. This cache lives outside that directory.
+const RUNTIME_CACHE_PATH = resolve(import.meta.dirname, '.partner-refresh-token-cache.json')
+
+interface RuntimeCache {
+  /** The env file's REFRESH_TOKEN value this cache was derived from — lets a manual edit to .env.partner invalidate a stale cache instead of being silently overridden by it. */
+  seedRefreshToken: string
+  refreshToken: string
+}
+
+function loadCachedRefreshToken(seedRefreshToken: string): string | null {
+  if (!existsSync(RUNTIME_CACHE_PATH)) return null
+  try {
+    const cache = JSON.parse(readFileSync(RUNTIME_CACHE_PATH, 'utf-8')) as RuntimeCache
+    return cache.seedRefreshToken === seedRefreshToken ? cache.refreshToken : null
+  } catch {
+    return null
+  }
+}
+
+function persistRefreshToken(seedRefreshToken: string, refreshToken: string): void {
+  const cache: RuntimeCache = { seedRefreshToken, refreshToken }
+  writeFileSync(RUNTIME_CACHE_PATH, JSON.stringify(cache, null, 2))
+}
 
 async function readBody(req: Connect.IncomingMessage): Promise<string> {
   let body = ''
@@ -38,29 +66,14 @@ function requireEnv(env: Record<string, string>, key: string): string {
 }
 
 /**
- * Gusto's OAuth server rotates refresh tokens on every use — the previous one
- * is invalidated the moment a new one is issued. Without persisting the
- * rotated value, the next `sdk-app:partner` process reads the now-dead token
- * from disk and can never refresh again.
- */
-function persistRefreshToken(envPath: string, refreshToken: string): void {
-  const content = readFileSync(envPath, 'utf-8')
-  const updated = content.replace(/^REFRESH_TOKEN=.*$/m, `REFRESH_TOKEN=${refreshToken}`)
-  writeFileSync(envPath, updated)
-}
-
-/**
  * Mounts the direct-to-API partner proxy on the Vite dev server. Requires
- * `CLIENT_ID`, `CLIENT_SECRET`, and `REFRESH_TOKEN` in the env file at `envPath`.
+ * `CLIENT_ID`, `CLIENT_SECRET`, and `REFRESH_TOKEN` in `env`.
  */
-export function registerPartnerApiProxy(
-  server: ViteDevServer,
-  env: Record<string, string>,
-  envPath: string,
-): void {
+export function registerPartnerApiProxy(server: ViteDevServer, env: Record<string, string>): void {
   const clientId = requireEnv(env, 'CLIENT_ID')
   const clientSecret = requireEnv(env, 'CLIENT_SECRET')
-  const refreshToken = requireEnv(env, 'REFRESH_TOKEN')
+  const seedRefreshToken = requireEnv(env, 'REFRESH_TOKEN')
+  const refreshToken = loadCachedRefreshToken(seedRefreshToken) ?? seedRefreshToken
 
   const baseUrl = env.GUSTO_API_BASE_URL || 'https://api.gusto-demo.com'
   const client = new GustoEmbedded({ serverURL: baseUrl })
@@ -90,7 +103,7 @@ export function registerPartnerApiProxy(
 
     if (auth.refreshToken && auth.refreshToken !== cache.refreshToken) {
       cache.refreshToken = auth.refreshToken
-      persistRefreshToken(envPath, auth.refreshToken)
+      persistRefreshToken(seedRefreshToken, auth.refreshToken)
     }
 
     return cache.token

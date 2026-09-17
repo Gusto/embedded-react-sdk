@@ -31,7 +31,6 @@ export default defineConfig(() => {
   const sdkBuild = process.env.SDK_BUILD || 'dev'
   const isProd = sdkBuild === 'prod'
   const env = loadEnvFile(zpEnv)
-  const envPath = resolve(__dirname, `env/.env.${zpEnv}`)
 
   const hasFlowToken = !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST)
   const hasPartnerCreds = !!(env.CLIENT_ID && env.CLIENT_SECRET && env.REFRESH_TOKEN)
@@ -79,7 +78,7 @@ export default defineConfig(() => {
         name: 'sdk-app-server-api',
         configureServer(server) {
           registerSandboxCommentsProxy(server)
-          if (hasPartnerCreds) registerPartnerApiProxy(server, env, envPath)
+          if (hasPartnerCreds) registerPartnerApiProxy(server, env)
 
           server.middlewares.use('/sdk-app/api/create-demo', async (req, res) => {
             if (req.method !== 'POST') {

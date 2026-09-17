@@ -213,6 +213,7 @@ sdk-app/env/.env.demo
 sdk-app/env/.env.staging
 sdk-app/env/.env.localzp
 sdk-app/env/.env.partner
+sdk-app/scripts/.partner-refresh-token-cache.json
 
 # api-extractor artifacts
 .reports/temp

@@ -78,7 +78,7 @@ Talks directly to the real Embedded API (`https://api.gusto-demo.com` by default
 
    `REFRESH_TOKEN` must be the one issued for that specific company — a `CLIENT_ID`/`CLIENT_SECRET` pair alone can't mint a token for an arbitrary `VITE_COMPANY_ID` you didn't create yourself; the embedded API only supports a `refresh_token` grant for company-scoped tokens, not a company-scoped `client_credentials` grant.
 
-3. `npm run sdk-app:partner`. The dev server refreshes the access token server-side as needed — it's never exposed to the browser.
+3. `npm run sdk-app:partner`. The dev server refreshes the access token server-side as needed — it's never exposed to the browser. Gusto's OAuth server rotates the refresh token on every use; the rotated value is cached in `sdk-app/scripts/.partner-refresh-token-cache.json` (gitignored) rather than written back to `.env.partner`, so it survives process restarts without hitting Vite's config-reload watcher. If you paste a new `REFRESH_TOKEN` into `.env.partner` (e.g. after switching companies), the cache is invalidated automatically — no need to delete it by hand.
 
 Since there's no gws-flows demo to fall back on, entity auto-fetch and the Settings panel's demo-management controls (create/refresh demo, entity catalog) are inactive in this mode — set any additional entity IDs (`VITE_EMPLOYEE_ID`, etc.) directly in `.env.partner` if a component needs them.
 
