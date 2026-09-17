@@ -56,7 +56,8 @@ export function PayrollHistory(props: PayrollHistoryProps) {
   )
 }
 
-const DEFAULT_LOOKBACK_MONTHS = 3
+const DEFAULT_LOOKBACK_MONTHS = 6
+const DEFAULT_LOOKAHEAD_MONTHS = 3
 
 const getDefaultStartDate = (): Date => {
   const date = new Date()
@@ -64,7 +65,11 @@ const getDefaultStartDate = (): Date => {
   return date
 }
 
-const getDefaultEndDate = (): Date => new Date()
+const getDefaultEndDate = (): Date => {
+  const date = new Date()
+  date.setMonth(date.getMonth() + DEFAULT_LOOKAHEAD_MONTHS)
+  return date
+}
 
 const Root = ({
   onEvent,
