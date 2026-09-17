@@ -225,6 +225,55 @@ describe('PayrollOverview polling', () => {
       )
     })
   })
+
+  it('keeps polling after Submit when the first read is inconclusive, instead of getting stuck on "Submitting payroll..."', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll.mockResolvedValue({ payrollUuid: 'payroll-uuid' })
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      processingRequest: { status: 'calculate_success', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => {
+      expect(mockSubmitPayroll).toHaveBeenCalled()
+    })
+
+    // Simulates the race the fix targets: this read still matches the pre-submit baseline,
+    // which used to terminate the poll permanently as `{type: 'loaded'}`.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
+
+    expect(mockOnEvent).not.toHaveBeenCalledWith(
+      componentEvents.RUN_PAYROLL_PROCESSED,
+      expect.anything(),
+    )
+    expect(screen.getByText(/Submitting payroll/i)).toBeInTheDocument()
+
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: true,
+      processingRequest: { status: 'submit_success', errors: [] },
+    }
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
+
+    await waitFor(() => {
+      expect(mockOnEvent).toHaveBeenCalledWith(
+        componentEvents.RUN_PAYROLL_PROCESSED,
+        expect.objectContaining({ payPeriod: basePayrollData.payPeriod }),
+      )
+    })
+  })
 })
 
 describe('PayrollOverview submit-in-progress overlay', () => {

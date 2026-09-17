@@ -86,6 +86,11 @@ const evaluateSubmissionOutcome = (
 
   if (isSubmitting) return { status: 'polling' }
 
+  // A baseline means Submit was just clicked, so an inconclusive read likely means the async
+  // job hasn't started yet -- keep polling. The baseline-less mount poll is exempt on purpose:
+  // it must not treat an already-settled payroll as a fresh transition.
+  if (run?.baseline != null) return { status: 'polling' }
+
   return { status: 'done', value: { type: 'loaded' } }
 }
 
