@@ -5,6 +5,7 @@ import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
+import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
@@ -184,19 +185,10 @@ const TWICE_PER_MONTH_OPTIONS = [
 
 const TWICE_PER_MONTH_ENTRIES = TWICE_PER_MONTH_OPTIONS.map(o => o.value)
 
-const WORKWEEK_START_DAY_OPTIONS: Array<{ value: PayScheduleWorkweekStartDay; label: string }> = [
-  { value: 'Sunday', label: 'Sunday' },
-  { value: 'Monday', label: 'Monday' },
-  { value: 'Tuesday', label: 'Tuesday' },
-  { value: 'Wednesday', label: 'Wednesday' },
-  { value: 'Thursday', label: 'Thursday' },
-  { value: 'Friday', label: 'Friday' },
-  { value: 'Saturday', label: 'Saturday' },
-]
+const WORKWEEK_START_DAY_ENTRIES: PayScheduleWorkweekStartDay[] = Object.values(WorkweekStartDay)
 
-const WORKWEEK_START_DAY_ENTRIES: PayScheduleWorkweekStartDay[] = WORKWEEK_START_DAY_OPTIONS.map(
-  o => o.value,
-)
+const WORKWEEK_START_DAY_OPTIONS: Array<{ value: PayScheduleWorkweekStartDay; label: string }> =
+  WORKWEEK_START_DAY_ENTRIES.map(value => ({ value, label: value }))
 
 function formatWatchedDate(value: unknown): string {
   if (value instanceof Date) return formatDateToStringDate(value) || ''

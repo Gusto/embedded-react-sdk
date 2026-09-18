@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest'
 import {
   buildFormSchema,
   type RequiredFieldConfig,
@@ -39,21 +40,12 @@ const FREQUENCY_VALUES = ['Every week', 'Every other week', 'Twice per month', '
  */
 export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number]
 
-const WORKWEEK_START_DAY_VALUES = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-] as const
 /**
  * Pay schedule workweek start day values accepted by {@link usePayScheduleForm}.
  *
  * @alpha
  */
-export type PayScheduleWorkweekStartDay = (typeof WORKWEEK_START_DAY_VALUES)[number]
+export type PayScheduleWorkweekStartDay = WorkweekStartDay
 
 const fieldValidators = {
   customName: z.string(),
@@ -63,7 +55,7 @@ const fieldValidators = {
   anchorEndOfPayPeriod: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   day1: z.preprocess(coerceNaN(0), z.number()),
   day2: z.preprocess(coerceNaN(0), z.number()),
-  workweekStartDay: z.enum(WORKWEEK_START_DAY_VALUES).nullable(),
+  workweekStartDay: z.enum(WorkweekStartDay).nullable(),
 }
 
 /**
@@ -107,7 +99,7 @@ const requiredFieldsConfig = {
   customTwicePerMonth: needsCustomTwicePerMonth,
   day1: needsDay1,
   day2: needsDay2,
-  // Null on legacy pay schedules — editing one must not force a value just to save other fields.
+  // Optional by default: legacy pay schedules have no value to force.
   workweekStartDay: 'never',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
@@ -140,8 +132,8 @@ function validateDayRanges(data: PayScheduleFormData, ctx: z.RefinementCtx) {
  * Configuration for promoting optional pay schedule fields to required in a given mode.
  *
  * @remarks
- * Only fields that are optional by default can be promoted. Currently
- * `customTwicePerMonth` is the only configurable field.
+ * Only fields that are optional by default can be promoted:
+ * `customTwicePerMonth`, `day1`, `day2`, and `workweekStartDay`.
  *
  * @public
  */
