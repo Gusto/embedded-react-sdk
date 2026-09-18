@@ -140,15 +140,17 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             </Button>
           </Flex>
 
-          {calculatedGrossUp && (
-            <>
-              <div className={styles.result}>
-                <Text size="sm" variant="supporting" weight="semibold">
-                  {t('grossPayResult')}
-                </Text>
-                <Heading as="h3">{formatNumberAsCurrency(parseFloat(calculatedGrossUp))}</Heading>
-              </div>
-            </>
+          {calculatedGrossUp ? (
+            <div className={styles.result}>
+              <Text size="sm" variant="supporting" weight="semibold">
+                {t('grossPayResult')}
+              </Text>
+              <Heading as="h3">{formatNumberAsCurrency(parseFloat(calculatedGrossUp))}</Heading>
+            </div>
+          ) : (
+            <Text size="sm" variant="supporting">
+              {t('applyHint')}
+            </Text>
           )}
         </div>
       </FormProvider>
