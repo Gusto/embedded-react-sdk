@@ -43,8 +43,19 @@ describe('GrossUpModal', () => {
 
     expect(screen.getByText(/net amount you want this employee/)).toBeInTheDocument()
     expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
+    expect(screen.getByText('$')).toBeInTheDocument()
     expect(screen.getByText('Calculate')).toBeInTheDocument()
     expect(screen.getByText('Cancel')).toBeInTheDocument()
+  })
+
+  it('starts with a blank net amount instead of 0', async () => {
+    renderWithProviders(<GrossUpModal {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
+    })
+
+    expect(screen.getByLabelText('Net amount')).toHaveValue('')
   })
 
   it('does not open the dialog when closed', () => {
