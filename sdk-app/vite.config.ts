@@ -6,6 +6,7 @@ import { scssPreprocessorOptions, svgrPlugin } from '../vite.config'
 import { fetchEntityIds, ENTITY_ID_KEYS, entityIdToEnvVar } from './src/entity-config'
 import { createDemoAndProvision, writeEnvFile, validateHost } from './scripts/demo-provisioner'
 import { registerSandboxCommentsProxy } from './scripts/sandbox-comments'
+import { registerPartnerApiProxy } from './scripts/partner-proxy'
 
 const SDK_APP_DEFAULT_PORT = 5200
 
@@ -32,8 +33,11 @@ export default defineConfig(() => {
   const env = loadEnvFile(zpEnv)
 
   const hasFlowToken = !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST)
-  const proxyMode = hasFlowToken ? 'flow-token' : null
+  const hasPartnerCreds = !!(env.CLIENT_ID && env.CLIENT_SECRET && env.REFRESH_TOKEN)
+  const proxyMode = hasFlowToken ? 'flow-token' : hasPartnerCreds ? 'partner-direct' : null
 
+  // Partner-direct mode registers its own middleware (needs an async token
+  // refresh before each request), so it's excluded from Vite's declarative proxy.
   const proxyConfig = hasFlowToken
     ? {
         '/api': {
@@ -74,6 +78,7 @@ export default defineConfig(() => {
         name: 'sdk-app-server-api',
         configureServer(server) {
           registerSandboxCommentsProxy(server)
+          if (hasPartnerCreds) registerPartnerApiProxy(server, env)
 
           server.middlewares.use('/sdk-app/api/create-demo', async (req, res) => {
             if (req.method !== 'POST') {
