@@ -78,6 +78,7 @@ describe('<ThemeProvider />', () => {
       expect(capturedContainer).not.toBe(article)
       expect(capturedContainer!.parentElement).toBe(document.body)
       expect(capturedContainer).toHaveClass('GSDK')
+      expect(capturedContainer).toHaveClass('GSDK-portal-root')
     })
 
     test('removes the default portal root on unmount', () => {

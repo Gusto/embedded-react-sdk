@@ -14,6 +14,9 @@ export interface ThemeProviderProps {
    * DatePicker, Menu, etc.). Defaults to a themed root element the SDK appends
    * directly to `document.body`, so overlays are never affected by a host page's
    * `position`, `transform`, `filter`, or `contain` on an intervening ancestor.
+   * That default root carries both the `GSDK` and `GSDK-portal-root` classes —
+   * the latter lets a host page's own `.GSDK` overrides exclude it
+   * (`.GSDK:not(.GSDK-portal-root)`) instead of reaching overlay content.
    *
    * Pass a specific element (e.g. when rendering inside a modal or shadow root)
    * to portal overlays there instead.
@@ -40,7 +43,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
 
     const defaultPortalRoot = document.createElement('div')
-    defaultPortalRoot.className = 'GSDK'
+    defaultPortalRoot.className = 'GSDK GSDK-portal-root'
     defaultPortalRoot.setAttribute('data-testid', 'GSDK-portal-root')
     document.body.appendChild(defaultPortalRoot)
     portalContainerRef.current = defaultPortalRoot
