@@ -83,6 +83,7 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
   const cached = loadCache(seedRefreshToken)
 
   const baseUrl = env.GUSTO_API_BASE_URL || 'https://api.gusto-demo.com'
+  const trustedBase = new URL(baseUrl)
   const client = new GustoEmbedded({ serverURL: baseUrl })
 
   const cache: TokenCache = {
@@ -132,7 +133,16 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
         const token = await getAccessToken()
         const method = req.method ?? 'GET'
         const isWrite = method !== 'GET' && method !== 'HEAD'
-        const upstreamUrl = `${baseUrl}${(req.url ?? '').replace(/^\/api/, '')}`
+        const requestPath = (req.url ?? '').replace(/^\/api/, '')
+        // String concatenation let a path like `@evil.com/...` redirect this token-bearing fetch off-origin (SSRF).
+        const resolvedUrl = new URL(requestPath, trustedBase)
+        if (resolvedUrl.origin !== trustedBase.origin) {
+          res.statusCode = 400
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'Partner proxy rejected an out-of-origin request' }))
+          return
+        }
+        const upstreamUrl = resolvedUrl.toString()
 
         const headers: Record<string, string> = {
           Accept: 'application/json',
