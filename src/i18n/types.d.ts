@@ -6980,6 +6980,8 @@ export namespace Translations {
     calculatingCta: string
     /** @defaultValue `"Apply"` */
     applyCta: string
+    /** @defaultValue `"Calculate a gross amount first to apply it."` */
+    applyHint: string
     /** @defaultValue `"Cancel"` */
     cancelCta: string
     /** @defaultValue `"Calculated gross pay"` */
