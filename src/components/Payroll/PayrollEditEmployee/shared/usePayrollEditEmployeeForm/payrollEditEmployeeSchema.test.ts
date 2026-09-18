@@ -11,8 +11,8 @@ import {
 
 const baseFormData: PayrollEditEmployeeFormData = {
   hours: {},
-  additionalEarnings: {},
-  other: {},
+  overtimeIncludedEarnings: {},
+  overtimeExcludedEarnings: {},
   timeOff: {},
   finalPayout: {},
   reimbursements: [],
@@ -26,8 +26,8 @@ describe('createPayrollEditEmployeeSchema', () => {
     const result = schema.safeParse({
       ...baseFormData,
       hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '40', '2025-01-08': '32.5' } } },
-      additionalEarnings: { 'job-1': { Bonus: { '2025-01-01': '100' } } },
-      other: { 'job-1': { 'Cash Tips': '50' } },
+      overtimeIncludedEarnings: { 'job-1': { Bonus: { '2025-01-01': '100' } } },
+      overtimeExcludedEarnings: { 'job-1': { 'Cash Tips': '50' } },
       timeOff: { Vacation: '8' },
       finalPayout: { Vacation: '0' },
       reimbursements: [{ uuid: 'r-1', description: 'Travel', amount: '25', recurring: false }],
@@ -59,7 +59,7 @@ describe('createPayrollEditEmployeeSchema', () => {
   it('rejects a non-numeric amount with the NEGATIVE_AMOUNT code', () => {
     const result = schema.safeParse({
       ...baseFormData,
-      other: { 'job-1': { 'Cash Tips': 'abc' } },
+      overtimeExcludedEarnings: { 'job-1': { 'Cash Tips': 'abc' } },
     })
 
     expect(result.success).toBe(false)
@@ -146,15 +146,15 @@ describe('per-row workweek completeness', () => {
     expect(issue?.message).toBe(PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK)
   })
 
-  it('applies the same rule to additionalEarnings', () => {
+  it('applies the same rule to overtimeIncludedEarnings', () => {
     const result = schema.safeParse({
       ...baseFormData,
-      additionalEarnings: { 'job-1': { Bonus: { '2025-01-01': '', '2025-01-08': '100' } } },
+      overtimeIncludedEarnings: { 'job-1': { Bonus: { '2025-01-01': '', '2025-01-08': '100' } } },
     })
 
     expect(result.success).toBe(false)
     const issue = result.error?.issues.find(
-      i => i.path.join('.') === 'additionalEarnings.job-1.Bonus.2025-01-01',
+      i => i.path.join('.') === 'overtimeIncludedEarnings.job-1.Bonus.2025-01-01',
     )
     expect(issue?.message).toBe(PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK)
   })

@@ -325,12 +325,13 @@ describe('usePayrollEditEmployeeForm', () => {
     // Every company earning type is seeded (like the stable editor), even ones the prepared
     // payroll has no fixed compensation for. Overtime-included types (Bonus, Commission,
     // Correction Payment) become additional earnings; the rest (Cash/Paycheck Tips) become other.
-    expect((form.Fields.additionalEarnings as EarningEntry[]).map(entry => entry.name)).toEqual([
-      'Bonus',
-      'Commission',
-      'Correction Payment',
+    expect(
+      (form.Fields.overtimeIncludedEarnings as EarningEntry[]).map(entry => entry.name),
+    ).toEqual(['Bonus', 'Commission', 'Correction Payment'])
+    expect(form.Fields.overtimeExcludedEarnings.map(entry => entry.id)).toEqual([
+      'Cash Tips',
+      'Paycheck Tips',
     ])
-    expect(form.Fields.otherEarnings.map(entry => entry.id)).toEqual(['Cash Tips', 'Paycheck Tips'])
     expect(typeof form.Fields.paymentMethod).toBe('function')
     expect(data.isMultipleWorkweeks).toBe(false)
   })
@@ -478,7 +479,7 @@ describe('usePayrollEditEmployeeForm', () => {
       await waitFor(() => {
         assertReady(result.current)
         expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(true)
-        expect(isSplitByWorkweek(result.current.form.Fields.additionalEarnings)).toBe(true)
+        expect(isSplitByWorkweek(result.current.form.Fields.overtimeIncludedEarnings)).toBe(true)
       })
     },
   )
@@ -496,7 +497,7 @@ describe('usePayrollEditEmployeeForm', () => {
       assertReady(result.current)
       expect(result.current.data.isOvertimeEligible).toBe(false)
       expect(isSplitByWorkweek(result.current.form.Fields.jobs[0]!.hours)).toBe(false)
-      expect(isSplitByWorkweek(result.current.form.Fields.additionalEarnings)).toBe(false)
+      expect(isSplitByWorkweek(result.current.form.Fields.overtimeIncludedEarnings)).toBe(false)
     },
   )
 

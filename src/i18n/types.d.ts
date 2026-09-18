@@ -8413,8 +8413,6 @@ export namespace Translations {
     amountColumn: string
     /** @defaultValue `"Hours"` */
     hoursColumn: string
-    /** @defaultValue `"Other"` */
-    otherTitle: string
     compensationNames: {
       /** @defaultValue `"Regular Hours"` */
       regularHours: string
@@ -8437,6 +8435,12 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
+    /** @defaultValue `"Earnings entered here factor into the overtime multiplier used to calculate {{employeeName}}'s total pay."` */
+    overtimeMultiplierEarningsAlert: string
+    /** @defaultValue `"Included in overtime multiplier calculation"` */
+    overtimeIncludedEarningsGroupLabel: string
+    /** @defaultValue `"Not a factor for overtime calculation"` */
+    overtimeExcludedEarningsGroupLabel: string
     /** @defaultValue `"Reimbursements"` */
     reimbursementTitle: string
     /** @defaultValue `"Description"` */
