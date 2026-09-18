@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { ThemeContext } from './useTheme'
 import { mergePartnerTheme, type GustoSDKTheme } from './theme'
 import { useNonce } from '@/contexts/NonceProvider'
@@ -11,10 +11,12 @@ export interface ThemeProviderProps {
   theme?: Partial<GustoSDKTheme>
   /**
    * Element to use as the portal container for all SDK overlays (Select, ComboBox,
-   * DatePicker, Menu, etc.). Defaults to the SDK's root article element.
+   * DatePicker, Menu, etc.). Defaults to a themed root element the SDK appends
+   * directly to `document.body`, so overlays are never affected by a host page's
+   * `position`, `transform`, `filter`, or `contain` on an intervening ancestor.
    *
-   * Pass `document.body` (or another stable element outside the SDK's container)
-   * when your app's scroll or clipping context interferes with overlay positioning.
+   * Pass a specific element (e.g. when rendering inside a modal or shadow root)
+   * to portal overlays there instead.
    */
   portalContainer?: HTMLElement
   /** Subtree rendered inside the SDK's themed root element. */
@@ -31,12 +33,22 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const GThemeVariables = useRef<HTMLStyleElement | null>(null)
   const portalContainerRef = useRef<HTMLElement | null>(null)
 
-  const articleRef = useCallback(
-    (el: HTMLElement | null) => {
-      portalContainerRef.current = portalContainer ?? el
-    },
-    [portalContainer],
-  )
+  useLayoutEffect(() => {
+    if (portalContainer) {
+      portalContainerRef.current = portalContainer
+      return
+    }
+
+    const defaultPortalRoot = document.createElement('div')
+    defaultPortalRoot.className = 'GSDK'
+    defaultPortalRoot.setAttribute('data-testid', 'GSDK-portal-root')
+    document.body.appendChild(defaultPortalRoot)
+    portalContainerRef.current = defaultPortalRoot
+
+    return () => {
+      defaultPortalRoot.remove()
+    }
+  }, [portalContainer])
 
   const mergedTheme = useMemo(
     () => mergePartnerTheme(partnerThemeOverrides),
@@ -61,7 +73,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={{ container: portalContainerRef }}>
-      <article className="GSDK" data-testid="GSDK" ref={articleRef}>
+      <article className="GSDK" data-testid="GSDK">
         {children}
       </article>
     </ThemeContext.Provider>

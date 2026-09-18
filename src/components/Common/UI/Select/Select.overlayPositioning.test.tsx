@@ -25,15 +25,21 @@ const defaultProps = {
  * `calculatePosition`): any of these properties on an ancestor between the overlay
  * and `document.body` establishes a new containing block, which is what causes
  * react-aria to mis-measure available space and collapse the overlay.
+ *
+ * Starts from the Popover's own parent, not the Popover itself — react-aria sets
+ * `position: absolute` on the Popover intentionally to position it, which isn't a
+ * containing-block violation.
  */
-function findContainingBlockAncestor(node: Element): Element | null {
-  let el = node.parentElement
+function findContainingBlockAncestor(overlayRoot: Element): Element | null {
+  let el = overlayRoot.parentElement
   while (el && el !== document.body) {
     const style = window.getComputedStyle(el)
+    // jsdom's getComputedStyle returns '' rather than the CSS initial value
+    // (e.g. 'static', 'none') for properties nothing has explicitly set.
     if (
-      style.position !== 'static' ||
-      style.transform !== 'none' ||
-      style.filter !== 'none' ||
+      (style.position && style.position !== 'static') ||
+      (style.transform && style.transform !== 'none') ||
+      (style.filter && style.filter !== 'none') ||
       style.contain === 'paint'
     ) {
       return el
@@ -62,8 +68,10 @@ describe('Select overlay positioning under a positioned ancestor', () => {
 
       await user.click(screen.getByRole('button'))
       const listbox = screen.getByRole('listbox')
+      const popover = listbox.closest('.react-aria-Popover')
+      expect(popover).not.toBeNull()
 
-      expect(findContainingBlockAncestor(listbox)).toBeNull()
+      expect(findContainingBlockAncestor(popover!)).toBeNull()
     },
   )
 })
