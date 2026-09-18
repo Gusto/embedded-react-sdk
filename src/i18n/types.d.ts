@@ -40,6 +40,10 @@ export interface Resources {
   /** */
   'Company.StateTaxes': Translations.CompanyStateTaxes
   /** */
+  'Company.Suspension.Form': Translations.CompanySuspensionForm
+  /** */
+  'Company.Suspension.Summary': Translations.CompanySuspensionSummary
+  /** */
   'Company.TimeOff.CreateTimeOffPolicy': Translations.CompanyTimeOffCreateTimeOffPolicy
   /** */
   'Company.TimeOff.EmployeeTable': Translations.CompanyTimeOffEmployeeTable
@@ -1266,6 +1270,170 @@ export namespace Translations {
       /** @defaultValue `"Tax rate scheduled to take effect on {{date}}."` */
       rateScheduledSuccess: string
     }
+  }
+  /** Translation keys for the `Company.Suspension.Form` i18n namespace. */
+  export interface CompanySuspensionForm {
+    /** @defaultValue `"Cancel account"` */
+    title: string
+    /** @defaultValue `"Help us improve by telling us why you have decided to cancel payroll."` */
+    helpUsImprove: string
+    reason: {
+      /** @defaultValue `"Why are you cancelling your account?"` */
+      label: string
+      /** @defaultValue `"Select a reason"` */
+      placeholder: string
+      /** @defaultValue `"I am switching to a new payroll provider or solution."` */
+      switching_provider: string
+      /** @defaultValue `"My company is shutting down."` */
+      shutting_down: string
+      /** @defaultValue `"My company is being acquired."` */
+      acquired: string
+      /** @defaultValue `"I no longer have employees to pay via payroll at this time."` */
+      no_more_employees: string
+      /** @defaultValue `"My business is changing our FEIN or entity type."` */
+      changing_ein_or_entity_type: string
+    }
+    leavingFor: {
+      /** @defaultValue `"Which provider are you switching to?"` */
+      label: string
+      /** @defaultValue `"Accountant"` */
+      accountant: string
+      /** @defaultValue `"ADP"` */
+      adp: string
+      /** @defaultValue `"ADP TotalSource"` */
+      adp_total_source: string
+      /** @defaultValue `"Bank or Financial Institution"` */
+      bank_or_financial_institution: string
+      /** @defaultValue `"BambooHR"` */
+      bamboo_hr: string
+      /** @defaultValue `"Check"` */
+      check: string
+      /** @defaultValue `"Deel"` */
+      deel: string
+      /** @defaultValue `"Gusto"` */
+      gusto_com: string
+      /** @defaultValue `"Homebase"` */
+      homebase: string
+      /** @defaultValue `"Insperity"` */
+      insperity: string
+      /** @defaultValue `"Intuit or QuickBooks"` */
+      intuit_or_quickbooks: string
+      /** @defaultValue `"Justworks"` */
+      justworks: string
+      /** @defaultValue `"Manual (In-House)"` */
+      manual: string
+      /** @defaultValue `"Namely"` */
+      namely: string
+      /** @defaultValue `"OnPay"` */
+      onpay: string
+      /** @defaultValue `"Other"` */
+      other: string
+      /** @defaultValue `"Oyster"` */
+      oyster: string
+      /** @defaultValue `"Patriot"` */
+      patriot: string
+      /** @defaultValue `"Paychex"` */
+      paychex: string
+      /** @defaultValue `"Paycom"` */
+      paycom: string
+      /** @defaultValue `"Paylocity"` */
+      paylocity: string
+      /** @defaultValue `"Remote"` */
+      remote: string
+      /** @defaultValue `"Rippling"` */
+      rippling: string
+      /** @defaultValue `"Square"` */
+      square: string
+      /** @defaultValue `"SurePayroll"` */
+      surepayroll: string
+      /** @defaultValue `"Trinet"` */
+      trinet: string
+      /** @defaultValue `"Velocity Global"` */
+      velocity_global: string
+      /** @defaultValue `"Zenefits"` */
+      zenefits: string
+    }
+    /** @defaultValue `"Please reach out to our support team so we can support your business changes."` */
+    einChangeWarning: string
+    /** @defaultValue `"If you're switching to Gusto, please reach out to our support team so we can support your business changes."` */
+    leavingForGustoWarning: string
+    comments: {
+      /** @defaultValue `"Comments"` */
+      label: string
+      /** @defaultValue `"Comments, including which provider you're switching to (required)"` */
+      labelLeavingForOther: string
+    }
+    /** @defaultValue `"How should we take care of the rest of your taxes?"` */
+    howToHandleTaxes: string
+    reconcileTaxMethod: {
+      /** @defaultValue `"Should we pay your taxes for this calendar year?"` */
+      label: string
+      /** @defaultValue `"Yes, pay all outstanding company taxes on my behalf."` */
+      payTaxes: string
+      /** @defaultValue `"No, refund all outstanding taxes to my bank account. I'll pay the payroll taxes myself."` */
+      refundTaxes: string
+    }
+    /** @defaultValue `"What taxes should we file on your behalf?"` */
+    whatTaxesToFile: string
+    /** @defaultValue `"All quarterly tax filings (like 941s)."` */
+    fileQuarterlyForms: string
+    /** @defaultValue `"All year-end tax filings (like W-2s and 1099s)."` */
+    fileYearlyForms: string
+    /** @defaultValue `"If you choose not to have us file your taxes, you'll be responsible for filing them yourself."` */
+    responsibleForFilingsWarning: string
+    /** @defaultValue `"You will be responsible for all future tax payments and tax filings, including W-2s and 1099s."` */
+    refundTaxesWarning: string
+    /** @defaultValue `"Cancel account"` */
+    submitCta: string
+    errors: {
+      /** @defaultValue `"Please select a reason for cancelling your account."` */
+      reasonRequired: string
+      /** @defaultValue `"Please select the provider you're switching to."` */
+      leavingForRequired: string
+      /** @defaultValue `"Please choose how we should handle your taxes."` */
+      reconcileTaxMethodRequired: string
+      /** @defaultValue `"Please tell us which provider you're switching to."` */
+      commentsRequired: string
+    }
+  }
+  /** Translation keys for the `Company.Suspension.Summary` i18n namespace. */
+  export interface CompanySuspensionSummary {
+    /** @defaultValue `"Your payroll account has been canceled"` */
+    title: string
+    /** @defaultValue `"You'll still be able to sign into your account to reference all of your company documents for tax and filing purposes."` */
+    intro: string
+    /** @defaultValue `"What you need to do next"` */
+    whatToDoNextTitle: string
+    /** @defaultValue `"Before the end of {{year}}, you'll need to close your accounts with the appropriate tax agencies. We may file $0 wage returns depending on your company's tax history and selected filing preferences. If you're unsure whether this applies to you, consult an accountant or the appropriate tax agency. If you don't close your accounts in an appropriate time, you'll be responsible for filing next year's taxes."` */
+    whatToDoNextBody: string
+    /** @defaultValue `"Please keep your bank account active to allow us to debit any additional taxes if needed for tax reconciliation. Closing your bank account could affect your tax filings and result in delays."` */
+    keepBankAccountActive: string
+    /** @defaultValue `"What we'll handle for you"` */
+    whatWeWillHandleTitle: string
+    /** @defaultValue `"We'll pay all outstanding tax payments."` */
+    payTaxes: string
+    /** @defaultValue `"We'll file your company's Q{{quarter}} {{year}} forms."` */
+    fileQuarterlyFormsYes: string
+    /** @defaultValue `"We will <strong>not</strong> file your company's Q{{quarter}} {{year}} forms."` */
+    fileQuarterlyFormsNo: string
+    /** @defaultValue `"We'll file your company's yearly forms (such as W-2s and 1099s) for tax year {{year}}."` */
+    fileYearlyFormsYes: string
+    /** @defaultValue `"We will <strong>not</strong> file your company's yearly forms (such as W-2s and 1099s) for tax year {{year}}."` */
+    fileYearlyFormsNo: string
+    /** @defaultValue `"We will also refund the following taxes:"` */
+    taxRefundSummary: string
+    /** @defaultValue `"Tax name"` */
+    taxName: string
+    /** @defaultValue `"Amount"` */
+    taxAmount: string
+    /** @defaultValue `"Total taxes"` */
+    totalTaxes: string
+    /** @defaultValue `"Done"` */
+    doneCta: string
+    /** @defaultValue `"No suspension found"` */
+    emptyTitle: string
+    /** @defaultValue `"This company does not have a suspension on record."` */
+    emptyDescription: string
   }
   /** Translation keys for the `Company.TimeOff.CreateTimeOffPolicy` i18n namespace. */
   export interface CompanyTimeOffCreateTimeOffPolicy {
