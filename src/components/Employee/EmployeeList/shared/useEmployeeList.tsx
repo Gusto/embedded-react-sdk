@@ -137,6 +137,10 @@ function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): 
  * `'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
  * to list every employee.
  *
+ * `'onboarding'` includes employees who haven't completed onboarding as well as employees who
+ * have completed onboarding but whose primary job's hire date hasn't arrived yet, so `onboarded`
+ * may be `true` for rows in this filter.
+ *
  * Page changes use placeholder data: the previous page stays rendered while the next one loads,
  * and `status.isFetching` flips to `true` during the request.
  *
@@ -185,7 +189,7 @@ export function useEmployeeList({
       case 'active':
         return { ...baseParams, onboardedActive: true }
       case 'onboarding':
-        return { ...baseParams, onboarded: false }
+        return { ...baseParams, onboardedActive: false }
       case 'terminated':
         return { ...baseParams, terminated: true }
       default:
