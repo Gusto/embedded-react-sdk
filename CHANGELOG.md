@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.55.8](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.7...v0.55.8) (2026-09-18)
+
+### Features & Enhancements
+
+- Group additional earnings by overtime impact in the edit-employee prototype, splitting by workweek only when overtime is added ([#2785](https://github.com/Gusto/embedded-react-sdk/issues/2785), [#2787](https://github.com/Gusto/embedded-react-sdk/issues/2787))
+- Add a workweek start day to `CompanyOnboarding.PaySchedule` ([#2796](https://github.com/Gusto/embedded-react-sdk/issues/2796))
+
+### Fixes
+
+- Support the `className` prop consistently across all SDK components ([#2738](https://github.com/Gusto/embedded-react-sdk/issues/2738))
+- Keep payroll review action buttons from overflowing at narrow widths ([#2608](https://github.com/Gusto/embedded-react-sdk/issues/2608))
+- Fix employee name reflow at a 320px viewport width ([#2754](https://github.com/Gusto/embedded-react-sdk/issues/2754))
+- Right-align the paystub column header with its download buttons ([#2788](https://github.com/Gusto/embedded-react-sdk/issues/2788))
+- Default the payroll history end date to three months ahead ([#2792](https://github.com/Gusto/embedded-react-sdk/issues/2792))
+- Include onboarded employees with future hire dates in payroll ([#2801](https://github.com/Gusto/embedded-react-sdk/issues/2801))
+- Constrain the Cancel and Save actions in `UNSTABLE_PayrollEditEmployee` ([#2786](https://github.com/Gusto/embedded-react-sdk/issues/2786))
+- Suppress the wire details loader on the payroll landing screen to avoid a double load ([#2793](https://github.com/Gusto/embedded-react-sdk/issues/2793))
+
+### Chores & Maintenance
+
+- Make `FieldCaption` an overridable component adapter ([#2769](https://github.com/Gusto/embedded-react-sdk/issues/2769))
+- Bump dependencies (`react-hook-form`, `react-i18next`, `dompurify`, `sass-embedded`, `vitest`, `@vitest/coverage-v8`, `@testing-library/dom`, `@types/react-dom`, `@microsoft/api-extractor`, `cspell`, `eslint-plugin-storybook`, `yaml`, `release-it`, `@release-it/conventional-changelog`)
+
 ## [0.55.7](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.6...v0.55.7) (2026-09-14)
 
 ### Features & Enhancements
