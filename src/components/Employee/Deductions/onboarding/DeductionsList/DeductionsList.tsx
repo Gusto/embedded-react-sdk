@@ -49,6 +49,7 @@ export function DeductionsList({
       {
         key: 'description',
         title: t('nameColumn'),
+        wrap: true,
       },
       {
         key: 'recurring',

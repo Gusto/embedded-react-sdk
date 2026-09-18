@@ -70,6 +70,7 @@ function DocumentsCardContent({ contractorId, onEvent, LoaderComponent }: Docume
     {
       key: 'title',
       title: t('nameColumn'),
+      wrap: true,
       render: (document: Document) => (
         <Components.Text weight="medium" size="sm">
           {document.title ?? document.name ?? t('emptyPlaceholder')}
@@ -79,6 +80,7 @@ function DocumentsCardContent({ contractorId, onEvent, LoaderComponent }: Docume
     {
       key: 'description',
       title: t('descriptionColumn'),
+      wrap: true,
       render: (document: Document) => (
         <Components.Text variant="supporting" size="sm">
           {document.description ?? t('emptyPlaceholder')}

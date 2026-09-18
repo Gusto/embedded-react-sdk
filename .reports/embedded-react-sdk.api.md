@@ -5619,6 +5619,7 @@ export interface SwitchProps extends SharedHorizontalFieldLayoutProps, Pick<Inpu
 export interface TableData {
     content: ReactNode;
     key: string;
+    wrap?: boolean;
 }
 
 // @public
