@@ -7891,6 +7891,8 @@ export namespace Translations {
     alerts: {
       /** @defaultValue `"Payroll is not calculated"` */
       payrollNotCalculated: string
+      /** @defaultValue `"There was an issue loading this payroll. Please try again."` */
+      payrollLoadFailed: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
       directDepositDeadline: string
       /** @defaultValue `"Make sure to submit before the deadline to ensure timely payments."` */

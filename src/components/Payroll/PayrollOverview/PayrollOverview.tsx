@@ -187,7 +187,6 @@ const Root = ({
     data,
     isFetching,
     isError,
-    error,
     refetch: refetchPayroll,
   } = usePayrollsGet(payrollRequest, {
     placeholderData: keepPreviousData,
@@ -355,7 +354,7 @@ const Root = ({
 
   if (!payrollData) {
     if (isError) {
-      throw error
+      throw new Error(t('alerts.payrollLoadFailed'))
     }
     return <PayrollLoading title={t('dataLoadingTitle')} />
   }

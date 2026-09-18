@@ -464,6 +464,10 @@ describe('PayrollOverview calculatedAt guard', () => {
 
     expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
     expect(screen.queryByText(/Loading payroll/i)).toBeNull()
+    // The boundary must show our own copy, not whatever raw message the query error carries --
+    // that message isn't translated or guaranteed end-user-appropriate.
+    expect(screen.getByText(/There was an issue loading this payroll/i)).toBeInTheDocument()
+    expect(screen.queryByText(/network error/i)).toBeNull()
   })
 })
 
