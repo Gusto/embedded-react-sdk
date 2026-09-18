@@ -314,6 +314,7 @@ import { WarningObject } from '@gusto/embedded-api/models/components/warningobje
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
 import { Workweeks } from '@gusto/embedded-api/models/components/payrollshow';
+import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest';
 
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
@@ -681,6 +682,7 @@ declare namespace APIModels {
         PayrollUpdatePaymentMethod,
         PayScheduleAutoPayrollEnablementBlocker,
         PayScheduleAutoPayrollEnablementBlockerMetadata,
+        WorkweekStartDay,
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
         PayScheduleWorkweekStartDay_2 as PayScheduleWorkweekStartDay,
@@ -4470,7 +4472,7 @@ export const PayScheduleErrorCodes: {
 export type PayScheduleField = "anchorEndOfPayPeriod" | "anchorPayDate" | "customName" | "customTwicePerMonth" | "day1" | "day2" | "frequency" | "workweekStartDay";
 
 // @public
-export type PayScheduleFieldsMetadata = { customName: FieldMetadata; frequency: FieldMetadataWithOptions<"Every other week" | "Every week" | "Monthly" | "Twice per month">; customTwicePerMonth: FieldMetadataWithOptions<string>; anchorPayDate: FieldMetadata; anchorEndOfPayPeriod: FieldMetadata; day1: FieldMetadata; day2: FieldMetadata; workweekStartDay: FieldMetadataWithOptions<"Friday" | "Monday" | "Saturday" | "Sunday" | "Thursday" | "Tuesday" | "Wednesday">; };
+export type PayScheduleFieldsMetadata = { customName: FieldMetadata; frequency: FieldMetadataWithOptions<"Every other week" | "Every week" | "Monthly" | "Twice per month">; customTwicePerMonth: FieldMetadataWithOptions<string>; anchorPayDate: FieldMetadata; anchorEndOfPayPeriod: FieldMetadata; day1: FieldMetadata; day2: FieldMetadata; workweekStartDay: FieldMetadataWithOptions<WorkweekStartDay>; };
 
 // @public
 export type PayScheduleFormData = { customName: string; frequency: "Every other week" | "Every week" | "Monthly" | "Twice per month"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; workweekStartDay: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | null; };
@@ -4506,7 +4508,7 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
 // @alpha
-export type PayScheduleWorkweekStartDay = "Friday" | "Monday" | "Saturday" | "Sunday" | "Thursday" | "Tuesday" | "Wednesday";
+export type PayScheduleWorkweekStartDay = WorkweekStartDay;
 
 // @public
 function PaystubsCard(input: PaystubsCardProps): JSX;

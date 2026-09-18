@@ -467,7 +467,7 @@ Union of field names managed by the pay schedule form.
 | `day1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 | `day2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 | `frequency` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`\> |
-| `workweekStartDay` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Sunday"` \| `"Monday"` \| `"Tuesday"` \| `"Wednesday"` \| `"Thursday"` \| `"Friday"` \| `"Saturday"`\> |
+| `workweekStartDay` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`WorkweekStartDay`](../../APIModels/index.md#workweekstartday-1)\> |
 
 Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
 
@@ -514,8 +514,8 @@ Configuration for promoting optional pay schedule fields to required in a given 
 
 #### Remarks
 
-Only fields that are optional by default can be promoted. Currently
-`customTwicePerMonth` is the only configurable field.
+Only fields that are optional by default can be promoted:
+`customTwicePerMonth`, `day1`, `day2`, and `workweekStartDay`.
 
 ## Endpoints
 
