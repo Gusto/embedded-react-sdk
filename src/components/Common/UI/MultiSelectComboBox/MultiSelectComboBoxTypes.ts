@@ -70,4 +70,9 @@ export interface MultiSelectComboBoxProps
    * Handler for blur events
    */
   onBlur?: () => void
+  /**
+   * Element to use as the portal container for the dropdown popover.
+   * Overrides the default SDK root container from context.
+   */
+  portalContainer?: HTMLElement
 }
