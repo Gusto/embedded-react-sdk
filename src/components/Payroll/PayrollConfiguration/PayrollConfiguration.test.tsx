@@ -546,15 +546,21 @@ describe('PayrollConfiguration', () => {
       // start-on-calculating effect after each deadline, so the failure is reported once per
       // window rather than latching after the first. This is the repeated-failsafe shape seen in
       // production; the deadline no longer lies about the outcome, but it does keep retrying.
+      //
+      // Jumping the mocked clock past the deadline -- rather than ticking through all ~36 real
+      // 5s intervals to get there -- means the very next scheduled poll read sees a stale clock
+      // and reports the deadline immediately, without changing what's under test.
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+        vi.setSystemTime(Date.now() + 3 * 60 * 1000 + 10_000)
+        await vi.advanceTimersByTimeAsync(6_000)
       })
       expect(
         onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
       ).toHaveLength(1)
 
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+        vi.setSystemTime(Date.now() + 3 * 60 * 1000 + 10_000)
+        await vi.advanceTimersByTimeAsync(6_000)
       })
       expect(
         onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
