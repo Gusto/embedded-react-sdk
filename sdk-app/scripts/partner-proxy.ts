@@ -1,6 +1,6 @@
 /**
- * Dev-server proxy that talks directly to the real Embedded API with a real
- * partner's own OAuth credentials, bypassing gws-flows entirely.
+ * Dev-server proxy that talks directly to the real Embedded API using your own
+ * demo-environment OAuth client credentials, bypassing gws-flows entirely.
  *
  * Browser code calls `/api/v1/...` (same as flow-token mode); we forward to
  * `GUSTO_API_BASE_URL` with a company-scoped bearer token attached

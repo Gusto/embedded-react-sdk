@@ -77,9 +77,9 @@ async function main() {
   const envPath = resolve(ENV_DIR, `.env.${zpEnv}`)
 
   if (zpEnv === 'partner') {
-    // Partner mode talks directly to the real API with a real partner's own
-    // credentials — there's no gws-flows demo to auto-provision here. The
-    // developer supplies an existing partner-managed company's tokens by hand.
+    // Partner mode talks directly to the real API with your own demo-environment
+    // OAuth client credentials — there's no gws-flows demo to auto-provision here.
+    // The developer supplies an existing partner-managed company's tokens by hand.
     if (!existsSync(envPath) || !partnerEnvIsUsable(loadEnvFile(envPath))) {
       console.error(
         `\n  Missing or incomplete ${envPath}.\n` +

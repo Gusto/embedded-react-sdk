@@ -8,7 +8,7 @@ A standalone development application for building and testing SDK components wit
 npm run sdk-app              # Demo environment (default)
 npm run sdk-app:local        # Local ZenPayroll
 npm run sdk-app:staging      # Staging environment
-npm run sdk-app:partner      # Direct to the demo API with your own partner credentials
+npm run sdk-app:partner      # Direct to the demo API with your own OAuth client credentials
 ```
 
 The app opens at `http://localhost:5200` (or the next available port).
@@ -62,12 +62,12 @@ On first run, the setup script will create a demo through your local gws-flows, 
 
 ### Partner
 
-Talks directly to the real Embedded API (`https://api.gusto-demo.com` by default) using a real partner's own OAuth credentials, bypassing gws-flows entirely. Use this when you need to test behavior gated by a per-partner feature flag or setting.
+Talks directly to the real Embedded API (`https://api.gusto-demo.com` by default) using your own demo-environment OAuth client credentials, bypassing gws-flows entirely. Use this when you need to test behavior gated by a per-partner feature flag or setting.
 
 **There's no "create a new onboarded company" step for this mode.** You need an _existing_ partner-managed company's tokens up front:
 
-1. Mint one via `POST /v1/partner_managed_companies` with your partner's `CLIENT_ID`/`CLIENT_SECRET` (a `system_access` grant, then that endpoint).
-2. Create `sdk-app/env/.env.partner` (gitignored, not auto-generated) with:
+1. Mint one via `POST /v1/partner_managed_companies` with your `CLIENT_ID`/`CLIENT_SECRET` (a `system_access` grant, then that endpoint).
+2. Copy `sdk-app/env/.env.partner.example` to `sdk-app/env/.env.partner` (gitignored, not auto-generated) and fill in:
 
    ```text
    CLIENT_ID=your_partner_client_id
@@ -113,7 +113,7 @@ Browser Request: /api/v1/companies/{id}/employees
        ▼
   Vite Dev Server Middleware (scripts/partner-proxy.ts)
        │
-       Refreshes the partner's own access token as needed
+       Refreshes your access token as needed using your own client credentials
        Forwards straight to GUSTO_API_BASE_URL, bearer token attached server-side
 ```
 
