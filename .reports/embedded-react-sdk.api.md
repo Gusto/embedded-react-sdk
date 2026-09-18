@@ -3803,6 +3803,7 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
     onBlur?: () => void;
     onChange?: (values: string[]) => void;
     options: MultiSelectComboBoxOption[];
+    portalContainer?: HTMLElement;
     value?: string[];
 }
 
