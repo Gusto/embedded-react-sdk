@@ -7525,3 +7525,43 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollshow.
 | ------ | ------ | ------ |
 | <a id="property-workweeksenddate"></a> `endDate?` | `RFCDate` | The end date of the workweek. |
 | <a id="property-workweeksstartdate"></a> `startDate?` | `RFCDate` | The start date of the workweek. |
+
+***
+
+<a id="workweekstartday"></a>
+
+## WorkweekStartDay
+
+> `const` **WorkweekStartDay**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payschedulecreaterequest.ts:43](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/payschedulecreaterequest.ts#L43)
+
+The day of the week that this pay schedule's workweeks start on, used for regular rate of pay overtime calculations.
+
+### Remarks
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-workweekstartdayfriday"></a> `Friday` | `"Friday"` |
+| <a id="property-workweekstartdaymonday"></a> `Monday` | `"Monday"` |
+| <a id="property-workweekstartdaysaturday"></a> `Saturday` | `"Saturday"` |
+| <a id="property-workweekstartdaysunday"></a> `Sunday` | `"Sunday"` |
+| <a id="property-workweekstartdaythursday"></a> `Thursday` | `"Thursday"` |
+| <a id="property-workweekstartdaytuesday"></a> `Tuesday` | `"Tuesday"` |
+| <a id="property-workweekstartdaywednesday"></a> `Wednesday` | `"Wednesday"` |
+
+***
+
+<a id="workweekstartday-1"></a>
+
+## WorkweekStartDay
+
+> **WorkweekStartDay** = `ClosedEnum`\<*typeof* [`WorkweekStartDay`](#workweekstartday)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payschedulecreaterequest.ts:43](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/payschedulecreaterequest.ts#L43)
+
+The day of the week that this pay schedule's workweeks start on, used for regular rate of pay overtime calculations.
+
+### Remarks
