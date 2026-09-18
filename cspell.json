@@ -24,6 +24,8 @@
     "\\w*&[a-z]+;\\w*"
   ],
   "words": [
+    "overmind",
+    "sidekiq",
     "affordances",
     "frontmatter",
     "regen",
