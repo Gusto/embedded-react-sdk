@@ -30,14 +30,16 @@ const Root = ({ dictionary, errorMessage, onEvent, className }: PrintChecksFailu
       <Alert status="error" disableScrollIntoView label={t('failedTitle')}>
         {errorMessage}
       </Alert>
-      <Button
-        variant="secondary"
-        onClick={() => {
-          onEvent(printChecksEvents.PRINT_CHECKS_RETRY)
-        }}
-      >
-        {t('retryCta')}
-      </Button>
+      <ActionsLayout>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(printChecksEvents.PRINT_CHECKS_RETRY)
+          }}
+        >
+          {t('retryCta')}
+        </Button>
+      </ActionsLayout>
     </Flex>
   )
 }
