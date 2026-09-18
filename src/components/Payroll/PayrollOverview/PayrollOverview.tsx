@@ -328,11 +328,10 @@ const Root = ({
     },
   })
 
-  // Always poll from mount, not just after Submit: the initial read is a non-suspense query, so
-  // if its notification never arrives the component is stuck on `!payrollData` forever with no
-  // other render source. This also doubles as picking up a submission already in flight
-  // (another tab, another admin) — the poll's own evaluate rules keep the loop going for as long
-  // as it reads `submitting`, regardless of why the loop started.
+  // The initial read is a non-suspense query; if its notification never arrives, the component
+  // is stuck on `!payrollData` forever with no other render source. This one read forces that
+  // render -- it only keeps tracking to completion if it happens to land on `submitting`, not as
+  // a durable watcher for a submission started elsewhere.
   useEffect(() => {
     startPayrollPoll({ baseline: null, sawSubmitting: false })
   }, [startPayrollPoll])
