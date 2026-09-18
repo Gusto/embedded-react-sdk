@@ -45,7 +45,8 @@ export interface DatePickerProps
    */
   placeholder?: string
   /**
-   * Element to use as the portal container
+   * Element to use as the portal container for the popover.
+   * Overrides the SDK's default portal root (a themed element appended to `document.body`).
    */
   portalContainer?: HTMLElement
   /**

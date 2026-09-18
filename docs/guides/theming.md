@@ -1,6 +1,6 @@
 ---
 title: Theming
-description: Import SDK styles, override theme variables on the GustoProvider theme prop, and apply consistent color, typography, and shadow values across SDK components.
+description: Import SDK styles, override theme variables on the GustoProvider theme prop, apply consistent color, typography, and shadow values across SDK components, and understand the SDK's root class and overlay portal behavior.
 ---
 
 UI components in the Gusto Embedded React SDK ship with simple baseline styles that are fully themable. "Themable" means that components are designed to take on the look and feel of the application in which they are embedded.
@@ -18,6 +18,31 @@ import '@gusto/embedded-react-sdk/style.css'
 ```
 
 Developers typically apply this import at the application root where they are also setting up the `GustoProvider`.
+
+## The SDK's root class and overlay portal
+
+The imported styles scope everything to a `GSDK` class. The SDK renders one `GSDK`-classed element in place, wherever you mount `GustoProvider`, and a UI component like `Select`, `ComboBox`, `DatePicker`, `Menu`, or `MultiSelectComboBox` renders its dropdown/popover content into a **separate** `GSDK`-classed element that the SDK appends directly to `document.body` — not into the in-place one. This keeps overlay positioning correct regardless of `position`, `transform`, `filter`, or `contain` on any element between your `GustoProvider` mount point and `document.body`.
+
+Because both elements carry the plain `GSDK` class, a global rule you write against `.GSDK` applies to both. If you need to target only the visible, in-place content and leave the (invisible, until a dropdown opens) portal root alone, exclude it with `.GSDK:not(.GSDK-portal-root)`:
+
+```css
+/* Applies only to the SDK's in-place root, not the overlay portal */
+.GSDK:not(.GSDK-portal-root) {
+  max-width: 800px;
+}
+```
+
+**If you render `GustoProvider` inside a shadow root**, pass an explicit `portalContainer` (an element inside your shadow root) to `GustoProvider`. `document.body` sits outside every shadow boundary, so without an explicit container, overlay content would render outside your shadow root's style encapsulation.
+
+```tsx
+<GustoProvider
+  portalContainer={myShadowRootElement}
+  theme={{/* ... */}}
+  config={{ baseUrl: `/proxy-url/` }}
+>
+  {children}
+</GustoProvider>
+```
 
 ## Theme variables
 
