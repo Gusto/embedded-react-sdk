@@ -57,6 +57,7 @@
     "firstName": "El nombre es obligatorio para contratistas individuales",
     "firstNameFormat": "El nombre no es válido",
     "hourlyRate": "La tarifa por hora es obligatoria para contratistas por hora",
+    "hourlyRateMax": "La tarifa por hora no puede superar los $1,000,000,000,000.00",
     "lastName": "El apellido es obligatorio para contratistas individuales",
     "lastNameFormat": "El apellido no es válido",
     "ssn": "El SSN es obligatorio para contratistas individuales",

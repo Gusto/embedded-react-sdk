@@ -2,6 +2,8 @@
   "form": {
     "cancelCta": "Cancelar",
     "effectiveFromLabel": "Válido desde: {{date}}",
+    "noEditableRequirementsDescription": "Este estado no tiene requisitos fiscales editables.",
+    "noEditableRequirementsTitle": "No hay requisitos editables",
     "saveCta": "Guardar",
     "title": "Requisitos de impuestos de {{state}}",
     "validations": {

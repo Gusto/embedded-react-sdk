@@ -1,5 +1,6 @@
 {
   "addContractorCta": "Agregar contratista",
+  "backToListCta": "Volver a contratistas",
   "cancelDismissalDialog": {
     "cancelCta": "No, regresar",
     "confirmCta": "Sí, cancelar despido",
