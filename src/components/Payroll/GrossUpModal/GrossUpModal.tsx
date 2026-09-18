@@ -32,12 +32,14 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
 
   const formHandlers = useForm<GrossUpFormValues>({
     resolver: zodResolver(GrossUpFormSchema),
-    defaultValues: { netPay: 0 },
+    // Start blank rather than 0: 0 is not a valid net amount, and a leading 0
+    // in the field means typing an amount produces values like "0350".
+    defaultValues: {},
   })
 
   useEffect(() => {
     if (!isOpen) {
-      formHandlers.reset({ netPay: 0 })
+      formHandlers.reset()
       setCalculatedGrossUp(null)
       setErrorMessage(null)
     }
