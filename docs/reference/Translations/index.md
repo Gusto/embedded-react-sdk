@@ -4648,6 +4648,7 @@ Translation keys for the `Payroll.GrossUpModal` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollgrossupmodalapplycta"></a> `applyCta` | `"Apply"` |
+| <a id="property-payrollgrossupmodalapplyhint"></a> `applyHint` | `"Calculate a gross amount first to apply it."` |
 | <a id="property-payrollgrossupmodalcalculatecta"></a> `calculateCta` | `"Calculate"` |
 | <a id="property-payrollgrossupmodalcalculatingcta"></a> `calculatingCta` | `"Calculating..."` |
 | <a id="property-payrollgrossupmodalcancelcta"></a> `cancelCta` | `"Cancel"` |
