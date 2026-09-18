@@ -43,6 +43,7 @@ describe('GrossUpModal', () => {
 
     expect(screen.getByText(/net amount you want this employee/)).toBeInTheDocument()
     expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
+    expect(screen.getByText('$')).toBeInTheDocument()
     expect(screen.getByText('Calculate')).toBeInTheDocument()
     expect(screen.getByText('Cancel')).toBeInTheDocument()
   })
