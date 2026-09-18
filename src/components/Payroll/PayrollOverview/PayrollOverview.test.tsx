@@ -65,6 +65,8 @@ const basePayrollData: PayrollShow = {
 
 let mockPayrollData = { ...basePayrollData }
 let mockIsFetching = false
+let mockIsError = false
+let mockError: Error | null = null
 let mockShowEmployees: { uuid: string; flsaStatus?: string }[] = []
 
 const buildMockPayrollQueryData = () => ({
@@ -78,8 +80,10 @@ const buildMockPayrollQueryData = () => ({
 
 vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGet: () => ({
-    data: buildMockPayrollQueryData(),
+    data: mockIsError ? undefined : buildMockPayrollQueryData(),
     isFetching: mockIsFetching,
+    isError: mockIsError,
+    error: mockError,
     // The submission poll drives its reads through this `refetch`, reusing the same query
     // instead of building a second one — so it reads whatever `mockPayrollData` holds at call
     // time, same as the render-driving `data` above.
@@ -152,6 +156,8 @@ describe('PayrollOverview polling', () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
   })
 
   afterEach(() => {
@@ -225,6 +231,55 @@ describe('PayrollOverview polling', () => {
       )
     })
   })
+
+  it('keeps polling after Submit when the first read is inconclusive, instead of getting stuck on "Submitting payroll..."', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockSubmitPayroll.mockResolvedValue({ payrollUuid: 'payroll-uuid' })
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      processingRequest: { status: 'calculate_success', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => {
+      expect(mockSubmitPayroll).toHaveBeenCalled()
+    })
+
+    // Simulates the race the fix targets: this read still matches the pre-submit baseline,
+    // which used to terminate the poll permanently as `{type: 'loaded'}`.
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
+
+    expect(mockOnEvent).not.toHaveBeenCalledWith(
+      componentEvents.RUN_PAYROLL_PROCESSED,
+      expect.anything(),
+    )
+    expect(screen.getByText(/Submitting payroll/i)).toBeInTheDocument()
+
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: true,
+      processingRequest: { status: 'submit_success', errors: [] },
+    }
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(6_000)
+    })
+
+    await waitFor(() => {
+      expect(mockOnEvent).toHaveBeenCalledWith(
+        componentEvents.RUN_PAYROLL_PROCESSED,
+        expect.objectContaining({ payPeriod: basePayrollData.payPeriod }),
+      )
+    })
+  })
 })
 
 describe('PayrollOverview submit-in-progress overlay', () => {
@@ -234,6 +289,8 @@ describe('PayrollOverview submit-in-progress overlay', () => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
   })
 
   it('renders the review UI with active Submit and Edit controls when loading a payroll whose server-side status is already submitting', async () => {
@@ -262,6 +319,8 @@ describe('PayrollOverview className', () => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
   })
 
   it('applies custom className', async () => {
@@ -284,6 +343,8 @@ describe('PayrollOverview tax totals', () => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
   })
 
   it('derives the per-tax breakdown from the payrollTaxes aggregate, not the paginated compensations', async () => {
@@ -329,6 +390,8 @@ describe('PayrollOverview compensation type', () => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
     mockShowEmployees = []
   })
 
@@ -370,6 +433,8 @@ describe('PayrollOverview calculatedAt guard', () => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
   })
 
   it('throws to the error boundary on a genuinely uncalculated payroll', async () => {
@@ -378,6 +443,8 @@ describe('PayrollOverview calculatedAt guard', () => {
       calculatedAt: null,
     }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
 
     renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
@@ -385,6 +452,22 @@ describe('PayrollOverview calculatedAt guard', () => {
 
     expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
     expect(screen.queryByText(/Review payroll/i)).toBeNull()
+  })
+
+  it('throws to the error boundary instead of loading forever when the payroll query itself errors', async () => {
+    mockIsError = true
+    mockError = new Error('network error')
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByText(/Loading payroll/i)).toBeNull()
+    // The boundary must show our own copy, not whatever raw message the query error carries --
+    // that message isn't translated or guaranteed end-user-appropriate.
+    expect(screen.getByText(/There was an issue loading this payroll/i)).toBeInTheDocument()
+    expect(screen.queryByText(/network error/i)).toBeNull()
   })
 })
 
@@ -415,6 +498,8 @@ describe('PayrollOverview print checks modal', () => {
       ],
     }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
   })
 
   it('hides the View and print checks button until the payroll is processed', async () => {
@@ -453,6 +538,8 @@ describe('PayrollOverview readOnly mode', () => {
     vi.clearAllMocks()
     mockPayrollData = { ...basePayrollData }
     mockIsFetching = false
+    mockIsError = false
+    mockError = null
     vi.mocked(canCancelPayroll).mockReturnValue(false)
   })
 

@@ -6,7 +6,16 @@ import type {
 import type { QueryObserverResult } from '@tanstack/react-query'
 import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
-import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
+import {
+  usePollingTask,
+  isNonRetryablePollError,
+  type PollReadOutcome,
+  type PollTickResult,
+} from '@/hooks/usePollingTask/usePollingTask'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError } from '@/types/sdkError'
+
+const COMPONENT_NAME = 'Payroll.PayrollConfiguration'
 
 /** @internal */
 export type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
@@ -49,19 +58,41 @@ const isCalculatedStatus = (
   (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
     processingRequest == null)
 
+// A calculation that succeeded must never be reported as a failure just because we stopped
+// reading it (deadline, or a non-retryable error) — a false failure re-arms prepare, which would
+// then wipe the result. Advancing on a stale success is the safer of the two wrong answers: the
+// next screen re-reads the payroll, whereas a false failure destroys real data.
+const verifiedCalculationOutcome = (lastData: PayrollsGetQueryData | null): CalculationOutcome => {
+  const payroll = lastData?.payrollShow
+  if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
+    return { type: 'calculated', payroll }
+  }
+  return { type: 'failed', payroll }
+}
+
 const evaluateCalculationOutcome = (
-  data: PayrollsGetQueryData,
+  outcome: PollReadOutcome<PayrollsGetQueryData>,
   run: CalculationPollRun | null,
 ): PollTickResult<CalculationOutcome> => {
-  const payroll = data.payrollShow
+  if (!outcome.success) {
+    if (!isNonRetryablePollError(outcome.error)) return { status: 'polling' }
+    // Rescue a success the freshness check above missed (e.g. a same-tick calculatedAt match
+    // with baseline); never rescue a failure this way -- an unconfirmed read must stay 'error',
+    // not 'done', so it doesn't reset hasSeenCalculatingRef.
+    const verified = verifiedCalculationOutcome(outcome.lastData)
+    if (verified.type === 'calculated') return { status: 'done', value: verified }
+    return { status: 'error', error: outcome.error }
+  }
+
+  const payroll = outcome.data.payrollShow
 
   if (isCalculatingStatus(payroll?.processingRequest)) {
     if (run) run.sawCalculatingThisPoll = true
-    return { done: false }
+    return { status: 'polling' }
   }
 
   if (payroll?.processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed) {
-    return { done: true, value: { type: 'failed', payroll } }
+    return { status: 'done', value: { type: 'failed', payroll } }
   }
 
   const calculatedAt = payroll?.calculatedAt
@@ -69,10 +100,10 @@ const evaluateCalculationOutcome = (
     run?.sawCalculatingThisPoll === true || calculatedAt?.getTime() !== run?.baselineCalculatedAt
 
   if (isNewCalculation && isCalculatedStatus(payroll?.processingRequest, calculatedAt)) {
-    return { done: true, value: { type: 'calculated', payroll } }
+    return { status: 'done', value: { type: 'calculated', payroll } }
   }
 
-  return { done: false }
+  return { status: 'polling' }
 }
 
 /** @internal */
@@ -84,6 +115,11 @@ export interface UseCalculationPollOptions {
   refetch: () => Promise<QueryObserverResult<PayrollsGetQueryData, PayrollsGetQueryError>>
   onCalculated: (payroll: PayrollShow | undefined) => void
   onProcessingFailed: (payroll: PayrollShow | undefined) => void
+  /**
+   * Called when the poll gives up on a non-retryable read error, without ever confirming a
+   * calculated/failed outcome. The raw error is reported to observability by this hook already.
+   */
+  onError: () => void
 }
 
 /** @internal */
@@ -101,8 +137,10 @@ export function useCalculationPoll({
   refetch,
   onCalculated,
   onProcessingFailed,
+  onError,
 }: UseCalculationPollOptions): CalculationPoll {
   const pollRunRef = useRef<CalculationPollRun | null>(null)
+  const { observability } = useObservability()
 
   const fetchPayroll = async (): Promise<PayrollsGetQueryData> => {
     const result = await refetch()
@@ -118,24 +156,23 @@ export function useCalculationPoll({
     onCalculated(outcome.payroll)
   }
 
-  // The server is the source of truth. A calculation that succeeded while we were waiting must
-  // never be reported as a failure — that reported false failures for payrolls that had
-  // calculated fine, and re-armed the prepare that would then wipe the result (SDK-1291).
-  // Advancing on a stale success is the safer of the two wrong answers: the next screen re-reads
-  // the payroll, whereas a false failure destroys real data.
   const handleDeadline = (lastData: PayrollsGetQueryData | null) => {
-    const payroll = lastData?.payrollShow
-    if (isCalculatedStatus(payroll?.processingRequest, payroll?.calculatedAt)) {
-      onCalculated(payroll)
-      return
-    }
-    onProcessingFailed(payroll)
+    handleDone(verifiedCalculationOutcome(lastData))
   }
 
   const { start: startPoll, isPolling } = usePollingTask<PayrollsGetQueryData, CalculationOutcome>({
     fetch: fetchPayroll,
-    evaluate: data => evaluateCalculationOutcome(data, pollRunRef.current),
+    evaluate: outcome => evaluateCalculationOutcome(outcome, pollRunRef.current),
     onDone: handleDone,
+    onError: error => {
+      const sdkError = normalizeToSDKError(error)
+      observability?.onError?.({
+        ...sdkError,
+        timestamp: Date.now(),
+        componentName: COMPONENT_NAME,
+      })
+      onError()
+    },
     onDeadline: handleDeadline,
   })
 

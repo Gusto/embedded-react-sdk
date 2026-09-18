@@ -138,6 +138,20 @@ const Root = ({
   }))
 
   const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
+  const [showProcessingFailedAlert, setShowProcessingFailedAlert] = useState(false)
+
+  const emitProcessingFailed = () => {
+    onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+    setShowProcessingFailedAlert(true)
+  }
+
+  const onProcessingFailed = (payroll: PayrollShow | undefined) => {
+    emitProcessingFailed()
+    // Let prepare run again on retry — but only when there is no calculation for it to wipe.
+    if (payroll?.calculatedAt == null) {
+      hasSeenCalculatingRef.current = false
+    }
+  }
 
   const { start: startCalculationPoll, isPolling } = useCalculationPoll({
     refetch: refetchPayroll,
@@ -153,18 +167,20 @@ const Root = ({
       })
       setPayrollBlockers([])
     },
-    onProcessingFailed: (payroll: PayrollShow | undefined) => {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-      // Let prepare run again on retry — but only when there is no calculation for it to wipe.
-      if (payroll?.calculatedAt == null) {
-        hasSeenCalculatingRef.current = false
-      }
-    },
+    onProcessingFailed,
+    // Unlike a real processing failure, we never confirmed whether the calculation actually
+    // succeeded server-side, so this must not reset hasSeenCalculatingRef — doing so would
+    // re-arm prepare and risk wiping a calculation that may have genuinely completed.
+    onError: emitProcessingFailed,
   })
 
   // Show the loading state the whole time we're calculating, so a second tab shows the loader
-  // instead of a blank table until it moves to the overview.
-  const isCalculatingActive = isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current
+  // instead of a blank table until it moves to the overview. Once the failed/error alert is
+  // showing, the poll has already reached a terminal state, so the loading UI must clear even
+  // though hasSeenCalculatingRef stays true (it still guards prepare separately, below).
+  const isCalculatingActive =
+    !showProcessingFailedAlert &&
+    (isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current)
 
   const {
     employeeDetails,
@@ -343,6 +359,7 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    setShowProcessingFailedAlert(false)
     // Mark it right away so prepare can't run and cancel the calculation we just started.
     hasSeenCalculatingRef.current = true
 
@@ -451,6 +468,13 @@ const Root = ({
     startCalculationPoll,
   ])
 
+  const processingFailedAlert = showProcessingFailedAlert
+    ? {
+        label: t('alerts.processingFailed.label'),
+        content: t('alerts.processingFailed.message'),
+      }
+    : undefined
+
   const payrollAlert = (() => {
     const statusMeta = payrollData.payrollShow?.payrollStatusMeta
 
@@ -526,6 +550,7 @@ const Root = ({
         paySchedule={paySchedule}
         payrollCategory={payrollCategory}
         alerts={alerts}
+        processingFailedAlert={processingFailedAlert}
         payrollAlert={payrollAlert}
         isPending={isCalculatingActive || isLoading || isUpdatingPayroll}
         isCalculating={isCalculatingActive}
