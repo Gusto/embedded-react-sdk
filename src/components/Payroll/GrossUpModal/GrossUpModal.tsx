@@ -120,7 +120,10 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             <Alert label={t('warning')} status="warning" disableScrollIntoView />
           </div>
 
-          <Flex flexDirection="row" gap={8}>
+          {/* Bottom-align on the row itself: the .calculateButton align-self
+              rule below only targets the default (react-aria) adapter, so in
+              other adapters the button otherwise falls back to flex-start. */}
+          <Flex flexDirection="row" gap={8} alignItems="flex-end">
             <NumberInputField
               name="netPay"
               label={t('netPayLabel')}
