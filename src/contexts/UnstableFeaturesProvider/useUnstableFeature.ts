@@ -21,6 +21,8 @@ export interface UnstableFeatures {
    * workweek start day field on `PaySchedule` that RRoP's overtime calculations depend on.
    */
   payrollRegularRateOfPay?: boolean
+  /** Enables the in-development `CompanyManagement.PaySchedule` flow for managing pay schedules and their assignments after onboarding. */
+  managePaySchedules?: boolean
 }
 
 /**
