@@ -218,33 +218,27 @@ export function ManagementEmployeeListView({
 
   return (
     <>
-      <section className={className}>
-        <Flex flexDirection="column" gap={32}>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Components.Button
-              variant="secondary"
-              onClick={onAddEmployee}
-              icon={<PlusCircleIcon />}
-            >
-              {t('addEmployeeCta')}
-            </Components.Button>
-          </Flex>
-
-          <Flex flexDirection="column" gap={0}>
-            <Components.Tabs
-              tabs={tabs}
-              selectedId={selectedTab}
-              onSelectionChange={id => {
-                onTabChange(id as EmployeeTab)
-              }}
-              aria-label={t('tabsLabel')}
-            />
-
-            <DataView label={t('employeeListLabel')} {...dataViewProps} />
-          </Flex>
+      <Flex className={className} flexDirection="column" gap={32}>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Components.Heading as="h2">{t('title')}</Components.Heading>
+          <Components.Button variant="secondary" onClick={onAddEmployee} icon={<PlusCircleIcon />}>
+            {t('addEmployeeCta')}
+          </Components.Button>
         </Flex>
-      </section>
+
+        <Flex flexDirection="column" gap={0}>
+          <Components.Tabs
+            tabs={tabs}
+            selectedId={selectedTab}
+            onSelectionChange={id => {
+              onTabChange(id as EmployeeTab)
+            }}
+            aria-label={t('tabsLabel')}
+          />
+
+          <DataView label={t('employeeListLabel')} {...dataViewProps} />
+        </Flex>
+      </Flex>
 
       <Components.Dialog
         isOpen={!!employeeToDelete}
