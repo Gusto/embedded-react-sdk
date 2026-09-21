@@ -23,6 +23,7 @@ import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/
 export function OffCycleCreationPresentation({
   employees,
   blockers,
+  onViewBlockersClick,
   isPending,
   minCheckDate,
   minCheckOnlyDate,
@@ -88,7 +89,9 @@ export function OffCycleCreationPresentation({
 
   return (
     <Flex className={className} flexDirection="column" gap={32}>
-      {hasBlockers && <PayrollBlockerAlerts blockers={blockers} />}
+      {hasBlockers && (
+        <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockersClick} />
+      )}
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('pageTitle')}</Heading>
         <Text variant="supporting">{t('pageDescription')}</Text>

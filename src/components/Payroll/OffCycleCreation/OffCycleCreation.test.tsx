@@ -731,5 +731,34 @@ describe('OffCycleCreation', () => {
 
       expect(screen.getByRole('button', { name: /continue/i })).toBeEnabled()
     })
+
+    it('does not render a view-blockers action for a single non-actionable blocker', async () => {
+      mockBlockers = [{ key: 'suspended', message: 'Company is suspended and cannot run payroll.' }]
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByText('Company is suspended and cannot run payroll.')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByRole('button', { name: /view blocker/i })).not.toBeInTheDocument()
+    })
+
+    it('emits offCycle/blockers/viewAll when the view-blockers action is activated for an actionable blocker', async () => {
+      mockBlockers = [
+        {
+          key: 'pending_recovery_case',
+          message: 'Company has an open recovery case that must be resolved.',
+        },
+      ]
+
+      const user = userEvent.setup()
+      renderComponent()
+
+      const viewBlockers = await screen.findByRole('button', { name: /view blocker/i })
+      await user.click(viewBlockers)
+
+      expect(defaultProps.onEvent).toHaveBeenCalledWith('offCycle/blockers/viewAll')
+    })
   })
 })

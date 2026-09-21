@@ -2,12 +2,13 @@ import { state, transition, reduce, guard } from 'robot3'
 import {
   OffCycleCreationContextual,
   OffCycleExecutionContextual,
+  PayrollBlockerListContextual,
   type OffCycleFlowContextInterface,
 } from './OffCycleFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
-import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
+import { patchBreadcrumbsHeader, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /** @internal */
 export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
@@ -22,6 +23,14 @@ export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
         component: OffCycleCreationContextual,
         payrollUuid: undefined,
       })) as (context: unknown) => unknown,
+    },
+  },
+  blockers: {
+    parent: 'createOffCyclePayroll',
+    item: {
+      id: 'blockers',
+      label: 'breadcrumbLabel',
+      namespace: 'Payroll.PayrollBlocker',
     },
   },
 }
@@ -61,7 +70,18 @@ export const offCycleMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.OFF_CYCLE_BLOCKERS_VIEW_ALL,
+      'blockers',
+      reduce((ctx: OffCycleFlowContextInterface): OffCycleFlowContextInterface => ({
+        ...updateBreadcrumbs('blockers', ctx),
+        component: PayrollBlockerListContextual,
+        payrollUuid: undefined,
+      })),
+    ),
   ),
+
+  blockers: state<MachineTransition>(creationBreadcrumbTransition),
 
   execution: state<MachineTransition>(creationBreadcrumbTransition),
 }

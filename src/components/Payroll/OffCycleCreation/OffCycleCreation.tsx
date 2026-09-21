@@ -43,6 +43,7 @@ const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `offCycle/created` | The off-cycle payroll has been created | `{ payrollUuid: string }` |
+ * | `offCycle/blockers/viewAll` | The user chose to view the company's payroll blockers from the blocker alert | none |
  *
  * Changing the reason updates the deduction and withholding defaults — `'bonus'` skips
  * regular deductions and uses the supplemental withholding rate; `'correction'` includes
@@ -96,6 +97,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
   const handleTaxWithholdingModalCancel = useCallback(() => {
     setIsTaxWithholdingModalOpen(false)
   }, [])
+
+  const handleViewBlockers = useCallback(() => {
+    onEvent(componentEvents.OFF_CYCLE_BLOCKERS_VIEW_ALL)
+  }, [onEvent])
 
   const { data: employeesData } = useEmployeesListSuspense({
     companyId,
@@ -237,6 +242,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
         <OffCycleCreationPresentation
           employees={employees}
           blockers={blockers}
+          onViewBlockersClick={handleViewBlockers}
           isPending={isPending}
           minCheckDate={minCheckDate}
           minCheckOnlyDate={today}
