@@ -486,6 +486,9 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
       })
+      expect(
+        screen.getByText("This payroll couldn't be calculated. Please try calculating again."),
+      ).toBeInTheDocument()
     })
 
     it('fires RUN_PAYROLL_PROCESSING_FAILED on polling timeout', async () => {
@@ -600,7 +603,7 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: 'Calculating payroll...' })).toBeInTheDocument()
       })
-      expect(screen.queryByText("This payroll couldn't be calculated")).toBeNull()
+      expect(screen.queryByText(/couldn't be calculated/i)).toBeNull()
     })
 
     it('recovers to a retryable state when calculate itself fails (SDK-1276)', async () => {
@@ -1071,6 +1074,83 @@ describe('PayrollConfiguration', () => {
       expect(
         onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
       ).toHaveLength(1)
+    })
+
+    it('does not get stuck on the calculating loader after an unrelated submit clears the error following a non-retryable read failure (SDK-1319 review)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let showCallCount = 0
+
+      currentPayrollData = buildPayrollData({
+        calculatedAt: null,
+        processingRequest: null,
+        employeeCompensations: [createCompensation('emp-1')],
+      })
+
+      server.use(
+        ...buildPayrollConfigurationHandlers({
+          getPayrollData: () => currentPayrollData,
+          employees: [createEmployee('emp-1', 'Alice', 'Anderson')],
+        }),
+      )
+
+      // A later `server.use` call's handlers take priority as a whole batch over an earlier
+      // call's, regardless of order within either array -- registering these separately (rather
+      // than appending them to the array above) is what lets the literal-path GET below actually
+      // shadow the generic `:payroll_id` GET already registered above.
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = buildPayrollData({
+            calculatedAt: null,
+            processingRequest: { status: 'calculating', errors: [] },
+            employeeCompensations: [createCompensation('emp-1')],
+          })
+          return new HttpResponse(null, { status: 202 })
+        }),
+        // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
+        // shadow its handler.
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/payroll-uuid-1`, () => {
+          showCallCount++
+          if (showCallCount <= 2) {
+            return HttpResponse.json(currentPayrollData)
+          }
+          return new HttpResponse(null, { status: 401 })
+        }),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () =>
+          HttpResponse.json(currentPayrollData),
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0)
+      })
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+      expect(
+        screen.getByText("This payroll couldn't be calculated. Please try calculating again."),
+      ).toBeInTheDocument()
+
+      // Before the fix, `isCalculatingActive` was gated on `error` from `useBase()`. Any
+      // unrelated submit clears that error as its first step (`baseSubmitHandler`), which
+      // reopened the gate with no poll running to ever close it again -- the same "stuck on the
+      // loading view forever" failure as SDK-1276, just reachable from a different trigger.
+      await user.click(screen.getByRole('button', { name: 'Edit' }))
+      await user.click(await screen.findByRole('menuitem', { name: 'Skip employee' }))
+
+      expect(screen.queryByRole('heading', { name: 'Calculating payroll...' })).toBeNull()
+      expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
     })
   })
 

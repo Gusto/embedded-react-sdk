@@ -91,7 +91,7 @@ const Root = ({
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
-  const { baseSubmitHandler, error, setError } = useBase()
+  const { baseSubmitHandler, setError } = useBase()
   const dateFormatter = useDateFormatter()
 
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
@@ -142,12 +142,18 @@ const Root = ({
   }))
 
   const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
+  // Drives the loader gate below. Deliberately separate from `error` -- `baseSubmitHandler`
+  // clears `error` at the start of *any* submit (e.g. skipping an employee, applying a gross-up),
+  // which would otherwise reopen this gate and get the loader stuck on with no poll running to
+  // ever clear it (SDK-1276). Only the same sites that used to own the old boolean flag touch it.
+  const [hasProcessingFailedAlert, setHasProcessingFailedAlert] = useState(false)
 
   const emitProcessingFailed = () => {
     onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+    setHasProcessingFailedAlert(true)
     setError({
       category: 'internal_error',
-      message: `${t('alerts.processingFailed.label')} ${t('alerts.processingFailed.message')}`,
+      message: `${t('alerts.processingFailed.label')}. ${t('alerts.processingFailed.message')}`,
       fieldErrors: [],
     })
   }
@@ -189,7 +195,8 @@ const Root = ({
   // showing, the poll has already reached a terminal state, so the loading UI must clear even
   // though hasSeenCalculatingRef stays true (it still guards prepare separately, below).
   const isCalculatingActive =
-    !error && (isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current)
+    !hasProcessingFailedAlert &&
+    (isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current)
 
   const {
     employeeDetails,
@@ -368,6 +375,7 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    setHasProcessingFailedAlert(false)
     setError(null)
     // Mark it right away so prepare can't run and cancel the calculation we just started.
     hasSeenCalculatingRef.current = true
@@ -477,6 +485,7 @@ const Root = ({
     // A fresh calculating status means a real calculation is in flight again -- even right after
     // this screen's own deadline reported one as failed -- so any stale failure alert must not
     // linger over it and block the loading UI.
+    setHasProcessingFailedAlert(false)
     setError(null)
     startCalculationPoll({
       baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
