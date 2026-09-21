@@ -12,6 +12,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 /**
  * Action that may be performed on an employee row, determined by the employee's onboarding state
@@ -32,6 +33,8 @@ export interface EmployeeWithActions extends Employee {
   allowedActions: EmployeeAction[]
   /** The employee's primary job, if one is marked primary. */
   primaryJob?: Job
+  /** Effective date of a termination that hasn't gone into effect yet, if one is scheduled. */
+  pendingDismissalDate?: string
 }
 
 /**
@@ -84,7 +87,21 @@ export interface UseEmployeeListReady extends BaseHookReady<
  */
 export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady
 
-function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): EmployeeAction[] {
+function getPendingDismissalDate(employee: Employee): string | undefined {
+  const pending = employee.terminations?.find(termination => {
+    if (!termination.effectiveDate || termination.active === true) return false
+    const effectiveDate = normalizeToDate(termination.effectiveDate)
+    return effectiveDate !== null && effectiveDate.getTime() > Date.now()
+  })
+
+  return pending?.effectiveDate
+}
+
+function deriveAllowedActions(
+  employee: Employee,
+  employeeType?: EmployeeType,
+  pendingDismissalDate?: string,
+): EmployeeAction[] {
   const actions: EmployeeAction[] = []
 
   // Edit action - available for certain onboarding statuses, but not for terminated employees
@@ -117,7 +134,7 @@ function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): 
   }
 
   // Tab-specific actions for ManagementEmployeeList
-  if (employeeType === 'active') {
+  if (employeeType === 'active' && !pendingDismissalDate) {
     actions.push('dismiss')
   }
 
@@ -134,8 +151,11 @@ function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): 
  *
  * @remarks
  * `employeeType` maps to a server-side filter and changes which actions appear on each row:
- * `'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
- * to list every employee.
+ * `'active'` adds `dismiss` unless the employee already has a termination scheduled for a future
+ * date, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it to list every employee.
+ *
+ * An `'active'` row with a pending termination carries its effective date on
+ * `pendingDismissalDate` instead of the `dismiss` action.
  *
  * `'onboarding'` includes employees who haven't completed onboarding as well as employees who
  * have completed onboarding but whose primary job's hire date hasn't arrived yet, so `onboarded`
@@ -217,11 +237,13 @@ export function useEmployeeList({
   const employees = useMemo<EmployeeWithActions[]>(() => {
     return (data?.showEmployees ?? []).map(employee => {
       const primaryJob = employee.jobs?.find(job => job.primary === true)
+      const pendingDismissalDate = getPendingDismissalDate(employee)
 
       return {
         ...employee,
-        allowedActions: deriveAllowedActions(employee, employeeType),
+        allowedActions: deriveAllowedActions(employee, employeeType, pendingDismissalDate),
         primaryJob,
+        pendingDismissalDate,
       }
     })
   }, [data?.showEmployees, employeeType])

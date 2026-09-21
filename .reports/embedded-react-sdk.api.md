@@ -2984,6 +2984,7 @@ export type EmployeeType = 'active' | 'onboarding' | 'terminated';
 // @public
 export interface EmployeeWithActions extends Employee {
     allowedActions: EmployeeAction[];
+    pendingDismissalDate?: string;
     primaryJob?: Job;
 }
 

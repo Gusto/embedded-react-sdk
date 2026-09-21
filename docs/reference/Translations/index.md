@@ -3644,6 +3644,8 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
+| <a id="property-employeemanagementemployeelistpendingdismissalbadge"></a> `pendingDismissalBadge` | `"Last day {{date}}"` |
+| <a id="property-employeemanagementemployeelistpendingdismissallabel"></a> `pendingDismissalLabel` | `"Pending dismissal"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |

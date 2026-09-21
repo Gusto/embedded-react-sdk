@@ -6124,6 +6124,10 @@ export namespace Translations {
     statusLabel: string
     /** @defaultValue `"Last day"` */
     lastDayLabel: string
+    /** @defaultValue `"Pending dismissal"` */
+    pendingDismissalLabel: string
+    /** @defaultValue `"Last day {{date}}"` */
+    pendingDismissalBadge: string
     /** @defaultValue `"Edit employee"` */
     editCta: string
     /** @defaultValue `"Dismiss employee"` */
