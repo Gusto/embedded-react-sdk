@@ -50,4 +50,11 @@ describe('employeeListStateMachine', () => {
     send(service, componentEvents.EMPLOYEE_RETURN_TO_LIST)
     expect(service.machine.current).toBe('list')
   })
+
+  it('returns to list when dismissal is cancelled from the termination form', () => {
+    const service = createService('terminate')
+    send(service, componentEvents.CANCEL)
+    expect(service.machine.current).toBe('list')
+    expect(service.context.employeeId).toBeUndefined()
+  })
 })
