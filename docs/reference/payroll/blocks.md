@@ -164,6 +164,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `offCycle/created` | The off-cycle payroll has been created | `{ payrollUuid: string }` |
+| `offCycle/blockers/viewAll` | The user chose to view the company's payroll blockers from the blocker alert | none |
 
 Changing the reason updates the deduction and withholding defaults — `'bonus'` skips
 regular deductions and uses the supplemental withholding rate; `'correction'` includes

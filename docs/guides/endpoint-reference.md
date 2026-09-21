@@ -474,7 +474,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | Flow | Blocks included |
 | --- | --- |
 | **Payroll.DismissalFlow** | Payroll.DismissalPayPeriodSelection, Payroll.PayrollExecutionFlow |
-| **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollExecutionFlow |
+| **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollBlockerList, Payroll.PayrollExecutionFlow |
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
 | **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollExecutionFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
 | **Payroll.TransitionFlow** | Payroll.PayrollExecutionFlow, Payroll.TransitionCreation |

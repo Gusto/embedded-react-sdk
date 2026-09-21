@@ -1305,6 +1305,7 @@ export const componentEvents: {
     readonly EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL: "employee/termination/runOffCyclePayroll";
     readonly EMPLOYEE_TERMINATION_VIEW_SUMMARY: "employee/termination/viewSummary";
     readonly OFF_CYCLE_CREATED: "offCycle/created";
+    readonly OFF_CYCLE_BLOCKERS_VIEW_ALL: "offCycle/blockers/viewAll";
     readonly DISMISSAL_PAY_PERIOD_SELECTED: "dismissal/payPeriod/selected";
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";

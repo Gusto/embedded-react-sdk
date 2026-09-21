@@ -2654,6 +2654,7 @@
     "Payroll.OffCycleFlow": {
       "blocks": [
         "Payroll.OffCycleCreation",
+        "Payroll.PayrollBlockerList",
         "Payroll.PayrollExecutionFlow"
       ]
     },
