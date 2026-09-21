@@ -82,45 +82,43 @@ export function TerminateEmployeePresentation({
   return (
     <FormProvider {...formMethods}>
       <HtmlForm onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <section className={className}>
-          <Flex flexDirection="column" gap={24}>
-            <Flex flexDirection="column" gap={4}>
-              <Heading as="h2">{t('title', { employeeName })}</Heading>
-              <Text variant="supporting">{t('subtitle')}</Text>
-            </Flex>
-
-            <Flex flexDirection="column" gap={24}>
-              <DatePickerField
-                name="lastDayOfWork"
-                label={t('form.lastDayOfEmployment.label')}
-                description={t('form.lastDayOfEmployment.description')}
-                isRequired
-                errorMessage={t('validation.lastDayRequired')}
-              />
-
-              <RadioGroupField<PayrollOption>
-                name="payrollOption"
-                label={t('form.payrollOption.label')}
-                description={t('form.payrollOption.description')}
-                options={payrollOptions}
-                isRequired
-                errorMessage={t('validation.payrollOptionRequired')}
-              />
-              <Alert status="warning" label={t(`alert.${selectedPayrollOption}.label`)}>
-                <Text>{t(`alert.${selectedPayrollOption}.text`, { employeeName })}</Text>
-              </Alert>
-            </Flex>
-
-            <ActionsLayout>
-              <Button variant="secondary" onClick={onCancel} isDisabled={isLoading}>
-                {t('actions.cancel')}
-              </Button>
-              <Button type="submit" variant="primary" isLoading={isLoading}>
-                {t('actions.submit')}
-              </Button>
-            </ActionsLayout>
+        <Flex className={className} flexDirection="column" gap={24}>
+          <Flex flexDirection="column" gap={4}>
+            <Heading as="h2">{t('title', { employeeName })}</Heading>
+            <Text variant="supporting">{t('subtitle')}</Text>
           </Flex>
-        </section>
+
+          <Flex flexDirection="column" gap={24}>
+            <DatePickerField
+              name="lastDayOfWork"
+              label={t('form.lastDayOfEmployment.label')}
+              description={t('form.lastDayOfEmployment.description')}
+              isRequired
+              errorMessage={t('validation.lastDayRequired')}
+            />
+
+            <RadioGroupField<PayrollOption>
+              name="payrollOption"
+              label={t('form.payrollOption.label')}
+              description={t('form.payrollOption.description')}
+              options={payrollOptions}
+              isRequired
+              errorMessage={t('validation.payrollOptionRequired')}
+            />
+            <Alert status="warning" label={t(`alert.${selectedPayrollOption}.label`)}>
+              <Text>{t(`alert.${selectedPayrollOption}.text`, { employeeName })}</Text>
+            </Alert>
+          </Flex>
+
+          <ActionsLayout>
+            <Button variant="secondary" onClick={onCancel} isDisabled={isLoading}>
+              {t('actions.cancel')}
+            </Button>
+            <Button type="submit" variant="primary" isLoading={isLoading}>
+              {t('actions.submit')}
+            </Button>
+          </ActionsLayout>
+        </Flex>
       </HtmlForm>
     </FormProvider>
   )
