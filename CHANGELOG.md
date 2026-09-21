@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.56.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.8...v0.56.0) (2026-09-21)
+
+### ⚠ Breaking Changes
+
+- **The default portal container for SDK overlays (`Select`, `ComboBox`, `Menu`, `DatePicker`, `MultiSelectComboBox`) is no longer the SDK's in-place root element — it's now a dedicated root appended to `document.body`** ([#2808](https://github.com/Gusto/embedded-react-sdk/issues/2808)). This fixes overlays collapsing (`max-height: 0`) when a host page puts `position`, `transform`, `filter`, or `contain` on any ancestor between the SDK root and the viewport. Three things to check:
+
+  - If you have CSS descendant selectors scoped to the SDK root that expect overlay content to render in-place (e.g. `.your-scope .GSDK [role="listbox"]`), they'll no longer match. Pass an explicit `portalContainer` to `GustoProvider` to restore in-place rendering:
+
+    ```diff
+     <GustoProvider
+    -  config={config}
+    +  config={config}
+    +  portalContainer={myContainerRef.current}
+     >
+    ```
+
+  - If you render the SDK inside a shadow root, `portalContainer` is now **required** — `document.body` sits outside every shadow boundary, so without one, overlays escape your shadow root's style encapsulation entirely.
+  - The new default portal root carries both the `GSDK` and `GSDK-portal-root` classes. If you have a global `.GSDK { ... }` override on the host page, it now also reaches the portal root — scope it to `.GSDK:not(.GSDK-portal-root)` if that's not intended.
+
+  See the [theming guide](https://github.com/Gusto/embedded-react-sdk/blob/main/docs/guides/theming.md) for details.
+
+### Features & Enhancements
+
+- `MultiSelectComboBox` accepts a `portalContainer` prop, matching `Select`, `ComboBox`, `Menu`, and `DatePicker` ([#2808](https://github.com/Gusto/embedded-react-sdk/issues/2808))
+
+### Fixes
+
+- Align payroll receipt sub-tables to full receipt width ([#2807](https://github.com/Gusto/embedded-react-sdk/issues/2807))
+- Return to the employee list when exiting, cancelling, or completing an offboarding payroll launched from `TerminationFlow` ([#2814](https://github.com/Gusto/embedded-react-sdk/issues/2814))
+- Show a "Last day" badge instead of the dismiss action for employees with a termination already scheduled, and expose the effective date via `useEmployeeList`'s new `EmployeeWithActions.pendingDismissalDate` field ([#2814](https://github.com/Gusto/embedded-react-sdk/issues/2814))
+- Harden payroll polling against dropped notifications and inconclusive reads ([#2794](https://github.com/Gusto/embedded-react-sdk/issues/2794))
+- Show a `$` symbol on the gross-up net amount field ([#2802](https://github.com/Gusto/embedded-react-sdk/issues/2802))
+- Show a hint to calculate before applying in the gross-up modal ([#2804](https://github.com/Gusto/embedded-react-sdk/issues/2804))
+- Apply `className` to the `Flex` root instead of an unstyled wrapper ([#2815](https://github.com/Gusto/embedded-react-sdk/issues/2815))
+- Show the specific reason a payroll is blocked (e.g. a suspended company) when creating an off-cycle payroll, matching the detail already shown in the regular payroll flow ([#2816](https://github.com/Gusto/embedded-react-sdk/issues/2816))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`cspell`, `dotenv`, `eslint-plugin-tsdoc`, `prettier`, `react-router-dom`)
+
 ## [0.55.8](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.7...v0.55.8) (2026-09-18)
 
 ### Features & Enhancements
