@@ -91,7 +91,7 @@ const Root = ({
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
-  const { baseSubmitHandler } = useBase()
+  const { baseSubmitHandler, error, setError } = useBase()
   const dateFormatter = useDateFormatter()
 
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
@@ -99,6 +99,10 @@ const Root = ({
   // calc or someone else did. Calling prepare after that would wipe the result, so we use this to
   // keep prepare off.
   const hasSeenCalculatingRef = useRef(false)
+  // Set when a poll ends in a non-retryable read error without confirming a calculated/failed
+  // outcome. Guards the auto-pickup effect below from re-arming a poll against the same stale
+  // "Calculating" read over and over -- it only clears once the status genuinely leaves Calculating.
+  const hasTerminalPollErrorRef = useRef(false)
   const gustoClient = useGustoEmbeddedContext()
 
   const payrollRequest = useMemo<GetV1CompaniesCompanyIdPayrollsPayrollIdRequest>(
@@ -138,11 +142,14 @@ const Root = ({
   }))
 
   const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
-  const [showProcessingFailedAlert, setShowProcessingFailedAlert] = useState(false)
 
   const emitProcessingFailed = () => {
     onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-    setShowProcessingFailedAlert(true)
+    setError({
+      category: 'internal_error',
+      message: `${t('alerts.processingFailed.label')} ${t('alerts.processingFailed.message')}`,
+      fieldErrors: [],
+    })
   }
 
   const onProcessingFailed = (payroll: PayrollShow | undefined) => {
@@ -171,7 +178,10 @@ const Root = ({
     // Unlike a real processing failure, we never confirmed whether the calculation actually
     // succeeded server-side, so this must not reset hasSeenCalculatingRef — doing so would
     // re-arm prepare and risk wiping a calculation that may have genuinely completed.
-    onError: emitProcessingFailed,
+    onError: () => {
+      hasTerminalPollErrorRef.current = true
+      emitProcessingFailed()
+    },
   })
 
   // Show the loading state the whole time we're calculating, so a second tab shows the loader
@@ -179,8 +189,7 @@ const Root = ({
   // showing, the poll has already reached a terminal state, so the loading UI must clear even
   // though hasSeenCalculatingRef stays true (it still guards prepare separately, below).
   const isCalculatingActive =
-    !showProcessingFailedAlert &&
-    (isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current)
+    !error && (isCalculatingPayroll || isPolling || hasSeenCalculatingRef.current)
 
   const {
     employeeDetails,
@@ -359,7 +368,7 @@ const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
-    setShowProcessingFailedAlert(false)
+    setError(null)
     // Mark it right away so prepare can't run and cancel the calculation we just started.
     hasSeenCalculatingRef.current = true
 
@@ -454,12 +463,21 @@ const Root = ({
   // and that lives in the poll loop.
   useEffect(() => {
     if (isPolling) return
-    if (!isCalculatingStatus(payrollData.payrollShow?.processingRequest)) return
+    if (!isCalculatingStatus(payrollData.payrollShow?.processingRequest)) {
+      // The status only leaves Calculating on a genuinely fresh read, so this is where a prior
+      // terminal failure stops blocking future pickups.
+      hasTerminalPollErrorRef.current = false
+      return
+    }
+    // A read error we already reported for this same stale "Calculating" snapshot -- retrying it
+    // immediately would just spin (fail, isPolling flips false, this effect fires again, repeat)
+    // instead of waiting for a genuinely new read.
+    if (hasTerminalPollErrorRef.current) return
 
     // A fresh calculating status means a real calculation is in flight again -- even right after
     // this screen's own deadline reported one as failed -- so any stale failure alert must not
     // linger over it and block the loading UI.
-    setShowProcessingFailedAlert(false)
+    setError(null)
     startCalculationPoll({
       baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
       // We have seen the calculating status, which is why we're starting to poll now until it completes or fails.
@@ -470,14 +488,8 @@ const Root = ({
     payrollData.payrollShow?.calculatedAt,
     isPolling,
     startCalculationPoll,
+    setError,
   ])
-
-  const processingFailedAlert = showProcessingFailedAlert
-    ? {
-        label: t('alerts.processingFailed.label'),
-        content: t('alerts.processingFailed.message'),
-      }
-    : undefined
 
   const payrollAlert = (() => {
     const statusMeta = payrollData.payrollShow?.payrollStatusMeta
@@ -554,7 +566,6 @@ const Root = ({
         paySchedule={paySchedule}
         payrollCategory={payrollCategory}
         alerts={alerts}
-        processingFailedAlert={processingFailedAlert}
         payrollAlert={payrollAlert}
         isPending={isCalculatingActive || isLoading || isUpdatingPayroll}
         isCalculating={isCalculatingActive}

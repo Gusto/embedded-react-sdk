@@ -47,10 +47,6 @@ interface PayrollConfigurationPresentationProps {
   onViewBlockers: () => void
   payrollCategory?: PayrollCategory
   alerts?: ReactNode
-  processingFailedAlert?: {
-    label: string
-    content?: ReactNode
-  }
   payrollAlert?: {
     label: string
     content?: ReactNode
@@ -89,7 +85,6 @@ export const PayrollConfigurationPresentation = ({
   onViewBlockers,
   payrollCategory = PayrollCategory.Regular,
   alerts,
-  processingFailedAlert,
   payrollAlert,
   isPending,
   isCalculating,
@@ -172,13 +167,8 @@ export const PayrollConfigurationPresentation = ({
           </FlexItem>
         </Flex>
 
-        {(alerts || processingFailedAlert || payrollAlert) && (
+        {(alerts || payrollAlert) && (
           <Grid gap={16} gridTemplateColumns="1fr">
-            {processingFailedAlert && (
-              <Alert label={processingFailedAlert.label} status="error">
-                {processingFailedAlert.content}
-              </Alert>
-            )}
             {payrollAlert && (
               <Alert label={payrollAlert.label} status={payrollAlert.variant}>
                 {payrollAlert.content}

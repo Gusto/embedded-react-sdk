@@ -45,7 +45,7 @@
       "label": "{{employeeName}} updated successfully"
     },
     "processingFailed": {
-      "label": "This payroll couldn't be calculated",
+      "label": "This payroll couldn't be calculated.",
       "message": "Please try calculating again."
     }
   },

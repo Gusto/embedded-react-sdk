@@ -1003,6 +1003,75 @@ describe('PayrollConfiguration', () => {
 
       expect(onEvent).not.toHaveBeenCalled()
     })
+
+    it('does not spin re-arming the poll after a non-retryable read error leaves the payroll reading stale calculating data (SDK-1319 review)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let showCallCount = 0
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+        // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
+        // shadow its handler.
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/payroll-uuid-1`, () => {
+          showCallCount++
+          // Call 1 is the initial suspense read; call 2 is the poll's first tick -- both report
+          // `calculating`, so the poll survives onto a real `setTimeout`-scheduled interval, same
+          // as it would against a live server. Call 3 (the next tick) 401s -- a non-retryable,
+          // terminal read failure, leaving the query's cached data stuck reporting `calculating`
+          // (the last successful read) with no way to change on its own.
+          if (showCallCount <= 2) {
+            return HttpResponse.json(currentPayrollData)
+          }
+          return new HttpResponse(null, { status: 401 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // Settle the calculate call and the poll's first tick (which reports `calculating`) in
+      // their own `act` before advancing to the next tick -- otherwise fake timers can fast
+      // forward through the whole click-to-failure sequence in one flush, collapsing the
+      // intermediate `isPolling: true` render this test depends on to reproduce a real,
+      // separately-committed `isPolling: true -> false` transition.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0)
+      })
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+
+      const callCountAfterFirstFailure = showCallCount
+
+      // Before the fix, isPolling flipping back to false re-triggered the auto-pickup effect
+      // against the same stale `calculating` snapshot, which failed and flipped isPolling again
+      // -- a tight spin of reads and RUN_PAYROLL_PROCESSING_FAILED events instead of stopping.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(15_000)
+      })
+
+      expect(showCallCount).toBe(callCountAfterFirstFailure)
+      expect(
+        onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
+      ).toHaveLength(1)
+    })
   })
 
   describe('excluded employees', () => {
