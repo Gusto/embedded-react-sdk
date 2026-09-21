@@ -42,6 +42,7 @@ import { useNonce } from '@/contexts/NonceProvider'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { isNonRetryablePollError } from '@/hooks/usePollingTask/usePollingTask'
 import { renderErrorList } from '@/helpers/apiErrorToList'
 import { Flex, PayrollLoading } from '@/components/Common'
 import { usePagination } from '@/hooks/usePagination/usePagination'
@@ -187,6 +188,7 @@ const Root = ({
     data,
     isFetching,
     isError,
+    error,
     refetch: refetchPayroll,
   } = usePayrollsGet(payrollRequest, {
     placeholderData: keepPreviousData,
@@ -357,6 +359,14 @@ const Root = ({
       throw new Error(t('alerts.payrollLoadFailed'))
     }
     return <PayrollLoading title={t('dataLoadingTitle')} />
+  }
+
+  // `keepPreviousData` can leave stale data in place while the query is erroring in the
+  // background. A retryable error (network blip, transient 5xx) is fine to ride out on stale
+  // data, but a non-retryable one (expired session, schema mismatch) never recovers on its own --
+  // continuing to render stale data would hide that from the partner indefinitely.
+  if (isError && isNonRetryablePollError(error)) {
+    throw new Error(t('alerts.payrollLoadFailed'))
   }
 
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {

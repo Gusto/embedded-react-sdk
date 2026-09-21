@@ -39,6 +39,12 @@ export interface SubmissionPollRun {
 const isSubmittingStatus = (status: string | undefined) =>
   status === PAYROLL_PROCESSING_STATUS.submitting
 
+// A run only counts as tracking a real submission if it started from a Submit click (baseline
+// set) or has observed a `submitting` status mid-run -- the baseline-less mount poll that never
+// saw either is just guarding the initial render, not watching a submission.
+const isTrackedSubmission = (run: SubmissionPollRun | null) =>
+  run?.baseline != null || run?.sawSubmitting === true
+
 const isProcessedStatus = (processed: boolean | undefined, status: string | undefined) =>
   processed === true || status === PAYROLL_PROCESSING_STATUS.submit_success
 
@@ -104,8 +110,12 @@ export interface UseSubmissionPollOptions {
   onProcessed: (payroll: PayrollShow | undefined) => void
   onProcessingFailed: (payroll: PayrollShow | undefined) => void
   /**
-   * Called when the poll gives up on a non-retryable read error, without ever confirming a
-   * processed/failed outcome. The raw error is reported to observability by this hook already.
+   * Called when the poll gives up on a non-retryable read error, but only for a run that was
+   * actually tracking a submission (`baseline` set, or a `submitting` status observed mid-run).
+   * A baseline-less mount poll that never saw `submitting` swallows the error here -- it was only
+   * guarding the initial render, not watching a real submission, so surfacing it as a processing
+   * failure would be a false failure. The raw error is reported to observability by this hook
+   * either way.
    */
   onError: () => void
 }
@@ -161,7 +171,11 @@ export function useSubmissionPoll({
         timestamp: Date.now(),
         componentName: COMPONENT_NAME,
       })
-      onError()
+      // Don't emit a processing failed error if we never observed this payroll
+      // be submitted; this could just be a load issue
+      if (isTrackedSubmission(pollRunRef.current)) {
+        onError()
+      }
     },
     onDeadline: handleDeadline,
   })
