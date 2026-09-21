@@ -456,6 +456,10 @@ const Root = ({
     if (isPolling) return
     if (!isCalculatingStatus(payrollData.payrollShow?.processingRequest)) return
 
+    // A fresh calculating status means a real calculation is in flight again -- even right after
+    // this screen's own deadline reported one as failed -- so any stale failure alert must not
+    // linger over it and block the loading UI.
+    setShowProcessingFailedAlert(false)
     startCalculationPoll({
       baselineCalculatedAt: payrollData.payrollShow?.calculatedAt?.getTime() ?? null,
       // We have seen the calculating status, which is why we're starting to poll now until it completes or fails.

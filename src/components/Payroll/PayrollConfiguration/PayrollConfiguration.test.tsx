@@ -567,6 +567,42 @@ describe('PayrollConfiguration', () => {
       ).toHaveLength(2)
     })
 
+    it('clears the stale failure alert and shows the calculating loader once a fresh calculating status is picked back up after a deadline', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // Same deadline jump as the test above -- the payroll is still `calculating` server-side,
+      // so the deadline reports a failure and the start-on-calculating effect immediately picks
+      // the still-running calculation back up.
+      await act(async () => {
+        vi.setSystemTime(Date.now() + 3 * 60 * 1000 + 10_000)
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Calculating payroll...' })).toBeInTheDocument()
+      })
+      expect(screen.queryByText("This payroll couldn't be calculated")).toBeNull()
+    })
+
     it('recovers to a retryable state when calculate itself fails (SDK-1276)', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
