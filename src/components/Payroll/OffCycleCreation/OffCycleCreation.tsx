@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import {
   OffCycleReason as ApiOffCycleReason,
   WithholdingPayPeriod,
@@ -11,6 +12,7 @@ import {
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
@@ -99,6 +101,15 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
     companyId,
     onboardedActive: true,
   })
+
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: companyId,
+  })
+
+  const blockers: ApiPayrollBlocker[] = (blockersData.payrollBlockers ?? []).map(blocker => ({
+    key: blocker.key,
+    message: blocker.message,
+  }))
 
   const employees: MultiSelectComboBoxOption[] = useMemo(() => {
     const employeeList = employeesData.showEmployees ?? []
@@ -225,6 +236,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
         <OffCycleCreationPresentation
           employees={employees}
+          blockers={blockers}
           isPending={isPending}
           minCheckDate={minCheckDate}
           minCheckOnlyDate={today}
