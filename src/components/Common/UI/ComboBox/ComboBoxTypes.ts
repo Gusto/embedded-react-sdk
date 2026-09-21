@@ -69,7 +69,7 @@ export interface ComboBoxProps
   allowsCustomValue?: boolean
   /**
    * Element to use as the portal container for the dropdown popover.
-   * Overrides the default SDK root container from context.
+   * Overrides the SDK's default portal root (a themed element appended to `document.body`).
    */
   portalContainer?: HTMLElement
 }
