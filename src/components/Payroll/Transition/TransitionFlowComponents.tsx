@@ -1,32 +1,27 @@
-import { useMemo } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
-import {
-  PayrollExecutionInternalFlow,
-  type PayrollExecutionInternalFlowProps,
-} from '../PayrollExecutionFlow/PayrollExecutionFlow'
-import { TransitionCreation } from '../TransitionCreation'
-import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
-import { BaseComponent } from '@/components/Base/Base'
+import { TransitionPayroll } from '../TransitionPayroll'
+import type { PayrollFlowContextInterface } from '../PayrollFlow/PayrollFlowComponents'
+import { useFlow } from '@/components/Flow/useFlow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
 /**
- * Flow context shape carried through the transition payroll state machine.
+ * Flow context shape carried through the transition payroll macro state machine.
+ *
+ * @remarks
+ * Extends {@link PayrollFlowContextInterface} so the payroll-execution reducers reused by the
+ * transition machine (overview, edit-employee, receipts, blockers) typecheck against a single
+ * shared context shape.
  *
  * @internal
  */
-export interface TransitionFlowContextInterface extends FlowContextInterface {
-  /** Company the transition payroll belongs to. */
-  companyId: string
+export interface TransitionFlowContextInterface extends PayrollFlowContextInterface {
   /** Start date of the transition pay period (YYYY-MM-DD). */
   startDate: string
   /** End date of the transition pay period (YYYY-MM-DD). */
   endDate: string
   /** UUID of the pay schedule the transition is associated with. */
   payScheduleUuid: string
-  /** UUID of the created transition payroll, populated once creation completes. */
-  payrollUuid?: string
 }
 
 /**
@@ -43,73 +38,42 @@ export interface TransitionFlowProps {
   endDate: string
   /** UUID of the pay schedule the transition is associated with. */
   payScheduleUuid: string
-  /** UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. */
+  /**
+   * UUID of an existing transition payroll. When provided, the flow skips the lookup and starts on
+   * configuration for this payroll. When omitted, it resolves the payroll for the pay period.
+   */
   payrollUuid?: string
+  /** Whether reimbursement fields are shown throughout the flow. Defaults to `true`. */
+  withReimbursements?: boolean
   /** Callback invoked for each event emitted by the flow and its child steps. */
   onEvent: OnEventType<EventType, unknown>
 }
 
-/** @internal */
-export function TransitionCreationContextual() {
-  const { companyId, startDate, endDate, payScheduleUuid, onEvent } =
-    useFlow<TransitionFlowContextInterface>()
+/**
+ * Renders {@link TransitionPayroll} as the entry step of {@link TransitionFlow}, wiring its events
+ * up to the flow's state machine.
+ *
+ * @internal
+ */
+export function TransitionPayrollContextual() {
+  const {
+    companyId,
+    startDate,
+    endDate,
+    payScheduleUuid,
+    payrollUuid,
+    withReimbursements,
+    onEvent,
+  } = useFlow<TransitionFlowContextInterface>()
   return (
-    <TransitionCreation
+    <TransitionPayroll
       companyId={ensureRequired(companyId)}
       startDate={ensureRequired(startDate)}
       endDate={ensureRequired(endDate)}
       payScheduleUuid={ensureRequired(payScheduleUuid)}
+      payrollUuid={payrollUuid}
+      withReimbursements={withReimbursements}
       onEvent={onEvent}
-    />
-  )
-}
-
-/** @internal */
-export function TransitionExecutionContextual() {
-  const { companyId, payrollUuid, onEvent, header } = useFlow<TransitionFlowContextInterface>()
-
-  const transitionCreationBreadcrumb =
-    header?.type === 'breadcrumbs'
-      ? header.breadcrumbs?.['createTransitionPayroll']?.[0]
-      : undefined
-  const prefixBreadcrumbs = useMemo(() => {
-    return transitionCreationBreadcrumb ? [transitionCreationBreadcrumb] : undefined
-  }, [transitionCreationBreadcrumb])
-
-  const resolvedCompanyId = ensureRequired(companyId)
-  const resolvedPayrollId = ensureRequired(payrollUuid)
-
-  return (
-    <BaseComponent onEvent={onEvent}>
-      <TransitionExecutionWithData
-        companyId={resolvedCompanyId}
-        payrollId={resolvedPayrollId}
-        onEvent={onEvent}
-        prefixBreadcrumbs={prefixBreadcrumbs}
-      />
-    </BaseComponent>
-  )
-}
-
-type TransitionExecutionWithDataProps = Pick<
-  PayrollExecutionInternalFlowProps,
-  'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs'
->
-
-function TransitionExecutionWithData({
-  companyId,
-  payrollId,
-  ...rest
-}: TransitionExecutionWithDataProps) {
-  const { data } = usePayrollsGetSuspense({ companyId, payrollId })
-  const initialPayPeriod = data.payrollShow?.payPeriod
-
-  return (
-    <PayrollExecutionInternalFlow
-      companyId={companyId}
-      payrollId={payrollId}
-      initialPayPeriod={initialPayPeriod}
-      {...rest}
     />
   )
 }

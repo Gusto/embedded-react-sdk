@@ -1,40 +1,44 @@
-import { useMemo } from 'react'
+import { useState } from 'react'
 import { createMachine } from 'robot3'
+import { useResolveTransitionPayroll } from '../TransitionPayroll/useResolveTransitionPayroll'
 import { transitionMachine, transitionBreadcrumbsNodes } from './transitionStateMachine'
 import {
-  TransitionCreationContextual,
-  TransitionExecutionContextual,
+  TransitionPayrollContextual,
   type TransitionFlowContextInterface,
   type TransitionFlowProps,
 } from './TransitionFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
-import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
+import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Guided flow to run a transition payroll when employees move from one pay schedule to another.
+ * Macro flow that runs a transition payroll end to end: resolve or create the payroll, then
+ * configure, review, submit, and view receipts.
  *
  * @remarks
- * When employees switch from an old pay schedule to a new one, the change can leave a gap between
- * the last pay period on the old schedule and the first on the new one. A transition payroll covers
- * the wages earned during that gap.
+ * Renders {@link TransitionPayroll} as its entry step, then routes the events its configuration
+ * screen emits into the shared payroll-execution states (overview, edit-employee, receipts,
+ * blockers). It owns the breadcrumb chrome and back-navigation, and re-runs the same cached resolve
+ * lookup to seed its initial breadcrumb and payroll context.
  *
- * Starts on the creation step (configure check date, deductions, and tax withholding for the
- * transition pay period). After the payroll is created, the flow hands off to the standard
- * payroll execution experience — configure compensation, review, submit, and view receipts.
- *
- * If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
+ * There is no terminal state (SDK-1169). Completion events bubble via `onEvent` for the parent to
+ * handle (in `Payroll.PayrollFlow` the parent machine does).
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
- * | `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
+ * | `transition/created` | Fired when the transition payroll is created and the flow advances to configuration | `{ payrollUuid: string }` |
+ * | `breadcrumb/navigate` | Fired when the user navigates via the breadcrumb header | `{ key: string }` |
  *
- * Once execution begins, all standard run-payroll events are emitted as well.
+ * All standard run-payroll events are emitted once configuration begins.
  *
  * @components
- * - {@link TransitionCreation}
- * - {@link PayrollExecutionFlow}
+ * - {@link TransitionPayroll}
+ * - {@link PayrollOverview}
+ * - {@link PayrollEditEmployee}
+ * - {@link PayrollReceipts}
+ * - {@link PayrollBlockerList}
  *
  * @param props - See {@link TransitionFlowProps}.
  * @returns The transition payroll flow.
@@ -61,42 +65,63 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * }
  * ```
  */
-export function TransitionFlow({
+export function TransitionFlow(props: TransitionFlowProps) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props} />
+    </BaseComponent>
+  )
+}
+
+function Root({
   companyId,
   startDate,
   endDate,
   payScheduleUuid,
   payrollUuid,
-  onEvent,
+  withReimbursements = true,
 }: TransitionFlowProps) {
-  const hasExistingPayroll = Boolean(payrollUuid)
-  const initialState = hasExistingPayroll ? 'execution' : 'createTransitionPayroll'
-  const initialComponent = hasExistingPayroll
-    ? TransitionExecutionContextual
-    : TransitionCreationContextual
+  const { onEvent } = useBase()
 
-  const transitionFlowMachine = useMemo(
-    () =>
-      createMachine(
-        initialState,
-        transitionMachine,
-        (initialContext: TransitionFlowContextInterface) => ({
-          ...initialContext,
-          component: initialComponent,
-          companyId,
-          startDate,
-          endDate,
-          payScheduleUuid,
-          payrollUuid,
-          header: {
-            type: 'breadcrumbs' as const,
-            breadcrumbs: buildBreadcrumbs(transitionBreadcrumbsNodes),
-            currentBreadcrumbId: hasExistingPayroll ? undefined : 'createTransitionPayroll',
-          },
-        }),
-      ),
-    [companyId, startDate, endDate, payScheduleUuid, payrollUuid],
-  )
+  const resolvedPayrollUuid = useResolveTransitionPayroll({
+    companyId,
+    startDate,
+    endDate,
+    payScheduleUuid,
+  })
 
-  return <Flow machine={transitionFlowMachine} onEvent={onEvent} />
+  // A caller-supplied payrollUuid wins over the lookup, so a parent that already knows the payroll
+  // can skip creation.
+  const initialPayrollUuid = payrollUuid ?? resolvedPayrollUuid
+
+  // Freeze the machine once. Creating a payroll refetches the resolve query, so recomputing this
+  // would re-seat the machine mid-flow. TransitionPayroll freezes the same decision independently.
+  const [machine] = useState(() => {
+    const initialBreadcrumbId = initialPayrollUuid ? 'configuration' : 'createTransitionPayroll'
+    const breadcrumbs = buildBreadcrumbs(transitionBreadcrumbsNodes)
+    const initialBreadcrumbContext = updateBreadcrumbs(
+      initialBreadcrumbId,
+      { header: { type: 'breadcrumbs' as const, breadcrumbs } },
+      { startDate, endDate },
+    )
+
+    return createMachine(
+      'transitionPayroll',
+      transitionMachine,
+      (initialContext: TransitionFlowContextInterface) => ({
+        ...initialContext,
+        ...initialBreadcrumbContext,
+        component: TransitionPayrollContextual,
+        companyId,
+        startDate,
+        endDate,
+        payScheduleUuid,
+        payrollUuid: initialPayrollUuid,
+        withReimbursements,
+        withOffcyclePayroll: true,
+      }),
+    )
+  })
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }

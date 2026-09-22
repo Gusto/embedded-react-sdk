@@ -4,21 +4,22 @@
 
 ## Step flow <!-- slot: appendix -->
 
-A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. The flow's entry point depends on whether `payrollUuid` is supplied: without it, the flow opens on the creation step and advances into execution; with it, the creation step is skipped and the flow starts directly in `PayrollExecutionFlow`.
+A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. Supply the pay period (`startDate`, `endDate`, `payScheduleUuid`); the flow resolves whether an unprocessed transition payroll already exists for it. If one exists, the flow opens directly on configuration; otherwise it opens on the creation step and advances to configuration once the payroll is created. From configuration it continues into the standard review, submit, and receipts steps.
 
 ```mermaid
 flowchart
-  start@{ shape: sm-circ } --> hasPayroll{{"payrollUuid provided?"}}
-  hasPayroll -.->|"no"| CreateTransitionPayroll["TransitionCreation"]
-  hasPayroll -.->|"yes"| Execution["PayrollExecutionFlow"]
-  CreateTransitionPayroll -->|"transition/created"| Execution
-  Execution -->|"breadcrumb/navigate"| CreateTransitionPayroll
-  Execution -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
-  class hasPayroll branch
-  class Execution flow
+  start@{ shape: sm-circ } --> resolve{{"transition payroll exists?"}}
+  resolve -.->|"no"| CreateTransitionPayroll["TransitionCreation"]
+  resolve -.->|"yes"| Configuration["PayrollConfiguration"]
+  CreateTransitionPayroll -->|"transition/created"| Configuration
+  Configuration -->|"runPayroll/calculated"| Overview["PayrollOverview"]
+  Overview -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  class resolve branch
+  class Configuration flow
+  class Overview flow
 ```
 
-Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
+The resolve/resume decision lives in `TransitionPayroll`, which you can also render on its own. Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
 
 ## Creation step <!-- slot: appendix -->
 
