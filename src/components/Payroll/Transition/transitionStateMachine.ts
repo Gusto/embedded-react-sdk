@@ -1,5 +1,4 @@
 import { state, transition, reduce } from 'robot3'
-import type { PayrollFlowContextInterface } from '../PayrollFlow/PayrollFlowComponents'
 import {
   payrollExecutionMachine,
   getPayrollExecutionBreadcrumbsNodes,
@@ -8,7 +7,10 @@ import {
   employeeEditTransition,
   blockersViewAllTransition,
 } from '../PayrollExecutionFlow/payrollExecutionMachine'
-import { TransitionPayrollContextual } from './TransitionFlowComponents'
+import {
+  TransitionPayrollContextual,
+  type TransitionFlowContextInterface,
+} from './TransitionFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type {
@@ -53,12 +55,12 @@ const transitionCreatedTransition = transition(
   'transitionPayroll',
   reduce(
     (
-      ctx: PayrollFlowContextInterface,
+      ctx: TransitionFlowContextInterface,
       ev: { payload?: { payrollUuid?: string } },
-    ): PayrollFlowContextInterface => ({
+    ): TransitionFlowContextInterface => ({
       ...updateBreadcrumbs('configuration', ctx, {
-        startDate: ctx.payPeriod?.startDate ?? '',
-        endDate: ctx.payPeriod?.endDate ?? '',
+        startDate: ctx.startDate,
+        endDate: ctx.endDate,
       }),
       component: TransitionPayrollContextual,
       payrollUuid: ev.payload?.payrollUuid ?? ctx.payrollUuid,
