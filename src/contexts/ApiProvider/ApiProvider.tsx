@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
+import { stripPartnerTosPayrollBlocker } from './stripPartnerTosPayrollBlocker'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
 /**
@@ -32,7 +33,8 @@ export interface ApiProviderProps {
  * @remarks
  * Registers the SDK's `X-Gusto-API-Version` header on every request, warns via `console.warn` if a
  * response reports a different `X-Gusto-API-Version` than was requested (e.g. a proxy rewriting the
- * header), applies any default `headers`, and registers user-supplied lifecycle hooks
+ * header), drops the `partner_tos_not_accepted` payroll blocker the generated Zod enum can't yet
+ * validate, applies any default `headers`, and registers user-supplied lifecycle hooks
  * (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`, `afterError`). When no `queryClient` is
  * supplied, one is created with the SDK's defaults so
  * successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
@@ -63,6 +65,7 @@ export function ApiProvider({
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
     sdkHooks.registerAfterSuccessHook(apiVersionMismatchHook)
     sdkHooks.registerAfterErrorHook(apiVersionMismatchHook)
+    sdkHooks.registerAfterSuccessHook(stripPartnerTosPayrollBlocker)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {

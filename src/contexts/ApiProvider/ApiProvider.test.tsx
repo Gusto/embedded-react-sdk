@@ -173,24 +173,28 @@ describe('ApiProvider', () => {
     expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-06-15')
   })
 
-  test('always registers the API version mismatch hook for afterSuccess and afterError', () => {
+  test('always registers the internal afterSuccess hooks and the version mismatch afterError hook', () => {
     render(
       <ApiProvider url="https://api.example.com">
         <div>Test</div>
       </ApiProvider>,
     )
 
-    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(1)
+    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(2)
     expect(mockSDKHooksInstance.registerAfterErrorHook).toHaveBeenCalledTimes(1)
 
-    const [afterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[0]! as [
+    const [mismatchHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[0]! as [
+      { afterSuccess: unknown },
+    ]
+    const [stripBlockerHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[1]! as [
       { afterSuccess: unknown },
     ]
     const [afterErrorHook] = mockSDKHooksInstance.registerAfterErrorHook.mock.calls[0]! as [
       { afterError: unknown },
     ]
 
-    expect(afterSuccessHook.afterSuccess).toBeDefined()
+    expect(mismatchHook.afterSuccess).toBeDefined()
+    expect(stripBlockerHook.afterSuccess).toBeDefined()
     expect(afterErrorHook.afterError).toBeDefined()
   })
 })
