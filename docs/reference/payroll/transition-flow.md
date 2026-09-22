@@ -17,19 +17,13 @@ configure, review, submit, and view receipts.
 
 ## Remarks
 
-Composes [TransitionPayroll](blocks.md#transitionpayroll) (which owns the resolve/create decision and the
-creation + configuration screens) with the shared payroll-execution states. The entry step
-renders [TransitionPayroll](blocks.md#transitionpayroll); the events its configuration screen emits
-(`runPayroll/calculated`, `runPayroll/employee/edit`, `runPayroll/blockers/viewAll`, etc.) bubble
-up and route into the reused overview / edit-employee / receipts / blockers states.
+Renders [TransitionPayroll](blocks.md#transitionpayroll) as its entry step, then routes the events its configuration
+screen emits into the shared payroll-execution states (overview, edit-employee, receipts,
+blockers). It owns the breadcrumb chrome and back-navigation, and re-runs the same cached resolve
+lookup to seed its initial breadcrumb and payroll context.
 
-Unlike [TransitionPayroll](blocks.md#transitionpayroll) used on its own, this flow owns the breadcrumb chrome and the
-back-navigation between execution screens. It re-runs the same (cached) resolve lookup as
-[TransitionPayroll](blocks.md#transitionpayroll) to seed its initial breadcrumb and payroll context.
-
-There is no terminal state (SDK-1169). Completion events (`runPayroll/submitted`,
-`runPayroll/processed`, `payroll/saveAndExit`) bubble via `onEvent`; the parent decides what to do
-next (in `Payroll.PayrollFlow` the parent machine handles them).
+There is no terminal state (SDK-1169). Completion events bubble via `onEvent` for the parent to
+handle (in `Payroll.PayrollFlow` the parent machine does).
 
 ## Example
 
