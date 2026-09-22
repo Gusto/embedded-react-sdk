@@ -245,6 +245,7 @@ export { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfi
 export type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
 export type { PayPeriod, PayPeriodPayroll } from '@gusto/embedded-api/models/components/payperiod'
 export { PayrollType } from '@gusto/embedded-api/models/components/payperiod'
+export { Key } from '@gusto/embedded-api/models/components/payrollblocker'
 /** `PayrollCompanyTaxesType` entity from the Gusto Embedded API. */
 export type { PayrollCompanyTaxesType } from '@gusto/embedded-api/models/components/payrollcompanytaxestype'
 /** `PayrollCreditBlockerTypeUnblockOptions` entity from the Gusto Embedded API. */

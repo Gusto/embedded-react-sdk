@@ -3485,6 +3485,59 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/holidaypaypo
 
 ***
 
+<a id="key"></a>
+
+## Key
+
+> `const` **Key**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollblocker.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/payrollblocker.ts#L14)
+
+A unique identifier for the payroll blocker reason. For a complete list of blockers and their meanings, see the [Payroll Blockers guide](https://docs.gusto.com/embedded-payroll/docs/payroll-blockers).
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-keycompanyownershiprequired"></a> `CompanyOwnershipRequired` | `"company_ownership_required"` |
+| <a id="property-keycontractoronlycompany"></a> `ContractorOnlyCompany` | `"contractor_only_company"` |
+| <a id="property-keyeftpsinerror"></a> `EftpsInError` | `"eftps_in_error"` |
+| <a id="property-keygeocodeerror"></a> `GeocodeError` | `"geocode_error"` |
+| <a id="property-keygeocodeneeded"></a> `GeocodeNeeded` | `"geocode_needed"` |
+| <a id="property-keyinvalidsignatory"></a> `InvalidSignatory` | `"invalid_signatory"` |
+| <a id="property-keymissingaddresses"></a> `MissingAddresses` | `"missing_addresses"` |
+| <a id="property-keymissingbankinfo"></a> `MissingBankInfo` | `"missing_bank_info"` |
+| <a id="property-keymissingbankverification"></a> `MissingBankVerification` | `"missing_bank_verification"` |
+| <a id="property-keymissingemployeesetup"></a> `MissingEmployeeSetup` | `"missing_employee_setup"` |
+| <a id="property-keymissingfederaltaxsetup"></a> `MissingFederalTaxSetup` | `"missing_federal_tax_setup"` |
+| <a id="property-keymissingforms"></a> `MissingForms` | `"missing_forms"` |
+| <a id="property-keymissingindustryselection"></a> `MissingIndustrySelection` | `"missing_industry_selection"` |
+| <a id="property-keymissingpayschedule"></a> `MissingPaySchedule` | `"missing_pay_schedule"` |
+| <a id="property-keymissingsignatory"></a> `MissingSignatory` | `"missing_signatory"` |
+| <a id="property-keymissingstatetaxsetup"></a> `MissingStateTaxSetup` | `"missing_state_tax_setup"` |
+| <a id="property-keyneedsapproval"></a> `NeedsApproval` | `"needs_approval"` |
+| <a id="property-keyneedsonboarding"></a> `NeedsOnboarding` | `"needs_onboarding"` |
+| <a id="property-keypayschedulesetupnotcomplete"></a> `PayScheduleSetupNotComplete` | `"pay_schedule_setup_not_complete"` |
+| <a id="property-keypendinginformationrequest"></a> `PendingInformationRequest` | `"pending_information_request"` |
+| <a id="property-keypendingpayrollreview"></a> `PendingPayrollReview` | `"pending_payroll_review"` |
+| <a id="property-keypendingrecoverycase"></a> `PendingRecoveryCase` | `"pending_recovery_case"` |
+| <a id="property-keysoftsuspended"></a> `SoftSuspended` | `"soft_suspended"` |
+| <a id="property-keysuspended"></a> `Suspended` | `"suspended"` |
+
+***
+
+<a id="key-1"></a>
+
+## Key
+
+> **Key** = `ClosedEnum`\<*typeof* [`Key`](#key)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollblocker.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.0-rc.2/gusto_embedded_v_2026_06_15/src/models/components/payrollblocker.ts#L14)
+
+A unique identifier for the payroll blocker reason. For a complete list of blockers and their meanings, see the [Payroll Blockers guide](https://docs.gusto.com/embedded-payroll/docs/payroll-blockers).
+
+***
+
 <a id="laborday"></a>
 
 ## LaborDay

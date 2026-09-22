@@ -148,6 +148,7 @@ import { InputHTMLAttributes } from 'react';
 import { Job } from '@gusto/embedded-api/models/components/job';
 import { JSX } from 'react';
 import { Juneteenth } from '@gusto/embedded-api/models/components/holidaypaypolicy';
+import { Key } from '@gusto/embedded-api/models/components/payrollblocker';
 import { LaborDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { Licensee } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { Location as Location_2 } from '@gusto/embedded-api/models/components/location';
@@ -591,6 +592,7 @@ declare namespace APIModels {
         PayPeriod,
         PayPeriodPayroll,
         PayrollType,
+        Key,
         PayrollCompanyTaxesType,
         PayrollCreditBlockerTypeUnblockOptions,
         PayrollCreditBlockerType,
