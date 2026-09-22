@@ -11,6 +11,7 @@ import {
   buildPayrollUpdateEmployeeCompensation,
   hasExistingOvertimeHours,
   hasBreakdownsMatchingWorkweeks,
+  zeroFillClearedWorkweekCells,
   type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import type { PayrollEditEmployeeFormData } from './payrollEditEmployeeSchema'
@@ -559,5 +560,85 @@ describe('buildPayrollUpdateEmployeeCompensation', () => {
       { name: 'Vacation', hours: '8', finalPayoutUnusedHoursInput: '4' },
     ])
     expect(regular.paidTimeOff).toEqual([{ name: 'Vacation', hours: '8' }])
+  })
+})
+
+describe('zeroFillClearedWorkweekCells', () => {
+  const JOB = 'job-1'
+
+  it('coerces a split cell cleared from a loaded value to "0"', () => {
+    const defaults: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { Overtime: { '2024-01-01': '10', '2024-01-08': '5' } } },
+    }
+    const current: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { Overtime: { '2024-01-01': '10', '2024-01-08': '' } } },
+    }
+
+    const result = zeroFillClearedWorkweekCells(current, defaults)
+
+    expect(result.hours).toEqual({ [JOB]: { Overtime: { '2024-01-01': '10', '2024-01-08': '0' } } })
+  })
+
+  it('coerces a collapsed box cleared from a loaded value to "0"', () => {
+    const defaults: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { 'Regular Hours': { '2024-01-01': '40' } } },
+    }
+    const current: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { 'Regular Hours': { '2024-01-01': '' } } },
+    }
+
+    expect(zeroFillClearedWorkweekCells(current, defaults).hours).toEqual({
+      [JOB]: { 'Regular Hours': { '2024-01-01': '0' } },
+    })
+  })
+
+  it('coerces every cell of a fully-cleared split row to "0"', () => {
+    const defaults: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { Overtime: { '2024-01-01': '10', '2024-01-08': '5' } } },
+    }
+    const current: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { Overtime: { '2024-01-01': '', '2024-01-08': '' } } },
+    }
+
+    expect(zeroFillClearedWorkweekCells(current, defaults).hours).toEqual({
+      [JOB]: { Overtime: { '2024-01-01': '0', '2024-01-08': '0' } },
+    })
+  })
+
+  it('leaves a cell that was blank at load untouched', () => {
+    const defaults: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { Overtime: { '2024-01-01': '10', '2024-01-08': '' } } },
+    }
+    const current: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      hours: { [JOB]: { Overtime: { '2024-01-01': '10', '2024-01-08': '' } } },
+    }
+
+    expect(zeroFillClearedWorkweekCells(current, defaults)).toEqual({})
+  })
+
+  it('coerces cleared overtime-included earnings the same way', () => {
+    const defaults: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      overtimeIncludedEarnings: { [JOB]: { Bonus: { '2024-01-01': '100', '2024-01-08': '50' } } },
+    }
+    const current: PayrollEditEmployeeFormData = {
+      ...emptyFormData,
+      overtimeIncludedEarnings: { [JOB]: { Bonus: { '2024-01-01': '100', '2024-01-08': '' } } },
+    }
+
+    const result = zeroFillClearedWorkweekCells(current, defaults)
+
+    expect(result.overtimeIncludedEarnings).toEqual({
+      [JOB]: { Bonus: { '2024-01-01': '100', '2024-01-08': '0' } },
+    })
+    expect(result.hours).toBeUndefined()
   })
 })
