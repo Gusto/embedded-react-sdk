@@ -5897,6 +5897,7 @@ interface TransitionFlowProps {
     companyId: string;
     endDate: string;
     onEvent: OnEventType<EventType, unknown>;
+    payrollUuid?: string;
     payScheduleUuid: string;
     startDate: string;
     withReimbursements?: boolean;
@@ -5909,6 +5910,7 @@ function TransitionPayroll(props: TransitionPayrollProps): JSX;
 interface TransitionPayrollProps extends BaseComponentInterface {
     companyId: string;
     endDate: string;
+    payrollUuid?: string;
     payScheduleUuid: string;
     startDate: string;
     withReimbursements?: boolean;

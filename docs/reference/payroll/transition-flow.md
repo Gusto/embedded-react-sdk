@@ -60,6 +60,7 @@ Props for TransitionFlow.
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
+| `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips the lookup and starts on configuration for this payroll. When omitted, it resolves the payroll for the pay period. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown throughout the flow. Defaults to `true`. |
 
 ## Events
