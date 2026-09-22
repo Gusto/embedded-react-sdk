@@ -24,6 +24,7 @@ import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBrea
 
 type PayrollEventPayloads = {
   [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
+    payrollId: string
     employeeId: string
     firstName: string
     lastName: string

@@ -57,7 +57,7 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `runPayroll/employee/edit` | An employee row is selected for editing | `{ employeeId, firstName, lastName }` |
+ * | `runPayroll/employee/edit` | An employee row is selected for editing | `{ payrollId, employeeId, firstName, lastName }` |
  * | `runPayroll/employee/skip` | An employee is skipped or unskipped for this payroll | `{ employeeId }` |
  * | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
  * | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
@@ -415,6 +415,7 @@ const Root = ({
 
   const onEdit = (employee: Employee) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, {
+      payrollId,
       employeeId: employee.uuid,
       firstName: employee.firstName,
       lastName: employee.lastName,
