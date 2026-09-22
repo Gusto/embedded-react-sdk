@@ -911,22 +911,16 @@ unprocessed transition payroll when one exists and creating one otherwise.
 
 ### Remarks
 
-When a company changes its pay schedule, a coverage gap can open between the last pay period on
-the old schedule and the first on the new one. The platform creates a single unprocessed
-off-cycle "transition" payroll for that gap. This component owns the resolve/resume decision that
-a composing flow (`Payroll.PayrollFlow`) previously kept internal, so it can be composed directly:
+A transition payroll covers the gap that opens when a company changes its pay schedule. This
+component looks up whether one already exists for the pay period and picks the starting screen:
 
-- If an unprocessed transition payroll already exists for the pay period, it starts on
-  [PayrollConfiguration](#payrollconfiguration) for that payroll.
-- Otherwise it starts on [TransitionCreation](#transitioncreation); once created it advances to
-  [PayrollConfiguration](#payrollconfiguration).
+- If it exists, it starts on [PayrollConfiguration](#payrollconfiguration) for that payroll.
+- Otherwise it starts on [TransitionCreation](#transitioncreation), then advances to [PayrollConfiguration](#payrollconfiguration)
+  once the payroll is created.
 
-The initial screen is frozen at mount from the resolve lookup. Creating the payroll invalidates
-the SDK query cache, so deriving the screen live would re-seat the machine mid-flow.
-
-The configuration screen's events (calculate, employee edit, blockers, etc.) are emitted through
-`onEvent` for the host to route. The component does not own those destinations; compose it inside
-[TransitionFlow](transition-flow.md) to get the full run-payroll experience, or handle the events directly.
+Configuration events (calculate, employee edit, blockers, etc.) are emitted through `onEvent` for
+the host to route. Compose it inside [TransitionFlow](transition-flow.md) for the full run-payroll experience,
+or handle the events yourself.
 
 <br />
 
