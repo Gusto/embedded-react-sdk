@@ -180,7 +180,7 @@ describe('ApiProvider', () => {
       </ApiProvider>,
     )
 
-    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(1)
+    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(2)
     expect(mockSDKHooksInstance.registerAfterErrorHook).toHaveBeenCalledTimes(1)
 
     const [afterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[0]! as [
@@ -192,5 +192,19 @@ describe('ApiProvider', () => {
 
     expect(afterSuccessHook.afterSuccess).toBeDefined()
     expect(afterErrorHook.afterError).toBeDefined()
+  })
+
+  test('always registers the partner ToS payroll blocker workaround for afterSuccess', () => {
+    render(
+      <ApiProvider url="https://api.example.com">
+        <div>Test</div>
+      </ApiProvider>,
+    )
+
+    const [partnerTosHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[1]! as [
+      { afterSuccess: unknown },
+    ]
+
+    expect(partnerTosHook.afterSuccess).toBeDefined()
   })
 })

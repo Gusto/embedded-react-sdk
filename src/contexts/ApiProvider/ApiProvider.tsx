@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
+import { partnerTosNotAcceptedHook } from './partnerTosNotAcceptedHook'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
 /**
@@ -63,6 +64,7 @@ export function ApiProvider({
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
     sdkHooks.registerAfterSuccessHook(apiVersionMismatchHook)
     sdkHooks.registerAfterErrorHook(apiVersionMismatchHook)
+    sdkHooks.registerAfterSuccessHook(partnerTosNotAcceptedHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
