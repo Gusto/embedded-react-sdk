@@ -122,5 +122,4 @@ The breadcrumb header (`breadcrumb/navigate`) returns to an earlier step, and **
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls) |
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |

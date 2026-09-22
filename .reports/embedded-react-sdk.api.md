@@ -4318,7 +4318,9 @@ declare namespace Payroll {
         TransitionFlowProps,
         TransitionCreation,
         TransitionCreationProps,
-        TransitionCreationFormData
+        TransitionCreationFormData,
+        TransitionPayroll,
+        TransitionPayrollProps
     }
 }
 
@@ -5888,16 +5890,28 @@ interface TransitionCreationProps extends BaseComponentInterface<'Payroll.Transi
 }
 
 // @public
-function TransitionFlow(input: TransitionFlowProps): JSX;
+function TransitionFlow(props: TransitionFlowProps): JSX;
 
 // @public
 interface TransitionFlowProps {
     companyId: string;
     endDate: string;
     onEvent: OnEventType<EventType, unknown>;
-    payrollUuid?: string;
     payScheduleUuid: string;
     startDate: string;
+    withReimbursements?: boolean;
+}
+
+// @public
+function TransitionPayroll(props: TransitionPayrollProps): JSX;
+
+// @public
+interface TransitionPayrollProps extends BaseComponentInterface {
+    companyId: string;
+    endDate: string;
+    payScheduleUuid: string;
+    startDate: string;
+    withReimbursements?: boolean;
 }
 
 // @public

@@ -12,19 +12,24 @@ custom_edit_url: null
 
 # TransitionFlow
 
-Guided flow to run a transition payroll when employees move from one pay schedule to another.
+Macro flow that runs a transition payroll end to end: resolve or create the payroll, then
+configure, review, submit, and view receipts.
 
 ## Remarks
 
-When employees switch from an old pay schedule to a new one, the change can leave a gap between
-the last pay period on the old schedule and the first on the new one. A transition payroll covers
-the wages earned during that gap.
+Composes [TransitionPayroll](blocks.md#transitionpayroll) (which owns the resolve/create decision and the
+creation + configuration screens) with the shared payroll-execution states. The entry step
+renders [TransitionPayroll](blocks.md#transitionpayroll); the events its configuration screen emits
+(`runPayroll/calculated`, `runPayroll/employee/edit`, `runPayroll/blockers/viewAll`, etc.) bubble
+up and route into the reused overview / edit-employee / receipts / blockers states.
 
-Starts on the creation step (configure check date, deductions, and tax withholding for the
-transition pay period). After the payroll is created, the flow hands off to the standard
-payroll execution experience — configure compensation, review, submit, and view receipts.
+Unlike [TransitionPayroll](blocks.md#transitionpayroll) used on its own, this flow owns the breadcrumb chrome and the
+back-navigation between execution screens. It re-runs the same (cached) resolve lookup as
+[TransitionPayroll](blocks.md#transitionpayroll) to seed its initial breadcrumb and payroll context.
 
-If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
+There is no terminal state (SDK-1169). Completion events (`runPayroll/submitted`,
+`runPayroll/processed`, `payroll/saveAndExit`) bubble via `onEvent`; the parent decides what to do
+next (in `Payroll.PayrollFlow` the parent machine handles them).
 
 ## Example
 
@@ -61,42 +66,46 @@ Props for TransitionFlow.
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
-| `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |
+| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown throughout the flow. Defaults to `true`. |
 
 ## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
-| `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
+| `transition/created` | Fired when the transition payroll is created and the flow advances to configuration | `{ payrollUuid: string }` |
+| `breadcrumb/navigate` | Fired when the user navigates via the breadcrumb header | `{ key: string }` |
 
-Once execution begins, all standard run-payroll events are emitted as well.
+All standard run-payroll events are emitted once configuration begins.
 
 ## Sub-components
 
 | Component | Description |
 | ------ | ------ |
-| [TransitionCreation](blocks.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
-| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+| [TransitionPayroll](blocks.md#transitionpayroll) | Resolves and runs a transition payroll for a pay-schedule change, picking up an existing unprocessed transition payroll when one exists and creating one otherwise. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollEditEmployee](blocks.md#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 
 <!-- guide-source: src/components/Payroll/Transition/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. The flow's entry point depends on whether `payrollUuid` is supplied: without it, the flow opens on the creation step and advances into execution; with it, the creation step is skipped and the flow starts directly in `PayrollExecutionFlow`.
+A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. Supply the pay period (`startDate`, `endDate`, `payScheduleUuid`); the flow resolves whether an unprocessed transition payroll already exists for it. If one exists, the flow opens directly on configuration; otherwise it opens on the creation step and advances to configuration once the payroll is created. From configuration it continues into the standard review, submit, and receipts steps.
 
 ```mermaid
 flowchart
-  start@{ shape: sm-circ } --> hasPayroll{{"payrollUuid provided?"}}
-  hasPayroll -.->|"no"| CreateTransitionPayroll["TransitionCreation"]
-  hasPayroll -.->|"yes"| Execution["PayrollExecutionFlow"]
-  CreateTransitionPayroll -->|"transition/created"| Execution
-  Execution -->|"breadcrumb/navigate"| CreateTransitionPayroll
-  Execution -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
-  class hasPayroll branch
-  class Execution flow
+  start@{ shape: sm-circ } --> resolve{{"transition payroll exists?"}}
+  resolve -.->|"no"| CreateTransitionPayroll["TransitionCreation"]
+  resolve -.->|"yes"| Configuration["PayrollConfiguration"]
+  CreateTransitionPayroll -->|"transition/created"| Configuration
+  Configuration -->|"runPayroll/calculated"| Overview["PayrollOverview"]
+  Overview -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  class resolve branch
+  class Configuration flow
+  class Overview flow
 ```
 
-Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
+The resolve/resume decision lives in `TransitionPayroll`, which you can also render on its own. Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
 
 ## Creation step
 
@@ -115,8 +124,5 @@ Transition pay periods should be resolved — run or skipped — before regular 
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
 | GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls) |
-| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
-| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
