@@ -17,22 +17,16 @@ import { Flow } from '@/components/Flow/Flow'
  * unprocessed transition payroll when one exists and creating one otherwise.
  *
  * @remarks
- * When a company changes its pay schedule, a coverage gap can open between the last pay period on
- * the old schedule and the first on the new one. The platform creates a single unprocessed
- * off-cycle "transition" payroll for that gap. This component owns the resolve/resume decision that
- * a composing flow (`Payroll.PayrollFlow`) previously kept internal, so it can be composed directly:
+ * A transition payroll covers the gap that opens when a company changes its pay schedule. This
+ * component looks up whether one already exists for the pay period and picks the starting screen:
  *
- * - If an unprocessed transition payroll already exists for the pay period, it starts on
- *   {@link PayrollConfiguration} for that payroll.
- * - Otherwise it starts on {@link TransitionCreation}; once created it advances to
- *   {@link PayrollConfiguration}.
+ * - If it exists, it starts on {@link PayrollConfiguration} for that payroll.
+ * - Otherwise it starts on {@link TransitionCreation}, then advances to {@link PayrollConfiguration}
+ *   once the payroll is created.
  *
- * The initial screen is frozen at mount from the resolve lookup. Creating the payroll invalidates
- * the SDK query cache, so deriving the screen live would re-seat the machine mid-flow.
- *
- * The configuration screen's events (calculate, employee edit, blockers, etc.) are emitted through
- * `onEvent` for the host to route. The component does not own those destinations; compose it inside
- * {@link TransitionFlow} to get the full run-payroll experience, or handle the events directly.
+ * Configuration events (calculate, employee edit, blockers, etc.) are emitted through `onEvent` for
+ * the host to route. Compose it inside {@link TransitionFlow} for the full run-payroll experience,
+ * or handle the events yourself.
  *
  * @events
  * | Event | Description | Data |
@@ -95,10 +89,8 @@ function Root({
     payScheduleUuid,
   })
 
-  // Freeze the machine in state (not a memo). Creating a transition payroll invalidates the whole
-  // SDK query namespace, which refetches the resolve query; a memo could recompute and re-seat the
-  // machine, orphaning its interpreter mid-flow. The lazy initializer runs exactly once, capturing
-  // the initial resolve outcome.
+  // Freeze the machine once. Creating a payroll refetches the resolve query, so recomputing this
+  // would re-seat the machine mid-flow.
   const [machine] = useState(() => {
     const hasExisting = Boolean(resolvedPayrollUuid)
     return createMachine(

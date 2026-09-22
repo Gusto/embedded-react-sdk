@@ -46,11 +46,8 @@ export const transitionBreadcrumbsNodes: BreadcrumbNodes = {
   },
 } satisfies Record<string, BreadcrumbNode>
 
-/**
- * Records the created transition payroll's UUID and flips the active breadcrumb to configuration
- * while keeping the entry compound node ({@link TransitionPayroll}) mounted, which internally
- * advances from its creation screen to configuration.
- */
+// Records the created payroll's UUID and moves the breadcrumb to configuration, keeping
+// TransitionPayroll mounted so it advances its own screen from creation to configuration.
 const transitionCreatedTransition = transition(
   componentEvents.TRANSITION_CREATED,
   'transitionPayroll',
@@ -73,12 +70,10 @@ const transitionCreatedTransition = transition(
  * Macro state machine for {@link TransitionFlow}.
  *
  * @remarks
- * The entry state `transitionPayroll` renders {@link TransitionPayroll} as a compound node. The
- * remaining states reuse the shared {@link payrollExecutionMachine} state map by object spread —
- * the first machine in the codebase to compose another machine's states this way (the existing
- * pattern is component nesting). The entry state reuses that machine's onward transition consts
- * (`calculatedTransition`, etc.) so the configuration events bubbled up from {@link TransitionPayroll}
- * route into the shared overview / edit-employee / blockers states.
+ * The entry state renders {@link TransitionPayroll}; the rest of the states are the shared
+ * {@link payrollExecutionMachine} states, reused via object spread. The entry state reuses that
+ * machine's onward transitions so configuration events route into overview / edit-employee /
+ * blockers.
  *
  * @internal
  */

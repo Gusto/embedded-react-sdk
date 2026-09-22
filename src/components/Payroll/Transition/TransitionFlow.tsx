@@ -17,19 +17,13 @@ import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers
  * configure, review, submit, and view receipts.
  *
  * @remarks
- * Composes {@link TransitionPayroll} (which owns the resolve/create decision and the
- * creation + configuration screens) with the shared payroll-execution states. The entry step
- * renders {@link TransitionPayroll}; the events its configuration screen emits
- * (`runPayroll/calculated`, `runPayroll/employee/edit`, `runPayroll/blockers/viewAll`, etc.) bubble
- * up and route into the reused overview / edit-employee / receipts / blockers states.
+ * Renders {@link TransitionPayroll} as its entry step, then routes the events its configuration
+ * screen emits into the shared payroll-execution states (overview, edit-employee, receipts,
+ * blockers). It owns the breadcrumb chrome and back-navigation, and re-runs the same cached resolve
+ * lookup to seed its initial breadcrumb and payroll context.
  *
- * Unlike {@link TransitionPayroll} used on its own, this flow owns the breadcrumb chrome and the
- * back-navigation between execution screens. It re-runs the same (cached) resolve lookup as
- * {@link TransitionPayroll} to seed its initial breadcrumb and payroll context.
- *
- * There is no terminal state (SDK-1169). Completion events (`runPayroll/submitted`,
- * `runPayroll/processed`, `payroll/saveAndExit`) bubble via `onEvent`; the parent decides what to do
- * next (in `Payroll.PayrollFlow` the parent machine handles them).
+ * There is no terminal state (SDK-1169). Completion events bubble via `onEvent` for the parent to
+ * handle (in `Payroll.PayrollFlow` the parent machine does).
  *
  * @events
  * | Event | Description | Data |
@@ -95,10 +89,8 @@ function Root({
     payScheduleUuid,
   })
 
-  // Freeze the machine in state (not a memo). Creating a transition payroll invalidates the SDK
-  // query namespace, refetching this resolve query; a memo could recompute and re-seat the machine
-  // mid-flow. The lazy initializer runs exactly once, capturing the initial resolve outcome.
-  // TransitionPayroll freezes the same decision independently.
+  // Freeze the machine once. Creating a payroll refetches the resolve query, so recomputing this
+  // would re-seat the machine mid-flow. TransitionPayroll freezes the same decision independently.
   const [machine] = useState(() => {
     const initialBreadcrumbId = resolvedPayrollUuid ? 'configuration' : 'createTransitionPayroll'
     const breadcrumbs = buildBreadcrumbs(transitionBreadcrumbsNodes)
