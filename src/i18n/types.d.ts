@@ -7233,7 +7233,13 @@ export namespace Translations {
     defaultBlockerDescription: string
     /** @defaultValue `"Please contact support."` */
     defaultBlockerHelp: string
+    /** @defaultValue `"Payroll blocker"` */
+    genericBlockerTitle: string
     blockers: {
+      partner_tos_not_accepted: {
+        /** @defaultValue `"Terms of Service Required"` */
+        title: string
+      }
       geocode_error: {
         /** @defaultValue `"Address Verification Failed"` */
         title: string
