@@ -4,6 +4,7 @@ import type {
   OffCyclePayrollDateType,
 } from '../OffCyclePayPeriodDateForm'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
@@ -39,6 +40,11 @@ export interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData 
 export interface OffCycleCreationPresentationProps {
   /** Selectable employees rendered in the multi-select. */
   employees: MultiSelectComboBoxOption[]
+  /**
+   * Run-payroll blockers for the company. When non-empty, a blocker alert is shown and the
+   * submit action is disabled so the off-cycle payroll cannot be created while a blocker is active.
+   */
+  blockers: ApiPayrollBlocker[]
   /** Whether the off-cycle create mutation is in flight. */
   isPending?: boolean
   /** Earliest selectable payment date for direct deposit (today plus the ACH lead time). */
