@@ -1,4 +1,8 @@
-import type { PayScheduleErrorCodes, PayScheduleFrequency } from './payScheduleSchema'
+import type {
+  PayScheduleErrorCodes,
+  PayScheduleFrequency,
+  PayScheduleWorkweekStartDay,
+} from './payScheduleSchema'
 import type { TextInputHookFieldProps } from '@/partner-hook-utils/form/fields/TextInputHookField'
 import type { SelectHookFieldProps } from '@/partner-hook-utils/form/fields/SelectHookField'
 import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/RadioGroupHookField'
@@ -123,4 +127,18 @@ export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidat
 /** @internal */
 export function Day2Field(props: Day2FieldProps) {
   return <NumberInputHookField {...props} name="day2" min={1} max={31} />
+}
+
+/**
+ * Props accepted by {@link usePayScheduleForm}'s `Fields.WorkweekStartDay` component.
+ *
+ * @alpha
+ */
+export type WorkweekStartDayFieldProps = HookFieldProps<
+  SelectHookFieldProps<never, PayScheduleWorkweekStartDay>
+>
+
+/** @internal */
+export function WorkweekStartDayField(props: WorkweekStartDayFieldProps) {
+  return <SelectHookField {...props} name="workweekStartDay" />
 }

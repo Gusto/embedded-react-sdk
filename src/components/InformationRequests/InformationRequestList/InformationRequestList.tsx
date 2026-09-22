@@ -156,17 +156,15 @@ function Root({ companyId, dictionary, onEvent, className }: InformationRequestL
   })
 
   return (
-    <section className={className}>
-      <Flex flexDirection="column" gap={20}>
-        <Flex flexDirection="column" gap={2}>
-          <Heading as="h2" styledAs="h4">
-            {t('title')}
-          </Heading>
-          {visibleRequests.length > 0 && <Text>{t('description')}</Text>}
-        </Flex>
-
-        <DataView {...dataViewProps} label={t('title')} />
+    <Flex className={className} flexDirection="column" gap={20}>
+      <Flex flexDirection="column" gap={2}>
+        <Heading as="h2" styledAs="h4">
+          {t('title')}
+        </Heading>
+        {visibleRequests.length > 0 && <Text>{t('description')}</Text>}
       </Flex>
-    </section>
+
+      <DataView {...dataViewProps} label={t('title')} />
+    </Flex>
   )
 }

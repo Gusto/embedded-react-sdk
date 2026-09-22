@@ -215,7 +215,49 @@ describe('useEmployeeList', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(requestUrl).toContain('onboarded=false')
+      expect(requestUrl).toContain('onboarded_active=false')
+    })
+
+    it('includes onboarded employees with a future hire date in the onboarding tab', async () => {
+      const futureHireEmployee = {
+        uuid: 'employee-3',
+        first_name: 'Future',
+        last_name: 'Hire',
+        onboarded: true,
+        onboarding_status: 'onboarding_completed',
+      }
+
+      server.use(
+        handleGetCompanyEmployees(() =>
+          HttpResponse.json([futureHireEmployee], {
+            headers: {
+              'x-total-pages': '1',
+              'x-total-count': '1',
+              'x-page': '1',
+              'x-per-page': '25',
+            },
+          }),
+        ),
+      )
+
+      const { result } = renderHook(
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'onboarding' }),
+        {
+          wrapper: TestWrapper,
+        },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        expect(result.current.data.employees).toHaveLength(1)
+        expect(result.current.data.employees[0]).toMatchObject({
+          uuid: 'employee-3',
+          onboarded: true,
+        })
+      }
     })
   })
 

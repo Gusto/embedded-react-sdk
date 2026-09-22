@@ -47,7 +47,9 @@ export function useDemoManager({ pollingDisabled = false }: UseDemoManagerOption
   }, [])
 
   useEffect(() => {
-    if (proxyMode === 'none') return
+    // Token validation and re-provisioning are gws-flows-specific — partner-direct
+    // mode manages its own token refresh server-side, with no demo to re-provision.
+    if (proxyMode !== 'flow-token') return
     if (pollingDisabled) {
       setState(prev => ({ ...prev, tokenStatus: 'unknown' }))
       return

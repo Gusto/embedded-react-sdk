@@ -293,6 +293,7 @@ export const PayrollOverviewPresentation = ({
     companyPaysColumns.push({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
+      justify: 'end',
       render: (employeeCompensations: EmployeeCompensations) => {
         const isDownloading =
           !!employeeCompensations.employeeUuid &&
@@ -659,7 +660,12 @@ export const PayrollOverviewPresentation = ({
           )}
         </Flex>
         {!isDesktop && (
-          <Grid gridTemplateColumns="1fr" gap={8}>
+          <Grid
+            gridTemplateColumns={
+              !isProcessed && canEdit ? ['minmax(0, 1fr)', 'minmax(0, 1fr)'] : '1fr'
+            }
+            gap={8}
+          >
             {actions}
           </Grid>
         )}

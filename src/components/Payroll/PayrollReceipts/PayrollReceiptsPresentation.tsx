@@ -172,7 +172,7 @@ export const PayrollReceiptsPresentation = ({
   )
 
   const renderBreakdownSection = () => (
-    <Flex flexDirection="column" gap={16}>
+    <Flex flexDirection="column" gap={16} alignItems="stretch">
       <DataTable
         label={t('sections.debitedLabel')}
         columns={[
@@ -197,7 +197,7 @@ export const PayrollReceiptsPresentation = ({
   )
 
   const renderTaxBreakdown = () => (
-    <Flex flexDirection="column" gap={16}>
+    <Flex flexDirection="column" gap={16} alignItems="stretch">
       <DataTable
         label={t('sections.taxLabel')}
         columns={[
@@ -248,7 +248,7 @@ export const PayrollReceiptsPresentation = ({
     )
 
     return (
-      <Flex flexDirection="column" gap={16}>
+      <Flex flexDirection="column" gap={16} alignItems="stretch">
         {isMobile && <Heading as="h2">{t('sections.employeesLabel')}</Heading>}
         <DataView
           label={t('sections.employeesLabel')}

@@ -7,6 +7,8 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockCreateOffCyclePayroll = vi.fn()
 
+let mockBlockers: Array<{ key: string; message?: string }> = []
+
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
@@ -49,6 +51,12 @@ vi.mock('@gusto/embedded-api/react-query/payrollsCreateOffCycle', () => ({
   }),
 }))
 
+vi.mock('@gusto/embedded-api/react-query/payrollsGetBlockers', () => ({
+  usePayrollsGetBlockersSuspense: () => ({
+    data: { payrollBlockers: mockBlockers },
+  }),
+}))
+
 vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
   useCompanyPaymentSpeed: () => ({
     paymentSpeed: undefined,
@@ -68,6 +76,7 @@ function renderComponent(props = {}) {
 describe('OffCycleCreation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockBlockers = []
 
     HTMLDialogElement.prototype.showModal = vi.fn()
     HTMLDialogElement.prototype.close = vi.fn()
@@ -697,6 +706,30 @@ describe('OffCycleCreation', () => {
       expect(screen.queryByText(/supplemental 22%/i)).not.toBeInTheDocument()
       const regularWagesTexts = screen.getAllByText(/regular wages, paid every other week/i)
       expect(regularWagesTexts).toHaveLength(2)
+    })
+  })
+
+  describe('payroll blockers', () => {
+    it('surfaces the suspended blocker message and disables the continue button', async () => {
+      mockBlockers = [{ key: 'suspended', message: 'Company is suspended and cannot run payroll.' }]
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByText('Company is suspended and cannot run payroll.')).toBeInTheDocument()
+      })
+
+      expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+    })
+
+    it('leaves the continue button enabled when there are no blockers', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByRole('button', { name: /continue/i })).toBeEnabled()
     })
   })
 })

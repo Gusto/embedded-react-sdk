@@ -52,7 +52,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `payroll/review` | A calculated payroll is opened for review | `{ payrollId: string }` |
 | `runPayroll/calculated` | Payroll calculations complete | — |
 | `runPayroll/edit` | The user returns to configuration to make changes | — |
-| `runPayroll/employee/edit` | An employee row is opened for editing | `{ employeeId: string, firstName: string, lastName: string }` |
+| `runPayroll/employee/edit` | An employee row is opened for editing | `{ payrollId: string, employeeId: string, firstName: string, lastName: string }` |
 | `runPayroll/employee/saved` | Employee payroll changes are saved | `{ payrollPrepared: object, employee: object }` |
 | `runPayroll/employee/cancelled` | Employee editing is cancelled | — |
 | `runPayroll/submitted` | Payroll is successfully submitted | Response from the submit payroll endpoint |
@@ -72,7 +72,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 | [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
-| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
+| [TransitionFlow](transition-flow.md) | Macro flow that runs a transition payroll end to end: resolve or create the payroll, then configure, review, submit, and view receipts. |
 | [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 | [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
 | [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |

@@ -400,6 +400,7 @@ export type {
   PayScheduleAutoPayrollEnablementBlocker,
   PayScheduleAutoPayrollEnablementBlockerMetadata,
 } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker'
+export { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest'
 export { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
 export type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
 /** `PayScheduleWorkweekStartDay` entity from the Gusto Embedded API. */

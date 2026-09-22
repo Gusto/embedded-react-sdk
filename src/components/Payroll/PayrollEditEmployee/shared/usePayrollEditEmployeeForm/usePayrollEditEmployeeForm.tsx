@@ -31,6 +31,7 @@ import {
   hasExistingOvertimeHours,
   normalizeWorkweeks,
   resolveEditableFixedCompensations,
+  zeroFillClearedWorkweekCells,
   type NormalizedWorkweek,
 } from './payrollEditEmployeeHelpers'
 import {
@@ -338,7 +339,7 @@ export function usePayrollEditEmployeeForm({
 
   // Seed a blank input for every payroll fixed-compensation type (like the stable
   // editor), then let the field/defaults builders split them into additional
-  // earnings vs `other` by overtime inclusion. Without this, an employee whose
+  // earnings vs `overtimeExcludedEarnings` by overtime inclusion. Without this, an employee whose
   // prepared payroll carries no fixed compensations shows no earnings inputs.
   const resolvedFixedCompensations = useMemo(
     () =>
@@ -589,8 +590,11 @@ export function usePayrollEditEmployeeForm({
       { shouldDirty: true },
     )
     formMethods.setValue(
-      'additionalEarnings',
-      overlayLiveFirstWeek(revealedDefaults.additionalEarnings, currentValues.additionalEarnings),
+      'overtimeIncludedEarnings',
+      overlayLiveFirstWeek(
+        revealedDefaults.overtimeIncludedEarnings,
+        currentValues.overtimeIncludedEarnings,
+      ),
       { shouldDirty: true },
     )
   }
@@ -625,6 +629,21 @@ export function usePayrollEditEmployeeForm({
 
   const onSubmit = async (): Promise<HookSubmitResult<PayrollPrepared> | undefined> => {
     let submitResult: HookSubmitResult<PayrollPrepared> | undefined
+
+    // A workweek input that loaded with a value and was cleared by the user
+    // submits an explicit `0` for that cell. Writing the `0` into form state
+    // before validation lets the existing per-row check and submit builder run
+    // unchanged: the cell is now filled rather than blank. Cells that were blank
+    // at load stay blank (and keep validating as required in a touched row).
+    const cleared = zeroFillClearedWorkweekCells(formMethods.getValues(), resolvedDefaults)
+    if (cleared.hours) {
+      formMethods.setValue('hours', cleared.hours, { shouldDirty: true })
+    }
+    if (cleared.overtimeIncludedEarnings) {
+      formMethods.setValue('overtimeIncludedEarnings', cleared.overtimeIncludedEarnings, {
+        shouldDirty: true,
+      })
+    }
 
     await new Promise<void>(resolve => {
       void formMethods.handleSubmit(

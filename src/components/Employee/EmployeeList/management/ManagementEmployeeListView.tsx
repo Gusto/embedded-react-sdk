@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
-import { DataView, EmptyData, useDataView } from '@/components/Common'
+import { DataView, EmptyData, useDataView, VisuallyHidden } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -9,7 +9,7 @@ import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingSta
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { formatDateLongWithYear } from '@/helpers/dateFormatting'
+import { formatDateLong, formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
@@ -100,7 +100,21 @@ export function ManagementEmployeeListView({
     }
 
     if (selectedTab === 'active') {
-      return [nameColumn, jobTitleColumn]
+      const pendingDismissalColumn = {
+        key: 'pendingDismissal',
+        title: <VisuallyHidden>{t('pendingDismissalLabel')}</VisuallyHidden>,
+        render: (employee: EmployeeWithActions) => {
+          if (!employee.pendingDismissalDate) return null
+
+          return (
+            <Components.Badge status="info">
+              {t('pendingDismissalBadge', { date: formatDateLong(employee.pendingDismissalDate) })}
+            </Components.Badge>
+          )
+        },
+      }
+
+      return [nameColumn, jobTitleColumn, pendingDismissalColumn]
     }
 
     if (selectedTab === 'onboarding') {
@@ -218,33 +232,27 @@ export function ManagementEmployeeListView({
 
   return (
     <>
-      <section className={className}>
-        <Flex flexDirection="column" gap={32}>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Components.Button
-              variant="secondary"
-              onClick={onAddEmployee}
-              icon={<PlusCircleIcon />}
-            >
-              {t('addEmployeeCta')}
-            </Components.Button>
-          </Flex>
-
-          <Flex flexDirection="column" gap={0}>
-            <Components.Tabs
-              tabs={tabs}
-              selectedId={selectedTab}
-              onSelectionChange={id => {
-                onTabChange(id as EmployeeTab)
-              }}
-              aria-label={t('tabsLabel')}
-            />
-
-            <DataView label={t('employeeListLabel')} {...dataViewProps} />
-          </Flex>
+      <Flex className={className} flexDirection="column" gap={32}>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Components.Heading as="h2">{t('title')}</Components.Heading>
+          <Components.Button variant="secondary" onClick={onAddEmployee} icon={<PlusCircleIcon />}>
+            {t('addEmployeeCta')}
+          </Components.Button>
         </Flex>
-      </section>
+
+        <Flex flexDirection="column" gap={0}>
+          <Components.Tabs
+            tabs={tabs}
+            selectedId={selectedTab}
+            onSelectionChange={id => {
+              onTabChange(id as EmployeeTab)
+            }}
+            aria-label={t('tabsLabel')}
+          />
+
+          <DataView label={t('employeeListLabel')} {...dataViewProps} />
+        </Flex>
+      </Flex>
 
       <Components.Dialog
         isOpen={!!employeeToDelete}

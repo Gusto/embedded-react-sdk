@@ -37,45 +37,41 @@ export function DismissalPayPeriodSelectionPresentation({
 
   if (hasNoPayPeriods) {
     return (
-      <section className={className}>
-        <Flex flexDirection="column" gap={24}>
-          <Flex flexDirection="column" gap={4}>
-            <Heading as="h2">{t('pageTitle')}</Heading>
-          </Flex>
-          <Alert status="info" label={t('emptyState')} />
+      <Flex className={className} flexDirection="column" gap={24}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('pageTitle')}</Heading>
         </Flex>
-      </section>
+        <Alert status="info" label={t('emptyState')} />
+      </Flex>
     )
   }
 
   return (
-    <section className={className}>
-      <Flex flexDirection="column" gap={24}>
-        <Flex flexDirection="column" gap={4}>
-          <Heading as="h2">{t('pageTitle')}</Heading>
-          <Text variant="supporting">{t('pageDescription')}</Text>
-        </Flex>
-
-        <Select
-          label={t('selectLabel')}
-          options={payPeriodOptions}
-          value={selectedPeriodKey}
-          onChange={onSelectPeriod}
-          placeholder={t('selectPlaceholder')}
-          isRequired
-        />
-
-        <ActionsLayout>
-          <Button
-            variant="primary"
-            onClick={onSubmit}
-            isLoading={isPending}
-            isDisabled={isPending || selectedPeriodKey === undefined}
-          >
-            {t('continueCta')}
-          </Button>
-        </ActionsLayout>
+    <Flex className={className} flexDirection="column" gap={24}>
+      <Flex flexDirection="column" gap={4}>
+        <Heading as="h2">{t('pageTitle')}</Heading>
+        <Text variant="supporting">{t('pageDescription')}</Text>
       </Flex>
-    </section>
+
+      <Select
+        label={t('selectLabel')}
+        options={payPeriodOptions}
+        value={selectedPeriodKey}
+        onChange={onSelectPeriod}
+        placeholder={t('selectPlaceholder')}
+        isRequired
+      />
+
+      <ActionsLayout>
+        <Button
+          variant="primary"
+          onClick={onSubmit}
+          isLoading={isPending}
+          isDisabled={isPending || selectedPeriodKey === undefined}
+        >
+          {t('continueCta')}
+        </Button>
+      </ActionsLayout>
+    </Flex>
   )
 }

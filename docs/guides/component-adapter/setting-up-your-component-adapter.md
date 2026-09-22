@@ -60,6 +60,22 @@ Make sure your component implementation:
 - Properly passes event handlers
 - Forwards additional HTML attributes to the appropriate element
 
+### Popover-based components: honor `portalContainer`
+
+`Select`, `ComboBox`, `Menu`, `DatePicker`, and `MultiSelectComboBox` each accept a `portalContainer?: HTMLElement` prop. Some SDK-rendered screens pass a live value for it — for example, when one of these fields renders inside an SDK-managed modal — specifically to keep the dropdown positioned inside that modal's stacking context.
+
+If your implementation ignores `portalContainer`, your dropdown falls back to whatever default portal target your own component library uses, and may render outside the modal it's meant to appear in. Forward the value to your library's equivalent option — most popover-based UI libraries expose one (for example, a `container` prop):
+
+```tsx
+import type { SelectProps } from '@gusto/embedded-react-sdk'
+
+const MyCustomSelect = ({ portalContainer, ...props }: SelectProps) => {
+  // Pass portalContainer through to whatever prop your library uses
+  // to control where its dropdown/popover renders.
+  return <MyLibrarySelect popoverContainer={portalContainer} {...props} />
+}
+```
+
 For a complete reference of all component types and their props, see the [Component Inventory](../../reference/component-inventory.md).
 
 To learn more about how each component should be implemented, you can reference the default implementations in the SDK ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)).

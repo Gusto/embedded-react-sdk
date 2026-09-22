@@ -5,6 +5,7 @@ import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
+import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
@@ -17,6 +18,7 @@ import {
   type PayScheduleFormData,
   type PayScheduleFormOutputs,
   type PayScheduleFrequency,
+  type PayScheduleWorkweekStartDay,
 } from './payScheduleSchema'
 import {
   CustomNameField,
@@ -26,6 +28,7 @@ import {
   AnchorEndOfPayPeriodField,
   Day1Field,
   Day2Field,
+  WorkweekStartDayField,
 } from './fields'
 import type {
   CustomNameFieldProps,
@@ -35,11 +38,13 @@ import type {
   AnchorEndOfPayPeriodFieldProps,
   Day1FieldProps,
   Day2FieldProps,
+  WorkweekStartDayFieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
+import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
@@ -51,6 +56,7 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 export type { PayScheduleOptionalFieldsToRequire } from './payScheduleSchema'
 
@@ -78,6 +84,15 @@ export interface UsePayScheduleFormProps {
   validationMode?: UseFormProps['mode']
   /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. */
   shouldFocusError?: boolean
+  /**
+   * Renders `Fields.WorkweekStartDay` disabled while still submitting its current value,
+   * for partners that compute the workweek start day themselves and don't want end users
+   * editing it directly. Defaults to `false`. Has no effect unless the `payrollRegularRateOfPay`
+   * unstable feature is enabled.
+   *
+   * @alpha
+   */
+  disableWorkweekStartDayEditing?: boolean
 }
 
 /**
@@ -105,6 +120,14 @@ export interface PayScheduleFormFields {
   Day1: ComponentType<Day1FieldProps> | undefined
   /** Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. */
   Day2: ComponentType<Day2FieldProps> | undefined
+  /**
+   * Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay
+   * overtime calculations. `undefined` unless the `payrollRegularRateOfPay` unstable feature
+   * is enabled.
+   *
+   * @alpha
+   */
+  WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined
 }
 
 /**
@@ -162,6 +185,11 @@ const TWICE_PER_MONTH_OPTIONS = [
 
 const TWICE_PER_MONTH_ENTRIES = TWICE_PER_MONTH_OPTIONS.map(o => o.value)
 
+const WORKWEEK_START_DAY_ENTRIES: PayScheduleWorkweekStartDay[] = Object.values(WorkweekStartDay)
+
+const WORKWEEK_START_DAY_OPTIONS: Array<{ value: PayScheduleWorkweekStartDay; label: string }> =
+  WORKWEEK_START_DAY_ENTRIES.map(value => ({ value, label: value }))
+
 function formatWatchedDate(value: unknown): string {
   if (value instanceof Date) return formatDateToStringDate(value) || ''
   if (typeof value === 'string' && value) return value
@@ -184,7 +212,10 @@ function deriveCustomTwicePerMonth(
 }
 
 /** @internal */
-function buildPayScheduleFieldsMetadata(base: Record<keyof PayScheduleFormData, FieldMetadata>) {
+function buildPayScheduleFieldsMetadata(
+  base: Record<keyof PayScheduleFormData, FieldMetadata>,
+  disableWorkweekStartDayEditing: boolean,
+) {
   return {
     customName: base.customName,
     frequency: withOptions<PayScheduleFrequency>(
@@ -201,6 +232,11 @@ function buildPayScheduleFieldsMetadata(base: Record<keyof PayScheduleFormData, 
     anchorEndOfPayPeriod: base.anchorEndOfPayPeriod,
     day1: base.day1,
     day2: base.day2,
+    workweekStartDay: withOptions<PayScheduleWorkweekStartDay>(
+      withFlags(base.workweekStartDay, { isDisabled: disableWorkweekStartDayEditing }),
+      WORKWEEK_START_DAY_OPTIONS,
+      WORKWEEK_START_DAY_ENTRIES,
+    ),
   } satisfies FieldsMetadata
 }
 
@@ -277,7 +313,9 @@ export function usePayScheduleForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  disableWorkweekStartDayEditing = false,
 }: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady {
+  const isWorkweekStartDayEnabled = useUnstableFeature('payrollRegularRateOfPay')
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: payScheduleId ?? '' },
     { enabled: !!payScheduleId },
@@ -315,6 +353,8 @@ export function usePayScheduleForm({
       null,
     day1: currentPaySchedule?.day1 ?? partnerDefaults?.day1 ?? NaN,
     day2: currentPaySchedule?.day2 ?? partnerDefaults?.day2 ?? NaN,
+    workweekStartDay:
+      currentPaySchedule?.workweekStartDay ?? partnerDefaults?.workweekStartDay ?? null,
   }
 
   const formMethods = useForm<PayScheduleFormData, unknown, PayScheduleFormOutputs>({
@@ -390,7 +430,10 @@ export function usePayScheduleForm({
   const showDay2 = watchedFrequency === 'Twice per month' && watchedCustomTwicePerMonth === 'custom'
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = buildPayScheduleFieldsMetadata(baseMetadata)
+  const fieldsMetadata = buildPayScheduleFieldsMetadata(
+    baseMetadata,
+    disableWorkweekStartDayEditing,
+  )
 
   const onSubmit = async (): Promise<HookSubmitResult<PayScheduleShow> | undefined> => {
     let submitResult: HookSubmitResult<PayScheduleShow> | undefined
@@ -413,6 +456,9 @@ export function usePayScheduleForm({
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
+                    workweekStartDay: isWorkweekStartDayEnabled
+                      ? (payload.workweekStartDay ?? undefined)
+                      : undefined,
                   },
                 },
               })
@@ -430,6 +476,9 @@ export function usePayScheduleForm({
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
+                    workweekStartDay: isWorkweekStartDayEnabled
+                      ? (payload.workweekStartDay ?? undefined)
+                      : undefined,
                     version: currentPaySchedule.version!,
                   },
                 },
@@ -481,6 +530,7 @@ export function usePayScheduleForm({
         AnchorEndOfPayPeriod: AnchorEndOfPayPeriodField,
         Day1: showDay1 ? Day1Field : undefined,
         Day2: showDay2 ? Day2Field : undefined,
+        WorkweekStartDay: isWorkweekStartDayEnabled ? WorkweekStartDayField : undefined,
       },
       fieldsMetadata,
       hookFormInternals,

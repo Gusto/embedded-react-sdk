@@ -506,7 +506,7 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`: `string`) => `void` | Callback when selection changes |
 | `placeholder?` | `string` | - |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the default SDK root container from context. |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
 
@@ -560,7 +560,7 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`: `Date` \| `null`) => `void` | Callback when selected date changes |
 | `placeholder?` | `string` | Placeholder text when no date is selected |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `Date` \| `null` | Currently selected date value |
 
@@ -892,7 +892,7 @@ Renders a popover menu of actions anchored to a trigger element.
 | `items?` | [`MenuItem`](#menuitem)[] | | Array of menu items to display |
 | `onClose?` | () => `void` | | Callback when the menu is closed |
 | `placement?` | `"left"` \| `"right"` \| `"bottom"` \| `"top"` \| `"top start"` \| `"top end"` \| `"bottom start"` \| `"bottom end"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
-| `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
+| `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `triggerRef?` | `RefObject`\<`Element` \| `null`\> | `undefined` | Reference to the element that triggers the menu |
 
 <a id="menuitem"></a>
@@ -980,6 +980,7 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`values`: `string`[]) => `void` | Callback when the set of selected values changes |
 | `placeholder?` | `string` | - |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | Currently selected values |
 
@@ -1254,7 +1255,7 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`: `string`) => `void` | Callback when selection changes |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
 

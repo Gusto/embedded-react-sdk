@@ -8,7 +8,7 @@ import {
   TransitionPayrollAlertPresentation,
   type TransitionPayPeriodGroup,
 } from './TransitionPayrollAlertPresentation'
-import { BaseComponent } from '@/components/Base/Base'
+import { BaseComponent, type LoaderComponentType } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
@@ -19,14 +19,19 @@ import { normalizeToSDKError } from '@/types/sdkError'
 interface TransitionPayrollAlertProps {
   companyId: string
   onEvent: OnEventType<EventType, unknown>
+  LoaderComponent?: LoaderComponentType
 }
 
 const COMPONENT_NAME = 'Payroll.TransitionPayrollAlert'
 
 /** @internal */
-export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayrollAlertProps) {
+export function TransitionPayrollAlert({
+  companyId,
+  onEvent,
+  LoaderComponent,
+}: TransitionPayrollAlertProps) {
   return (
-    <BaseComponent onEvent={onEvent}>
+    <BaseComponent onEvent={onEvent} LoaderComponent={LoaderComponent}>
       <Root companyId={companyId} />
     </BaseComponent>
   )

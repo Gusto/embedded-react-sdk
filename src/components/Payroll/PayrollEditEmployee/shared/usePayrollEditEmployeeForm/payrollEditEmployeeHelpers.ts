@@ -76,7 +76,7 @@ export function normalizeWorkweeks(
 /**
  * Collects the names of earning types included in the regular-rate-of-pay
  * overtime calculation. These earnings render in the workweek-breakdown
- * additional-earnings section; all others fall into the flat `other` section.
+ * additional-earnings section; all others fall into the flat `overtimeExcludedEarnings` section.
  *
  * @param earningTypeList - The company's default and custom earning types.
  * @returns A set of earning-type names with `includedInOvertimePay` set.
@@ -110,7 +110,7 @@ export function collectOvertimeEarningNames(
  * handled elsewhere or never shown as additional earnings
  * ({@link EXCLUDED_ADDITIONAL_EARNINGS}) and inactive types are skipped. The
  * result is sorted alphabetically by name. The regular-rate-of-pay split between
- * additional earnings and `other` happens downstream via `overtimeEarningNames`;
+ * additional earnings and `overtimeExcludedEarnings` happens downstream via `overtimeEarningNames`;
  * this helper only decides which earning lines exist.
  *
  * @param existingFixedCompensations - The prepared compensation's fixed compensations.
@@ -323,14 +323,14 @@ export function derivePayrollEditEmployeeDefaults(
   }
 
   // Earnings whose earning type is included in the regular-rate-of-pay overtime
-  // calculation stay workweek-breakdown; the rest are flat and land in `other`.
+  // calculation stay workweek-breakdown; the rest are flat and land in `overtimeExcludedEarnings`.
   // The hook owns this bucketing so the UI just renders each section.
-  const additionalEarnings: PayrollEditEmployeeFormData['additionalEarnings'] = {}
-  const other: PayrollEditEmployeeFormData['other'] = {}
+  const overtimeIncludedEarnings: PayrollEditEmployeeFormData['overtimeIncludedEarnings'] = {}
+  const overtimeExcludedEarnings: PayrollEditEmployeeFormData['overtimeExcludedEarnings'] = {}
   for (const compensation of fixedCompensations) {
     if (!compensation.jobUuid || !compensation.name) continue
     if (overtimeEarningNames.has(compensation.name)) {
-      const jobEarnings = (additionalEarnings[compensation.jobUuid] ??= {})
+      const jobEarnings = (overtimeIncludedEarnings[compensation.jobUuid] ??= {})
       jobEarnings[compensation.name] = buildWeekMap(
         workweeks,
         compensation.amount,
@@ -338,7 +338,7 @@ export function derivePayrollEditEmployeeDefaults(
         isSplit,
       )
     } else {
-      const jobOther = (other[compensation.jobUuid] ??= {})
+      const jobOther = (overtimeExcludedEarnings[compensation.jobUuid] ??= {})
       jobOther[compensation.name] = formatAmountInput(compensation.amount)
     }
   }
@@ -362,8 +362,8 @@ export function derivePayrollEditEmployeeDefaults(
 
   return {
     hours,
-    additionalEarnings,
-    other,
+    overtimeIncludedEarnings,
+    overtimeExcludedEarnings,
     timeOff,
     finalPayout,
     reimbursements,
@@ -431,6 +431,73 @@ function sumWeekValues(
     return total + Math.round(value * factor)
   }, 0)
   return String(totalMinorUnits / factor)
+}
+
+/**
+ * Returns a copy of one week-mapped section (`hours` or `overtimeIncludedEarnings`)
+ * with every cell that loaded with a value but is now empty coerced to `"0"`, so a
+ * user who clears a pre-filled workweek input submits an explicit zero for it rather
+ * than leaving it blank. "Loaded with a value" means the matching cell in `defaults`
+ * is non-empty; a cell that was blank at load is left untouched (it stays subject to
+ * the per-row "fill every workweek" validation). Returns `null` when nothing changed,
+ * so the caller can skip a redundant form update.
+ */
+function zeroFillClearedSection(
+  current: Record<string, Record<string, Record<string, string>>>,
+  defaults: Record<string, Record<string, Record<string, string>>>,
+): Record<string, Record<string, Record<string, string>>> | null {
+  let changed = false
+  const next: Record<string, Record<string, Record<string, string>>> = {}
+  for (const [jobUuid, names] of Object.entries(current)) {
+    const nextNames: Record<string, Record<string, string>> = {}
+    for (const [name, weekMap] of Object.entries(names)) {
+      const nextWeekMap: Record<string, string> = {}
+      for (const [week, value] of Object.entries(weekMap)) {
+        const loaded = defaults[jobUuid]?.[name]?.[week]
+        if (value === '' && loaded != null && loaded !== '') {
+          nextWeekMap[week] = '0'
+          changed = true
+        } else {
+          nextWeekMap[week] = value
+        }
+      }
+      nextNames[name] = nextWeekMap
+    }
+    next[jobUuid] = nextNames
+  }
+  return changed ? next : null
+}
+
+/**
+ * Coerces cleared-from-loaded workweek cells to `"0"` across both week-mapped
+ * sections (`hours`, `overtimeIncludedEarnings`).
+ *
+ * @remarks
+ * Run just before submit: a workweek input that loaded with a value and was
+ * cleared by the user should submit an explicit `0` for that cell (whether split
+ * by workweek or collapsed to a single box), instead of falling back to the
+ * original value or being blocked by the per-row completeness check. Cells that
+ * were blank at load are untouched. Each returned section is present only when it
+ * actually changed, so the caller can `setValue` selectively.
+ *
+ * @param current - The live form values.
+ * @param defaults - The form's loaded defaults (the API-seeded baseline for the current split mode).
+ * @returns The coerced `hours` and/or `overtimeIncludedEarnings` sections, each omitted when unchanged.
+ * @internal
+ */
+export function zeroFillClearedWorkweekCells(
+  current: Pick<PayrollEditEmployeeFormData, 'hours' | 'overtimeIncludedEarnings'>,
+  defaults: Pick<PayrollEditEmployeeFormData, 'hours' | 'overtimeIncludedEarnings'>,
+): Partial<Pick<PayrollEditEmployeeFormData, 'hours' | 'overtimeIncludedEarnings'>> {
+  const hours = zeroFillClearedSection(current.hours, defaults.hours)
+  const overtimeIncludedEarnings = zeroFillClearedSection(
+    current.overtimeIncludedEarnings,
+    defaults.overtimeIncludedEarnings,
+  )
+  return {
+    ...(hours ? { hours } : {}),
+    ...(overtimeIncludedEarnings ? { overtimeIncludedEarnings } : {}),
+  }
 }
 
 /**
@@ -517,7 +584,7 @@ export function buildPayrollUpdateEmployeeCompensation(
     }),
   )
 
-  const breakdownEarnings = Object.entries(formData.additionalEarnings).flatMap(
+  const breakdownEarnings = Object.entries(formData.overtimeIncludedEarnings).flatMap(
     ([jobUuid, names]) =>
       Object.entries(names).flatMap(([name, weekMap]) => {
         if (!isSplit) {
@@ -542,12 +609,13 @@ export function buildPayrollUpdateEmployeeCompensation(
   )
 
   // Non-overtime earnings never carry breakdowns; they are sent as flat totals.
-  const flatEarnings = Object.entries(formData.other).flatMap(([jobUuid, names]) =>
-    Object.entries(names).map(([name, amount]) => ({
-      jobUuid,
-      name,
-      amount: hasValue(amount) ? amount : (originalAmounts.get(`${jobUuid}|${name}`) ?? '0'),
-    })),
+  const flatEarnings = Object.entries(formData.overtimeExcludedEarnings).flatMap(
+    ([jobUuid, names]) =>
+      Object.entries(names).map(([name, amount]) => ({
+        jobUuid,
+        name,
+        amount: hasValue(amount) ? amount : (originalAmounts.get(`${jobUuid}|${name}`) ?? '0'),
+      })),
   )
 
   const fixedCompensations = [...breakdownEarnings, ...flatEarnings]

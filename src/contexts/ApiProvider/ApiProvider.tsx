@@ -4,6 +4,7 @@ import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
 import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
+import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
@@ -29,9 +30,11 @@ export interface ApiProviderProps {
  * Wires the `@gusto/embedded-api-v-2026-06-15` client and a React Query client into the React tree.
  *
  * @remarks
- * Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
- * and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
- * `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
+ * Registers the SDK's `X-Gusto-API-Version` header on every request, warns via `console.warn` if a
+ * response reports a different `X-Gusto-API-Version` than was requested (e.g. a proxy rewriting the
+ * header), applies any default `headers`, and registers user-supplied lifecycle hooks
+ * (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`, `afterError`). When no `queryClient` is
+ * supplied, one is created with the SDK's defaults so
  * successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
  * query automatically. Partners who supply their own `QueryClient` are responsible for matching that
  * contract.
@@ -58,6 +61,8 @@ export function ApiProvider({
     const sdkHooks = client._options.hooks || new NativeSDKHooks()
 
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
+    sdkHooks.registerAfterSuccessHook(apiVersionMismatchHook)
+    sdkHooks.registerAfterErrorHook(apiVersionMismatchHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
