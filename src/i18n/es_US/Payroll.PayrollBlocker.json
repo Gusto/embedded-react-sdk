@@ -86,9 +86,6 @@
       "help": "Tu cuenta está en revisión. Espera la aprobación.",
       "title": "Aprobación pendiente"
     },
-    "partner_tos_not_accepted": {
-      "title": "Se requieren los Términos del servicio"
-    },
     "needs_onboarding": {
       "defaultAction": "Completar incorporación",
       "help": "Completa todos los pasos de incorporación requeridos.",
@@ -136,7 +133,6 @@
   "defaultBlockerHelp": "Comunícate con el soporte, por favor.",
   "estimatedTime": "Tiempo estimado",
   "exitFlowCta": "Salir",
-  "genericBlockerTitle": "Bloqueador de nómina",
   "multipleIssuesTitle": "{{count}} problemas te impiden procesar la nómina",
   "noBlockersMessage": "No hay bloqueadores de nómina en este momento.",
   "viewAllBlockers": "Ver todos los bloqueadores",
