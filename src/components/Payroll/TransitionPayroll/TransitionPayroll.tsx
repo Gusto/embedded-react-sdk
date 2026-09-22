@@ -78,6 +78,7 @@ function Root({
   startDate,
   endDate,
   payScheduleUuid,
+  payrollUuid,
   withReimbursements = true,
 }: TransitionPayrollProps) {
   const { onEvent } = useBase()
@@ -89,10 +90,14 @@ function Root({
     payScheduleUuid,
   })
 
+  // A caller-supplied payrollUuid wins over the lookup, so a parent that already knows the payroll
+  // can skip creation.
+  const initialPayrollUuid = payrollUuid ?? resolvedPayrollUuid
+
   // Freeze the machine once. Creating a payroll refetches the resolve query, so recomputing this
   // would re-seat the machine mid-flow.
   const [machine] = useState(() => {
-    const hasExisting = Boolean(resolvedPayrollUuid)
+    const hasExisting = Boolean(initialPayrollUuid)
     return createMachine(
       hasExisting ? 'configuration' : 'creation',
       transitionPayrollMachine,
@@ -103,7 +108,7 @@ function Root({
         startDate,
         endDate,
         payScheduleUuid,
-        payrollUuid: resolvedPayrollUuid,
+        payrollUuid: initialPayrollUuid,
         withReimbursements,
       }),
     )

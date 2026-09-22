@@ -78,6 +78,7 @@ function Root({
   startDate,
   endDate,
   payScheduleUuid,
+  payrollUuid,
   withReimbursements = true,
 }: TransitionFlowProps) {
   const { onEvent } = useBase()
@@ -89,10 +90,14 @@ function Root({
     payScheduleUuid,
   })
 
+  // A caller-supplied payrollUuid wins over the lookup, so a parent that already knows the payroll
+  // can skip creation.
+  const initialPayrollUuid = payrollUuid ?? resolvedPayrollUuid
+
   // Freeze the machine once. Creating a payroll refetches the resolve query, so recomputing this
   // would re-seat the machine mid-flow. TransitionPayroll freezes the same decision independently.
   const [machine] = useState(() => {
-    const initialBreadcrumbId = resolvedPayrollUuid ? 'configuration' : 'createTransitionPayroll'
+    const initialBreadcrumbId = initialPayrollUuid ? 'configuration' : 'createTransitionPayroll'
     const breadcrumbs = buildBreadcrumbs(transitionBreadcrumbsNodes)
     const initialBreadcrumbContext = updateBreadcrumbs(
       initialBreadcrumbId,
@@ -111,7 +116,7 @@ function Root({
         startDate,
         endDate,
         payScheduleUuid,
-        payrollUuid: resolvedPayrollUuid,
+        payrollUuid: initialPayrollUuid,
         withReimbursements,
         withOffcyclePayroll: true,
       }),

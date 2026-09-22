@@ -38,6 +38,11 @@ export interface TransitionFlowProps {
   endDate: string
   /** UUID of the pay schedule the transition is associated with. */
   payScheduleUuid: string
+  /**
+   * UUID of an existing transition payroll. When provided, the flow skips the lookup and starts on
+   * configuration for this payroll. When omitted, it resolves the payroll for the pay period.
+   */
+  payrollUuid?: string
   /** Whether reimbursement fields are shown throughout the flow. Defaults to `true`. */
   withReimbursements?: boolean
   /** Callback invoked for each event emitted by the flow and its child steps. */
@@ -51,14 +56,22 @@ export interface TransitionFlowProps {
  * @internal
  */
 export function TransitionPayrollContextual() {
-  const { companyId, startDate, endDate, payScheduleUuid, withReimbursements, onEvent } =
-    useFlow<TransitionFlowContextInterface>()
+  const {
+    companyId,
+    startDate,
+    endDate,
+    payScheduleUuid,
+    payrollUuid,
+    withReimbursements,
+    onEvent,
+  } = useFlow<TransitionFlowContextInterface>()
   return (
     <TransitionPayroll
       companyId={ensureRequired(companyId)}
       startDate={ensureRequired(startDate)}
       endDate={ensureRequired(endDate)}
       payScheduleUuid={ensureRequired(payScheduleUuid)}
+      payrollUuid={payrollUuid}
       withReimbursements={withReimbursements}
       onEvent={onEvent}
     />

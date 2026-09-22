@@ -14,6 +14,11 @@ export interface TransitionPayrollProps extends BaseComponentInterface {
   endDate: string
   /** The UUID of the pay schedule the transition is associated with. */
   payScheduleUuid: string
+  /**
+   * UUID of an existing transition payroll. When provided, the component skips the lookup and starts
+   * on configuration for this payroll. When omitted, it resolves the payroll for the pay period.
+   */
+  payrollUuid?: string
   /** Whether reimbursement fields are shown on the configuration screen. Defaults to `true`. */
   withReimbursements?: boolean
 }

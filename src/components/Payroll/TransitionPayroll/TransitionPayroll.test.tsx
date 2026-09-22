@@ -91,6 +91,21 @@ describe('TransitionPayroll', () => {
     })
   })
 
+  it('starts on configuration when a payrollUuid prop is supplied, ignoring the lookup', async () => {
+    server.use(handleGetPayrolls(() => HttpResponse.json([])))
+
+    renderWithProviders(
+      <TransitionPayroll {...defaultProps} payrollUuid="provided-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByTestId('payroll-configuration')).toBeInTheDocument()
+    expect(screen.queryByTestId('transition-creation')).toBeNull()
+    expect(captured.configuration.at(-1)).toMatchObject({
+      companyId: COMPANY_ID,
+      payrollId: 'provided-uuid',
+    })
+  })
+
   it('advances from creation to configuration on transition/created, carrying the new id', async () => {
     const user = userEvent.setup()
     const onEvent = vi.fn()
