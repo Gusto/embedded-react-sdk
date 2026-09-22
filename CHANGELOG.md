@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.56.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.0...v0.56.1) (2026-09-22)
+
+### Features & Enhancements
+
+- Add `Payroll.TransitionPayroll`, a standalone block that resolves an existing transition payroll for a pay-schedule change (or creates one) and can be composed directly, and rework `Payroll.TransitionFlow` to build on it. `TransitionFlow` keeps its optional `payrollUuid` prop, and the `runPayroll/employee/edit` event now includes `payrollId`. ([#2822](https://github.com/Gusto/embedded-react-sdk/issues/2822))
+
+### Fixes
+
+- Submit `0` for a previously-loaded workweek cell that is cleared, so clearing a loaded value now persists instead of being dropped ([#2817](https://github.com/Gusto/embedded-react-sdk/issues/2817))
+
+### Chores & Maintenance
+
+- Sync translations from Lokalise ([#2800](https://github.com/Gusto/embedded-react-sdk/issues/2800))
+- Bump dev dependencies (`dotenv`, `release-it`)
+
 ## [0.56.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.55.8...v0.56.0) (2026-09-21)
 
 ### ⚠ Breaking Changes
