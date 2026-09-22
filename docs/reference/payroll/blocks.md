@@ -340,7 +340,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `runPayroll/employee/edit` | An employee row is selected for editing | `{ employeeId, firstName, lastName }` |
+| `runPayroll/employee/edit` | An employee row is selected for editing | `{ payrollId, employeeId, firstName, lastName }` |
 | `runPayroll/employee/skip` | An employee is skipped or unskipped for this payroll | `{ employeeId }` |
 | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
 | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
