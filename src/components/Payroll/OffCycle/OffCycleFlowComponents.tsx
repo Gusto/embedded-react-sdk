@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { OffCycleCreation } from '../OffCycleCreation'
+import { PayrollBlockerList } from '../PayrollBlocker'
 import {
   PayrollExecutionInternalFlow,
   type PayrollExecutionInternalFlowProps,
@@ -55,6 +56,12 @@ export function OffCycleCreationContextual() {
       onEvent={onEvent}
     />
   )
+}
+
+/** @internal */
+export function PayrollBlockerListContextual() {
+  const { companyId, onEvent } = useFlow<OffCycleFlowContextInterface>()
+  return <PayrollBlockerList companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 /** @internal */

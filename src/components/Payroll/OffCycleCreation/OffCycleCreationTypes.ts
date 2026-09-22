@@ -45,6 +45,11 @@ export interface OffCycleCreationPresentationProps {
    * submit action is disabled so the off-cycle payroll cannot be created while a blocker is active.
    */
   blockers: ApiPayrollBlocker[]
+  /**
+   * Invoked when the user activates the "View Blockers" action on the blocker alert. The alert
+   * only renders that action when there are multiple blockers or an actionable blocker to resolve.
+   */
+  onViewBlockersClick?: () => void
   /** Whether the off-cycle create mutation is in flight. */
   isPending?: boolean
   /** Earliest selectable payment date for direct deposit (today plus the ACH lead time). */

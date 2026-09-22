@@ -60,6 +60,7 @@ Props for OffCycleFlow.
 | ----- | ----------- | ---- |
 | `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
 | `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
+| `offCycle/blockers/viewAll` | User opens the payroll blockers step from the creation screen's blocker alert | none |
 
 Once the flow transitions to execution, all standard run-payroll events are emitted
 (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
@@ -69,6 +70,7 @@ Once the flow transitions to execution, all standard run-payroll events are emit
 | Component | Description |
 | ------ | ------ |
 | [OffCycleCreation](blocks.md#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 
 <!-- guide-source: src/components/Payroll/OffCycle/GUIDE.md (slot: appendix) -->
@@ -106,5 +108,7 @@ When deductions are skipped, all regular deductions and contributions are blocke
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
 | POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
 | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
 | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
+| GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases) |

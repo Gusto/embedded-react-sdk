@@ -24,12 +24,14 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | ----- | ----------- | ---- |
  * | `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
  * | `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
+ * | `offCycle/blockers/viewAll` | User opens the payroll blockers step from the creation screen's blocker alert | none |
  *
  * Once the flow transitions to execution, all standard run-payroll events are emitted
  * (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
  *
  * @components
  * - {@link OffCycleCreation}
+ * - {@link PayrollBlockerList}
  * - {@link PayrollExecutionFlow}
  *
  * @param props - {@link OffCycleFlowProps}
