@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.55.8",
+  "version": "0.56.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -125,7 +125,7 @@
     "ajv": "^8.20.0",
     "axe-core": "^4.13.0",
     "cspell": "^10.3.3",
-    "dotenv": "^18.0.0",
+    "dotenv": "^18.0.1",
     "eslint": "^9.39.5",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -152,7 +152,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-router-dom": "^7.18.4",
-    "release-it": "^21.0.3",
+    "release-it": "^21.1.0",
     "sass-embedded": "^1.104.1",
     "storybook": "^10.5.5",
     "stylelint-config-standard": "^40.0.0",

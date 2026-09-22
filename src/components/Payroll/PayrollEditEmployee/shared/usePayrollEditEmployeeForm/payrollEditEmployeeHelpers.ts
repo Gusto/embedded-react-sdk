@@ -434,6 +434,73 @@ function sumWeekValues(
 }
 
 /**
+ * Returns a copy of one week-mapped section (`hours` or `overtimeIncludedEarnings`)
+ * with every cell that loaded with a value but is now empty coerced to `"0"`, so a
+ * user who clears a pre-filled workweek input submits an explicit zero for it rather
+ * than leaving it blank. "Loaded with a value" means the matching cell in `defaults`
+ * is non-empty; a cell that was blank at load is left untouched (it stays subject to
+ * the per-row "fill every workweek" validation). Returns `null` when nothing changed,
+ * so the caller can skip a redundant form update.
+ */
+function zeroFillClearedSection(
+  current: Record<string, Record<string, Record<string, string>>>,
+  defaults: Record<string, Record<string, Record<string, string>>>,
+): Record<string, Record<string, Record<string, string>>> | null {
+  let changed = false
+  const next: Record<string, Record<string, Record<string, string>>> = {}
+  for (const [jobUuid, names] of Object.entries(current)) {
+    const nextNames: Record<string, Record<string, string>> = {}
+    for (const [name, weekMap] of Object.entries(names)) {
+      const nextWeekMap: Record<string, string> = {}
+      for (const [week, value] of Object.entries(weekMap)) {
+        const loaded = defaults[jobUuid]?.[name]?.[week]
+        if (value === '' && loaded != null && loaded !== '') {
+          nextWeekMap[week] = '0'
+          changed = true
+        } else {
+          nextWeekMap[week] = value
+        }
+      }
+      nextNames[name] = nextWeekMap
+    }
+    next[jobUuid] = nextNames
+  }
+  return changed ? next : null
+}
+
+/**
+ * Coerces cleared-from-loaded workweek cells to `"0"` across both week-mapped
+ * sections (`hours`, `overtimeIncludedEarnings`).
+ *
+ * @remarks
+ * Run just before submit: a workweek input that loaded with a value and was
+ * cleared by the user should submit an explicit `0` for that cell (whether split
+ * by workweek or collapsed to a single box), instead of falling back to the
+ * original value or being blocked by the per-row completeness check. Cells that
+ * were blank at load are untouched. Each returned section is present only when it
+ * actually changed, so the caller can `setValue` selectively.
+ *
+ * @param current - The live form values.
+ * @param defaults - The form's loaded defaults (the API-seeded baseline for the current split mode).
+ * @returns The coerced `hours` and/or `overtimeIncludedEarnings` sections, each omitted when unchanged.
+ * @internal
+ */
+export function zeroFillClearedWorkweekCells(
+  current: Pick<PayrollEditEmployeeFormData, 'hours' | 'overtimeIncludedEarnings'>,
+  defaults: Pick<PayrollEditEmployeeFormData, 'hours' | 'overtimeIncludedEarnings'>,
+): Partial<Pick<PayrollEditEmployeeFormData, 'hours' | 'overtimeIncludedEarnings'>> {
+  const hours = zeroFillClearedSection(current.hours, defaults.hours)
+  const overtimeIncludedEarnings = zeroFillClearedSection(
+    current.overtimeIncludedEarnings,
+    defaults.overtimeIncludedEarnings,
+  )
+  return {
+    ...(hours ? { hours } : {}),
+    ...(overtimeIncludedEarnings ? { overtimeIncludedEarnings } : {}),
+  }
+}
+
+/**
  * Builds the `PayrollUpdate` employee-compensation payload from form values.
  *
  * @remarks

@@ -431,6 +431,11 @@
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payrolls/blockers",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         }
       ],
       "variables": [
