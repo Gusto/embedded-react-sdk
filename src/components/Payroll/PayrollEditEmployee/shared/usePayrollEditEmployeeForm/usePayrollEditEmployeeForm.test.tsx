@@ -973,14 +973,13 @@ describe('usePayrollEditEmployeeForm', () => {
     })
     const ready = result.current
 
-    // Clear Regular Hours' seeded first cell so its row is entirely blank, and
-    // fill both Overtime cells. The blank Regular row sends nothing; Overtime
-    // tiles every workweek.
+    // Fill both Regular cells so its row tiles, and leave Overtime untouched:
+    // it loaded as 0, so both cells are blank from the start. The untouched
+    // Overtime row sends nothing; Regular tiles every workweek.
     act(() => {
       const { setValue } = ready.form.hookFormInternals.formMethods
-      setValue('hours.job-1.Regular Hours.2024-01-01', '')
-      setValue('hours.job-1.Overtime.2024-01-01', '5')
-      setValue('hours.job-1.Overtime.2024-01-08', '3')
+      setValue('hours.job-1.Regular Hours.2024-01-01', '40')
+      setValue('hours.job-1.Regular Hours.2024-01-08', '40')
     })
     await act(async () => {
       await ready.actions.onSubmit()
@@ -988,12 +987,79 @@ describe('usePayrollEditEmployeeForm', () => {
 
     expect(updateResolver).toHaveBeenCalledTimes(1)
     const hourly = updateBody!.employee_compensations[0]!.hourly_compensations!
-    expect(hourly.map(line => line.name)).toEqual(['Overtime'])
+    expect(hourly.map(line => line.name)).toEqual(['Regular Hours'])
+    const regular = hourly.find(line => line.name === 'Regular Hours')!
+    expect(regular.hours).toBe('80')
+    expect(regular.breakdowns).toEqual([
+      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '40' },
+      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '40' },
+    ])
+  })
+
+  it('coerces a cleared, previously-loaded workweek cell to 0 on submit', async () => {
+    const prepare = {
+      ...MULTI_WORKWEEK_PREPARE,
+      employee_compensations: [
+        {
+          ...MULTI_WORKWEEK_PREPARE.employee_compensations[0],
+          hourly_compensations: [
+            {
+              job_uuid: 'job-1',
+              name: 'Regular Hours',
+              hours: '80',
+              flsa_status: 'Nonexempt',
+              breakdowns: [
+                { start_date: '2024-01-01', end_date: '2024-01-07', hours: '40' },
+                { start_date: '2024-01-08', end_date: '2024-01-14', hours: '40' },
+              ],
+            },
+            {
+              job_uuid: 'job-1',
+              name: 'Overtime',
+              hours: '10',
+              flsa_status: 'Nonexempt',
+              breakdowns: [
+                { start_date: '2024-01-01', end_date: '2024-01-07', hours: '6' },
+                { start_date: '2024-01-08', end_date: '2024-01-14', hours: '4' },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(prepare)))
+    let updateBody: CapturedBody | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateBody = (await request.json()) as CapturedBody
+      return HttpResponse.json(prepare)
+    })
+    server.use(handlePayrollsUpdate(updateResolver))
+
+    const { result } = renderPayrollEditEmployeeForm()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    assertReady(result.current)
+    // Overtime already has per-week breakdowns, so the form loads split.
+    expect(result.current.data.withOvertime).toBe(true)
+    const ready = result.current
+
+    // Clear Overtime's second week, which loaded with a value (4). Regular and
+    // Overtime week 1 keep their loaded values.
+    act(() => {
+      ready.form.hookFormInternals.formMethods.setValue('hours.job-1.Overtime.2024-01-08', '')
+    })
+    await act(async () => {
+      await ready.actions.onSubmit()
+    })
+
+    expect(updateResolver).toHaveBeenCalledTimes(1)
+    const hourly = updateBody!.employee_compensations[0]!.hourly_compensations!
     const overtime = hourly.find(line => line.name === 'Overtime')!
-    expect(overtime.hours).toBe('8')
+    expect(overtime.hours).toBe('6')
     expect(overtime.breakdowns).toEqual([
-      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '5' },
-      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '3' },
+      { start_date: '2024-01-01', end_date: '2024-01-07', hours: '6' },
+      { start_date: '2024-01-08', end_date: '2024-01-14', hours: '0' },
     ])
   })
 

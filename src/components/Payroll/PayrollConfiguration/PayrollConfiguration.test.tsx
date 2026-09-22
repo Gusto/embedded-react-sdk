@@ -1278,6 +1278,7 @@ describe('PayrollConfiguration', () => {
       await user.click(await screen.findByRole('menuitem', { name: 'Edit' }))
 
       expect(onEvent).toHaveBeenCalledWith('runPayroll/employee/edit', {
+        payrollId: 'payroll-uuid-1',
         employeeId: 'emp-1',
         firstName: 'Alice',
         lastName: 'Anderson',
