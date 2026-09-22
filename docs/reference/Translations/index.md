@@ -4927,6 +4927,8 @@ Translation keys for the `Payroll.PayrollBlocker` i18n namespace.
 | `blockers.needs_onboarding.description` | `"Company must complete all onboarding requirements in order to run payroll."` |
 | `blockers.needs_onboarding.help` | `"Complete all required onboarding steps."` |
 | `blockers.needs_onboarding.title` | `"Onboarding Incomplete"` |
+| `blockers.partner_tos_not_accepted` | |
+| `blockers.partner_tos_not_accepted.title` | `"Terms of Service Required"` |
 | `blockers.pay_schedule_setup_not_complete` | |
 | `blockers.pay_schedule_setup_not_complete.description` | `"Some employees don't have a pay schedule set up yet."` |
 | `blockers.pay_schedule_setup_not_complete.help` | `"Assign all employees to a pay schedule."` |
@@ -4964,6 +4966,7 @@ Translation keys for the `Payroll.PayrollBlocker` i18n namespace.
 | <a id="property-payrollpayrollblockerdefaultblockerhelp"></a> `defaultBlockerHelp` | `"Please contact support."` |
 | <a id="property-payrollpayrollblockerestimatedtime"></a> `estimatedTime` | `"Estimated time"` |
 | <a id="property-payrollpayrollblockerexitflowcta"></a> `exitFlowCta` | `"Exit"` |
+| <a id="property-payrollpayrollblockergenericblockertitle"></a> `genericBlockerTitle` | `"Payroll blocker"` |
 | <a id="property-payrollpayrollblockermultipleissuestitle"></a> `multipleIssuesTitle` | `"{{count}} issues are preventing you from running payroll"` |
 | <a id="property-payrollpayrollblockernoblockersmessage"></a> `noBlockersMessage` | `"No payroll blockers at this time."` |
 | <a id="property-payrollpayrollblockerviewallblockers"></a> `viewAllBlockers` | `"View All Blockers"` |
