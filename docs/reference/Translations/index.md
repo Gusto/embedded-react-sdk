@@ -5067,6 +5067,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeegrosspaylabel"></a> `grossPayLabel` | `"Gross pay (excluding reimbursements)"` |
 | <a id="property-payrollpayrolleditemployeegrosspaylabelmobile"></a> `grossPayLabelMobile` | `"Gross pay: {{grossPay}} (excluding reimbursements)"` |
 | <a id="property-payrollpayrolleditemployeehoursunit"></a> `hoursUnit` | `"Hours"` |
+| <a id="property-payrollpayrolleditemployeejobtitlewithrate"></a> `jobTitleWithRate` | `"{{title}} ({{rate}}/hr)"` |
 | <a id="property-payrollpayrolleditemployeepagetitle"></a> `pageTitle` | `"Edit payroll for {{employeeName}}"` |
 | <a id="property-payrollpayrolleditemployeepaymentmethoddescription"></a> `paymentMethodDescription` | `"Changing the default payment method will only apply to this payroll."` |
 | <a id="property-payrollpayrolleditemployeepaymentmethodlabel"></a> `paymentMethodLabel` | `"Payment method"` |
