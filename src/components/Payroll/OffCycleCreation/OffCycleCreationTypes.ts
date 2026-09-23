@@ -4,6 +4,7 @@ import type {
   OffCyclePayrollDateType,
 } from '../OffCyclePayPeriodDateForm'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
@@ -39,6 +40,16 @@ export interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData 
 export interface OffCycleCreationPresentationProps {
   /** Selectable employees rendered in the multi-select. */
   employees: MultiSelectComboBoxOption[]
+  /**
+   * Run-payroll blockers for the company. When non-empty, a blocker alert is shown and the
+   * submit action is disabled so the off-cycle payroll cannot be created while a blocker is active.
+   */
+  blockers: ApiPayrollBlocker[]
+  /**
+   * Invoked when the user activates the "View Blockers" action on the blocker alert. The alert
+   * only renders that action when there are multiple blockers or an actionable blocker to resolve.
+   */
+  onViewBlockersClick?: () => void
   /** Whether the off-cycle create mutation is in flight. */
   isPending?: boolean
   /** Earliest selectable payment date for direct deposit (today plus the ACH lead time). */
@@ -59,4 +70,6 @@ export interface OffCycleCreationPresentationProps {
   onTaxWithholdingModalDone: (config: OffCycleTaxWithholdingConfig) => void
   /** Fires when the user dismisses the tax withholding modal without saving. */
   onTaxWithholdingModalCancel: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }

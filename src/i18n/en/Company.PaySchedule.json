@@ -30,14 +30,17 @@
     "firstPayDayOfTheMonth": "First pay day of the month",
     "lastPayDayOfTheMonth": "Last pay day of the month",
     "preview": "Preview",
-    "legend": "Legend"
+    "legend": "Legend",
+    "workweekStartDay": "Workweek start day",
+    "workweekStartDayPlaceholder": "Select day..."
   },
   "loading": "Loading...",
   "descriptions": {
     "frequencyOptionsDescription": "Select the pay days for the month.",
     "anchorPayDateDescription_one": "Please account for the {{count}} day it will take to process payroll.",
     "anchorPayDateDescription_other": "Please account for the {{count}} days it will take to process payroll.",
-    "anchorEndOfPayPeriodDescription": "The last date of the first pay period to help calculate future pay periods. This can be the same date as the first pay date."
+    "anchorEndOfPayPeriodDescription": "The last date of the first pay period to help calculate future pay periods. This can be the same date as the first pay date.",
+    "workweekStartDayDescription": "The day of the week this pay schedule's workweeks start on. Used for regular rate of pay overtime calculations."
   },
   "payPreview": {
     "payPeriod": "Pay period",
@@ -57,6 +60,15 @@
   "frequencyOptions": {
     "15thAndLast": "15th and Last day of the month",
     "custom": "Custom"
+  },
+  "workweekStartDayOptions": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   },
   "validations": {
     "name": "Pay schedule name is required",

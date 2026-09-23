@@ -83,6 +83,7 @@ export const Default = () => {
   return (
     <OffCycleCreationPresentation
       employees={mockEmployees}
+      blockers={[]}
       {...mockDateBounds}
       {...taxWithholding}
     />
@@ -94,6 +95,7 @@ export const CorrectionSelected = () => {
   return (
     <OffCycleCreationPresentation
       employees={mockEmployees}
+      blockers={[]}
       {...mockDateBounds}
       {...taxWithholding}
     />
@@ -114,6 +116,7 @@ export const CheckOnlyMode = () => {
   return (
     <OffCycleCreationPresentation
       employees={mockEmployees}
+      blockers={[]}
       {...mockDateBounds}
       {...taxWithholding}
     />
@@ -128,3 +131,35 @@ CheckOnlyMode.decorators = [
     </I18nLoader>
   ),
 ]
+
+export const WithPayrollBlocker = () => {
+  const taxWithholding = useTaxWithholdingState()
+  return (
+    <OffCycleCreationPresentation
+      employees={mockEmployees}
+      blockers={[{ key: 'suspended', message: 'Company is suspended and cannot run payroll.' }]}
+      {...mockDateBounds}
+      {...taxWithholding}
+    />
+  )
+}
+
+export const WithActionableBlocker = () => {
+  const taxWithholding = useTaxWithholdingState()
+  return (
+    <OffCycleCreationPresentation
+      employees={mockEmployees}
+      blockers={[
+        {
+          key: 'pending_recovery_case',
+          message: 'Company has an open recovery case that must be resolved.',
+        },
+      ]}
+      onViewBlockersClick={() => {
+        window.alert('View blockers')
+      }}
+      {...mockDateBounds}
+      {...taxWithholding}
+    />
+  )
+}

@@ -5,6 +5,13 @@
   transition:
     opacity 0.5s ease,
     transform 0.5s ease;
+
+  // A component that renders nothing (e.g. a conditional alert with no data) still gets a
+  // FadeIn wrapper. Collapse it so it claims no space in a gap'd flex/grid layout and doesn't
+  // shift sibling content when it resolves.
+  &:empty {
+    display: none;
+  }
 }
 
 .fadeIn {

@@ -62,6 +62,18 @@ describe('PayrollConfiguration', () => {
         expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
       })
     })
+
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <PayrollConfiguration {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   describe('already processed payroll', () => {
@@ -474,6 +486,9 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
       })
+      expect(
+        screen.getByText("This payroll couldn't be calculated. Please try calculating again."),
+      ).toBeInTheDocument()
     })
 
     it('fires RUN_PAYROLL_PROCESSING_FAILED on polling timeout', async () => {
@@ -534,19 +549,61 @@ describe('PayrollConfiguration', () => {
       // start-on-calculating effect after each deadline, so the failure is reported once per
       // window rather than latching after the first. This is the repeated-failsafe shape seen in
       // production; the deadline no longer lies about the outcome, but it does keep retrying.
+      //
+      // Jumping the mocked clock past the deadline -- rather than ticking through all ~36 real
+      // 5s intervals to get there -- means the very next scheduled poll read sees a stale clock
+      // and reports the deadline immediately, without changing what's under test.
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+        vi.setSystemTime(Date.now() + 3 * 60 * 1000 + 10_000)
+        await vi.advanceTimersByTimeAsync(6_000)
       })
       expect(
         onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
       ).toHaveLength(1)
 
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+        vi.setSystemTime(Date.now() + 3 * 60 * 1000 + 10_000)
+        await vi.advanceTimersByTimeAsync(6_000)
       })
       expect(
         onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
       ).toHaveLength(2)
+    })
+
+    it('clears the stale failure alert and shows the calculating loader once a fresh calculating status is picked back up after a deadline', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // Same deadline jump as the test above -- the payroll is still `calculating` server-side,
+      // so the deadline reports a failure and the start-on-calculating effect immediately picks
+      // the still-running calculation back up.
+      await act(async () => {
+        vi.setSystemTime(Date.now() + 3 * 60 * 1000 + 10_000)
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Calculating payroll...' })).toBeInTheDocument()
+      })
+      expect(screen.queryByText(/couldn't be calculated/i)).toBeNull()
     })
 
     it('recovers to a retryable state when calculate itself fails (SDK-1276)', async () => {
@@ -799,6 +856,54 @@ describe('PayrollConfiguration', () => {
       expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
     })
 
+    it('advances instead of reporting failure when a non-retryable error follows a same-tick calculated read', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let showCallCount = 0
+
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: '2025-08-10T12:00:00Z',
+        processing_request: { status: 'calculate_success', errors: [] },
+      }
+
+      server.use(
+        // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
+        // shadow its handler.
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/payroll-uuid-1`, () => {
+          showCallCount++
+          // First two reads match baseline exactly, so the freshness check reports 'polling' not
+          // 'calculated'; the third 401s and must rescue that snapshot instead of a false failure.
+          if (showCallCount > 2) {
+            return new HttpResponse(null, { status: 401 })
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/processingFailed')
+    })
+
     // Guardrail for the SDK-1231 gate: prepare resets a calculation, so reaching the poll
     // deadline must not re-enable it while a good calculation exists.
     it('keeps prepare gated after the poll deadline', async () => {
@@ -900,6 +1005,158 @@ describe('PayrollConfiguration', () => {
       })
 
       expect(onEvent).not.toHaveBeenCalled()
+    })
+
+    it('does not spin re-arming the poll after a non-retryable read error leaves the payroll reading stale calculating data (SDK-1319 review)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let showCallCount = 0
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+        // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
+        // shadow its handler.
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/payroll-uuid-1`, () => {
+          showCallCount++
+          // Call 1 is the initial suspense read; call 2 is the poll's first tick -- both report
+          // `calculating`, so the poll survives onto a real `setTimeout`-scheduled interval, same
+          // as it would against a live server. Call 3 (the next tick) 401s -- a non-retryable,
+          // terminal read failure, leaving the query's cached data stuck reporting `calculating`
+          // (the last successful read) with no way to change on its own.
+          if (showCallCount <= 2) {
+            return HttpResponse.json(currentPayrollData)
+          }
+          return new HttpResponse(null, { status: 401 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // Settle the calculate call and the poll's first tick (which reports `calculating`) in
+      // their own `act` before advancing to the next tick -- otherwise fake timers can fast
+      // forward through the whole click-to-failure sequence in one flush, collapsing the
+      // intermediate `isPolling: true` render this test depends on to reproduce a real,
+      // separately-committed `isPolling: true -> false` transition.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0)
+      })
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+
+      const callCountAfterFirstFailure = showCallCount
+
+      // Before the fix, isPolling flipping back to false re-triggered the auto-pickup effect
+      // against the same stale `calculating` snapshot, which failed and flipped isPolling again
+      // -- a tight spin of reads and RUN_PAYROLL_PROCESSING_FAILED events instead of stopping.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(15_000)
+      })
+
+      expect(showCallCount).toBe(callCountAfterFirstFailure)
+      expect(
+        onEvent.mock.calls.filter(([eventType]) => eventType === 'runPayroll/processingFailed'),
+      ).toHaveLength(1)
+    })
+
+    it('does not get stuck on the calculating loader after an unrelated submit clears the error following a non-retryable read failure (SDK-1319 review)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let showCallCount = 0
+
+      currentPayrollData = buildPayrollData({
+        calculatedAt: null,
+        processingRequest: null,
+        employeeCompensations: [createCompensation('emp-1')],
+      })
+
+      server.use(
+        ...buildPayrollConfigurationHandlers({
+          getPayrollData: () => currentPayrollData,
+          employees: [createEmployee('emp-1', 'Alice', 'Anderson')],
+        }),
+      )
+
+      // A later `server.use` call's handlers take priority as a whole batch over an earlier
+      // call's, regardless of order within either array -- registering these separately (rather
+      // than appending them to the array above) is what lets the literal-path GET below actually
+      // shadow the generic `:payroll_id` GET already registered above.
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = buildPayrollData({
+            calculatedAt: null,
+            processingRequest: { status: 'calculating', errors: [] },
+            employeeCompensations: [createCompensation('emp-1')],
+          })
+          return new HttpResponse(null, { status: 202 })
+        }),
+        // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
+        // shadow its handler.
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/payroll-uuid-1`, () => {
+          showCallCount++
+          if (showCallCount <= 2) {
+            return HttpResponse.json(currentPayrollData)
+          }
+          return new HttpResponse(null, { status: 401 })
+        }),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () =>
+          HttpResponse.json(currentPayrollData),
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0)
+      })
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+      expect(
+        screen.getByText("This payroll couldn't be calculated. Please try calculating again."),
+      ).toBeInTheDocument()
+
+      // Before the fix, `isCalculatingActive` was gated on `error` from `useBase()`. Any
+      // unrelated submit clears that error as its first step (`baseSubmitHandler`), which
+      // reopened the gate with no poll running to ever close it again -- the same "stuck on the
+      // loading view forever" failure as SDK-1276, just reachable from a different trigger.
+      await user.click(screen.getByRole('button', { name: 'Edit' }))
+      await user.click(await screen.findByRole('menuitem', { name: 'Skip employee' }))
+
+      expect(screen.queryByRole('heading', { name: 'Calculating payroll...' })).toBeNull()
+      expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      // The unrelated submit clears `error` too (as `baseSubmitHandler`'s first step), so the
+      // alert itself disappears here even though `hasProcessingFailedAlert` -- the separate flag
+      // that keeps the loader gate closed -- stays true. Documenting that trade-off rather than
+      // leaving it to be discovered: the pre-fix boolean kept the alert visible through unrelated
+      // submits; this doesn't.
+      expect(screen.queryByText(/couldn't be calculated/i)).toBeNull()
     })
   })
 
@@ -1021,6 +1278,7 @@ describe('PayrollConfiguration', () => {
       await user.click(await screen.findByRole('menuitem', { name: 'Edit' }))
 
       expect(onEvent).toHaveBeenCalledWith('runPayroll/employee/edit', {
+        payrollId: 'payroll-uuid-1',
         employeeId: 'emp-1',
         firstName: 'Alice',
         lastName: 'Anderson',

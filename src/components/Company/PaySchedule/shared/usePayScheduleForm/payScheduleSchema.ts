@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest'
 import {
   buildFormSchema,
   type RequiredFieldConfig,
@@ -39,6 +40,13 @@ const FREQUENCY_VALUES = ['Every week', 'Every other week', 'Twice per month', '
  */
 export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number]
 
+/**
+ * Pay schedule workweek start day values accepted by {@link usePayScheduleForm}.
+ *
+ * @alpha
+ */
+export type PayScheduleWorkweekStartDay = WorkweekStartDay
+
 const fieldValidators = {
   customName: z.string(),
   frequency: z.enum(FREQUENCY_VALUES),
@@ -47,6 +55,7 @@ const fieldValidators = {
   anchorEndOfPayPeriod: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   day1: z.preprocess(coerceNaN(0), z.number()),
   day2: z.preprocess(coerceNaN(0), z.number()),
+  workweekStartDay: z.enum(WorkweekStartDay).nullable(),
 }
 
 /**
@@ -90,6 +99,8 @@ const requiredFieldsConfig = {
   customTwicePerMonth: needsCustomTwicePerMonth,
   day1: needsDay1,
   day2: needsDay2,
+  // Optional by default: legacy pay schedules have no value to force.
+  workweekStartDay: 'never',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
 /**
@@ -121,8 +132,8 @@ function validateDayRanges(data: PayScheduleFormData, ctx: z.RefinementCtx) {
  * Configuration for promoting optional pay schedule fields to required in a given mode.
  *
  * @remarks
- * Only fields that are optional by default can be promoted. Currently
- * `customTwicePerMonth` is the only configurable field.
+ * Only fields that are optional by default can be promoted:
+ * `customTwicePerMonth`, `day1`, `day2`, and `workweekStartDay`.
  *
  * @public
  */

@@ -448,7 +448,7 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 
 ### PayScheduleField
 
-> **PayScheduleField** = `"frequency"` \| `"customName"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customTwicePerMonth"`
+> **PayScheduleField** = `"frequency"` \| `"workweekStartDay"` \| `"customName"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customTwicePerMonth"`
 
 Union of field names managed by the pay schedule form.
 
@@ -467,6 +467,7 @@ Union of field names managed by the pay schedule form.
 | `day1` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 | `day2` | [`FieldMetadata`](../../hooks.md#fieldmetadata) |
 | `frequency` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<`"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`\> |
+| `workweekStartDay` | [`FieldMetadataWithOptions`](../../hooks.md#fieldmetadatawithoptions)\<[`WorkweekStartDay`](../../APIModels/index.md#workweekstartday-1)\> |
 
 Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
 
@@ -489,6 +490,7 @@ Shape of the values managed by the pay schedule form.
 | `day1` | `number` |
 | `day2` | `number` |
 | `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
+| `workweekStartDay` | `"Sunday"` \| `"Monday"` \| `"Tuesday"` \| `"Wednesday"` \| `"Thursday"` \| `"Friday"` \| `"Saturday"` \| `null` |
 
 ***
 
@@ -512,8 +514,8 @@ Configuration for promoting optional pay schedule fields to required in a given 
 
 #### Remarks
 
-Only fields that are optional by default can be promoted. Currently
-`customTwicePerMonth` is the only configurable field.
+Only fields that are optional by default can be promoted:
+`customTwicePerMonth`, `day1`, `day2`, and `workweekStartDay`.
 
 ## Endpoints
 

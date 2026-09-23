@@ -24,10 +24,10 @@ export interface AddEmployeesHolidayProps extends BaseComponentInterface<never> 
  * @returns The rendered holiday employee selection screen.
  * @public
  */
-export function AddEmployeesHoliday(props: AddEmployeesHolidayProps) {
+export function AddEmployeesHoliday({ className, ...props }: AddEmployeesHolidayProps) {
   return (
     <BaseComponent {...props}>
-      <SelectEmployeesHoliday companyId={props.companyId} mode="standalone" />
+      <SelectEmployeesHoliday companyId={props.companyId} mode="standalone" className={className} />
     </BaseComponent>
   )
 }

@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
@@ -32,6 +32,7 @@ import type { useDataViewPropReturn } from '@/components/Common/DataView/useData
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
@@ -42,7 +43,7 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
  * Gated behind the `payrollRegularRateOfPay` unstable feature flag and not part of the public
  * SDK surface. `PayrollEditEmployee` renders this in place of the stable editor when the flag is
  * enabled. Consumes {@link usePayrollEditEmployeeForm} and renders the header, the hours /
- * additional-earnings / time-off / other / payment-method sections, and the
+ * additional-earnings / time-off / payment-method sections, and the
  * `Cancel`/`Save` controls, performing a real payroll update on save. For an overtime-eligible
  * employee on a multi-workweek payroll, Overtime/Double-overtime rows start hidden behind a single,
  * employee-level "Add overtime" control (`form.data.withOvertime` / `form.actions.addOvertime`)
@@ -198,7 +199,11 @@ const Root = ({
   const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
-  const { Alert, Box, BoxHeader, Button, Heading } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
+  const isSmallOrGreater = breakpoints.includes('small')
 
   // Error copy keyed by code, supplied to the hook once. Every bound field
   // resolves and renders its own message from this — the consumer never
@@ -223,7 +228,9 @@ const Root = ({
 
   if (form.isLoading) {
     return (
-      <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />
+      <div ref={containerRef} className={styles.container}>
+        <BaseLayout isLoading error={form.errorHandling.errors} LoaderComponent={LoaderComponent} />
+      </div>
     )
   }
 
@@ -267,33 +274,25 @@ const Root = ({
     }
   }
 
-  const renderBreakdownSection = (
+  // The visible rows for a section: the first workweek's rows drive the row set
+  // (workweek columns fan out from there), or the flat list when not split.
+  const getSectionRows = (section: HourEntry[] | Record<string, HourEntry[]>) =>
+    isSplitByWorkweek(section) ? (section[form.data.workweeks[0]?.startDate ?? ''] ?? []) : section
+
+  const buildBreakdownDataView = (
     section: HourEntry[] | Record<string, HourEntry[]>,
     options: {
-      title: string
       label: string
       rowHeader: string
       valueColumnLabel: string
       labelFor: (name: string) => string
       adornmentStart?: string
       adornmentEnd?: string
-      footer?: React.ReactNode
     },
   ) => {
-    const {
-      title,
-      label,
-      rowHeader,
-      valueColumnLabel,
-      labelFor,
-      adornmentStart,
-      adornmentEnd,
-      footer,
-    } = options
+    const { label, rowHeader, valueColumnLabel, labelFor, adornmentStart, adornmentEnd } = options
     const split = isSplitByWorkweek(section)
-    const firstWeekStart = form.data.workweeks[0]?.startDate ?? ''
-    const rows = split ? (section[firstWeekStart] ?? []) : section
-    if (rows.length === 0 && !footer) return null
+    const rows = getSectionRows(section)
 
     const renderField = (entry: HourEntry, fieldLabel: string) => (
       <div className={styles.inputContainer}>
@@ -337,9 +336,28 @@ const Root = ({
       ...(split ? workweekColumns : [valueColumn]),
     ]
 
+    return <DataView label={label} isWithinBox columns={columns} data={rows} />
+  }
+
+  const renderBreakdownSection = (
+    section: HourEntry[] | Record<string, HourEntry[]>,
+    options: {
+      title: string
+      label: string
+      rowHeader: string
+      valueColumnLabel: string
+      labelFor: (name: string) => string
+      adornmentStart?: string
+      adornmentEnd?: string
+      footer?: React.ReactNode
+    },
+  ) => {
+    const { title, footer, ...viewOptions } = options
+    if (getSectionRows(section).length === 0 && !footer) return null
+
     return (
       <Box header={<BoxHeader title={title} />} withPadding={false} footer={footer}>
-        <DataView label={label} isWithinBox columns={columns} data={rows} />
+        {buildBreakdownDataView(section, viewOptions)}
       </Box>
     )
   }
@@ -383,6 +401,93 @@ const Root = ({
     )
   }
 
+  // A flat single-amount earnings table: one "type" column and one "$" input
+  // column. Used for the merged no-overtime list and the overtime-excluded group.
+  const renderAmountTable = (
+    rows: { label: string; Field: HourEntry['Field'] }[],
+    label: string,
+  ) => {
+    const columns: useDataViewPropReturn<(typeof rows)[number]>['columns'] = [
+      { title: t('typeColumn'), render: row => row.label },
+      {
+        title: t('amountColumn'),
+        justify: 'end',
+        render: row => (
+          <div className={styles.inputContainer}>
+            <row.Field label={row.label} shouldVisuallyHideLabel adornmentStart="$" />
+          </div>
+        ),
+      },
+    ]
+    return <DataView label={label} isWithinBox columns={columns} data={rows} />
+  }
+
+  const renderGroupLabel = (label: string) => (
+    <div className={styles.earningsGroupLabel}>
+      <Text size="sm" weight="semibold">
+        {label}
+      </Text>
+    </div>
+  )
+
+  const renderEarningsSection = () => {
+    const includedEarnings = Fields.overtimeIncludedEarnings
+    const excludedRows = Fields.overtimeExcludedEarnings.map(entry => ({
+      label: earningLabel(entry.id),
+      Field: entry.Field,
+    }))
+
+    const hasIncluded = getSectionRows(includedEarnings).length > 0
+    if (!hasIncluded && excludedRows.length === 0) return null
+
+    const includedTable = buildBreakdownDataView(includedEarnings, {
+      label: t('additionalEarningsTitle'),
+      rowHeader: t('typeColumn'),
+      valueColumnLabel: t('amountColumn'),
+      labelFor: earningLabel,
+      adornmentStart: '$',
+    })
+
+    // Split into per-workweek columns and labeled overtime groups only once
+    // overtime is added (the included section becomes workweek-keyed). Otherwise
+    // included and excluded earnings render together as one flat list.
+    if (!isSplitByWorkweek(includedEarnings)) {
+      const mergedRows = [
+        ...includedEarnings.map(entry => ({ label: earningLabel(entry.name), Field: entry.Field })),
+        ...excludedRows,
+      ]
+      return (
+        <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
+          {renderAmountTable(mergedRows, t('additionalEarningsTitle'))}
+        </Box>
+      )
+    }
+
+    return (
+      <Box header={<BoxHeader title={t('additionalEarningsTitle')} />} withPadding={false}>
+        {hasIncluded ? (
+          <>
+            <div className={styles.earningsAlert}>
+              <Alert
+                status="info"
+                label={t('overtimeMultiplierEarningsAlert', { employeeName })}
+                disableScrollIntoView
+              />
+            </div>
+            {renderGroupLabel(t('overtimeIncludedEarningsGroupLabel'))}
+            {includedTable}
+          </>
+        ) : null}
+        {excludedRows.length > 0 ? (
+          <>
+            {renderGroupLabel(t('overtimeExcludedEarningsGroupLabel'))}
+            {renderAmountTable(excludedRows, t('overtimeExcludedEarningsGroupLabel'))}
+          </>
+        ) : null}
+      </Box>
+    )
+  }
+
   const PaymentMethodField = Fields.paymentMethod
   const ReimbursementDraft = Fields.reimbursementDraft
   const reimbursementRows = form.data.reimbursements
@@ -401,32 +506,47 @@ const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
   }
 
+  const actions = (
+    <Flex
+      flexDirection={isSmallOrGreater ? 'row' : 'column'}
+      justifyContent={isSmallOrGreater ? 'flex-end' : 'normal'}
+      alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+      gap={12}
+    >
+      <Button variant="secondary" onClick={handleCancel} title={t('cancelCta')}>
+        {t('cancelCta')}
+      </Button>
+      <Button
+        onClick={() => {
+          void handleSave()
+        }}
+        title={t('saveCta')}
+        isLoading={form.status.isPending}
+      >
+        {t('saveCta')}
+      </Button>
+    </Flex>
+  )
+
   return (
-    <div className={styles.container}>
+    <div ref={containerRef} className={styles.container}>
       <BaseLayout error={form.errorHandling.errors} LoaderComponent={LoaderComponent}>
         <SDKFormProvider formHookResult={form}>
           <Flex flexDirection="column" gap={24}>
-            <Flex justifyContent="space-between" alignItems="flex-start" gap={12}>
-              <Flex flexDirection="column" gap={8}>
+            <Flex
+              flexDirection={isSmallOrGreater ? 'row' : 'column'}
+              justifyContent="space-between"
+              alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+              gap={12}
+            >
+              <Flex flexDirection="column" alignItems="stretch" gap={8}>
                 <Heading as="h1" styledAs="h2">
                   {t('pageTitle', { employeeName })}
                 </Heading>
               </Flex>
-              <Flex justifyContent="flex-end" gap={12}>
-                <Button variant="secondary" onClick={handleCancel} title={t('cancelCta')}>
-                  {t('cancelCta')}
-                </Button>
-                <Button
-                  onClick={() => {
-                    void handleSave()
-                  }}
-                  title={t('saveCta')}
-                  isLoading={form.status.isPending}
-                >
-                  {t('saveCta')}
-                </Button>
-              </Flex>
+              {isSmallOrGreater && actions}
             </Flex>
+            {!isSmallOrGreater && actions}
 
             {(() => {
               const isMultiJob = Fields.jobs.length > 1
@@ -478,14 +598,7 @@ const Root = ({
               )
             })()}
 
-            {renderBreakdownSection(Fields.additionalEarnings, {
-              title: t('additionalEarningsTitle'),
-              label: t('additionalEarningsTitle'),
-              rowHeader: t('typeColumn'),
-              valueColumnLabel: t('amountColumn'),
-              labelFor: earningLabel,
-              adornmentStart: '$',
-            })}
+            {renderEarningsSection()}
 
             {renderTimeOffSection(Fields.timeOff, {
               title: Fields.finalPayout ? t('timeOffTitleDismissal') : t('timeOffTitle'),
@@ -496,39 +609,6 @@ const Root = ({
                   title: t('finalPayoutTitle'),
                   description: t('finalPayoutDescription'),
                 })
-              : null}
-
-            {Fields.otherEarnings.length > 0
-              ? (() => {
-                  const columns: useDataViewPropReturn<
-                    (typeof Fields.otherEarnings)[number]
-                  >['columns'] = [
-                    { title: t('typeColumn'), render: entry => earningLabel(entry.id) },
-                    {
-                      title: t('amountColumn'),
-                      justify: 'end',
-                      render: entry => (
-                        <div className={styles.inputContainer}>
-                          <entry.Field
-                            label={earningLabel(entry.id)}
-                            shouldVisuallyHideLabel
-                            adornmentStart="$"
-                          />
-                        </div>
-                      ),
-                    },
-                  ]
-                  return (
-                    <Box header={<BoxHeader title={t('otherTitle')} />} withPadding={false}>
-                      <DataView
-                        label={t('otherTitle')}
-                        isWithinBox
-                        columns={columns}
-                        data={Fields.otherEarnings}
-                      />
-                    </Box>
-                  )
-                })()
               : null}
 
             {PaymentMethodField ? (

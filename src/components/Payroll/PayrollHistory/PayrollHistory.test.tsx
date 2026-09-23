@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
@@ -93,6 +93,18 @@ describe('PayrollHistory', () => {
       ).toBeInTheDocument()
 
       expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+    })
+
+    test('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <PayrollHistory {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
     })
   })
 
@@ -709,7 +721,7 @@ describe('PayrollHistory', () => {
       })
     })
 
-    it('passes default date params (3 months back through today, filtered by pay period) to the API', async () => {
+    it('passes default date params (6 months back through 3 months ahead) to the API', async () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
@@ -724,19 +736,19 @@ describe('PayrollHistory', () => {
 
       const startDate = new Date(startDateParam!)
       const endDate = new Date(endDateParam!)
-      const fourMonthsAgo = new Date()
-      fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4)
-      const twoMonthsAgo = new Date()
-      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2)
-      expect(startDate.getTime()).toBeGreaterThan(fourMonthsAgo.getTime())
-      expect(startDate.getTime()).toBeLessThan(twoMonthsAgo.getTime())
+      const sevenMonthsAgo = new Date()
+      sevenMonthsAgo.setMonth(sevenMonthsAgo.getMonth() - 7)
+      const fiveMonthsAgo = new Date()
+      fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5)
+      expect(startDate.getTime()).toBeGreaterThan(sevenMonthsAgo.getTime())
+      expect(startDate.getTime()).toBeLessThan(fiveMonthsAgo.getTime())
 
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      const tomorrow = new Date()
-      tomorrow.setDate(tomorrow.getDate() + 1)
-      expect(endDate.getTime()).toBeGreaterThan(yesterday.getTime())
-      expect(endDate.getTime()).toBeLessThan(tomorrow.getTime())
+      const twoMonthsAhead = new Date()
+      twoMonthsAhead.setMonth(twoMonthsAhead.getMonth() + 2)
+      const fourMonthsAhead = new Date()
+      fourMonthsAhead.setMonth(fourMonthsAhead.getMonth() + 4)
+      expect(endDate.getTime()).toBeGreaterThan(twoMonthsAhead.getTime())
+      expect(endDate.getTime()).toBeLessThan(fourMonthsAhead.getTime())
     })
   })
 

@@ -25,6 +25,8 @@ export interface EmployeeListViewProps extends Pick<
   onAddEmployee: () => void
   onSkip: () => void
   showContinueButton: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -40,6 +42,7 @@ export function EmployeeListView({
   onAddEmployee,
   onSkip,
   showContinueButton,
+  className,
 }: EmployeeListViewProps) {
   const { t } = useTranslation('Employee.EmployeeList')
   const Components = useComponentContext()
@@ -134,7 +137,7 @@ export function EmployeeListView({
 
   return (
     <>
-      <Flex flexDirection="column" gap={24}>
+      <Flex className={className} flexDirection="column" gap={24}>
         <Flex justifyContent="space-between" alignItems="center">
           <Components.Heading as="h2">{t('title')}</Components.Heading>
 

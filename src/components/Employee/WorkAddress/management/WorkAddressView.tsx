@@ -43,6 +43,8 @@ export interface WorkAddressViewProps {
   onWorkAddressSaved: (result: HookSubmitResult<EmployeeWorkAddress>) => void
   onBack: () => void
   isDeletePending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 function resolveLocation(
@@ -82,6 +84,7 @@ export function WorkAddressView({
   onWorkAddressSaved,
   onBack,
   isDeletePending = false,
+  className,
 }: WorkAddressViewProps) {
   const { t } = useTranslation('Employee.Management.WorkAddress')
   const Components = useComponentContext()
@@ -281,7 +284,7 @@ export function WorkAddressView({
     workAddress && companyLocations ? resolveLocation(workAddress, companyLocations) : undefined
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4} alignItems="flex-start">
         <Components.Heading as="h1" styledAs="h2">
           {t('title')}

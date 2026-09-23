@@ -59,6 +59,8 @@ export function createTransitionCreationSchema(
 
 /** @internal */
 export interface TransitionCreationPresentationProps {
+  /** CSS class name applied to the component's root element. */
+  className?: string
   /** The start date of the transition pay period (YYYY-MM-DD). */
   startDate: string
   /** The end date of the transition pay period (YYYY-MM-DD). */

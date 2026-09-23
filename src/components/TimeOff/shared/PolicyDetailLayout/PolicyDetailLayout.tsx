@@ -24,6 +24,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
   removeDialog,
   successAlert,
   onDismissAlert,
+  className,
 }: PolicyDetailLayoutProps<T>) {
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.PolicyDetail')
@@ -85,6 +86,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
         tabs={tabs}
         selectedTabId={selectedTabId}
         onTabChange={onTabChange}
+        className={className}
       />
 
       <Dialog

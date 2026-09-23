@@ -687,6 +687,7 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `descriptions.anchorPayDateDescription_one` | `"Please account for the {{count}} day it will take to process payroll."` |
 | `descriptions.anchorPayDateDescription_other` | `"Please account for the {{count}} days it will take to process payroll."` |
 | `descriptions.frequencyOptionsDescription` | `"Select the pay days for the month."` |
+| `descriptions.workweekStartDayDescription` | `"The day of the week this pay schedule's workweeks start on. Used for regular rate of pay overtime calculations."` |
 | <a id="property-companypayschedulefrequencies"></a> `frequencies` | |
 | `frequencies.everyOtherWeek` | `"Every other week"` |
 | `frequencies.everyWeek` | `"Every week"` |
@@ -712,6 +713,8 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `labels.name` | `"Name"` |
 | `labels.payfrequency` | `"Pay frequency"` |
 | `labels.preview` | `"Preview"` |
+| `labels.workweekStartDay` | `"Workweek start day"` |
+| `labels.workweekStartDayPlaceholder` | `"Select day..."` |
 | <a id="property-companypayschedulelistdescription"></a> `listDescription` | `"Pick what frequency you'd like to run payroll. If you need help, you can read more about <ScheduleLink href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</ScheduleLink>"` |
 | <a id="property-companypayschedulelistdescription2"></a> `listDescription2` | `"Why do we need to ask for this? We need to know when to pay your employees. Some states have <PaymentLawLink href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</PaymentLawLink> Please choose pay schedules that are legal for your employees."` |
 | <a id="property-companypayscheduleloading"></a> `loading` | `"Loading..."` |
@@ -740,6 +743,14 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `validations.frequencyOptions` | `"Please select the pay days for the month"` |
 | `validations.lastPayDayOfTheMonth` | `"Last pay day of the month is required"` |
 | `validations.name` | `"Pay schedule name is required"` |
+| <a id="property-companypayscheduleworkweekstartdayoptions"></a> `workweekStartDayOptions` | |
+| `workweekStartDayOptions.friday` | `"Friday"` |
+| `workweekStartDayOptions.monday` | `"Monday"` |
+| `workweekStartDayOptions.saturday` | `"Saturday"` |
+| `workweekStartDayOptions.sunday` | `"Sunday"` |
+| `workweekStartDayOptions.thursday` | `"Thursday"` |
+| `workweekStartDayOptions.tuesday` | `"Tuesday"` |
+| `workweekStartDayOptions.wednesday` | `"Wednesday"` |
 
 ***
 
@@ -3632,6 +3643,8 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
+| <a id="property-employeemanagementemployeelistpendingdismissalbadge"></a> `pendingDismissalBadge` | `"Last day {{date}}"` |
+| <a id="property-employeemanagementemployeelistpendingdismissallabel"></a> `pendingDismissalLabel` | `"Pending dismissal"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |
@@ -4636,6 +4649,7 @@ Translation keys for the `Payroll.GrossUpModal` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollgrossupmodalapplycta"></a> `applyCta` | `"Apply"` |
+| <a id="property-payrollgrossupmodalapplyhint"></a> `applyHint` | `"Calculate a gross amount first to apply it."` |
 | <a id="property-payrollgrossupmodalcalculatecta"></a> `calculateCta` | `"Calculate"` |
 | <a id="property-payrollgrossupmodalcalculatingcta"></a> `calculatingCta` | `"Calculating..."` |
 | <a id="property-payrollgrossupmodalcancelcta"></a> `cancelCta` | `"Cancel"` |
@@ -4912,6 +4926,8 @@ Translation keys for the `Payroll.PayrollBlocker` i18n namespace.
 | `blockers.needs_onboarding.description` | `"Company must complete all onboarding requirements in order to run payroll."` |
 | `blockers.needs_onboarding.help` | `"Complete all required onboarding steps."` |
 | `blockers.needs_onboarding.title` | `"Onboarding Incomplete"` |
+| `blockers.partner_tos_not_accepted` | |
+| `blockers.partner_tos_not_accepted.title` | `"Terms of Service Required"` |
 | `blockers.pay_schedule_setup_not_complete` | |
 | `blockers.pay_schedule_setup_not_complete.description` | `"Some employees don't have a pay schedule set up yet."` |
 | `blockers.pay_schedule_setup_not_complete.help` | `"Assign all employees to a pay schedule."` |
@@ -4949,6 +4965,7 @@ Translation keys for the `Payroll.PayrollBlocker` i18n namespace.
 | <a id="property-payrollpayrollblockerdefaultblockerhelp"></a> `defaultBlockerHelp` | `"Please contact support."` |
 | <a id="property-payrollpayrollblockerestimatedtime"></a> `estimatedTime` | `"Estimated time"` |
 | <a id="property-payrollpayrollblockerexitflowcta"></a> `exitFlowCta` | `"Exit"` |
+| <a id="property-payrollpayrollblockergenericblockertitle"></a> `genericBlockerTitle` | `"Payroll blocker"` |
 | <a id="property-payrollpayrollblockermultipleissuestitle"></a> `multipleIssuesTitle` | `"{{count}} issues are preventing you from running payroll"` |
 | <a id="property-payrollpayrollblockernoblockersmessage"></a> `noBlockersMessage` | `"No payroll blockers at this time."` |
 | <a id="property-payrollpayrollblockerviewallblockers"></a> `viewAllBlockers` | `"View All Blockers"` |
@@ -4977,6 +4994,9 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `alerts.payrollDeadline.message` | `"To pay your employees with direct deposit by the check date, you'll need to run payroll by the deadline."` |
 | `alerts.payrollLate` | `"Your original pay date was {{initialCheckDate}}"` |
 | `alerts.payrollLateText` | `"Run payroll before {{time}} on {{date}} to pay your employees on {{newCheckDate}}."` |
+| `alerts.processingFailed` | |
+| `alerts.processingFailed.label` | `"This payroll couldn't be calculated"` |
+| `alerts.processingFailed.message` | `"Please try calculating again."` |
 | `alerts.progressSaved` | `"Your progress has been saved"` |
 | `alerts.skippedEmployees` | |
 | `alerts.skippedEmployees.employeeAddressNotVerified` | `"Employee address not verified"` |
@@ -5243,6 +5263,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
+| `alerts.payrollLoadFailed` | `"There was an issue loading this payroll. Please try again."` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |

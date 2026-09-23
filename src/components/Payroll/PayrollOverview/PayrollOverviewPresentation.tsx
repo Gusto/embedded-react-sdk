@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import type {
   EmployeeCompensations,
   PayrollShow,
@@ -37,6 +38,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
+  className?: string
   payrollData: PayrollShow
   employeeFlsaStatusByUuid?: Record<string, string | undefined>
   bankAccount?: CompanyBankAccount
@@ -74,6 +76,7 @@ const getPayrollOverviewTitle = (
 
 /** @internal */
 export const PayrollOverviewPresentation = ({
+  className,
   onEdit,
   onSubmit,
   onCancel,
@@ -141,7 +144,7 @@ export const PayrollOverviewPresentation = ({
 
   if (status === PayrollOverviewStatus.Cancelled) {
     return (
-      <div ref={containerRef} className={styles.container}>
+      <div ref={containerRef} className={classNames(styles.container, className)}>
         <Flex flexDirection="column" alignItems="stretch">
           <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
             <Flex flexDirection="column" gap={4}>
@@ -290,6 +293,7 @@ export const PayrollOverviewPresentation = ({
     companyPaysColumns.push({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
+      justify: 'end',
       render: (employeeCompensations: EmployeeCompensations) => {
         const isDownloading =
           !!employeeCompensations.employeeUuid &&
@@ -642,7 +646,7 @@ export const PayrollOverviewPresentation = ({
   )
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={classNames(styles.container, className)}>
       <Flex flexDirection="column" alignItems="stretch">
         <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
           <Flex flexDirection="column" gap={4}>
@@ -656,7 +660,12 @@ export const PayrollOverviewPresentation = ({
           )}
         </Flex>
         {!isDesktop && (
-          <Grid gridTemplateColumns="1fr" gap={8}>
+          <Grid
+            gridTemplateColumns={
+              !isProcessed && canEdit ? ['minmax(0, 1fr)', 'minmax(0, 1fr)'] : '1fr'
+            }
+            gap={8}
+          >
             {actions}
           </Grid>
         )}

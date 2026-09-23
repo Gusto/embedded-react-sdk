@@ -21,6 +21,8 @@ interface TerminationSummaryPresentationProps {
   onDialogClose: () => void
   onDialogConfirm: () => void
   isCancelling: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -41,6 +43,7 @@ export function TerminationSummaryPresentation({
   onDialogClose,
   onDialogConfirm,
   isCancelling,
+  className,
 }: TerminationSummaryPresentationProps) {
   const { Alert, Heading, Text, Button, DescriptionList, Dialog, Link } = useComponentContext()
   const { formatLongWithYear } = useDateFormatter()
@@ -67,7 +70,7 @@ export function TerminationSummaryPresentation({
   const hasActions = canCancel || canEdit || showRunPayroll || showRunOffCyclePayroll
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4}>
         {showSuccessAlert && (
           <Alert status="success" label={t('alert.success.label', { employeeName })} />
