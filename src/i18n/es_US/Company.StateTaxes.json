@@ -2,9 +2,6 @@
   "form": {
     "cancelCta": "Cancelar",
     "effectiveFromLabel": "Válido desde: {{date}}",
-    "errors": {
-      "incompleteRequirementSet": "{{section}} para {{state}} está incompleto. Completa todos los campos obligatorios e inténtalo de nuevo."
-    },
     "noEditableRequirementsDescription": "Este estado no tiene requisitos fiscales editables.",
     "noEditableRequirementsTitle": "No hay requisitos editables",
     "saveCta": "Guardar",
