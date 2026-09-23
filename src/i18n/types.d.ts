@@ -7565,6 +7565,8 @@ export namespace Translations {
     grossPayLabelMobile: string
     /** @defaultValue `"Regular hours"` */
     regularHoursTitle: string
+    /** @defaultValue `"{{title}} ({{rate}}/hr)"` */
+    jobTitleWithRate: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */

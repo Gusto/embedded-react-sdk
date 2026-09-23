@@ -281,7 +281,7 @@ describe('PayrollEditEmployeePresentation', () => {
     expect(await screen.findByText('Manager')).toBeInTheDocument()
   })
 
-  it('does not render job title when employee has only one job', async () => {
+  it('renders the job title as the hours heading when employee has only one job', async () => {
     const employee: Employee = {
       uuid: 'emp-1',
       firstName: 'Jane',
@@ -303,7 +303,40 @@ describe('PayrollEditEmployeePresentation', () => {
     )
 
     expect(await screen.findByLabelText(/^Regular Hours\b/)).toBeInTheDocument()
-    expect(screen.queryByText('Designer')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Designer' })).toBeInTheDocument()
+  })
+
+  it('appends the hourly rate to the job title heading for hourly (nonexempt) jobs', async () => {
+    const employee: Employee = {
+      uuid: 'emp-1',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      paymentMethod: EmployeePaymentMethod1.DirectDeposit,
+      jobs: [
+        {
+          uuid: 'job-1',
+          title: 'Barista',
+          primary: true,
+          compensations: [
+            { uuid: 'comp-1', rate: '18.50', paymentUnit: 'Hour', flsaStatus: 'Nonexempt' },
+          ],
+        },
+      ],
+    }
+    const compensation: PayrollEmployeeCompensationsType = {
+      employeeUuid: 'emp-1',
+      hourlyCompensations: [{ name: 'Regular Hours', hours: '40', jobUuid: 'job-1' }],
+    }
+
+    renderWithProviders(
+      <PayrollEditEmployeePresentation
+        {...defaultProps}
+        employee={employee}
+        employeeCompensation={compensation}
+      />,
+    )
+
+    expect(await screen.findByRole('heading', { name: 'Barista ($18.50/hr)' })).toBeInTheDocument()
   })
 
   it('renders form fields for existing compensations', async () => {
@@ -312,7 +345,17 @@ describe('PayrollEditEmployeePresentation', () => {
     await waitFor(() => {
       expect(screen.getAllByLabelText(/^Regular Hours\b/)).toHaveLength(2)
     })
-    expect(screen.getByLabelText(/^Overtime\b/)).toBeInTheDocument()
+    const overtimeInputs = screen.getAllByLabelText(/^Overtime\b/)
+    expect(overtimeInputs).toHaveLength(2)
+    // job-1 carries an overtime line (editable); job-2 does not, so its input renders disabled.
+    expect(overtimeInputs[0]).toBeEnabled()
+    expect(overtimeInputs[1]).toBeDisabled()
+    // Double overtime has no lines on either job, so both render disabled rather than hidden.
+    const doubleOvertimeInputs = screen.getAllByLabelText(/^Double overtime\b/)
+    expect(doubleOvertimeInputs).toHaveLength(2)
+    doubleOvertimeInputs.forEach(input => {
+      expect(input).toBeDisabled()
+    })
   })
 
   it('pre-fills form fields with existing compensation hours', async () => {
@@ -324,7 +367,7 @@ describe('PayrollEditEmployeePresentation', () => {
     expect(regularHoursInputs[0]).toHaveValue(40)
     expect(regularHoursInputs[1]).toHaveValue(20)
 
-    const overtimeInput = screen.getByLabelText(/^Overtime\b/)
+    const overtimeInput = screen.getAllByLabelText(/^Overtime\b/)[0]
     expect(overtimeInput).toHaveValue(5)
   })
 
@@ -389,7 +432,7 @@ describe('PayrollEditEmployeePresentation', () => {
     const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours\b/)
     expect(regularHoursInputs[0]).toHaveValue(40)
 
-    const overtimeInput = screen.getByLabelText(/^Overtime\b/)
+    const overtimeInput = screen.getAllByLabelText(/^Overtime\b/)[0]
     expect(overtimeInput).toHaveValue(5)
 
     expect(regularHoursInputs[1]).toHaveValue(20)
@@ -1464,14 +1507,18 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByLabelText('Check')).toBeInTheDocument()
     })
 
-    it('hides payment method control when employee does not have direct deposit set up', () => {
+    it('shows a disabled check-only payment method control when employee has no direct deposit set up', () => {
       renderWithProviders(
         <PayrollEditEmployeePresentation {...defaultProps} hasDirectDepositSetup={false} />,
       )
 
-      expect(screen.queryByText('Payment method')).not.toBeInTheDocument()
+      // The section stays visible (matching the gws-flows form) but offers only check, disabled.
+      expect(screen.getByText('Payment method')).toBeInTheDocument()
       expect(screen.queryByLabelText('Direct deposit')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Check')).not.toBeInTheDocument()
+      const checkRadio = screen.getByLabelText('Check')
+      expect(checkRadio).toBeInTheDocument()
+      expect(checkRadio).toBeDisabled()
+      expect(checkRadio).toBeChecked()
     })
 
     it('shows payment method control by default when hasDirectDepositSetup is not provided', () => {

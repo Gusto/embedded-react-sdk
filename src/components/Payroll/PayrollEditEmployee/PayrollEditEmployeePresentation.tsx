@@ -43,6 +43,7 @@ import {
   COMPENSATION_NAME_CORRECTION_PAYMENT,
   COMPENSATION_NAME_COMMISSION,
   COMPENSATION_NAME_CASH_TIPS,
+  FlsaStatus,
 } from '@/shared/constants'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
@@ -232,7 +233,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, ButtonIcon, Heading, Text } = useComponentContext()
+  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -310,6 +311,24 @@ export const PayrollEditEmployeePresentation = ({
       default:
         return compensationName
     }
+  }
+
+  // The hours section is headed by the job's title (matching the gws-flows edit form), falling
+  // back to a generic label when a job has no title. Pure hourly (Nonexempt) jobs append an
+  // "($rate/hr)" suffix, exactly as gws-flows does; salaried/exempt jobs show the title alone.
+  const getHoursSectionHeading = (job: (typeof hourlyJobs)[number]) => {
+    if (!job.title) {
+      return t('regularHoursTitle')
+    }
+    const compensation = job.compensations?.[0]
+    const rate = compensation?.rate
+    if (compensation?.flsaStatus === FlsaStatus.NONEXEMPT && rate) {
+      return t('jobTitleWithRate', {
+        title: job.title,
+        rate: formatNumberAsCurrency(parseFloat(rate)),
+      })
+    }
+    return job.title
   }
 
   const getFixedCompensationLabel = (compensationName?: string) => {
@@ -665,28 +684,50 @@ export const PayrollEditEmployeePresentation = ({
         <Form>
           {hourlyJobs.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h3">{t('regularHoursTitle')}</Heading>
               {hourlyJobs.map(hourlyJob => (
                 <Flex key={hourlyJob.uuid} flexDirection="column" gap={8}>
-                  {hourlyJobs.length > 1 && <Heading as="h4">{hourlyJob.title}</Heading>}
-                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                  <Heading as="h3" styledAs="h4">
+                    {getHoursSectionHeading(hourlyJob)}
+                  </Heading>
+                  <Grid
+                    gridTemplateColumns={{ base: '1fr', small: [320, 320], large: [320, 320, 320] }}
+                    gap={20}
+                  >
                     {HOURS_COMPENSATION_NAMES.map(compensationName => {
                       const employeeHourlyCompensation = findMatchingCompensation(
                         hourlyJob.uuid,
                         compensationName,
                       )
-                      if (employeeHourlyCompensation) {
+                      // Every job renders all three hours inputs. Overtime / double overtime that
+                      // the prepared payroll doesn't carry (e.g. for salaried/exempt employees)
+                      // render as a disabled, empty placeholder rather than being hidden, matching
+                      // the gws-flows form. These placeholders are presentational only -- they are
+                      // not bound to the form, so they never validate or post back.
+                      if (!employeeHourlyCompensation) {
                         return (
-                          <TextInputField
+                          <TextInput
                             key={compensationName}
                             type="number"
                             min={0}
                             adornmentEnd={t('hoursUnit')}
+                            isDisabled
                             label={getCompensationLabel(compensationName)}
-                            name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
+                            name={`hourlyCompensations.${hourlyJob.uuid}.${compensationName}`}
+                            value=""
+                            onChange={() => {}}
                           />
                         )
                       }
+                      return (
+                        <TextInputField
+                          key={compensationName}
+                          type="number"
+                          min={0}
+                          adornmentEnd={t('hoursUnit')}
+                          label={getCompensationLabel(compensationName)}
+                          name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
+                        />
+                      )
                     })}
                   </Grid>
                 </Flex>
@@ -827,29 +868,40 @@ export const PayrollEditEmployeePresentation = ({
               )}
             </div>
           )}
-          {hasDirectDepositSetup && (
-            <div className={styles.fieldGroup}>
-              <Heading as="h3" styledAs="h4">
-                {t('paymentMethodTitle')}
-              </Heading>
-              <RadioGroupField
-                name="paymentMethod"
-                isRequired
-                label={t('paymentMethodLabel')}
-                description={t('paymentMethodDescription')}
-                options={[
-                  {
-                    value: PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
-                    label: t('paymentMethodOptions.directDeposit'),
-                  },
-                  {
-                    value: PayrollEmployeeCompensationsTypePaymentMethod.Check,
-                    label: t('paymentMethodOptions.check'),
-                  },
-                ]}
-              />
-            </div>
-          )}
+          <div className={styles.fieldGroup}>
+            <Heading as="h3" styledAs="h4">
+              {t('paymentMethodTitle')}
+            </Heading>
+            <RadioGroupField
+              name="paymentMethod"
+              isRequired
+              // Without a direct deposit account the employee can only be paid by check; the
+              // control still renders (disabled, check-only) so the payment method is always
+              // visible, matching the gws-flows form rather than hiding the section entirely.
+              isDisabled={!hasDirectDepositSetup}
+              label={t('paymentMethodLabel')}
+              description={t('paymentMethodDescription')}
+              options={
+                hasDirectDepositSetup
+                  ? [
+                      {
+                        value: PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
+                        label: t('paymentMethodOptions.directDeposit'),
+                      },
+                      {
+                        value: PayrollEmployeeCompensationsTypePaymentMethod.Check,
+                        label: t('paymentMethodOptions.check'),
+                      },
+                    ]
+                  : [
+                      {
+                        value: PayrollEmployeeCompensationsTypePaymentMethod.Check,
+                        label: t('paymentMethodOptions.check'),
+                      },
+                    ]
+              }
+            />
+          </div>
         </Form>
         {!isSmallOrGreater && actions}
       </FormProvider>

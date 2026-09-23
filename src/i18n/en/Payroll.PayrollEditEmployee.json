@@ -4,6 +4,7 @@
   "grossPayLabel": "Gross pay (excluding reimbursements)",
   "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular hours",
+  "jobTitleWithRate": "{{title}} ({{rate}}/hr)",
   "hoursUnit": "Hours",
   "saveCta": "Save",
   "cancelCta": "Cancel",

@@ -16,6 +16,7 @@
     "reimbursement": "Reembolso"
   },
   "grossPayLabel": "Pago bruto (sin incluir reembolsos)",
+  "jobTitleWithRate": "{{title}} ({{rate}}/hr)",
   "grossPayLabelMobile": "Pago bruto: {{grossPay}} (sin incluir reembolsos)",
   "pageTitle": "Editar la nómina de {{employeeName}}",
   "paymentMethodDescription": "Cambiar el método de pago predeterminado solo se aplicará a esta nómina.",
