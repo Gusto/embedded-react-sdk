@@ -56,8 +56,8 @@ describe('Contractor SignatureForm', () => {
 
     await user.click(screen.getByRole('button', { name: 'Change SSN' }))
 
-    // The redacted SSN is optional (a value is already on file), so its label
-    // carries an "(optional)" suffix — match on the stable prefix.
+    // Optional fields carry no required indicator, so the label is just the
+    // field name — match on the stable prefix to stay robust to any suffix.
     const editableSsn = screen.getByLabelText(/Social Security Number \(SSN\)/)
     expect(editableSsn).toHaveValue('')
     expect(editableSsn).toBeEnabled()
