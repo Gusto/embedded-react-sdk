@@ -42,6 +42,7 @@ import { useNonce } from '@/contexts/NonceProvider'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { isNonRetryablePollError } from '@/hooks/usePollingTask/usePollingTask'
 import { renderErrorList } from '@/helpers/apiErrorToList'
 import { Flex, PayrollLoading } from '@/components/Common'
 import { usePagination } from '@/hooks/usePagination/usePagination'
@@ -186,6 +187,8 @@ const Root = ({
   const {
     data,
     isFetching,
+    isError,
+    error,
     refetch: refetchPayroll,
   } = usePayrollsGet(payrollRequest, {
     placeholderData: keepPreviousData,
@@ -318,13 +321,18 @@ const Root = ({
     refetch: refetchPayroll,
     onProcessed: emitProcessed,
     onProcessingFailed: emitProcessingFailed,
+    // Unlike the calculation poll, a second Submit click here is safe even if this fires on a
+    // payroll that actually did process successfully — payrollsSubmit only operates on an
+    // unprocessed payroll, so the API itself rejects a resubmit rather than double-running it.
+    onError: () => {
+      emitProcessingFailed(undefined)
+    },
   })
 
-  // Always poll from mount, not just after Submit: the initial read is a non-suspense query, so
-  // if its notification never arrives the component is stuck on `!payrollData` forever with no
-  // other render source. This also doubles as picking up a submission already in flight
-  // (another tab, another admin) — the poll's own evaluate rules keep the loop going for as long
-  // as it reads `submitting`, regardless of why the loop started.
+  // The initial read is a non-suspense query; if its notification never arrives, the component
+  // is stuck on `!payrollData` forever with no other render source. This one read forces that
+  // render -- it only keeps tracking to completion if it happens to land on `submitting`, not as
+  // a durable watcher for a submission started elsewhere.
   useEffect(() => {
     startPayrollPoll({ baseline: null, sawSubmitting: false })
   }, [startPayrollPoll])
@@ -347,7 +355,18 @@ const Root = ({
   )
 
   if (!payrollData) {
+    if (isError) {
+      throw new Error(t('alerts.payrollLoadFailed'))
+    }
     return <PayrollLoading title={t('dataLoadingTitle')} />
+  }
+
+  // `keepPreviousData` can leave stale data in place while the query is erroring in the
+  // background. A retryable error (network blip, transient 5xx) is fine to ride out on stale
+  // data, but a non-retryable one (expired session, schema mismatch) never recovers on its own --
+  // continuing to render stale data would hide that from the partner indefinitely.
+  if (isError && isNonRetryablePollError(error)) {
+    throw new Error(t('alerts.payrollLoadFailed'))
   }
 
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {

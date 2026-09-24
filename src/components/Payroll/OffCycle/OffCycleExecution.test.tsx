@@ -352,7 +352,7 @@ describe('OffCycleExecution - edit employee hours round-trip', () => {
       ).toBeInTheDocument()
     })
 
-    const regularHoursInput = await screen.findByLabelText('Regular Hours')
+    const regularHoursInput = await screen.findByLabelText(/^Regular Hours\b/)
     await user.clear(regularHoursInput)
     await user.type(regularHoursInput, '20')
 

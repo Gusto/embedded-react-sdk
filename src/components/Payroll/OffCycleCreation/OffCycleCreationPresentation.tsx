@@ -5,6 +5,7 @@ import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
 import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
 import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import {
   WAGE_TYPE_CATEGORIES,
   type WageTypeGroup,
@@ -21,6 +22,8 @@ import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/
 /** @internal */
 export function OffCycleCreationPresentation({
   employees,
+  blockers,
+  onViewBlockersClick,
   isPending,
   minCheckDate,
   minCheckOnlyDate,
@@ -82,8 +85,13 @@ export function OffCycleCreationPresentation({
     },
   ]
 
+  const hasBlockers = blockers.length > 0
+
   return (
     <Flex className={className} flexDirection="column" gap={32}>
+      {hasBlockers && (
+        <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockersClick} />
+      )}
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('pageTitle')}</Heading>
         <Text variant="supporting">{t('pageDescription')}</Text>
@@ -166,7 +174,7 @@ export function OffCycleCreationPresentation({
       </Flex>
 
       <Flex justifyContent="flex-end" gap={12}>
-        <Button type="submit" isLoading={isPending} isDisabled={isPending}>
+        <Button type="submit" isLoading={isPending} isDisabled={isPending || hasBlockers}>
           {t('continueCta')}
         </Button>
       </Flex>

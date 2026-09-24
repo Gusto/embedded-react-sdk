@@ -123,7 +123,6 @@ export const TimeOffField = ({ timeOff, employee }: TimeOffFieldProps) => {
         type="number"
         min={0}
         adornmentEnd={t('hoursUnit')}
-        isRequired
         label={timeOff.name}
         aria-describedby={id}
       />

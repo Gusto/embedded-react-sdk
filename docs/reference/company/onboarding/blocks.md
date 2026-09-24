@@ -1008,7 +1008,7 @@ available via the API, the corresponding values are overwritten.
 
 ### PayScheduleDefaultFields
 
-> **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
+> **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency" \| "workweekStartDay"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
 
 The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
 

@@ -16,7 +16,10 @@ import { createContext, useContext } from 'react'
 export interface UnstableFeatures {
   /** Enables recording past payments to contractors within the `ContractorManagement` flows. */
   historicalPayments?: boolean
-  /** Enables the in-development regular-rate-of-pay experience for editing an employee's payroll. */
+  /**
+   * Enables the in-development regular-rate-of-pay experience: the payroll editing flow, and the
+   * workweek start day field on `PaySchedule` that RRoP's overtime calculations depend on.
+   */
   payrollRegularRateOfPay?: boolean
 }
 

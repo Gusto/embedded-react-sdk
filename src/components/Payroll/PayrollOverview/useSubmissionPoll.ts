@@ -5,7 +5,16 @@ import type {
 } from '@gusto/embedded-api/react-query/payrollsGet'
 import type { QueryObserverResult } from '@tanstack/react-query'
 import { PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
-import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
+import {
+  usePollingTask,
+  isNonRetryablePollError,
+  type PollReadOutcome,
+  type PollTickResult,
+} from '@/hooks/usePollingTask/usePollingTask'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError } from '@/types/sdkError'
+
+const COMPONENT_NAME = 'Payroll.PayrollOverview'
 
 /** @internal */
 export type PayrollShow = NonNullable<PayrollsGetQueryData['payrollShow']>
@@ -30,21 +39,43 @@ export interface SubmissionPollRun {
 const isSubmittingStatus = (status: string | undefined) =>
   status === PAYROLL_PROCESSING_STATUS.submitting
 
+// A run only counts as tracking a real submission if it started from a Submit click (baseline
+// set) or has observed a `submitting` status mid-run -- the baseline-less mount poll that never
+// saw either is just guarding the initial render, not watching a submission.
+const isTrackedSubmission = (run: SubmissionPollRun | null) =>
+  run?.baseline != null || run?.sawSubmitting === true
+
 const isProcessedStatus = (processed: boolean | undefined, status: string | undefined) =>
   processed === true || status === PAYROLL_PROCESSING_STATUS.submit_success
 
+// Verify against the last-known data before reporting failure: a success that already landed
+// on the server must never be reported as a failure just because the deadline hit first.
+const verifiedSubmissionOutcome = (lastData: PayrollsGetQueryData | null): SubmissionOutcome => {
+  const payroll = lastData?.payrollShow
+  if (isProcessedStatus(payroll?.processed, payroll?.processingRequest?.status)) {
+    return { type: 'processed', payroll }
+  }
+  return { type: 'failed', payroll }
+}
+
 const evaluateSubmissionOutcome = (
-  queryData: PayrollsGetQueryData,
+  outcome: PollReadOutcome<PayrollsGetQueryData>,
   run: SubmissionPollRun | null,
 ): PollTickResult<SubmissionOutcome> => {
-  const payroll = queryData.payrollShow
+  if (!outcome.success) {
+    return isNonRetryablePollError(outcome.error)
+      ? { status: 'error', error: outcome.error }
+      : { status: 'polling' }
+  }
+
+  const payroll = outcome.data.payrollShow
   const submissionStatus = payroll?.processingRequest?.status
   const isSubmitting = isSubmittingStatus(submissionStatus)
 
   if (isSubmitting && run) run.sawSubmitting = true
 
   if (submissionStatus === PAYROLL_PROCESSING_STATUS.processing_failed) {
-    return { done: true, value: { type: 'failed', payroll } }
+    return { status: 'done', value: { type: 'failed', payroll } }
   }
 
   // Checked ahead of the `isSubmitting` re-poll below: `processed` can flip true while
@@ -56,12 +87,17 @@ const evaluateSubmissionOutcome = (
       (payroll?.processed !== run.baseline.processed || submissionStatus !== run.baseline.status))
 
   if (isNewTransition && isProcessedStatus(payroll?.processed, submissionStatus)) {
-    return { done: true, value: { type: 'processed', payroll } }
+    return { status: 'done', value: { type: 'processed', payroll } }
   }
 
-  if (isSubmitting) return { done: false }
+  if (isSubmitting) return { status: 'polling' }
 
-  return { done: true, value: { type: 'loaded' } }
+  // A baseline means Submit was just clicked, so an inconclusive read likely means the async
+  // job hasn't started yet -- keep polling. The baseline-less mount poll is exempt on purpose:
+  // it must not treat an already-settled payroll as a fresh transition.
+  if (run?.baseline != null) return { status: 'polling' }
+
+  return { status: 'done', value: { type: 'loaded' } }
 }
 
 /** @internal */
@@ -73,6 +109,15 @@ export interface UseSubmissionPollOptions {
   refetch: () => Promise<QueryObserverResult<PayrollsGetQueryData, PayrollsGetQueryError>>
   onProcessed: (payroll: PayrollShow | undefined) => void
   onProcessingFailed: (payroll: PayrollShow | undefined) => void
+  /**
+   * Called when the poll gives up on a non-retryable read error, but only for a run that was
+   * actually tracking a submission (`baseline` set, or a `submitting` status observed mid-run).
+   * A baseline-less mount poll that never saw `submitting` swallows the error here -- it was only
+   * guarding the initial render, not watching a real submission, so surfacing it as a processing
+   * failure would be a false failure. The raw error is reported to observability by this hook
+   * either way.
+   */
+  onError: () => void
 }
 
 /** @internal */
@@ -90,8 +135,10 @@ export function useSubmissionPoll({
   refetch,
   onProcessed,
   onProcessingFailed,
+  onError,
 }: UseSubmissionPollOptions): SubmissionPoll {
   const pollRunRef = useRef<SubmissionPollRun | null>(null)
+  const { observability } = useObservability()
 
   const fetchPayroll = async (): Promise<PayrollsGetQueryData> => {
     const result = await refetch()
@@ -109,22 +156,27 @@ export function useSubmissionPoll({
     }
   }
 
-  // Verify against the server before reporting failure, same rationale as
-  // PayrollConfiguration's calculation poll: a success that arrived while we were waiting must
-  // never be reported as a failure.
   const handleDeadline = (lastData: PayrollsGetQueryData | null) => {
-    const payroll = lastData?.payrollShow
-    if (isProcessedStatus(payroll?.processed, payroll?.processingRequest?.status)) {
-      onProcessed(payroll)
-      return
-    }
-    onProcessingFailed(payroll)
+    handleDone(verifiedSubmissionOutcome(lastData))
   }
 
   const { start: startPoll, isPolling } = usePollingTask<PayrollsGetQueryData, SubmissionOutcome>({
     fetch: fetchPayroll,
-    evaluate: queryData => evaluateSubmissionOutcome(queryData, pollRunRef.current),
+    evaluate: outcome => evaluateSubmissionOutcome(outcome, pollRunRef.current),
     onDone: handleDone,
+    onError: error => {
+      const sdkError = normalizeToSDKError(error)
+      observability?.onError?.({
+        ...sdkError,
+        timestamp: Date.now(),
+        componentName: COMPONENT_NAME,
+      })
+      // Don't emit a processing failed error if we never observed this payroll
+      // be submitted; this could just be a load issue
+      if (isTrackedSubmission(pollRunRef.current)) {
+        onError()
+      }
+    },
     onDeadline: handleDeadline,
   })
 

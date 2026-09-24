@@ -40,5 +40,9 @@
     "remaining": "Quedan {{balance}}"
   },
   "timeOffTitle": "Tiempo libre",
-  "timeOffTitleDismissal": "Horas de tiempo libre usadas en este período de pago"
+  "timeOffTitleDismissal": "Horas de tiempo libre usadas en este período de pago",
+  "validations": {
+    "negativeAmount": "El monto no puede ser negativo",
+    "reimbursementAmount": "El monto debe ser mayor que cero"
+  }
 }
