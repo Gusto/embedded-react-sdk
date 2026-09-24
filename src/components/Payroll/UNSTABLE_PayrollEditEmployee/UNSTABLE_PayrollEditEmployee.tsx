@@ -470,9 +470,11 @@ const Root = ({
             <div className={styles.earningsAlert}>
               <Alert
                 status="info"
-                label={t('overtimeMultiplierEarningsAlert', { employeeName })}
+                label={t('overtimeMultiplierEarningsAlert')}
                 disableScrollIntoView
-              />
+              >
+                <Text size="sm">{t('overtimeMultiplierEarningsAlertDescription')}</Text>
+              </Alert>
             </div>
             {renderGroupLabel(t('overtimeIncludedEarningsGroupLabel'))}
             {includedTable}
