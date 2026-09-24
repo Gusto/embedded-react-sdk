@@ -28,7 +28,11 @@ import {
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
-import { formatNumberAsCurrency, firstLastName } from '@/helpers/formattedStrings'
+import {
+  formatNumberAsCurrency,
+  firstLastName,
+  stripLeadingZeros,
+} from '@/helpers/formattedStrings'
 import { getAdditionalEarningsCompensations, calculateGrossPay } from '@/components/Payroll/helpers'
 import { PayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
 import {
@@ -681,6 +685,7 @@ export const PayrollEditEmployeePresentation = ({
                             key={compensationName}
                             type="number"
                             min={0}
+                            transform={stripLeadingZeros}
                             adornmentEnd={t('hoursUnit')}
                             label={getCompensationLabel(compensationName)}
                             name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
@@ -744,6 +749,7 @@ export const PayrollEditEmployeePresentation = ({
                     key={fixedCompensation.name}
                     type="number"
                     min={0}
+                    transform={stripLeadingZeros}
                     adornmentStart="$"
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
@@ -764,6 +770,7 @@ export const PayrollEditEmployeePresentation = ({
                 <TextInputField
                   type="number"
                   min={0}
+                  transform={stripLeadingZeros}
                   adornmentStart="$"
                   label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
                   name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
@@ -793,6 +800,7 @@ export const PayrollEditEmployeePresentation = ({
                         name="amount"
                         type="number"
                         min={0}
+                        transform={stripLeadingZeros}
                         adornmentStart="$"
                         isRequired
                         label={t('reimbursementAmountLabel')}

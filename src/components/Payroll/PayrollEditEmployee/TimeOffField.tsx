@@ -6,6 +6,7 @@ import type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedde
 import type { PayrollEditEmployeeFormValues } from './PayrollEditEmployeePresentation'
 import { Flex, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { stripLeadingZeros } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 
 /** @internal */
@@ -79,6 +80,7 @@ export const PayoutTimeOffField = ({ timeOff, employee }: PayoutTimeOffFieldProp
         name={`finalPayoutCompensations.${timeOff.name}`}
         type="number"
         min={0}
+        transform={stripLeadingZeros}
         adornmentEnd={t('hoursUnit')}
         label={timeOff.name}
         aria-describedby={id}
@@ -122,6 +124,7 @@ export const TimeOffField = ({ timeOff, employee }: TimeOffFieldProps) => {
         name={`timeOffCompensations.${timeOff.name}`}
         type="number"
         min={0}
+        transform={stripLeadingZeros}
         adornmentEnd={t('hoursUnit')}
         label={timeOff.name}
         aria-describedby={id}
