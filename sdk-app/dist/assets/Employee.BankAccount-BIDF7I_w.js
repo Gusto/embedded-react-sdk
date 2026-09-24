@@ -1,0 +1,1 @@
+const e="Imagen del cheque bancario de muestra que muestra la ubicación del número de ruta y del número de cuenta",a="Apodo de la cuenta",c="(9 dígitos)",n={accountType:"Seleccione el tipo de cuenta"},t={checkImageAlt:e,nameLabel:a,routingNumberDescription:c,validations:n};export{e as checkImageAlt,t as default,a as nameLabel,c as routingNumberDescription,n as validations};

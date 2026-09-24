@@ -1,0 +1,544 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateType = void 0;
+exports.generate = generate;
+const lodash_1 = require("lodash");
+const memoize_1 = require("./memoize");
+const index_1 = require("./index");
+const AST_1 = require("./types/AST");
+const utils_1 = require("./utils");
+function generate(ast, options = index_1.DEFAULT_OPTIONS) {
+    return ([
+        options.bannerComment,
+        declareNamedTypes(ast, options, ast.standaloneName),
+        declareNamedInterfaces(ast, options, ast.standaloneName),
+        declareEnums(ast, options),
+    ]
+        .filter(Boolean)
+        .join('\n\n') + '\n'); // trailing newline
+}
+function declareEnums(ast, options, processed = new Set()) {
+    if (processed.has(ast)) {
+        return '';
+    }
+    processed.add(ast);
+    let type = '';
+    switch (ast.type) {
+        case 'ENUM':
+            return generateStandaloneEnum(ast, options) + '\n';
+        case 'ARRAY':
+            return declareEnums(ast.params, options, processed);
+        case 'UNION':
+        case 'INTERSECTION':
+            return ast.params.reduce((prev, ast) => prev + declareEnums(ast, options, processed), '');
+        case 'TUPLE':
+            type = ast.params.reduce((prev, ast) => prev + declareEnums(ast, options, processed), '');
+            if (ast.spreadParam) {
+                type += declareEnums(ast.spreadParam, options, processed);
+            }
+            return type;
+        case 'INTERFACE':
+            return getSuperTypesAndParams(ast).reduce((prev, ast) => prev + declareEnums(ast, options, processed), '');
+        default:
+            return '';
+    }
+}
+function declareNamedInterfaces(ast, options, rootASTName, processed = new Set()) {
+    if (processed.has(ast)) {
+        return '';
+    }
+    processed.add(ast);
+    let type = '';
+    switch (ast.type) {
+        case 'ARRAY':
+            type = declareNamedInterfaces(ast.params, options, rootASTName, processed);
+            break;
+        case 'INTERFACE':
+            type = [
+                (0, AST_1.hasStandaloneName)(ast) &&
+                    (ast.standaloneName === rootASTName || options.declareExternallyReferenced || ast.isUnreachableDefinition) &&
+                    generateStandaloneInterface(ast, options),
+                getSuperTypesAndParams(ast)
+                    .map(ast => declareNamedInterfaces(ast, options, rootASTName, processed))
+                    .filter(Boolean)
+                    .join('\n'),
+            ]
+                .filter(Boolean)
+                .join('\n');
+            break;
+        case 'INTERSECTION':
+        case 'TUPLE':
+        case 'UNION':
+            type = ast.params
+                .map(_ => declareNamedInterfaces(_, options, rootASTName, processed))
+                .filter(Boolean)
+                .join('\n');
+            if (ast.type === 'TUPLE' && ast.spreadParam) {
+                type += declareNamedInterfaces(ast.spreadParam, options, rootASTName, processed);
+            }
+            break;
+        default:
+            type = '';
+    }
+    return type;
+}
+function declareNamedTypes(ast, options, rootASTName, processed = new Set()) {
+    if (processed.has(ast)) {
+        return '';
+    }
+    processed.add(ast);
+    switch (ast.type) {
+        case 'ARRAY':
+            return [
+                declareNamedTypes(ast.params, options, rootASTName, processed),
+                (0, AST_1.hasStandaloneName)(ast) ? generateStandaloneType(ast, options) : undefined,
+            ]
+                .filter(Boolean)
+                .join('\n');
+        case 'ENUM':
+            return '';
+        case 'INTERFACE':
+            return getSuperTypesAndParams(ast)
+                .map(ast => (ast.standaloneName === rootASTName ||
+                options.declareExternallyReferenced ||
+                ast.isUnreachableDefinition) &&
+                declareNamedTypes(ast, options, rootASTName, processed))
+                .filter(Boolean)
+                .join('\n');
+        case 'INTERSECTION':
+        case 'TUPLE':
+        case 'UNION':
+            return [
+                (0, AST_1.hasStandaloneName)(ast) ? generateStandaloneType(ast, options) : undefined,
+                ast.params
+                    .map(ast => declareNamedTypes(ast, options, rootASTName, processed))
+                    .filter(Boolean)
+                    .join('\n'),
+                'spreadParam' in ast && ast.spreadParam
+                    ? declareNamedTypes(ast.spreadParam, options, rootASTName, processed)
+                    : undefined,
+            ]
+                .filter(Boolean)
+                .join('\n');
+        default:
+            if ((0, AST_1.hasStandaloneName)(ast)) {
+                return generateStandaloneType(ast, options);
+            }
+            return '';
+    }
+}
+exports.generateType = (0, memoize_1.memoize)(generateRawType);
+function generateRawType(ast, options) {
+    (0, utils_1.log)('magenta', 'generator', ast);
+    if ((0, AST_1.hasStandaloneName)(ast)) {
+        return (0, utils_1.toSafeString)(ast.standaloneName);
+    }
+    switch (ast.type) {
+        case 'ANY':
+            return 'any';
+        case 'ARRAY':
+            return (() => {
+                const type = (0, exports.generateType)(ast.params, options);
+                return type.endsWith('"') ? '(' + type + ')[]' : type + '[]';
+            })();
+        case 'BOOLEAN':
+            return 'boolean';
+        case 'INTERFACE':
+            return generateInterface(ast, options);
+        case 'INTERSECTION':
+            return generateSetOperation(ast, options);
+        case 'LITERAL':
+            return JSON.stringify(ast.params);
+        case 'NEVER':
+            return 'never';
+        case 'NUMBER':
+            return 'number';
+        case 'NULL':
+            return 'null';
+        case 'OBJECT':
+            return 'object';
+        case 'REFERENCE':
+            return ast.params;
+        case 'STRING':
+            return 'string';
+        case 'TUPLE':
+            return (() => {
+                const minItems = ast.minItems;
+                const maxItems = ast.maxItems || -1;
+                let spreadParam = ast.spreadParam;
+                const astParams = [...ast.params];
+                if (minItems > 0 && minItems > astParams.length && ast.spreadParam === undefined) {
+                    // this is a valid state, and JSONSchema doesn't care about the item type
+                    if (maxItems < 0) {
+                        // no max items and no spread param, so just spread any
+                        spreadParam = options.unknownAny ? AST_1.T_UNKNOWN : AST_1.T_ANY;
+                    }
+                }
+                if (maxItems > astParams.length && ast.spreadParam === undefined) {
+                    // this is a valid state, and JSONSchema doesn't care about the item type
+                    // fill the tuple with any elements
+                    for (let i = astParams.length; i < maxItems; i += 1) {
+                        astParams.push(options.unknownAny ? AST_1.T_UNKNOWN : AST_1.T_ANY);
+                    }
+                }
+                function addSpreadParam(params) {
+                    if (spreadParam) {
+                        const spread = '...(' + (0, exports.generateType)(spreadParam, options) + ')[]';
+                        params.push(spread);
+                    }
+                    return params;
+                }
+                function paramsToString(params) {
+                    return '[' + params.join(', ') + ']';
+                }
+                const paramsList = astParams.map(param => (0, exports.generateType)(param, options));
+                if (paramsList.length > minItems) {
+                    /*
+                  if there are more items than the min, we return a union of tuples instead of
+                  using the optional element operator. This is done because it is more typesafe.
+          
+                  // optional element operator
+                  type A = [string, string?, string?]
+                  const a: A = ['a', undefined, 'c'] // no error
+          
+                  // union of tuples
+                  type B = [string] | [string, string] | [string, string, string]
+                  const b: B = ['a', undefined, 'c'] // TS error
+                  */
+                    const cumulativeParamsList = paramsList.slice(0, minItems);
+                    const typesToUnion = [];
+                    if (cumulativeParamsList.length > 0) {
+                        // actually has minItems, so add the initial state
+                        typesToUnion.push(paramsToString(cumulativeParamsList));
+                    }
+                    else {
+                        // no minItems means it's acceptable to have an empty tuple type
+                        typesToUnion.push(paramsToString([]));
+                    }
+                    for (let i = minItems; i < paramsList.length; i += 1) {
+                        cumulativeParamsList.push(paramsList[i]);
+                        if (i === paramsList.length - 1) {
+                            // only the last item in the union should have the spread parameter
+                            addSpreadParam(cumulativeParamsList);
+                        }
+                        typesToUnion.push(paramsToString(cumulativeParamsList));
+                    }
+                    return typesToUnion.join('|');
+                }
+                // no max items so only need to return one type
+                return paramsToString(addSpreadParam(paramsList));
+            })();
+        case 'UNION':
+            return generateSetOperation(ast, options);
+        case 'UNKNOWN':
+            return 'unknown';
+        case 'CUSTOM_TYPE':
+            return ast.params;
+    }
+}
+/**
+ * Generate a Union or Intersection
+ */
+function generateSetOperation(ast, options) {
+    const members = ast.params.map(_ => (0, exports.generateType)(_, options));
+    const separator = ast.type === 'UNION' ? '|' : '&';
+    if (members.length === 0) {
+        // A union of nothing accepts nothing (`never`). An intersection of nothing (eg. every
+        // `allOf` member turned out to contribute no information) constrains nothing -- render it
+        // exactly like the `{[k: string]: unknown}` a single vacuous member would otherwise have
+        // produced, so it still dedupes against an identical sibling rather than showing up as a
+        // spurious, differently-spelled extra member.
+        return ast.type === 'UNION' ? 'never' : generateInterface(vacuousInterface(options), options);
+    }
+    return members.length === 1 ? members[0] : '(' + members.join(' ' + separator + ' ') + ')';
+}
+function vacuousInterface(options) {
+    return {
+        params: [
+            {
+                ast: options.unknownAny ? AST_1.T_UNKNOWN_ADDITIONAL_PROPERTIES : AST_1.T_ANY_ADDITIONAL_PROPERTIES,
+                isIndexSignature: true,
+                isPatternProperty: false,
+                isRequired: true,
+                isUnreachableDefinition: false,
+                keyName: '[k: string]',
+            },
+        ],
+        superTypes: [],
+        type: 'INTERFACE',
+    };
+}
+// `any`/`unknown` accept every other type, making index-signature widening
+// unnecessary. Checked on the AST (which covers named aliases, since the name is
+// metadata on the same node); `tsType` overrides are compared textually since they
+// are opaque.
+function isAny(ast) {
+    return ast.type === 'ANY' || (ast.type === 'CUSTOM_TYPE' && ast.params.trim() === 'any');
+}
+function isUnknown(ast) {
+    return ast.type === 'UNKNOWN' || (ast.type === 'CUSTOM_TYPE' && ast.params.trim() === 'unknown');
+}
+/**
+ * Named properties (own and inherited) that TypeScript checks against an interface's
+ * index signature.
+ */
+function getIndexSignatureSiblings(params, indexSignature, superTypes) {
+    const siblings = params.filter(_ => _ !== indexSignature);
+    const visited = new Set();
+    function collectInherited(superTypes) {
+        for (const superType of superTypes) {
+            if (visited.has(superType)) {
+                continue;
+            }
+            visited.add(superType);
+            // the parser casts `extends` schemas to TNamedInterface unchecked, so a
+            // non-object supertype has no params to collect
+            if (superType.type !== 'INTERFACE') {
+                continue;
+            }
+            siblings.push(...superType.params.filter(_ => !_.isPatternProperty && !_.isUnreachableDefinition && !_.isIndexSignature));
+            collectInherited(superType.superTypes);
+        }
+    }
+    collectInherited(superTypes);
+    return siblings;
+}
+// Types that render without recursing into other ASTs.
+const LEAF_TYPES = new Set([
+    'BOOLEAN',
+    'CUSTOM_TYPE',
+    'LITERAL',
+    'NEVER',
+    'NULL',
+    'NUMBER',
+    'OBJECT',
+    'REFERENCE',
+    'STRING',
+]);
+/**
+ * TypeScript requires every named property's type to be assignable to the interface's
+ * index signature type (TS2411), including properties inherited via `extends`. Widen
+ * the index signature's type into a union that also covers the named properties'
+ * types — `T | undefined` for optional properties, since that is the type TypeScript
+ * checks them against.
+ *
+ * Operates on ASTs rather than generated strings so members are deduplicated and
+ * rendered by the normal generator machinery. Returns undefined when no widening is
+ * needed and the index signature should render its own type as usual.
+ *
+ * Known limitation: when a supertype declares its own index signature, widening the
+ * subtype's can make the two incompatible (TS2430) — that case needs narrowing, not
+ * widening, and is out of scope here.
+ */
+function generateIndexSignatureType(indexSignature, params, superTypes, options) {
+    if (isAny(indexSignature.ast) || isUnknown(indexSignature.ast)) {
+        return undefined;
+    }
+    const memberASTs = [];
+    function addMember(ast) {
+        // flatten anonymous unions so their members participate in deduplication
+        if (ast.type === 'UNION' && !(0, AST_1.hasStandaloneName)(ast)) {
+            ast.params.forEach(addMember);
+            return;
+        }
+        // also flatten anonymous tsType unions, but only when provably safe to split:
+        // nothing but identifier characters, whitespace, and `|` (no brackets, quotes,
+        // arrows, or other constructs that would require real parsing)
+        if (ast.type === 'CUSTOM_TYPE' &&
+            !(0, AST_1.hasStandaloneName)(ast) &&
+            ast.params.includes('|') &&
+            /^[\w$.\s|]+$/.test(ast.params)) {
+            for (const member of ast.params.split('|')) {
+                const trimmed = member.trim();
+                if (trimmed) {
+                    memberASTs.push({ type: 'CUSTOM_TYPE', params: trimmed });
+                }
+            }
+            return;
+        }
+        memberASTs.push(ast);
+    }
+    addMember(indexSignature.ast);
+    let needsUndefined = options.strictIndexSignatures;
+    for (const sibling of getIndexSignatureSiblings(params, indexSignature, superTypes)) {
+        if (isAny(sibling.ast)) {
+            // `any` (even when optional) is assignable to every index signature type
+            continue;
+        }
+        if (!sibling.isRequired) {
+            needsUndefined = true;
+        }
+        if (sibling.ast.type === 'NEVER') {
+            continue;
+        }
+        addMember(sibling.ast);
+    }
+    // `unknown` absorbs every other member; so does an `any` among the index
+    // signature's own members that the optimizer did not already collapse (a
+    // `tsType: 'any'` patternProperty, say)
+    const top = memberASTs.some(isAny) ? 'any' : memberASTs.some(isUnknown) ? 'unknown' : undefined;
+    if (top) {
+        return options.strictIndexSignatures ? `${top} | undefined` : top;
+    }
+    // degenerate index signature type (e.g. an empty anyOf): render it as-is
+    if (memberASTs.length === 0) {
+        return undefined;
+    }
+    // nothing to widen: keep the memoized as-is rendering
+    if (memberASTs.length === 1 && !needsUndefined) {
+        return undefined;
+    }
+    const seen = new Set();
+    const members = [];
+    for (const memberAST of memberASTs) {
+        const type = (0, exports.generateType)(memberAST, options);
+        // a named alias of a leaf type (e.g. `type Foo = string`) also covers its
+        // underlying type, so dedupe against both renderings. Restricted to leaf types
+        // because structurally rendering a compound type's body can re-enter an
+        // in-flight render for self-referential schemas (memoization only caches
+        // completed renders, so it cannot break such cycles). (generateRawType, not
+        // generateType: the name-stripped copy is a fresh object, so memoization
+        // can't help anyway.)
+        const underlying = (0, AST_1.hasStandaloneName)(memberAST) && LEAF_TYPES.has(memberAST.type)
+            ? generateRawType((0, AST_1.omitStandaloneName)(memberAST), options)
+            : type;
+        if (seen.has(type) || seen.has(underlying)) {
+            continue;
+        }
+        seen.add(type);
+        seen.add(underlying);
+        // tsType overrides are opaque strings (e.g. function types) that may not be
+        // union-safe, so parenthesize them unless they are a simple type reference
+        members.push(memberAST.type === 'CUSTOM_TYPE' && !/^[\w$.]+(\[\])*$/.test(type) ? `(${type})` : type);
+    }
+    if (needsUndefined && !seen.has('undefined')) {
+        members.push('undefined');
+    }
+    return members.join(' | ');
+}
+function generateInterface(ast, options) {
+    const params = ast.params.filter(_ => !_.isPatternProperty && !_.isUnreachableDefinition);
+    const indexSignature = params.find(_ => _.isIndexSignature);
+    const indexSignatureType = indexSignature
+        ? generateIndexSignatureType(indexSignature, params, ast.superTypes, options)
+        : undefined;
+    return (`{` +
+        '\n' +
+        params
+            .map(param => {
+            const { isRequired, isIndexSignature, keyName, ast } = param;
+            // the widened type handles strictIndexSignatures itself; the fallback path
+            // (widening skipped or unneeded) appends `| undefined` here
+            const type = param === indexSignature && indexSignatureType !== undefined
+                ? indexSignatureType
+                : (0, exports.generateType)(ast, options) + (isIndexSignature && options.strictIndexSignatures ? ' | undefined' : '');
+            const commented = withItemsComment(ast);
+            return (((0, AST_1.hasComment)(commented) && !ast.standaloneName
+                ? generateComment(commented.comment, commented.deprecated) + '\n'
+                : '') +
+                (isIndexSignature ? keyName : escapeKeyName(keyName)) +
+                (isRequired ? '' : '?') +
+                ': ' +
+                type);
+        })
+            .join('\n') +
+        '\n' +
+        '}');
+}
+/**
+ * An inline (non-standalone) item schema is rendered mid-expression (`T[]`,
+ * `[T, ...T[]]`), where no statement line can carry a JSDoc block of its own, so
+ * its description is surfaced in the comment of the declaration the array type is
+ * attached to - a standalone type alias or an interface property - under an
+ * "Items:" label. This is the one place that decides where item descriptions go
+ * (#660).
+ */
+function withItemsComment(ast) {
+    const itemsComment = getItemsComment(ast);
+    if (itemsComment === undefined) {
+        return ast;
+    }
+    return Object.assign(Object.assign({}, ast), { comment: ast.comment ? ast.comment + '\n\n' + itemsComment : itemsComment });
+}
+function getItemsComment(ast) {
+    let members;
+    switch (ast.type) {
+        case 'ARRAY':
+            members = [ast.params];
+            break;
+        case 'TUPLE':
+            members = ast.spreadParam ? [...ast.params, ast.spreadParam] : ast.params;
+            break;
+        default:
+            return undefined;
+    }
+    // Named item types are declared separately with their own comment. Nested array
+    // types are skipped too: the normalizer appends `@minItems`/`@maxItems` block
+    // tags to their descriptions, which would read as tags of this declaration.
+    const comments = new Set(members.map(_ => ((0, AST_1.hasStandaloneName)(_) || _.type === 'ARRAY' || _.type === 'TUPLE' ? undefined : _.comment)));
+    // Every member has to carry the same description (for a tuple: one `items` schema
+    // that minItems/maxItems expanded). Distinct positional descriptions have no
+    // agreed rendering and are left out, as before.
+    const [comment] = comments;
+    // TypeScript reads a JSDoc block tag (`@word` at line start or after whitespace)
+    // anywhere in a comment as a tag of the declaration the comment sits on, so a
+    // tagged item description (e.g. `@deprecated`) is not hoisted onto the array.
+    if (comments.size !== 1 || !comment || /(^|\s)@\w/.test(comment)) {
+        return undefined;
+    }
+    return 'Items: ' + comment;
+}
+function generateComment(comment, deprecated) {
+    const commentLines = ['/**'];
+    if (deprecated) {
+        commentLines.push(' * @deprecated');
+    }
+    if (typeof comment !== 'undefined') {
+        commentLines.push(...comment.split('\n').map(_ => ' * ' + _));
+    }
+    commentLines.push(' */');
+    return commentLines.join('\n');
+}
+function generateStandaloneEnum(ast, options) {
+    // Anything that is not a bare TypeScript identifier has to be quoted. Testing
+    // for the valid shape (rather than for "special characters") also covers the
+    // empty string and names that begin with a digit, both of which are legal
+    // enum *values* but not legal identifiers.
+    const isValidIdentifier = (key) => /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key);
+    return (((0, AST_1.hasComment)(ast) ? generateComment(ast.comment, ast.deprecated) + '\n' : '') +
+        'export ' +
+        (options.enableConstEnums ? 'const ' : '') +
+        `enum ${(0, utils_1.toSafeString)(ast.standaloneName)} {` +
+        '\n' +
+        ast.params
+            .map(({ ast, keyName }) => 
+        // JSON.stringify, not string interpolation: the key may itself contain
+        // quotes or backslashes that need escaping.
+        (isValidIdentifier(keyName) ? keyName : JSON.stringify(keyName)) + ' = ' + (0, exports.generateType)(ast, options))
+            .join(',\n') +
+        '\n' +
+        '}');
+}
+function generateStandaloneInterface(ast, options) {
+    return (((0, AST_1.hasComment)(ast) ? generateComment(ast.comment, ast.deprecated) + '\n' : '') +
+        `export interface ${(0, utils_1.toSafeString)(ast.standaloneName)} ` +
+        (ast.superTypes.length > 0
+            ? `extends ${ast.superTypes.map(superType => (0, utils_1.toSafeString)(superType.standaloneName)).join(', ')} `
+            : '') +
+        generateInterface(ast, options));
+}
+function generateStandaloneType(ast, options) {
+    const commented = withItemsComment(ast);
+    return (((0, AST_1.hasComment)(commented) ? generateComment(commented.comment) + '\n' : '') +
+        `export type ${(0, utils_1.toSafeString)(ast.standaloneName)} = ${(0, exports.generateType)((0, lodash_1.omit)(ast, 'standaloneName') /* TODO */, options)}`);
+}
+function escapeKeyName(keyName) {
+    if (keyName.length && /[A-Za-z_$]/.test(keyName.charAt(0)) && /^[\w$]+$/.test(keyName)) {
+        return keyName;
+    }
+    return JSON.stringify(keyName);
+}
+function getSuperTypesAndParams(ast) {
+    return ast.params.map(param => param.ast).concat(ast.superTypes);
+}
+//# sourceMappingURL=generator.js.map

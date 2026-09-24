@@ -1,0 +1,2 @@
+export declare const replaceDataPlaceholder: (data: object) => string;
+export declare const writeDataToInteractiveFile: (data: object, filePath: string) => void;

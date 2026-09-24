@@ -1,0 +1,71 @@
+const title = "Pay contractors";
+const emptyTableTitle = "No contractors available for payment";
+const emptyTableDescription = "There are no active contractors with completed onboarding. Add and onboard contractors before creating payments.";
+const breadcrumbLabel = "Pay contractors";
+const paymentSpeedNotice_one = "Direct deposit payments submitted before 4pm PT on a business day will take {{count}} business day to complete";
+const paymentSpeedNotice_other = "Direct deposit payments submitted before 4pm PT on a business day will take {{count}} business days to complete";
+const dateLabel = "Payment date";
+const hoursAndPaymentsLabel = "Hours and payments";
+const contractorTableHeaders = { "contractor": "Contractor", "wageType": "Wage", "paymentMethod": "Payment method", "hours": "Hours", "wage": "Fixed amount", "bonus": "Bonus", "reimbursement": "Reimbursement", "total": "Total" };
+const na = "N/A";
+const totalsLabel = "Totals";
+const backButton = "Back";
+const continueCta = "Continue";
+const editContractor = "Edit contractor payment";
+const perHour = "/hr";
+const wageTypes = { "fixed": "Fixed", "hourly": "Hourly" };
+const paymentMethods = { "directDeposit": "Direct Deposit", "check": "Check", "historicalPayment": "Historical Payment" };
+const alerts = { "contractorPaymentUpdated": "Pay updated for {{contractorName}}", "noContractorPayments": "Please add at least one contractor payment to continue." };
+const editContractorPayment = { "title": "Edit contractor pay", "subtitle": `Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click "Done" to apply the change.`, "hoursLabel": "Hours", "hoursAdornment": "hrs", "hoursPayDescription": "{{rate}}/hr × hours = {{total}}", "wageLabel": "Fixed amount", "bonusLabel": "Bonus", "reimbursementLabel": "Reimbursement", "paymentMethodLabel": "Payment Method", "cancelCta": "Cancel", "saveCta": "Done", "paymentMethods": { "check": "Check", "directDeposit": "Direct deposit", "historicalPayment": "Historical payment" }, "errors": { "directDepositNotAvailable": "Direct Deposit is not available for contractors set up for Check payments", "unsupportedPaymentMethod": "This payment method is not supported. Please select Check or Direct Deposit." } };
+const wireDetailsBanner = { "title": "To make payment, wire funds by {{time}} on {{date}}", "titleFallback": "Wire transfer details required", "description": "We can't pay your contractors until we get your wire. It may take time to get from your bank to ours, so we recommend sending it as soon as you can.", "startWireTransferCta": "Start your wire transfer", "confirmationDescription": "We'll notify you once we've received your wire transfer." };
+const successState = { "title": "Payment group created successfully", "message": "{{count}} contractor payment has been successfully scheduled.", "message_other": "{{count}} contractor payments have been successfully scheduled.", "doneCta": "Done", "wireDetailsSubmittedTitle": "Wire details submitted" };
+const previewPresentation = { "breadcrumbLabel": "Submit", "reviewAndSubmitTitle": "Review and submit", "reviewSubtitle": "We'll debit funds on {{debitDate}}", "summaryTableHeaders": { "totalAmount": "Total amount", "debitAmount": "Debit amount", "debitAccount": "Debit account", "debitDate": "Debit date", "contractorPayDate": "Contractor pay date" }, "paymentSummaryTitle": "Payment summary", "whatYourCompanyPays": "What your company pays", "contractorTableHeaders": { "contractor": "Contractor", "wageType": "Wage", "paymentMethod": "Payment method", "hours": "Hours", "wage": "Fixed amount", "bonus": "Bonus", "reimbursement": "Reimbursement", "total": "Total" }, "totalsLabel": "Totals", "editButton": "Edit", "submitButton": "Submit", "perHour": "/hr", "na": "N/A", "wageTypes": { "fixed": "Fixed", "hourly": "Hourly" }, "paymentMethods": { "directDeposit": "Direct Deposit", "check": "Check", "historicalPayment": "Historical Payment" }, "alerts": { "submitPaymentsDeadline": "To pay your contractors by {{checkDate}}, submit payments by {{debitDate}}." }, "naDebitAccount": "N/A", "submissionBlockers": { "genericBlockerTitle": "Submission blocked", "genericBlockerMessage": "This payment cannot be submitted. Please contact support for assistance.", "fastAchOptions": { "description": "Payment can still be funded by selecting one of the options below. The selected funding method will only be used for this payment and will not apply to future payments.", "fundingOptionsLabel": "Funding options", "wireLabel": "Wire funds", "wireFastestBadge": "Fastest", "wireDescription": "Pay your contractors on time by sending a wire transfer. We'll provide instructions on the next step.", "directDepositLabel": "Switch to 4-day direct deposit", "directDepositDescription": "Delay contractor pay date by four days and process using regular debits.", "contractorPayDate": "Contractor pay date: {{date}}" }, "fast_ach_threshold_exceeded": { "title": "You have exceeded the limit at which you can process {{days}} contractor payments." }, "needs_earned_access_for_fast_ach": { "title": "You have not yet earned access to faster contractor payments." } } };
+const Contractor_Payments_CreatePayment = {
+  title,
+  emptyTableTitle,
+  emptyTableDescription,
+  breadcrumbLabel,
+  paymentSpeedNotice_one,
+  paymentSpeedNotice_other,
+  dateLabel,
+  hoursAndPaymentsLabel,
+  contractorTableHeaders,
+  na,
+  totalsLabel,
+  backButton,
+  continueCta,
+  editContractor,
+  perHour,
+  wageTypes,
+  paymentMethods,
+  alerts,
+  editContractorPayment,
+  wireDetailsBanner,
+  successState,
+  previewPresentation
+};
+export {
+  alerts,
+  backButton,
+  breadcrumbLabel,
+  continueCta,
+  contractorTableHeaders,
+  dateLabel,
+  Contractor_Payments_CreatePayment as default,
+  editContractor,
+  editContractorPayment,
+  emptyTableDescription,
+  emptyTableTitle,
+  hoursAndPaymentsLabel,
+  na,
+  paymentMethods,
+  paymentSpeedNotice_one,
+  paymentSpeedNotice_other,
+  perHour,
+  previewPresentation,
+  successState,
+  title,
+  totalsLabel,
+  wageTypes,
+  wireDetailsBanner
+};

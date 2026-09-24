@@ -1,0 +1,1 @@
+const e="Cerrar",c="La descarga debería haber comenzado automáticamente. De lo contrario, usa el enlace a continuación.",a="Tus cheques están listos",s="Ver cheques",t={closeCta:e,succeededDescription:c,succeededTitle:a,viewChecksCta:s};export{e as closeCta,t as default,c as succeededDescription,a as succeededTitle,s as viewChecksCta};

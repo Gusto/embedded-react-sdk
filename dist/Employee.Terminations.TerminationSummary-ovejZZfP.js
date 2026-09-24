@@ -1,0 +1,26 @@
+const title = "Termination summary";
+const subtitle = "The termination has been submitted. Here's the timeline and what to expect.";
+const alert = { "success": { "label": "{{employeeName}} has been successfully terminated" } };
+const dates = { "today": "Today", "dismissed": "You dismissed {{employeeName}}.", "lastDayOfWork": "Last day of work", "lastPayDay": "Last pay day" };
+const offboarding = { "title": "Offboarding checklist:", "runPayroll": { "title": "Run payroll", "description": `We recommend running the payroll 2-4 days before the last day of employment so there's enough time for direct deposit to process. Make sure you <StateRequirementsLink href="https://support.gusto.com/article/100895878100000/Final-paychecks" target="_blank">meet your state's requirements</StateRequirementsLink> about employees' final payment (deadline to pay, unused PTO, etc). If you're going to pay an employee outside of payroll (like via a physical check), make sure you record it for tax purposes.` }, "taxForms": { "title": "Tax forms and documents", "description": "Ensure that former employees have a way to access their paystubs and tax documents." }, "disconnectAccounts": { "title": "Disconnect accounts and services", "description": "If there are any company email addresses or other accounts associated with the dismissed employees, we recommend disconnecting those before the employees' last day." } };
+const actions = { "cancelTermination": "Cancel termination", "editDismissal": "Edit termination", "runDismissalPayroll": "Run termination payroll", "runOffCyclePayroll": "Run off-cycle payroll" };
+const cancelDialog = { "title": "Cancel termination?", "body": "Are you sure you want to cancel this termination? The employee will remain active.", "confirm": "Yes, cancel termination", "cancel": "No, go back" };
+const Employee_Terminations_TerminationSummary = {
+  title,
+  subtitle,
+  alert,
+  dates,
+  offboarding,
+  actions,
+  cancelDialog
+};
+export {
+  actions,
+  alert,
+  cancelDialog,
+  dates,
+  Employee_Terminations_TerminationSummary as default,
+  offboarding,
+  subtitle,
+  title
+};

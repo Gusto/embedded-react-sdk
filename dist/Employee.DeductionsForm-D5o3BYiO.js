@@ -1,0 +1,41 @@
+const addTitle = "Add Deduction";
+const editTitle = "Edit Deduction";
+const description = "Amounts are withheld from the net pay of an employee and reported on the paystub and within payroll receipts. Note that these deductions are always post-tax and will start with the next pay period.";
+const variantLabel = "Deduction type";
+const variantDescription = "A garnishment is a court-ordered wage reduction—we’ll handle the tax calculations based what you select. For other post-tax deductions, choose Custom Deduction.";
+const garnishmentOption = "Garnishment (a court-ordered deduction)";
+const customOption = "Custom deduction (post-tax)";
+const garnishmentTypeLabel = "Garnishment type";
+const types = { "childSupport": "Child Support", "federalTaxLien": "Federal Tax Lien", "stateTaxLien": "State Tax Lien", "studentLoan": "Student Loan", "creditorGarnishment": "Creditor Garnishment", "federalLoan": "Federal Loan", "otherGarnishment": "Other Garnishment", "custom": "Custom deduction" };
+const standard = { "descriptionLabel": "Description", "descriptionRequired": "Description is required", "frequencyLabel": "Deduction frequency", "frequencyRecurring": "Recurring (every payroll)", "frequencyOneTime": "One-time (next payroll only)", "frequencyRequired": "Frequency is required", "typeLabel": "Percentage or fixed", "typePercentage": "Percentage of pay", "typeFixed": "Fixed dollar amount", "typeRequired": "Deduction type is required", "amountLabel": "Amount to withhold", "amountPercentDescription": "Enter the percentage of your employee’s wages to withhold.", "amountFixedDescription": "Enter the amount of money to withhold each pay period from your employee’s wages.", "amountRequired": "Amount is required", "amountNonNegative": "Amount must be 0 or greater", "totalAmountLabel": "Total amount owed", "totalAmountDescription": "We will adjust the amount of the last payment and stop collecting once the total amount is reached.", "annualMaxLabel": "Annual maximum", "annualMaxDescription": "The maximum annual amount you deduct from the employee's pay for this specific deduction. Leave this field blank if there is no maximum." };
+const childSupport = { "agencyLabel": "Agency", "agencyPlaceholder": "Select state...", "agencyDescription": "Select the appropriate state agency.", "agencyRequired": "Agency is required", "manualPaymentRequired": "This agency doesn't support electronic payments. You are responsible for paying the agency yourself.", "countyLabel": "County", "countyPlaceholder": "Select county...", "countyDescription": "Select the appropriate state county", "allCounties": "All counties", "countyRequired": "County is required", "caseNumberDescription": "Carefully enter the Child Support Enforcement Case Number", "caseNumberRequired": "Case number is required", "orderNumberDescription": "Enter the unique Order Identifier or Order ID associated with this child support obligation.", "orderNumberRequired": "Order number is required", "remittanceNumberDescription": "Carefully enter the Child Support Enforcement Remittance ID", "remittanceNumberRequired": "Remittance number is required", "totalAmountWithheld": "Total amount withheld", "totalAmountWithheldDescription": "Enter the amount indicated in the letter from the child support agency", "payPeriodMaximumRequired": "Pay period maximum is required", "maxPaycheckPercentage": "Max paycheck percentage", "maxPaycheckPercentageDescription": "Enter the maximum percentage of your employee's paycheck that we should withhold. You can find this info in the letter from the child support agency.", "amountRequired": "Amount is required", "amountNonNegative": "Amount must be 0 or greater", "percentOutOfRange": "Must be between 0 and 100", "paymentPeriodLabel": "Per", "paymentPeriodPlaceholder": "Select payment period...", "paymentPeriodDescription": "Enter how often the agency collects the withholding amount", "paymentPeriodRequired": "Payment period is required", "paymentPeriod": { "everyWeek": "Every week", "everyOtherWeek": "Every other week", "twicePerMonth": "Twice per month", "monthly": "Monthly" } };
+const actions = { "save": "Save", "cancel": "Cancel" };
+const Employee_DeductionsForm = {
+  addTitle,
+  editTitle,
+  description,
+  variantLabel,
+  variantDescription,
+  garnishmentOption,
+  customOption,
+  garnishmentTypeLabel,
+  types,
+  standard,
+  childSupport,
+  actions
+};
+export {
+  actions,
+  addTitle,
+  childSupport,
+  customOption,
+  Employee_DeductionsForm as default,
+  description,
+  editTitle,
+  garnishmentOption,
+  garnishmentTypeLabel,
+  standard,
+  types,
+  variantDescription,
+  variantLabel
+};

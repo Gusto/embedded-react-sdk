@@ -1,0 +1,1 @@
+const o="No se encontraron contratistas elegibles.",t="Buscar por nombre",a="Buscar por nombre",r="Contratistas",e="Salario",s="Por hora · {{rate}}/hr",c={emptyState:o,searchLabel:t,searchPlaceholder:a,tableLabel:r,wageColumn:e,wageHourly:s};export{c as default,o as emptyState,t as searchLabel,a as searchPlaceholder,r as tableLabel,e as wageColumn,s as wageHourly};

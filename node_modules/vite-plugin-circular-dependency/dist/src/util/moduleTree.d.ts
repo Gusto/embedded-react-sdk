@@ -1,0 +1,5 @@
+import type { ModuleNode } from "../module/moduleNode";
+/** Generate the dependency tree of modules */
+export declare function generateModuleTree(rootModuleNode: ModuleNode, moduleIdNodeMap: Map<string, ModuleNode>): void;
+/** Generate a map of nodes that form cycles */
+export declare function generateCircleNodeMap(rootModuleNode: ModuleNode): Map<string, ModuleNode[]>;

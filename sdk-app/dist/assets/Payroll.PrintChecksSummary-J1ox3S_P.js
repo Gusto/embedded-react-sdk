@@ -1,0 +1,1 @@
+const e="Your checks are ready",c="The download should have started automatically. If not, use the link below.",s="View checks",t="Close",o={succeededTitle:e,succeededDescription:c,viewChecksCta:s,closeCta:t};export{t as closeCta,o as default,c as succeededDescription,e as succeededTitle,s as viewChecksCta};

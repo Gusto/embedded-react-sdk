@@ -1,0 +1,29 @@
+const backCta = "Back";
+const exitFlowCta = "Exit";
+const breadcrumbLabel = "Receipts";
+const receipt = { "totalLabel": "Total", "detailsLabel": "Receipt Details", "receiptId": "Receipt ID", "from": "From", "to": "To", "debitDate": "Debit date", "employeeCount": "{{count}} employees", "employeeCount_one": "{{count}} employee", "employeeCount_other": "{{count}} employees", "disclaimer": "These amounts may not represent all monies due to government tax authorities from you, and do not include any amounts transmitted outside the platform.", "companyInfo": "Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our <licensesLink>license page</licensesLink>.", "address": "525 20th St, San Francisco, CA 94107 | 415-777-8888" };
+const sections = { "debitedLabel": "Debited", "taxLabel": "Tax", "employeesLabel": "Employees" };
+const breakdown = { "directDeposits": "Direct deposits", "reimbursements": "Reimbursements", "garnishments": "Garnishments", "taxes": "Taxes (Employee and Employer)", "totals": "Totals", "category": "Category", "amount": "Amount" };
+const tax = { "name": "Tax Type", "amount": "Amount" };
+const employee = { "name": "Employee", "paymentMethod": "Payment method", "childSupport": "Child support", "reimbursement": "Reimbursement", "totalTaxes": "Total taxes", "netPay": "Net pay", "totalEmployees": "{{count}} employees in this payroll", "totalEmployees_one": "{{count}} employee in this payroll", "totalEmployees_other": "{{count}} employees in this payroll" };
+const Payroll_PayrollReceipts = {
+  backCta,
+  exitFlowCta,
+  breadcrumbLabel,
+  receipt,
+  sections,
+  breakdown,
+  tax,
+  employee
+};
+export {
+  backCta,
+  breadcrumbLabel,
+  breakdown,
+  Payroll_PayrollReceipts as default,
+  employee,
+  exitFlowCta,
+  receipt,
+  sections,
+  tax
+};

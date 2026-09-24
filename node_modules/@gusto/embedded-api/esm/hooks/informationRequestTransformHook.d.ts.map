@@ -1,0 +1,1 @@
+{"version":3,"file":"informationRequestTransformHook.d.ts","sourceRoot":"","sources":["../../src/hooks/informationRequestTransformHook.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,oBAAoB,EACpB,iBAAiB,EAClB,MAAM,YAAY,CAAC;AAEpB;;;GAGG;AACH,qBAAa,+BAAgC,YAAW,iBAAiB;IACjE,aAAa,CACjB,OAAO,EAAE,oBAAoB,EAC7B,OAAO,EAAE,OAAO,GACf,OAAO,CAAC,OAAO,CAAC;IAuDnB,OAAO,CAAC,YAAY;CAoBrB"}

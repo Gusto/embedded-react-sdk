@@ -1,0 +1,1 @@
+const a="–",t={title:"Aún no hay documentos"},o="Documentos del contratista",n={notSigned:"No firmado",signed:"Firmado"},e="Estado de firma",s={emptyPlaceholder:"–",emptyState:t,listLabel:o,signingStatus:n,signingStatusColumn:e};export{s as default,a as emptyPlaceholder,t as emptyState,o as listLabel,n as signingStatus,e as signingStatusColumn};

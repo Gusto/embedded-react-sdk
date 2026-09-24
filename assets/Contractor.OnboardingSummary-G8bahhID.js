@@ -1,0 +1,1 @@
+const a="Tu información de incorporación ha sido enviada. Tu empresa revisará tus datos y se te notificará si se necesita algo más.",o="Listo",s={description:a,doneCta:o};export{s as default,a as description,o as doneCta};

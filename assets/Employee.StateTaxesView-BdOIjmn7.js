@@ -1,0 +1,1 @@
+const e="No se requiere retención de impuesto sobre la renta estatal para el estado de trabajo de este empleado.",t="Requisitos de impuestos de {{state}}",a={required:"Este campo es obligatorio. Ingresa un valor."},s={noWithholding:e,stateTaxesTitle:t,validations:a};export{s as default,e as noWithholding,t as stateTaxesTitle,a as validations};

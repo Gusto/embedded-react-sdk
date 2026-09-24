@@ -1,0 +1,8 @@
+const status = { "processed": "Processed", "calculating": "Calculating...", "readyToSubmit": "Ready to submit", "processing": "Processing", "failed": "Failed", "waitingForWireIn": "Waiting for wire in", "pendingApproval": "Pending approval", "dueInHours_one": "Due in {{count}} hour", "dueInHours_other": "Due in {{count}} hours", "dueInDays_one": "Due in {{count}} day", "dueInDays_other": "Due in {{count}} days", "daysLate_one": "{{count}} day late", "daysLate_other": "{{count}} days late", "pending": "Pending", "paid": "Paid", "complete": "Complete", "submitted": "Submitted", "inProgress": "In progress" };
+const Payroll_Common = {
+  status
+};
+export {
+  Payroll_Common as default,
+  status
+};

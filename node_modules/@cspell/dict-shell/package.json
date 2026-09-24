@@ -1,0 +1,44 @@
+{
+  "name": "@cspell/dict-shell",
+  "version": "1.2.0",
+  "description": "Shell Script dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "bash",
+    "shell",
+    "POSIX",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/bash#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/shell"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/*",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "shx cat test/legacy-words.txt | cspell -c ./cspell-ext.json \"--locale=*\" \"--languageId=shellscript\" stdin"
+  },
+  "gitHead": "372b73a4c7b1dcff5f9bb57168cbc673e78ac163"
+}

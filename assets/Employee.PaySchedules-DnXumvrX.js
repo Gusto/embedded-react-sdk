@@ -1,0 +1,1 @@
+const e={deadline:"Fecha límite para procesar la nómina",frequency:"Frecuencia de pago"},a="Configurar calendario de pagos",r="Asegúrate de verificar que esta información sea correcta. Si esta información no es correcta, puede retrasar cuándo se le pagará a tu equipo.",c={labels:e,pageTitle:a,pleaseVerify:r};export{c as default,e as labels,a as pageTitle,r as pleaseVerify};

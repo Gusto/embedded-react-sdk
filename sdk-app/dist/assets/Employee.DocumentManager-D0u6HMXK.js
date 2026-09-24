@@ -1,0 +1,1 @@
+const o="También puedes <downloadLink>descargar este documento</downloadLink>.",e="Ver documento",n={downloadDocumentCta:o,viewDocumentCta:e};export{n as default,o as downloadDocumentCta,e as viewDocumentCta};

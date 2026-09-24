@@ -1,0 +1,26 @@
+const alerts = { "profileUpdated": "Perfil actualizado" };
+const email = "Correo electrónico";
+const employerIdentificationNumber = "Número de identificación del empleador (EIN)";
+const form = { "businessName": "Nombre comercial", "changeCta": "Cambiar", "einLabel": "Número de identificación del empleador (EIN)", "einMask": "••-•••••••", "emailDescription": "Se utiliza para enviar notificaciones de incorporación y de pago.", "firstName": "Nombre", "lastName": "Apellido", "middleInitial": "Inicial del segundo nombre", "onFileHint": "Ya está en el archivo.", "ssnMask": "•••-••-••••", "successAlert": "Perfil actualizado", "title": "Detalles básicos", "validations": { "businessName": "El nombre de la empresa es obligatorio", "ein": "El EIN debe tener exactamente 9 dígitos.", "email": "Ingresa una dirección de correo electrónico válida", "ssn": 'El SSN debe tener exactamente 9 dígitos, no puede contener solo ceros en ningún grupo y los primeros tres dígitos no pueden ser "666" ni estar en el rango de 900 a 999.', "startDate": "La fecha de inicio es obligatoria" } };
+const legalName = "Nombre legal";
+const listEmptyPlaceholder = "Ningún valor registrado";
+const title = "Detalles básicos";
+const Contractor_Management_Profile = {
+  alerts,
+  email,
+  employerIdentificationNumber,
+  form,
+  legalName,
+  listEmptyPlaceholder,
+  title
+};
+export {
+  alerts,
+  Contractor_Management_Profile as default,
+  email,
+  employerIdentificationNumber,
+  form,
+  legalName,
+  listEmptyPlaceholder,
+  title
+};

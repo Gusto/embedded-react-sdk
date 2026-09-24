@@ -1,0 +1,1 @@
+const e="{{state}} Tax Requirements",t="No state income tax withholding is required for this employee's work state.",i={required:"This field is a required field. Please enter a value."},s={stateTaxesTitle:e,noWithholding:t,validations:i};export{s as default,t as noWithholding,e as stateTaxesTitle,i as validations};

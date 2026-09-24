@@ -1,0 +1,1 @@
+{"version":3,"file":"achtransactions.d.ts","sourceRoot":"","sources":["../../src/sdk/achtransactions.ts"],"names":[],"mappings":"AAKA,OAAO,EAAE,SAAS,EAAE,cAAc,EAAE,MAAM,gBAAgB,CAAC;AAC3D,OAAO,EACL,yBAAyB,EACzB,0BAA0B,EAC3B,MAAM,4CAA4C,CAAC;AAGpD,qBAAa,eAAgB,SAAQ,SAAS;IAC5C;;;;;;;OAOG;IACG,MAAM,CACV,OAAO,EAAE,yBAAyB,EAClC,OAAO,CAAC,EAAE,cAAc,GACvB,OAAO,CAAC,0BAA0B,CAAC;CAOvC"}

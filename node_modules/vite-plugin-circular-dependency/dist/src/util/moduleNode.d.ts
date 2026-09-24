@@ -1,0 +1,16 @@
+import type { Context } from "../types";
+import { ModuleNode } from "../module/moduleNode";
+export type ModuleInfo = {
+    id: string;
+    importedIds: string[];
+    dynamicallyImportedIds: string[];
+    code: string | null;
+};
+/** Get all imported module ids of the module */
+export declare function getModuleImportIds(moduleInfo: ModuleInfo, ctx: Context): string[];
+/** Factory function to generate module nodes */
+export declare function generateModuleNode(moduleInfo: ModuleInfo, ctx: Context): ModuleNode;
+export declare function initRootModuleId(): {
+    getRootModuleId(): string;
+    setRootModuleId(moduleId: string): void;
+};

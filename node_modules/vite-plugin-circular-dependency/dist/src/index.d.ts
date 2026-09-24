@@ -1,0 +1,4 @@
+import type { Options } from "./types";
+import type { Plugin } from "vite";
+declare const _default: (options?: Options) => Plugin;
+export default _default;

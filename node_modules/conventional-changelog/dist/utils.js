@@ -1,0 +1,71 @@
+import { isPrereleaseVersion } from '@conventional-changelog/git-client';
+import { hostsOptions } from './hosts/index.js';
+export function getHostOptions(repository, context) {
+    const host = context?.host;
+    let type;
+    if (!host || host === repository?.host) {
+        type = repository?.type;
+    }
+    else {
+        const match = host.match(/github|bitbucket|gitlab/i);
+        type = match?.[0]?.toLowerCase();
+    }
+    if (type && (type in hostsOptions)) {
+        return hostsOptions[type];
+    }
+    return null;
+}
+export function guessNextTag(previousTag, version = '') {
+    if (previousTag) {
+        if (previousTag.startsWith('v') && !version.startsWith('v')) {
+            return `v${version}`;
+        }
+        if (!previousTag.startsWith('v') && version.startsWith('v')) {
+            return version.replace(/^v/, '');
+        }
+        return version;
+    }
+    if (!version.startsWith('v')) {
+        return `v${version}`;
+    }
+    return version;
+}
+export function isUnreleasedVersion(semverTags, version) {
+    const [lastTag] = semverTags;
+    return lastTag && version
+        && (lastTag === version || lastTag === `v${version}`);
+}
+export const versionTagRegex = /tag:\s*(.*?)[,)]/gi;
+export const defaultVersionRegex = /tag:\s*[v=]?(.*?)[,)]/gi;
+export function matchSemverTag(gitTags, regex, predicate) {
+    if (typeof gitTags === 'string') {
+        for (const [, tag] of gitTags.matchAll(regex)) {
+            if (predicate(tag)) {
+                return tag;
+            }
+        }
+    }
+    return null;
+}
+export function defaultCommitTransform(commit, params) {
+    const { tags, options: { formatDate } } = params;
+    const prefix = tags?.prefix;
+    const versionRegex = prefix
+        ? new RegExp(`tag:\\s*[v=]?${prefix}(.*?)[,)]`, 'gi')
+        : defaultVersionRegex;
+    const { committerDate, gitTags } = commit;
+    const patch = {
+        committerDate: committerDate
+            ? formatDate(committerDate)
+            : committerDate
+    };
+    const version = matchSemverTag(gitTags, versionRegex, version => !(tags?.skipUnstable && isPrereleaseVersion(version)));
+    if (version) {
+        patch.version = version;
+    }
+    return patch;
+}
+export function bindLogNamespace(namespace, log) {
+    return (messages) => log(namespace, messages);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXRpbHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvdXRpbHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQ0EsT0FBTyxFQUFFLG1CQUFtQixFQUFFLE1BQU0sb0NBQW9DLENBQUE7QUFPeEUsT0FBTyxFQUFFLFlBQVksRUFBRSxNQUFNLGtCQUFrQixDQUFBO0FBRS9DLE1BQU0sVUFBVSxjQUFjLENBQzVCLFVBQXFELEVBQ3JELE9BQTJDO0lBRTNDLE1BQU0sSUFBSSxHQUFHLE9BQU8sRUFBRSxJQUFJLENBQUE7SUFDMUIsSUFBSSxJQUFJLENBQUE7SUFFUixJQUFJLENBQUMsSUFBSSxJQUFJLElBQUksS0FBSyxVQUFVLEVBQUUsSUFBSSxFQUFFLENBQUM7UUFDdkMsSUFBSSxHQUFHLFVBQVUsRUFBRSxJQUFJLENBQUE7SUFDekIsQ0FBQztTQUFNLENBQUM7UUFDTixNQUFNLEtBQUssR0FBRyxJQUFJLENBQUMsS0FBSyxDQUFDLDBCQUEwQixDQUFDLENBQUE7UUFFcEQsSUFBSSxHQUFHLEtBQUssRUFBRSxDQUFDLENBQUMsQ0FBQyxFQUFFLFdBQVcsRUFBRSxDQUFBO0lBQ2xDLENBQUM7SUFFRCxJQUFJLElBQUksSUFBSSxDQUFDLElBQUksSUFBSSxZQUFZLENBQUMsRUFBRSxDQUFDO1FBQ25DLE9BQU8sWUFBWSxDQUFDLElBQUksQ0FBQyxDQUFBO0lBQzNCLENBQUM7SUFFRCxPQUFPLElBQUksQ0FBQTtBQUNiLENBQUM7QUFFRCxNQUFNLFVBQVUsWUFBWSxDQUMxQixXQUFtQixFQUNuQixPQUFPLEdBQUcsRUFBRTtJQUVaLElBQUksV0FBVyxFQUFFLENBQUM7UUFDaEIsSUFBSSxXQUFXLENBQUMsVUFBVSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsT0FBTyxDQUFDLFVBQVUsQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDO1lBQzVELE9BQU8sSUFBSSxPQUFPLEVBQUUsQ0FBQTtRQUN0QixDQUFDO1FBRUQsSUFBSSxDQUFDLFdB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

@@ -1,0 +1,1 @@
+const o={reasonSelection:"Selecciona el motivo de la nómina fuera de ciclo"},e={bonus:{description:"Paga un bono, regalo o comisión."},correction:{label:"Pago de corrección"}},n="Motivo",c={aria:o,options:e,title:n};export{o as aria,c as default,e as options,n as title};

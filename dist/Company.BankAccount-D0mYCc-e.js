@@ -1,0 +1,26 @@
+const accountNumberLabel = "Cuenta";
+const changeBankAccountCta = "Cambiar cuenta bancaria";
+const deposit1Label = "Depósito de prueba n.º 1";
+const deposit2Label = "Depósito de prueba n.º 2";
+const form = { "routingNumberDescription": "Ingresa tu número de ruta de 9 dígitos" };
+const validations = { "accountNumber": "El número de cuenta es obligatorio", "deposit1": "El depósito 1 es obligatorio", "deposit2": "El depósito 2 es obligatorio", "routingNumber": "El número de ruta es obligatorio" };
+const verificationAlert = { "awaiting_deposits": { "description": "Estamos enviando dos depósitos de prueba a la cuenta bancaria que aparece a continuación. Debería verlos en 1 a 2 días hábiles. Después de recibir los depósitos, agréguenos en el paso de verificación bancaria.", "label": "Verificación pendiente" }, "ready_for_verification": { "description": "Se enviaron correctamente dos depósitos de prueba a la cuenta que termina en {{number}}.", "label": "Verifica tu cuenta bancaria" } };
+const Company_BankAccount = {
+  accountNumberLabel,
+  changeBankAccountCta,
+  deposit1Label,
+  deposit2Label,
+  form,
+  validations,
+  verificationAlert
+};
+export {
+  accountNumberLabel,
+  changeBankAccountCta,
+  Company_BankAccount as default,
+  deposit1Label,
+  deposit2Label,
+  form,
+  validations,
+  verificationAlert
+};

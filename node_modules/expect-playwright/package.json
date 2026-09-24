@@ -1,0 +1,25 @@
+{
+  "name": "expect-playwright",
+  "version": "0.8.0",
+  "main": "lib/index.js",
+  "types": "./global.d.ts",
+  "repository": "https://github.com/playwright-community/expect-playwright",
+  "author": "Max Schmitt <max@schmitt.mx>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc --watch",
+    "test": "jest --maxWorkers=4"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.12.2",
+    "jest": "^27.0.4",
+    "jest-playwright-preset": "^1.7.0",
+    "playwright-chromium": "^1.14.0",
+    "playwright-core": "^1.14.0",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.5"
+  }
+}

@@ -1,0 +1,6 @@
+export declare class ModuleNode {
+    moduleId: string;
+    importerModuleIds: string[];
+    children: Set<ModuleNode> | null;
+    constructor(moduleId: string, importerModuleIds: string[]);
+}

@@ -1,0 +1,62 @@
+const back = "Atrás";
+const card = { "selectAllRowsLabel": "Seleccionar todas las filas", "selectRowLabel": "Seleccionar fila" };
+const compensationRateFormats = { "hourly": "{{amount}} por hora", "monthly": "{{amount}} por mes", "paycheck": "{{amount}} por cheque de pago", "weekly": "{{amount}} por semana", "yearly": "{{amount}} por año" };
+const errors = { "ensureRequired": "Falta una propiedad requerida", "errorHeading": "Error", "globalReactError": "Error al renderizar el componente del SDK: {{error}}", "missingParamsOrContext": "A {{component}} le falta el parámetro {{param}} o se usa fuera de {{provider}}", "resetGlobalError": "Inténtalo de nuevo", "unhandledEvent": "Tipo de evento no manejado: {{event}}", "unknownError": "Error desconocido", "unknownEventType": "Tipo de evento no procesado" };
+const fileInput = { "acceptedTypes": "Solo se permiten archivos {{types}}", "removeFile": "Eliminar archivo", "uploadInstructions": "<clickToUpload>Haz clic para cargar</clickToUpload> o arrastra y suelta" };
+const icons = { "calendarArrow": "Mostrar calendario", "completedStep": "Paso completado", "nextMonth": "Mostrar el mes siguiente", "paginationFirst": "Ir a la primera página", "paginationLast": "Ir a la última página", "paginationNext": "Ir a la página siguiente", "paginationPrev": "Ir a la página anterior", "previousMonth": "Mostrar el mes anterior", "selectArrow": "Mostrar opciones" };
+const inputs = { "ein": { "placeholder": "**-*******" }, "ssn": { "placeholder": "***-**-****" }, "workersCompensationRatePerHourAdornment": "/hr" };
+const labels = { "menuLabel": "Menú", "openMenu": "Abrir menú", "paginationControlCountLabel": "Elementos por página", "paginationFetchingLabel": "Obteniendo datos...", "removeItem": "Eliminar {{label}}", "selectedItems": "Seleccionado {{label}}", "tabNavigation": "Navegación por pestañas" };
+const onboardingStatus = { "contractor": { "admin_onboarding_incomplete": "Incorporación por administrador: incompleta", "admin_onboarding_review": "Revisión de incorporación por administrador", "onboarding_completed": "Completado", "self_onboarding_invited": "Auto-incorporación: invitado", "self_onboarding_not_invited": "Auto-incorporación: no invitado", "self_onboarding_review": "Auto-incorporación: revisión", "self_onboarding_started": "Auto-incorporación iniciada", "undefined": "N/A" }, "employee": { "admin_onboarding_incomplete": "Incorporación por administrador: incompleta", "onboarding_completed": "Completado", "self_onboarding_awaiting_admin_review": "Auto-incorporación: revisión del administrador", "self_onboarding_completed_by_employee": "Auto-incorporación: completada", "self_onboarding_invited": "Auto-incorporación: invitado", "self_onboarding_invited_overdue": "Auto-incorporación: vencida", "self_onboarding_invited_started": "Auto-incorporación iniciada", "self_onboarding_pending_invite": "Auto-incorporación: invitación pendiente", "undefined": "N/A" } };
+const optionalLabel = "(opcional)";
+const payRateFormats = { "hourly": "{{amount}}/hr", "monthly": "{{amount}}/yr", "paycheck": "{{amount}}/paycheck", "weekly": "{{amount}}/yr", "yearly": "{{amount}}/yr" };
+const progressBarLabel = "Estás en el paso {{currentStep}} de {{totalSteps}}";
+const reorderableList = { "dragEnded": "Se terminó de arrastrar el elemento {{item}}", "dragStarted": "Se comenzó a arrastrar el elemento {{item}}", "draggableItem": "Elemento arrastrable", "draggableLabel": "Presiona la barra espaciadora o Enter para comenzar a reordenar el elemento {{item}}", "draggableLabelActive": "Presiona las teclas de flecha para mover el elemento {{item}}, o presiona la barra espaciadora/Enter para finalizar el reordenamiento", "draggablePosition": "Elemento {{item}} en la posición {{position}} de {{total}}", "dropItemHere": "Suelta el elemento aquí", "item": "Elemento {{position}}", "itemMovedDown": "Elemento {{item}} movido hacia abajo a la posición {{position}} de {{total}}", "itemMovedUp": "Elemento {{item}} movido hacia arriba a la posición {{position}} de {{total}}", "movedDown": "Elemento {{item}} movido hacia abajo a la posición {{position}} de {{total}}", "movedUp": "Elemento {{item}} movido hacia arriba a la posición {{position}} de {{total}}", "reorderingCanceled": "Modo de reordenamiento cancelado para el elemento {{item}}", "reorderingComplete": "Reordenamiento completado para el elemento {{item}}", "reorderingExited": "Se salió del modo de reordenamiento para el elemento {{item}}", "reorderingStarted": "Se ingresó al modo de reordenamiento para el elemento {{item}}. Usa las teclas de flecha para moverlo, Escape para cancelar o la barra espaciadora para finalizar." };
+const selectPlaceholder = "Selecciona una opción...";
+const signatoryTitles = { "corporate_officer": "Funcionario de la sociedad", "member": "Miembro", "owner": "Propietario", "partner": "Socio", "president": "Presidente", "treasurer": "Tesorero", "vice_president": "Vicepresidente" };
+const statesHash = { "AK": "Alaska", "AL": "Alabama", "AR": "Arkansas", "AZ": "Arizona", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DC": "Distrito de Columbia", "DE": "Delaware", "FL": "Florida", "GA": "Georgia", "HI": "Hawái", "IA": "Iowa", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", "KY": "Kentucky", "LA": "Luisiana", "MA": "Massachusetts", "MD": "Maryland", "ME": "Maine", "MI": "Michigan", "MN": "Minnesota", "MO": "Misuri", "MS": "Misisipi", "MT": "Montana", "NC": "Carolina del Norte", "ND": "Dakota del Norte", "NE": "Nebraska", "NH": "Nuevo Hampshire", "NJ": "Nueva Jersey", "NM": "Nuevo México", "NV": "Nevada", "NY": "Nueva York", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregón", "PA": "Pensilvania", "RI": "Rhode Island", "SC": "Carolina del Sur", "SD": "Dakota del Sur", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VA": "Virginia", "VT": "Vermont", "WA": "Washington", "WI": "Wisconsin", "WV": "Virginia Occidental", "WY": "Wyoming" };
+const status = { "errorEncountered": "Hubo un problema con tu envío", "loading": "Cargando componente...", "loadingOptions": "Cargando opciones...", "multipleErrorsEncountered": "Hubo varios problemas con tu envío", "requiredField": "es un campo obligatorio" };
+const table = { "actionsColumnHeader": "Acciones", "selectAllRowsLabel": "Seleccionar todas las filas", "selectRowHeader": "Seleccionar fila", "selectRowLabel": "Seleccionar fila" };
+const validations = { "accountName": "El nombre de la cuenta es obligatorio", "accountNumber": "El número de cuenta es un campo obligatorio", "dob": "La fecha de nacimiento es obligatoria", "location": "La ubicación no es válida", "percentageMax": "El valor máximo es {{max}}%", "percentageMin": "El valor mínimo es {{min}}%", "routingNumber": "El número de ruta debe ser un número (9 dígitos)", "ssn": 'El SSN debe tener exactamente 9 dígitos, no puede contener solo ceros en ningún grupo y los primeros tres dígitos no pueden ser "666" ni estar en el rango de 900 a 999.', "ssnRequired": "El número de Seguro Social es obligatorio" };
+const common = {
+  back,
+  card,
+  compensationRateFormats,
+  errors,
+  fileInput,
+  icons,
+  inputs,
+  labels,
+  onboardingStatus,
+  optionalLabel,
+  payRateFormats,
+  progressBarLabel,
+  reorderableList,
+  selectPlaceholder,
+  signatoryTitles,
+  statesHash,
+  status,
+  table,
+  validations
+};
+export {
+  back,
+  card,
+  compensationRateFormats,
+  common as default,
+  errors,
+  fileInput,
+  icons,
+  inputs,
+  labels,
+  onboardingStatus,
+  optionalLabel,
+  payRateFormats,
+  progressBarLabel,
+  reorderableList,
+  selectPlaceholder,
+  signatoryTitles,
+  statesHash,
+  status,
+  table,
+  validations
+};

@@ -1,0 +1,20 @@
+const modal = { "doneButton": "Listo", "regularSection": { "rateDescription": "Los salarios regulares deben gravarse a una tasa que coincida con el calendario de pago regular de tus empleados. Selecciona el calendario de pago más preciso.", "ratePlaceholder": "Selecciona el calendario de pago...", "subtitle": "Incluye horas regulares, salarios regulares y propinas", "title": "Tasa para salarios y ganancias regulares" }, "supplementalSection": { "title": "Tasa para salarios y ganancias suplementarias", "useRegularRate": "Usar la tasa para salarios regulares (según el calendario de pago de {{frequency}})", "useSupplementalRate": "Usar la tasa de impuesto suplementaria" }, "title": "Tasas de retención de impuestos" };
+const payPeriodFrequency = { "annually": "Anual", "everyOtherWeek": "Cada dos semanas", "everyWeek": "Cada semana", "monthly": "Mensual", "quarterly": "Trimestralmente", "semiannually": "Semestralmente", "twicePerMonth": "Dos veces al mes" };
+const table = { "headers": { "taxedAs": "Gravado como", "wageTypes": "Tipos de salario" }, "taxedAsNotTaxed": "No gravado", "taxedAsRegular": "Salarios regulares, pagados {{frequency}}", "taxedAsSupplemental": "22 % suplementario para los impuestos federales sobre los ingresos y a la tasa impositiva suplementaria del estado para los impuestos estatales sobre los ingresos." };
+const title = "Tasas de retención de impuestos";
+const wageTypeGroups = { "regular": { "description": "Estas ganancias deben gravarse a una tasa que coincida con el calendario de pago regular de sus empleados.", "label": "Horas regulares, salarios regulares y propinas", "taxedAsDescription": "Los impuestos federales y estatales sobre los ingresos se retienen según las tablas de impuestos estándar para esta frecuencia de pago." }, "reimbursement": { "label": "Reembolsos", "taxedAsDescription": "Los reembolsos por gastos de negocio no son salarios sujetos a impuestos, por lo que no se retienen impuestos federales ni estatales sobre los ingresos." }, "supplemental": { "description": "Por lo general, se gravan a la tasa requerida por el IRS para los impuestos federales sobre el ingreso y por el estado para los impuestos estatales sobre el ingreso.", "label": "Salarios suplementarios, bonificaciones, comisiones", "taxedAsDescription": "Se grava con la tasa suplementaria fija del 22 % del IRS o según tu calendario de pago regular, dependiendo de la tasa que selecciones arriba." } };
+const Payroll_OffCycleTaxWithholding = {
+  modal,
+  payPeriodFrequency,
+  table,
+  title,
+  wageTypeGroups
+};
+export {
+  Payroll_OffCycleTaxWithholding as default,
+  modal,
+  payPeriodFrequency,
+  table,
+  title,
+  wageTypeGroups
+};

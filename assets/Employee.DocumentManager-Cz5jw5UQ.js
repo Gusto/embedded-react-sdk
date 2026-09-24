@@ -1,0 +1,1 @@
+const o="View document",n="You can also <downloadLink>download this document</downloadLink>.",a="Back",t={viewDocumentCta:o,downloadDocumentCta:n,backCta:a};export{a as backCta,t as default,n as downloadDocumentCta,o as viewDocumentCta};

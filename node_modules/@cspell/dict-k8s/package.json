@@ -1,0 +1,48 @@
+{
+  "name": "@cspell/dict-k8s",
+  "version": "1.0.13",
+  "description": "K8s dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "k8s",
+    "kubernetes",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/k8s#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/k8s"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "contributors": [
+    "Carlo Corradini",
+    "Jason Dent"
+  ],
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/k8s.txt",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli compile --keep-raw-case src/k8s.txt --no-compress -o ./dict",
+    "download": "./src/build.sh --out-file ./src/k8s.txt",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "shx head -n 100 src/k8s.txt | cspell -c ./cspell-ext.json \"--locale=*\" \"--languageId=yaml\" stdin"
+  },
+  "gitHead": "09b0483b7c3c9d04e504e5f9275d3ad530a69742"
+}

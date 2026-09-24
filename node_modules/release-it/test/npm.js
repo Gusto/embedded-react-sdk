@@ -1,0 +1,661 @@
+import { join, resolve } from 'node:path';
+import test, { beforeEach, describe } from 'node:test';
+import assert from 'node:assert/strict';
+import fs, { writeFileSync } from 'node:fs';
+import npm from '../lib/plugin/npm/npm.js';
+import { factory, runTasks } from './util/index.js';
+import { mkTmpDir, getArgs } from './util/helpers.js';
+
+describe('npm', async () => {
+  test('should return npm package url', async () => {
+    const options = { npm: { name: 'my-cool-package' } };
+    const npmClient = await factory(npm, { options });
+    assert.equal(npmClient.getPackageUrl(), 'https://www.npmjs.com/package/my-cool-package');
+  });
+
+  test('should return npm package url (custom registry)', async () => {
+    const options = { npm: { name: 'my-cool-package', publishConfig: { registry: 'https://registry.example.org/' } } };
+    const npmClient = await factory(npm, { options });
+    assert.equal(npmClient.getPackageUrl(), 'https://registry.example.org/package/my-cool-package');
+  });
+
+  test('should return npm package url (custom publicPath)', async () => {
+    const options = { npm: { name: 'my-cool-package', publishConfig: { publicPath: '/custom/public-path' } } };
+    const npmClient = await factory(npm, { options });
+    assert.equal(npmClient.getPackageUrl(), 'https://www.npmjs.com/custom/public-path/my-cool-package');
+  });
+
+  test('should return npm package url (custom registry and publicPath)', async () => {
+    const options = {
+      npm: {
+        name: 'my-cool-package',
+        publishConfig: { registry: 'https://registry.example.org/', publicPath: '/custom/public-path' }
+      }
+    };
+    const npmClient = await factory(npm, { options });
+    assert.equal(npmClient.getPackageUrl(), 'https://registry.example.org/custom/public-path/my-cool-package');
+  });
+
+  test('should return default tag', async () => {
+    const npmClient = await factory(npm);
+    const tag = await npmClient.resolveTag();
+    assert.equal(tag, 'latest');
+  });
+
+  test('should resolve default tag for pre-release', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient, 'getRegistryDistTags', () => ({}));
+    const tag = await npmClient.resolveTag('1.0.0-0');
+    assert.equal(tag, 'next');
+  });
+
+  test('should guess tag from registry for pre-release matching current version', async t => {
+    const npmClient = await factory(npm);
+    npmClient.setContext({ latestVersion: '1.0.0-0' });
+    t.mock.method(npmClient, 'getRegistryDistTags', () => ({
+      latest: '0.9.0',
+      alpha: '1.0.0-alpha.1',
+      next: '1.0.0-0'
+    }));
+    const tag = await npmClient.resolveTag('1.0.0-1');
+    assert.equal(tag, 'next');
+  });
+
+  test('should guess first pre-release tag from registry when no version match', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient, 'getRegistryDistTags', () => ({ latest: '0.9.0', alpha: '1.0.0-alpha.1' }));
+    const tag = await npmClient.resolveTag('1.0.0-0');
+    assert.equal(tag, 'alpha');
+  });
+
+  test('should derive tag from pre-release version', async () => {
+    const npmClient = await factory(npm);
+    const tag = await npmClient.resolveTag('1.0.2-alpha.3');
+    assert.equal(tag, 'alpha');
+  });
+
+  test('should use provided (default) tag even for pre-release', async t => {
+    const options = { npm: { tag: 'latest' } };
+    const npmClient = await factory(npm, { options });
+    t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await npmClient.bump('1.0.0-next.0');
+    assert.equal(npmClient.getContext('tag'), 'latest');
+  });
+
+  test('should throw when `npm version` fails', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient.shell, 'exec', () =>
+      Promise.reject(new Error('npm ERR! Version not changed, might want --allow-same-version'))
+    );
+    await assert.rejects(npmClient.bump('1.0.0-next.0'), { message: /Version not changed/ });
+  });
+
+  test('should return first pre-release tag from package in registry when resolving tag without pre-id', async t => {
+    const npmClient = await factory(npm);
+    const response = { latest: '1.4.1', alpha: '2.0.0-alpha.1', beta: '2.0.0-beta.3' };
+    t.mock.method(npmClient.shell, 'exec', () => Promise.resolve(JSON.stringify(response)));
+    assert.equal(await npmClient.resolveTag('2.0.0-5'), 'alpha');
+  });
+
+  test('should return default pre-release tag when resolving tag without pre-id', async t => {
+    const npmClient = await factory(npm);
+    const response = {
+      latest: '1.4.1'
+    };
+    t.mock.method(npmClient.shell, 'exec', () => Promise.resolve(JSON.stringify(response)));
+    assert.equal(await npmClient.resolveTag('2.0.0-0'), 'next');
+  });
+
+  test('should handle erroneous output when resolving tag without pre-id', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient.shell, 'exec', () => Promise.resolve(''));
+    assert.equal(await npmClient.resolveTag('2.0.0-0'), 'next');
+  });
+
+  test('should handle errored request when resolving tag without pre-id', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    assert.equal(await npmClient.resolveTag('2.0.0-0'), 'next');
+  });
+
+  test('should add registry to commands when specified', async t => {
+    const npmClient = await factory(npm);
+    npmClient.setContext({ publishConfig: { registry: 'registry.example.org' } });
+    const exec = t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami --registry registry.example.org') return Promise.resolve('john');
+      const re = /npm access (list collaborators --json|ls-collaborators) release-it --registry registry.example.org/;
+      if (re.test(command)) return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      return Promise.resolve();
+    });
+
+    await runTasks(npmClient);
+    const commands = exec.mock.calls.map(c => c.arguments[0]);
+    assert(commands.includes('npm ping --registry registry.example.org'));
+    assert(commands.includes('npm whoami --registry registry.example.org'));
+    assert(commands.some(c => /npm show release-it@[a-z]+ version --registry registry\.example\.org/.test(c)));
+  });
+
+  test('should not throw when executing tasks', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami') return Promise.resolve('john');
+      const re = /npm access (list collaborators --json|ls-collaborators) release-it/;
+      if (re.test(command)) return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      return Promise.resolve();
+    });
+    await assert.doesNotReject(runTasks(npmClient));
+  });
+
+  test('should throw if npm is down', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm ping') return Promise.reject();
+      return Promise.resolve();
+    });
+    await assert.rejects(runTasks(npmClient), { message: /^Unable to reach npm registry/ });
+  });
+
+  test('should not throw if npm returns 400/404 for unsupported ping/whoami/access', async t => {
+    const npmClient = await factory(npm);
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    const pingError = "npm ERR! code E404\nnpm ERR! 404 Package '--ping' not found : ping";
+    const whoamiError = "npm ERR! code E404\nnpm ERR! 404 Package '--whoami' not found : whoami";
+    const accessError = 'npm ERR! code E400\nnpm ERR! 400 Bad Request - GET https://npm.example.org/-/collaborators';
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error(pingError)), 0);
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error(whoamiError)), 1);
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error(accessError)), 2);
+    await runTasks(npmClient);
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], ['npm', 'publish', '.', '--tag', 'latest']);
+  });
+
+  test('should not throw if npm returns 400 for unsupported ping/whoami/access', async t => {
+    const npmClient = await factory(npm);
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    const pingError = 'npm ERR! code E400\nnpm ERR! 400 Bad Request - GET https://npm.example.org/-/ping?write=true';
+    const whoamiError = 'npm ERR! code E400\nnpm ERR! 400 Bad Request - GET https://npm.example.org/-/whoami';
+    const accessError = 'npm ERR! code E400\nnpm ERR! 400 Bad Request - GET https://npm.example.org/-/collaborators';
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error(pingError)), 0);
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error(whoamiError)), 1);
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error(accessError)), 2);
+    await runTasks(npmClient);
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], ['npm', 'publish', '.', '--tag', 'latest']);
+  });
+
+  test('should throw if user is not authenticated', async t => {
+    const npmClient = await factory(npm);
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    exec.mock.mockImplementationOnce(() => Promise.reject(), 1);
+    await assert.rejects(runTasks(npmClient), { message: /^Not authenticated with npm/ });
+  });
+
+  describe('login recovery', () => {
+    beforeEach(t => {
+      const descriptor = Object.getOwnPropertyDescriptor(process.stdin, 'isTTY');
+      Object.defineProperty(process.stdin, 'isTTY', { configurable: true, value: true });
+      t.after(() => {
+        if (descriptor) Object.defineProperty(process.stdin, 'isTTY', descriptor);
+        else delete process.stdin.isTTY;
+      });
+    });
+
+    const setup = async (
+      t,
+      { options = {}, answer = true, error = 'npm error code ENEEDAUTH', loginError, retryError } = {}
+    ) => {
+      const createPrompt = t.mock.fn(() => answer);
+      const client = await factory(npm, { options: { ci: false, ...options }, container: { createPrompt } });
+      let checks = 0;
+      const exec = t.mock.method(client.shell, 'exec', async command => {
+        if (typeof command === 'string' && command.startsWith('npm whoami')) {
+          checks++;
+          if (checks === 1 && error) throw new Error(error);
+          if (checks > 1 && retryError) throw new Error(retryError);
+          return 'ada';
+        }
+        if (Array.isArray(command) && command[1] === 'login' && loginError) throw new Error(loginError);
+        if (command === 'npm --version') return '11.9.0';
+        if (typeof command === 'string' && command.startsWith('npm access')) return JSON.stringify({ ada: ['write'] });
+        return '';
+      });
+      return { client, createPrompt, exec };
+    };
+
+    for (const error of ['npm error code ENEEDAUTH', 'npm error code E401']) {
+      test(`should log in and continue the release after ${error}`, async t => {
+        const { client, createPrompt, exec } = await setup(t, { error });
+        await runTasks(client);
+        const calls = exec.mock.calls.map(call => call.arguments);
+        const login = calls.find(args => Array.isArray(args[0]) && args[0][1] === 'login');
+        assert.deepEqual(login[0], ['npm', 'login']);
+        assert.equal(login[1].interactive, true);
+        assert.equal(login[1].write, true);
+        assert.equal(login[1].cache, false);
+        assert.equal(client.getContext('username'), 'ada');
+        const checks = calls.filter(args => args[0] === 'npm whoami');
+        assert.equal(checks.length, 2);
+        assert.equal(checks[1][1].cache, false);
+        assert.equal(createPrompt.mock.callCount(), 1);
+        assert.match(createPrompt.mock.calls[0].arguments[1].message, /^Publish /);
+        assert(calls.some(args => Array.isArray(args[0]) && args[0][1] === 'publish'));
+      });
+    }
+
+    test('should allow login to take longer than the registry timeout', async t => {
+      t.mock.timers.enable({ apis: ['setTimeout'] });
+      const { client } = await setup(t, { options: { npm: { timeout: 1 } } });
+      const login = client.login.bind(client);
+      t.mock.method(client, 'login', async () => {
+        t.mock.timers.tick(2000);
+        await Promise.resolve();
+        return login();
+      });
+      await client.init();
+      assert.equal(client.getContext('username'), 'ada');
+    });
+
+    test('should refresh the registry version after login', async t => {
+      const { client } = await setup(t);
+      const getLatestRegistryVersion = t.mock.method(client, 'getLatestRegistryVersion', async () => '9.9.9');
+      getLatestRegistryVersion.mock.mockImplementationOnce(async () => null);
+      await client.init();
+      assert.equal(getLatestRegistryVersion.mock.callCount(), 2);
+      assert.equal(client.log.warn.mock.callCount(), 1);
+      assert.match(
+        client.log.warn.mock.calls[0].arguments[0],
+        /^Latest version in registry \(9\.9\.9\) does not match package\.json/
+      );
+    });
+
+    test('should skip authentication for a private package', async t => {
+      const { client, exec, createPrompt } = await setup(t);
+      const readFileSync = fs.readFileSync;
+      t.mock.method(fs, 'readFileSync', (file, ...args) =>
+        file === resolve('package.json')
+          ? JSON.stringify({ name: 'private-package', version: '1.0.0', private: true })
+          : readFileSync(file, ...args)
+      );
+      await client.init();
+      assert.equal(exec.mock.callCount(), 0);
+      assert.equal(createPrompt.mock.callCount(), 0);
+    });
+
+    test('should log in to the registry used by the authentication check', async t => {
+      const { client, exec } = await setup(t);
+      t.mock.method(client, 'getRegistry', () => 'https://registry.example.org/');
+      await client.init();
+      const commands = exec.mock.calls.map(call => call.arguments[0]);
+      assert.deepEqual(
+        commands.find(command => Array.isArray(command)),
+        ['npm', 'login', '--registry', 'https://registry.example.org/']
+      );
+      assert.equal(
+        commands.filter(command => command === 'npm whoami --registry https://registry.example.org/').length,
+        2
+      );
+    });
+
+    test('should log in automatically without a release-it confirmation', async t => {
+      const { client, createPrompt, exec } = await setup(t, { answer: false });
+      await client.init();
+      assert.equal(createPrompt.mock.callCount(), 0);
+      assert.deepEqual(exec.mock.calls.find(call => Array.isArray(call.arguments[0])).arguments[0], ['npm', 'login']);
+      assert.equal(client.getContext('username'), 'ada');
+    });
+
+    test('should stop after a failed login without retrying', async t => {
+      const { client, exec } = await setup(t, { loginError: 'Login cancelled' });
+      await assert.rejects(client.init(), /Login cancelled/);
+      assert.equal(exec.mock.calls.filter(call => call.arguments[0] === 'npm whoami').length, 1);
+    });
+
+    test('should stop if authentication still fails after login', async t => {
+      const { client, createPrompt, exec } = await setup(t, { retryError: 'npm error code E401' });
+      await assert.rejects(client.init(), /^Error: Not authenticated with npm/);
+      assert.equal(createPrompt.mock.callCount(), 0);
+      assert.equal(exec.mock.calls.filter(call => call.arguments[0] === 'npm whoami').length, 2);
+    });
+
+    for (const [name, settings] of [
+      ['CI', { options: { ci: true } }],
+      ['dry run', { options: { 'dry-run': true } }],
+      ['network error', { error: 'npm error code ECONNRESET' }],
+      ['server error', { error: 'npm error code E500' }]
+    ]) {
+      test(`should not log in for ${name}`, async t => {
+        const { client, createPrompt, exec } = await setup(t, settings);
+        await assert.rejects(client.init(), /^Error: Not authenticated with npm/);
+        assert.equal(createPrompt.mock.callCount(), 0);
+        assert(!exec.mock.calls.some(call => Array.isArray(call.arguments[0])));
+      });
+    }
+
+    test('should not log in without a terminal', async t => {
+      Object.defineProperty(process.stdin, 'isTTY', { configurable: true, value: false });
+      const { client, createPrompt } = await setup(t);
+      await assert.rejects(client.init(), /^Error: Not authenticated with npm/);
+      assert.equal(createPrompt.mock.callCount(), 0);
+    });
+
+    for (const options of [{ npm: { publish: false } }, { npm: { skipChecks: true } }]) {
+      test(`should not authenticate with ${JSON.stringify(options)}`, async t => {
+        const { client, createPrompt, exec } = await setup(t, { options });
+        await client.init();
+        assert.equal(createPrompt.mock.callCount(), 0);
+        assert.equal(exec.mock.callCount(), 0);
+      });
+    }
+
+    test('should not log in when already authenticated', async t => {
+      const { client, createPrompt } = await setup(t, { error: null });
+      await client.init();
+      assert.equal(createPrompt.mock.callCount(), 0);
+    });
+  });
+
+  test('should throw if user is not a collaborator (v9)', async t => {
+    const npmClient = await factory(npm);
+    t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami') return Promise.resolve('ada');
+      if (command === 'npm --version') return Promise.resolve('9.2.0');
+      if (command === 'npm access list collaborators --json release-it')
+        return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      return Promise.resolve();
+    });
+    await assert.rejects(runTasks(npmClient), { message: /^User ada is not a collaborator for release-it/ });
+  });
+
+  test('should throw if user is not a collaborator (v8)', async t => {
+    const npmClient = await factory(npm);
+
+    t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami') return Promise.resolve('ada');
+      if (command === 'npm --version') return Promise.resolve('8.2.0');
+      const re = /npm access (list collaborators --json|ls-collaborators) release-it/;
+      if (re.test(command)) return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      return Promise.resolve();
+    });
+
+    await assert.rejects(runTasks(npmClient), { message: /^User ada is not a collaborator for release-it/ });
+  });
+
+  test('should not throw if user is not a collaborator on a new package', async t => {
+    const npmClient = await factory(npm);
+
+    t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami') return Promise.resolve('ada');
+      const re = /npm access (list collaborators --json|ls-collaborators) release-it/;
+      const message =
+        'npm ERR! code E404\nnpm ERR! 404 Not Found - GET https://registry.npmjs.org/-/package/release-it/collaborators?format=cli - File not found';
+      if (re.test(command)) return Promise.reject(new Error(message));
+      return Promise.resolve();
+    });
+
+    await assert.doesNotReject(runTasks(npmClient));
+  });
+
+  test('should handle 2FA and publish with OTP', async t => {
+    const npmClient = await factory(npm);
+    npmClient.setContext({ name: 'pkg' });
+
+    const exec = t.mock.method(npmClient.shell, 'exec');
+
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error('Initial error with one-time pass.')), 0);
+    exec.mock.mockImplementationOnce(() => Promise.reject(new Error('The provided one-time pass is incorrect.')), 1);
+    exec.mock.mockImplementationOnce(() => Promise.resolve(), 2);
+
+    await npmClient.publish({
+      otpCallback: () =>
+        npmClient.publish({
+          otp: '123',
+          otpCallback: () => npmClient.publish({ otp: '123456' })
+        })
+    });
+
+    assert.equal(exec.mock.callCount(), 3);
+    assert.deepEqual(exec.mock.calls[0].arguments[0], ['npm', 'publish', '.', '--tag', 'latest']);
+    assert.deepEqual(exec.mock.calls[1].arguments[0], ['npm', 'publish', '.', '--tag', 'latest', '--otp', '123']);
+    assert.deepEqual(exec.mock.calls[2].arguments[0], ['npm', 'publish', '.', '--tag', 'latest', '--otp', '123456']);
+
+    assert.equal(npmClient.log.warn.mock.callCount(), 1);
+    assert.equal(npmClient.log.warn.mock.calls[0].arguments[0], 'The provided OTP is incorrect or has expired.');
+  });
+
+  test('should let npm own the terminal under --only-version so passkey 2FA works (#1234)', async t => {
+    const onlyVersion = await factory(npm, { options: { 'only-version': true } });
+    onlyVersion.setContext({ name: 'pkg' });
+    const exec = t.mock.method(onlyVersion.shell, 'exec', () => Promise.resolve());
+    await onlyVersion.publish();
+    assert.equal(exec.mock.calls.at(-1).arguments[1].interactive, true);
+
+    const ci = await factory(npm);
+    ci.setContext({ name: 'pkg' });
+    const exec2 = t.mock.method(ci.shell, 'exec', () => Promise.resolve());
+    await ci.publish();
+    assert.equal(exec2.mock.calls.at(-1).arguments[1].interactive, false);
+  });
+
+  test('should publish without forcing workspaces off', async t => {
+    const npmClient = await factory(npm);
+    const exec = t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami') return Promise.resolve('john');
+      const re = /npm access (list collaborators --json|ls-collaborators) release-it/;
+      if (re.test(command)) return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      return Promise.resolve();
+    });
+    await runTasks(npmClient);
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], ['npm', 'publish', '.', '--tag', 'latest']);
+  });
+
+  test('should use extra publish arguments', async t => {
+    const options = { npm: { skipChecks: true, publishArgs: '--registry=http://my-internal-registry.local' } };
+    const npmClient = await factory(npm, { options });
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await runTasks(npmClient);
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], [
+      'npm',
+      'publish',
+      '.',
+      '--tag',
+      'latest',
+      '--registry=http://my-internal-registry.local'
+    ]);
+  });
+
+  test('should publish to the staging area when `stage` is enabled', async t => {
+    const options = { npm: { skipChecks: true, stage: true } };
+    const npmClient = await factory(npm, { options });
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await runTasks(npmClient);
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], ['npm', 'stage', 'publish', '.', '--tag', 'latest']);
+  });
+
+  test('should not pass --otp when staging (2FA happens at approval)', async t => {
+    const npmClient = await factory(npm, { options: { npm: { stage: true } } });
+    npmClient.setContext({ name: 'pkg' });
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await npmClient.publish({ otp: '123456' });
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], ['npm', 'stage', 'publish', '.', '--tag', 'latest']);
+  });
+
+  test('should stage publish with pnpm', async t => {
+    const npmClient = await factory(npm, { options: { npm: { stage: true, publishPackageManager: 'pnpm' } } });
+    npmClient.setContext({ name: 'pkg' });
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await npmClient.publish();
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], ['pnpm', 'stage', 'publish', '.', '--tag', 'latest']);
+  });
+
+  test('should print the authenticated user staged-packages approval URL after stage publish', async t => {
+    for (const name of ['pkg', '@release-it/conventional-changelog', '@other-user/pkg']) {
+      const npmClient = await factory(npm, { options: { npm: { stage: true } } });
+      npmClient.setContext({ name, username: 'webpro' });
+      t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+      await npmClient.publish();
+      assert.equal(
+        npmClient.log.log.mock.calls[0].arguments[0],
+        '📦 Staged, not yet published. Approve at https://www.npmjs.com/settings/webpro/staged-packages (or `npm stage approve`).'
+      );
+    }
+  });
+
+  test('should fall back to npmjs.com when the staged package publisher username is unknown', async () => {
+    for (const name of ['pkg', '@release-it/conventional-changelog']) {
+      const npmClient = await factory(npm, { options: { npm: { stage: true } } });
+      npmClient.setContext({ name });
+      assert.equal(npmClient.getStagedPackagesUrl(), 'https://www.npmjs.com');
+    }
+  });
+
+  test('should ask to stage or publish according to the npm stage option', async t => {
+    for (const [stage, tag, message] of [
+      [true, 'latest', 'Stage @release-it/conventional-changelog to npm?'],
+      [true, 'next', 'Stage @release-it/conventional-changelog@next to npm?'],
+      [false, 'latest', 'Publish @release-it/conventional-changelog to npm?'],
+      [false, 'next', 'Publish @release-it/conventional-changelog@next to npm?']
+    ]) {
+      const createPrompt = t.mock.fn(() => false);
+      const npmClient = await factory(npm, { options: { ci: false, npm: { stage } }, container: { createPrompt } });
+      npmClient.setContext({ name: '@release-it/conventional-changelog', tag });
+      await npmClient.release();
+      assert.equal(createPrompt.mock.callCount(), 1);
+      assert.deepEqual(createPrompt.mock.calls[0].arguments, ['confirm', { message, default: true }]);
+    }
+  });
+
+  test('should surface the stage id from publish output in the approval message', async t => {
+    const npmClient = await factory(npm, { options: { npm: { stage: true } } });
+    npmClient.setContext({ name: 'pkg', username: 'webpro' });
+    const id = '71289309-c232-432b-a2d4-32a14fa08177';
+    t.mock.method(npmClient.shell, 'exec', () => Promise.resolve(`+ pkg@1.0.0 (staged with id ${id})`));
+    await npmClient.publish();
+    const logged = npmClient.log.log.mock.calls.map(c => c.arguments[0]).join('\n');
+    assert.match(logged, new RegExp(`npm stage approve ${id}`));
+  });
+
+  test('should describe a staged dry-run, whether npm resolves or rejects the un-bumped version', async t => {
+    const execs = [
+      () => Promise.resolve('staged with id 71289309-c232-432b-a2d4-32a14fa08177'),
+      () => Promise.reject(new Error('npm error You cannot publish over the previously published versions: 1.0.0.'))
+    ];
+    for (const exec of execs) {
+      const npmClient = await factory(npm, { options: { 'dry-run': true, npm: { stage: true } } });
+      npmClient.setContext({ name: 'pkg', username: 'webpro' });
+      t.mock.method(npmClient.shell, 'exec', exec);
+      await npmClient.publish();
+      const logged = npmClient.log.log.mock.calls.map(c => c.arguments[0]).join('\n');
+      assert.match(logged, /Would stage \(dry-run\)/);
+      assert.match(logged, /settings\/webpro\/staged-packages/);
+      assert.doesNotMatch(logged, /stage approve 71289309/);
+    }
+  });
+
+  test('should skip checks', async () => {
+    const options = { npm: { skipChecks: true } };
+    const npmClient = await factory(npm, { options });
+    await assert.doesNotReject(npmClient.init());
+  });
+
+  test('should publish to a different/scoped registry', async t => {
+    const tmp = mkTmpDir();
+    process.chdir(tmp);
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({
+        name: '@my-scope/my-pkg',
+        version: '1.0.0',
+        publishConfig: {
+          access: 'public',
+          '@my-scope:registry': 'https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/'
+        }
+      })
+    );
+    const options = { npm };
+    const npmClient = await factory(npm, { options });
+    const exec = t.mock.method(npmClient.shell, 'exec', command => {
+      const cmd = 'npm whoami --registry https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/';
+      if (command === cmd) return Promise.resolve('john');
+      const re =
+        /npm access (list collaborators --json|ls-collaborators) @my-scope\/my-pkg --registry https:\/\/gitlab\.com\/api\/v4\/projects\/my-scope%2Fmy-pkg\/packages\/npm\//;
+      if (re.test(command)) return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      return Promise.resolve();
+    });
+    await runTasks(npmClient);
+
+    assert.deepEqual(exec.mock.calls.at(-1).arguments[0], [
+      'npm',
+      'publish',
+      '.',
+      '--tag',
+      'latest',
+      '--registry',
+      'https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/'
+    ]);
+    assert.deepEqual(getArgs(exec, 'npm'), [
+      'npm ping --registry https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/',
+      'npm whoami --registry https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/',
+      'npm show @my-scope/my-pkg@latest version --registry https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/',
+      'npm --version',
+      'npm version 1.0.1 --no-git-tag-version --workspaces=false',
+      'npm publish . --tag latest --registry https://gitlab.com/api/v4/projects/my-scope%2Fmy-pkg/packages/npm/'
+    ]);
+  });
+
+  test('should not publish when `npm version` fails', async t => {
+    const tmp = mkTmpDir();
+    process.chdir(tmp);
+    writeFileSync(join(tmp, 'package.json'), JSON.stringify({ name: '@my-scope/my-pkg', version: '1.0.0' }));
+    const options = { npm };
+    const npmClient = await factory(npm, { options });
+
+    const exec = t.mock.method(npmClient.shell, 'exec', command => {
+      if (command === 'npm whoami') return Promise.resolve('john');
+      const re = /npm access (list collaborators --json|ls-collaborators) @my-scope\/my-pkg/;
+      if (re.test(command)) return Promise.resolve(JSON.stringify({ john: ['write'] }));
+      if (command === 'npm version 1.0.1 --no-git-tag-version --workspaces=false')
+        return Promise.reject('npm ERR! Version not changed, might want --allow-same-version');
+      return Promise.resolve();
+    });
+
+    await assert.rejects(runTasks(npmClient), /Version not changed/);
+
+    assert.deepEqual(getArgs(exec, 'npm'), [
+      'npm ping',
+      'npm whoami',
+      'npm show @my-scope/my-pkg@latest version',
+      'npm --version',
+      'npm version 1.0.1 --no-git-tag-version --workspaces=false'
+    ]);
+  });
+
+  test('should add allow-same-version argument', async t => {
+    const options = { npm: { skipChecks: true, allowSameVersion: true } };
+    const npmClient = await factory(npm, { options });
+
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+
+    await runTasks(npmClient);
+    const versionArgs = getArgs(exec, 'npm version');
+    assert.match(versionArgs[0], / --allow-same-version/);
+  });
+
+  test('should add version arguments', async t => {
+    const options = { npm: { skipChecks: true, versionArgs: ['--workspaces-update=false', '--allow-same-version'] } };
+    const npmClient = await factory(npm, { options });
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await runTasks(npmClient);
+    const versionArgs = getArgs(exec, 'npm version');
+    assert.match(versionArgs[0], / --workspaces-update=false --allow-same-version/);
+  });
+
+  test('should not bypass dry-run guard for `npm version`', async t => {
+    const options = { 'dry-run': true, npm: { skipChecks: true } };
+    const npmClient = await factory(npm, { options });
+    const exec = t.mock.method(npmClient.shell, 'exec', () => Promise.resolve());
+    await runTasks(npmClient);
+    const versionCall = exec.mock.calls.find(call =>
+      (typeof call.arguments[0] === 'string' ? call.arguments[0] : '').startsWith('npm version')
+    );
+    assert.ok(versionCall, 'expected `npm version` to be invoked');
+    assert.notEqual(versionCall.arguments[1]?.write, false);
+  });
+});

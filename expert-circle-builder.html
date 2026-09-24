@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Circle Builder</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+                "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #f5f5f5;
+        }
+
+        .expert-circle-builder {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: flex;
+            gap: 24px;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 320px;
+            position: sticky;
+            top: 24px;
+            height: fit-content;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .tier-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .tier-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tier-btn:hover {
+            border-color: #2d8659;
+            color: #2d8659;
+        }
+
+        .tier-btn.active {
+            background: #2d8659;
+            color: white;
+            border-color: #2d8659;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 32px 0 16px 0;
+        }
+
+        .section-title.first {
+            margin-top: 0;
+        }
+
+        .advisors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .expert-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .expert-card:hover {
+            border-color: #2d8659;
+            box-shadow: 0 2px 8px rgba(45, 134, 89, 0.1);
+        }
+
+        .expert-card.disabled-tier {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .expert-card-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .expert-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            background: #f0f0f0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .expert-info {
+            flex: 1;
+        }
+
+        .expert-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .expert-title {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .expert-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2d8659;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .expert-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .expert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .expert-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .expert-action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            border-color: #2d8659;
+            color: #2d8659;
+        }
+
+        .btn.primary {
+            background: #2d8659;
+            color: white;
+            border-color: #2d8659;
+        }
+
+        .btn.primary:hover {
+            background: #1f5f3f;
+            border-color: #1f5f3f;
+        }
+
+        .btn.secondary {
+            background: white;
+            color: #2d8659;
+            border-color: #2d8659;
+        }
+
+        .btn.secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .btn.danger {
+            background: white;
+            color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .btn.danger:hover {
+            background: #ffebee;
+        }
+
+        .btn.disabled {
+            background: #f5f5f5;
+            color: #999;
+            border-color: #ddd;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn.small {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .bundle-section {
+            margin-bottom: 16px;
+        }
+
+        .bundle-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .cart-summary {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 0;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Checkout Screen */
+        .checkout-screen {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkout-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .checkout-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .checkout-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .checkout-plan {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .checkout-section {
+            margin-bottom: 24px;
+        }
+
+        .checkout-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .checkout-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkout-billing {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .checkout-billing-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .checkout-billing-item:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: #1a1a1a;
+            border-top: 1px solid #ddd;
+            padding-top: 6px;
+            margin-top: 6px;
+        }
+
+        .checkout-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Confirmation Screen */
+        .confirmation-screen {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .confirmation-checkmark {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .confirmation-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .confirmation-header p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .saved-advisors-list {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .saved-advisor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .saved-advisor-item:last-child {
+            border-bottom: none;
+        }
+
+        .saved-advisor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .saved-advisor-info {
+            flex: 1;
+        }
+
+        .saved-advisor-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .saved-advisor-price {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .confirmation-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Call Scheduler Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .time-slots {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .time-slot {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            background: white;
+        }
+
+        .time-slot:hover {
+            border-color: #2d8659;
+            background: #f5f5f5;
+        }
+
+        .time-slot.selected {
+            background: #2d8659;
+            color: white;
+            border-color: #2d8659;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .expert-circle-builder {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            .advisors-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const MOCK_EXPERTS = [
+            { id: 1, name: "Sarah Chen", title: "Gusto Tax Advisor", emoji: "👩‍💼", description: "Specializes in tax optimization and compliance", monthlyFee: 0, type: "gusto-tax", available: true },
+            { id: 2, name: "Mike Rodriguez", title: "Gusto Benefits Expert", emoji: "🏥", description: "Expert in benefits planning and selection", monthlyFee: 0, type: "gusto-benefits", available: true },
+            { id: 3, name: "Alex Lee", title: "AI Recruitment Specialist", emoji: "👤", description: "Helps with hiring strategies and recruitment", monthlyFee: 0, type: "ai-recruitment", available: true },
+            { id: 4, name: "Emma Thompson", title: "HRx Advisor", emoji: "👩‍🔬", description: "HR strategy and implementation expert", monthlyFee: 99, type: "gusto-hrx", available: "plus" },
+            { id: 5, name: "David Kim", title: "Workforce Strategy Consultant", emoji: "📊", description: "Advises on workforce planning and optimization", monthlyFee: 75, customPriceLabel: "$75/hour", type: "ai-workforce-strategy", available: "plus" },
+            { id: 6, name: "Lisa Wong", title: "AI Wage Advisor", emoji: "💰", description: "Compensation and wage structure guidance", monthlyFee: 0, type: "ai-wage-advisor", available: true },
+            { id: 7, name: "James Miller", title: "Compliance Specialist", emoji: "⚖️", description: "Employment law and compliance expert", monthlyFee: 99, customPriceLabel: "$99/mo + $75 per hour", type: "compliance-specialist", available: "premium" },
+            { id: 8, name: "Rachel Green", title: "Financial Planning Expert", emoji: "💼", description: "Business financial planning and analysis", monthlyFee: 150, customPriceLabel: "$150/mo", type: "financial-planner", available: "premium" },
+            { id: 9, name: "Tom Clarke", title: "Operations Manager", emoji: "🔧", description: "Streamlines HR and payroll operations", monthlyFee: 100, customPriceLabel: "$100/mo", type: "operations-manager", available: "premium" },
+            { id: 10, name: "Nina Patel", title: "Benefits Architect", emoji: "🏗️", description: "Designs comprehensive benefits packages", monthlyFee: 125, customPriceLabel: "$125/mo", type: "benefits-architect", available: "premium" },
+            { id: 11, name: "Carlos Moreno", title: "Payroll Systems Specialist", emoji: "⚙️", description: "Optimizes payroll processes and integration", monthlyFee: 85, customPriceLabel: "$85/mo", type: "payroll-specialist", available: "premium" },
+            { id: 12, name: "Sophie Laurent", title: "Employee Experience Coach", emoji: "🎯", description: "Improves employee engagement and retention", monthlyFee: 110, customPriceLabel: "$110/mo", type: "employee-coach", available: "premium" },
+        ];
+
+        const BUNDLES = {
+            simple: { name: "Simple", experts: [1, 2, 3], totalMonthly: 0 },
+            plus: { name: "Plus", experts: [1, 2, 3, 4, 5, 6], totalMonthly: 99 },
+        };
+
+        function ExpertCard({ expert, isSelected, isSaved, isDisabledTier, onAdd, onRemove, onSchedule }) {
+            const showSchedule = expert.type === "gusto-hrx" || expert.type === "gusto-benefits" || expert.type === "gusto-tax";
+            const isFreeAdvisor = expert.monthlyFee === 0 && !showSchedule;
+
+            return (
+                <div className={`expert-card ${isDisabledTier ? "disabled-tier" : ""}`}>
+                    <div className="expert-card-header">
+                        <div className="expert-avatar">{expert.emoji}</div>
+                        <div className="expert-info">
+                            <div className="expert-name">{expert.name}</div>
+                            <div className="expert-title">{expert.title}</div>
+                            {isSaved && <div className="expert-badge">Active</div>}
+                        </div>
+                    </div>
+                    <div className="expert-description">{expert.description}</div>
+                    <div className="expert-footer">
+                        <div className="expert-price">{expert.customPriceLabel || (expert.monthlyFee === 0 ? "Free" : `$${expert.monthlyFee}/mo`)}</div>
+                    </div>
+                    <div className="expert-action-buttons">
+                        {isFreeAdvisor && <button className="btn secondary small" onClick={() => alert(`Chat with ${expert.name}`)}>Chat with Advisor</button>}
+                        {showSchedule && (
+                            <>
+                                <button className="btn secondary small" onClick={() => onSchedule(expert)}>Schedule call</button>
+                                {!isSelected && <button className="btn primary small" onClick={() => onAdd(expert)}>Add</button>}
+                                {isSelected && <button className="btn secondary small" onClick={() => onRemove(expert)}>✓ Added</button>}
+                            </>
+                        )}
+                        {!isFreeAdvisor && !showSchedule && (
+                            <>
+                                {!isSelected && <button className={`btn ${isDisabledTier ? "disabled" : "primary"} small`} onClick={() => onAdd(expert)} disabled={isDisabledTier}>Add</button>}
+                                {isSelected && <button className="btn danger small" onClick={() => onRemove(expert)}>Remove</button>}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function CheckoutScreen({ cart, tier, onCancel, onConfirm }) {
+            const expertsInCart = cart.map(id => MOCK_EXPERTS.find(e => e.id === id));
+            const totalMonthly = expertsInCart.reduce((sum, expert) => sum + (expert?.monthlyFee || 0), 0);
+
+            return (
+                <div className="checkout-screen">
+                    <div className="checkout-header">
+                        <h2>Review Your Team</h2>
+                        <p>Confirm your expert selections and billing details</p>
+                    </div>
+                    <div className="checkout-plan">Plan: <strong>{tier.charAt(0).toUpperCase() + tier.slice(1)}</strong></div>
+                    <div className="checkout-section">
+                        <div className="checkout-section-title">Selected Experts</div>
+                        {expertsInCart.map(expert => (
+                            <div key={expert.id} className="checkout-item">
+                                <div><div>{expert.name}</div><div style={{ fontSize: "12px", color: "#999" }}>{expert.title}</div></div>
+                                <div>{expert.customPriceLabel || (expert.monthlyFee === 0 ? "Free" : `$${expert.monthlyFee}/mo`)}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="checkout-billing">
+                        <div className="checkout-billing-item"><span>Billing Cycle:</span><span>Monthly</span></div>
+                        <div className="checkout-billing-item"><span>Start Date:</span><span>Today</span></div>
+                        <div className="checkout-billing-item"><span>Payment Method:</span><span>Account Balance</span></div>
+                        <div className="checkout-billing-item"><span>Total Monthly Fee:</span><span>${totalMonthly}/mo</span></div>
+                    </div>
+                    <div className="checkout-actions">
+                        <button className="btn" onClick={onCancel}>Cancel</button>
+                        <button className="btn primary" onClick={onConfirm}>Confirm & Checkout</button>
+                    </div>
+                </div>
+            );
+        }
+
+        function ConfirmationScreen({ savedAdvisors, onReturnHome }) {
+            const savedExperts = savedAdvisors.map(id => MOCK_EXPERTS.find(e => e.id === id));
+
+            return (
+                <div className="confirmation-screen">
+                    <div className="confirmation-checkmark">✓</div>
+                    <div className="confirmation-header">
+                        <h2>Team Successfully Created!</h2>
+                        <p>Your expert circle is now active</p>
+                    </div>
+                    <div className="saved-advisors-list">
+                        {savedExperts.map(expert => (
+                            <div key={expert.id} className="saved-advisor-item">
+                                <div className="saved-advisor-avatar">{expert.emoji}</div>
+                                <div className="saved-advisor-info">
+                                    <div className="saved-advisor-name">{expert.name}</div>
+                                    <div className="saved-advisor-price">{expert.title}</div>
+                                </div>
+                                <div style={{ fontSize: "12px", color: "#999" }}>{expert.customPriceLabel || (expert.monthlyFee === 0 ? "Free" : `$${expert.monthlyFee}/mo`)}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="confirmation-actions">
+                        <button className="btn primary" onClick={onReturnHome}>Return to Help</button>
+                    </div>
+                </div>
+            );
+        }
+
+        function CallSchedulerModal({ expert, onClose, onConfirm }) {
+            const [selectedTime, setSelectedTime] = useState(null);
+            const timeSlots = ["Monday 10:00 AM", "Tuesday 2:00 PM", "Wednesday 11:00 AM", "Thursday 3:00 PM"];
+
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>Schedule Free Consultation</h3>
+                            <p>with {expert.name}</p>
+                        </div>
+                        <div className="time-slots">
+                            {timeSlots.map(time => (
+                                <div key={time} className={`time-slot ${selectedTime === time ? "selected" : ""}`} onClick={() => setSelectedTime(time)}>
+                                    {time}
+                                </div>
+                            ))}
+                        </div>
+                        {selectedTime && <div style={{ padding: "12px", background: "#e8f5e9", borderRadius: "6px", marginBottom: "24px", fontSize: "14px", color: "#2d8659", textAlign: "center" }}>✓ Consultation scheduled for {selectedTime}</div>}
+                        <div className="modal-actions">
+                            <button className="btn" onClick={onClose}>Cancel</button>
+                            <button className="btn primary" onClick={() => onConfirm(selectedTime)} disabled={!selectedTime}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function ExpertCircleBuilder() {
+            const [tier, setTier] = useState("simple");
+            const [cart, setCart] = useState([]);
+            const [savedAdvisors, setSavedAdvisors] = useState([]);
+            const [screen, setScreen] = useState("builder");
+            const [showScheduler, setShowScheduler] = useState(null);
+
+            const tierLevelMap = { true: 0, simple: 0, plus: 1, premium: 2 };
+
+            const getExpertsForTier = () => {
+                const currentLevel = tierLevelMap[tier];
+                return MOCK_EXPERTS.filter(expert => {
+                    if (expert.available === true) return true;
+                    const expertLevel = tierLevelMap[expert.available] || 0;
+                    return expertLevel <= currentLevel;
+                }).map(expert => ({ ...expert, saved: savedAdvisors.includes(expert.id) }));
+            };
+
+            const handleAddExpert = expert => setCart([...cart, expert.id]);
+            const handleRemoveExpert = expert => {
+                setCart(cart.filter(id => id !== expert.id));
+                setSavedAdvisors(savedAdvisors.filter(id => id !== expert.id));
+            };
+
+            const handleAddBundle = bundleKey => {
+                const bundle = BUNDLES[bundleKey];
+                setCart(Array.from(new Set([...cart, ...bundle.experts])));
+            };
+
+            const handleCheckout = () => {
+                setScreen("checkout");
+                setTimeout(() => {
+                    setScreen("confirmation");
+                    setSavedAdvisors(cart);
+                }, 1500);
+            };
+
+            const experts = getExpertsForTier();
+            const cartTotal = cart.reduce((sum, id) => sum + (MOCK_EXPERTS.find(e => e.id === id)?.monthlyFee || 0), 0);
+
+            if (screen === "checkout") {
+                return <CheckoutScreen cart={cart} tier={tier} onCancel={() => setScreen("builder")} onConfirm={handleCheckout} />;
+            }
+
+            if (screen === "confirmation") {
+                return <ConfirmationScreen savedAdvisors={savedAdvisors} onReturnHome={() => { setScreen("builder"); setCart([]); }} />;
+            }
+
+            return (
+                <div className="expert-circle-builder">
+                    <div className="main-content">
+                        <div className="header">
+                            <h1>Build Your Expert Circle</h1>
+                            <p>Select experts to get personalized guidance for your business</p>
+                        </div>
+                        <div className="tier-selector">
+                            {["simple", "plus", "premium"].map(t => (
+                                <button key={t} className={`tier-btn ${tier === t ? "active" : ""}`} onClick={() => setTier(t)}>
+                                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="section-title first">Recommended for you</div>
+                        <div className="advisors-grid">
+                            {experts.map(expert => {
+                                const isDisabledTier = expert.available !== true && tierLevelMap[expert.available] > tierLevelMap[tier];
+                                return (
+                                    <ExpertCard
+                                        key={expert.id}
+                                        expert={expert}
+                                        isSelected={cart.includes(expert.id)}
+                                        isSaved={savedAdvisors.includes(expert.id)}
+                                        isDisabledTier={isDisabledTier}
+                                        onAdd={handleAddExpert}
+                                        onRemove={handleRemoveExpert}
+                                        onSchedule={setShowScheduler}
+                                    />
+                                );
+                            })}
+                        </div>
+                        {cart.length > 0 && (
+                            <div style={{ textAlign: "center", marginTop: "32px", paddingBottom: "32px" }}>
+                                <button className="btn primary" onClick={handleCheckout} style={{ minWidth: "200px" }}>Continue to Checkout</button>
+                            </div>
+                        )}
+                        {cart.length === 0 && (
+                            <div className="empty-state">
+                                <div className="empty-state-icon">+</div>
+                                <div className="empty-state-text">Add advisors to build your team</div>
+                            </div>
+                        )}
+                    </div>
+                    <div className="sidebar">
+                        <div className="sidebar-card">
+                            <div className="sidebar-title">Bundle Offers</div>
+                            <div className="bundle-section">
+                                <div className="bundle-title">Simple Bundle</div>
+                                <button className="btn secondary small" onClick={() => handleAddBundle("simple")} style={{ width: "100%" }}>Add Bundle</button>
+                            </div>
+                            <div className="bundle-section">
+                                <div className="bundle-title">Plus Bundle</div>
+                                <button className="btn secondary small" onClick={() => handleAddBundle("plus")} style={{ width: "100%" }} disabled={tier === "simple"}>Add Bundle</button>
+                            </div>
+                        </div>
+                        {cart.length > 0 && (
+                            <div className="sidebar-card">
+                                <div className="sidebar-title">Your Selection ({cart.length})</div>
+                                <div className="cart-summary">
+                                    {cart.map(id => {
+                                        const expert = MOCK_EXPERTS.find(e => e.id === id);
+                                        return <div key={id} className="cart-item"><span>{expert.name}</span></div>;
+                                    })}
+                                </div>
+                                <div className="cart-total">
+                                    <span>Total/Month</span>
+                                    <span>${cartTotal}</span>
+                                </div>
+                                <button className="btn danger small" onClick={() => { setCart([]); setSavedAdvisors([]); }} style={{ width: "100%", marginTop: "12px" }}>Clear All</button>
+                            </div>
+                        )}
+                    </div>
+                    {showScheduler && (
+                        <CallSchedulerModal expert={showScheduler} onClose={() => setShowScheduler(null)} onConfirm={() => { handleAddExpert(showScheduler); setShowScheduler(null); }} />
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<ExpertCircleBuilder />);
+    </script>
+</body>
+</html>

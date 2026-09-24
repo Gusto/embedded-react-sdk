@@ -1,0 +1,23 @@
+const title = "Terminate {{employeeName}}";
+const subtitle = "Set their last day of work and choose how to handle their final payroll.";
+const form = { "lastDayOfEmployment": { "label": "Last day of work", "description": "The last day must be after their most recent regular payroll period (even if they were paid $0). If they never started working, the dismissal date has to be on or after the hire date." }, "payrollOption": { "label": "How should the final payroll be handled?", "description": "We recommend running a dismissal payroll. Make sure you meet your state's requirements about employees' final payment (deadline to pay, unused PTO, etc).", "options": { "dismissalPayroll": { "label": "Dismissal payroll", "description": "Runs a final payroll that automatically pays out unused PTO, lets you include severance, keep a separate record for audits, and choose a custom payday based on when you run it." }, "regularPayroll": { "label": "Regular payroll", "description": "Same as dismissal payrolls, except there won’t be a separate record of final payment and you can’t customize the final payday (they’ll be paid on the regular payday)." }, "anotherWay": { "label": "Another way", "description": "You can run an off-cycle payroll to manually calculate final amounts, or you can pay them outside of the app (but make sure to report this payroll so the amounts are recorded on tax forms). You can also select this option if you’ve already paid them." } } } };
+const alert = { "dismissalPayroll": { "label": "After submitting, you won't be able to undo this dismissal", "text": "Make sure you want to end {{employeeName}}'s employment. You won't be able to cancel this dismissal and you'll need to rehire them if they return." }, "regularPayroll": { "label": "After their last day, you won't be able to undo this dismissal", "text": "Make sure you want to end {{employeeName}}'s employment. You will be able to cancel the dismissal or make changes until their last day. After their last working day, you won't be able to cancel this dismissal and you'll need to rehire them if they return." }, "anotherWay": { "label": "After their last day, you won't be able to undo this dismissal", "text": "Make sure you want to end {{employeeName}}'s employment. You will be able to cancel the dismissal or make changes until their last day. After their last working day, you won't be able to cancel this dismissal and you'll need to rehire them if they return." } };
+const actions = { "submit": "Terminate employee", "cancel": "Cancel" };
+const validation = { "lastDayRequired": "Last day of work is required", "payrollOptionRequired": "Please select how to handle the final payroll" };
+const Employee_Terminations_TerminateEmployee = {
+  title,
+  subtitle,
+  form,
+  alert,
+  actions,
+  validation
+};
+export {
+  actions,
+  alert,
+  Employee_Terminations_TerminateEmployee as default,
+  form,
+  subtitle,
+  title,
+  validation
+};

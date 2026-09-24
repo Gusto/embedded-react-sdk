@@ -1,0 +1,1 @@
+const e="Name",o="Wage",t="Hourly · {{rate}}/hr",a="Search by name",c="Search by name",n="Contractors",r="No eligible contractors found.",s={nameColumn:e,wageColumn:o,wageHourly:t,searchLabel:a,searchPlaceholder:c,tableLabel:n,emptyState:r};export{s as default,r as emptyState,e as nameColumn,a as searchLabel,c as searchPlaceholder,n as tableLabel,o as wageColumn,t as wageHourly};

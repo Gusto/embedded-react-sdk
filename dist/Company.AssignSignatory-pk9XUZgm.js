@@ -1,0 +1,29 @@
+const title = "Assign a company signatory";
+const description = `The company signatory is responsible for electronically signing all government forms Gusto creates and is generally a member of the business or partnership. Each time a signatory is updated, we'll file a new Form 8655 with the IRS to give Gusto the "Reporting Agent Authorization" we need to file and pay your taxes. Your signatory must be authorized by the IRS.`;
+const signingOptions = { "label": "Signing options", "selfSign": "I'm authorized to sign official documents for the company.", "appointOther": "I'll appoint another person to sign official documents." };
+const signatoryDetails = { "title": "Signatory person details", "description": "Make sure this information is accurate. We'll use it to submit IRS Form 8655 so we can file and pay your federal taxes. If you don't know who your authorized signatory is, please call the IRS at (800) 829-4933.", "firstName": "First name", "lastName": "Last name", "email": "Email address", "phone": "Phone number", "ssn": "Social security number", "birthday": "Date of birth", "titleSelect": { "label": "Title", "placeholder": "Select title..." } };
+const address = { "title": "Signatory home address", "description": "To verify your identity, please enter your home address. If you're unsure what address to use, use the one listed on your driver's license.", "street1": "Street 1", "street2": "Street 2", "city": "City", "state": "State", "statePlaceholder": "Select state...", "zip": "Zip" };
+const inviteSignatory = { "title": "Invite a signatory", "description": "Make sure this information is accurate. We'll use it to submit IRS Form 8655 so we can file and pay your federal taxes. If you don't know who your authorized signatory is, please call the IRS at (800) 829-4933.", "signatoryEmail": "Signatory email", "confirmEmail": "Confirm signatory email", "firstName": "First name", "lastName": "Last name" };
+const buttons = { "signDocuments": "Sign documents", "inviteSignatory": "Invite signatory" };
+const validations = { "dob": "Date of birth is required", "email": "Email address is required and must be valid", "emailMismatch": "Email addresses must match", "firstName": "First name is required", "lastName": "Last name is required", "phone": "Phone number must be 10 digits", "title": "Title is required", "address": { "street1": "Street address is required", "city": "City is required", "state": "State is required", "zip": "ZIP code must be 5 digits" } };
+const Company_AssignSignatory = {
+  title,
+  description,
+  signingOptions,
+  signatoryDetails,
+  address,
+  inviteSignatory,
+  buttons,
+  validations
+};
+export {
+  address,
+  buttons,
+  Company_AssignSignatory as default,
+  description,
+  inviteSignatory,
+  signatoryDetails,
+  signingOptions,
+  title,
+  validations
+};

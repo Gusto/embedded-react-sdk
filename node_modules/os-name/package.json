@@ -1,0 +1,52 @@
+{
+	"name": "os-name",
+	"version": "7.0.0",
+	"description": "Get the name of the current operating system. Example: macOS Sierra",
+	"license": "MIT",
+	"repository": "sindresorhus/os-name",
+	"funding": "https://github.com/sponsors/sindresorhus",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "https://sindresorhus.com"
+	},
+	"type": "module",
+	"exports": {
+		"types": "./index.d.ts",
+		"default": "./index.js"
+	},
+	"sideEffects": false,
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"test": "xo && ava && tsd"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
+	"keywords": [
+		"os",
+		"operating",
+		"system",
+		"platform",
+		"name",
+		"title",
+		"release",
+		"version",
+		"macos",
+		"windows",
+		"linux"
+	],
+	"dependencies": {
+		"macos-release": "^3.4.0",
+		"windows-release": "^7.1.0"
+	},
+	"devDependencies": {
+		"@types/node": "^25.2.0",
+		"ava": "^6.4.1",
+		"tsd": "^0.33.0",
+		"xo": "^1.2.3"
+	}
+}

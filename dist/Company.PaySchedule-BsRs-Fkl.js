@@ -1,0 +1,50 @@
+const addAnotherPayScheduleCta = "+ Agregar otro calendario de pago";
+const descriptions = { "anchorEndOfPayPeriodDescription": "La última fecha del primer período de pago para ayudar a calcular los períodos de pago futuros. Esta puede ser la misma fecha que la primera fecha de pago.", "anchorPayDateDescription_one": "Por favor, ten en cuenta el {{count}} día que tomará procesar la nómina.", "anchorPayDateDescription_other": "Ten en cuenta los {{count}} días que tomará procesar la nómina.", "frequencyOptionsDescription": "Selecciona los días de pago para el mes." };
+const frequencies = { "everyOtherWeek": "Cada dos semanas", "everyWeek": "Cada semana", "monthly": "Mensual", "twicePerMonth": "Dos veces al mes" };
+const frequencyOptions = { "15thAndLast": "Día 15 y último día del mes", "custom": "Personalizado" };
+const headings = { "addPaySchedule": "Agregar calendario de pago", "editPaySchedule": "Editar calendario de pago", "pageTitle": "Configurar calendario de pago" };
+const labels = { "deadline": "Fecha límite para procesar la nómina", "firstPayDayOfTheMonth": "Primer día de pago del mes", "frequencyOptions": "Opciones de frecuencia", "frequencyPlaceholder": "Selecciona la frecuencia...", "lastPayDayOfTheMonth": "Último día de pago del mes", "legend": "Leyenda", "payfrequency": "Frecuencia de pago", "preview": "Vista previa" };
+const listDescription = 'Elige con qué frecuencia deseas procesar la nómina. Si necesitas ayuda, puedes leer más sobre <ScheduleLink href="https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business" target="_blank">cómo elegir un calendario de pago.</ScheduleLink>';
+const listDescription2 = '¿Por qué tenemos que pedir esto? Necesitamos saber cuándo pagarles a tus empleados. Algunos estados tienen <PaymentLawLink href="https://www.dol.gov/agencies/whd/state/payday" target="_blank">leyes sobre cuándo debes pagarles a tus empleados.</PaymentLawLink> Elige calendarios de pago que sean legales para tus empleados.';
+const loading = "Cargando...";
+const payPreview = { "payday": "Día de pago", "payrollDeadline": "Procesa la nómina antes de las 4:00 p. m. (PDT) el " };
+const payScheduleList = { "actions": "Acciones", "active": "Activo", "inactive": "Inactivo" };
+const payScheduleListLabel = "Calendarios de pago";
+const pleaseVerify = "Asegúrate de verificar que esta información sea correcta. Si esta información no es precisa, podría retrasar el momento en que se le paga a tu equipo.";
+const previewAlert = { "description": "Completa todos los campos requeridos para ver una vista previa de tu calendario de pago.", "title": "Vista previa del calendario de pago" };
+const validations = { "dayRange": "Debe estar entre 1 y 31", "firstPayDate": "La primera fecha de pago es obligatoria", "firstPayDayOfTheMonth": "Se requiere el primer día de pago del mes", "firstPayPeriodEndDate": "La fecha de fin del primer período de pago es obligatoria", "frequency": "La frecuencia de pago es obligatoria", "frequencyOptions": "Selecciona los días de pago del mes", "lastPayDayOfTheMonth": "Se requiere el último día de pago del mes", "name": "El nombre del calendario de pago es obligatorio" };
+const Company_PaySchedule = {
+  addAnotherPayScheduleCta,
+  descriptions,
+  frequencies,
+  frequencyOptions,
+  headings,
+  labels,
+  listDescription,
+  listDescription2,
+  loading,
+  payPreview,
+  payScheduleList,
+  payScheduleListLabel,
+  pleaseVerify,
+  previewAlert,
+  validations
+};
+export {
+  addAnotherPayScheduleCta,
+  Company_PaySchedule as default,
+  descriptions,
+  frequencies,
+  frequencyOptions,
+  headings,
+  labels,
+  listDescription,
+  listDescription2,
+  loading,
+  payPreview,
+  payScheduleList,
+  payScheduleListLabel,
+  pleaseVerify,
+  previewAlert,
+  validations
+};

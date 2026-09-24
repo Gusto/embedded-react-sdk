@@ -1,0 +1,32 @@
+const title = "Employment Eligibility";
+const subtitle = 'The federal government requires verification of your eligibility to work in the United States. For more information, see <formI9Link href="https://www.uscis.gov/i-9" target="_blank">Form I-9</formI9Link>';
+const select = { "label": "I am...", "description": "This information will be used to fill out Form I-9, which proves you are legally allowed to work in the United States.", "placeholder": "Select status...", "options": { "citizen": "a citizen of the United States", "permanent_resident": "a lawful permanent resident", "noncitizen": "a noncitizen national", "alien": "a noncitizen authorized to work" } };
+const statusDescriptions = { "citizen": "A citizen is someone who was born or naturalized in the U.S. or born abroad to U.S. citizen parent(s) or who has derived citizenship through a parent's naturalization based on legal requirements.", "permanent_resident": "A lawful permanent resident is someone who is not a US citizen and who resides under legally recognized and lawfully recorded permanent residence as an immigrant.", "noncitizen": "A noncitizen national is someone born in American Samoa, certain former citizens of the former Trust Territory of the Pacific Islands, and certain children of noncitizen nationals born abroad.", "alien": "A noncitizen authorized to work includes anyone who is authorized to work in the United States but is not a US citizen, US national or lawful permanent resident." };
+const expirationDate = { "label": "Authorized to work until" };
+const authorizationDocument = { "label": "Authorization document", "options": { "uscis_alien_registration_number": "USCIS or A-Number", "form_i94": "Form I-94", "foreign_passport": "Foreign passport" } };
+const documentNumber = { "uscis_alien_registration_number": { "label": "USCIS or A-Number", "description": 'Fill in a 7-9 digit USCIS Number or A-Number (include the "A")', "placeholder": "********" }, "form_i94": { "label": "Form I-94 admission number", "description": "Fill in your 11-character I-94 admission number", "placeholder": "***********" }, "foreign_passport": { "label": "Foreign passport number", "placeholder": "**********" } };
+const country = { "label": "Country of Issuance", "description": "The country that issues your passport", "placeholder": "Search or type a country..." };
+const submit = "Continue";
+const Employee_EmploymentEligibility = {
+  title,
+  subtitle,
+  select,
+  statusDescriptions,
+  expirationDate,
+  authorizationDocument,
+  documentNumber,
+  country,
+  submit
+};
+export {
+  authorizationDocument,
+  country,
+  Employee_EmploymentEligibility as default,
+  documentNumber,
+  expirationDate,
+  select,
+  statusDescriptions,
+  submit,
+  subtitle,
+  title
+};

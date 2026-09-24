@@ -1,0 +1,1 @@
+const o="Reason",e={correction:{label:"Correction payment",description:"Run a payroll outside of your regular pay schedule"},bonus:{label:"Bonus",description:"Pay a bonus, gift, or commission."}},n={reasonSelection:"Select off-cycle payroll reason"},a={title:o,options:e,aria:n};export{n as aria,a as default,e as options,o as title};

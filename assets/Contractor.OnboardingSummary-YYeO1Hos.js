@@ -1,0 +1,1 @@
+const o="You're all set!",e="Your onboarding information has been submitted. Your company will review your details and you'll be notified if anything else is needed.",n="Done",t={subtitle:o,description:e,doneCta:n};export{t as default,e as description,n as doneCta,o as subtitle};

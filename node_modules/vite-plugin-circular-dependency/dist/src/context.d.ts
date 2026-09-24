@@ -1,0 +1,2 @@
+import type { Options, Context } from "./types";
+export declare function createContext(options?: Options): Context;

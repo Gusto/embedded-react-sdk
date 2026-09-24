@@ -1,0 +1,1 @@
+const e={informationRequestResponded:{title:"We've received your response",description:"We are reviewing your submission and will reach out if we need any additional information."}},i={alerts:e};export{e as alerts,i as default};

@@ -1,0 +1,125 @@
+import { ClientSDK, RequestOptions } from "../lib/sdks.js";
+import { DeleteV1EmployeesEmployeeIdI9AuthorizationDocumentsDocumentIdRequest, DeleteV1EmployeesEmployeeIdI9AuthorizationDocumentsDocumentIdResponse } from "../models/operations/deletev1employeesemployeeidi9authorizationdocumentsdocumentid.js";
+import { GetV1EmployeesEmployeeIdI9AuthorizationRequest, GetV1EmployeesEmployeeIdI9AuthorizationResponse } from "../models/operations/getv1employeesemployeeidi9authorization.js";
+import { GetV1EmployeesEmployeeIdI9AuthorizationDocumentOptionsRequest, GetV1EmployeesEmployeeIdI9AuthorizationDocumentOptionsResponse } from "../models/operations/getv1employeesemployeeidi9authorizationdocumentoptions.js";
+import { GetV1EmployeesEmployeeIdI9AuthorizationDocumentsRequest, GetV1EmployeesEmployeeIdI9AuthorizationDocumentsResponse } from "../models/operations/getv1employeesemployeeidi9authorizationdocuments.js";
+import { PutV1EmployeesEmployeeIdI9AuthorizationRequest, PutV1EmployeesEmployeeIdI9AuthorizationResponse } from "../models/operations/putv1employeesemployeeidi9authorization.js";
+import { PutV1EmployeesEmployeeIdI9AuthorizationDocumentsRequest, PutV1EmployeesEmployeeIdI9AuthorizationDocumentsResponse } from "../models/operations/putv1employeesemployeeidi9authorizationdocuments.js";
+import { PutV1EmployeesEmployeeIdI9AuthorizationEmployerSignRequest, PutV1EmployeesEmployeeIdI9AuthorizationEmployerSignResponse } from "../models/operations/putv1employeesemployeeidi9authorizationemployersign.js";
+export declare class I9Verification extends ClientSDK {
+    /**
+     * Get an employee's I-9 authorization
+     *
+     * @remarks
+     * An employee's I-9 authorization stores information about an employee's authorization status and I-9 signatures, information required to fill out the Form I-9 for employment eligibility verification.
+     *
+     * **NOTE:** The `form_uuid` in responses from this endpoint can be used to retrieve the PDF version of the I-9. See the "get employee form PDF" request for more details.
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:read`
+     */
+    getAuthorization(request: GetV1EmployeesEmployeeIdI9AuthorizationRequest, options?: RequestOptions): Promise<GetV1EmployeesEmployeeIdI9AuthorizationResponse>;
+    /**
+     * Create or update an employee's I-9 authorization
+     *
+     * @remarks
+     * An employee's I-9 authorization stores information about an employee's authorization status, as well as signatures and other information required to complete the Form I-9 for employment eligibility verification.
+     *
+     * If the version is supplied and the employee I-9 authorization exists, this endpoint acts as an update. Otherwise, it will create an employee I-9 authorization.
+     *
+     * Validations on this endpoint are conditional:
+     *   * `document_type` may be required, depending on `authorization_status`.
+     *   * Valid formats for `document_number` vary, depending on `document_type`.
+     *   * `country` is only allowed with `document_type: 'foreign_passport'`.
+     *   * `expiration_date` is only allowed with `authorization_status: 'alien'`.
+     *
+     * > ℹ️ Unneeded information is automatically removed during updates.
+     * >
+     * > If an update causes some formerly-required fields to be unneeded, the now-unneeded data will be removed automatically.
+     * >
+     * > **Example:** Updating `authorization_status` from `alien` to `citizen` will cause any data in `document_type`, `document_number`, `country`, and `expiration_date` to be removed, since these fields are unused for `authorization_status:'citizen'`.
+     *
+     * Detailed instructions for completing Form I-9 can be found at https://www.uscis.gov/sites/default/files/document/forms/i-9instr.pdf
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:write`
+     */
+    update(request: PutV1EmployeesEmployeeIdI9AuthorizationRequest, options?: RequestOptions): Promise<PutV1EmployeesEmployeeIdI9AuthorizationResponse>;
+    /**
+     * Get an employee's I-9 verification document options
+     *
+     * @remarks
+     * An employee's I-9 verification documents are the documents an employee has provided the employer to verify their identity and authorization to work in the United States. This endpoint returns the possible document options based on the employee's authorization status. These options can then be used to create the I-9 verification documents.
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:read`
+     */
+    getDocumentOptions(request: GetV1EmployeesEmployeeIdI9AuthorizationDocumentOptionsRequest, options?: RequestOptions): Promise<GetV1EmployeesEmployeeIdI9AuthorizationDocumentOptionsResponse>;
+    /**
+     * Get an employee's I-9 verification documents
+     *
+     * @remarks
+     * An employee's I-9 verification documents are the documents an employee has provided the employer to verify their identity and authorization to work in the United States.
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:read`
+     */
+    getDocuments(request: GetV1EmployeesEmployeeIdI9AuthorizationDocumentsRequest, options?: RequestOptions): Promise<GetV1EmployeesEmployeeIdI9AuthorizationDocumentsResponse>;
+    /**
+     * Create an employee's I-9 authorization verification documents
+     *
+     * @remarks
+     * An employee's I-9 verification documents are the documents an employee has provided the employer to verify their identity and authorization to work in the United States.
+     *
+     * Use the [document options endpoint](ref:get-v1-employees-employee_id-i9_authorization-document_options) to get the possible document types and titles, which can vary depending on the employee's authorization status.
+     *
+     * > 🚧 Every request must contain the complete list of documents for the Employee.
+     * >
+     * > Every request to this endpoint removes any previous verification document records for the employee.
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:manage`
+     */
+    createDocuments(request: PutV1EmployeesEmployeeIdI9AuthorizationDocumentsRequest, options?: RequestOptions): Promise<PutV1EmployeesEmployeeIdI9AuthorizationDocumentsResponse>;
+    /**
+     * Delete an employee's I-9 verification document
+     *
+     * @remarks
+     * An employee's I-9 verification documents are the documents an employee has provided the employer to verify their identity and authorization to work in the United States. This endpoint deletes a specific verification document.
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:manage`
+     */
+    deleteDocument(request: DeleteV1EmployeesEmployeeIdI9AuthorizationDocumentsDocumentIdRequest, options?: RequestOptions): Promise<DeleteV1EmployeesEmployeeIdI9AuthorizationDocumentsDocumentIdResponse>;
+    /**
+     * Employer sign an employee's Form I-9
+     *
+     * @remarks
+     * Sign an employee's Form I-9 as an employer. Once the form is signed, the employee's I-9 authorization is considered complete and cannot be modified.
+     *
+     * ### Prerequisites
+     * Before calling this endpoint:
+     * 1. The employee must have a completed [I-9 authorization](ref:put-v1-employees-employee_id-i9_authorization)
+     * 2. The employee must have signed the Form I-9
+     * 3. [I-9 verification documents](ref:put-v1-employees-employee_id-i9_authorization-documents) must be submitted
+     *
+     * ### Related guides
+     * - [I-9 employment verification](doc:i-9-employment-verification)
+     *
+     * scope: `i9_authorizations:manage`
+     */
+    employerSign(request: PutV1EmployeesEmployeeIdI9AuthorizationEmployerSignRequest, options?: RequestOptions): Promise<PutV1EmployeesEmployeeIdI9AuthorizationEmployerSignResponse>;
+}
+//# sourceMappingURL=i9verification.d.ts.map

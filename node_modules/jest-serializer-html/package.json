@@ -1,0 +1,51 @@
+{
+  "name": "jest-serializer-html",
+  "version": "7.1.0",
+  "description": "Jest snapshot serializer that beautifies HTML.",
+  "main": "index.js",
+  "author": "Raymond RUTJES <raymond.rutjes@gmail.com> (https://github.com/rayrutjes/)",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --verbose",
+    "test:update": "jest --verbose --updateSnapshot",
+    "changelog": "conventional-changelog --preset angular --infile CHANGELOG.md --same-file",
+    "changelog:unreleased": "conventional-changelog --preset angular --output-unreleased"
+  },
+  "files": [
+    "index.js",
+    "createSerializer.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rayrutjes/jest-serializer-html.git"
+  },
+  "keywords": [
+    "jest",
+    "snapshot",
+    "serializer",
+    "html",
+    "snapshotSerializer",
+    "string",
+    "vue",
+    "vue.js",
+    "test",
+    "beautifier",
+    "js-beautify"
+  ],
+  "bugs": {
+    "url": "https://github.com/rayrutjes/jest-serializer-html/issues"
+  },
+  "homepage": "https://github.com/rayrutjes/jest-serializer-html#readme",
+  "dependencies": {
+    "diffable-html": "^4.1.0"
+  },
+  "devDependencies": {
+    "conventional-changelog-cli": "^1.3.4",
+    "jest": "^19.0.2"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "./index.js"
+    ]
+  }
+}

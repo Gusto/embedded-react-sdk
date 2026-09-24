@@ -1,0 +1,4 @@
+import type { ModuleNode } from "../module/moduleNode";
+import type { Context } from "../types";
+/** handle circle nodes */
+export declare function processCircleNodes(ctx: Context, circleNodesMap: Map<string, ModuleNode[]>): void;

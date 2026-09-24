@@ -1,0 +1,33 @@
+{
+    "name": "@types/eslint-plugin-jsx-a11y",
+    "version": "6.10.1",
+    "description": "TypeScript definitions for eslint-plugin-jsx-a11y",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/eslint-plugin-jsx-a11y",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Seth Murphy",
+            "githubUsername": "eagerestwolf",
+            "url": "https://github.com/eagerestwolf"
+        },
+        {
+            "name": "Jordan Harband",
+            "githubUsername": "ljharb",
+            "url": "https://github.com/ljharb"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/eslint-plugin-jsx-a11y"
+    },
+    "scripts": {},
+    "dependencies": {
+        "eslint": "^9"
+    },
+    "peerDependencies": {},
+    "typesPublisherContentHash": "ea7df748bd58d2acbeaa5aac689fa345edc33d2386eeee40477066e545d0e8c8",
+    "typeScriptVersion": "5.2"
+}
