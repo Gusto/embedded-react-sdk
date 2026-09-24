@@ -25,7 +25,8 @@
   "cancelledEmptyState": "This payroll has been cancelled.",
   "skippedBadge": "Skipped",
   "alerts": {
-    "payrollNotCalculated": "Payroll is not calculated",
+    "payrollNotCalculatedTitle": "This payroll isn't calculated yet",
+    "payrollNotCalculatedMessage": "Go back and recalculate it, then return here to review and submit.",
     "payrollLoadFailed": "There was an issue loading this payroll. Please try again.",
     "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
     "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",

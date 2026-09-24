@@ -554,7 +554,8 @@ describe('PayrollOverview calculatedAt guard', () => {
     mockRefetchError = null
   })
 
-  it('throws to the error boundary on a genuinely uncalculated payroll', async () => {
+  it('recovers with a recalculate action instead of dead-ending when the payroll settles uncalculated', async () => {
+    const mockOnEvent = vi.fn()
     mockPayrollData = {
       ...basePayrollData,
       calculatedAt: null,
@@ -565,12 +566,39 @@ describe('PayrollOverview calculatedAt guard', () => {
     mockStaleDataPresent = false
     mockRefetchError = null
 
+    const user = userEvent.setup()
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    // No dead-end: the error-boundary card never renders, and the recovery copy shows instead.
+    expect(await screen.findByText(/isn't calculated yet/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('internal-error-card')).toBeNull()
+    expect(screen.queryByText(/Review payroll/i)).toBeNull()
+
+    // The recalculate action routes back to configuration to fix the payroll.
+    await user.click(screen.getByRole('button', { name: /Recalculate payroll/i }))
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_EDIT)
+  })
+
+  it('shows the loader instead of an error while a fresh read is still in flight', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      calculatedAt: null,
+    }
+    mockIsFetching = true
+    mockIsError = false
+    mockError = null
+    mockStaleDataPresent = false
+    mockRefetchError = null
+
     renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
     )
 
-    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
-    expect(screen.queryByText(/Review payroll/i)).toBeNull()
+    expect(await screen.findByText(/Loading payroll/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('internal-error-card')).toBeNull()
+    expect(screen.queryByText(/isn't calculated yet/i)).toBeNull()
   })
 
   it('throws to the error boundary instead of loading forever when the payroll query itself errors', async () => {
