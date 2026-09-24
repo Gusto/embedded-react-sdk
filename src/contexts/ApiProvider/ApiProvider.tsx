@@ -5,6 +5,7 @@ import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
+import { informationRequestEnumHook } from './informationRequestEnumHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
@@ -63,6 +64,7 @@ export function ApiProvider({
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
     sdkHooks.registerAfterSuccessHook(apiVersionMismatchHook)
     sdkHooks.registerAfterErrorHook(apiVersionMismatchHook)
+    sdkHooks.registerAfterSuccessHook(informationRequestEnumHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
