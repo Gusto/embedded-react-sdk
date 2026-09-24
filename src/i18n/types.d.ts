@@ -8471,9 +8471,9 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
-    /** @defaultValue `"These earnings raise {{employeeName}}'s overtime premium"` */
+    /** @defaultValue `"Certain types of additional earnings affect the overtime premium (the multiplier used to calculate OT rates)."` */
     overtimeMultiplierEarningsAlert: string
-    /** @defaultValue `"The amount you enter increases the overtime rate for the workweek it's assigned to. If an earning covers a longer stretch of work, like a quarterly commission, running it as an off-cycle payroll dated to that period spreads the overtime premium across those weeks. Enter it here if this pay period is where it belongs."` */
+    /** @defaultValue `"Only additional earnings attributable to this pay period should be entered below. These amounts will be included in the overtime premium calculations on this payroll. Employee earnings attributable to any period of time different than this pay period (such as a quarterly or annual bonus) should be entered as a separate off-cycle payroll specifying the relevant dates."` */
     overtimeMultiplierEarningsAlertDescription: string
     /** @defaultValue `"Included in overtime multiplier calculation"` */
     overtimeIncludedEarningsGroupLabel: string

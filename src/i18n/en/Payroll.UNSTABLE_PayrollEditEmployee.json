@@ -25,8 +25,8 @@
     "remaining": "{{balance}} remaining"
   },
   "additionalEarningsTitle": "Additional earnings",
-  "overtimeMultiplierEarningsAlert": "These earnings raise {{employeeName}}'s overtime premium",
-  "overtimeMultiplierEarningsAlertDescription": "The amount you enter increases the overtime rate for the workweek it's assigned to. If an earning covers a longer stretch of work, like a quarterly commission, running it as an off-cycle payroll dated to that period spreads the overtime premium across those weeks. Enter it here if this pay period is where it belongs.",
+  "overtimeMultiplierEarningsAlert": "Certain types of additional earnings affect the overtime premium (the multiplier used to calculate OT rates).",
+  "overtimeMultiplierEarningsAlertDescription": "Only additional earnings attributable to this pay period should be entered below. These amounts will be included in the overtime premium calculations on this payroll. Employee earnings attributable to any period of time different than this pay period (such as a quarterly or annual bonus) should be entered as a separate off-cycle payroll specifying the relevant dates.",
   "overtimeIncludedEarningsGroupLabel": "Included in overtime multiplier calculation",
   "overtimeExcludedEarningsGroupLabel": "Not a factor for overtime calculation",
   "reimbursementTitle": "Reimbursements",
