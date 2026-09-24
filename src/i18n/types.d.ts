@@ -8471,8 +8471,10 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
-    /** @defaultValue `"Earnings entered here factor into the overtime multiplier used to calculate {{employeeName}}'s total pay."` */
+    /** @defaultValue `"Certain types of additional earnings affect the overtime premium (the multiplier used to calculate OT rates)."` */
     overtimeMultiplierEarningsAlert: string
+    /** @defaultValue `"Only additional earnings attributable to this pay period should be entered below. These amounts will be included in the overtime premium calculations on this payroll. Employee earnings attributable to any period of time different than this pay period (such as a quarterly or annual bonus) should be entered as a separate off-cycle payroll specifying the relevant dates."` */
+    overtimeMultiplierEarningsAlertDescription: string
     /** @defaultValue `"Included in overtime multiplier calculation"` */
     overtimeIncludedEarningsGroupLabel: string
     /** @defaultValue `"Not a factor for overtime calculation"` */
