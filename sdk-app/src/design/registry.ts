@@ -1,6 +1,6 @@
 export type Category = (typeof CATEGORIES)[number]
 
-export const CATEGORIES = ['Examples', 'Companies', 'Contractors', 'Employees', 'Payroll'] as const
+export const CATEGORIES = ['Examples', 'Companies', 'Contractors', 'Employees', 'Payroll', 'Prototypes'] as const
 
 export interface PrototypeEntry {
   name: string
@@ -181,6 +181,13 @@ export const categorizedRegistry: CategorizedRegistry = {
           description: 'Browse individual components and configurations with mock data.',
         },
       ],
+    },
+  ],
+  Prototypes: [
+    {
+      name: 'Expert Circle Builder',
+      path: '/design/expert-circle-builder',
+      description: 'Build your expert circle — select experts to get personalized guidance for your business.',
     },
   ],
 }

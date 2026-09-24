@@ -46,6 +46,7 @@ import {
 } from './design/prototypes/company-management/ManagePaySchedules'
 import { TaxFilings } from './design/prototypes/tax-filings'
 import { AgentPayments } from './design/prototypes/agent-payments'
+import { ExpertCircle } from './design/prototypes/expert-circle-builder'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
           { path: 'component-showcase', element: <ComponentShowcase /> },
           { path: 'tax-filings', element: <TaxFilings /> },
           { path: 'agent-payments', element: <AgentPayments /> },
+          { path: 'expert-circle-builder', element: <ExpertCircle /> },
           {
             path: 'contractor-management',
             element: <ContractorManagementFlow />,
