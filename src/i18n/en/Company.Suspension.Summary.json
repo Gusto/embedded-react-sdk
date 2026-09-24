@@ -1,0 +1,20 @@
+{
+  "title": "Your payroll account has been canceled",
+  "intro": "You'll still be able to sign into your account to reference all of your company documents for tax and filing purposes.",
+  "whatToDoNextTitle": "What you need to do next",
+  "whatToDoNextBody": "Before the end of {{year}}, you'll need to close your accounts with the appropriate tax agencies. We may file $0 wage returns depending on your company's tax history and selected filing preferences. If you're unsure whether this applies to you, consult an accountant or the appropriate tax agency. If you don't close your accounts in an appropriate time, you'll be responsible for filing next year's taxes.",
+  "keepBankAccountActive": "Please keep your bank account active to allow us to debit any additional taxes if needed for tax reconciliation. Closing your bank account could affect your tax filings and result in delays.",
+  "whatWeWillHandleTitle": "What we'll handle for you",
+  "payTaxes": "We'll pay all outstanding tax payments.",
+  "fileQuarterlyFormsYes": "We'll file your company's Q{{quarter}} {{year}} forms.",
+  "fileQuarterlyFormsNo": "We will <strong>not</strong> file your company's Q{{quarter}} {{year}} forms.",
+  "fileYearlyFormsYes": "We'll file your company's yearly forms (such as W-2s and 1099s) for tax year {{year}}.",
+  "fileYearlyFormsNo": "We will <strong>not</strong> file your company's yearly forms (such as W-2s and 1099s) for tax year {{year}}.",
+  "taxRefundSummary": "We will also refund the following taxes:",
+  "taxName": "Tax name",
+  "taxAmount": "Amount",
+  "totalTaxes": "Total taxes",
+  "doneCta": "Done",
+  "emptyTitle": "No suspension found",
+  "emptyDescription": "This company does not have a suspension on record."
+}

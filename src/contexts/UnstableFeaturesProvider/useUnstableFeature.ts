@@ -21,6 +21,8 @@ export interface UnstableFeatures {
    * workweek start day field on `PaySchedule` that RRoP's overtime calculations depend on.
    */
   payrollRegularRateOfPay?: boolean
+  /** Enables the in-development company suspension ("cancel account") experience within the `CompanyManagement` flows. */
+  companySuspension?: boolean
 }
 
 /**
