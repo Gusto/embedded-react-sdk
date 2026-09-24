@@ -5265,7 +5265,8 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollLoadFailed` | `"There was an issue loading this payroll. Please try again."` |
-| `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
+| `alerts.payrollNotCalculatedMessage` | `"Go back and recalculate it, then return here to review and submit."` |
+| `alerts.payrollNotCalculatedTitle` | `"This payroll isn't calculated yet"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
 | `alerts.payrollProcessingFailedCtaLabel` | `"Recalculate payroll"` |
