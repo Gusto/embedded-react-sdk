@@ -636,8 +636,10 @@ and per-employee paystub downloads once complete.
 
 ### Remarks
 
-The payroll referenced by `payrollId` must already be calculated; rendering with an
-uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+The payroll referenced by `payrollId` is expected to already be calculated; if a read
+settles without `calculatedAt` (after a bounded re-read to ride out eventual consistency),
+the component shows a recoverable state that routes back to configuration to recalculate
+rather than dead-ending. Unresolved submission blockers (e.g. fast-ACH threshold,
 wire-in funding) are surfaced inline and the submit action stays disabled until each
 blocker has a selected unblock option. While the payroll is processing, the component
 polls until success or failure and emits the corresponding event. Pass `readOnly` to hide

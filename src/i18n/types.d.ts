@@ -7923,8 +7923,10 @@ export namespace Translations {
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
     alerts: {
-      /** @defaultValue `"Payroll is not calculated"` */
-      payrollNotCalculated: string
+      /** @defaultValue `"This payroll isn't calculated yet"` */
+      payrollNotCalculatedTitle: string
+      /** @defaultValue `"Go back and recalculate it, then return here to review and submit."` */
+      payrollNotCalculatedMessage: string
       /** @defaultValue `"There was an issue loading this payroll. Please try again."` */
       payrollLoadFailed: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */

@@ -71,6 +71,11 @@ export interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.Pa
   readOnly?: boolean
 }
 
+// How many times to re-read the payroll when the overview settles without `calculatedAt`
+// before giving up and showing the recovery state. Covers a brief eventually-consistent gap
+// after a successful calculate without letting a genuinely uncalculated payroll spin forever.
+const MAX_UNCALCULATED_REFETCHES = 3
+
 const findUnresolvedBlockersWithOptions = (
   blockers: PayrollSubmissionBlockerType[] = [],
 ): PayrollSubmissionBlockerType[] => {
@@ -104,8 +109,10 @@ const findWireInRequestUuid = (
  * and per-employee paystub downloads once complete.
  *
  * @remarks
- * The payroll referenced by `payrollId` must already be calculated; rendering with an
- * uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+ * The payroll referenced by `payrollId` is expected to already be calculated; if a read
+ * settles without `calculatedAt` (after a bounded re-read to ride out eventual consistency),
+ * the component shows a recoverable state that routes back to configuration to recalculate
+ * rather than dead-ending. Unresolved submission blockers (e.g. fast-ACH threshold,
  * wire-in funding) are surfaced inline and the submit action stays disabled until each
  * blocker has a selected unblock option. While the payroll is processing, the component
  * polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
@@ -165,8 +172,9 @@ const Root = ({
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
-  const { Button, UnorderedList, Text } = useComponentContext()
+  const { Alert, Button, UnorderedList, Text } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
+  const [uncalculatedRefetchCount, setUncalculatedRefetchCount] = useState(0)
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
     defaultItemsPerPage: 25,
   })
@@ -192,6 +200,10 @@ const Root = ({
     refetch: refetchPayroll,
   } = usePayrollsGet(payrollRequest, {
     placeholderData: keepPreviousData,
+    // The overview reads the payroll with its own query key, separate from the calculation
+    // poll that gated the transition here. Always refetch on mount so we act on a fresh read
+    // rather than a stale cached snapshot that could still be missing `calculatedAt` (SDK-1348).
+    refetchOnMount: 'always',
   })
   const payrollData = data?.payrollShow
   const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData?.submissionBlockers)
@@ -337,6 +349,31 @@ const Root = ({
     startPayrollPoll({ baseline: null, sawSubmitting: false })
   }, [startPayrollPoll])
 
+  // The overview's independent read can briefly settle without `calculatedAt` right after a
+  // successful calculate (an eventually-consistent gap; see SDK-1348). Re-read a bounded number
+  // of times to ride that out before surfacing the recovery state, and reset once a calculated
+  // read arrives so a later edit -> recalculate cycle gets the same grace.
+  const hasPayrollData = !!payrollData
+  const hasCalculatedAt = !!payrollData?.calculatedAt
+  useEffect(() => {
+    if (status !== PayrollOverviewStatus.Viewing) return
+    if (hasCalculatedAt) {
+      setUncalculatedRefetchCount(0)
+      return
+    }
+    if (!hasPayrollData || isFetching) return
+    if (uncalculatedRefetchCount >= MAX_UNCALCULATED_REFETCHES) return
+    setUncalculatedRefetchCount(count => count + 1)
+    void refetchPayroll()
+  }, [
+    status,
+    hasCalculatedAt,
+    hasPayrollData,
+    isFetching,
+    uncalculatedRefetchCount,
+    refetchPayroll,
+  ])
+
   const { data: bankAccountData } = useBankAccountsGetSuspense({
     companyId,
   })
@@ -369,8 +406,36 @@ const Root = ({
     throw new Error(t('alerts.payrollLoadFailed'))
   }
 
-  if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
-    throw new Error(t('alerts.payrollNotCalculated'))
+  const isAwaitingCalculation =
+    status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt
+
+  // While a fresh read is still in flight -- or we're still within the bounded re-read budget --
+  // show the loader so the common transient gap never flashes an error.
+  if (
+    isAwaitingCalculation &&
+    (isFetching || uncalculatedRefetchCount < MAX_UNCALCULATED_REFETCHES)
+  ) {
+    return <PayrollLoading title={t('dataLoadingTitle')} />
+  }
+
+  // The payroll genuinely settled without a calculation. Previously this threw into the error
+  // boundary, dead-ending the user with only a reset that re-threw (SDK-1348). Instead, offer a
+  // recoverable state that routes back to configuration to recalculate.
+  if (isAwaitingCalculation) {
+    return (
+      <Flex flexDirection="column" gap={16} className={className}>
+        <Alert status="error" label={t('alerts.payrollNotCalculatedTitle')}>
+          <Flex flexDirection="column" gap={16} alignItems="flex-start">
+            <Text>{t('alerts.payrollNotCalculatedMessage')}</Text>
+            {!readOnly && (
+              <Button variant="secondary" onClick={onEdit}>
+                {t('alerts.payrollProcessingFailedCtaLabel')}
+              </Button>
+            )}
+          </Flex>
+        </Alert>
+      </Flex>
+    )
   }
 
   const pagination = getPaginationProps(data.httpMeta.response.headers, isFetching)
