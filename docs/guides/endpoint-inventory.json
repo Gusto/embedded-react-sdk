@@ -116,6 +116,11 @@
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
+        },
+        {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls"

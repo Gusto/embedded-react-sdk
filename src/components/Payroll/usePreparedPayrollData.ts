@@ -13,6 +13,11 @@ interface UsePreparedPayrollDataParams {
   employeeUuids?: string[]
   sortBy?: string
   onDataReady?: (preparedPayroll: PayrollPrepared) => void
+  /**
+   * When true, prepare is called without a roster. A transition payroll's roster is fixed by the
+   * pay-schedule transition, so the API rejects any `employeeUuids` sent to prepare.
+   */
+  isTransitionPayroll?: boolean
 }
 
 interface UsePreparedPayrollDataReturn {
@@ -50,6 +55,7 @@ export const usePreparedPayrollData = ({
   employeeUuids,
   sortBy,
   onDataReady,
+  isTransitionPayroll = false,
 }: UsePreparedPayrollDataParams): UsePreparedPayrollDataReturn => {
   const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
     usePayrollsPrepareMutation()
@@ -77,7 +83,7 @@ export const usePreparedPayrollData = ({
         payrollId,
         sortBy,
         requestBody: {
-          employeeUuids,
+          employeeUuids: isTransitionPayroll ? undefined : employeeUuids,
         },
       },
     })
@@ -86,7 +92,7 @@ export const usePreparedPayrollData = ({
       hasInitialDataRef.current = true
       onDataReady?.(result.payrollPrepared)
     }
-  }, [companyId, payrollId, preparePayroll, employeeUuidsKey, sortBy, onDataReady])
+  }, [companyId, payrollId, preparePayroll, employeeUuidsKey, sortBy, onDataReady, isTransitionPayroll])
 
   const handlePreparePayroll = useCallback(async () => {
     await baseSubmitHandler(null, () =>
