@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.56.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.1...v0.56.2) (2026-09-25)
+
+### Fixes
+
+- Preserve edited hours when saving from the legacy `PayrollEditEmployee` editor by omitting stale per-workweek breakdowns from the update, so the hours you enter are the ones that persist ([#2839](https://github.com/Gusto/embedded-react-sdk/issues/2839))
+- Clarify the overtime premium alert copy in `UNSTABLE_PayrollEditEmployee` to explain which earnings affect the overtime premium and that earnings for other periods belong on a separate off-cycle payroll ([#2795](https://github.com/Gusto/embedded-react-sdk/issues/2795))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@commitlint/cli`, `react-error-boundary`, `tsx`, `vite-plugin-dts`)
+
 ## [0.56.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.0...v0.56.1) (2026-09-22)
 
 ### Features & Enhancements
