@@ -122,7 +122,7 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
         const newCompensation = created.data.compensations?.find(c => c.uuid === newCompensationId)
         await result.current.compensationForm.actions.onSubmit({
           jobId: newJobId,
-          compensationId: newCompensationId,
+          compensationId: newCompensationId ?? undefined,
           compensationVersion: newCompensation?.version as string,
         })
       },

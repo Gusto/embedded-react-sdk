@@ -97,14 +97,22 @@ export const PayrollHistoryPresentation = ({
         label: t('menu.viewSummary'),
         icon: <FileIcon aria-hidden />,
         onClick: () => {
-          onViewSummary(payrollId, item.payPeriod?.startDate, item.payPeriod?.endDate)
+          onViewSummary(
+            payrollId,
+            item.payPeriod?.startDate ?? undefined,
+            item.payPeriod?.endDate ?? undefined,
+          )
         },
       },
       {
         label: t('menu.viewReceipt'),
         icon: <ReceiptIcon aria-hidden />,
         onClick: () => {
-          onViewReceipt(payrollId, item.payPeriod?.startDate, item.payPeriod?.endDate)
+          onViewReceipt(
+            payrollId,
+            item.payPeriod?.startDate ?? undefined,
+            item.payPeriod?.endDate ?? undefined,
+          )
         },
       },
     ]
