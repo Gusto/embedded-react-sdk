@@ -20,6 +20,11 @@ interface TransitionPayrollAlertProps {
   companyId: string
   onEvent: OnEventType<EventType, unknown>
   LoaderComponent?: LoaderComponentType
+  /**
+   * When true, a payroll blocker is present and the run/skip actions are
+   * disabled so the user can't start a transition payroll that would dead-end.
+   */
+  hasBlockers?: boolean
 }
 
 const COMPONENT_NAME = 'Payroll.TransitionPayrollAlert'
@@ -29,15 +34,16 @@ export function TransitionPayrollAlert({
   companyId,
   onEvent,
   LoaderComponent,
+  hasBlockers,
 }: TransitionPayrollAlertProps) {
   return (
     <BaseComponent onEvent={onEvent} LoaderComponent={LoaderComponent}>
-      <Root companyId={companyId} />
+      <Root companyId={companyId} hasBlockers={hasBlockers} />
     </BaseComponent>
   )
 }
 
-function Root({ companyId }: { companyId: string }) {
+function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boolean }) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { observability } = useObservability()
 
@@ -134,6 +140,7 @@ function Root({ companyId }: { companyId: string }) {
       showSkipSuccessAlert={showSkipSuccessAlert}
       onDismissSkipSuccessAlert={handleDismissSkipSuccessAlert}
       skippingPayPeriod={skippingPayPeriod}
+      hasBlockers={hasBlockers}
     />
   )
 }
