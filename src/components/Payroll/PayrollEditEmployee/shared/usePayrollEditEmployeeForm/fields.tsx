@@ -11,6 +11,7 @@ import type { HookFieldProps, ValidationMessages } from '@/partner-hook-utils/ty
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { COMPENSATION_NAME_DOUBLE_OVERTIME, COMPENSATION_NAME_OVERTIME } from '@/shared/constants'
+import { stripLeadingZeros } from '@/helpers/formattedStrings'
 
 /**
  * Display copy for each validation error code a bound field can surface, so the
@@ -300,15 +301,22 @@ function createNumberField(
   return function BoundNumberField(props: PayrollEditEmployeeFieldProps) {
     // The field resolves its own validation copy from its bound path, so the
     // consumer supplies error copy once (keyed by code) and never reconstructs
-    // form paths or guesses which rule a field can fail. name, type, min, and
-    // errorMessage are applied after the spread so callers can't override the
-    // binding or the non-negative numeric contract via custom props.
+    // form paths or guesses which rule a field can fail. name, type, min,
+    // transform, and errorMessage are applied after the spread so callers can't
+    // override the binding or the non-negative numeric contract via custom props.
     const errorMessage = useFieldErrorMessage(
       name,
       errorMessages as ValidationMessages<PayrollEditEmployeeErrorCode> | undefined,
     )
     return (
-      <TextInputField {...props} name={name} type="number" min={0} errorMessage={errorMessage} />
+      <TextInputField
+        {...props}
+        name={name}
+        type="number"
+        min={0}
+        transform={stripLeadingZeros}
+        errorMessage={errorMessage}
+      />
     )
   }
 }
