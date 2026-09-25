@@ -146,6 +146,7 @@ export function PayrollLandingTabsContextual() {
         companyId={ensureRequired(companyId)}
         onEvent={onEvent}
         LoaderComponent={() => <></>}
+        hasBlockers={blockers.length > 0}
       />
       <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockers} />
       <Tabs
