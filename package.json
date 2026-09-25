@@ -119,7 +119,7 @@
     "@types/react-dom": "^19.3.0",
     "@typescript-eslint/parser": "^8.70.1",
     "@typescript-eslint/rule-tester": "^8.70.1",
-    "@typescript-eslint/utils": "^8.68.0",
+    "@typescript-eslint/utils": "^8.70.1",
     "@vitejs/plugin-react-swc": "^4.3.3",
     "@vitest/coverage-v8": "^5.0.0",
     "ajv": "^8.20.0",
