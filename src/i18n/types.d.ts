@@ -1235,6 +1235,10 @@ export namespace Translations {
       noEditableRequirementsTitle: string
       /** @defaultValue `"This state does not have any editable tax requirements."` */
       noEditableRequirementsDescription: string
+      errors: {
+        /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
+        incompleteRequirementSet: string
+      }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string

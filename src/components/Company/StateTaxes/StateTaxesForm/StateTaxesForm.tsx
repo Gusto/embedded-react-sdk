@@ -10,6 +10,7 @@ import { isRequirementApplicable, type StateTaxesFormValues } from '../shared/ap
 import { prepareRequirements } from '../shared/prepareRequirements'
 import { buildRequirementSchema } from '../shared/buildRequirementSchema'
 import { stringifyRequirementValue } from '../shared/requirementValue'
+import { parseRequirementSetError } from '../shared/requirementSetError'
 import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
@@ -21,6 +22,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
+import { SDKInternalError } from '@/types/sdkError'
 
 /**
  * Props for {@link StateTaxesForm}.
@@ -158,13 +160,30 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
             })),
           }
         })
-      await updateStateTax({
-        request: {
-          companyUuid: companyId,
-          requestBody: { requirementSets },
-          state,
-        },
-      })
+      try {
+        await updateStateTax({
+          request: {
+            companyUuid: companyId,
+            requestBody: { requirementSets },
+            state,
+          },
+        })
+      } catch (error) {
+        const requirementSetError = parseRequirementSetError(error)
+        if (!requirementSetError) throw error
+
+        const section =
+          stateTaxRequirements.requirementSets?.find(
+            requirementSet => requirementSet.key === requirementSetError.key,
+          )?.label ?? requirementSetError.key
+        throw new SDKInternalError(
+          t('errors.incompleteRequirementSet', {
+            section,
+            state: requirementSetError.state ?? state,
+          }),
+          'api_error',
+        )
+      }
       onEvent(componentEvents.COMPANY_STATE_TAX_UPDATED)
     })
   }

@@ -112,6 +112,8 @@ GustoProvider → ComponentsProvider → ThemeProvider → LocaleProvider / I18n
 
 All user-facing text uses i18next. Run `npm run i18n:generate` after changing translations. Use the `useTranslation` hook.
 
+Only hand-edit `src/i18n/en/**.json` (the source strings). **Never hand-write or edit translations under `src/i18n/es_US/**` (or any other non-`en` locale)** — those files are populated exclusively by the Lokalise sync (`Pull Translations` workflow, PRs branched `lokalise-update-<hash>` and labeled `lokalise-translation`). A CI check (`.github/workflows/check-manual-translations.yaml`) fails any other PR that touches `src/i18n/es_US/**`. Add the new key only to `en`; the translation lands in other locales on the next Lokalise sync.
+
 ### Partner hooks (`composeErrorHandler` / `composeSubmitHandler`)
 
 Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api` queries or screen-level submit state in the same error surface.
