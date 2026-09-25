@@ -200,10 +200,10 @@ describe('PayrollBlockerList', () => {
   })
 
   describe('recovery cases and information requests integration', () => {
-    it('renders recovery cases section when unrecovered cases exist', async () => {
+    it('renders the recovery cases section when a pending recovery case blocker exists', async () => {
       server.use(
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([{ uuid: 'rc-1', company_uuid: mockCompanyId, status: 'open' }]),
+        handleGetPayrollBlockers(() =>
+          HttpResponse.json([createMockBlocker({ key: 'pending_recovery_case' })]),
         ),
       )
 
@@ -212,32 +212,19 @@ describe('PayrollBlockerList', () => {
       expect(await screen.findByText('Recovery cases')).toBeInTheDocument()
     })
 
-    it('does not render recovery cases section when all cases are recovered', async () => {
-      server.use(
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([{ uuid: 'rc-1', company_uuid: mockCompanyId, status: 'recovered' }]),
-        ),
-      )
+    it('does not render the recovery cases section when there is no recovery case blocker', async () => {
+      server.use(handleGetPayrollBlockers(() => HttpResponse.json([createMockBlocker()])))
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
-      await new Promise(resolve => setTimeout(resolve, 200))
-
+      await screen.findByText('Payroll blockers')
       expect(screen.queryByText('Recovery cases')).not.toBeInTheDocument()
     })
 
-    it('renders information requests section when non-approved requests exist', async () => {
+    it('renders the information requests section when a pending information request blocker exists', async () => {
       server.use(
-        handleGetInformationRequests(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rfi-1',
-              company_uuid: mockCompanyId,
-              type: 'company_onboarding',
-              status: 'pending_response',
-              blocking_payroll: false,
-            },
-          ]),
+        handleGetPayrollBlockers(() =>
+          HttpResponse.json([createMockBlocker({ key: 'pending_information_request' })]),
         ),
       )
 
@@ -246,43 +233,22 @@ describe('PayrollBlockerList', () => {
       expect(await screen.findByText('Information requests')).toBeInTheDocument()
     })
 
-    it('does not render information requests section when all requests are approved', async () => {
-      server.use(
-        handleGetInformationRequests(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rfi-1',
-              company_uuid: mockCompanyId,
-              type: 'company_onboarding',
-              status: 'approved',
-              blocking_payroll: true,
-            },
-          ]),
-        ),
-      )
+    it('does not render the information requests section when there is no information request blocker', async () => {
+      server.use(handleGetPayrollBlockers(() => HttpResponse.json([createMockBlocker()])))
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
-      await new Promise(resolve => setTimeout(resolve, 200))
-
+      await screen.findByText('Payroll blockers')
       expect(screen.queryByText('Information requests')).not.toBeInTheDocument()
     })
 
-    it('renders all sections when blockers, recovery cases, and information requests exist', async () => {
+    it('renders all sections when generic, recovery case, and information request blockers exist', async () => {
       server.use(
-        handleGetPayrollBlockers(() => HttpResponse.json([createMockBlocker()])),
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([{ uuid: 'rc-1', company_uuid: mockCompanyId, status: 'open' }]),
-        ),
-        handleGetInformationRequests(() =>
+        handleGetPayrollBlockers(() =>
           HttpResponse.json([
-            {
-              uuid: 'rfi-1',
-              company_uuid: mockCompanyId,
-              type: 'company_onboarding',
-              status: 'pending_response',
-              blocking_payroll: true,
-            },
+            createMockBlocker(),
+            createMockBlocker({ key: 'pending_recovery_case' }),
+            createMockBlocker({ key: 'pending_information_request' }),
           ]),
         ),
       )
@@ -293,22 +259,40 @@ describe('PayrollBlockerList', () => {
       expect(await screen.findByText('Recovery cases')).toBeInTheDocument()
       expect(await screen.findByText('Information requests')).toBeInTheDocument()
     })
+
+    it('does not request recovery cases when only an information request blocker is present (SDK-1347)', async () => {
+      let recoveryCasesRequested = false
+      server.use(
+        handleGetPayrollBlockers(() =>
+          HttpResponse.json([createMockBlocker({ key: 'pending_information_request' })]),
+        ),
+        handleGetRecoveryCases(() => {
+          recoveryCasesRequested = true
+          return HttpResponse.json([])
+        }),
+      )
+
+      renderPayrollBlockerList({ companyId: mockCompanyId })
+
+      // The RFI surface renders, and the recovery-cases endpoint -- which the dismissal flow's
+      // token isn't authorized for -- is never requested, so it can't take down the screen.
+      expect(await screen.findByText('Information requests')).toBeInTheDocument()
+      expect(recoveryCasesRequested).toBe(false)
+    })
   })
 
   describe('submission alerts', () => {
-    it('does not render any alerts initially', async () => {
-      server.use(
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rc-1',
-              company_uuid: mockCompanyId,
-              status: 'open',
-              latest_error_code: 'R01',
-            },
-          ]),
-        ),
+    const recoveryCaseBlocker = () =>
+      handleGetPayrollBlockers(() =>
+        HttpResponse.json([createMockBlocker({ key: 'pending_recovery_case' })]),
       )
+    const informationRequestBlocker = () =>
+      handleGetPayrollBlockers(() =>
+        HttpResponse.json([createMockBlocker({ key: 'pending_information_request' })]),
+      )
+
+    it('does not render any alerts initially', async () => {
+      server.use(recoveryCaseBlocker())
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
@@ -319,17 +303,7 @@ describe('PayrollBlockerList', () => {
     })
 
     it('displays recovery case alert when resubmit done event is triggered', async () => {
-      server.use(
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rc-1',
-              company_uuid: mockCompanyId,
-              status: 'open',
-            },
-          ]),
-        ),
-      )
+      server.use(recoveryCaseBlocker())
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
@@ -350,19 +324,7 @@ describe('PayrollBlockerList', () => {
     })
 
     it('displays information request alert when form done event is triggered', async () => {
-      server.use(
-        handleGetInformationRequests(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rfi-1',
-              company_uuid: mockCompanyId,
-              type: 'company_onboarding',
-              status: 'pending_response',
-              blocking_payroll: true,
-            },
-          ]),
-        ),
-      )
+      server.use(informationRequestBlocker())
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
@@ -385,17 +347,7 @@ describe('PayrollBlockerList', () => {
     it('allows dismissing alerts', async () => {
       const user = userEvent.setup()
 
-      server.use(
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rc-1',
-              company_uuid: mockCompanyId,
-              status: 'open',
-            },
-          ]),
-        ),
-      )
+      server.use(recoveryCaseBlocker())
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
@@ -419,24 +371,10 @@ describe('PayrollBlockerList', () => {
 
     it('displays newest alerts at the top', async () => {
       server.use(
-        handleGetRecoveryCases(() =>
+        handleGetPayrollBlockers(() =>
           HttpResponse.json([
-            {
-              uuid: 'rc-1',
-              company_uuid: mockCompanyId,
-              status: 'open',
-            },
-          ]),
-        ),
-        handleGetInformationRequests(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rfi-1',
-              company_uuid: mockCompanyId,
-              type: 'company_onboarding',
-              status: 'pending_response',
-              blocking_payroll: true,
-            },
+            createMockBlocker({ key: 'pending_recovery_case' }),
+            createMockBlocker({ key: 'pending_information_request' }),
           ]),
         ),
       )
@@ -469,17 +407,7 @@ describe('PayrollBlockerList', () => {
     })
 
     it('bubbles events to parent onEvent callback', async () => {
-      server.use(
-        handleGetRecoveryCases(() =>
-          HttpResponse.json([
-            {
-              uuid: 'rc-1',
-              company_uuid: mockCompanyId,
-              status: 'open',
-            },
-          ]),
-        ),
-      )
+      server.use(recoveryCaseBlocker())
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 

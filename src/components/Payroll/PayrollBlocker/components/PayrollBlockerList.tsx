@@ -2,10 +2,11 @@ import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
-import { useRecoveryCasesGetSuspense } from '@gusto/embedded-api/react-query/recoveryCasesGet'
-import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
-import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
-import { getBlockerTranslationKeys } from '../payrollHelpers'
+import {
+  getBlockerTranslationKeys,
+  PENDING_INFORMATION_REQUEST_BLOCKER_KEY,
+  PENDING_RECOVERY_CASE_BLOCKER_KEY,
+} from '../payrollHelpers'
 import styles from './PayrollBlockerList.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, FlexItem } from '@/components/Common'
@@ -115,14 +116,6 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     companyUuid: companyId,
   })
 
-  const { data: recoveryCasesData } = useRecoveryCasesGetSuspense({
-    companyUuid: companyId,
-  })
-
-  const { data: informationRequestsData } = useInformationRequestsGetInformationRequestsSuspense({
-    companyUuid: companyId,
-  })
-
   const payrollBlockerList = blockersData.payrollBlockers ?? []
   const blockers: PayrollBlocker[] = payrollBlockerList.map(blocker => {
     const blockerKey = blocker.key
@@ -143,15 +136,16 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     }
   })
 
-  const recoveryCases = recoveryCasesData.recoveryCases ?? []
-  const informationRequests = informationRequestsData.informationRequests ?? []
-
-  const hasUnrecoveredCases = recoveryCases.some(
-    recoveryCase => recoveryCase.status !== 'recovered',
+  // Gate the recovery-cases and information-requests surfaces on the backend's own blocker keys
+  // rather than eagerly fetching each one here. Those surfaces self-fetch inside their own error
+  // boundaries, so probing them from this parent both duplicated the request and, when the flow's
+  // token wasn't scoped for that endpoint (e.g. recovery cases in the dismissal flow), threw and
+  // took down the entire blocker screen -- including an otherwise-viewable RFI (SDK-1347).
+  const hasRecoveryCaseBlocker = payrollBlockerList.some(
+    blocker => blocker.key === PENDING_RECOVERY_CASE_BLOCKER_KEY,
   )
-
-  const hasInformationRequests = informationRequests.some(
-    request => request.status !== InformationRequestStatus.Approved,
+  const hasInformationRequestBlocker = payrollBlockerList.some(
+    blocker => blocker.key === PENDING_INFORMATION_REQUEST_BLOCKER_KEY,
   )
 
   const dataViewProps = useDataView({
@@ -190,7 +184,7 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
   })
 
   const hasBlockers = blockers.length > 0
-  const hasAnyContent = hasBlockers || hasUnrecoveredCases || hasInformationRequests
+  const hasAnyContent = hasBlockers || hasRecoveryCaseBlocker || hasInformationRequestBlocker
 
   if (!hasAnyContent) {
     return (
@@ -225,9 +219,9 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
           </Flex>
         )}
 
-        {hasUnrecoveredCases && <RecoveryCases companyId={companyId} onEvent={handleEvent} />}
+        {hasRecoveryCaseBlocker && <RecoveryCases companyId={companyId} onEvent={handleEvent} />}
 
-        {hasInformationRequests && (
+        {hasInformationRequestBlocker && (
           <InformationRequestsFlow companyId={companyId} withAlert={false} onEvent={handleEvent} />
         )}
       </Flex>
