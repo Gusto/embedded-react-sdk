@@ -61,6 +61,7 @@ function DocumentsCardContent({ employeeId, onEvent, LoaderComponent }: Document
     {
       key: 'title',
       title: t('columns.title'),
+      wrap: true,
       render: (form: Form) => form.title || '-',
     },
     {
