@@ -300,8 +300,8 @@ export const PayrollListPresentation = ({
             {
               render: ({ payPeriod }) => {
                 const { startDate, endDate } = formatPayPeriod(
-                  payPeriod?.startDate,
-                  payPeriod?.endDate,
+                  payPeriod?.startDate ?? undefined,
+                  payPeriod?.endDate ?? undefined,
                 )
 
                 return (
@@ -383,8 +383,8 @@ export const PayrollListPresentation = ({
             }
 
             const { fullPeriod: payPeriodString } = formatPayPeriod(
-              payPeriod?.startDate,
-              payPeriod?.endDate,
+              payPeriod?.startDate ?? undefined,
+              payPeriod?.endDate ?? undefined,
             )
 
             const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
