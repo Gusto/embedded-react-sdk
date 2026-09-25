@@ -7,7 +7,8 @@ import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
-import { derivePayrollCategory, isOffCyclePayroll } from '../payrollTypes'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { derivePayrollCategory, isOffCyclePayroll, PayrollCategory } from '../payrollTypes'
 import { cleanupReimbursements } from '../helpers'
 import { UNSTABLE_PayrollEditEmployee } from '../UNSTABLE_PayrollEditEmployee/UNSTABLE_PayrollEditEmployee'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
@@ -99,16 +100,22 @@ const Root = ({
     employeeId,
   })
   const memoizedEmployeeId = useMemo(() => [employeeId], [employeeId])
+  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+  const isTransitionPayroll =
+    derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
     payrollId,
     employeeUuids: memoizedEmployeeId,
+    isTransitionPayroll,
   })
 
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
   const employee = employeeData.employee!
-  const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
+  const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
+    comp => comp.employeeUuid === employeeId,
+  )
   const bankAccounts = bankAccountsList.employeeBankAccounts || []
   const hasDirectDepositSetup = bankAccounts.length > 0
   const payrollCategory = derivePayrollCategory(preparedPayroll ?? {})

@@ -16,6 +16,7 @@ import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
+import { derivePayrollCategory, PayrollCategory } from '../payrollTypes'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
 import { useCalculationPoll, isCalculatingStatus, type PayrollShow } from './useCalculationPoll'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -215,6 +216,8 @@ const Root = ({
     // calculated when we opened (e.g. clicking Edit), we do prepare so it can be edited.
     disablePrepare: isPolling || isCalculatingPayroll || hasSeenCalculatingRef.current,
     excludedEmployeeUuids,
+    isTransitionPayroll:
+      derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition,
   })
 
   const alreadyProcessedAlert: PayrollFlowAlert = useMemo(
