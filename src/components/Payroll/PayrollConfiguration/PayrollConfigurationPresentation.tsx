@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
+import classNames from 'classnames'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
@@ -34,6 +35,8 @@ import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContaine
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 interface PayrollConfigurationPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   employeeCompensations: PayrollEmployeeCompensationsType[]
   employeeDetails: Employee[]
   payPeriod?: PayrollPayPeriodType
@@ -71,6 +74,7 @@ const getPayrollConfigurationTitle = (
 
 /** @internal */
 export const PayrollConfigurationPresentation = ({
+  className,
   employeeCompensations,
   employeeDetails,
   payPeriod,
@@ -112,7 +116,7 @@ export const PayrollConfigurationPresentation = ({
   }
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={classNames(styles.container, className)}>
       <Flex flexDirection="column" gap={32}>
         <Flex
           flexDirection={isDesktop ? 'row' : 'column'}

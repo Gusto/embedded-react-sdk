@@ -1,5 +1,6 @@
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useMemo, useRef, useState } from 'react'
+import classNames from 'classnames'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   FixedCompensations,
@@ -48,6 +49,8 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 interface PayrollEditEmployeeProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => void
   onCancel: () => void
   employee: Employee
@@ -216,6 +219,7 @@ const buildCompensationFromFormData = (
 
 /** @internal */
 export const PayrollEditEmployeePresentation = ({
+  className,
   onSave,
   onCancel,
   employee,
@@ -632,12 +636,12 @@ export const PayrollEditEmployeePresentation = ({
   )
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={classNames(styles.container, className)}>
       <div
         className={`${styles.headerSection} ${!isSmallOrGreater ? styles.headerSectionSticky : ''}`}
       >
         <Flex justifyContent="space-between">
-          <Flex flexDirection="column" gap={isSmallOrGreater ? 8 : 2}>
+          <Flex flexDirection="column" alignItems="stretch" gap={isSmallOrGreater ? 8 : 2}>
             <Heading as="h1" styledAs={isSmallOrGreater ? 'h2' : 'h4'}>
               {t('pageTitle', { employeeName })}
             </Heading>
@@ -678,7 +682,6 @@ export const PayrollEditEmployeePresentation = ({
                             type="number"
                             min={0}
                             adornmentEnd={t('hoursUnit')}
-                            isRequired
                             label={getCompensationLabel(compensationName)}
                             name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
                           />
@@ -742,7 +745,6 @@ export const PayrollEditEmployeePresentation = ({
                     type="number"
                     min={0}
                     adornmentStart="$"
-                    isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
                     // useField only surfaces this once react-hook-form has flagged the
@@ -763,7 +765,6 @@ export const PayrollEditEmployeePresentation = ({
                   type="number"
                   min={0}
                   adornmentStart="$"
-                  isRequired
                   label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
                   name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
                   errorMessage={t('validations.negativeAmount')}

@@ -75,6 +75,8 @@ export interface HomeAddressViewProps {
   onConfirmDelete: (homeAddressUuid: string) => Promise<boolean>
   onBack: () => void
   isDeletePending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -89,6 +91,7 @@ export function HomeAddressView({
   onConfirmDelete,
   onBack,
   isDeletePending = false,
+  className,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.Management.HomeAddress')
   const Components = useComponentContext()
@@ -326,7 +329,7 @@ export function HomeAddressView({
   const modalPending = addressModalSession?.isPending ?? false
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4} alignItems="flex-start">
         <Components.Heading as="h1" styledAs="h2">
           {t('title')}

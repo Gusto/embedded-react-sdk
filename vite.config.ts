@@ -41,10 +41,9 @@ export default defineConfig(({ mode }) => {
       !isDev &&
         dts({
           include: ['src'],
-          outDir: './dist',
+          outDirs: ['./dist'],
           tsconfigPath: './tsconfig.json',
           insertTypesEntry: true,
-          rollupTypes: false,
           copyDtsFiles: true,
           exclude: [
             '**/node_modules/**',

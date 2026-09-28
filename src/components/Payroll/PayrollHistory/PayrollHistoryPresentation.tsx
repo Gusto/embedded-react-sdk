@@ -18,6 +18,8 @@ import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
 import { EmptyData } from '@/components/Common/'
 
 interface PayrollHistoryPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   payrollHistory: Payroll[]
   wireInRequests: WireInRequest[]
   pagination: PaginationControlProps
@@ -33,6 +35,7 @@ interface PayrollHistoryPresentationProps {
 
 /** @internal */
 export const PayrollHistoryPresentation = ({
+  className,
   payrollHistory,
   wireInRequests,
   pagination,
@@ -121,7 +124,7 @@ export const PayrollHistoryPresentation = ({
   }
 
   return (
-    <Flex flexDirection="column" gap={16}>
+    <Flex className={className} flexDirection="column" gap={16}>
       <Flex justifyContent="space-between" alignItems="center">
         <Heading as="h2">{t('title')}</Heading>
         <DateRangeFilter

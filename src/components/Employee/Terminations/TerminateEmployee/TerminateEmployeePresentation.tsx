@@ -17,6 +17,8 @@ interface TerminateEmployeePresentationProps {
   onSubmit: (data: TerminateEmployeeFormData) => void
   onCancel: () => void
   isLoading: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 const terminateEmployeeSchema = z.object({
@@ -33,6 +35,7 @@ export function TerminateEmployeePresentation({
   onSubmit,
   onCancel,
   isLoading,
+  className,
 }: TerminateEmployeePresentationProps) {
   const { Alert, Heading, Text, Button } = useComponentContext()
   useI18n('Employee.Terminations.TerminateEmployee')
@@ -79,7 +82,7 @@ export function TerminateEmployeePresentation({
   return (
     <FormProvider {...formMethods}>
       <HtmlForm onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <Flex flexDirection="column" gap={24}>
+        <Flex className={className} flexDirection="column" gap={24}>
           <Flex flexDirection="column" gap={4}>
             <Heading as="h2">{t('title', { employeeName })}</Heading>
             <Text variant="supporting">{t('subtitle')}</Text>

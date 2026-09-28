@@ -54,7 +54,7 @@ type StatusMapping = {
   badgeStatus: BadgeProps['status']
 } | null
 
-function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
+function Root({ companyId, dictionary, onEvent, className }: InformationRequestListProps) {
   useComponentDictionary('InformationRequests.InformationRequestList', dictionary)
   useI18n('InformationRequests.InformationRequestList')
   const { t } = useTranslation('InformationRequests.InformationRequestList')
@@ -156,7 +156,7 @@ function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
   })
 
   return (
-    <Flex flexDirection="column" gap={20}>
+    <Flex className={className} flexDirection="column" gap={20}>
       <Flex flexDirection="column" gap={2}>
         <Heading as="h2" styledAs="h4">
           {t('title')}

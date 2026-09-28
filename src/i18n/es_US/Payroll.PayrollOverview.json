@@ -1,6 +1,7 @@
 {
   "alerts": {
     "directDepositDeadline": "Para pagar a tus empleados con depósito directo para el {{payDate}}, deberás ejecutar la nómina antes de las {{time}} del {{date}}",
+    "directDepositDeadlineText": "Asegúrate de enviarlo antes de la fecha límite para garantizar pagos puntuales.",
     "payrollNotCalculated": "La nómina no está calculada",
     "payrollProcessedMessage": "Se debitarán {{amount}} el {{date}}. Asegúrate de tener estos fondos disponibles.",
     "payrollProcessedTitle": "Nómina enviada",
@@ -37,6 +38,7 @@
   },
   "declineCancelCta": "No, regresar",
   "directDepositLabel": "Depósitos directos",
+  "downloadLoadingMessage": "Generando recibo de pago…",
   "downloadPaystubLabel": "Descargar recibo de pago en PDF",
   "garnishmentsLabel": "Embargos",
   "loadingDescription": "Esto puede tomar uno o dos minutos. Puedes navegar a otra página mientras tanto.",

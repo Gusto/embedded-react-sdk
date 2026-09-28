@@ -27,6 +27,9 @@
     "effectiveFromLabel": "Effective: {{date}}",
     "noEditableRequirementsTitle": "No editable requirements",
     "noEditableRequirementsDescription": "This state does not have any editable tax requirements.",
+    "errors": {
+      "incompleteRequirementSet": "{{section}} for {{state}} is incomplete. Complete all required fields and try again."
+    },
     "validations": {
       "minValue": "Minimum value is {{min}}%",
       "maxValue": "Maximum value is {{max}}%",

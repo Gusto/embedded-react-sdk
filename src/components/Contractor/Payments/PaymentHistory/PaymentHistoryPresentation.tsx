@@ -16,6 +16,8 @@ import EyeIcon from '@/assets/icons/eye.svg?react'
 import CancelIcon from '@/assets/icons/slash-circle.svg?react'
 
 interface PaymentHistoryPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   paymentGroup: ContractorPaymentGroup
   contractors: Contractor[]
   onViewPayment: (paymentId: string) => void
@@ -25,6 +27,7 @@ interface PaymentHistoryPresentationProps {
 
 /** @internal */
 export const PaymentHistoryPresentation = ({
+  className,
   paymentGroup,
   contractors,
   onViewPayment,
@@ -47,7 +50,7 @@ export const PaymentHistoryPresentation = ({
   }
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={8}>
         <Heading as="h2">{t('title')}</Heading>
         <Text>

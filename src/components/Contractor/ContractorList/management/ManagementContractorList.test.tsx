@@ -49,6 +49,21 @@ describe('ManagementContractorList — Active tab', () => {
     expect(screen.getByText('Hourly — $50.00/hr')).toBeInTheDocument()
   })
 
+  it('applies custom className', async () => {
+    mockList([{ ...baseContractor }])
+
+    const { container } = renderWithProviders(
+      <ManagementContractorList
+        companyId="company-123"
+        onEvent={() => {}}
+        className="custom-class"
+      />,
+    )
+
+    await screen.findByText('Ada Lovelace')
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   it('shows a "Starts" badge when a rehire is scheduled', async () => {
     mockList([
       {

@@ -19,4 +19,15 @@
     opacity: 1;
     margin: 0;
   }
+
+  // Two-class specificity beats a host page's own `.GSDK { ... }` override
+  // without `!important`, so a partner styling the visible root can't
+  // accidentally reintroduce a containing-block bug on this one.
+  &.GSDK-portal-root {
+    position: static;
+    overflow: visible;
+    transform: none;
+    filter: none;
+    contain: none;
+  }
 }

@@ -7,27 +7,22 @@ import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_contex
 import { useQueryClient } from '@tanstack/react-query'
 import { DocumentType } from '@gusto/embedded-api/models/operations/getv1generateddocumentsdocumenttyperequestuuid'
 import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument'
-import { usePollingTask, type PollTickResult } from '@/hooks/usePollingTask/usePollingTask'
+import {
+  usePollingTask,
+  isNonRetryablePollError,
+  type PollReadOutcome,
+  type PollTickResult,
+} from '@/hooks/usePollingTask/usePollingTask'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError } from '@/types/sdkError'
+
+const COMPONENT_NAME = 'Payroll.PrintChecksForm'
 
 type PrintChecksOutcome = { type: 'succeeded'; url: string | null } | { type: 'failed' }
 
-const evaluatePrintChecksOutcome = (
-  data: GeneratedDocumentsGetQueryData,
-): PollTickResult<PrintChecksOutcome> => {
-  const status = data.generatedDocument?.status
-  if (status === GeneratedDocumentStatus.Succeeded) {
-    return {
-      done: true,
-      value: { type: 'succeeded', url: data.generatedDocument?.documentUrls?.[0] ?? null },
-    }
-  }
-  if (status === GeneratedDocumentStatus.Failed) {
-    return { done: true, value: { type: 'failed' } }
-  }
-  return { done: false }
-}
-
-const deadlinePrintChecksOutcome = (
+// Verify against the last-known data before reporting failure: a document that already
+// finished generating must never be reported as a failure just because the deadline hit first.
+const verifiedPrintChecksOutcome = (
   lastData: GeneratedDocumentsGetQueryData | null,
 ): PrintChecksOutcome => {
   const status = lastData?.generatedDocument?.status
@@ -35,6 +30,28 @@ const deadlinePrintChecksOutcome = (
     return { type: 'succeeded', url: lastData?.generatedDocument?.documentUrls?.[0] ?? null }
   }
   return { type: 'failed' }
+}
+
+const evaluatePrintChecksOutcome = (
+  outcome: PollReadOutcome<GeneratedDocumentsGetQueryData>,
+): PollTickResult<PrintChecksOutcome> => {
+  if (!outcome.success) {
+    return isNonRetryablePollError(outcome.error)
+      ? { status: 'error', error: outcome.error }
+      : { status: 'polling' }
+  }
+
+  const status = outcome.data.generatedDocument?.status
+  if (status === GeneratedDocumentStatus.Succeeded) {
+    return {
+      status: 'done',
+      value: { type: 'succeeded', url: outcome.data.generatedDocument?.documentUrls?.[0] ?? null },
+    }
+  }
+  if (status === GeneratedDocumentStatus.Failed) {
+    return { status: 'done', value: { type: 'failed' } }
+  }
+  return { status: 'polling' }
 }
 
 /** @internal */
@@ -62,6 +79,7 @@ export function useGenerationPoll({
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
   const requestUuidRef = useRef<string | null>(null)
+  const { observability } = useObservability()
 
   // Unlike the payroll polls, there's no sibling `useGeneratedDocumentsGet` rendering this data —
   // the result is only ever downloaded, never displayed — so there's no other observer of this
@@ -93,8 +111,20 @@ export function useGenerationPoll({
     fetch: fetchGeneratedDocument,
     evaluate: evaluatePrintChecksOutcome,
     onDone: handleOutcome,
+    // Unlike the payroll polls, print-checks generation has no equivalent to prepare/resubmit to
+    // guard against, so a non-retryable read error can safely reuse the same failure path as a
+    // real generation failure — same screen, same retry CTA.
+    onError: error => {
+      const sdkError = normalizeToSDKError(error)
+      observability?.onError?.({
+        ...sdkError,
+        timestamp: Date.now(),
+        componentName: COMPONENT_NAME,
+      })
+      onFailed()
+    },
     onDeadline: lastData => {
-      handleOutcome(deadlinePrintChecksOutcome(lastData))
+      handleOutcome(verifiedPrintChecksOutcome(lastData))
     },
   })
 

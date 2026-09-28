@@ -29,6 +29,7 @@ function DashboardRoot({
   onEvent,
   selectedTab: controlledTab,
   LoaderComponent,
+  className,
 }: DashboardProps) {
   useI18n('Employee.Dashboard')
   useComponentDictionary('Employee.Dashboard', dictionary)
@@ -61,7 +62,7 @@ function DashboardRoot({
   ]
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Suspense fallback={null}>
         <DashboardHeader employeeId={employeeId} />
       </Suspense>

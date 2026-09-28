@@ -63,7 +63,15 @@ export interface GustoBaseProviderProps {
    * Also exposed to custom UI components via `useNonce`.
    */
   nonce?: string
-  /** Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. */
+  /**
+   * Element to use as the portal container for SDK popovers and dropdowns.
+   * Defaults to a themed root element the SDK appends to `document.body`.
+   *
+   * Pass an element here if rendering inside a modal, or **required** if
+   * rendering inside a shadow root — `document.body` sits outside every
+   * shadow boundary, so without an explicit container overlays would
+   * otherwise escape your shadow root's style encapsulation.
+   */
   portalContainer?: HTMLElement
   /** Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. */
   queryClient?: QueryClient

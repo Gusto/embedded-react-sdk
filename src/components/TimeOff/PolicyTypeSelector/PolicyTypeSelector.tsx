@@ -42,7 +42,7 @@ export function PolicyTypeSelector(props: PolicyTypeSelectorProps) {
   )
 }
 
-function Root({ companyId, defaultPolicyType }: PolicyTypeSelectorProps) {
+function Root({ companyId, defaultPolicyType, className }: PolicyTypeSelectorProps) {
   const { onEvent } = useBase()
 
   const holidayQuery = useHolidayPayPoliciesGet({ companyUuid: companyId })
@@ -64,6 +64,7 @@ function Root({ companyId, defaultPolicyType }: PolicyTypeSelectorProps) {
       onCancel={handleCancel}
       defaultPolicyType={defaultPolicyType}
       holidayPolicyExists={holidayPolicyExists}
+      className={className}
     />
   )
 }

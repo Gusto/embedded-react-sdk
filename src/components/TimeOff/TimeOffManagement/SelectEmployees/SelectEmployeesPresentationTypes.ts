@@ -30,4 +30,6 @@ export interface SelectEmployeesPresentationProps {
   isFetching?: boolean
   /** Disables the back button and shows a spinner on the continue button while a submit is in flight. */
   isPending?: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }

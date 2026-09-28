@@ -1096,6 +1096,10 @@ export namespace Translations {
       preview: string
       /** @defaultValue `"Legend"` */
       legend: string
+      /** @defaultValue `"Workweek start day"` */
+      workweekStartDay: string
+      /** @defaultValue `"Select day..."` */
+      workweekStartDayPlaceholder: string
     }
     /** @defaultValue `"Loading..."` */
     loading: string
@@ -1108,6 +1112,8 @@ export namespace Translations {
       anchorPayDateDescription_other: string
       /** @defaultValue `"The last date of the first pay period to help calculate future pay periods. This can be the same date as the first pay date."` */
       anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"The day of the week this pay schedule's workweeks start on. Used for regular rate of pay overtime calculations."` */
+      workweekStartDayDescription: string
     }
     payPreview: {
       /** @defaultValue `"Pay period"` */
@@ -1138,6 +1144,22 @@ export namespace Translations {
       '15thAndLast': string
       /** @defaultValue `"Custom"` */
       custom: string
+    }
+    workweekStartDayOptions: {
+      /** @defaultValue `"Sunday"` */
+      sunday: string
+      /** @defaultValue `"Monday"` */
+      monday: string
+      /** @defaultValue `"Tuesday"` */
+      tuesday: string
+      /** @defaultValue `"Wednesday"` */
+      wednesday: string
+      /** @defaultValue `"Thursday"` */
+      thursday: string
+      /** @defaultValue `"Friday"` */
+      friday: string
+      /** @defaultValue `"Saturday"` */
+      saturday: string
     }
     validations: {
       /** @defaultValue `"Pay schedule name is required"` */
@@ -1244,6 +1266,10 @@ export namespace Translations {
       noEditableRequirementsTitle: string
       /** @defaultValue `"This state does not have any editable tax requirements."` */
       noEditableRequirementsDescription: string
+      errors: {
+        /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
+        incompleteRequirementSet: string
+      }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string
@@ -6133,6 +6159,10 @@ export namespace Translations {
     statusLabel: string
     /** @defaultValue `"Last day"` */
     lastDayLabel: string
+    /** @defaultValue `"Pending dismissal"` */
+    pendingDismissalLabel: string
+    /** @defaultValue `"Last day {{date}}"` */
+    pendingDismissalBadge: string
     /** @defaultValue `"Edit employee"` */
     editCta: string
     /** @defaultValue `"Dismiss employee"` */
@@ -6989,6 +7019,8 @@ export namespace Translations {
     calculatingCta: string
     /** @defaultValue `"Apply"` */
     applyCta: string
+    /** @defaultValue `"Calculate a gross amount first to apply it."` */
+    applyHint: string
     /** @defaultValue `"Cancel"` */
     cancelCta: string
     /** @defaultValue `"Calculated gross pay"` */
@@ -7236,7 +7268,13 @@ export namespace Translations {
     defaultBlockerDescription: string
     /** @defaultValue `"Please contact support."` */
     defaultBlockerHelp: string
+    /** @defaultValue `"Payroll blocker"` */
+    genericBlockerTitle: string
     blockers: {
+      partner_tos_not_accepted: {
+        /** @defaultValue `"Terms of Service Required"` */
+        title: string
+      }
       geocode_error: {
         /** @defaultValue `"Address Verification Failed"` */
         title: string
@@ -7531,6 +7569,12 @@ export namespace Translations {
       employeeUpdated: {
         /** @defaultValue `"{{employeeName}} updated successfully"` */
         label: string
+      }
+      processingFailed: {
+        /** @defaultValue `"This payroll couldn't be calculated"` */
+        label: string
+        /** @defaultValue `"Please try calculating again."` */
+        message: string
       }
     }
     /** @defaultValue `"Preparing payroll..."` */
@@ -7916,6 +7960,8 @@ export namespace Translations {
     alerts: {
       /** @defaultValue `"Payroll is not calculated"` */
       payrollNotCalculated: string
+      /** @defaultValue `"There was an issue loading this payroll. Please try again."` */
+      payrollLoadFailed: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
       directDepositDeadline: string
       /** @defaultValue `"Make sure to submit before the deadline to ensure timely payments."` */
@@ -8416,14 +8462,14 @@ export namespace Translations {
     pageTitle: string
     /** @defaultValue `"{{firstName}} {{lastName}}"` */
     breadcrumbLabel: string
-    /** @defaultValue `"Gross pay (excluding reimbursements)"` */
-    grossPayLabel: string
-    /** @defaultValue `"Gross pay: {{grossPay}} (excluding reimbursements)"` */
-    grossPayLabelMobile: string
     /** @defaultValue `"Regular and overtime hours"` */
     regularHoursTitle: string
     /** @defaultValue `"Regular hours"` */
     regularHoursTitleWithoutOvertime: string
+    /** @defaultValue `"Add overtime"` */
+    addOvertimeCta: string
+    /** @defaultValue `"When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly."` */
+    overtimeWorkweekAlert: string
     /** @defaultValue `"Hours"` */
     hoursUnit: string
     /** @defaultValue `"Save"` */
@@ -8438,8 +8484,6 @@ export namespace Translations {
     amountColumn: string
     /** @defaultValue `"Hours"` */
     hoursColumn: string
-    /** @defaultValue `"Other"` */
-    otherTitle: string
     compensationNames: {
       /** @defaultValue `"Regular Hours"` */
       regularHours: string
@@ -8462,6 +8506,14 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
+    /** @defaultValue `"Certain types of additional earnings affect the overtime premium (the multiplier used to calculate OT rates)."` */
+    overtimeMultiplierEarningsAlert: string
+    /** @defaultValue `"Only additional earnings attributable to this pay period should be entered below. These amounts will be included in the overtime premium calculations on this payroll. Employee earnings attributable to any period of time different than this pay period (such as a quarterly or annual bonus) should be entered as a separate off-cycle payroll specifying the relevant dates."` */
+    overtimeMultiplierEarningsAlertDescription: string
+    /** @defaultValue `"Included in overtime multiplier calculation"` */
+    overtimeIncludedEarningsGroupLabel: string
+    /** @defaultValue `"Not a factor for overtime calculation"` */
+    overtimeExcludedEarningsGroupLabel: string
     /** @defaultValue `"Reimbursements"` */
     reimbursementTitle: string
     /** @defaultValue `"Description"` */
@@ -8531,6 +8583,8 @@ export namespace Translations {
       reimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Enter an amount for every workweek"` */
+      requiredWorkweek: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */

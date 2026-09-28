@@ -4,6 +4,7 @@ import type { PayScheduleShow } from '@gusto/embedded-api/models/components/pays
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
@@ -60,6 +61,8 @@ function hasKebabActions(
 }
 
 interface PayrollListPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
@@ -83,6 +86,7 @@ interface PayrollListPresentationProps {
 
 /** @internal */
 export const PayrollListPresentation = ({
+  className,
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
@@ -237,7 +241,7 @@ export const PayrollListPresentation = ({
   }
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={classNames(styles.container, className)}>
       <Flex flexDirection="column" gap={16} alignItems="stretch">
         {showSkipSuccessAlert && (
           <div className={styles.alertContainer}>

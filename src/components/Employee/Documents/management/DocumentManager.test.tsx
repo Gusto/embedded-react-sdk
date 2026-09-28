@@ -59,6 +59,16 @@ describe('DocumentManager', () => {
       })
     })
 
+    it('applies custom className', async () => {
+      const { container } = renderWithProviders(
+        <DocumentManager {...defaultProps} className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(container.querySelector('.custom-class')).toBeInTheDocument()
+      })
+    })
+
     it('renders a Back button', async () => {
       renderWithProviders(<DocumentManager {...defaultProps} />)
 

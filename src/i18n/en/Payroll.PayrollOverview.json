@@ -26,6 +26,7 @@
   "skippedBadge": "Skipped",
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
+    "payrollLoadFailed": "There was an issue loading this payroll. Please try again.",
     "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
     "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",
     "paystubPdfError": "There was an issue generating the paystub PDF. Please try again later.",

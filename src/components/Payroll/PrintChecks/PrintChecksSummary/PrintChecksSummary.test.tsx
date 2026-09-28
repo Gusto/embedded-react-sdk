@@ -35,4 +35,13 @@ describe('PrintChecksSummary', () => {
 
     expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_CLOSE)
   })
+
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <PrintChecksSummary onEvent={vi.fn()} className="custom-class" />,
+    )
+
+    await screen.findByText('Your checks are ready')
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
 })

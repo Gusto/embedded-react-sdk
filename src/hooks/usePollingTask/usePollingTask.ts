@@ -1,12 +1,55 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 
 /**
  * The outcome of evaluating a single poll tick.
  *
+ * @remarks
+ * `'done'` (a domain-understood outcome, success or real failure) and `'error'` (the read failed
+ * in a way not worth retrying, so the poll never learned what happened) are both terminal but go
+ * to different callbacks — `onDone` and `onError` — so callers can't conflate the two.
+ *
  * @typeParam TValue - The terminal value handed to `onDone`.
  * @internal
  */
-export type PollTickResult<TValue> = { done: true; value: TValue } | { done: false }
+export type PollTickResult<TValue> =
+  { status: 'polling' } | { status: 'done'; value: TValue } | { status: 'error'; error: unknown }
+
+/**
+ * The result of one poll tick's read — the data it resolved to, or the error it rejected with.
+ *
+ * @remarks
+ * `lastData` (rejection only) is the most recent successfully-read data, or `null` if none has
+ * succeeded yet — the same value `onDeadline` receives, and worth verifying against for the same
+ * reason.
+ *
+ * @typeParam TData - The value a successful read resolves to.
+ * @internal
+ */
+export type PollReadOutcome<TData> =
+  { success: true; data: TData } | { success: false; error: unknown; lastData: TData | null }
+
+const NON_RETRYABLE_HTTP_STATUSES = new Set([401, 403])
+
+/**
+ * Whether a poll read's error is not worth retrying.
+ *
+ * @remarks
+ * `SDKValidationError` (also matches `ResponseValidationError`) means the response failed schema
+ * validation. A 401/403 means the session that started the poll expired mid-poll (SDK-1291) --
+ * neither recovers by retrying. Everything else (network blips, timeouts, transient 5xx) may
+ * still succeed on the next tick.
+ *
+ * @internal
+ */
+export function isNonRetryablePollError(error: unknown): boolean {
+  if (error instanceof SDKValidationError) return true
+  return (
+    error instanceof GustoEmbeddedError &&
+    NON_RETRYABLE_HTTP_STATUSES.has(error.httpMeta.response.status)
+  )
+}
 
 /**
  * Configuration for {@link usePollingTask}.
@@ -16,16 +59,18 @@ export type PollTickResult<TValue> = { done: true; value: TValue } | { done: fal
  * @internal
  */
 export interface UsePollingTaskOptions<TData, TValue> {
-  /** Reads the current server state for one tick. Rejections are tolerated and retried next tick. */
+  /** Reads the current server state for one tick. Rejections are passed to `evaluate`, not thrown. */
   fetch: (signal: AbortSignal) => Promise<TData>
   /**
-   * Decides whether the operation has reached a terminal state, from the data this tick just
-   * read. Must not depend on rendered state — that dependency is the bug this hook exists to
-   * avoid.
+   * Decides whether the operation has reached a terminal state, from this tick's read outcome.
+   * Called on every tick, including ones where `fetch` rejected — see {@link PollReadOutcome} and
+   * {@link isNonRetryablePollError}.
    */
-  evaluate: (data: TData) => PollTickResult<TValue>
-  /** Called once, from the poll loop, when `evaluate` reports a terminal state. */
+  evaluate: (outcome: PollReadOutcome<TData>) => PollTickResult<TValue>
+  /** Called once, from the poll loop, when `evaluate` reports a `'done'` terminal state. */
   onDone: (value: TValue) => void
+  /** Called once, from the poll loop, when `evaluate` reports an `'error'` terminal state. */
+  onError: (error: unknown) => void
   /**
    * Called once when `deadlineMs` elapses without a terminal state, with the most recent data
    * successfully read (or `null` if no read ever succeeded). Verify against that data before
@@ -81,12 +126,12 @@ export interface PollingTask {
  *
  * - `start()` reads immediately, then every `intervalMs` after the previous read settles, so a
  *   slow read never stacks up overlapping requests.
- * - A rejected read is not a failed task. It is ignored and retried on the next tick, which
- *   matters because SDK queries are configured with `retry: false`. Note that when `fetch` reads
- *   through a shared query key, the failure is still recorded on that key, so observers of it
- *   see the error state even though the task carries on.
- * - A terminal result on the deadline tick wins over the deadline, and `onDeadline` receives the
- *   last data read so the caller can verify before declaring failure.
+ * - A rejected read isn't thrown; it's handed to `evaluate` as a {@link PollReadOutcome}, since
+ *   SDK queries are configured with `retry: false`. See {@link PollTickResult} for how `evaluate`
+ *   routes a read error to `'polling'` (retry) vs `'error'` (give up). When `fetch` reads through
+ *   a shared query key, observers of that key still see the error even though the task carries on.
+ * - A `'done'` or `'error'` result on the deadline tick wins over the deadline, and `onDeadline`
+ *   receives the last data read so the caller can verify before declaring failure.
  * - Each tick bumps internal state, which gives the calling component a render source
  *   independent of any query observer. Fresh cache data is then picked up on that render.
  * - `stop()` and unmount abort the in-flight read and guarantee no further callbacks fire.
@@ -145,25 +190,31 @@ export function usePollingTask<TData, TValue>(
     const tick = async () => {
       if (!isCurrentRun()) return
 
-      const { fetch: read, evaluate, onDone, onDeadline } = optionsRef.current
+      const { fetch: read, evaluate, onDone, onError, onDeadline } = optionsRef.current
 
+      let outcome: PollReadOutcome<TData>
       try {
-        last = { value: await read(controller.signal) }
-      } catch {
-        // One failed read is not a failed task — try again on the next tick.
+        const data = await read(controller.signal)
+        last = { value: data }
+        outcome = { success: true, data }
+      } catch (error) {
+        outcome = { success: false, error, lastData: last ? last.value : null }
       }
 
       if (!isCurrentRun()) return
 
       setTickCount(count => count + 1)
 
-      if (last) {
-        const result = evaluate(last.value)
-        if (result.done) {
-          stop()
-          onDone(result.value)
-          return
-        }
+      const result = evaluate(outcome)
+      if (result.status === 'done') {
+        stop()
+        onDone(result.value)
+        return
+      }
+      if (result.status === 'error') {
+        stop()
+        onError(result.error)
+        return
       }
 
       if (Date.now() >= deadline) {

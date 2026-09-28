@@ -120,7 +120,9 @@ export function useEntities() {
 
     const proxyMode =
       typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : 'none'
-    if (proxyMode === 'none') return
+    // Auto-fetching entities hits a gws-flows-specific endpoint; partner-direct mode
+    // has no entity catalog to fetch from, so it relies on entities set in .env.partner.
+    if (proxyMode !== 'flow-token') return
 
     if (hasMissingEntities(entities)) {
       hasAutoFetched.current = true

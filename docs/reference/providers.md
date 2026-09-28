@@ -120,7 +120,7 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
 | `nonce?` | `string` | CSP nonce to apply to runtime-injected `<style>` elements (theming, PDF download window). Pass the same per-request nonce your app uses in its `style-src 'nonce-…'` directive. Also exposed to custom UI components via `useNonce`. |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Defaults to a themed root element the SDK appends to `document.body`. Pass an element here if rendering inside a modal, or **required** if rendering inside a shadow root — `document.body` sits outside every shadow boundary, so without an explicit container overlays would otherwise escape your shadow root's style encapsulation. |
 | `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
 | `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
 

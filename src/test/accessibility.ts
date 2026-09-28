@@ -4,10 +4,16 @@ import type { RenderResult } from '@testing-library/react'
 import { expect } from 'vitest'
 
 // Extend expect with jest-axe matchers
+interface AxeMatchers<R = unknown> {
+  toHaveNoViolations: () => R
+}
+
 declare module 'vitest' {
-  interface Assertion {
-    toHaveNoViolations(): void
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Matchers<
+    R extends void | Promise<void> = void | Promise<void>,
+    T = unknown,
+  > extends AxeMatchers<R> {}
 }
 
 // Rules commonly disabled in component tests

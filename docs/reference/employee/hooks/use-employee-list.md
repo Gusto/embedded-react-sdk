@@ -21,8 +21,15 @@ allowed for its current onboarding state.
 ## Remarks
 
 `employeeType` maps to a server-side filter and changes which actions appear on each row:
-`'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
-to list every employee.
+`'active'` adds `dismiss` unless the employee already has a termination scheduled for a future
+date, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it to list every employee.
+
+An `'active'` row with a pending termination carries its effective date on
+`pendingDismissalDate` instead of the `dismiss` action.
+
+`'onboarding'` includes employees who haven't completed onboarding as well as employees who
+have completed onboarding but whose primary job's hire date hasn't arrived yet, so `onboarded`
+may be `true` for rows in this filter.
 
 Page changes use placeholder data: the previous page stays rendered while the next one loads,
 and `status.isFetching` flips to `true` during the request.
@@ -168,6 +175,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `onboardingDocumentsConfig?` | [`OnboardingDocumentsConfig`](../../APIModels/index.md#onboardingdocumentsconfig) | Configuration for an employee onboarding documents during onboarding |
 | `onboardingStatus?` | [`EmployeeOnboardingStatus1`](../../APIModels/index.md#employeeonboardingstatus1-1) \| `null` | The current onboarding status of the employee |
 | `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
+| `pendingDismissalDate?` | `string` | Effective date of a termination that hasn't gone into effect yet, if one is scheduled. |
 | `phone?` | `string` \| `null` | - |
 | `preferredFirstName?` | `string` \| `null` | - |
 | `primaryJob?` | [`Job`](../../APIModels/index.md#job) | The employee's primary job, if one is marked primary. |

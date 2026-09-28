@@ -1,5 +1,6 @@
 {
   "alerts": {
+    "alreadyProcessed": "Esta nómina ya se procesó. Si desea hacer cambios, cancélela y procésela de nuevo.",
     "directDepositDeadline": "Para pagar a tus empleados con depósito directo para el {{payDate}}, deberás procesar la nómina antes de las {{time}} del {{date}}.",
     "directDepositDeadlineText": "Asegúrate de enviar todo antes de la fecha límite para garantizar pagos puntuales.",
     "employeeUpdated": {

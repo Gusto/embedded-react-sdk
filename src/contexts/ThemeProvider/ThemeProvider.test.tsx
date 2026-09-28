@@ -64,7 +64,7 @@ describe('<ThemeProvider />', () => {
       return null
     }
 
-    test('defaults container to the article.GSDK element when portalContainer is not provided', () => {
+    test('defaults container to a themed root appended to document.body when portalContainer is not provided', () => {
       let capturedContainer: HTMLElement | null = null
 
       render(
@@ -74,7 +74,26 @@ describe('<ThemeProvider />', () => {
       )
 
       const article = screen.getByTestId('GSDK')
-      expect(capturedContainer).toBe(article)
+      expect(capturedContainer).not.toBeNull()
+      expect(capturedContainer).not.toBe(article)
+      expect(capturedContainer!.parentElement).toBe(document.body)
+      expect(capturedContainer).toHaveClass('GSDK')
+      expect(capturedContainer).toHaveClass('GSDK-portal-root')
+    })
+
+    test('removes the default portal root on unmount', () => {
+      const { unmount } = render(
+        <ThemeProvider>
+          <p>Child</p>
+        </ThemeProvider>,
+      )
+
+      const portalRoot = screen.getByTestId('GSDK-portal-root')
+      expect(document.body.contains(portalRoot)).toBe(true)
+
+      unmount()
+
+      expect(document.body.contains(portalRoot)).toBe(false)
     })
 
     test('uses the supplied portalContainer element instead of article.GSDK', () => {

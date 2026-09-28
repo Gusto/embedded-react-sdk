@@ -170,6 +170,17 @@ describe('RecoveryCasesResubmit', () => {
     expect(onEvent).toHaveBeenCalledWith(recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_CANCEL)
   })
 
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <FlowContext.Provider value={flowContextValue}>
+        <RecoveryCasesResubmit {...defaultProps} className="custom-class" />
+      </FlowContext.Provider>,
+    )
+
+    await screen.findByText('R01: Insufficient funds')
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
   it('submits redebit and fires done event with response data', async () => {
     server.use(
       handleRedebitRecoveryCase(() => {

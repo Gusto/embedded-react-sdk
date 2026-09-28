@@ -9,6 +9,7 @@
   },
   "emptyTableDescription": "Agrega contratistas para configurarlos para la nómina.",
   "emptyTableTitle": "Aún no has agregado ningún contratista",
+  "hamburgerTitle": "Acciones para {{name}}",
   "progressBarCta": "Regresar a contratistas",
   "reviewCta": "Revisar",
   "title": "Contratistas"

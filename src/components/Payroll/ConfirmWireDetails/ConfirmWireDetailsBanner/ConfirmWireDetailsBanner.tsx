@@ -32,6 +32,7 @@ const Root = ({
   dictionary,
   confirmationAlert,
   onStartWireTransfer,
+  className,
 }: ConfirmWireDetailsBannerProps) => {
   useComponentDictionary('Payroll.ConfirmWireDetailsBanner', dictionary)
   useI18n('Payroll.ConfirmWireDetailsBanner')
@@ -148,7 +149,7 @@ const Root = ({
   }
 
   return (
-    <Flex flexDirection="column" gap={16}>
+    <Flex className={className} flexDirection="column" gap={16}>
       {shouldShowConfirmationAlert && (
         <Alert
           status="success"

@@ -21,6 +21,7 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
  * @internal
  */
 export function TransitionCreationPresentation({
+  className,
   startDate,
   endDate,
   payScheduleName,
@@ -73,7 +74,7 @@ export function TransitionCreationPresentation({
   )
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('pageTitle')}</Heading>
         <Text variant="supporting">{t('pageDescription')}</Text>

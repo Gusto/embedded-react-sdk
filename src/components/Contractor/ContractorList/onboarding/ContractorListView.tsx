@@ -16,6 +16,8 @@ export interface ContractorListViewProps extends Pick<
   Extract<UseContractorListResult, { isLoading: false }>,
   'pagination' | 'status'
 > {
+  /** CSS class name applied to the root element. */
+  className?: string
   contractors: ContractorWithActions[]
   isFetching: boolean
   successMessage?: string
@@ -34,6 +36,7 @@ function contractorDisplayName(contractor: ContractorWithActions) {
 
 /** @internal */
 export function ContractorListView({
+  className,
   contractors,
   isFetching,
   pagination,
@@ -121,7 +124,7 @@ export function ContractorListView({
 
   return (
     <>
-      <Flex flexDirection="column">
+      <Flex className={className} flexDirection="column">
         {successMessage && <Components.Alert label={successMessage} status="success" />}
 
         <Flex alignItems="center" justifyContent="space-between">

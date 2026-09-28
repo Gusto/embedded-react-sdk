@@ -86,4 +86,48 @@ describe('offCycleStateMachine', () => {
       expect(service.context.payrollUuid).toBe('payroll-123')
     })
   })
+
+  describe('blockers state', () => {
+    function toBlockers(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.OFF_CYCLE_BLOCKERS_VIEW_ALL)
+      expect(service.machine.current).toBe('blockers')
+    }
+
+    it('transitions to blockers on OFF_CYCLE_BLOCKERS_VIEW_ALL and activates the blockers breadcrumb', () => {
+      const service = createService()
+
+      send(service, componentEvents.OFF_CYCLE_BLOCKERS_VIEW_ALL)
+
+      expect(service.machine.current).toBe('blockers')
+      expect(service.context.payrollUuid).toBeUndefined()
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('blockers')
+    })
+
+    it('transitions back to createOffCyclePayroll on BREADCRUMB_NAVIGATE with matching key', () => {
+      const service = createService()
+      toBlockers(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'createOffCyclePayroll' })
+
+      expect(service.machine.current).toBe('createOffCyclePayroll')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('createOffCyclePayroll')
+    })
+
+    it('ignores BREADCRUMB_NAVIGATE with non-matching key', () => {
+      const service = createService()
+      toBlockers(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'blockers' })
+
+      expect(service.machine.current).toBe('blockers')
+    })
+  })
 })

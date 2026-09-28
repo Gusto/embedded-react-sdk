@@ -28,6 +28,7 @@
   },
   "icons": {
     "calendarArrow": "Mostrar calendario",
+    "completedStep": "Paso completado",
     "nextMonth": "Mostrar el mes siguiente",
     "paginationFirst": "Ir a la primera página",
     "paginationLast": "Ir a la última página",

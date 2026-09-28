@@ -33,5 +33,5 @@ Full multi-step user experiences as a single component — the fastest path to a
 | [Payroll.OffCycleFlow](payroll/off-cycle-flow) | Guided flow to create and run a bonus or correction payroll. |
 | [Payroll.PayrollExecutionFlow](payroll/payroll-execution-flow) | Guided flow to configure, review, and submit a single payroll. |
 | [Payroll.PayrollFlow](payroll/payroll-flow) | Hub for running and managing all payrolls across a company's pay schedules. |
-| [Payroll.TransitionFlow](payroll/transition-flow) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
+| [Payroll.TransitionFlow](payroll/transition-flow) | Macro flow that runs a transition payroll end to end: resolve or create the payroll, then configure, review, submit, and view receipts. |
 | [TimeOff.TimeOffFlow](time-off/time-off-flow) | Hub for creating and managing a company's time off policies. |

@@ -21,7 +21,11 @@
   "estimatedTime": "Estimated time",
   "defaultBlockerDescription": "Unknown blocker",
   "defaultBlockerHelp": "Please contact support.",
+  "genericBlockerTitle": "Payroll blocker",
   "blockers": {
+    "partner_tos_not_accepted": {
+      "title": "Terms of Service Required"
+    },
     "geocode_error": {
       "title": "Address Verification Failed",
       "description": "Company or employee address could not be verified.",

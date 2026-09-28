@@ -22,6 +22,7 @@ function ContractorListRoot({
   dictionary,
   successMessage,
   LoaderComponent,
+  className,
 }: ContractorListProps) {
   useI18n('Contractor.ContractorList')
   useComponentDictionary('Contractor.ContractorList', dictionary)
@@ -53,6 +54,7 @@ function ContractorListRoot({
   return (
     <BaseLayout error={contractorList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <ContractorListView
+        className={className}
         contractors={contractorList.data.contractors}
         isFetching={contractorList.status.isFetching}
         pagination={contractorList.pagination}

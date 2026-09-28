@@ -32,12 +32,14 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
 
   const formHandlers = useForm<GrossUpFormValues>({
     resolver: zodResolver(GrossUpFormSchema),
-    defaultValues: { netPay: 0 },
+    // Start blank rather than 0: 0 is not a valid net amount, and a leading 0
+    // in the field means typing an amount produces values like "0350".
+    defaultValues: {},
   })
 
   useEffect(() => {
     if (!isOpen) {
-      formHandlers.reset({ netPay: 0 })
+      formHandlers.reset()
       setCalculatedGrossUp(null)
       setErrorMessage(null)
     }
@@ -118,11 +120,15 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             <Alert label={t('warning')} status="warning" disableScrollIntoView />
           </div>
 
-          <Flex flexDirection="row" gap={8}>
+          {/* Bottom-align on the row itself: the .calculateButton align-self
+              rule below only targets the default (react-aria) adapter, so in
+              other adapters the button otherwise falls back to flex-start. */}
+          <Flex flexDirection="row" gap={8} alignItems="flex-end">
             <NumberInputField
               name="netPay"
               label={t('netPayLabel')}
               format="currency"
+              adornmentStart="$"
               errorMessage={t('validations.netPay')}
               min={0}
               isRequired
@@ -137,15 +143,17 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             </Button>
           </Flex>
 
-          {calculatedGrossUp && (
-            <>
-              <div className={styles.result}>
-                <Text size="sm" variant="supporting" weight="semibold">
-                  {t('grossPayResult')}
-                </Text>
-                <Heading as="h3">{formatNumberAsCurrency(parseFloat(calculatedGrossUp))}</Heading>
-              </div>
-            </>
+          {calculatedGrossUp ? (
+            <div className={styles.result}>
+              <Text size="sm" variant="supporting" weight="semibold">
+                {t('grossPayResult')}
+              </Text>
+              <Heading as="h3">{formatNumberAsCurrency(parseFloat(calculatedGrossUp))}</Heading>
+            </div>
+          ) : (
+            <Text size="sm" variant="supporting">
+              {t('applyHint')}
+            </Text>
           )}
         </div>
       </FormProvider>

@@ -81,6 +81,9 @@ export const employeeListStateMachine = {
   ),
   terminate: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+    transition(componentEvents.PAYROLL_EXIT_FLOW, 'list', returnToList),
+    transition(componentEvents.RUN_PAYROLL_CANCELLED, 'list', returnToList),
+    transition(componentEvents.CANCEL, 'list', returnToList),
   ),
   onboard: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),

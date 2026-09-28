@@ -19,6 +19,8 @@ import {
 } from '@/helpers/dateFormatting'
 
 interface ContractorPaymentCreatePaymentPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   contractors: Contractor[]
   contractorPayments: (ContractorPayments & { isTouched?: boolean })[]
   paymentDate: string
@@ -42,6 +44,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
 
 /** @internal */
 export const CreatePaymentPresentation = ({
+  className,
   contractors,
   paymentDate,
   contractorPayments,
@@ -62,7 +65,7 @@ export const CreatePaymentPresentation = ({
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Flex justifyContent="flex-end" gap={16}>
         <Flex flexDirection="column" gap={4}>
           <Heading as="h2">{t('title')}</Heading>

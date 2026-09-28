@@ -28,11 +28,24 @@ describe('PayrollBlockerAlerts', () => {
   })
 
   describe('single blocker', () => {
-    it('displays default title when translation key not found', async () => {
+    it('displays generic title when translation key not found', async () => {
       const blocker = createMockBlocker({ key: 'blocker_1', message: 'Single blocker message' })
       renderWithProviders(<PayrollBlockerAlerts blockers={[blocker]} />)
       const alertElement = await screen.findByRole('alert')
-      expect(alertElement).toHaveAccessibleName('Unknown blocker')
+      expect(alertElement).toHaveAccessibleName('Payroll blocker')
+    })
+
+    it('displays specific title and API message for partner_tos_not_accepted', async () => {
+      const blocker = createMockBlocker({
+        key: 'partner_tos_not_accepted',
+        message: 'Partner must accept the terms of service.',
+      })
+      renderWithProviders(<PayrollBlockerAlerts blockers={[blocker]} />)
+      const alertElement = await screen.findByRole('alert')
+      expect(alertElement).toHaveAccessibleName('Terms of Service Required')
+      expect(
+        await screen.findByText('Partner must accept the terms of service.'),
+      ).toBeInTheDocument()
     })
 
     it('displays blocker message as description', async () => {

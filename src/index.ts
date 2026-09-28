@@ -602,6 +602,7 @@ export type {
   PayScheduleFormData,
   PayScheduleField,
   PayScheduleFrequency,
+  PayScheduleWorkweekStartDay,
   PayScheduleRequiredValidation,
   DayValidation,
   CustomNameFieldProps,
@@ -611,6 +612,7 @@ export type {
   AnchorEndOfPayPeriodFieldProps,
   Day1FieldProps,
   Day2FieldProps,
+  WorkweekStartDayFieldProps,
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
 
 export {

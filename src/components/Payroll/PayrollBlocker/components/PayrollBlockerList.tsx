@@ -129,9 +129,7 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     const translationKeys = getBlockerTranslationKeys(blockerKey)
 
     const title = t(translationKeys.titleKey, {
-      defaultValue: blockerKey
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, (letter: string) => letter.toUpperCase()),
+      defaultValue: t('genericBlockerTitle'),
     })
 
     const description = t(translationKeys.descriptionKey, {

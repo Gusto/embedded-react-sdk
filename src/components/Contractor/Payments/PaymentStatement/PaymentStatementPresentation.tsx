@@ -17,6 +17,8 @@ import { addressInline, formatPhoneNumber } from '@/helpers/formattedStrings'
 import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
 
 interface PaymentStatementPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   payment: ContractorPaymentForGroup
   contractor: Contractor
   paymentReceipt?: ContractorPaymentReceipt
@@ -30,6 +32,7 @@ type PaymentStatementRow = {
 
 /** @internal */
 export const PaymentStatementPresentation = ({
+  className,
   payment,
   contractor,
   checkDate,
@@ -111,7 +114,7 @@ export const PaymentStatementPresentation = ({
   }, [payment, isHourly, hours, hourlyRate, bonus, reimbursement, t, currencyFormatter])
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={16}>
         <Flex flexDirection="column" gap={8}>
           <Heading as="h2">{t('title', { contractorName })}</Heading>

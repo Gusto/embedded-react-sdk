@@ -90,6 +90,7 @@ const Root = ({
   onEvent,
   withOffcyclePayroll = true,
   LoaderComponent,
+  className,
 }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
@@ -220,6 +221,7 @@ const Root = ({
 
   return (
     <PayrollListPresentation
+      className={className}
       payrolls={payrollList}
       pagination={paginationProps}
       paySchedules={paySchedulesList}

@@ -287,6 +287,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `INFORMATION_REQUEST_FORM_DONE` | `"informationRequest/form/done"` |
 | `INFORMATION_REQUEST_FORM_SUBMIT` | `"informationRequest/form/submit"` |
 | `INFORMATION_REQUEST_RESPOND` | `"informationRequest/respond"` |
+| `OFF_CYCLE_BLOCKERS_VIEW_ALL` | `"offCycle/blockers/viewAll"` |
 | `OFF_CYCLE_CREATED` | `"offCycle/created"` |
 | `OFF_CYCLE_DEDUCTIONS_CHANGE` | `"offCycle/deductionsChange"` |
 | `OFF_CYCLE_SELECT_REASON` | `"offCycle/selectReason"` |

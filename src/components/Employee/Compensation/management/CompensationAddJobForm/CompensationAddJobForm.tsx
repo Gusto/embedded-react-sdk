@@ -58,6 +58,7 @@ function Root({
   employeeId,
   onEvent,
   LoaderComponent,
+  className,
 }: Omit<CompensationAddJobFormProps, 'dictionary'>) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
@@ -70,6 +71,7 @@ function Root({
       submitCtaLabel={t('saveNewJobCta')}
       dictionary={editCompensationDictionary}
       LoaderComponent={LoaderComponent}
+      className={className}
       onEvent={(type, data) => {
         // The onboarding EditCompensation fires its own job/compensation events;
         // the management block exposes a single scoped "submitted" event keyed off

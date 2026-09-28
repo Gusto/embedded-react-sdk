@@ -20,6 +20,8 @@ export interface ManagementContractorListViewProps extends Pick<
   Extract<UseContractorListResult, { isLoading: false }>,
   'pagination' | 'status'
 > {
+  /** CSS class name applied to the root element. */
+  className?: string
   contractors: ContractorWithActions[]
   isFetching: boolean
   selectedTab: ContractorTab
@@ -71,6 +73,7 @@ function isOnboardingEditReview(onboardingStatus?: string | null) {
 
 /** @internal */
 export function ManagementContractorListView({
+  className,
   contractors,
   isFetching,
   selectedTab,
@@ -313,7 +316,7 @@ export function ManagementContractorListView({
 
   return (
     <>
-      <Flex flexDirection="column" gap={32}>
+      <Flex className={className} flexDirection="column" gap={32}>
         <Flex justifyContent="space-between" alignItems="center">
           <Components.Heading as="h2">{t('title')}</Components.Heading>
           <Components.Button variant="secondary" onClick={onAddContractor}>

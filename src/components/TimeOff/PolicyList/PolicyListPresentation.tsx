@@ -25,6 +25,7 @@ export function PolicyListPresentation({
   onDismissDeleteAlert,
   isDeletingPolicyId,
   isPending,
+  className,
 }: PolicyListPresentationProps) {
   const { Button, Heading, Alert, Dialog } = useComponentContext()
   useI18n('Company.TimeOff.TimeOffPolicies')
@@ -126,7 +127,7 @@ export function PolicyListPresentation({
   })
 
   return (
-    <Flex flexDirection="column" gap={16}>
+    <Flex className={className} flexDirection="column" gap={16}>
       {deleteSuccessAlert && (
         <Alert status="success" label={deleteSuccessAlert} onDismiss={onDismissDeleteAlert} />
       )}

@@ -6,6 +6,7 @@
   "calculateCta": "Calculate",
   "calculatingCta": "Calculating...",
   "applyCta": "Apply",
+  "applyHint": "Calculate a gross amount first to apply it.",
   "cancelCta": "Cancel",
   "grossPayResult": "Calculated gross pay",
   "errorMessage": "Unable to calculate gross up. Please try again.",
