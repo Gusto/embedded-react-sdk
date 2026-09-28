@@ -78,9 +78,12 @@ function Root({ companyId, dictionary }: Omit<PayScheduleAssignmentProps, BaseCo
     hooks.registerAfterSuccessHook(stripNullAssignmentPreviewFields)
 
     return () => {
-      hooks.afterSuccessHooks = hooks.afterSuccessHooks.filter(
-        hook => hook !== stripNullAssignmentPreviewFields,
-      )
+      // Remove only the single instance this effect registered — filtering the array would
+      // also drop another concurrently-mounted instance's registration of the same hook.
+      const index = hooks.afterSuccessHooks.indexOf(stripNullAssignmentPreviewFields)
+      if (index !== -1) {
+        hooks.afterSuccessHooks.splice(index, 1)
+      }
     }
   }, [client])
 

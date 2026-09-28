@@ -307,6 +307,45 @@ describe('PaySchedule (management)', () => {
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: /pay schedule/i })).toBeInTheDocument()
     })
+    expect(screen.getByText('Pay schedule assignment updated.')).toBeInTheDocument()
+  })
+
+  it('dismisses the assignment success alert', async () => {
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableMultipleSchedules: true })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /manage/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /manage/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: /there are no changes to review/i }),
+      ).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /submit/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Pay schedule assignment updated.')).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /dismiss alert/i }))
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.PAY_SCHEDULE_MANAGEMENT_ALERT_DISMISSED,
+      null,
+    )
+    expect(screen.queryByText('Pay schedule assignment updated.')).toBeNull()
   })
 
   it('fires PAY_SCHEDULE_AUTO_PILOT_EDIT when the AutoPilot Edit button is clicked, without navigating away', async () => {

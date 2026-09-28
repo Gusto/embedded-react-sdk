@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesPreviewAssignmentMutation } from '@gusto/embedded-api/react-query/paySchedulesPreviewAssignment'
 import { usePaySchedulesAssignMutation } from '@gusto/embedded-api/react-query/paySchedulesAssign'
@@ -95,10 +95,13 @@ export function AssignmentReviewStep() {
     usePaySchedulesPreviewAssignmentMutation()
   const { mutateAsync: assignSchedules, isPending: isAssigning } = usePaySchedulesAssignMutation()
 
-  const payScheduleAssignmentBody: PayScheduleAssignmentBody = {
-    type: assignmentType ?? PayScheduleAssignmentBodyType.Single,
-    defaultPayScheduleUuid,
-  }
+  const payScheduleAssignmentBody: PayScheduleAssignmentBody = useMemo(
+    () => ({
+      type: assignmentType ?? PayScheduleAssignmentBodyType.Single,
+      defaultPayScheduleUuid,
+    }),
+    [assignmentType, defaultPayScheduleUuid],
+  )
 
   useEffect(() => {
     void baseSubmitHandler(undefined, async () => {
@@ -107,8 +110,7 @@ export function AssignmentReviewStep() {
       })
       setEmployeeChanges(response.payScheduleAssignmentPreview?.employeeChanges ?? [])
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyId, assignmentType, defaultPayScheduleUuid])
+  }, [companyId, payScheduleAssignmentBody, previewAssignment, baseSubmitHandler])
 
   // The enclosing BaseComponent's own BaseLayout already renders `error` for this whole
   // component tree, so surface only the loading state here to avoid rendering it twice.
