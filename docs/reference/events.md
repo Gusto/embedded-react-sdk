@@ -291,11 +291,13 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `OFF_CYCLE_CREATED` | `"offCycle/created"` |
 | `OFF_CYCLE_DEDUCTIONS_CHANGE` | `"offCycle/deductionsChange"` |
 | `OFF_CYCLE_SELECT_REASON` | `"offCycle/selectReason"` |
+| `PAY_SCHEDULE_AUTO_PILOT_EDIT` | `"paySchedule/management/autoPilotEdit"` |
 | `PAY_SCHEDULE_CREATE` | `"paySchedule/create"` |
 | `PAY_SCHEDULE_CREATED` | `"paySchedule/created"` |
 | `PAY_SCHEDULE_DELETE` | `"paySchedule/delete"` |
 | `PAY_SCHEDULE_DELETED` | `"paySchedule/deleted"` |
 | `PAY_SCHEDULE_DONE` | `"paySchedule/done"` |
+| `PAY_SCHEDULE_MANAGE_ASSIGNMENT` | `"paySchedule/management/manageAssignment"` |
 | `PAY_SCHEDULE_UPDATE` | `"paySchedule/update"` |
 | `PAY_SCHEDULE_UPDATED` | `"paySchedule/updated"` |
 | `PAYROLL_DELETED` | `"payroll/deleted"` |

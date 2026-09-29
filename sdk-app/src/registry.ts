@@ -1,4 +1,5 @@
 import { ENTITY_REQUIREMENTS, ADDITIONAL_REQUIRED_PROPS } from './generated-registry-data'
+import * as CompanyManagement from '@/components/Company/exports/companyManagement'
 import * as CompanyOnboarding from '@/components/Company/exports/companyOnboarding'
 import * as ContractorManagement from '@/components/Contractor/exports/contractorManagement'
 import * as ContractorOnboarding from '@/components/Contractor/exports/contractorOnboarding'
@@ -9,6 +10,7 @@ import * as InformationRequests from '@/components/InformationRequests'
 import * as TimeOff from '@/components/TimeOff'
 
 export type Category =
+  | 'CompanyManagement'
   | 'CompanyOnboarding'
   | 'ContractorManagement'
   | 'ContractorOnboarding'
@@ -27,6 +29,7 @@ export interface ComponentEntry {
 }
 
 const namespaces: Record<Category, Record<string, unknown>> = {
+  CompanyManagement,
   CompanyOnboarding,
   ContractorManagement,
   ContractorOnboarding,
@@ -73,6 +76,7 @@ function buildRegistry(): ComponentEntry[] {
 export const componentRegistry = buildRegistry()
 
 export const categorizedRegistry: Record<Category, ComponentEntry[]> = {
+  CompanyManagement: [],
   CompanyOnboarding: [],
   ContractorManagement: [],
   ContractorOnboarding: [],
@@ -88,6 +92,7 @@ for (const entry of componentRegistry) {
 }
 
 export const CATEGORIES: Category[] = [
+  'CompanyManagement',
   'CompanyOnboarding',
   'EmployeeManagement',
   'EmployeeOnboarding',

@@ -1,7 +1,9 @@
 import { describe, expect, test, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { PayrollEditEmployee } from './PayrollEditEmployee'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -77,6 +79,13 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       jobUuid: 'test-job-uuid',
       amount: '880.0',
       compensationMultiplier: 1.0,
+      breakdowns: [
+        {
+          startDate: new RFCDate('2025-01-01'),
+          endDate: new RFCDate('2025-01-15'),
+          hours: '40.000',
+        },
+      ],
     },
   ],
   paidTimeOff: [
@@ -106,9 +115,13 @@ vi.mock('@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts',
   }),
 }))
 
+const { mockMutateAsync } = vi.hoisted(() => ({
+  mockMutateAsync: vi.fn().mockResolvedValue({ payrollPrepared: {} }),
+}))
+
 vi.mock('@gusto/embedded-api/react-query/payrollsUpdate', () => ({
   usePayrollsUpdateMutation: () => ({
-    mutateAsync: vi.fn(),
+    mutateAsync: mockMutateAsync,
     isPending: false,
   }),
 }))
@@ -143,5 +156,25 @@ describe('PayrollEditEmployee', () => {
     })
 
     expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
+  test('omits breakdowns from the update payload when the prepared compensation includes them', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledTimes(1)
+    })
+
+    const sentHourlyCompensation =
+      mockMutateAsync.mock.calls[0]![0].request.payrollUpdate.employeeCompensations[0]
+        .hourlyCompensations[0]
+    expect(sentHourlyCompensation).toMatchObject({
+      name: 'Regular Hours',
+      jobUuid: 'test-job-uuid',
+    })
+    expect(sentHourlyCompensation).not.toHaveProperty('breakdowns')
   })
 })
