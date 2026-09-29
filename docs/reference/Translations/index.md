@@ -5306,7 +5306,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewcancelcta"></a> `cancelCta` | `"Cancel payroll"` |
 | <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
 | <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
-| <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{startDate}} - {{endDate}} payroll?"` |
+| <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{payPeriod}} payroll?"` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitledismissal"></a> `cancelDialogTitleDismissal` | `"Cancel payroll?"` |
 | <a id="property-payrollpayrolloverviewcancelledemptystate"></a> `cancelledEmptyState` | `"This payroll has been cancelled."` |
 | <a id="property-payrollpayrolloverviewcancellingtitle"></a> `cancellingTitle` | `"Cancelling payroll..."` |
@@ -5336,7 +5336,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewloadingdescription"></a> `loadingDescription` | `"This may take a minute or two. You can navigate away while this happens."` |
 | <a id="property-payrollpayrolloverviewloadingtitle"></a> `loadingTitle` | `"Submitting payroll..."` |
 | <a id="property-payrollpayrolloverviewoverviewtitle"></a> `overviewTitle` | `"Review payroll"` |
-| <a id="property-payrollpayrolloverviewpagesubtitle"></a> `pageSubtitle` | `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` |
+| <a id="property-payrollpayrolloverviewpagesubtitle"></a> `pageSubtitle` | `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` |
 | <a id="property-payrollpayrolloverviewpagesubtitledismissal"></a> `pageSubtitleDismissal` | `"{{payrollType}} payroll"` |
 | <a id="property-payrollpayrolloverviewpayrollreceiptcta"></a> `payrollReceiptCta` | `"View payroll receipt"` |
 | <a id="property-payrollpayrolloverviewpayrollsummarylabel"></a> `payrollSummaryLabel` | `"Payroll summary table"` |
