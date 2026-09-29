@@ -92,7 +92,15 @@ export const usePreparedPayrollData = ({
       hasInitialDataRef.current = true
       onDataReady?.(result.payrollPrepared)
     }
-  }, [companyId, payrollId, preparePayroll, employeeUuidsKey, sortBy, onDataReady, isTransitionPayroll])
+  }, [
+    companyId,
+    payrollId,
+    preparePayroll,
+    employeeUuidsKey,
+    sortBy,
+    onDataReady,
+    isTransitionPayroll,
+  ])
 
   const handlePreparePayroll = useCallback(async () => {
     await baseSubmitHandler(null, () =>
