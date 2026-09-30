@@ -1,5 +1,6 @@
 import { expect, describe, it } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Suspense } from 'react'
 import {
@@ -118,6 +119,22 @@ describe('TimeOffField', () => {
     renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
 
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+  })
+
+  it('strips the leading zero when typing into a zero-seeded field', async () => {
+    const user = userEvent.setup()
+    const timeOffEntry: PayrollEmployeeCompensationsTypePaidTimeOff = {
+      name: 'Vacation Hours',
+      hours: '0',
+    }
+
+    renderWithProviders(<TestWrapper timeOffEntry={timeOffEntry} employee={mockEmployee} />)
+
+    const input = await screen.findByLabelText(/^Vacation Hours\b/)
+    await user.type(input, '5')
+
+    expect(screen.getByDisplayValue('5')).toBeInTheDocument()
+    expect(screen.queryByDisplayValue('05')).not.toBeInTheDocument()
   })
 
   it('should not show balance if no matching policy found', async () => {
