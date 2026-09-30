@@ -205,8 +205,8 @@ export const formatPayPeriod = (
  * @param endDateInput - Pay period end date.
  * @param locale - Optional BCP 47 locale tag passed to `toLocaleDateString`.
  * @param options - When `useShortMonth` is true, both ends use short month names.
- * Otherwise the start uses the long month name and the end uses short.
- * @returns The formatted range (e.g. `January 1–Jan 15, 2025`), or an empty
+ * Otherwise both use the long month name.
+ * @returns The formatted range (e.g. `January 1–January 15, 2025`), or an empty
  * string when either input cannot be parsed.
  * @internal
  */

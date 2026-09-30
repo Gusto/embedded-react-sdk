@@ -7976,7 +7976,7 @@ export namespace Translations {
     overviewTitle: string
     /** @defaultValue `"Payroll summary"` */
     summaryTitle: string
-    /** @defaultValue `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` */
+    /** @defaultValue `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` */
     pageSubtitle: string
     /** @defaultValue `"{{payrollType}} payroll"` */
     pageSubtitleDismissal: string
@@ -7986,7 +7986,7 @@ export namespace Translations {
     editCta: string
     /** @defaultValue `"Cancel payroll"` */
     cancelCta: string
-    /** @defaultValue `"Cancel {{startDate}} - {{endDate}} payroll?"` */
+    /** @defaultValue `"Cancel {{payPeriod}} payroll?"` */
     cancelDialogTitle: string
     /** @defaultValue `"Cancel payroll?"` */
     cancelDialogTitleDismissal: string
