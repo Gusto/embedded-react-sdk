@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { VisuallyHidden } from '../VisuallyHidden'
 import type { FieldCaptionProps } from './FieldCaptionTypes'
@@ -13,16 +12,15 @@ const DefaultFieldCaption = ({
   isVisuallyHidden = false,
   className,
 }: FieldCaptionProps) => {
-  const { t } = useTranslation('common')
   const Component = as
 
   const content = (
     <Component
       className={classNames(styles.root, className)}
       htmlFor={as === 'label' ? htmlFor : undefined}
+      data-required={isRequired || undefined}
     >
       {children}
-      {!isRequired && <span className={styles.optionalLabel}> {t('optionalLabel')}</span>}
     </Component>
   )
 

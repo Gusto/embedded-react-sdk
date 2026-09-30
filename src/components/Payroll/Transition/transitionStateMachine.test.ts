@@ -19,6 +19,11 @@ function createTestMachine() {
       startDate: '2025-08-14',
       endDate: '2025-08-27',
       payScheduleUuid: 'schedule-uuid-1',
+      payPeriod: {
+        startDate: '2025-08-14',
+        endDate: '2025-08-27',
+        payScheduleUuid: 'schedule-uuid-1',
+      },
       withReimbursements: true,
       withOffcyclePayroll: true,
       header: {
@@ -97,6 +102,27 @@ describe('transitionMachine', () => {
 
       expect(service.machine.current).toBe('editEmployee')
       expect(service.context.employeeId).toBe('emp-1')
+    })
+
+    it('resolves the parent configuration breadcrumb with the transition pay period, not blank dates (SDK-1202)', () => {
+      const service = createService()
+
+      send(service, componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, {
+        employeeId: 'emp-1',
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+      })
+
+      const { header } = service.context
+      const configurationCrumb =
+        header?.type === 'breadcrumbs'
+          ? header.breadcrumbs?.editEmployee?.find(b => b.id === 'configuration')
+          : undefined
+
+      expect(configurationCrumb?.variables).toMatchObject({
+        startDate: '2025-08-14',
+        endDate: '2025-08-27',
+      })
     })
 
     it('routes runPayroll/blockers/viewAll to blockers', () => {

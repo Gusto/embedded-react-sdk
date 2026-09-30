@@ -22,6 +22,7 @@ import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { FlsaStatus } from '@/shared/constants'
 import { MS_PER_HOUR } from '@/helpers/dateFormatting'
+import type { useDateFormatter } from '@/hooks/useDateFormatter'
 const REGULAR_HOURS_NAME = 'regular hours'
 
 /**
@@ -683,6 +684,48 @@ export const getPayrollType = (payroll: {
  */
 export const isDismissalPayroll = (offCycleReason?: string | null): boolean =>
   offCycleReason === OffCycleReasonType.DismissedEmployee
+
+/**
+ * Returns whether an off-cycle reason indicates a tax reconciliation payroll.
+ *
+ * @remarks
+ * Tax reconciliation payrolls are created by Gusto rather than run by the partner. They come
+ * back processed with no pay period and no `calculatedAt`, so callers use this to grant them a
+ * targeted exception from checks that otherwise assume every payroll has both.
+ *
+ * @param offCycleReason - The payroll's off-cycle reason string.
+ * @returns `true` when the reason matches the tax reconciliation reason.
+ * @internal
+ */
+export const isTaxReconciliationPayroll = (offCycleReason?: string | null): boolean =>
+  offCycleReason === OffCycleReasonType.TaxReconciliation
+
+/**
+ * Returns a formatted pay-period range, falling back to the formatted check date when the
+ * payroll has no pay period.
+ *
+ * @remarks
+ * Tax reconciliation payrolls always have a null `pay_period`, so anywhere a pay-period date
+ * is used to identify a payroll on screen needs this fallback to avoid rendering blank space.
+ *
+ * @param payroll - The payroll to derive a date label for.
+ * @param dateFormatter - The date formatter returned by {@link useDateFormatter}.
+ * @returns The formatted pay-period range, or the formatted check date when no pay period exists.
+ * @internal
+ */
+export const getPayPeriodOrCheckDateLabel = (
+  payroll: {
+    payPeriod?: { startDate?: string | null; endDate?: string | null } | null
+    checkDate?: string | Date | null
+  },
+  dateFormatter: ReturnType<typeof useDateFormatter>,
+): string => {
+  const range = dateFormatter.formatPayPeriodRange(
+    payroll.payPeriod?.startDate,
+    payroll.payPeriod?.endDate,
+  )
+  return range || dateFormatter.formatShortWithYear(payroll.checkDate)
+}
 
 const OFF_CYCLE_REASON_LABELS: Record<string, string> = {
   Bonus: 'Bonus',
