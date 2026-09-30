@@ -13,7 +13,11 @@ import {
   getAdditionalEarningsCompensations,
   canCancelPayroll,
   isOvertimeEligibleFlsaStatus,
+  isTaxReconciliationPayroll,
+  getPayPeriodOrCheckDateLabel,
 } from './helpers'
+import { formatPayPeriodRange, formatDateShortWithYear } from '@/helpers/dateFormatting'
+import type { useDateFormatter } from '@/hooks/useDateFormatter'
 import { PayrollCategory } from './payrollTypes'
 import {
   type Employee,
@@ -1063,6 +1067,63 @@ describe('Payroll helpers', () => {
         const payroll = { offCycle: true, offCycleReason: reason }
         expect(getPayrollTypeLabel(payroll)).toBe(expectedLabel)
       }
+    })
+  })
+
+  describe('isTaxReconciliationPayroll', () => {
+    it('returns true for the tax reconciliation off-cycle reason', () => {
+      expect(isTaxReconciliationPayroll('Tax reconciliation')).toBe(true)
+    })
+
+    it('returns false for other off-cycle reasons', () => {
+      expect(isTaxReconciliationPayroll('Bonus')).toBe(false)
+    })
+
+    it('returns false for null or undefined', () => {
+      expect(isTaxReconciliationPayroll(null)).toBe(false)
+      expect(isTaxReconciliationPayroll(undefined)).toBe(false)
+    })
+  })
+
+  describe('getPayPeriodOrCheckDateLabel', () => {
+    const dateFormatter = {
+      formatPayPeriodRange: (start?: string | Date | null, end?: string | Date | null) =>
+        formatPayPeriodRange(start, end),
+      formatShortWithYear: (date?: string | Date | null) => formatDateShortWithYear(date),
+    } as unknown as ReturnType<typeof useDateFormatter>
+
+    it('returns the formatted pay-period range when both dates are present', () => {
+      const payroll = { payPeriod: { startDate: '2025-01-01', endDate: '2025-01-15' } }
+      expect(getPayPeriodOrCheckDateLabel(payroll, dateFormatter)).toBe(
+        formatPayPeriodRange('2025-01-01', '2025-01-15'),
+      )
+    })
+
+    it('falls back to the formatted check date when the pay period is null', () => {
+      const payroll = {
+        payPeriod: { startDate: null, endDate: null },
+        checkDate: '2026-09-30',
+      }
+      expect(getPayPeriodOrCheckDateLabel(payroll, dateFormatter)).toBe(
+        formatDateShortWithYear('2026-09-30'),
+      )
+    })
+
+    it('falls back to the formatted check date when the pay period is missing entirely', () => {
+      const payroll = { checkDate: '2026-09-30' }
+      expect(getPayPeriodOrCheckDateLabel(payroll, dateFormatter)).toBe(
+        formatDateShortWithYear('2026-09-30'),
+      )
+    })
+
+    it('falls back to the formatted check date when only one pay-period date is present', () => {
+      const payroll = {
+        payPeriod: { startDate: '2025-01-01', endDate: null },
+        checkDate: '2026-09-30',
+      }
+      expect(getPayPeriodOrCheckDateLabel(payroll, dateFormatter)).toBe(
+        formatDateShortWithYear('2026-09-30'),
+      )
     })
   })
 
