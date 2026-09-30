@@ -100,7 +100,6 @@ Translation keys for the `common` i18n namespace.
 | `onboardingStatus.employee.self_onboarding_invited_started` | `"Self-onboarding started"` |
 | `onboardingStatus.employee.self_onboarding_pending_invite` | `"Self-onboarding: Pending Invite"` |
 | `onboardingStatus.employee.undefined` | `"N/A"` |
-| <a id="property-commonoptionallabel"></a> `optionalLabel` | `"(optional)"` |
 | <a id="property-commonpayrateformats"></a> `payRateFormats` | |
 | `payRateFormats.hourly` | `"{{amount}}/hr"` |
 | `payRateFormats.monthly` | `"{{amount}}/yr"` |
