@@ -7074,8 +7074,6 @@ export namespace Translations {
     netPayLabel: string
     /** @defaultValue `"Calculate"` */
     calculateCta: string
-    /** @defaultValue `"Calculating..."` */
-    calculatingCta: string
     /** @defaultValue `"Apply"` */
     applyCta: string
     /** @defaultValue `"Calculate a gross amount first to apply it."` */
