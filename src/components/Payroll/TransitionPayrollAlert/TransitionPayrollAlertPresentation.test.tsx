@@ -209,6 +209,65 @@ describe('TransitionPayrollAlertPresentation', () => {
     })
   })
 
+  describe('payroll blocker gating', () => {
+    it('disables run and skip actions when hasBlockers is true', async () => {
+      renderWithSuspense(
+        <TransitionPayrollAlertPresentation
+          groupedPayPeriods={mockGroupedPayPeriods}
+          onRunPayroll={() => {}}
+          onSkipPayroll={() => {}}
+          showSkipSuccessAlert={false}
+          onDismissSkipSuccessAlert={() => {}}
+          skippingPayPeriod={null}
+          hasBlockers
+        />,
+      )
+
+      await screen.findByText(/Transition payroll -/)
+      expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /skip this payroll/i })).toBeDisabled()
+    })
+
+    it('does not call onRunPayroll when the disabled run button is clicked', async () => {
+      const user = userEvent.setup()
+      const onRunPayroll = vi.fn()
+
+      renderWithSuspense(
+        <TransitionPayrollAlertPresentation
+          groupedPayPeriods={mockGroupedPayPeriods}
+          onRunPayroll={onRunPayroll}
+          onSkipPayroll={() => {}}
+          showSkipSuccessAlert={false}
+          onDismissSkipSuccessAlert={() => {}}
+          skippingPayPeriod={null}
+          hasBlockers
+        />,
+      )
+
+      await screen.findByText(/Transition payroll -/)
+      await user.click(screen.getByRole('button', { name: /run transition payroll/i }))
+      expect(onRunPayroll).not.toHaveBeenCalled()
+    })
+
+    it('enables run and skip actions when hasBlockers is false', async () => {
+      renderWithSuspense(
+        <TransitionPayrollAlertPresentation
+          groupedPayPeriods={mockGroupedPayPeriods}
+          onRunPayroll={() => {}}
+          onSkipPayroll={() => {}}
+          showSkipSuccessAlert={false}
+          onDismissSkipSuccessAlert={() => {}}
+          skippingPayPeriod={null}
+          hasBlockers={false}
+        />,
+      )
+
+      await screen.findByText(/Transition payroll -/)
+      expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeEnabled()
+      expect(screen.getByRole('button', { name: /skip this payroll/i })).toBeEnabled()
+    })
+  })
+
   describe('skip success alert', () => {
     it('shows skip success alert when showSkipSuccessAlert is true', async () => {
       renderWithSuspense(
