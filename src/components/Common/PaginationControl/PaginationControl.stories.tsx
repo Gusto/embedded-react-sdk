@@ -71,6 +71,33 @@ export const LastPage = () => {
   )
 }
 
+export const SmallTotalCount = () => {
+  const { value: page, handleChange: setCurrentPage } = useStoryState(
+    'PaginationSmallTotalCount',
+    1,
+  )
+  const currentPage = page ?? 1
+  const totalPages = 3
+  const totalCount = 11
+  const itemsPerPage = 5
+
+  return (
+    <PaginationControl
+      currentPage={currentPage}
+      totalPages={totalPages}
+      totalCount={totalCount}
+      itemsPerPage={itemsPerPage}
+      handleFirstPage={() => setCurrentPage(1)}
+      handlePreviousPage={() => setCurrentPage(Math.max(1, currentPage - 1))}
+      handleNextPage={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+      handleLastPage={() => setCurrentPage(totalPages)}
+      handleItemsPerPageChange={() => {
+        setCurrentPage(1)
+      }}
+    />
+  )
+}
+
 export const MiddlePage = () => {
   const { value: page, handleChange: setCurrentPage } = useStoryState('PaginationMiddlePage', 5)
   const currentPage = page ?? 5

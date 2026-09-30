@@ -31,6 +31,12 @@ const versions: string[] = rawVersions
 const lastVersion = versions[0]
 const hasVersions = lastVersion !== undefined
 
+// Building every minor's full doc set on every release OOMs — cap the live site
+// to the most recent minors. Older minors' markdown still lives in the GitHub repo and
+// is served, unversioned, from the corresponding tag.
+const MAX_BUILT_VERSIONS = 5
+const builtVersions = versions.slice(0, MAX_BUILT_VERSIONS)
+
 const config: Config = {
   title: 'Gusto Embedded',
   tagline: 'Embedded Payroll React SDK Documentation',
@@ -206,8 +212,9 @@ const config: Config = {
           ...(hasVersions && {
             lastVersion,
             includeCurrentVersion: false,
+            onlyIncludeVersions: builtVersions,
             versions: Object.fromEntries(
-              versions.map(version => [version, { banner: 'none' as const, badge: false }]),
+              builtVersions.map(version => [version, { banner: 'none' as const, badge: false }]),
             ),
           }),
         },
@@ -216,9 +223,9 @@ const config: Config = {
           // robots.txt blocks crawlers from fetching older-minor snapshots; keep
           // them out of the sitemap too, so it advertises only the canonical,
           // unprefixed /docs/<page> (the latest minor, driven by lastVersion).
-          // versions[0] is that latest minor served unprefixed, so slice(1) drops
-          // just the /docs/<X.Y>/ snapshots — no maintenance as new minors land.
-          ignorePatterns: hasVersions ? versions.slice(1).map(v => `/docs/${v}/**`) : [],
+          // builtVersions[0] is that latest minor served unprefixed, so slice(1)
+          // drops just the /docs/<X.Y>/ snapshots — no maintenance as new minors land.
+          ignorePatterns: hasVersions ? builtVersions.slice(1).map(v => `/docs/${v}/**`) : [],
           changefreq: 'weekly',
           priority: 0.5,
         },

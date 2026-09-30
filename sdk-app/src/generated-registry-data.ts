@@ -4,6 +4,8 @@
 import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyManagement.PaySchedule': ['companyId'],
+  'CompanyManagement.PayScheduleAssignment': ['companyId'],
   'CompanyOnboarding.AssignSignatory': ['companyId'],
   'CompanyOnboarding.BankAccount': ['companyId'],
   'CompanyOnboarding.CreateSignatory': ['companyId'],
@@ -200,5 +202,6 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
+  managePaySchedules: false,
   payrollRegularRateOfPay: false,
 }

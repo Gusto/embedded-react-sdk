@@ -75,6 +75,48 @@ describe('normalizeToSDKError', () => {
     })
   })
 
+  describe('UnprocessableEntityError with no extractable field errors (SDK-1180)', () => {
+    it('never surfaces the raw JSON dump UnprocessableEntityError falls back to internally', () => {
+      // Mirrors the tax-requirements-update response: a `requirement_sets` nested_errors node
+      // with an empty child `errors[]` and no top-level `message` in the body.
+      // UnprocessableEntityError's own constructor falls back to
+      // `API error occurred: ${JSON.stringify(err)}` in this case — normalizeToSDKError must not
+      // pass that raw dump through as the user-facing message.
+      const errors = [
+        {
+          errorKey: 'requirement_sets',
+          category: 'nested_errors',
+          metadata: { key: 'registrations', state: 'CO' },
+          errors: [],
+        },
+      ]
+      const body = JSON.stringify({ errors })
+      const error = new UnprocessableEntityError({ errors }, createHttpMeta(422, body))
+
+      expect(error.message).toContain('API error occurred:')
+
+      const result = normalizeToSDKError(error)
+
+      expect(result.fieldErrors).toEqual([])
+      expect(result.message).toBe(GENERIC_API_ERROR_MESSAGE)
+    })
+
+    it('uses a genuine top-level message from the response body when one is present', () => {
+      const body = JSON.stringify({ errors: [], message: 'Registrations for CO are incomplete' })
+      const error = new UnprocessableEntityError(
+        {
+          errors: [],
+          message: 'Registrations for CO are incomplete',
+        } as unknown as ConstructorParameters<typeof UnprocessableEntityError>[0],
+        createHttpMeta(422, body),
+      )
+
+      const result = normalizeToSDKError(error)
+
+      expect(result.message).toBe('Registrations for CO are incomplete')
+    })
+  })
+
   describe('APIError (fallback class) — body parsing', () => {
     it('parses field errors from a JSON body with errors[]', () => {
       const body = JSON.stringify({

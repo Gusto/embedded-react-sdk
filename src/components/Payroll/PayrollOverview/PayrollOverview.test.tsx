@@ -573,6 +573,32 @@ describe('PayrollOverview calculatedAt guard', () => {
     expect(screen.queryByText(/Review payroll/i)).toBeNull()
   })
 
+  it('renders a processed tax reconciliation payroll despite a null calculatedAt', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: true,
+      calculatedAt: null,
+      offCycleReason: OffCycleReasonType.TaxReconciliation,
+      checkDate: '2026-09-30',
+      // The real API sends explicit `null`s here, but the generated `PayrollPayPeriodType`
+      // only types `startDate`/`endDate` as `string | undefined` (a separate, tracked
+      // schema-nullability gap) -- `undefined` exercises the same "no pay period" branch
+      // in our fallback logic without fighting that type.
+      payPeriod: { startDate: undefined, endDate: undefined, payScheduleUuid: null },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /Payroll summary/i }),
+    ).toBeInTheDocument()
+    expect(screen.queryByTestId('internal-error-card')).toBeNull()
+    // Falls back to the check date since there's no pay period to show.
+    expect(screen.getAllByText(/Sep 30, 2026/i).length).toBeGreaterThan(0)
+  })
+
   it('throws to the error boundary instead of loading forever when the payroll query itself errors', async () => {
     mockIsError = true
     mockError = new Error('network error')

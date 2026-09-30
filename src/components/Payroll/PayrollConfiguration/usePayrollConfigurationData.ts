@@ -21,6 +21,11 @@ interface UsePayrollConfigurationDataParams {
   /** When true, don't call prepare and cancel any prepare already running. */
   disablePrepare?: boolean
   excludedEmployeeUuids?: string[]
+  /**
+   * When true, prepare is called without a roster. A transition payroll's roster is fixed by the
+   * pay-schedule transition, so the API rejects any `employeeUuids` sent to prepare.
+   */
+  isTransitionPayroll?: boolean
 }
 
 interface UsePayrollConfigurationDataReturn {
@@ -51,6 +56,7 @@ export function usePayrollConfigurationData({
   payrollId,
   disablePrepare = false,
   excludedEmployeeUuids = [],
+  isTransitionPayroll = false,
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
@@ -109,7 +115,7 @@ export function usePayrollConfigurationData({
           payrollId,
           sortBy: 'last_name',
           requestBody: {
-            employeeUuids,
+            employeeUuids: isTransitionPayroll ? undefined : employeeUuids,
           },
         },
         { signal },

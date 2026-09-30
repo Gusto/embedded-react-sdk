@@ -32,6 +32,10 @@ export interface Resources {
   /** */
   'Company.Locations': Translations.CompanyLocations
   /** */
+  'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
+  /** */
+  'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -939,6 +943,92 @@ export namespace Translations {
       phone: string
     }
   }
+  /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
+  export interface CompanyManagementPaySchedule {
+    /** @defaultValue `"Pay schedule"` */
+    title: string
+    /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
+    description: string
+    /** @defaultValue `"Manage"` */
+    manageCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Edit pay schedule"` */
+    editScheduleAriaLabel: string
+    /** @defaultValue `"Edit AutoPilot"` */
+    editAutoPilotAriaLabel: string
+    labels: {
+      /** @defaultValue `"Name"` */
+      name: string
+      /** @defaultValue `"Frequency"` */
+      frequency: string
+    }
+    autoPilot: {
+      /** @defaultValue `"AutoPilot"` */
+      label: string
+      /** @defaultValue `"Enabled"` */
+      enabled: string
+      /** @defaultValue `"Disabled"` */
+      disabled: string
+    }
+    alerts: {
+      /** @defaultValue `"Pay schedule assignment updated."` */
+      assignmentUpdated: string
+    }
+  }
+  /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
+  export interface CompanyManagementPayScheduleAssignment {
+    typeStep: {
+      /** @defaultValue `"Choose schedule type"` */
+      heading: string
+      /** @defaultValue `"After you choose, you can create a pay schedule for each group."` */
+      description: string
+      options: {
+        single: {
+          /** @defaultValue `"Everyone on one schedule"` */
+          label: string
+          /** @defaultValue `"Choose one pay schedule for all your employees"` */
+          description: string
+        }
+      }
+    }
+    scheduleStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Pay schedule"` */
+      payScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for all employees."` */
+      payScheduleDescription: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
+    reviewStep: {
+      /** @defaultValue `"Review changes"` */
+      heading: string
+      /** @defaultValue `"There are no changes to review."` */
+      noChangesHeading: string
+      /** @defaultValue `"If you intended to make changes, please go back and make them."` */
+      noChangesDescription: string
+      /** @defaultValue `"Employees affected"` */
+      employeeChangesHeading: string
+      /** @defaultValue `"Name"` */
+      nameLabel: string
+      /** @defaultValue `"Transition pay period"` */
+      transitionPayPeriodLabel: string
+      /** @defaultValue `"New pay frequency"` */
+      payFrequencyLabel: string
+      /** @defaultValue `"First pay period"` */
+      firstPayPeriodLabel: string
+      /** @defaultValue `"No transition needed"` */
+      noTransitionNeeded: string
+    }
+    /** @defaultValue `"Back"` */
+    backCta: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    /** @defaultValue `"Submit"` */
+    submitCta: string
+  }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {
     /** @defaultValue `"Nice! We’ll take it from here."` */
@@ -1235,6 +1325,10 @@ export namespace Translations {
       noEditableRequirementsTitle: string
       /** @defaultValue `"This state does not have any editable tax requirements."` */
       noEditableRequirementsDescription: string
+      errors: {
+        /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
+        incompleteRequirementSet: string
+      }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string
@@ -7882,7 +7976,7 @@ export namespace Translations {
     overviewTitle: string
     /** @defaultValue `"Payroll summary"` */
     summaryTitle: string
-    /** @defaultValue `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` */
+    /** @defaultValue `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` */
     pageSubtitle: string
     /** @defaultValue `"{{payrollType}} payroll"` */
     pageSubtitleDismissal: string
@@ -7892,7 +7986,7 @@ export namespace Translations {
     editCta: string
     /** @defaultValue `"Cancel payroll"` */
     cancelCta: string
-    /** @defaultValue `"Cancel {{startDate}} - {{endDate}} payroll?"` */
+    /** @defaultValue `"Cancel {{payPeriod}} payroll?"` */
     cancelDialogTitle: string
     /** @defaultValue `"Cancel payroll?"` */
     cancelDialogTitleDismissal: string
@@ -8629,8 +8723,6 @@ export namespace Translations {
       /** @defaultValue `"There were multiple problems with your submission"` */
       multipleErrorsEncountered: string
     }
-    /** @defaultValue `"(optional)"` */
-    optionalLabel: string
     /** @defaultValue `"Select an option..."` */
     selectPlaceholder: string
     /** @defaultValue `"You are on step {{currentStep}} of {{totalSteps}}"` */

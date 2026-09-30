@@ -1,0 +1,20 @@
+{
+  "title": "Pay schedule",
+  "description": "You have assigned everyone to be on one pay schedule.",
+  "manageCta": "Manage",
+  "editCta": "Edit",
+  "editScheduleAriaLabel": "Edit pay schedule",
+  "editAutoPilotAriaLabel": "Edit AutoPilot",
+  "labels": {
+    "name": "Name",
+    "frequency": "Frequency"
+  },
+  "autoPilot": {
+    "label": "AutoPilot",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "alerts": {
+    "assignmentUpdated": "Pay schedule assignment updated."
+  }
+}
