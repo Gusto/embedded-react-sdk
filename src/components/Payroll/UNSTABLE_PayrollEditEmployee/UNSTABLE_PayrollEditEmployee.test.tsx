@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { UNSTABLE_PayrollEditEmployee } from './UNSTABLE_PayrollEditEmployee'
@@ -185,6 +185,37 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     await waitFor(() => {
       expect(screen.getByText('32 remaining')).toBeInTheDocument()
     })
+  })
+
+  it('strips the leading zero from a zero-seeded field before submitting', async () => {
+    server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
+    let updateBody: Record<string, unknown> | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json(multiWorkweekPrepare('0'))
+    })
+    server.use(handlePayrollsUpdate(updateResolver))
+
+    const user = userEvent.setup()
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    // Vacation Hours is seeded with "0". A native number input keeps the leading
+    // zero when the user types onto it, so the browser fires onChange with "05" --
+    // fireEvent.change reproduces that verbatim (userEvent's number-input
+    // simulation normalizes it away, hiding the bug). Absent the stripLeadingZeros
+    // transform every bound field carries, that "05" would submit unchanged.
+    const timeOffField = await screen.findByRole('spinbutton', { name: /^Vacation Hours/ })
+    fireEvent.change(timeOffField, { target: { value: '05' } })
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+    })
+    const compensation = (updateBody!.employee_compensations as Array<Record<string, unknown>>)[0]!
+    const vacation = (compensation.paid_time_off as Array<{ name: string; hours: string }>).find(
+      entry => entry.name === 'Vacation Hours',
+    )
+    expect(vacation).toMatchObject({ name: 'Vacation Hours', hours: '5' })
   })
 
   it('adds, then removes, a one-time reimbursement', async () => {
