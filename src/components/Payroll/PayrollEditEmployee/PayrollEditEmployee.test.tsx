@@ -1,7 +1,10 @@
-import { describe, expect, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { PayrollCategory } from '../payrollTypes'
 import { PayrollEditEmployee } from './PayrollEditEmployee'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -77,6 +80,13 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       jobUuid: 'test-job-uuid',
       amount: '880.0',
       compensationMultiplier: 1.0,
+      breakdowns: [
+        {
+          startDate: new RFCDate('2025-01-01'),
+          endDate: new RFCDate('2025-01-15'),
+          hours: '40.000',
+        },
+      ],
     },
   ],
   paidTimeOff: [
@@ -106,23 +116,27 @@ vi.mock('@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts',
   }),
 }))
 
+const { mockMutateAsync, mockUsePayrollsGetSuspense, mockUsePreparedPayrollData } = vi.hoisted(
+  () => ({
+    mockMutateAsync: vi.fn().mockResolvedValue({ payrollPrepared: {} }),
+    mockUsePayrollsGetSuspense: vi.fn(),
+    mockUsePreparedPayrollData: vi.fn(),
+  }),
+)
+
 vi.mock('@gusto/embedded-api/react-query/payrollsUpdate', () => ({
   usePayrollsUpdateMutation: () => ({
-    mutateAsync: vi.fn(),
+    mutateAsync: mockMutateAsync,
     isPending: false,
   }),
 }))
 
+vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
+  usePayrollsGetSuspense: mockUsePayrollsGetSuspense,
+}))
+
 vi.mock('../usePreparedPayrollData', () => ({
-  usePreparedPayrollData: () => ({
-    preparedPayroll: {
-      employeeCompensations: [mockEmployeeCompensation],
-      fixedCompensationTypes: [],
-      payPeriod: { startDate: '2025-01-01', endDate: '2025-01-15' },
-    },
-    paySchedule: undefined,
-    isLoading: false,
-  }),
+  usePreparedPayrollData: mockUsePreparedPayrollData,
 }))
 
 const defaultProps = {
@@ -133,6 +147,22 @@ const defaultProps = {
 }
 
 describe('PayrollEditEmployee', () => {
+  beforeEach(() => {
+    mockMutateAsync.mockClear()
+    // Regular (non-transition) payroll by default; individual tests override this to
+    // exercise the transition-payroll path.
+    mockUsePayrollsGetSuspense.mockReturnValue({ data: { payrollShow: {} } })
+    mockUsePreparedPayrollData.mockReturnValue({
+      preparedPayroll: {
+        employeeCompensations: [mockEmployeeCompensation],
+        fixedCompensationTypes: [],
+        payPeriod: { startDate: '2025-01-01', endDate: '2025-01-15' },
+      },
+      paySchedule: undefined,
+      isLoading: false,
+    })
+  })
+
   test('applies custom className', async () => {
     const { container } = renderWithProviders(
       <PayrollEditEmployee {...defaultProps} className="custom-class" />,
@@ -143,5 +173,79 @@ describe('PayrollEditEmployee', () => {
     })
 
     expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
+  test('omits breakdowns from the update payload when the prepared compensation includes them', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledTimes(1)
+    })
+
+    const sentHourlyCompensation =
+      mockMutateAsync.mock.calls[0]![0].request.payrollUpdate.employeeCompensations[0]
+        .hourlyCompensations[0]
+    expect(sentHourlyCompensation).toMatchObject({
+      name: 'Regular Hours',
+      jobUuid: 'test-job-uuid',
+    })
+    expect(sentHourlyCompensation).not.toHaveProperty('breakdowns')
+  })
+
+  test('passes isTransitionPayroll through to usePreparedPayrollData for a transition payroll', async () => {
+    mockUsePayrollsGetSuspense.mockReturnValue({
+      data: { payrollShow: { offCycle: true, offCycleReason: PayrollCategory.Transition } },
+    })
+
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(mockUsePreparedPayrollData).toHaveBeenCalledWith(
+        expect.objectContaining({ isTransitionPayroll: true }),
+      )
+    })
+  })
+
+  test('does not mark a regular payroll as a transition payroll', async () => {
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(mockUsePreparedPayrollData).toHaveBeenCalledWith(
+        expect.objectContaining({ isTransitionPayroll: false }),
+      )
+    })
+  })
+
+  test('selects the compensation matching employeeId, not just the first entry, when prepare returns multiple employees', async () => {
+    const otherEmployeeCompensation: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensation,
+      employeeUuid: 'other-employee-uuid',
+    }
+    // A transition payroll's roster is fixed by the pay-schedule transition, so prepare
+    // returns every employee's compensation rather than just the one being edited.
+    mockUsePreparedPayrollData.mockReturnValue({
+      preparedPayroll: {
+        employeeCompensations: [otherEmployeeCompensation, mockEmployeeCompensation],
+        fixedCompensationTypes: [],
+        payPeriod: { startDate: '2025-01-01', endDate: '2025-01-15' },
+      },
+      paySchedule: undefined,
+      isLoading: false,
+    })
+    const user = userEvent.setup()
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledTimes(1)
+    })
+
+    const sentCompensation =
+      mockMutateAsync.mock.calls[0]![0].request.payrollUpdate.employeeCompensations[0]
+    expect(sentCompensation).toMatchObject({ employeeUuid: 'test-employee-uuid' })
   })
 })

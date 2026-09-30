@@ -5,9 +5,10 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
-import { derivePayrollCategory, isOffCyclePayroll } from '../payrollTypes'
+import { derivePayrollCategory, isOffCyclePayroll, PayrollCategory } from '../payrollTypes'
 import { cleanupReimbursements } from '../helpers'
 import { UNSTABLE_PayrollEditEmployee } from '../UNSTABLE_PayrollEditEmployee/UNSTABLE_PayrollEditEmployee'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
@@ -99,16 +100,22 @@ const Root = ({
     employeeId,
   })
   const memoizedEmployeeId = useMemo(() => [employeeId], [employeeId])
+  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+  const isTransitionPayroll =
+    derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
     payrollId,
     employeeUuids: memoizedEmployeeId,
+    isTransitionPayroll,
   })
 
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
   const employee = employeeData.employee!
-  const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
+  const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
+    comp => comp.employeeUuid === employeeId,
+  )
   const bankAccounts = bankAccountsList.employeeBankAccounts || []
   const hasDirectDepositSetup = bankAccounts.length > 0
   const payrollCategory = derivePayrollCategory(preparedPayroll ?? {})
@@ -122,6 +129,16 @@ const Root = ({
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     return {
       ...compensation,
+      // The legacy editor edits hours, not per-workweek breakdowns, so omit
+      // breakdowns and let the API use the hours we send.
+      hourlyCompensations: compensation.hourlyCompensations?.map(hourlyCompensation => {
+        const { breakdowns, ...hourlyCompensationWithoutBreakdowns } = hourlyCompensation
+        return hourlyCompensationWithoutBreakdowns
+      }),
+      fixedCompensations: compensation.fixedCompensations?.map(fixedCompensation => {
+        const { breakdowns, ...fixedCompensationWithoutBreakdowns } = fixedCompensation
+        return fixedCompensationWithoutBreakdowns
+      }),
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
       // Off-cycle payrolls write reimbursements via the legacy fixed_compensations field; the
