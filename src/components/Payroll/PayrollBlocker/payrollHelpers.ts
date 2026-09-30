@@ -108,7 +108,23 @@ export const payrollSubmitHandler = async (
   }
 }
 
-const ACTIONABLE_BLOCKER_KEYS = ['pending_information_request', 'pending_recovery_case'] as const
+/**
+ * Blocker key the backend returns when a company has an outstanding information request.
+ *
+ * @internal
+ */
+export const PENDING_INFORMATION_REQUEST_BLOCKER_KEY = 'pending_information_request'
+/**
+ * Blocker key the backend returns when a company has an open recovery case.
+ *
+ * @internal
+ */
+export const PENDING_RECOVERY_CASE_BLOCKER_KEY = 'pending_recovery_case'
+
+const ACTIONABLE_BLOCKER_KEYS = [
+  PENDING_INFORMATION_REQUEST_BLOCKER_KEY,
+  PENDING_RECOVERY_CASE_BLOCKER_KEY,
+] as const
 
 /** @internal */
 export const isActionableBlocker = (key: string) =>

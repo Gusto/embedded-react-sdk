@@ -358,18 +358,8 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/information_requests",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/recovery_cases",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases"
         }
       ],
       "variables": [
@@ -1791,6 +1781,16 @@
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id"
         },
         {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules/assign",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules/assignment_preview",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview"
+        },
+        {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/preview",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview"
@@ -1985,6 +1985,38 @@
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules/assign",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules/assignment_preview",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
+    "CompanyManagement.PayScheduleAssignment": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules/assign",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules/assignment_preview",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview"
         }
       ],
       "variables": [

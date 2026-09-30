@@ -21,7 +21,7 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
-import { canCancelPayroll } from '../helpers'
+import { canCancelPayroll, isTaxReconciliationPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -369,7 +369,11 @@ const Root = ({
     throw new Error(t('alerts.payrollLoadFailed'))
   }
 
-  if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
+  if (
+    status === PayrollOverviewStatus.Viewing &&
+    !payrollData.calculatedAt &&
+    !isTaxReconciliationPayroll(payrollData.offCycleReason)
+  ) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
 

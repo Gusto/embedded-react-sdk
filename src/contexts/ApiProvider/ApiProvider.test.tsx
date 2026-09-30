@@ -180,10 +180,15 @@ describe('ApiProvider', () => {
       </ApiProvider>,
     )
 
-    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(1)
+    // Two afterSuccess hooks are registered: the API version mismatch warning and the
+    // information-request enum-hardening hook (SDK-1347).
+    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(2)
     expect(mockSDKHooksInstance.registerAfterErrorHook).toHaveBeenCalledTimes(1)
 
     const [afterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[0]! as [
+      { afterSuccess: unknown },
+    ]
+    const [enumAfterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[1]! as [
       { afterSuccess: unknown },
     ]
     const [afterErrorHook] = mockSDKHooksInstance.registerAfterErrorHook.mock.calls[0]! as [
@@ -191,6 +196,7 @@ describe('ApiProvider', () => {
     ]
 
     expect(afterSuccessHook.afterSuccess).toBeDefined()
+    expect(enumAfterSuccessHook.afterSuccess).toBeDefined()
     expect(afterErrorHook.afterError).toBeDefined()
   })
 })

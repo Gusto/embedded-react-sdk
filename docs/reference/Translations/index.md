@@ -100,7 +100,6 @@ Translation keys for the `common` i18n namespace.
 | `onboardingStatus.employee.self_onboarding_invited_started` | `"Self-onboarding started"` |
 | `onboardingStatus.employee.self_onboarding_pending_invite` | `"Self-onboarding: Pending Invite"` |
 | `onboardingStatus.employee.undefined` | `"N/A"` |
-| <a id="property-commonoptionallabel"></a> `optionalLabel` | `"(optional)"` |
 | <a id="property-commonpayrateformats"></a> `payRateFormats` | |
 | `payRateFormats.hourly` | `"{{amount}}/hr"` |
 | `payRateFormats.monthly` | `"{{amount}}/yr"` |
@@ -634,6 +633,8 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 
 | Property | Default value |
 | ------ | ------ |
+| <a id="property-companymanagementpayschedulealerts"></a> `alerts` | |
+| `alerts.assignmentUpdated` | `"Pay schedule assignment updated."` |
 | <a id="property-companymanagementpayscheduleautopilot"></a> `autoPilot` | |
 | `autoPilot.disabled` | `"Disabled"` |
 | `autoPilot.enabled` | `"Enabled"` |
@@ -647,6 +648,44 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `labels.name` | `"Name"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
+
+***
+
+<a id="companymanagementpayscheduleassignment"></a>
+
+### CompanyManagementPayScheduleAssignment
+
+Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementpayscheduleassignmentbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-companymanagementpayscheduleassignmentcontinuecta"></a> `continueCta` | `"Continue"` |
+| <a id="property-companymanagementpayscheduleassignmentreviewstep"></a> `reviewStep` | |
+| `reviewStep.employeeChangesHeading` | `"Employees affected"` |
+| `reviewStep.firstPayPeriodLabel` | `"First pay period"` |
+| `reviewStep.heading` | `"Review changes"` |
+| `reviewStep.nameLabel` | `"Name"` |
+| `reviewStep.noChangesDescription` | `"If you intended to make changes, please go back and make them."` |
+| `reviewStep.noChangesHeading` | `"There are no changes to review."` |
+| `reviewStep.noTransitionNeeded` | `"No transition needed"` |
+| `reviewStep.payFrequencyLabel` | `"New pay frequency"` |
+| `reviewStep.transitionPayPeriodLabel` | `"Transition pay period"` |
+| <a id="property-companymanagementpayscheduleassignmentschedulestep"></a> `scheduleStep` | |
+| `scheduleStep.addPayScheduleCta` | `"Add pay schedule"` |
+| `scheduleStep.heading` | `"Assign employees"` |
+| `scheduleStep.payScheduleDescription` | `"The pay schedule to use for all employees."` |
+| `scheduleStep.payScheduleLabel` | `"Pay schedule"` |
+| <a id="property-companymanagementpayscheduleassignmentsubmitcta"></a> `submitCta` | `"Submit"` |
+| <a id="property-companymanagementpayscheduleassignmenttypestep"></a> `typeStep` | |
+| `typeStep.description` | `"After you choose, you can create a pay schedule for each group."` |
+| `typeStep.heading` | `"Choose schedule type"` |
+| `typeStep.options` | |
+| `typeStep.options.single` | |
+| `typeStep.options.single.description` | `"Choose one pay schedule for all your employees"` |
+| `typeStep.options.single.label` | `"Everyone on one schedule"` |
 
 ***
 
@@ -4680,7 +4719,6 @@ Translation keys for the `Payroll.GrossUpModal` i18n namespace.
 | <a id="property-payrollgrossupmodalapplycta"></a> `applyCta` | `"Apply"` |
 | <a id="property-payrollgrossupmodalapplyhint"></a> `applyHint` | `"Calculate a gross amount first to apply it."` |
 | <a id="property-payrollgrossupmodalcalculatecta"></a> `calculateCta` | `"Calculate"` |
-| <a id="property-payrollgrossupmodalcalculatingcta"></a> `calculatingCta` | `"Calculating..."` |
 | <a id="property-payrollgrossupmodalcancelcta"></a> `cancelCta` | `"Cancel"` |
 | <a id="property-payrollgrossupmodaldescription"></a> `description` | `"Please enter the net amount you want this employee to receive. We'll then automatically calculate the gross amount you need to pay, including taxes and deductions."` |
 | <a id="property-payrollgrossupmodalerrormessage"></a> `errorMessage` | `"Unable to calculate gross up. Please try again."` |
@@ -5306,7 +5344,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewcancelcta"></a> `cancelCta` | `"Cancel payroll"` |
 | <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
 | <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
-| <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{startDate}} - {{endDate}} payroll?"` |
+| <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{payPeriod}} payroll?"` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitledismissal"></a> `cancelDialogTitleDismissal` | `"Cancel payroll?"` |
 | <a id="property-payrollpayrolloverviewcancelledemptystate"></a> `cancelledEmptyState` | `"This payroll has been cancelled."` |
 | <a id="property-payrollpayrolloverviewcancellingtitle"></a> `cancellingTitle` | `"Cancelling payroll..."` |
@@ -5336,7 +5374,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewloadingdescription"></a> `loadingDescription` | `"This may take a minute or two. You can navigate away while this happens."` |
 | <a id="property-payrollpayrolloverviewloadingtitle"></a> `loadingTitle` | `"Submitting payroll..."` |
 | <a id="property-payrollpayrolloverviewoverviewtitle"></a> `overviewTitle` | `"Review payroll"` |
-| <a id="property-payrollpayrolloverviewpagesubtitle"></a> `pageSubtitle` | `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` |
+| <a id="property-payrollpayrolloverviewpagesubtitle"></a> `pageSubtitle` | `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` |
 | <a id="property-payrollpayrolloverviewpagesubtitledismissal"></a> `pageSubtitleDismissal` | `"{{payrollType}} payroll"` |
 | <a id="property-payrollpayrolloverviewpayrollreceiptcta"></a> `payrollReceiptCta` | `"View payroll receipt"` |
 | <a id="property-payrollpayrolloverviewpayrollsummarylabel"></a> `payrollSummaryLabel` | `"Payroll summary table"` |
@@ -5800,6 +5838,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
+| <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
 | <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |
