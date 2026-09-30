@@ -1059,6 +1059,13 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+declare namespace CompanyManagement {
+    export {
+        PaySchedule_2 as PaySchedule,
+        PayScheduleProps_2 as PayScheduleProps
+    }
+}
+
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
@@ -1440,6 +1447,8 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_DELETE: "paySchedule/delete";
     readonly PAY_SCHEDULE_DELETED: "paySchedule/deleted";
     readonly PAY_SCHEDULE_DONE: "paySchedule/done";
+    readonly PAY_SCHEDULE_MANAGE_ASSIGNMENT: "paySchedule/management/manageAssignment";
+    readonly PAY_SCHEDULE_AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
     readonly COMPANY_INDUSTRY: "company/industry";
     readonly COMPANY_INDUSTRY_SELECTED: "company/industry/selected";
     readonly COMPANY_FEDERAL_TAXES_UPDATED: "company/federalTaxes/updated";
@@ -4456,6 +4465,9 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 // @public
 const PaySchedule: (input: PayScheduleProps) => JSX;
 
+// @alpha
+const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
+
 // @public
 type PayScheduleDefaultFields = {
     [K in keyof Pick<PayScheduleFormData, 'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency' | 'workweekStartDay'>]: NonNullable<PayScheduleFormData[K]>;
@@ -4507,6 +4519,13 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
     defaultValues?: PayScheduleDefaultValues;
     // @alpha
     disableWorkweekStartDayEditing?: boolean;
+}
+
+// @alpha
+interface PayScheduleProps_2 extends BaseComponentInterface<'Company.Management.PaySchedule'> {
+    companyId: string;
+    enableAutoPilot?: boolean;
+    enableMultipleSchedules?: boolean;
 }
 
 // @public
@@ -4894,6 +4913,8 @@ export interface Resources {
     'Company.Industry': Translations.CompanyIndustry
     // (undocumented)
     'Company.Locations': Translations.CompanyLocations
+    // (undocumented)
+    'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)
     'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
     // (undocumented)
@@ -5942,6 +5963,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     historicalPayments?: boolean;
+    managePaySchedules?: boolean;
     payrollRegularRateOfPay?: boolean;
 }
 

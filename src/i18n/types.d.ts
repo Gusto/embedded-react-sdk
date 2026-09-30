@@ -32,6 +32,8 @@ export interface Resources {
   /** */
   'Company.Locations': Translations.CompanyLocations
   /** */
+  'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -939,6 +941,35 @@ export namespace Translations {
       phone: string
     }
   }
+  /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
+  export interface CompanyManagementPaySchedule {
+    /** @defaultValue `"Pay schedule"` */
+    title: string
+    /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
+    description: string
+    /** @defaultValue `"Manage"` */
+    manageCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Edit pay schedule"` */
+    editScheduleAriaLabel: string
+    /** @defaultValue `"Edit AutoPilot"` */
+    editAutoPilotAriaLabel: string
+    labels: {
+      /** @defaultValue `"Name"` */
+      name: string
+      /** @defaultValue `"Frequency"` */
+      frequency: string
+    }
+    autoPilot: {
+      /** @defaultValue `"AutoPilot"` */
+      label: string
+      /** @defaultValue `"Enabled"` */
+      enabled: string
+      /** @defaultValue `"Disabled"` */
+      disabled: string
+    }
+  }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {
     /** @defaultValue `"Nice! We’ll take it from here."` */
@@ -1235,6 +1266,10 @@ export namespace Translations {
       noEditableRequirementsTitle: string
       /** @defaultValue `"This state does not have any editable tax requirements."` */
       noEditableRequirementsDescription: string
+      errors: {
+        /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
+        incompleteRequirementSet: string
+      }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string
@@ -8471,8 +8506,10 @@ export namespace Translations {
     }
     /** @defaultValue `"Additional earnings"` */
     additionalEarningsTitle: string
-    /** @defaultValue `"Earnings entered here factor into the overtime multiplier used to calculate {{employeeName}}'s total pay."` */
+    /** @defaultValue `"Certain types of additional earnings affect the overtime premium (the multiplier used to calculate OT rates)."` */
     overtimeMultiplierEarningsAlert: string
+    /** @defaultValue `"Only additional earnings attributable to this pay period should be entered below. These amounts will be included in the overtime premium calculations on this payroll. Employee earnings attributable to any period of time different than this pay period (such as a quarterly or annual bonus) should be entered as a separate off-cycle payroll specifying the relevant dates."` */
+    overtimeMultiplierEarningsAlertDescription: string
     /** @defaultValue `"Included in overtime multiplier calculation"` */
     overtimeIncludedEarningsGroupLabel: string
     /** @defaultValue `"Not a factor for overtime calculation"` */
