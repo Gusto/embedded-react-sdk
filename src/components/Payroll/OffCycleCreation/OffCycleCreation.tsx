@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import {
   OffCycleReason as ApiOffCycleReason,
   WithholdingPayPeriod,
@@ -11,10 +12,8 @@ import {
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
-import {
-  createOffCyclePayPeriodDateFormSchema,
-  type OffCyclePayrollDateType,
-} from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { OffCycleCreationFormData, OffCycleCreationProps } from './OffCycleCreationTypes'
@@ -44,6 +43,7 @@ const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `offCycle/created` | The off-cycle payroll has been created | `{ payrollUuid: string }` |
+ * | `offCycle/blockers/viewAll` | The user chose to view the company's payroll blockers from the blocker alert | none |
  *
  * Changing the reason updates the deduction and withholding defaults — `'bonus'` skips
  * regular deductions and uses the supplemental withholding rate; `'correction'` includes
@@ -61,7 +61,7 @@ export function OffCycleCreation(props: OffCycleCreationProps) {
   )
 }
 
-function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreationProps) {
+function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCycleCreationProps) {
   useComponentDictionary('Payroll.OffCycleCreation', dictionary)
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleReasonSelection')
@@ -75,7 +75,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
-  const { minCheckDate, today } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
+  const { minCheckDate, maxDate, minPayPeriodDate, today } =
+    useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
@@ -97,10 +98,23 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     setIsTaxWithholdingModalOpen(false)
   }, [])
 
+  const handleViewBlockers = useCallback(() => {
+    onEvent(componentEvents.OFF_CYCLE_BLOCKERS_VIEW_ALL)
+  }, [onEvent])
+
   const { data: employeesData } = useEmployeesListSuspense({
     companyId,
     onboardedActive: true,
   })
+
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: companyId,
+  })
+
+  const blockers: ApiPayrollBlocker[] = (blockersData.payrollBlockers ?? []).map(blocker => ({
+    key: blocker.key,
+    message: blocker.message,
+  }))
 
   const employees: MultiSelectComboBoxOption[] = useMemo(() => {
     const employeeList = employeesData.showEmployees ?? []
@@ -126,14 +140,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     t(key as any, options as any) as string
 
   const dynamicResolver: Resolver<OffCycleCreationFormData> = (values, context, options) => {
-    const reason = values.reason
     const isCheckOnly = values.isCheckOnly
-    const resolvedPayrollType: OffCyclePayrollDateType =
-      reason === 'correction' ? 'correction' : payrollType
 
     const dateSchema = createOffCyclePayPeriodDateFormSchema(
       translateValidation,
-      resolvedPayrollType,
       isCheckOnly ? today : minCheckDate,
       paymentSpeedDays,
     )
@@ -231,14 +241,19 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
         <OffCycleCreationPresentation
           employees={employees}
+          blockers={blockers}
+          onViewBlockersClick={handleViewBlockers}
           isPending={isPending}
           minCheckDate={minCheckDate}
           minCheckOnlyDate={today}
+          maxDate={maxDate}
+          minPayPeriodDate={minPayPeriodDate}
           taxWithholdingConfig={taxWithholdingConfig}
           isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
           onTaxWithholdingEditClick={handleTaxWithholdingEditClick}
           onTaxWithholdingModalDone={handleTaxWithholdingModalDone}
           onTaxWithholdingModalCancel={handleTaxWithholdingModalCancel}
+          className={className}
         />
       </Form>
     </FormProvider>

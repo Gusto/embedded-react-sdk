@@ -46,7 +46,7 @@ const contractorPaymentGroup = {
   ],
 }
 
-const renderScreen = (onEvent = vi.fn()) => {
+const renderScreen = (onEvent = vi.fn(), className?: string) => {
   server.use(
     handleGetContractorsList(() =>
       HttpResponse.json([hourlyContractor], {
@@ -55,15 +55,16 @@ const renderScreen = (onEvent = vi.fn()) => {
     ),
     handleGetContractorPaymentGroup(() => HttpResponse.json(contractorPaymentGroup)),
   )
-  renderWithProviders(
+  const { container } = renderWithProviders(
     <HistoricalPaymentSummary
       companyId={COMPANY_ID}
       paymentGroupId={PAYMENT_GROUP_ID}
       onEvent={onEvent}
+      className={className}
     />,
     { unstableFeatures: { historicalPayments: true } },
   )
-  return { onEvent }
+  return { onEvent, container }
 }
 
 describe('HistoricalPaymentSummary', () => {
@@ -84,6 +85,15 @@ describe('HistoricalPaymentSummary', () => {
     })
     expect(screen.queryByText('Debit Account')).not.toBeInTheDocument()
     expect(screen.queryByText('Debit Date')).not.toBeInTheDocument()
+  })
+
+  it('applies custom className', async () => {
+    const { container } = renderScreen(vi.fn(), 'custom-class')
+
+    await waitFor(() => {
+      expect(screen.getByText('Ada Lovelace')).toBeInTheDocument()
+    })
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
   })
 
   it('emits exit when Done is clicked', async () => {

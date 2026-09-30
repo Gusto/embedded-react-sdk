@@ -26,7 +26,7 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 | [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 | [PayrollFlow](payroll-flow.md) | Hub for running and managing all payrolls across a company's pay schedules. |
-| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
+| [TransitionFlow](transition-flow.md) | Macro flow that runs a transition payroll end to end: resolve or create the payroll, then configure, review, submit, and view receipts. |
 
 ## 🧩 Blocks
 
@@ -48,3 +48,4 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 | [PrintChecks](blocks.md#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
 | [RecoveryCases](blocks.md#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
 | [TransitionCreation](blocks.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
+| [TransitionPayroll](blocks.md#transitionpayroll) | Resolves and runs a transition payroll for a pay-schedule change, picking up an existing unprocessed transition payroll when one exists and creating one otherwise. |

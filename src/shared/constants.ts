@@ -243,6 +243,7 @@ export const contractorEvents = {
   CONTRACTOR_SIGN_DOCUMENT: 'contractor/documents/sign',
   CONTRACTOR_DOCUMENTS_DONE: 'contractor/documents/done',
   CONTRACTOR_VIEW: 'contractor/view',
+  CONTRACTOR_RETURN_TO_LIST: 'contractor/returnToList',
   CONTRACTOR_DISMISS: 'contractor/dismiss',
   CONTRACTOR_REHIRE: 'contractor/rehire',
   CONTRACTOR_DISMISSAL_CANCELLED: 'contractor/dismissal/cancelled',
@@ -367,6 +368,8 @@ export const payScheduleEvents = {
   PAY_SCHEDULE_DELETE: 'paySchedule/delete',
   PAY_SCHEDULE_DELETED: 'paySchedule/deleted',
   PAY_SCHEDULE_DONE: 'paySchedule/done',
+  PAY_SCHEDULE_MANAGE_ASSIGNMENT: 'paySchedule/management/manageAssignment',
+  PAY_SCHEDULE_AUTO_PILOT_EDIT: 'paySchedule/management/autoPilotEdit',
 } as const
 
 /**
@@ -500,6 +503,7 @@ export const printChecksEvents = {
  */
 export const offCycleEvents = {
   OFF_CYCLE_CREATED: 'offCycle/created',
+  OFF_CYCLE_BLOCKERS_VIEW_ALL: 'offCycle/blockers/viewAll',
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
   TRANSITION_CREATED: 'transition/created',
   RUN_TRANSITION_PAYROLL: 'transition/runPayroll',

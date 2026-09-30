@@ -32,10 +32,6 @@
     :global(.react-aria-Cell) {
       width: 50%;
       text-align: left;
-
-      &:last-child {
-        text-align: left;
-      }
     }
   }
 }

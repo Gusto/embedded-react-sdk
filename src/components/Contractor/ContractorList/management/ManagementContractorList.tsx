@@ -41,6 +41,7 @@ function ManagementContractorListRoot({
   onEvent,
   dictionary,
   LoaderComponent,
+  className,
 }: ManagementContractorListProps) {
   useI18n('Contractor.ManagementContractorList')
   useComponentDictionary('Contractor.ManagementContractorList', dictionary)
@@ -89,6 +90,7 @@ function ManagementContractorListRoot({
   return (
     <BaseLayout error={contractorList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <ManagementContractorListView
+        className={className}
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
         contractors={contractorList.data.contractors}

@@ -1,8 +1,5 @@
 import type { AgentPayment } from './types'
 
-const COMPANY_UUID = 'f0e1d2c3-b4a5-6789-0fed-cba987654321'
-void COMPANY_UUID
-
 export const mockAgentPayments: AgentPayment[] = [
   {
     uuid: 'ap-0001-0000-0000-000000000001',

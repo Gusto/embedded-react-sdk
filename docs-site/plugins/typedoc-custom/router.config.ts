@@ -238,6 +238,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     id: 'component-inventory',
     sources: [
       'components/Common/UI',
+      'components/Common/FieldCaption',
       'components/Common/FieldLayout',
       'components/Common/PaginationControl',
       'components/Common/PayrollLoading',

@@ -1,5 +1,5 @@
 import { describe, test, expect, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { HttpResponse } from 'msw'
 import { ContractorSubmit } from './Submit'
 import { server } from '@/test/mocks/server'
@@ -86,6 +86,39 @@ describe('ContractorSubmit', () => {
 
     // Documents section SHOULD render when W-9 is not signed
     expect(await screen.findByText('Documents')).toBeInTheDocument()
+  })
+
+  test('applies custom className', async () => {
+    server.use(
+      handleGetContractor(() =>
+        HttpResponse.json({
+          uuid: 'contractor-uuid',
+          type: 'Individual',
+          first_name: 'Test',
+          last_name: 'Contractor',
+        }),
+      ),
+      handleGetContractorOnboardingStatus(() =>
+        HttpResponse.json({
+          uuid: 'status-uuid',
+          onboarding_status: 'admin_onboarding_review',
+          onboarding_steps: [],
+        }),
+      ),
+      handleGetContractorDocuments(() => HttpResponse.json([])),
+    )
+
+    const { container } = renderWithProviders(
+      <ContractorSubmit
+        contractorId="contractor-uuid"
+        onEvent={mockOnEvent}
+        className="custom-class"
+      />,
+    )
+
+    await waitFor(() => {
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
   })
 
   test('hides documents section when there are no documents to collect', () => {

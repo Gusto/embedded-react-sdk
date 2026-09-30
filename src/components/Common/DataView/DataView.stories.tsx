@@ -373,3 +373,22 @@ export const DataViewWithFooter = () => {
 
   return <DataView label="Data View with Footer" {...dataProps} />
 }
+
+// Alignment is driven entirely by column.justify: the numeric "Amount" column
+// right-aligns (header, body, and footer), while text columns stay left. The
+// injected row-menu column is always flush-right.
+export const DataViewWithJustifiedColumns = () => {
+  const justifiedColumns: useDataViewProp<CompensationRow>['columns'] = [
+    { key: 'jobTitle', title: 'Job Title' },
+    { key: 'payType', title: 'Pay Type' },
+    { key: 'amount', title: 'Amount', justify: 'end' },
+    { key: 'payTimePeriod', title: 'Pay Time Period' },
+  ]
+  const dataProps = useDataView({
+    data: compensationData,
+    columns: justifiedColumns,
+    itemMenu: renderItemMenu,
+    footer: () => ({ jobTitle: 'Total', amount: '$1,050.15' }),
+  })
+  return <DataView label="Data View with Justified Columns" {...dataProps} />
+}

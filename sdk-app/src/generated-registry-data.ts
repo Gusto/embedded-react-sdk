@@ -4,6 +4,7 @@
 import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyOnboarding.AssignSignatory': ['companyId'],
   'CompanyOnboarding.BankAccount': ['companyId'],
   'CompanyOnboarding.CreateSignatory': ['companyId'],
@@ -30,6 +31,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorManagement.CompensationCard': ['contractorId'],
   'ContractorManagement.CompensationEditForm': ['contractorId'],
   'ContractorManagement.ContractorList': ['companyId'],
+  'ContractorManagement.ContractorListFlow': ['companyId'],
   'ContractorManagement.CreateHistoricalPayment': ['companyId'],
   'ContractorManagement.CreatePayment': ['companyId'],
   'ContractorManagement.CreatePaymentFlow': ['companyId'],
@@ -145,6 +147,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.RecoveryCases': ['companyId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
+  'Payroll.TransitionPayroll': ['companyId'],
   'TimeOff.AddEmployeesHoliday': ['companyId'],
   'TimeOff.AddEmployeesToPolicy': ['companyId'],
   'TimeOff.HolidaySelectionForm': ['companyId'],
@@ -178,6 +181,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'Payroll.OffCycleDeductionsSetting': ['skipRegularDeductions'],
   'Payroll.TransitionCreation': ['startDate', 'endDate', 'payScheduleUuid'],
   'Payroll.TransitionFlow': ['startDate', 'endDate', 'payScheduleUuid'],
+  'Payroll.TransitionPayroll': ['startDate', 'endDate', 'payScheduleUuid'],
   'TimeOff.AddEmployeesToPolicy': ['policyId', 'policyType'],
   'TimeOff.PolicyConfigurationForm': ['policyType'],
   'TimeOff.PolicySettings': ['policyId'],
@@ -197,5 +201,6 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
+  managePaySchedules: false,
   payrollRegularRateOfPay: false,
 }

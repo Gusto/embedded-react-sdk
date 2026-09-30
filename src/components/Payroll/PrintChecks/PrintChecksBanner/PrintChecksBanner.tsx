@@ -20,7 +20,13 @@ export function PrintChecksBanner(props: PrintChecksBannerProps) {
   )
 }
 
-const Root = ({ companyId, payrollId, dictionary, onStartPrintChecks }: PrintChecksBannerProps) => {
+const Root = ({
+  companyId,
+  payrollId,
+  dictionary,
+  onStartPrintChecks,
+  className,
+}: PrintChecksBannerProps) => {
   useComponentDictionary('Payroll.PrintChecksBanner', dictionary)
   useI18n('Payroll.PrintChecksBanner')
   const { t } = useTranslation('Payroll.PrintChecksBanner')
@@ -50,6 +56,7 @@ const Root = ({ companyId, payrollId, dictionary, onStartPrintChecks }: PrintChe
   return (
     <Alert
       status="info"
+      className={className}
       label={t('title', { count: checkPaymentsCount })}
       action={
         isProcessed && (

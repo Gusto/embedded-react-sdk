@@ -56,7 +56,7 @@ export function EmployeeDocuments(props: EmployeeDocumentsProps) {
   )
 }
 
-const Root = ({ employeeId, dictionary }: EmployeeDocumentsProps) => {
+const Root = ({ employeeId, dictionary, className }: EmployeeDocumentsProps) => {
   useComponentDictionary('Employee.EmployeeDocuments', dictionary)
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -99,6 +99,7 @@ const Root = ({ employeeId, dictionary }: EmployeeDocumentsProps) => {
 
   return (
     <EmployeeDocumentsPresentation
+      className={className}
       isEmployeeSelfOnboarding={isEmployeeSelfOnboarding}
       currentI9Status={currentI9Status}
       onSubmit={onSubmit}

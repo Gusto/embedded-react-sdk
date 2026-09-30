@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { PrintChecksForm } from './PrintChecksForm'
@@ -276,5 +276,59 @@ describe('PrintChecksForm', () => {
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
 
     expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_CANCEL)
+  })
+
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <FlowContext.Provider value={flowContextValue}>
+        <PrintChecksForm payrollId="payroll-1" onEvent={onEvent} className="custom-class" />
+      </FlowContext.Provider>,
+    )
+
+    await screen.findByRole('radio', { name: 'Custom check stock' })
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
+
+  describe('polling deadline', () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ shouldAdvanceTime: true })
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('fires PRINT_CHECKS_GENERATE_FAILED when the deadline elapses without a terminal status', async () => {
+      const fakeUser = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        handlePayrollsGeneratePrintableChecks(() =>
+          HttpResponse.json(createPayrollCheck(), { status: 200 }),
+        ),
+      )
+      server.use(
+        handleGeneratedDocumentsGet(() =>
+          HttpResponse.json(createGeneratedDocument({ status: 'pending' })),
+        ),
+      )
+
+      renderForm()
+
+      await fakeUser.click(await screen.findByRole('button', { name: 'View checks' }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 10_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, {
+          errorMessage: null,
+        })
+      })
+      expect(onEvent).not.toHaveBeenCalledWith(
+        printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED,
+        expect.anything(),
+      )
+    })
   })
 })

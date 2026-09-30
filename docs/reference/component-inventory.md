@@ -24,7 +24,7 @@ replace specific components while keeping SDK defaults for the rest.
 
 To take full control of every UI component (and eliminate the React Aria dependency),
 pass a complete [ComponentsContextType](#componentscontexttype) to [GustoProviderCustomUIAdapter](providers.md#gustoprovidercustomuiadapter) instead.
-All properties are then required except `PaginationControl` and `PayrollLoading`,
+All properties are then required except `PaginationControl`, `PayrollLoading`, and `FieldCaption`,
 which fall back to built-in SDK implementations when omitted.
 
 ### Examples
@@ -115,6 +115,7 @@ function App() {
 | `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
 | `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
 | `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
+| `FieldCaption?` | `FunctionComponent`\<[`FieldCaptionProps`](#fieldcaptionprops)\> | Label or legend caption for form controls, including the optional/required indicator. Defaults to the SDK's built-in caption UI when omitted. |
 | `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
 | `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 
@@ -505,7 +506,7 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`: `string`) => `void` | Callback when selection changes |
 | `placeholder?` | `string` | - |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the default SDK root container from context. |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
 
@@ -559,7 +560,7 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`: `Date` \| `null`) => `void` | Callback when selected date changes |
 | `placeholder?` | `string` | Placeholder text when no date is selected |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `Date` \| `null` | Currently selected date value |
 
@@ -653,6 +654,26 @@ Renders a modal confirmation dialog with a primary action and a cancel action.
 | `onPrimaryActionClick?` | () => `void` | | Callback function called when the primary action button is clicked |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the dialog |
 | `title?` | `ReactNode` | | Optional title content to be displayed at the top of the dialog |
+
+***
+
+<a id="fieldcaptionprops"></a>
+
+### FieldCaptionProps
+
+Props your `FieldCaption` implementation must accept from the component adapter.
+Renders the label or legend caption for a form control, including the optional/required indicator.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children` | `ReactNode` | Caption content rendered inside the label or legend element. |
+| `as?` | `"label"` \| `"legend"` | HTML element to render as — `label` for individual inputs, `legend` for fieldsets. |
+| `className?` | `string` | Additional class names appended to the root element. |
+| `htmlFor?` | `string` | Associates a `label` with an input by id. Ignored when `as` is `legend`. |
+| `isRequired?` | `boolean` | When false, appends a localized optional indicator after the caption. |
+| `isVisuallyHidden?` | `boolean` | Visually hides the caption while keeping it available to assistive technology. |
 
 ***
 
@@ -871,7 +892,7 @@ Renders a popover menu of actions anchored to a trigger element.
 | `items?` | [`MenuItem`](#menuitem)[] | | Array of menu items to display |
 | `onClose?` | () => `void` | | Callback when the menu is closed |
 | `placement?` | `"left"` \| `"right"` \| `"bottom"` \| `"top"` \| `"top start"` \| `"top end"` \| `"bottom start"` \| `"bottom end"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
-| `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
+| `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `triggerRef?` | `RefObject`\<`Element` \| `null`\> | `undefined` | Reference to the element that triggers the menu |
 
 <a id="menuitem"></a>
@@ -959,6 +980,7 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`values`: `string`[]) => `void` | Callback when the set of selected values changes |
 | `placeholder?` | `string` | - |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | Currently selected values |
 
@@ -1233,7 +1255,7 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`: `string`) => `void` | Callback when selection changes |
-| `portalContainer?` | `HTMLElement` | Element to use as the portal container |
+| `portalContainer?` | `HTMLElement` | Element to use as the portal container for the popover. Overrides the SDK's default portal root (a themed element appended to `document.body`). |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
 

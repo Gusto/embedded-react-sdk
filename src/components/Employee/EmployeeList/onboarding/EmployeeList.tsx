@@ -37,6 +37,7 @@ function EmployeeListRoot({
   dictionary,
   showContinueButton = false,
   LoaderComponent,
+  className,
 }: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   useComponentDictionary('Employee.EmployeeList', dictionary)
@@ -96,6 +97,7 @@ function EmployeeListRoot({
         onAddEmployee={handleAddEmployee}
         onSkip={handleSkip}
         showContinueButton={showContinueButton}
+        className={className}
       />
     </BaseLayout>
   )

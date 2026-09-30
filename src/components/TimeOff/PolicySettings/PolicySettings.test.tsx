@@ -349,6 +349,18 @@ describe('PolicySettings container', () => {
     })
   })
 
+  describe('custom className', () => {
+    it('applies custom className to the root element', async () => {
+      const { container } = renderComponent({ className: 'custom-class' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Policy settings')).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+  })
+
   describe('back navigation', () => {
     it('emits POLICY_SETTINGS_BACK when Back is clicked', async () => {
       const user = userEvent.setup()

@@ -253,6 +253,11 @@
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         },
@@ -292,11 +297,6 @@
     },
     "Payroll.PayrollFlow": {
       "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
-        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId",
@@ -431,6 +431,11 @@
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payrolls/blockers",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         }
       ],
       "variables": [
@@ -497,19 +502,6 @@
         "payrollId"
       ]
     },
-    "Payroll.TransitionFlow": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "payrollId"
-      ]
-    },
     "Payroll.TransitionCreation": {
       "endpoints": [
         {
@@ -531,6 +523,18 @@
       "variables": [
         "companyId",
         "companyUuid"
+      ]
+    },
+    "Payroll.TransitionPayroll": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
+        }
+      ],
+      "variables": [
+        "companyId"
       ]
     },
     "TimeOff.PolicyList": {
@@ -1970,6 +1974,18 @@
         "signatoryUuid"
       ]
     },
+    "CompanyManagement.PaySchedule": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
     "ContractorOnboarding.Landing": {
       "endpoints": [
         {
@@ -2509,6 +2525,13 @@
         "EmployeeOnboarding.OnboardingFlow"
       ]
     },
+    "ContractorManagement.ContractorListFlow": {
+      "blocks": [
+        "ContractorManagement.ContractorList",
+        "ContractorManagement.DashboardFlow",
+        "ContractorOnboarding.OnboardingFlow"
+      ]
+    },
     "ContractorManagement.CreatePaymentFlow": {
       "blocks": [
         "ContractorManagement.CreatePayment",
@@ -2637,6 +2660,7 @@
     "Payroll.OffCycleFlow": {
       "blocks": [
         "Payroll.OffCycleCreation",
+        "Payroll.PayrollBlockerList",
         "Payroll.PayrollExecutionFlow"
       ]
     },
@@ -2661,7 +2685,7 @@
     "Payroll.TransitionFlow": {
       "blocks": [
         "Payroll.PayrollExecutionFlow",
-        "Payroll.TransitionCreation"
+        "Payroll.TransitionPayroll"
       ]
     },
     "TimeOff.TimeOffFlow": {

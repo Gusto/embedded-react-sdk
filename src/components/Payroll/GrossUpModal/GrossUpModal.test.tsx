@@ -42,9 +42,45 @@ describe('GrossUpModal', () => {
     })
 
     expect(screen.getByText(/net amount you want this employee/)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Net amount/)).toBeInTheDocument()
+    expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
+    expect(screen.getByText('$')).toBeInTheDocument()
     expect(screen.getByText('Calculate')).toBeInTheDocument()
     expect(screen.getByText('Cancel')).toBeInTheDocument()
+  })
+
+  it('starts with a blank net amount instead of 0', async () => {
+    renderWithProviders(<GrossUpModal {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
+    })
+
+    expect(screen.getByLabelText('Net amount')).toHaveValue('')
+  })
+
+  it('shows a hint to calculate first, then replaces it with the result', async () => {
+    const onCalculateGrossUp = vi.fn().mockResolvedValue('5000.00')
+    const user = userEvent.setup()
+    renderWithProviders(<GrossUpModal {...defaultProps} onCalculateGrossUp={onCalculateGrossUp} />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
+    })
+
+    expect(screen.getByText('Calculate a gross amount first to apply it.')).toBeInTheDocument()
+
+    const netPayInput = screen.getByLabelText('Net amount')
+    await user.clear(netPayInput)
+    await user.type(netPayInput, '3500')
+    await user.click(screen.getByText('Calculate'))
+
+    await waitFor(() => {
+      expect(screen.getByText('Calculated gross pay')).toBeInTheDocument()
+    })
+
+    expect(
+      screen.queryByText('Calculate a gross amount first to apply it.'),
+    ).not.toBeInTheDocument()
   })
 
   it('does not open the dialog when closed', () => {
@@ -73,10 +109,10 @@ describe('GrossUpModal', () => {
     renderWithProviders(<GrossUpModal {...defaultProps} onCalculateGrossUp={onCalculateGrossUp} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Net amount/)).toBeInTheDocument()
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
     })
 
-    const netPayInput = screen.getByLabelText(/Net amount/)
+    const netPayInput = screen.getByLabelText('Net amount')
     await user.clear(netPayInput)
     await user.type(netPayInput, '3500')
 
@@ -97,10 +133,10 @@ describe('GrossUpModal', () => {
     renderWithProviders(<GrossUpModal {...defaultProps} onCalculateGrossUp={onCalculateGrossUp} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Net amount/)).toBeInTheDocument()
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
     })
 
-    const netPayInput = screen.getByLabelText(/Net amount/)
+    const netPayInput = screen.getByLabelText('Net amount')
     await user.clear(netPayInput)
     await user.type(netPayInput, '3500')
     await user.click(screen.getByText('Calculate'))
@@ -120,10 +156,10 @@ describe('GrossUpModal', () => {
     renderWithProviders(<GrossUpModal {...defaultProps} onCalculateGrossUp={onCalculateGrossUp} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Net amount/)).toBeInTheDocument()
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
     })
 
-    const netPayInput = screen.getByLabelText(/Net amount/)
+    const netPayInput = screen.getByLabelText('Net amount')
     await user.clear(netPayInput)
     await user.type(netPayInput, '3500')
     await user.click(screen.getByText('Calculate'))
@@ -139,7 +175,7 @@ describe('GrossUpModal', () => {
     renderWithProviders(<GrossUpModal {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Net amount/)).toBeInTheDocument()
+      expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
     })
 
     expect(

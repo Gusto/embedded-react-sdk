@@ -19,25 +19,27 @@ export function PrintChecksFailure(props: PrintChecksFailureProps) {
   )
 }
 
-const Root = ({ dictionary, errorMessage, onEvent }: PrintChecksFailureProps) => {
+const Root = ({ dictionary, errorMessage, onEvent, className }: PrintChecksFailureProps) => {
   useComponentDictionary('Payroll.PrintChecksFailure', dictionary)
   useI18n('Payroll.PrintChecksFailure')
   const { t } = useTranslation('Payroll.PrintChecksFailure')
   const { Alert, Button } = useComponentContext()
 
   return (
-    <Flex flexDirection="column" gap={16}>
+    <Flex className={className} flexDirection="column" gap={16}>
       <Alert status="error" disableScrollIntoView label={t('failedTitle')}>
         {errorMessage}
       </Alert>
-      <Button
-        variant="secondary"
-        onClick={() => {
-          onEvent(printChecksEvents.PRINT_CHECKS_RETRY)
-        }}
-      >
-        {t('retryCta')}
-      </Button>
+      <ActionsLayout>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(printChecksEvents.PRINT_CHECKS_RETRY)
+          }}
+        >
+          {t('retryCta')}
+        </Button>
+      </ActionsLayout>
     </Flex>
   )
 }

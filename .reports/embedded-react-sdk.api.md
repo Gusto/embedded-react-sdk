@@ -255,7 +255,7 @@ import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
 import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod';
 import { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow';
-import { PayScheduleWorkweekStartDay } from '@gusto/embedded-api/models/components/payscheduleshow';
+import { PayScheduleWorkweekStartDay as PayScheduleWorkweekStartDay_2 } from '@gusto/embedded-api/models/components/payscheduleshow';
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
@@ -314,6 +314,7 @@ import { WarningObject } from '@gusto/embedded-api/models/components/warningobje
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
 import { Workweeks } from '@gusto/embedded-api/models/components/payrollshow';
+import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest';
 
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
@@ -337,7 +338,7 @@ type AccrualMethod_2 = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
 type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 
 // @public
-function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
+function AddEmployeesHoliday(input: AddEmployeesHolidayProps): JSX;
 
 // @public
 interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
@@ -345,7 +346,7 @@ interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
+function AddEmployeesToPolicy(input: AddEmployeesToPolicyProps): JSX;
 
 // @public
 interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
@@ -681,9 +682,10 @@ declare namespace APIModels {
         PayrollUpdatePaymentMethod,
         PayScheduleAutoPayrollEnablementBlocker,
         PayScheduleAutoPayrollEnablementBlockerMetadata,
+        WorkweekStartDay,
         PayScheduleFrequency_2 as PayScheduleFrequency,
         PaySchedulePreviewPayPeriod,
-        PayScheduleWorkweekStartDay,
+        PayScheduleWorkweekStartDay_2 as PayScheduleWorkweekStartDay,
         PayScheduleShow,
         PrintablePayrollChecksBody,
         PrintingFormat,
@@ -1057,6 +1059,13 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+declare namespace CompanyManagement {
+    export {
+        PaySchedule_2 as PaySchedule,
+        PayScheduleProps_2 as PayScheduleProps
+    }
+}
+
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
@@ -1303,6 +1312,7 @@ export const componentEvents: {
     readonly EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL: "employee/termination/runOffCyclePayroll";
     readonly EMPLOYEE_TERMINATION_VIEW_SUMMARY: "employee/termination/viewSummary";
     readonly OFF_CYCLE_CREATED: "offCycle/created";
+    readonly OFF_CYCLE_BLOCKERS_VIEW_ALL: "offCycle/blockers/viewAll";
     readonly DISMISSAL_PAY_PERIOD_SELECTED: "dismissal/payPeriod/selected";
     readonly TRANSITION_CREATED: "transition/created";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
@@ -1403,6 +1413,7 @@ export const componentEvents: {
     readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly CONTRACTOR_VIEW: "contractor/view";
+    readonly CONTRACTOR_RETURN_TO_LIST: "contractor/returnToList";
     readonly CONTRACTOR_DISMISS: "contractor/dismiss";
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
@@ -1436,6 +1447,8 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_DELETE: "paySchedule/delete";
     readonly PAY_SCHEDULE_DELETED: "paySchedule/deleted";
     readonly PAY_SCHEDULE_DONE: "paySchedule/done";
+    readonly PAY_SCHEDULE_MANAGE_ASSIGNMENT: "paySchedule/management/manageAssignment";
+    readonly PAY_SCHEDULE_AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
     readonly COMPANY_INDUSTRY: "company/industry";
     readonly COMPANY_INDUSTRY_SELECTED: "company/industry/selected";
     readonly COMPANY_FEDERAL_TAXES_UPDATED: "company/federalTaxes/updated";
@@ -1611,6 +1624,7 @@ export interface ComponentsContextType {
     DateRangePicker: FunctionComponent<DateRangePickerProps>;
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
+    FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
     FormBoxHeader: FunctionComponent<FormBoxHeaderProps>;
@@ -1820,6 +1834,7 @@ export const ContractorDetailsErrorCodes: {
     readonly INVALID_EMAIL: "INVALID_EMAIL";
     readonly INVALID_SSN: "INVALID_SSN";
     readonly INVALID_EIN: "INVALID_EIN";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -1845,6 +1860,9 @@ export interface ContractorDetailsFormFields {
     WageType: ComponentType<ContractorWageTypeFieldProps>;
     WorkState: ComponentType<ContractorWorkStateFieldProps> | undefined;
 }
+
+// @public
+export type ContractorDetailsMaxHourlyRateValidation = typeof ContractorDetailsErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
@@ -1879,13 +1897,21 @@ export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFie
 export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
-export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation | ContractorDetailsMaxHourlyRateValidation>>;
 
 // @public
 export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
 function ContractorList(input: ContractorListProps): JSX;
+
+// @public
+const ContractorListFlow: (input: ContractorListFlowProps) => JSX;
+
+// @public
+interface ContractorListFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
 
 // @public
 interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
@@ -1898,6 +1924,8 @@ declare namespace ContractorManagement {
         ManagementContractorList as ContractorList,
         ManagementContractorListProps,
         ContractorTab,
+        ContractorListFlow,
+        ContractorListFlowProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,
@@ -2010,6 +2038,7 @@ export type ContractorPayErrorCode = (typeof ContractorPayErrorCodes)[keyof type
 // @public
 export const ContractorPayErrorCodes: {
     readonly REQUIRED: "REQUIRED";
+    readonly MAX_HOURLY_RATE: "MAX_HOURLY_RATE";
 };
 
 // @public
@@ -2028,7 +2057,10 @@ export interface ContractorPayFormFields {
 }
 
 // @public
-export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation>>;
+export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorPayRequiredValidation | ContractorPayMaxHourlyRateValidation>>;
+
+// @public
+export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
 
 // @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
@@ -2962,6 +2994,7 @@ export type EmployeeType = 'active' | 'onboarding' | 'terminated';
 // @public
 export interface EmployeeWithActions extends Employee {
     allowedActions: EmployeeAction[];
+    pendingDismissalDate?: string;
     primaryJob?: Job;
 }
 
@@ -3064,6 +3097,16 @@ interface FederalTaxesProps_3 extends BaseComponentInterface<'Company.FederalTax
 
 // @public
 export type FederalTaxesRequiredValidation = typeof FederalTaxesErrorCodes.REQUIRED;
+
+// @public
+export interface FieldCaptionProps {
+    as?: 'label' | 'legend';
+    children: ReactNode;
+    className?: string;
+    htmlFor?: string;
+    isRequired?: boolean;
+    isVisuallyHidden?: boolean;
+}
 
 // @public
 export interface FieldMetadata {
@@ -3321,6 +3364,7 @@ interface HolidayPolicyDetailEmployee extends EmployeeTableItem {
 interface HolidayPolicyDetailPresentationProps {
     actions?: ReactNode[];
     backLabel: string;
+    className?: string;
     employees: PolicyDetailEmployeeTableData<HolidayPolicyDetailEmployee>;
     holidays: HolidayItem[];
     onAddEmployee?: () => void;
@@ -3770,6 +3814,7 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
     onBlur?: () => void;
     onChange?: (values: string[]) => void;
     options: MultiSelectComboBoxOption[];
+    portalContainer?: HTMLElement;
     value?: string[];
 }
 
@@ -4283,7 +4328,9 @@ declare namespace Payroll {
         TransitionFlowProps,
         TransitionCreation,
         TransitionCreationProps,
-        TransitionCreationFormData
+        TransitionCreationFormData,
+        TransitionPayroll,
+        TransitionPayrollProps
     }
 }
 
@@ -4418,9 +4465,12 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 // @public
 const PaySchedule: (input: PayScheduleProps) => JSX;
 
+// @alpha
+const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
+
 // @public
 type PayScheduleDefaultFields = {
-    [K in keyof Pick<PayScheduleFormData, 'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'>]: NonNullable<PayScheduleFormData[K]>;
+    [K in keyof Pick<PayScheduleFormData, 'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency' | 'workweekStartDay'>]: NonNullable<PayScheduleFormData[K]>;
 };
 
 // @public
@@ -4436,13 +4486,13 @@ export const PayScheduleErrorCodes: {
 };
 
 // @public
-export type PayScheduleField = "anchorEndOfPayPeriod" | "anchorPayDate" | "customName" | "customTwicePerMonth" | "day1" | "day2" | "frequency";
+export type PayScheduleField = "anchorEndOfPayPeriod" | "anchorPayDate" | "customName" | "customTwicePerMonth" | "day1" | "day2" | "frequency" | "workweekStartDay";
 
 // @public
-export type PayScheduleFieldsMetadata = { customName: FieldMetadata; frequency: FieldMetadataWithOptions<"Every other week" | "Every week" | "Monthly" | "Twice per month">; customTwicePerMonth: FieldMetadataWithOptions<string>; anchorPayDate: FieldMetadata; anchorEndOfPayPeriod: FieldMetadata; day1: FieldMetadata; day2: FieldMetadata; };
+export type PayScheduleFieldsMetadata = { customName: FieldMetadata; frequency: FieldMetadataWithOptions<"Every other week" | "Every week" | "Monthly" | "Twice per month">; customTwicePerMonth: FieldMetadataWithOptions<string>; anchorPayDate: FieldMetadata; anchorEndOfPayPeriod: FieldMetadata; day1: FieldMetadata; day2: FieldMetadata; workweekStartDay: FieldMetadataWithOptions<WorkweekStartDay>; };
 
 // @public
-export type PayScheduleFormData = { customName: string; frequency: "Every other week" | "Every week" | "Monthly" | "Twice per month"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; };
+export type PayScheduleFormData = { customName: string; frequency: "Every other week" | "Every week" | "Monthly" | "Twice per month"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; workweekStartDay: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | null; };
 
 // @public
 export interface PayScheduleFormFields {
@@ -4453,22 +4503,36 @@ export interface PayScheduleFormFields {
     Day1: ComponentType<Day1FieldProps> | undefined;
     Day2: ComponentType<Day2FieldProps> | undefined;
     Frequency: ComponentType<FrequencyFieldProps>;
+    // @alpha
+    WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined;
 }
 
 // @public
 export type PayScheduleFrequency = "Every other week" | "Every week" | "Monthly" | "Twice per month";
 
 // @public
-export type PayScheduleOptionalFieldsToRequire = { create?: ("customTwicePerMonth" | "day1" | "day2")[] | undefined; update?: ("customTwicePerMonth" | "day1" | "day2")[] | undefined; };
+export type PayScheduleOptionalFieldsToRequire = { create?: ("customTwicePerMonth" | "day1" | "day2" | "workweekStartDay")[] | undefined; update?: ("customTwicePerMonth" | "day1" | "day2" | "workweekStartDay")[] | undefined; };
 
 // @public
 interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
     companyId: string;
     defaultValues?: PayScheduleDefaultValues;
+    // @alpha
+    disableWorkweekStartDayEditing?: boolean;
+}
+
+// @alpha
+interface PayScheduleProps_2 extends BaseComponentInterface<'Company.Management.PaySchedule'> {
+    companyId: string;
+    enableAutoPilot?: boolean;
+    enableMultipleSchedules?: boolean;
 }
 
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
+
+// @alpha
+export type PayScheduleWorkweekStartDay = WorkweekStartDay;
 
 // @public
 function PaystubsCard(input: PaystubsCardProps): JSX;
@@ -4563,6 +4627,7 @@ function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX
 // @public
 interface PolicySettingsPresentationProps {
     accrualMethod: PolicySettingsAccrualMethod;
+    className?: string;
     defaultValues?: Partial<PolicySettingsFormData>;
     editingPolicyName?: string;
     isPending?: boolean;
@@ -4848,6 +4913,8 @@ export interface Resources {
     'Company.Industry': Translations.CompanyIndustry
     // (undocumented)
     'Company.Locations': Translations.CompanyLocations
+    // (undocumented)
+    'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)
     'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
     // (undocumented)
@@ -5795,6 +5862,7 @@ function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationP
 interface TimeOffPolicyDetailPresentationBaseProps {
     actions?: ReactNode[];
     backLabel: string;
+    className?: string;
     employees: PolicyDetailEmployeeTableData<TimeOffPolicyDetailEmployee>;
     onAddEmployee?: () => void;
     onBack: () => void;
@@ -5844,7 +5912,7 @@ interface TransitionCreationProps extends BaseComponentInterface<'Payroll.Transi
 }
 
 // @public
-function TransitionFlow(input: TransitionFlowProps): JSX;
+function TransitionFlow(props: TransitionFlowProps): JSX;
 
 // @public
 interface TransitionFlowProps {
@@ -5854,6 +5922,20 @@ interface TransitionFlowProps {
     payrollUuid?: string;
     payScheduleUuid: string;
     startDate: string;
+    withReimbursements?: boolean;
+}
+
+// @public
+function TransitionPayroll(props: TransitionPayrollProps): JSX;
+
+// @public
+interface TransitionPayrollProps extends BaseComponentInterface {
+    companyId: string;
+    endDate: string;
+    payrollUuid?: string;
+    payScheduleUuid: string;
+    startDate: string;
+    withReimbursements?: boolean;
 }
 
 // @public
@@ -5881,6 +5963,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     historicalPayments?: boolean;
+    managePaySchedules?: boolean;
     payrollRegularRateOfPay?: boolean;
 }
 
@@ -6467,6 +6550,8 @@ export function usePayScheduleForm(input: UsePayScheduleFormProps): HookLoadingR
 export interface UsePayScheduleFormProps {
     companyId: string;
     defaultValues?: Partial<PayScheduleFormData>;
+    // @alpha
+    disableWorkweekStartDayEditing?: boolean;
     optionalFieldsToRequire?: PayScheduleOptionalFieldsToRequire;
     payScheduleId?: string;
     shouldFocusError?: boolean;
@@ -6757,6 +6842,9 @@ export interface WorkingSplit {
     splitAmount: number | null;
     uuid: string;
 }
+
+// @alpha
+export type WorkweekStartDayFieldProps = HookFieldProps<SelectHookFieldProps<never, PayScheduleWorkweekStartDay>>;
 
 // @public
 export type ZipFieldProps = HookFieldProps<TextInputHookFieldProps<ZipValidation>>;

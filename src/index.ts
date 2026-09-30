@@ -257,6 +257,7 @@ export type {
   ContractorDetailsErrorCode,
   ContractorDetailsFormData,
   ContractorDetailsRequiredValidation,
+  ContractorDetailsMaxHourlyRateValidation,
   ContractorDetailsNameValidation,
   ContractorDetailsEmailValidation,
   ContractorDetailsSsnValidation,
@@ -336,6 +337,7 @@ export type {
   ContractorPayFormData,
   ContractorPayFormField,
   RequiredValidation as ContractorPayRequiredValidation,
+  MaxHourlyRateValidation as ContractorPayMaxHourlyRateValidation,
   WageTypeFieldProps as ContractorPayWageTypeFieldProps,
   HourlyRateFieldProps as ContractorPayHourlyRateFieldProps,
 } from '@/components/Contractor/Compensation/shared/useContractorPayForm'
@@ -600,6 +602,7 @@ export type {
   PayScheduleFormData,
   PayScheduleField,
   PayScheduleFrequency,
+  PayScheduleWorkweekStartDay,
   PayScheduleRequiredValidation,
   DayValidation,
   CustomNameFieldProps,
@@ -609,6 +612,7 @@ export type {
   AnchorEndOfPayPeriodFieldProps,
   Day1FieldProps,
   Day2FieldProps,
+  WorkweekStartDayFieldProps,
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
 
 export {

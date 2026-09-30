@@ -87,6 +87,7 @@ const Root = ({
   onEvent,
   dictionary,
   withReimbursements = true,
+  className,
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
@@ -121,6 +122,16 @@ const Root = ({
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     return {
       ...compensation,
+      // The legacy editor edits hours, not per-workweek breakdowns, so omit
+      // breakdowns and let the API use the hours we send.
+      hourlyCompensations: compensation.hourlyCompensations?.map(hourlyCompensation => {
+        const { breakdowns, ...hourlyCompensationWithoutBreakdowns } = hourlyCompensation
+        return hourlyCompensationWithoutBreakdowns
+      }),
+      fixedCompensations: compensation.fixedCompensations?.map(fixedCompensation => {
+        const { breakdowns, ...fixedCompensationWithoutBreakdowns } = fixedCompensation
+        return fixedCompensationWithoutBreakdowns
+      }),
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
       // Off-cycle payrolls write reimbursements via the legacy fixed_compensations field; the
@@ -167,6 +178,7 @@ const Root = ({
 
   return (
     <PayrollEditEmployeePresentation
+      className={className}
       onSave={onSave}
       onCancel={onCancel}
       employee={employee}

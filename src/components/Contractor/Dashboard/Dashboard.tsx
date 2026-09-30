@@ -28,6 +28,7 @@ function DashboardRoot({
   onEvent,
   selectedTab: controlledTab,
   LoaderComponent,
+  className,
 }: DashboardProps) {
   useI18n('Contractor.Dashboard')
   useComponentDictionary('Contractor.Dashboard', dictionary)
@@ -43,7 +44,7 @@ function DashboardRoot({
   ]
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex className={className} flexDirection="column" gap={32}>
       <Suspense fallback={null}>
         <DashboardHeader contractorId={contractorId} />
       </Suspense>
@@ -91,7 +92,11 @@ function DashboardHeader({ contractorId }: { contractorId: string }) {
   const legalName = contractor
     ? isBusiness
       ? contractor.businessName
-      : firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
+      : firstLastName({
+          first_name: contractor.firstName,
+          middle_initial: contractor.middleInitial,
+          last_name: contractor.lastName,
+        })
     : undefined
 
   return (

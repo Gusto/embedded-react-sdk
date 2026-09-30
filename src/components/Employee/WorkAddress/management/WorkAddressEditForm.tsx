@@ -24,6 +24,7 @@ function WorkAddressEditFormRoot({
   dictionary,
   onEvent,
   LoaderComponent,
+  className,
 }: WorkAddressEditFormProps) {
   useI18n(['Employee.Management.WorkAddress'])
   useComponentDictionary('Employee.Management.WorkAddress', dictionary)
@@ -67,6 +68,7 @@ function WorkAddressEditFormRoot({
           onEvent(componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED)
         }}
         isDeletePending={management.status.isDeletePending}
+        className={className}
       />
     </BaseLayout>
   )

@@ -18,6 +18,8 @@ export type EmployeeDocumentsFormValues = z.infer<typeof EmployeeDocumentsSchema
 
 /** @internal */
 export interface EmployeeDocumentsPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   isEmployeeSelfOnboarding: boolean
   currentI9Status: boolean
   onSubmit: (formData: EmployeeDocumentsFormValues) => Promise<void>
@@ -27,6 +29,7 @@ export interface EmployeeDocumentsPresentationProps {
 
 /** @internal */
 export const EmployeeDocumentsPresentation = ({
+  className,
   isEmployeeSelfOnboarding,
   currentI9Status,
   onSubmit,
@@ -134,27 +137,25 @@ export const EmployeeDocumentsPresentation = ({
   )
 
   return (
-    <>
-      <Flex flexDirection="column" gap={16}>
-        {isEmployeeSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
+    <Flex className={className} flexDirection="column" gap={16}>
+      {isEmployeeSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
 
-        <Flex justifyContent="flex-end" gap={12}>
-          {isEmployeeSelfOnboarding ? (
-            <Button
-              variant="primary"
-              type="submit"
-              form={EMPLOYEE_DOCUMENTS_FORM_ID}
-              isLoading={isPending}
-            >
-              {t('continueCta')}
-            </Button>
-          ) : (
-            <Button variant="primary" onClick={onDone}>
-              {t('continueCta')}
-            </Button>
-          )}
-        </Flex>
+      <Flex justifyContent="flex-end" gap={12}>
+        {isEmployeeSelfOnboarding ? (
+          <Button
+            variant="primary"
+            type="submit"
+            form={EMPLOYEE_DOCUMENTS_FORM_ID}
+            isLoading={isPending}
+          >
+            {t('continueCta')}
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={onDone}>
+            {t('continueCta')}
+          </Button>
+        )}
       </Flex>
-    </>
+    </Flex>
   )
 }

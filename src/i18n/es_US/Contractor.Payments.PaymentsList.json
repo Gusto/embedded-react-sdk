@@ -19,6 +19,11 @@
     "last3Months": "Últimos 3 meses",
     "last6Months": "Últimos 6 meses"
   },
+  "historicalPaymentCta": {
+    "button": "Registra un pago histórico",
+    "description": "Agrega un pago a un contratista que se realizó fuera de Gusto para mantener tus registros completos.",
+    "title": "Registra un pago histórico"
+  },
   "noPaymentsDescription": "Todavía no se han creado pagos a contratistas. Crea tu primer pago para comenzar.",
   "noPaymentsFound": "No se encontraron pagos",
   "reimbursementTotalColumnLabel": "Total de reembolsos",

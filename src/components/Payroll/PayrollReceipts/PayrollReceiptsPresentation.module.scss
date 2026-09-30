@@ -1,5 +1,7 @@
 .container {
   width: 100%;
+  max-width: toRem(656);
+  margin: 0 auto;
   box-sizing: border-box;
 
   // Ensure all child elements take full width
@@ -15,8 +17,6 @@
   border-radius: var(--g-inputRadius);
   padding: toRem(24);
   width: 100%;
-  max-width: toRem(656);
-  margin: 0 auto;
   box-sizing: border-box;
 }
 

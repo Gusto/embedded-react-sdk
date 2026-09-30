@@ -65,6 +65,7 @@
     "ein": "EIN is required for business contractors",
     "einFormat": "EIN must be valid format (XX-XXXXXXX)",
     "hourlyRate": "Hourly rate is required for hourly contractors",
+    "hourlyRateMax": "Hourly rate can't exceed $1,000,000,000,000.00",
     "startDate": "Start date is required"
   },
   "buttons": {

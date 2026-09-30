@@ -26,6 +26,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 
 interface EmploymentEligibilityPresentationProps {
+  /** CSS class name applied to the root element. */
+  className?: string
   onSubmit: SubmitHandler<EmploymentEligibilityPayload>
   defaultValues?: Partial<EmploymentEligibilityInputs>
   hasDocumentNumber?: boolean | null
@@ -41,6 +43,7 @@ const statusDescriptionKeys = {
 
 /** @internal */
 export const EmploymentEligibilityPresentation = ({
+  className,
   onSubmit,
   defaultValues,
   hasDocumentNumber,
@@ -97,7 +100,7 @@ export const EmploymentEligibilityPresentation = ({
 
   return (
     <FormProvider {...formMethods}>
-      <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
+      <Form className={className} onSubmit={formMethods.handleSubmit(onSubmit)}>
         <Flex flexDirection="column" gap={16}>
           <Flex flexDirection="column" gap={2}>
             <Heading as="h2">{t('title')}</Heading>

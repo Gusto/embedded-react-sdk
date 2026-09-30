@@ -190,6 +190,49 @@ Common grouping patterns:
 }
 ```
 
+## Syncing translations with Lokalise
+
+Source strings and reviewed translations flow to and from [Lokalise](https://lokalise.com/) via two workflows:
+
+- **[Push Sources](https://github.com/Gusto/embedded-react-sdk/actions/workflows/push-sources.yaml)** — runs automatically on every push to `main` that touches `src/i18n/en/**.json`. Pushes the `en` source strings to Lokalise. No PR involved, so it's not affected by anything below.
+- **[Pull Translations](https://github.com/Gusto/embedded-react-sdk/actions/workflows/pull-translations.yaml)** — manual (`workflow_dispatch` only, run a few times a month as translations get reviewed in Lokalise). Downloads reviewed `es_US` strings and opens a PR (branch `lokalise-update-<hash>`, labeled `lokalise-translation`) via `Gusto/embedded-i18n-actions/pull_translations`.
+
+Both workflows, plus `check-for-manual-translations` (below), live in `Gusto/embedded-i18n-actions` and this repo's `.github/workflows/`.
+
+### Merging a Pull Translations PR
+
+The PR the workflow opens needs one manual step before it can merge — **`ci.yaml`'s required checks (`build`, `format`, `lint`, etc.) never run on it automatically.** Root cause: `ci.yaml` only triggers on `push`/`merge_group`, and the PR's branch is pushed using the default `GITHUB_TOKEN` — GitHub's built-in anti-recursion rule means a `GITHUB_TOKEN`-authenticated push never triggers other push-triggered workflows. (We tried minting a GitHub App token instead to work around this — see #2680 — but the app available to this repo only has `contents: write`, not `pull_requests: write`, so PR creation itself failed outright. Reverted in #2706. Fixing this for real needs either that app's permissions extended or a dedicated PAT — both blocked on org/app-admin access at the time of writing. If you have that access, revisiting this is worthwhile so the step below can be removed.)
+
+To merge a Pull Translations PR:
+
+1. Trigger the workflow: Actions tab → **Pull Translations** → **Run workflow**.
+2. Wait for the `lokalise-update-<hash>` PR to appear (labeled `lokalise-translation`).
+3. **Check out the branch locally and push it yourself:**
+
+   ```bash
+   git fetch origin
+   git checkout lokalise-update-<hash>
+   git merge origin/main   # or rebase — either works, see note below
+   git push origin lokalise-update-<hash>
+   ```
+
+   A push made with your own credentials isn't subject to the anti-recursion rule, so it fires `ci.yaml` normally. If the branch is already up to date with `main` (`git merge` reports "Already up to date"), there's nothing to merge — push an empty commit instead so a `push` event still fires: `git commit --allow-empty -m "chore: trigger CI" && git push`.
+
+4. **Check `format`.** The Lokalise CLI export doesn't add a trailing newline to the downloaded JSON files, which Prettier requires — `format` will fail on any file Lokalise actually changed. Run `npx prettier --write` on the flagged files, commit, and push again:
+
+   ```bash
+   npx prettier <path-to-flagged-file> --write
+   git add <path-to-flagged-file>
+   git commit -m "style: add trailing newline to Lokalise-exported translation files"
+   git push
+   ```
+
+5. Once all required checks pass, review and merge as usual.
+
+### `check-for-manual-translations`
+
+A separate check (`.github/workflows/check-manual-translations.yaml`) blocks manual hand-edits to `src/i18n/es_US/**` in any PR — those files should only ever be updated by the Pull Translations workflow. It skips validation when the `lokalise-translation` label is present (checked live via `gh pr view`, not the webhook event payload, which is stale by the time these bot-created PRs are evaluated — see #2674 if this check ever regresses). This check is already fixed and working; it's unrelated to the manual step above.
+
 ## Creating components
 
 ### Block components

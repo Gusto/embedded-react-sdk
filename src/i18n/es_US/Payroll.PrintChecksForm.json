@@ -1,0 +1,14 @@
+{
+  "blankStockDescription": "Use este tipo de cheques si tiene cheques en blanco y necesita que completemos la información de su empresa y banco. El cheque físico siempre estará en la parte inferior del PDF del cheque.",
+  "blankStockLabel": "Cheques en blanco",
+  "customStockDescription": "Use este tipo de cheques si tiene cheques preimpresos con la información de su empresa y banco. El cheque físico aparecerá en la parte superior del PDF del cheque. Los números de cheque ya deben estar preimpresos en los cheques que compró.",
+  "customStockLabel": "Cheques personalizados",
+  "modalTitle": "Elija el tipo de cheques",
+  "startingCheckNumberDescription": "Este será el primer número de cheque; todos los demás cheques seguirán en orden secuencial.",
+  "startingCheckNumberLabel": "El número de cheque comienza con",
+  "submitCta": "Ver cheques",
+  "submitCtaLoading": "Generando...",
+  "validations": {
+    "startingCheckNumber": "Ingresa un número de cheque válido"
+  }
+}

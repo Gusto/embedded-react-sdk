@@ -145,6 +145,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` |
 | `CONTRACTOR_REHIRE` | `"contractor/rehire"` |
 | `CONTRACTOR_REHIRE_CANCELLED` | `"contractor/rehire/cancelled"` |
+| `CONTRACTOR_RETURN_TO_LIST` | `"contractor/returnToList"` |
 | `CONTRACTOR_SELF_ONBOARDING_CANCELLED` | `"contractor/selfOnboarding/cancelled"` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` |
@@ -286,14 +287,17 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `INFORMATION_REQUEST_FORM_DONE` | `"informationRequest/form/done"` |
 | `INFORMATION_REQUEST_FORM_SUBMIT` | `"informationRequest/form/submit"` |
 | `INFORMATION_REQUEST_RESPOND` | `"informationRequest/respond"` |
+| `OFF_CYCLE_BLOCKERS_VIEW_ALL` | `"offCycle/blockers/viewAll"` |
 | `OFF_CYCLE_CREATED` | `"offCycle/created"` |
 | `OFF_CYCLE_DEDUCTIONS_CHANGE` | `"offCycle/deductionsChange"` |
 | `OFF_CYCLE_SELECT_REASON` | `"offCycle/selectReason"` |
+| `PAY_SCHEDULE_AUTO_PILOT_EDIT` | `"paySchedule/management/autoPilotEdit"` |
 | `PAY_SCHEDULE_CREATE` | `"paySchedule/create"` |
 | `PAY_SCHEDULE_CREATED` | `"paySchedule/created"` |
 | `PAY_SCHEDULE_DELETE` | `"paySchedule/delete"` |
 | `PAY_SCHEDULE_DELETED` | `"paySchedule/deleted"` |
 | `PAY_SCHEDULE_DONE` | `"paySchedule/done"` |
+| `PAY_SCHEDULE_MANAGE_ASSIGNMENT` | `"paySchedule/management/manageAssignment"` |
 | `PAY_SCHEDULE_UPDATE` | `"paySchedule/update"` |
 | `PAY_SCHEDULE_UPDATED` | `"paySchedule/updated"` |
 | `PAYROLL_DELETED` | `"payroll/deleted"` |

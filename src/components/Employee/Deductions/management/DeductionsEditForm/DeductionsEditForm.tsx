@@ -59,6 +59,7 @@ function DeductionsEditFormRoot({
   dictionary,
   onEvent,
   LoaderComponent,
+  className,
 }: DeductionsEditFormProps) {
   useI18n('Employee.Management.Deductions')
   useComponentDictionary('Employee.Management.Deductions', dictionary)
@@ -85,6 +86,7 @@ function DeductionsEditFormRoot({
         deduction={deduction}
         dictionary={formDictionary}
         LoaderComponent={LoaderComponent}
+        className={className}
         onSaved={(saved, mode) => {
           onEvent(
             mode === 'create'

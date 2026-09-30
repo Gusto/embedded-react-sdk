@@ -624,6 +624,32 @@ Translation keys for the `Company.Locations` i18n namespace.
 
 ***
 
+<a id="companymanagementpayschedule"></a>
+
+### CompanyManagementPaySchedule
+
+Translation keys for the `Company.Management.PaySchedule` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementpayscheduleautopilot"></a> `autoPilot` | |
+| `autoPilot.disabled` | `"Disabled"` |
+| `autoPilot.enabled` | `"Enabled"` |
+| `autoPilot.label` | `"AutoPilot"` |
+| <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
+| <a id="property-companymanagementpayscheduleeditautopilotarialabel"></a> `editAutoPilotAriaLabel` | `"Edit AutoPilot"` |
+| <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
+| <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
+| <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
+| `labels.frequency` | `"Frequency"` |
+| `labels.name` | `"Name"` |
+| <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
+| <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
+
+***
+
 <a id="companyonboardingoverview"></a>
 
 ### CompanyOnboardingOverview
@@ -688,6 +714,7 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `descriptions.anchorPayDateDescription_one` | `"Please account for the {{count}} day it will take to process payroll."` |
 | `descriptions.anchorPayDateDescription_other` | `"Please account for the {{count}} days it will take to process payroll."` |
 | `descriptions.frequencyOptionsDescription` | `"Select the pay days for the month."` |
+| `descriptions.workweekStartDayDescription` | `"The day of the week this pay schedule's workweeks start on. Used for regular rate of pay overtime calculations."` |
 | <a id="property-companypayschedulefrequencies"></a> `frequencies` | |
 | `frequencies.everyOtherWeek` | `"Every other week"` |
 | `frequencies.everyWeek` | `"Every week"` |
@@ -713,6 +740,8 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `labels.name` | `"Name"` |
 | `labels.payfrequency` | `"Pay frequency"` |
 | `labels.preview` | `"Preview"` |
+| `labels.workweekStartDay` | `"Workweek start day"` |
+| `labels.workweekStartDayPlaceholder` | `"Select day..."` |
 | <a id="property-companypayschedulelistdescription"></a> `listDescription` | `"Pick what frequency you'd like to run payroll. If you need help, you can read more about <ScheduleLink href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</ScheduleLink>"` |
 | <a id="property-companypayschedulelistdescription2"></a> `listDescription2` | `"Why do we need to ask for this? We need to know when to pay your employees. Some states have <PaymentLawLink href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</PaymentLawLink> Please choose pay schedules that are legal for your employees."` |
 | <a id="property-companypayscheduleloading"></a> `loading` | `"Loading..."` |
@@ -741,6 +770,14 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | `validations.frequencyOptions` | `"Please select the pay days for the month"` |
 | `validations.lastPayDayOfTheMonth` | `"Last pay day of the month is required"` |
 | `validations.name` | `"Pay schedule name is required"` |
+| <a id="property-companypayscheduleworkweekstartdayoptions"></a> `workweekStartDayOptions` | |
+| `workweekStartDayOptions.friday` | `"Friday"` |
+| `workweekStartDayOptions.monday` | `"Monday"` |
+| `workweekStartDayOptions.saturday` | `"Saturday"` |
+| `workweekStartDayOptions.sunday` | `"Sunday"` |
+| `workweekStartDayOptions.thursday` | `"Thursday"` |
+| `workweekStartDayOptions.tuesday` | `"Tuesday"` |
+| `workweekStartDayOptions.wednesday` | `"Wednesday"` |
 
 ***
 
@@ -781,6 +818,8 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | <a id="property-companystatetaxesform"></a> `form` |
 | `form.cancelCta` |
 | `form.effectiveFromLabel` |
+| `form.errors` |
+| `form.errors.incompleteRequirementSet` |
 | `form.noEditableRequirementsDescription` |
 | `form.noEditableRequirementsTitle` |
 | `form.saveCta` |
@@ -1625,6 +1664,7 @@ Translation keys for the `Contractor.Management.Compensation` i18n namespace.
 | `form.title` | `"Edit compensation"` |
 | `form.validations` | |
 | `form.validations.hourlyRate` | `"Enter a valid hourly rate"` |
+| `form.validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `form.wageTypeLabel` | `"Compensation type"` |
 | <a id="property-contractormanagementcompensationhourlylabel"></a> `hourlyLabel` | `"Hourly"` |
 | <a id="property-contractormanagementcompensationhourlyratevalue"></a> `hourlyRateValue` | `"${{rate}}/hr"` |
@@ -1645,6 +1685,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-contractormanagementcontractorlistaddcontractorcta"></a> `addContractorCta` | `"Add contractor"` |
+| <a id="property-contractormanagementcontractorlistbacktolistcta"></a> `backToListCta` | `"Back to contractors"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissalcta"></a> `cancelDismissalCta` | `"Cancel dismissal"` |
 | <a id="property-contractormanagementcontractorlistcanceldismissaldialog"></a> `cancelDismissalDialog` | |
 | `cancelDismissalDialog.cancelCta` | `"No, go back"` |
@@ -1808,8 +1849,8 @@ Translation keys for the `Contractor.Management.Profile` i18n namespace.
 | `form.validations.businessName` | `"Business name is required"` |
 | `form.validations.ein` | `"The EIN must be exactly 9 digits long."` |
 | `form.validations.email` | `"Enter a valid email address"` |
-| `form.validations.firstName` | `"First name is required"` |
-| `form.validations.lastName` | `"Last name is required"` |
+| `form.validations.firstName` | `"Enter a valid first name"` |
+| `form.validations.lastName` | `"Enter a valid last name"` |
 | `form.validations.ssn` | `"The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999."` |
 | `form.validations.startDate` | `"Start date is required"` |
 | <a id="property-contractormanagementprofilelegalname"></a> `legalName` | `"Legal name"` |
@@ -2368,6 +2409,7 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `validations.firstName` | `"First name is required for individual contractors"` |
 | `validations.firstNameFormat` | `"First name is not valid"` |
 | `validations.hourlyRate` | `"Hourly rate is required for hourly contractors"` |
+| `validations.hourlyRateMax` | `"Hourly rate can't exceed $1,000,000,000,000.00"` |
 | `validations.lastName` | `"Last name is required for individual contractors"` |
 | `validations.lastNameFormat` | `"Last name is not valid"` |
 | `validations.ssn` | `"SSN is required for individual contractors"` |
@@ -3630,6 +3672,8 @@ Translation keys for the `Employee.ManagementEmployeeList` i18n namespace.
 | <a id="property-employeemanagementemployeelistjobtitlelabel"></a> `jobTitleLabel` | `"Job title"` |
 | <a id="property-employeemanagementemployeelistlastdaylabel"></a> `lastDayLabel` | `"Last day"` |
 | <a id="property-employeemanagementemployeelistnamelabel"></a> `nameLabel` | `"Employee name"` |
+| <a id="property-employeemanagementemployeelistpendingdismissalbadge"></a> `pendingDismissalBadge` | `"Last day {{date}}"` |
+| <a id="property-employeemanagementemployeelistpendingdismissallabel"></a> `pendingDismissalLabel` | `"Pending dismissal"` |
 | <a id="property-employeemanagementemployeeliststartdatelabel"></a> `startDateLabel` | `"Start date"` |
 | <a id="property-employeemanagementemployeeliststatuslabel"></a> `statusLabel` | `"Status"` |
 | <a id="property-employeemanagementemployeelisttabs"></a> `tabs` | |
@@ -4634,6 +4678,7 @@ Translation keys for the `Payroll.GrossUpModal` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollgrossupmodalapplycta"></a> `applyCta` | `"Apply"` |
+| <a id="property-payrollgrossupmodalapplyhint"></a> `applyHint` | `"Calculate a gross amount first to apply it."` |
 | <a id="property-payrollgrossupmodalcalculatecta"></a> `calculateCta` | `"Calculate"` |
 | <a id="property-payrollgrossupmodalcancelcta"></a> `cancelCta` | `"Cancel"` |
 | <a id="property-payrollgrossupmodaldescription"></a> `description` | `"Please enter the net amount you want this employee to receive. We'll then automatically calculate the gross amount you need to pay, including taxes and deductions."` |
@@ -4728,7 +4773,6 @@ Translation keys for the `Payroll.OffCyclePayPeriodDateForm` i18n namespace.
 | `validations.checkDateRequired` | `"Payment date is required"` |
 | `validations.endDateAfterStart` | `"End date must be on or after start date"` |
 | `validations.endDateRequired` | `"End date is required"` |
-| `validations.startDateNotFuture` | `"Start date cannot be in the future for correction payrolls"` |
 | `validations.startDateRequired` | `"Start date is required"` |
 
 ***
@@ -4910,6 +4954,8 @@ Translation keys for the `Payroll.PayrollBlocker` i18n namespace.
 | `blockers.needs_onboarding.description` | `"Company must complete all onboarding requirements in order to run payroll."` |
 | `blockers.needs_onboarding.help` | `"Complete all required onboarding steps."` |
 | `blockers.needs_onboarding.title` | `"Onboarding Incomplete"` |
+| `blockers.partner_tos_not_accepted` | |
+| `blockers.partner_tos_not_accepted.title` | `"Terms of Service Required"` |
 | `blockers.pay_schedule_setup_not_complete` | |
 | `blockers.pay_schedule_setup_not_complete.description` | `"Some employees don't have a pay schedule set up yet."` |
 | `blockers.pay_schedule_setup_not_complete.help` | `"Assign all employees to a pay schedule."` |
@@ -4947,6 +4993,7 @@ Translation keys for the `Payroll.PayrollBlocker` i18n namespace.
 | <a id="property-payrollpayrollblockerdefaultblockerhelp"></a> `defaultBlockerHelp` | `"Please contact support."` |
 | <a id="property-payrollpayrollblockerestimatedtime"></a> `estimatedTime` | `"Estimated time"` |
 | <a id="property-payrollpayrollblockerexitflowcta"></a> `exitFlowCta` | `"Exit"` |
+| <a id="property-payrollpayrollblockergenericblockertitle"></a> `genericBlockerTitle` | `"Payroll blocker"` |
 | <a id="property-payrollpayrollblockermultipleissuestitle"></a> `multipleIssuesTitle` | `"{{count}} issues are preventing you from running payroll"` |
 | <a id="property-payrollpayrollblockernoblockersmessage"></a> `noBlockersMessage` | `"No payroll blockers at this time."` |
 | <a id="property-payrollpayrollblockerviewallblockers"></a> `viewAllBlockers` | `"View All Blockers"` |
@@ -4975,6 +5022,9 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `alerts.payrollDeadline.message` | `"To pay your employees with direct deposit by the check date, you'll need to run payroll by the deadline."` |
 | `alerts.payrollLate` | `"Your original pay date was {{initialCheckDate}}"` |
 | `alerts.payrollLateText` | `"Run payroll before {{time}} on {{date}} to pay your employees on {{newCheckDate}}."` |
+| `alerts.processingFailed` | |
+| `alerts.processingFailed.label` | `"This payroll couldn't be calculated"` |
+| `alerts.processingFailed.message` | `"Please try calculating again."` |
 | `alerts.progressSaved` | `"Your progress has been saved"` |
 | `alerts.skippedEmployees` | |
 | `alerts.skippedEmployees.employeeAddressNotVerified` | `"Employee address not verified"` |
@@ -5241,6 +5291,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewalerts"></a> `alerts` | |
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
+| `alerts.payrollLoadFailed` | `"There was an issue loading this payroll. Please try again."` |
 | `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
@@ -5747,6 +5798,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
+| <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
 | <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |

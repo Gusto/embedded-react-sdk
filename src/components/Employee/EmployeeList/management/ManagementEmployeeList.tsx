@@ -41,6 +41,7 @@ function ManagementEmployeeListRoot({
   onEvent,
   dictionary,
   LoaderComponent,
+  className,
 }: ManagementEmployeeListProps) {
   useI18n('Employee.ManagementEmployeeList')
   useComponentDictionary('Employee.ManagementEmployeeList', dictionary)
@@ -96,6 +97,7 @@ function ManagementEmployeeListRoot({
           onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
         }}
         onAddEmployee={handleAddEmployee}
+        className={className}
       />
     </BaseLayout>
   )

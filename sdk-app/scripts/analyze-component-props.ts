@@ -30,6 +30,7 @@ const ENTITY_ID_PATTERN = /^(company|employee|contractor|payroll|request|payment
 const UNSTABLE_FEATURES_PATH = 'src/contexts/UnstableFeaturesProvider/useUnstableFeature.ts'
 
 const NAMESPACES: Record<string, string[]> = {
+  CompanyManagement: ['src/components/Company/exports/companyManagement.ts'],
   CompanyOnboarding: ['src/components/Company/exports/companyOnboarding.ts'],
   EmployeeManagement: ['src/components/Employee/exports/employeeManagement.ts'],
   EmployeeOnboarding: ['src/components/Employee/exports/employeeOnboarding.ts'],

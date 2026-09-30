@@ -68,6 +68,7 @@ export function TaxRateHistorySection({ group, showHeader = true }: TaxRateHisto
       ...requirementColumns.map(column => ({
         key: column.key,
         title: column.label ?? column.key,
+        justify: 'end' as const,
         render: (row: HistoryRow) => row.values[column.key] ?? '',
       })),
     ],

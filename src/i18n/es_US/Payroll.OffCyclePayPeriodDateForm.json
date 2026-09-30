@@ -9,7 +9,6 @@
     "checkDateRequired": "Se requiere la fecha de pago",
     "endDateAfterStart": "La fecha de finalización debe ser igual o posterior a la fecha de inicio",
     "endDateRequired": "Se requiere la fecha de finalización",
-    "startDateNotFuture": "La fecha de inicio no puede estar en el futuro para las nóminas de corrección",
     "startDateRequired": "La fecha de inicio es obligatoria"
   }
 }

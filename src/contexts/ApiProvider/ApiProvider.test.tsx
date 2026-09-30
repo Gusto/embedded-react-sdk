@@ -172,4 +172,25 @@ describe('ApiProvider', () => {
 
     expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-06-15')
   })
+
+  test('always registers the API version mismatch hook for afterSuccess and afterError', () => {
+    render(
+      <ApiProvider url="https://api.example.com">
+        <div>Test</div>
+      </ApiProvider>,
+    )
+
+    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(1)
+    expect(mockSDKHooksInstance.registerAfterErrorHook).toHaveBeenCalledTimes(1)
+
+    const [afterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[0]! as [
+      { afterSuccess: unknown },
+    ]
+    const [afterErrorHook] = mockSDKHooksInstance.registerAfterErrorHook.mock.calls[0]! as [
+      { afterError: unknown },
+    ]
+
+    expect(afterSuccessHook.afterSuccess).toBeDefined()
+    expect(afterErrorHook.afterError).toBeDefined()
+  })
 })

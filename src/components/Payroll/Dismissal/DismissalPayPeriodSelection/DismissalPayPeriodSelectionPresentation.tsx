@@ -16,6 +16,8 @@ export interface DismissalPayPeriodSelectionPresentationProps {
   onSubmit: () => void
   /** Whether the submit action is in flight. */
   isPending: boolean
+  /** CSS class name applied to the root element. */
+  className?: string
 }
 
 /** @internal */
@@ -25,6 +27,7 @@ export function DismissalPayPeriodSelectionPresentation({
   onSelectPeriod,
   onSubmit,
   isPending,
+  className,
 }: DismissalPayPeriodSelectionPresentationProps) {
   useI18n('Payroll.Dismissal')
   const { t } = useTranslation('Payroll.Dismissal')
@@ -34,7 +37,7 @@ export function DismissalPayPeriodSelectionPresentation({
 
   if (hasNoPayPeriods) {
     return (
-      <Flex flexDirection="column" gap={24}>
+      <Flex className={className} flexDirection="column" gap={24}>
         <Flex flexDirection="column" gap={4}>
           <Heading as="h2">{t('pageTitle')}</Heading>
         </Flex>
@@ -44,7 +47,7 @@ export function DismissalPayPeriodSelectionPresentation({
   }
 
   return (
-    <Flex flexDirection="column" gap={24}>
+    <Flex className={className} flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('pageTitle')}</Heading>
         <Text variant="supporting">{t('pageDescription')}</Text>

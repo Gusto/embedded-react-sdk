@@ -39,6 +39,7 @@ import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderT
 import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
+import type { FieldCaptionProps } from '@/components/Common/FieldCaption/FieldCaptionTypes'
 
 /**
  * Full map of UI components used by the SDK. Every property is a React component that the
@@ -49,7 +50,7 @@ import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/Pay
  *
  * To take full control of every UI component (and eliminate the React Aria dependency),
  * pass a complete {@link ComponentsContextType} to {@link GustoProviderCustomUIAdapter} instead.
- * All properties are then required except `PaginationControl` and `PayrollLoading`,
+ * All properties are then required except `PaginationControl`, `PayrollLoading`, and `FieldCaption`,
  * which fall back to built-in SDK implementations when omitted.
  *
  * @public
@@ -176,6 +177,8 @@ export interface ComponentsContextType {
   /** HTML `<ul>` for an unordered list of items. */
   UnorderedList: FunctionComponent<UnorderedListProps>
 
+  /** Label or legend caption for form controls, including the optional/required indicator. Defaults to the SDK's built-in caption UI when omitted. */
+  FieldCaption?: FunctionComponent<FieldCaptionProps>
   /** Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. */
   PaginationControl?: FunctionComponent<PaginationControlProps>
   /** Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. */

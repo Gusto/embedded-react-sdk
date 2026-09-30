@@ -12,6 +12,13 @@ import type { HookFieldProps } from '@/partner-hook-utils/types'
 export type RequiredValidation = typeof ContractorPayErrorCodes.REQUIRED
 
 /**
+ * Validation code for an hourly rate above the server's maximum cap.
+ *
+ * @public
+ */
+export type MaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE
+
+/**
  * Props accepted by {@link useContractorPayForm}'s `Fields.WageType` component.
  *
  * @public
@@ -30,7 +37,9 @@ export function WageTypeField(props: WageTypeFieldProps) {
  *
  * @public
  */
-export type HourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<RequiredValidation>>
+export type HourlyRateFieldProps = HookFieldProps<
+  NumberInputHookFieldProps<RequiredValidation | MaxHourlyRateValidation>
+>
 
 /** @internal */
 export function HourlyRateField(props: HourlyRateFieldProps) {

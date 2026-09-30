@@ -162,6 +162,20 @@ describe('HolidayPolicyDetail', () => {
     // against userEvent + concurrent React + the hook's debounce.
   })
 
+  describe('custom className', () => {
+    it('applies custom className to the root element', async () => {
+      const { container } = renderWithProviders(
+        <HolidayPolicyDetail {...defaultProps} defaultTab="holidays" className="custom-class" />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Holiday pay policy' })).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('.custom-class')).toBeInTheDocument()
+    })
+  })
+
   describe('navigation', () => {
     it('fires TIME_OFF_BACK_TO_LIST when back is clicked', async () => {
       const user = userEvent.setup()

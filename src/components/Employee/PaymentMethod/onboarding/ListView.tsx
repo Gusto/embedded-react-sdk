@@ -110,6 +110,7 @@ function ListViewReady({
       {
         key: 'splitAmount',
         title: t('allocationColumn'),
+        justify: 'end',
         render: bankAccount => {
           const splitAmount =
             paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.splitAmount ?? 0

@@ -1,10 +1,10 @@
 {
   "pageTitle": "Edit payroll for {{employeeName}}",
   "breadcrumbLabel": "{{firstName}} {{lastName}}",
-  "grossPayLabel": "Gross pay (excluding reimbursements)",
-  "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular and overtime hours",
   "regularHoursTitleWithoutOvertime": "Regular hours",
+  "addOvertimeCta": "Add overtime",
+  "overtimeWorkweekAlert": "When adding overtime hours, you must record hours and earnings by work week so {{employeeName}}'s pay is calculated correctly.",
   "hoursUnit": "Hours",
   "saveCta": "Save",
   "cancelCta": "Cancel",
@@ -12,7 +12,6 @@
   "typeColumn": "Type",
   "amountColumn": "Amount",
   "hoursColumn": "Hours",
-  "otherTitle": "Other",
   "compensationNames": {
     "regularHours": "Regular Hours",
     "overtime": "Overtime",
@@ -26,6 +25,10 @@
     "remaining": "{{balance}} remaining"
   },
   "additionalEarningsTitle": "Additional earnings",
+  "overtimeMultiplierEarningsAlert": "Certain types of additional earnings affect the overtime premium (the multiplier used to calculate OT rates).",
+  "overtimeMultiplierEarningsAlertDescription": "Only additional earnings attributable to this pay period should be entered below. These amounts will be included in the overtime premium calculations on this payroll. Employee earnings attributable to any period of time different than this pay period (such as a quarterly or annual bonus) should be entered as a separate off-cycle payroll specifying the relevant dates.",
+  "overtimeIncludedEarningsGroupLabel": "Included in overtime multiplier calculation",
+  "overtimeExcludedEarningsGroupLabel": "Not a factor for overtime calculation",
   "reimbursementTitle": "Reimbursements",
   "reimbursementDescriptionLabel": "Description",
   "reimbursementDescriptionPlaceholder": "e.g., Office supplies",
@@ -62,6 +65,7 @@
   },
   "validations": {
     "reimbursementAmount": "Amount must be greater than zero",
-    "negativeAmount": "Amount cannot be negative"
+    "negativeAmount": "Amount cannot be negative",
+    "requiredWorkweek": "Enter an amount for every workweek"
   }
 }

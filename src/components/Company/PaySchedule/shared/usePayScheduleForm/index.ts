@@ -13,6 +13,7 @@ export {
   type PayScheduleFormData,
   type PayScheduleField,
   type PayScheduleFrequency,
+  type PayScheduleWorkweekStartDay,
 } from './payScheduleSchema'
 export type {
   RequiredValidation as PayScheduleRequiredValidation,
@@ -24,4 +25,5 @@ export type {
   AnchorEndOfPayPeriodFieldProps,
   Day1FieldProps,
   Day2FieldProps,
+  WorkweekStartDayFieldProps,
 } from './fields'

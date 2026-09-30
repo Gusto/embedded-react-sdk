@@ -1,6 +1,7 @@
 {
   "title": "Contractors",
   "addContractorCta": "Add contractor",
+  "backToListCta": "Back to contractors",
   "tabsLabel": "Contractor status tabs",
   "tabs": {
     "active": "Active",

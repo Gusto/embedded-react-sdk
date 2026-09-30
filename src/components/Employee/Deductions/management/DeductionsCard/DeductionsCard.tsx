@@ -113,6 +113,7 @@ function DeductionsCardContent({ employeeId, onEvent, LoaderComponent }: Deducti
     {
       key: 'amount',
       title: t('columns.withhold'),
+      justify: 'end' as const,
       render: (garnishment: Garnishment) =>
         formatDeductionAmount(garnishment, {
           formatCurrency,

@@ -13,6 +13,8 @@
   "startDateLabel": "Start date",
   "statusLabel": "Status",
   "lastDayLabel": "Last day",
+  "pendingDismissalLabel": "Pending dismissal",
+  "pendingDismissalBadge": "Last day {{date}}",
   "editCta": "Edit employee",
   "dismissCta": "Dismiss employee",
   "cancelCta": "Cancel onboarding",

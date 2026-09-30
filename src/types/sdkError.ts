@@ -1,4 +1,5 @@
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { HTTPClientError } from '@gusto/embedded-api/models/errors/httpclienterrors'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
@@ -33,6 +34,14 @@ export const SDKErrorCategories = {
  * @public
  */
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories]
+
+/**
+ * Fallback message used when an API error response carries no extractable field errors
+ * (e.g. a non-JSON or unrecognized 5xx body) — never surfaces the raw response body.
+ *
+ * @internal
+ */
+export const GENERIC_API_ERROR_MESSAGE = 'Something went wrong. Please try again.'
 
 /**
  * An error thrown by internal SDK logic that should be caught and normalized
@@ -233,6 +242,39 @@ function buildApiErrorMessage(fieldErrors: SDKFieldError[], fallbackMessage: str
 }
 
 /**
+ * Resolves a safe fallback message for a `GustoEmbeddedError` with no extractable field errors.
+ *
+ * @remarks
+ * Every generated error class (`APIError`, `UnprocessableEntityError`, `ForbiddenErrorObject`, etc.)
+ * falls back to a raw `JSON.stringify` dump of the response as its own `.message` whenever the
+ * response body has no top-level `message` string — `error instanceof APIError` alone doesn't catch
+ * this for the other classes. Re-parsing `httpMeta.body` recovers the same top-level `message` those
+ * classes use when it exists, and falls back to {@link GENERIC_API_ERROR_MESSAGE} otherwise so the
+ * raw body is never surfaced.
+ */
+function getSafeFallbackMessage(error: GustoEmbeddedError): string {
+  if (error instanceof APIError) {
+    return GENERIC_API_ERROR_MESSAGE
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(error.httpMeta.body)
+    if (
+      parsed !== null &&
+      typeof parsed === 'object' &&
+      'message' in parsed &&
+      typeof (parsed as { message: unknown }).message === 'string'
+    ) {
+      return (parsed as { message: string }).message
+    }
+  } catch {
+    // Body isn't valid JSON
+  }
+
+  return GENERIC_API_ERROR_MESSAGE
+}
+
+/**
  * Normalizes any caught error into a unified `SDKError`.
  *
  * Classification is based purely on the error type:
@@ -278,9 +320,11 @@ export function normalizeToSDKError(error: unknown): SDKError {
       ? extractFieldErrors(error.errors)
       : tryExtractFieldErrorsFromBody(error.httpMeta.body)
 
+    const fallbackMessage = getSafeFallbackMessage(error)
+
     return {
       category: 'api_error',
-      message: buildApiErrorMessage(fieldErrors, error.message),
+      message: buildApiErrorMessage(fieldErrors, fallbackMessage),
       httpStatus,
       fieldErrors,
       raw: error,

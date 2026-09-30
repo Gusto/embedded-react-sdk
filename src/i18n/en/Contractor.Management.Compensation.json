@@ -21,7 +21,8 @@
     "saveCta": "Save",
     "successAlert": "Compensation updated",
     "validations": {
-      "hourlyRate": "Enter a valid hourly rate"
+      "hourlyRate": "Enter a valid hourly rate",
+      "hourlyRateMax": "Hourly rate can't exceed $1,000,000,000,000.00"
     }
   }
 }

@@ -81,6 +81,7 @@ const calculateDateRange = (months: number = 3) => {
 }
 
 const Root = ({
+  className,
   companyId,
   dictionary,
   onEvent,
@@ -185,6 +186,7 @@ const Root = ({
 
   return (
     <PaymentsListPresentation
+      className={className}
       contractorPayments={contractorPayments}
       numberOfMonths={numberOfMonths}
       onCreatePayment={onCreatePayment}

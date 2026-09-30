@@ -31,7 +31,7 @@ export function RecoveryCasesResubmit(props: RecoveryCasesResubmitProps) {
   )
 }
 
-function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
+function Root({ dictionary, recoveryCaseId, className }: RecoveryCasesResubmitProps) {
   useComponentDictionary('Payroll.RecoveryCasesResubmit', dictionary)
   const { Heading, Text } = useComponentContext()
   const { onEvent, baseSubmitHandler } = useBase()
@@ -64,7 +64,7 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
   }
 
   return (
-    <Flex flexDirection="column" gap={16}>
+    <Flex className={className} flexDirection="column" gap={16}>
       {title && <Heading as="h2">{title}</Heading>}
       {subtitle && <Text>{subtitle}</Text>}
       {description.length > 0 && description}

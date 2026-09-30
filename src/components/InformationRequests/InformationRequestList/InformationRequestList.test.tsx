@@ -134,4 +134,14 @@ describe('InformationRequestList', () => {
 
     expect(screen.queryByText('Company Onboarding')).not.toBeInTheDocument()
   })
+
+  it('applies custom className', async () => {
+    const { container } = renderWithProviders(
+      <InformationRequestList {...defaultProps} className="custom-class" />,
+    )
+
+    await screen.findByText('Company Onboarding')
+
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
+  })
 })

@@ -72,4 +72,6 @@ export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
   successAlert?: string
   /** Called when the success alert is dismissed. */
   onDismissAlert?: () => void
+  /** CSS class name applied to the root element. */
+  className?: string
 }

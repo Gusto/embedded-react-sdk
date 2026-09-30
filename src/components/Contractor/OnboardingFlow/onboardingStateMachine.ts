@@ -23,7 +23,10 @@ type EventPayloads = {
     onboardingStatus?: Contractor['onboardingStatus']
     selfOnboarding: boolean
   }
-  [componentEvents.CONTRACTOR_SUBMIT_DONE]: { message?: string }
+  [componentEvents.CONTRACTOR_SUBMIT_DONE]: {
+    message?: string
+    onboardingStatus?: Contractor['onboardingStatus']
+  }
 }
 
 // The new hire report belongs to the contractor's initial onboarding pass only.
@@ -79,13 +82,17 @@ const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   })
 }
 
-const cancelTransition = () =>
+// Parameterized by the "list" screen to return to on cancel/submit, so this same step
+// sequence can be reused by a host machine with its own list state (see
+// `createContractorOnboardingSteps` below) without hardcoding this module's own
+// onboarding-side list.
+const cancelTransition = (returnToListComponent: React.ComponentType) =>
   transition(
     componentEvents.CANCEL,
     'list',
     reduce(
       createReducer({
-        component: ContractorListContextual,
+        component: returnToListComponent,
         header: null,
         contractorId: undefined,
         successMessage: undefined,
@@ -93,42 +100,83 @@ const cancelTransition = () =>
     ),
   )
 
-/** @internal */
-export const onboardingMachine = {
-  list: state<MachineTransition>(
-    transition(
-      componentEvents.CONTRACTOR_CREATE,
-      'profile',
-      reduce(
-        createReducer({
-          component: ProfileContextual,
-          header: progressHeader('profile'),
-          contractorId: undefined,
-          successMessage: undefined,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.CONTRACTOR_UPDATE,
-      'profile',
-      reduce(
-        (
-          ctx: OnboardingFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_UPDATE>,
-        ): OnboardingFlowContextInterface => {
-          return {
-            ...ctx,
-            component: ProfileContextual,
-            header: progressHeader('profile'),
-            contractorId: ev.payload.contractorId,
-            successMessage: undefined,
-          }
-        },
-      ),
-    ),
+/**
+ * Transitions a host machine's `list` state into the Profile step to onboard a brand-new
+ * contractor. Reused as-is by both {@link onboardingMachine} and `ContractorListFlow`'s own
+ * machine so "Add contractor" behaves identically in both places.
+ *
+ * @internal
+ */
+export const contractorCreateTransition = transition(
+  componentEvents.CONTRACTOR_CREATE,
+  'profile',
+  reduce(
+    createReducer({
+      component: ProfileContextual,
+      header: progressHeader('profile'),
+      contractorId: undefined,
+      successMessage: undefined,
+    }),
   ),
+)
+
+/**
+ * Transitions a host machine's `list` state into the Profile step to continue an existing
+ * contractor's onboarding. Reused as-is by both {@link onboardingMachine} and
+ * `ContractorListFlow`'s own machine so "Continue"/"Review" behaves identically in both places.
+ *
+ * @internal
+ */
+export const contractorUpdateTransition = transition(
+  componentEvents.CONTRACTOR_UPDATE,
+  'profile',
+  reduce(
+    (
+      ctx: OnboardingFlowContextInterface,
+      ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_UPDATE>,
+    ): OnboardingFlowContextInterface => {
+      return {
+        ...ctx,
+        component: ProfileContextual,
+        header: progressHeader('profile'),
+        contractorId: ev.payload.contractorId,
+        successMessage: undefined,
+      }
+    },
+  ),
+)
+
+/**
+ * The Profile → Address → Payment Method → New Hire Report → Submit step sequence, with all
+ * of its self-onboarding and new-hire-report skip logic. Extracted so a host machine with its
+ * own `list` state (e.g. `ContractorListFlow`) can spread these states in directly rather than
+ * mounting {@link OnboardingFlow} as a nested component — nesting would render a second,
+ * independent `<Flow>` with its own header, and its `CANCEL`/submit-done transitions would
+ * resolve against *its own* internal list rather than the host's. Spreading these states into
+ * the host's own machine means every `'list'`-targeting transition below resolves against
+ * whichever machine they're mixed into, so `returnToListComponent` is the only piece that
+ * varies per host.
+ *
+ * `ContractorSubmit`'s admin (non-self-onboarding) submit button fires `contractor/submit/done`
+ * twice in quick succession for the same completion: once immediately after the mutation
+ * succeeds (`{ message }`, no `onboardingStatus`), and again if the admin then clicks the
+ * "Done" CTA on the `SubmitDone` confirmation screen it renders once the onboarding-status
+ * query refetches as completed (`{ onboardingStatus, message }`). The self-onboarding invite
+ * path has no such confirmation screen and only ever fires once, immediately. By default (used
+ * by {@link OnboardingFlow}, which shows a success banner on its own list on return) both fires
+ * transition straight to `list` — matching its long-standing behavior. Pass
+ * `waitForExplicitSubmitDone: true` (used by `ContractorListFlow`, whose list has no such
+ * banner) to hold on the first, bare-message fire so the admin actually sees `SubmitDone` and
+ * must click its "Done" CTA before returning to `list`.
+ *
+ * @internal
+ */
+export const createContractorOnboardingSteps = (
+  returnToListComponent: React.ComponentType,
+  { waitForExplicitSubmitDone = false }: { waitForExplicitSubmitDone?: boolean } = {},
+) => ({
   profile: state<MachineTransition>(
-    cancelTransition(),
+    cancelTransition(returnToListComponent),
     transition(
       componentEvents.CONTRACTOR_PROFILE_DONE,
       'address',
@@ -207,7 +255,7 @@ export const onboardingMachine = {
     ),
   ),
   address: state<MachineTransition>(
-    cancelTransition(),
+    cancelTransition(returnToListComponent),
     transition(
       componentEvents.CONTRACTOR_ADDRESS_DONE,
       'paymentMethod',
@@ -222,7 +270,7 @@ export const onboardingMachine = {
     ),
   ),
   paymentMethod: state<MachineTransition>(
-    cancelTransition(),
+    cancelTransition(returnToListComponent),
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE,
       'newHireReport',
@@ -251,7 +299,7 @@ export const onboardingMachine = {
     ),
   ),
   newHireReport: state<MachineTransition>(
-    cancelTransition(),
+    cancelTransition(returnToListComponent),
     transition(
       componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE,
       'submit',
@@ -266,7 +314,7 @@ export const onboardingMachine = {
     ),
   ),
   submit: state<MachineTransition>(
-    cancelTransition(),
+    cancelTransition(returnToListComponent),
     transition(
       componentEvents.CONTRACTOR_SUBMIT_DONE,
       'list',
@@ -277,13 +325,29 @@ export const onboardingMachine = {
         ): OnboardingFlowContextInterface => {
           return {
             ...ctx,
-            component: ContractorListContextual,
+            component: returnToListComponent,
             header: null,
             successMessage: ev.payload.message,
           }
         },
       ),
+      ...(waitForExplicitSubmitDone
+        ? [
+            guard(
+              (
+                ctx: OnboardingFlowContextInterface,
+                ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_SUBMIT_DONE>,
+              ) => ctx.selfOnboarding === true || ev.payload.onboardingStatus !== undefined,
+            ),
+          ]
+        : []),
     ),
   ),
+})
+
+/** @internal */
+export const onboardingMachine = {
+  list: state<MachineTransition>(contractorCreateTransition, contractorUpdateTransition),
+  ...createContractorOnboardingSteps(ContractorListContextual),
   final: state<MachineTransition>(),
 }
