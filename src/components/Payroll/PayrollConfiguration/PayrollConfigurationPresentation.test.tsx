@@ -144,6 +144,55 @@ describe('PayrollConfigurationPresentation', () => {
     })
   })
 
+  describe('pay by check indicator', () => {
+    it('shows "Pay by check" when the employee is paid by check', async () => {
+      const checkCompensation = {
+        ...mockEmployeeCompensations[0],
+        paymentMethod: 'Check' as const,
+      }
+
+      renderWithProviders(
+        <PayrollConfigurationPresentation
+          {...defaultProps}
+          employeeCompensations={[checkCompensation]}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Pay by check')).toBeInTheDocument()
+      })
+    })
+
+    it('does not show "Pay by check" for direct deposit employees', async () => {
+      renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('John Doe')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Pay by check')).not.toBeInTheDocument()
+    })
+
+    it('does not show "Pay by check" when a check employee is skipped', async () => {
+      const skippedCheckCompensation = {
+        ...mockEmployeeCompensations[0],
+        paymentMethod: 'Check' as const,
+        excluded: true,
+      }
+
+      renderWithProviders(
+        <PayrollConfigurationPresentation
+          {...defaultProps}
+          employeeCompensations={[skippedCheckCompensation]}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Skipped')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Pay by check')).not.toBeInTheDocument()
+    })
+  })
+
   it('filters out compensations without matching employee details', () => {
     const compensationWithoutEmployee = {
       ...mockEmployeeCompensations[0],

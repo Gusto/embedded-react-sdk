@@ -5089,6 +5089,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | <a id="property-payrollpayrollconfigurationloadingdescription"></a> `loadingDescription` | `"This may take a minute or two. You can navigate away while this happens."` |
 | <a id="property-payrollpayrollconfigurationloadingtitle"></a> `loadingTitle` | `"Preparing payroll..."` |
 | <a id="property-payrollpayrollconfigurationpagetitle"></a> `pageTitle` | `"Edit Payroll"` |
+| <a id="property-payrollpayrollconfigurationpaybycheck"></a> `payByCheck` | `"Pay by check"` |
 | <a id="property-payrollpayrollconfigurationskippedbadge"></a> `skippedBadge` | `"Skipped"` |
 | <a id="property-payrollpayrollconfigurationtablecolumns"></a> `tableColumns` | |
 | `tableColumns.additionalEarnings` | `"Additional earnings"` |
