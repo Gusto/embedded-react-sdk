@@ -118,7 +118,7 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
         const created = await result.current.jobForm.actions.onSubmit()
         if (!created || created.mode !== 'create') return
         const newJobId = created.data.uuid
-        const newCompensationId = created.data.currentCompensationUuid
+        const newCompensationId = created.data.currentCompensationUuid ?? undefined
         const newCompensation = created.data.compensations?.find(c => c.uuid === newCompensationId)
         await result.current.compensationForm.actions.onSubmit({
           jobId: newJobId,

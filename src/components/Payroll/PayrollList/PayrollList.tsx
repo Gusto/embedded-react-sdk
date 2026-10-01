@@ -184,8 +184,8 @@ const Root = ({
             companyUuid: companyId,
             requestBody: {
               payrollType,
-              startDate: payroll.payPeriod?.startDate,
-              endDate: payroll.payPeriod?.endDate,
+              startDate: payroll.payPeriod?.startDate ?? undefined,
+              endDate: payroll.payPeriod?.endDate ?? undefined,
               payScheduleUuid: payroll.payPeriod?.payScheduleUuid ?? undefined,
             },
           },
