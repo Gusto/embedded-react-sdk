@@ -30,6 +30,7 @@ import XCircle from '@/assets/icons/x-circle.svg?react'
 import PlusCircle from '@/assets/icons/plus-circle.svg?react'
 import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { PAYMENT_METHODS } from '@/shared/constants'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
@@ -261,20 +262,33 @@ export const PayrollConfigurationPresentation = ({
                     title: t('tableColumns.totalPay'),
                     justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
+                      let grossPay: number
                       if (isRegularRateOfPayEnabled) {
-                        return formatNumberAsCurrency(Number(item.grossPay ?? 0))
+                        grossPay = Number(item.grossPay ?? 0)
+                      } else {
+                        const employee = employeeMap.get(item.employeeUuid || '')
+                        grossPay = employee
+                          ? calculateGrossPay(
+                              item,
+                              employee,
+                              payPeriod?.startDate,
+                              paySchedule,
+                              payrollCategory,
+                            )
+                          : 0
                       }
-                      const employee = employeeMap.get(item.employeeUuid || '')
-                      const calculatedGrossPay = employee
-                        ? calculateGrossPay(
-                            item,
-                            employee,
-                            payPeriod?.startDate,
-                            paySchedule,
-                            payrollCategory,
-                          )
-                        : 0
-                      return formatNumberAsCurrency(calculatedGrossPay)
+                      const amount = formatNumberAsCurrency(grossPay)
+                      if (item.excluded || item.paymentMethod !== PAYMENT_METHODS.check) {
+                        return amount
+                      }
+                      return (
+                        <Flex flexDirection="column" gap={0} alignItems="flex-end">
+                          {amount}
+                          <Text size="xs" variant="supporting">
+                            {t('payByCheck')}
+                          </Text>
+                        </Flex>
+                      )
                     },
                   },
                 ]}

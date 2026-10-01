@@ -7586,6 +7586,8 @@ export namespace Translations {
     }
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
+    /** @defaultValue `"Pay by check"` */
+    payByCheck: string
     /** @defaultValue `"Unknown employee"` */
     unknownEmployeeFallback: string
     editMenu: {
