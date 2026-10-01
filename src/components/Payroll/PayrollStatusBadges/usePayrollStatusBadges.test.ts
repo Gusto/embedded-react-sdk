@@ -1,6 +1,14 @@
 import { expect, describe, it } from 'vitest'
 import { getPayrollStatusBadges } from './usePayrollStatusBadges'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
+
+const ZERO_TOTALS = {
+  grossPay: '0.00',
+  employerTaxes: '0.00',
+  reimbursements: '0.00',
+  benefits: '0.00',
+}
 
 describe('usePayrollStatusBadges', () => {
   describe('processing request statuses (highest priority)', () => {
@@ -188,6 +196,87 @@ describe('usePayrollStatusBadges', () => {
 
       expect(result.badges[0]!.variant).toBe('info')
       expect(result.badges[0]!.translationKey).toBe('pending')
+    })
+  })
+
+  describe('skipped transition payrolls', () => {
+    it('returns Skipped for a processed transition payroll with zero totals', () => {
+      const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      const payroll = {
+        processed: true,
+        checkDate: futureDate,
+        offCycleReason: OffCycleReasonType.TransitionFromOldPaySchedule,
+        totals: ZERO_TOTALS,
+      }
+      const result = getPayrollStatusBadges(payroll)
+
+      expect(result.badges[0]!.variant).toBe('info')
+      expect(result.badges[0]!.translationKey).toBe('skipped')
+      expect(result.badges).toHaveLength(1)
+    })
+
+    it('shows Skipped instead of Complete when the check date has already passed', () => {
+      const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      const payroll = {
+        processed: true,
+        checkDate: pastDate,
+        offCycleReason: OffCycleReasonType.TransitionFromOldPaySchedule,
+        totals: ZERO_TOTALS,
+      }
+      const result = getPayrollStatusBadges(payroll)
+
+      expect(result.badges[0]!.translationKey).toBe('skipped')
+    })
+
+    it('does not return Skipped for a transition payroll that actually ran (non-zero gross pay)', () => {
+      const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      const payroll = {
+        processed: true,
+        checkDate: pastDate,
+        offCycleReason: OffCycleReasonType.TransitionFromOldPaySchedule,
+        totals: { ...ZERO_TOTALS, grossPay: '1500.00' },
+      }
+      const result = getPayrollStatusBadges(payroll)
+
+      expect(result.badges[0]!.translationKey).toBe('complete')
+    })
+
+    it('does not return Skipped for a zero-total non-transition payroll', () => {
+      const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      const payroll = {
+        processed: true,
+        checkDate: futureDate,
+        offCycleReason: OffCycleReasonType.Bonus,
+        totals: ZERO_TOTALS,
+      }
+      const result = getPayrollStatusBadges(payroll)
+
+      expect(result.badges[0]!.translationKey).toBe('pending')
+    })
+
+    it('does not return Skipped for a zero-total regular (non-off-cycle) payroll', () => {
+      const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      const payroll = {
+        processed: true,
+        checkDate: futureDate,
+        totals: ZERO_TOTALS,
+      }
+      const result = getPayrollStatusBadges(payroll)
+
+      expect(result.badges[0]!.translationKey).toBe('pending')
+    })
+
+    it('does not return Skipped for an unprocessed transition payroll', () => {
+      const futureTime = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+      const payroll = {
+        processed: false,
+        payrollDeadline: futureTime.toISOString(),
+        offCycleReason: OffCycleReasonType.TransitionFromOldPaySchedule,
+        totals: ZERO_TOTALS,
+      }
+      const result = getPayrollStatusBadges(payroll)
+
+      expect(result.badges[0]!.translationKey).toBe('dueInDays')
     })
   })
 
