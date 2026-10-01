@@ -3,7 +3,7 @@ import z from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { contractorDisplayName } from '../ContractorList/shared/contractorDisplayName'
+import { getContractorDisplayName } from '../shared/helpers'
 import { Flex, ActionsLayout, DatePickerField } from '@/components/Common'
 import { Form as HtmlForm } from '@/components/Common/Form/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -46,7 +46,7 @@ export function DismissalPresentation({
     defaultValues: {},
   })
 
-  const name = contractorDisplayName(contractor)
+  const name = getContractorDisplayName(contractor)
   const minDate = contractor.startDate
     ? addDays(normalizeToDate(contractor.startDate)!, 1)
     : undefined

@@ -50,6 +50,11 @@ function ManagementContractorListRoot({
   useComponentDictionary('Contractor.ManagementContractorList', dictionary)
 
   const [selectedTab, setSelectedTab] = useState<ContractorTab>(initialTab)
+  // Seeded from the prop on mount only — the prop changes only when the owning flow
+  // remounts this component on the way back from a sub-flow (e.g. Dismissal), so a fresh
+  // mount always starts with the latest message. Cleared locally on any further
+  // interaction below so a stale banner doesn't linger past the action it announced.
+  const [bannerMessage, setBannerMessage] = useState(successMessage)
 
   const contractorList = useContractorList({
     companyId,
@@ -87,6 +92,7 @@ function ManagementContractorListRoot({
   }
 
   const handleTabChange = (tab: ContractorTab) => {
+    setBannerMessage(undefined)
     setSelectedTab(tab)
   }
 
@@ -96,7 +102,7 @@ function ManagementContractorListRoot({
         className={className}
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
-        successMessage={successMessage}
+        successMessage={bannerMessage}
         contractors={contractorList.data.contractors}
         isFetching={contractorList.status.isFetching}
         pagination={contractorList.pagination}
@@ -106,19 +112,23 @@ function ManagementContractorListRoot({
         onDismiss={handleDismiss}
         onRehire={handleRehire}
         onDelete={async (contractorId: string) => {
+          setBannerMessage(undefined)
           await contractorList.actions.onDelete(contractorId)
           onEvent(componentEvents.CONTRACTOR_DELETED, { contractorId })
         }}
         onCancelSelfOnboarding={async (contractorId: string) => {
+          setBannerMessage(undefined)
           const onboardingStatus = await contractorList.actions.onCancelSelfOnboarding(contractorId)
           if (!onboardingStatus) return
           onEvent(componentEvents.CONTRACTOR_SELF_ONBOARDING_CANCELLED, onboardingStatus)
         }}
         onCancelDismissal={async (contractorId: string) => {
+          setBannerMessage(undefined)
           await contractorList.actions.onCancelDismissal(contractorId)
           onEvent(componentEvents.CONTRACTOR_DISMISSAL_CANCELLED, { contractorId })
         }}
         onCancelRehire={async (contractorId: string) => {
+          setBannerMessage(undefined)
           await contractorList.actions.onCancelRehire(contractorId)
           onEvent(componentEvents.CONTRACTOR_REHIRE_CANCELLED, { contractorId })
         }}
