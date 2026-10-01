@@ -7,3 +7,4 @@ export {
   type UseContractorListResult,
   type UseContractorListReady,
 } from './useContractorList'
+export { contractorDisplayName } from './contractorDisplayName'

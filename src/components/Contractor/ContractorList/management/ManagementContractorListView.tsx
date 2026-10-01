@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { UseContractorListResult, ContractorWithActions } from '../shared/useContractorList'
+import { contractorDisplayName } from '../shared/contractorDisplayName'
 import type { ContractorTab } from './ManagementContractorList'
 import { DataView, EmptyData, useDataView, Flex, VisuallyHidden } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -11,9 +12,8 @@ import XCircleSvg from '@/assets/icons/x-circle.svg?react'
 import EyeSvg from '@/assets/icons/eye.svg?react'
 import SlashCircleSvg from '@/assets/icons/slash-circle.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
-import { firstLastName } from '@/helpers/formattedStrings'
 import { normalizeToDate, formatDateLong, formatDateLongWithYear } from '@/helpers/dateFormatting'
-import { CONTRACTOR_TYPE, ContractorOnboardingStatus } from '@/shared/constants'
+import { ContractorOnboardingStatus } from '@/shared/constants'
 
 /** @internal */
 export interface ManagementContractorListViewProps extends Pick<
@@ -26,6 +26,8 @@ export interface ManagementContractorListViewProps extends Pick<
   isFetching: boolean
   selectedTab: ContractorTab
   onTabChange: (tab: ContractorTab) => void
+  /** Success message to display in an alert above the list, typically after a dismissal is scheduled. */
+  successMessage?: string
   onEdit: (contractorId: string) => void
   onView: (contractorId: string) => void
   onDismiss: (contractorId: string) => void
@@ -35,12 +37,6 @@ export interface ManagementContractorListViewProps extends Pick<
   onCancelDismissal: (contractorId: string) => Promise<void>
   onCancelRehire: (contractorId: string) => Promise<void>
   onAddContractor: () => void
-}
-
-function contractorDisplayName(contractor: ContractorWithActions) {
-  return contractor.type === CONTRACTOR_TYPE.BUSINESS
-    ? (contractor.businessName ?? '')
-    : firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
 }
 
 function ContractorNameCell({ contractor }: { contractor: ContractorWithActions }) {
@@ -78,6 +74,7 @@ export function ManagementContractorListView({
   isFetching,
   selectedTab,
   onTabChange,
+  successMessage,
   status,
   pagination,
   onEdit,
@@ -317,6 +314,7 @@ export function ManagementContractorListView({
   return (
     <>
       <Flex className={className} flexDirection="column" gap={32}>
+        {successMessage && <Components.Alert label={successMessage} status="success" />}
         <Flex justifyContent="space-between" alignItems="center">
           <Components.Heading as="h2">{t('title')}</Components.Heading>
           <Components.Button variant="secondary" onClick={onAddContractor}>

@@ -22,6 +22,8 @@ export interface ManagementContractorListProps extends BaseComponentInterface<'C
   companyId: string
   /** Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. */
   initialTab?: ContractorTab
+  /** Success message to display in an alert above the list, typically after a dismissal is scheduled. */
+  successMessage?: string
 }
 
 const mapTabToContractorType = (tab: ContractorTab): ContractorType => {
@@ -38,6 +40,7 @@ const mapTabToContractorType = (tab: ContractorTab): ContractorType => {
 function ManagementContractorListRoot({
   companyId,
   initialTab = 'active',
+  successMessage,
   onEvent,
   dictionary,
   LoaderComponent,
@@ -93,6 +96,7 @@ function ManagementContractorListRoot({
         className={className}
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
+        successMessage={successMessage}
         contractors={contractorList.data.contractors}
         isFetching={contractorList.status.isFetching}
         pagination={contractorList.pagination}
