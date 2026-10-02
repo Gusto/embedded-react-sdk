@@ -452,6 +452,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.PayrollBlockerList** | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
 | **Payroll.RecoveryCases** | GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases) |
 |  | PUT | [`/v1/recovery_cases/:recoveryCaseUuid/redebit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/redebit-recovery-case) |
+| **Payroll.TaxPaymentsFlow** | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+|  | GET | [`/v1/companies/:companyUuid/tax_payments`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-tax-payments) |
+|  | GET | [`/v1/companies/:companyUuid/tax_payments/:uuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-tax-payment) |
 | **Payroll.PrintChecks** | GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
 |  | GET | [`/v1/generated_documents/:documentType/:requestUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-generated_documents-document_type-request_uuid) |
 |  | POST | [`/v1/payrolls/:payrollUuid/generated_documents/printable_payroll_checks`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-payrolls-payroll_uuid-generated_documents-printable_payroll_checks) |
@@ -479,6 +482,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollBlockerList, Payroll.PayrollExecutionFlow |
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
 | **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollExecutionFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
+| **Payroll.TaxPaymentsFlow** |  |
 | **Payroll.TransitionFlow** | Payroll.PayrollExecutionFlow, Payroll.TransitionPayroll |
 
 ## Time off policies

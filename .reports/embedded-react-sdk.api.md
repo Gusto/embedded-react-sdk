@@ -290,6 +290,8 @@ import { SyntheticEvent } from 'react';
 import { TableHTMLAttributes } from 'react';
 import { Taxes } from '@gusto/embedded-api/models/components/payrollreceipt';
 import { TaxPayerType } from '@gusto/embedded-api/models/components/federaltaxdetails';
+import { TaxPayment } from '@gusto/embedded-api/models/components/taxpayment';
+import { TaxPaymentLineItem } from '@gusto/embedded-api/models/components/taxpaymentlineitem';
 import { TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement';
 import { TaxRequirementMetadata } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
 import { TaxRequirementMetadataType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
@@ -708,6 +710,8 @@ declare namespace APIModels {
         IdentityVerificationStatus,
         SignatoryHomeAddress,
         Signatory,
+        TaxPayment,
+        TaxPaymentLineItem,
         ApplicableIf,
         TaxRequirement,
         Options,
@@ -1352,6 +1356,8 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
+    readonly TAX_PAYMENT_VIEW: "payroll/taxPayments/view";
+    readonly TAX_PAYMENT_BACK: "payroll/taxPayments/back";
     readonly PRINT_CHECKS_START: "payroll/printChecks/start";
     readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
     readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
@@ -4345,6 +4351,12 @@ declare namespace Payroll {
         PayrollBlockerListProps,
         RecoveryCases,
         RecoveryCasesProps,
+        TaxPaymentsFlow,
+        TaxPaymentsList,
+        TaxPaymentDetail,
+        TaxPaymentsFlowProps,
+        TaxPaymentsListProps,
+        TaxPaymentDetailProps,
         PrintChecks,
         PrintChecksProps,
         OffCyclePayPeriodDateFormData,
@@ -5178,6 +5190,10 @@ export interface Resources {
     // (undocumented)
     'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
     // (undocumented)
+    'Payroll.TaxPaymentDetail': Translations.PayrollTaxPaymentDetail
+    // (undocumented)
+    'Payroll.TaxPaymentsList': Translations.PayrollTaxPaymentsList
+    // (undocumented)
     'Payroll.Transition': Translations.PayrollTransition
     // (undocumented)
     'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
@@ -5736,6 +5752,31 @@ export interface TabsProps {
     tabs: TabProps[];
 }
 
+// @alpha
+function TaxPaymentDetail(props: TaxPaymentDetailProps): JSX;
+
+// @alpha
+interface TaxPaymentDetailProps extends BaseComponentInterface<'Payroll.TaxPaymentDetail'> {
+    companyId: string;
+    taxPaymentId: string;
+}
+
+// @alpha
+const TaxPaymentsFlow: (input: TaxPaymentsFlowProps) => JSX;
+
+// @alpha
+interface TaxPaymentsFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
+
+// @alpha
+function TaxPaymentsList(props: TaxPaymentsListProps): JSX;
+
+// @alpha
+interface TaxPaymentsListProps extends BaseComponentInterface<'Payroll.TaxPaymentsList'> {
+    companyId: string;
+}
+
 // @public
 function TaxRateManagement(props: TaxRateManagementProps): JSX;
 
@@ -6011,6 +6052,7 @@ export interface UnstableFeatures {
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
     payrollRegularRateOfPay?: boolean;
+    taxPayments?: boolean;
 }
 
 // @public
