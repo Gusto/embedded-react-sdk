@@ -296,7 +296,10 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `PAY_SCHEDULE_ASSIGNMENT_CANCEL` | `"paySchedule/management/assignment/cancel"` |
 | `PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED` | `"paySchedule/management/assignment/scheduleSelected"` |
 | `PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED` | `"paySchedule/management/assignment/typeSelected"` |
+| `PAY_SCHEDULE_AUTO_PILOT_DISABLED` | `"paySchedule/management/autoPilotDisabled"` |
+| `PAY_SCHEDULE_AUTO_PILOT_DISMISSED` | `"paySchedule/management/autoPilotDismissed"` |
 | `PAY_SCHEDULE_AUTO_PILOT_EDIT` | `"paySchedule/management/autoPilotEdit"` |
+| `PAY_SCHEDULE_AUTO_PILOT_ENABLED` | `"paySchedule/management/autoPilotEnabled"` |
 | `PAY_SCHEDULE_CREATE` | `"paySchedule/create"` |
 | `PAY_SCHEDULE_CREATED` | `"paySchedule/created"` |
 | `PAY_SCHEDULE_DELETE` | `"paySchedule/delete"` |

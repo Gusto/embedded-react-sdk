@@ -1465,6 +1465,9 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_DONE: "paySchedule/done";
     readonly PAY_SCHEDULE_MANAGE_ASSIGNMENT: "paySchedule/management/manageAssignment";
     readonly PAY_SCHEDULE_AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
+    readonly PAY_SCHEDULE_AUTO_PILOT_ENABLED: "paySchedule/management/autoPilotEnabled";
+    readonly PAY_SCHEDULE_AUTO_PILOT_DISABLED: "paySchedule/management/autoPilotDisabled";
+    readonly PAY_SCHEDULE_AUTO_PILOT_DISMISSED: "paySchedule/management/autoPilotDismissed";
     readonly PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED: "paySchedule/management/assignment/typeSelected";
     readonly PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED: "paySchedule/management/assignment/scheduleSelected";
     readonly PAY_SCHEDULE_ASSIGNMENT_BACK: "paySchedule/management/assignment/back";
@@ -4943,6 +4946,8 @@ export interface Resources {
     'Company.Industry': Translations.CompanyIndustry
     // (undocumented)
     'Company.Locations': Translations.CompanyLocations
+    // (undocumented)
+    'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
     // (undocumented)
     'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)

@@ -1987,6 +1987,11 @@
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
         {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules/assign",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign"
@@ -1998,7 +2003,8 @@
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "payScheduleId"
       ]
     },
     "CompanyManagement.PayScheduleAssignment": {
