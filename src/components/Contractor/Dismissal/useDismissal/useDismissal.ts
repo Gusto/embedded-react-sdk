@@ -6,6 +6,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { GENERIC_API_ERROR_MESSAGE } from '@/types/sdkError'
 
 /**
  * Props for {@link useDismissal}.
@@ -80,7 +81,24 @@ export function useDismissal({ contractorId }: UseDismissalProps): UseDismissalR
   const { data, isLoading } = contractorQuery
 
   if (isLoading || !data?.contractor) {
-    return { isLoading: true, errorHandling }
+    // A settled query (not `isLoading`) with no query `error` but also no `contractor` in the
+    // response body would otherwise report `isLoading: true` forever with an empty error list —
+    // `contractor` is optional on the response type, so this isn't a thrown error we'd catch via
+    // `composeErrorHandler`. Surface it as an error so the host sees a real failure state instead
+    // of a stuck spinner.
+    const settledWithNoContractor = !isLoading && !contractorQuery.error
+    return {
+      isLoading: true,
+      errorHandling: settledWithNoContractor
+        ? {
+            ...errorHandling,
+            errors: [
+              ...errorHandling.errors,
+              { category: 'internal_error', message: GENERIC_API_ERROR_MESSAGE, fieldErrors: [] },
+            ],
+          }
+        : errorHandling,
+    }
   }
 
   return {

@@ -88,6 +88,23 @@ describe('useDismissal', () => {
     expect(submitResult).toMatchObject({ mode: 'create' })
   })
 
+  it('surfaces an error instead of looping forever when the query settles with no contractor', async () => {
+    server.use(handleGetContractor(() => HttpResponse.json({})))
+
+    const { result } = renderHook(() => useDismissal({ contractorId: 'contractor-123' }), {
+      wrapper: GustoTestProvider,
+    })
+
+    await waitFor(() => {
+      expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
+    })
+
+    // Still reports isLoading: true (no contractor to populate the ready branch with), but
+    // BaseLayout checks `hasErrors` before `isLoading` — so a real error, not an endless
+    // spinner, is what the host actually renders here.
+    expect(result.current.isLoading).toBe(true)
+  })
+
   it('surfaces a mutation error via errorHandling', async () => {
     server.use(
       handleScheduleContractorDismissal(
