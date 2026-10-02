@@ -21,6 +21,11 @@ const DefaultFieldCaption = ({
       data-required={isRequired || undefined}
     >
       {children}
+      {isRequired ? (
+        <span aria-hidden="true" className={styles.requiredIndicator}>
+          &#160;*
+        </span>
+      ) : null}
     </Component>
   )
 
