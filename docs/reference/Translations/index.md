@@ -2336,6 +2336,7 @@ Translation keys for the `Contractor.Payments.PaymentStatement` i18n namespace.
 | `receipt.detailsLabel` | `"Receipt Details"` |
 | `receipt.disclaimer` | `"This receipt confirms funds have been electronically transferred to the recipient's bank account. Money transmission services are provided by Gusto, Inc. pursuant to its <licensesLink>licenses</licensesLink>."` |
 | `receipt.from` | `"From"` |
+| `receipt.receiptId` | `"Receipt ID"` |
 | `receipt.to` | `"To"` |
 | `receipt.totalLabel` | `"Total"` |
 | <a id="property-contractorpaymentspaymentstatementreimbursement"></a> `reimbursement` | `"Reimbursement"` |
