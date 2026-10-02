@@ -1433,6 +1433,7 @@ export const componentEvents: {
     readonly CONTRACTOR_DISMISS: "contractor/dismiss";
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
+    readonly CONTRACTOR_DISMISSAL_SCHEDULED: "contractor/dismissal/scheduled";
     readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: "contractor/management/profile/editRequested";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
@@ -1948,6 +1949,8 @@ declare namespace ContractorManagement {
         ContractorTab,
         ContractorListFlow,
         ContractorListFlowProps,
+        Dismissal,
+        DismissalProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,
@@ -2626,6 +2629,9 @@ export interface DialogProps {
 }
 
 // @public
+function Dismissal(input: DismissalProps): JSX;
+
+// @public
 function DismissalFlow(input: DismissalFlowProps): JSX;
 
 // @public
@@ -2644,6 +2650,11 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
     companyId: string;
     employeeId?: string;
     payrollId?: string;
+}
+
+// @public
+interface DismissalProps extends BaseComponentInterface<'Contractor.Dismissal'> {
+    contractorId: string;
 }
 
 // @public
@@ -3764,6 +3775,7 @@ function ManagementContractorList(input: ManagementContractorListProps): JSX;
 interface ManagementContractorListProps extends BaseComponentInterface<'Contractor.ManagementContractorList'> {
     companyId: string;
     initialTab?: ContractorTab;
+    successMessage?: string;
 }
 
 // @public
@@ -4981,6 +4993,8 @@ export interface Resources {
     'Contractor.ContractorList': Translations.ContractorContractorList
     // (undocumented)
     'Contractor.Dashboard': Translations.ContractorDashboard
+    // (undocumented)
+    'Contractor.Dismissal': Translations.ContractorDismissal
     // (undocumented)
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)

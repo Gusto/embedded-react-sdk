@@ -4,6 +4,7 @@ export {
   type ContractorTab,
 } from '../ContractorList/management/ManagementContractorList'
 export { ContractorListFlow, type ContractorListFlowProps } from '../ContractorListFlow'
+export { Dismissal, type DismissalProps } from '../Dismissal/Dismissal'
 export { DashboardFlow, Dashboard } from '../Dashboard'
 export type { DashboardFlowProps, DashboardProps, DashboardTab } from '../Dashboard'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'

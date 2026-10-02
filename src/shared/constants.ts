@@ -247,6 +247,7 @@ export const contractorEvents = {
   CONTRACTOR_DISMISS: 'contractor/dismiss',
   CONTRACTOR_REHIRE: 'contractor/rehire',
   CONTRACTOR_DISMISSAL_CANCELLED: 'contractor/dismissal/cancelled',
+  CONTRACTOR_DISMISSAL_SCHEDULED: 'contractor/dismissal/scheduled',
   CONTRACTOR_REHIRE_CANCELLED: 'contractor/rehire/cancelled',
   CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: 'contractor/management/profile/editRequested',
   CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: 'contractor/management/profile/updated',

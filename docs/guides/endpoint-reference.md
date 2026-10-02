@@ -324,6 +324,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
 |  | DELETE | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire) |
 |  | DELETE | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination) |
+| **ContractorManagement.Dismissal** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+|  | POST | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination) |
 | **ContractorManagement.DashboardFlow** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
 | **ContractorManagement.Profile** | POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors) |
 |  | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
@@ -365,7 +367,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Flow | Blocks included |
 | --- | --- |
-| **ContractorManagement.ContractorListFlow** | ContractorManagement.ContractorList, ContractorManagement.DashboardFlow, ContractorOnboarding.OnboardingFlow |
+| **ContractorManagement.ContractorListFlow** | ContractorManagement.ContractorList, ContractorManagement.DashboardFlow, ContractorManagement.Dismissal, ContractorOnboarding.OnboardingFlow |
 | **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
 | **ContractorManagement.DashboardFlow** | ContractorManagement.Address, ContractorManagement.Compensation, ContractorManagement.DocumentsCard, ContractorManagement.PaymentMethod, ContractorManagement.Profile |
 | **ContractorManagement.HistoricalPaymentFlow** | ContractorManagement.CreateHistoricalPayment, ContractorManagement.HistoricalPaymentSummary |

@@ -1591,6 +1591,33 @@ Translation keys for the `Contractor.Dashboard` i18n namespace.
 
 ***
 
+<a id="contractordismissal"></a>
+
+### ContractorDismissal
+
+Translation keys for the `Contractor.Dismissal` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractordismissalactions"></a> `actions` | |
+| `actions.cancel` | `"Cancel"` |
+| `actions.submit` | `"Dismiss contractor"` |
+| <a id="property-contractordismissalalert"></a> `alert` | |
+| `alert.label` | `"This can be cancelled"` |
+| `alert.text` | `"The dismissal can be cancelled from the contractor list any time before the dismissal date takes effect."` |
+| <a id="property-contractordismissalform"></a> `form` | |
+| `form.endDate` | |
+| `form.endDate.label` | `"Dismissal date"` |
+| <a id="property-contractordismissalsubtitle"></a> `subtitle` | `"Schedule a dismissal date for this contractor."` |
+| <a id="property-contractordismissalsuccessmessage"></a> `successMessage` | `"Dismissal scheduled"` |
+| <a id="property-contractordismissaltitle"></a> `title` | `"Dismiss {{name}}"` |
+| <a id="property-contractordismissalvalidation"></a> `validation` | |
+| `validation.endDateRequired` | `"Enter a dismissal date"` |
+
+***
+
 <a id="contractordocumentslist"></a>
 
 ### ContractorDocumentsList
@@ -5856,6 +5883,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorbankaccountfields"></a> `Contractor.BankAccountFields` | [`ContractorBankAccountFields`](#contractorbankaccountfields) |
 | <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
 | <a id="property-resourcescontractordashboard"></a> `Contractor.Dashboard` | [`ContractorDashboard`](#contractordashboard) |
+| <a id="property-resourcescontractordismissal"></a> `Contractor.Dismissal` | [`ContractorDismissal`](#contractordismissal) |
 | <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
 | <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
 | <a id="property-resourcescontractormanagementaddress"></a> `Contractor.Management.Address` | [`ContractorManagementAddress`](#contractormanagementaddress) |

@@ -70,6 +70,8 @@ export interface Resources {
   /** */
   'Contractor.Dashboard': Translations.ContractorDashboard
   /** */
+  'Contractor.Dismissal': Translations.ContractorDismissal
+  /** */
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   /** */
   'Contractor.Landing': Translations.ContractorLanding
@@ -2441,6 +2443,37 @@ export namespace Translations {
       /** @defaultValue `"Compensation updated"` */
       compensationUpdated: string
     }
+  }
+  /** Translation keys for the `Contractor.Dismissal` i18n namespace. */
+  export interface ContractorDismissal {
+    /** @defaultValue `"Dismiss {{name}}"` */
+    title: string
+    /** @defaultValue `"Schedule a dismissal date for this contractor."` */
+    subtitle: string
+    alert: {
+      /** @defaultValue `"This can be cancelled"` */
+      label: string
+      /** @defaultValue `"The dismissal can be cancelled from the contractor list any time before the dismissal date takes effect."` */
+      text: string
+    }
+    form: {
+      endDate: {
+        /** @defaultValue `"Dismissal date"` */
+        label: string
+      }
+    }
+    validation: {
+      /** @defaultValue `"Enter a dismissal date"` */
+      endDateRequired: string
+    }
+    actions: {
+      /** @defaultValue `"Cancel"` */
+      cancel: string
+      /** @defaultValue `"Dismiss contractor"` */
+      submit: string
+    }
+    /** @defaultValue `"Dismissal scheduled"` */
+    successMessage: string
   }
   /** Translation keys for the `Contractor.DocumentsList` i18n namespace. */
   export interface ContractorDocumentsList {
