@@ -1,0 +1,46 @@
+{
+  "title": "AutoPilot — {{scheduleName}}",
+  "description": "AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay deadline and funds are debited on your pay deadline.",
+  "toggleLabel": "Enable AutoPilot",
+  "saveCta": "Save",
+  "cancelCta": "Cancel",
+  "blockers": {
+    "heading": "AutoPilot isn't available yet",
+    "employees_not_on_direct_deposit": {
+      "title": "Some employees aren't on direct deposit",
+      "description": "Every employee on this schedule needs to be set up with direct deposit before AutoPilot can run their payroll automatically."
+    },
+    "employees_not_salaried": {
+      "title": "Some employees aren't salaried",
+      "description": "AutoPilot requires every employee on this schedule to be salaried."
+    },
+    "missing_state_tax_requirements": {
+      "title": "State tax setup is incomplete",
+      "description": "Finish state tax setup for every state this schedule's employees work in before enabling AutoPilot."
+    },
+    "missing_funding_method": {
+      "title": "No funding method on file",
+      "description": "Add a verified bank account to use as the default funding method before enabling AutoPilot."
+    },
+    "one_day_ach_speed_not_supported": {
+      "title": "Payment speed isn't eligible",
+      "description": "AutoPilot isn't available for schedules using next-day ACH."
+    },
+    "company_suspended": {
+      "title": "Company is suspended",
+      "description": "Resolve your company's suspension before enabling AutoPilot."
+    },
+    "earned_fast_ach_not_met": {
+      "title": "Fast ACH threshold not met",
+      "description": "This company hasn't yet met the funding history needed to qualify for fast ACH payments."
+    },
+    "hourly_employees_missing_default_hours": {
+      "title": "Some hourly employees are missing default hours",
+      "description": "Set default hours for every hourly employee on this schedule before enabling AutoPilot."
+    },
+    "generic": {
+      "title": "AutoPilot can't be enabled right now",
+      "description": "Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."
+    }
+  }
+}
