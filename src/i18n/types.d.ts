@@ -6948,6 +6948,8 @@ export namespace Translations {
       daysLate_one: string
       /** @defaultValue `"{{count}} days late"` */
       daysLate_other: string
+      /** @defaultValue `"Skipped"` */
+      skipped: string
       /** @defaultValue `"Pending"` */
       pending: string
       /** @defaultValue `"Paid"` */
