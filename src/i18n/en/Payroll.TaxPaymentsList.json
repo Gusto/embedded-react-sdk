@@ -1,0 +1,43 @@
+{
+  "title": "Tax payments",
+  "tableLabel": "Tax payments",
+  "searchLabel": "Search tax payments",
+  "searchPlaceholder": "Search by agency...",
+  "jurisdictionFilterLabel": "Jurisdiction",
+  "allJurisdictions": "All jurisdictions",
+  "federalJurisdictionOption": "Federal (US)",
+  "statusFilterLabel": "Status",
+  "allStatuses": "All statuses",
+  "columns": {
+    "agency": "Agency",
+    "jurisdiction": "Jurisdiction",
+    "period": "Period",
+    "dueDate": "Due date",
+    "amount": "Amount",
+    "status": "Status"
+  },
+  "federal": "Federal",
+  "state": "State · {{jurisdiction}}",
+  "unknownAgency": "Unknown agency",
+  "periodRange": "{{start}} – {{end}}",
+  "viewCta": "View",
+  "viewPaymentLabel": "View {{agency}} tax payment",
+  "status": {
+    "paid": "Paid",
+    "scheduled": "Scheduled",
+    "overdue": "Overdue",
+    "refund": "Refund / Credit"
+  },
+  "overdueAlert": {
+    "label_one": "{{count}} tax payment is overdue and may require immediate attention.",
+    "label_other": "{{count}} tax payments are overdue and may require immediate attention."
+  },
+  "emptyState": {
+    "title": "No tax payments yet",
+    "description": "Tax payments appear here after payroll is processed."
+  },
+  "noResults": {
+    "title": "No matching tax payments",
+    "description": "Try a different search or adjust the filters."
+  }
+}
