@@ -7589,7 +7589,7 @@ export namespace Translations {
     /** @defaultValue `"Unknown employee"` */
     unknownEmployeeFallback: string
     editMenu: {
-      /** @defaultValue `"Edit"` */
+      /** @defaultValue `"Edit payroll"` */
       edit: string
       /** @defaultValue `"Skip employee"` */
       skip: string
