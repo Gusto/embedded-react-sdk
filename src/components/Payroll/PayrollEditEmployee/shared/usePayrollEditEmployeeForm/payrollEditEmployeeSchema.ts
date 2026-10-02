@@ -49,9 +49,14 @@ const nonNegativeAmount = z.string().refine(value => value === '' || NON_NEGATIV
   message: PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT,
 })
 
-// Mirrors the server's fixed hours cap (draft_payrolls' MAX_HOURS) so an
-// over-limit value is caught inline instead of round-tripping to a 422.
-const MAX_HOURS = 99_999
+/**
+ * Mirrors the server's fixed hours cap (`draft_payrolls`' `MAX_HOURS`) so an
+ * over-limit value is caught inline instead of round-tripping to a 422. Also
+ * applied as the hours fields' native `max` so the stepper can't reach it.
+ *
+ * @public
+ */
+export const MAX_HOURS = 99_999
 
 const nonNegativeHours = nonNegativeAmount.refine(
   value => value === '' || Number(value) <= MAX_HOURS,
@@ -69,10 +74,15 @@ const reimbursementSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
-// Mirrors the server's fixed reimbursement cap (payroll_core_data's
-// Reimbursements::MAX_AMOUNT) so an over-limit value is caught inline instead
-// of round-tripping to a 422.
-const MAX_REIMBURSEMENT_AMOUNT = 1_000_000
+/**
+ * Mirrors the server's fixed reimbursement cap (`payroll_core_data`'s
+ * `Reimbursements::MAX_AMOUNT`) so an over-limit value is caught inline
+ * instead of round-tripping to a 422. Also applied as the amount field's
+ * native `max` so the stepper can't reach it.
+ *
+ * @public
+ */
+export const MAX_REIMBURSEMENT_AMOUNT = 1_000_000
 
 /**
  * The single reimbursement validation schema: the "add reimbursement" draft row.
