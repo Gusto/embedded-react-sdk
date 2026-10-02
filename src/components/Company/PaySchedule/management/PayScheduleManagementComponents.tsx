@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import { PayScheduleForm } from '../PayScheduleForm'
 import type { PayScheduleDefaultValues } from '../PaySchedule'
 import { PayScheduleOverview } from './PayScheduleOverview'
 import { PayScheduleAssignment } from './PayScheduleAssignment'
+import { AutoPilotDialog } from './AutoPilotDialog'
 import { Flex } from '@/components/Common/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -20,13 +22,20 @@ export interface PayScheduleManagementContextInterface extends FlowContextInterf
   enableAutoPilot?: boolean
   enableMultipleSchedules?: boolean
   successAlert?: PayScheduleManagementSuccessAlertCode | null
+  autoPilotSchedule?: PayScheduleShow
   component: React.ComponentType | null
 }
 
 /** @internal */
 export function PayScheduleOverviewContextual() {
-  const { companyId, onEvent, enableAutoPilot, enableMultipleSchedules, successAlert } =
-    useFlow<PayScheduleManagementContextInterface>()
+  const {
+    companyId,
+    onEvent,
+    enableAutoPilot,
+    enableMultipleSchedules,
+    successAlert,
+    autoPilotSchedule,
+  } = useFlow<PayScheduleManagementContextInterface>()
   const { t } = useTranslation('Company.Management.PaySchedule')
   const Components = useComponentContext()
 
@@ -47,6 +56,13 @@ export function PayScheduleOverviewContextual() {
         enableAutoPilot={enableAutoPilot}
         enableMultipleSchedules={enableMultipleSchedules}
       />
+      {autoPilotSchedule ? (
+        <AutoPilotDialog
+          companyId={ensureRequired(companyId)}
+          schedule={autoPilotSchedule}
+          onEvent={onEvent}
+        />
+      ) : null}
     </Flex>
   )
 }
