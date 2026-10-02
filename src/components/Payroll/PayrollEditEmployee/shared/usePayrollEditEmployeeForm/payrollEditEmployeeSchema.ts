@@ -23,7 +23,9 @@ export const PAYMENT_METHOD_OPTIONS = PAYMENT_METHOD_VALUES.map(value => ({ valu
  */
 export const PayrollEditEmployeeErrorCodes = {
   NEGATIVE_AMOUNT: 'NEGATIVE_AMOUNT',
+  MAX_HOURS: 'MAX_HOURS',
   REIMBURSEMENT_AMOUNT: 'REIMBURSEMENT_AMOUNT',
+  MAX_REIMBURSEMENT_AMOUNT: 'MAX_REIMBURSEMENT_AMOUNT',
   REQUIRED_WORKWEEK: 'REQUIRED_WORKWEEK',
 } as const
 
@@ -47,6 +49,15 @@ const nonNegativeAmount = z.string().refine(value => value === '' || NON_NEGATIV
   message: PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT,
 })
 
+// Mirrors the server's fixed hours cap (draft_payrolls' MAX_HOURS) so an
+// over-limit value is caught inline instead of round-tripping to a 422.
+const MAX_HOURS = 99_999
+
+const nonNegativeHours = nonNegativeAmount.refine(
+  value => value === '' || Number(value) <= MAX_HOURS,
+  { message: PayrollEditEmployeeErrorCodes.MAX_HOURS },
+)
+
 // Committed reimbursement rows are presentational passthrough: they hold data
 // that was already validated when its draft was saved (or came from the server),
 // so the amount is a plain string here. All reimbursement validation lives in
@@ -58,6 +69,11 @@ const reimbursementSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
+// Mirrors the server's fixed reimbursement cap (payroll_core_data's
+// Reimbursements::MAX_AMOUNT) so an over-limit value is caught inline instead
+// of round-tripping to a 422.
+const MAX_REIMBURSEMENT_AMOUNT = 1_000_000
+
 /**
  * The single reimbursement validation schema: the "add reimbursement" draft row.
  * Amount must be a number greater than zero, matching the legacy editor's
@@ -68,9 +84,14 @@ const reimbursementSchema = z.object({
  */
 export const reimbursementDraftSchema = z.object({
   description: z.string(),
-  amount: z.string().refine(value => parseFloat(value) > 0, {
-    message: PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
-  }),
+  amount: z
+    .string()
+    .refine(value => parseFloat(value) > 0, {
+      message: PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
+    })
+    .refine(value => parseFloat(value) <= MAX_REIMBURSEMENT_AMOUNT, {
+      message: PayrollEditEmployeeErrorCodes.MAX_REIMBURSEMENT_AMOUNT,
+    }),
 })
 
 // A "row" is one job+name line's week map (`{ [workweekStart]: amount }`). A
@@ -128,7 +149,7 @@ function addRequiredWorkweekIssues(
 export function createPayrollEditEmployeeSchema() {
   return z
     .object({
-      hours: z.record(z.string(), z.record(z.string(), z.record(z.string(), nonNegativeAmount))),
+      hours: z.record(z.string(), z.record(z.string(), z.record(z.string(), nonNegativeHours))),
       overtimeIncludedEarnings: z.record(
         z.string(),
         z.record(z.string(), z.record(z.string(), nonNegativeAmount)),
