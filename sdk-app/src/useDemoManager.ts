@@ -23,6 +23,7 @@ export function useDemoManager({ pollingDisabled = false }: UseDemoManagerOption
   const pollRef = useRef<ReturnType<typeof setInterval>>()
 
   const proxyMode = typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : 'none'
+  const isTokenExpired = state.tokenStatus === 'expired'
 
   const checkTokenHealth = useCallback(async () => {
     setState(prev => {
@@ -54,6 +55,7 @@ export function useDemoManager({ pollingDisabled = false }: UseDemoManagerOption
       setState(prev => ({ ...prev, tokenStatus: 'unknown' }))
       return
     }
+    if (isTokenExpired) return
 
     void checkTokenHealth()
 
@@ -64,7 +66,7 @@ export function useDemoManager({ pollingDisabled = false }: UseDemoManagerOption
     return () => {
       clearInterval(pollRef.current)
     }
-  }, [proxyMode, pollingDisabled, checkTokenHealth])
+  }, [proxyMode, pollingDisabled, isTokenExpired, checkTokenHealth])
 
   const createNewDemo = useCallback(
     async (demoType: string = 'react_sdk_demo_company_onboarded') => {

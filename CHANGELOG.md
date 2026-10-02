@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.56.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.3...v0.56.4) (2026-10-02)
+
+### Fixes
+
+- Keep the required-field asterisk out of the field's accessible name, so screen readers no longer announce it as part of the label ([#2865](https://github.com/Gusto/embedded-react-sdk/issues/2865))
+
+## [0.56.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.2...v0.56.3) (2026-10-01)
+
+### Features & Enhancements
+
+- Mark required form fields with an asterisk (`*`) instead of appending an `(optional)` suffix to non-required fields. The asterisk is CSS-generated, so each field's accessible name is unchanged ([#2770](https://github.com/Gusto/embedded-react-sdk/issues/2770))
+- Add the alpha `CompanyManagement.PaySchedule` component with `PayScheduleOverview`, surfacing a company's pay schedule name, frequency, and AutoPilot status. Gated behind the `managePaySchedules` unstable feature flag ([#2746](https://github.com/Gusto/embedded-react-sdk/issues/2746))
+- Add the alpha `CompanyManagement.PayScheduleAssignment`, a standalone flow for assigning a single pay schedule (type selector, schedule picker with inline creation, and a review-and-submit step) that can be mounted directly or launched from `PayScheduleOverview` ([#2762](https://github.com/Gusto/embedded-react-sdk/issues/2762))
+
+### Fixes
+
+- Update the bundled `@gusto/embedded-api` client to stable `0.3.1` ([#2863](https://github.com/Gusto/embedded-react-sdk/issues/2863))
+- Handle Gusto-created tax reconciliation payrolls, which have no pay period and previously crashed `PayrollOverview` and left blank dates in `PayrollHistory` ([#2859](https://github.com/Gusto/embedded-react-sdk/issues/2859))
+- Prepare transition payrolls without sending an employee roster, which the API rejects for a transition payroll ([#2850](https://github.com/Gusto/embedded-react-sdk/issues/2850))
+- Disable transition payroll actions while a payroll blocker exists ([#2848](https://github.com/Gusto/embedded-react-sdk/issues/2848))
+- Strip leading zeros from payroll number inputs ([#2831](https://github.com/Gusto/embedded-react-sdk/issues/2831))
+- Stop the RFI payroll-blocker screen from crashing on unauthorized or unknown data ([#2833](https://github.com/Gusto/embedded-react-sdk/issues/2833))
+- Fix the Calculate button loading state in the gross-up modal ([#2718](https://github.com/Gusto/embedded-react-sdk/issues/2718))
+- Hide pagination page-size options that would render identically to a smaller one ([#2856](https://github.com/Gusto/embedded-react-sdk/issues/2856))
+- Show a friendly message for incomplete state tax requirement sets ([#2829](https://github.com/Gusto/embedded-react-sdk/issues/2829))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`typescript-eslint`, `dotenv`)
+- Apply grouped Dependabot security updates ([#2837](https://github.com/Gusto/embedded-react-sdk/issues/2837), [#2838](https://github.com/Gusto/embedded-react-sdk/issues/2838))
+
 ## [0.56.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.1...v0.56.2) (2026-09-25)
 
 ### Fixes
