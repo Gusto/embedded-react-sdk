@@ -5105,7 +5105,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | <a id="property-payrollpayrollconfigurationdescription"></a> `description` | `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` |
 | <a id="property-payrollpayrollconfigurationdescriptiondismissal"></a> `descriptionDismissal` | `"{{payrollType}} payroll"` |
 | <a id="property-payrollpayrollconfigurationeditmenu"></a> `editMenu` | |
-| `editMenu.edit` | `"Edit"` |
+| `editMenu.edit` | `"Edit payroll"` |
 | `editMenu.setNetEarnings` | `"Set employee net earnings"` |
 | `editMenu.skip` | `"Skip employee"` |
 | `editMenu.unskip` | `"Unskip employee"` |

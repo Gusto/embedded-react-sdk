@@ -21,7 +21,7 @@
   "skippedBadge": "Skipped",
   "unknownEmployeeFallback": "Unknown employee",
   "editMenu": {
-    "edit": "Edit",
+    "edit": "Edit payroll",
     "skip": "Skip employee",
     "unskip": "Unskip employee",
     "setNetEarnings": "Set employee net earnings"
