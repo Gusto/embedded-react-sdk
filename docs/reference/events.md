@@ -95,6 +95,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_DELETED` | `"contractor/deleted"` |
 | `CONTRACTOR_DISMISS` | `"contractor/dismiss"` |
 | `CONTRACTOR_DISMISSAL_CANCELLED` | `"contractor/dismissal/cancelled"` |
+| `CONTRACTOR_DISMISSAL_SCHEDULED` | `"contractor/dismissal/scheduled"` |
 | `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT` | `"contractor/historicalPayments/backToEdit"` |
 | `CONTRACTOR_HISTORICAL_PAYMENT_CREATE` | `"contractor/historicalPayments/create"` |

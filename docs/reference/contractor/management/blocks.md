@@ -283,6 +283,7 @@ Props for [ManagementContractorList](#contractorlist).
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorManagementContractorList`](../../Translations/index.md#contractormanagementcontractorlist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `initialTab?` | [`ContractorTab`](#contractortab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
+| `successMessage?` | `string` | Success message to display in an alert above the list, typically after a dismissal is scheduled. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
 
@@ -431,6 +432,72 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 - [PaymentMethodCard](#paymentmethodcard)
 - [CompensationCard](#compensationcard)
 - [DocumentsCard](#documentscard)
+
+***
+
+<a id="dismissal"></a>
+
+## Dismissal
+
+Standalone form for scheduling a contractor's dismissal.
+
+### Remarks
+
+Fetches the contractor, renders a single "Dismissal date" field bounded to
+the day after their start date, and schedules the dismissal on submit.
+Does not remove or hide the contractor itself — the dismissal can be
+cancelled up until the date takes effect.
+
+<br />
+
+### Example
+
+```tsx
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <ContractorManagement.Dismissal
+      contractorId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+<br />
+
+### DismissalProps
+
+<a id="dismissalprops"></a>
+
+Props for [Dismissal](#dismissal).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The contractor identifier to dismiss. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorDismissal`](../../Translations/index.md#contractordismissal)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/dismissal/scheduled` | Fired after the dismissal is successfully scheduled | `{ contractorId: string, endDate: string, message: string }` |
+| `CANCEL` | Fired when the user clicks Cancel | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| POST | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination) |
 
 ***
 
