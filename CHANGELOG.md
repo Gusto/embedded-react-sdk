@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.56.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.3...v0.56.4) (2026-10-02)
+
+### Fixes
+
+- Keep the required-field asterisk out of the field's accessible name, so screen readers no longer announce it as part of the label ([#2865](https://github.com/Gusto/embedded-react-sdk/issues/2865))
+
 ## [0.56.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.2...v0.56.3) (2026-10-01)
 
 ### Features & Enhancements
