@@ -212,8 +212,12 @@ const Root = ({
   const errorMessages = useMemo(
     () => ({
       [PayrollEditEmployeeErrorCodes.NEGATIVE_AMOUNT]: t('validations.negativeAmount'),
+      [PayrollEditEmployeeErrorCodes.MAX_HOURS]: t('validations.maxHours'),
       [PayrollEditEmployeeErrorCodes.REQUIRED_WORKWEEK]: t('validations.requiredWorkweek'),
       [PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT]: t('validations.reimbursementAmount'),
+      [PayrollEditEmployeeErrorCodes.MAX_REIMBURSEMENT_AMOUNT]: t(
+        'validations.maxReimbursementAmount',
+      ),
     }),
     [t],
   )
