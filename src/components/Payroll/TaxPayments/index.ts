@@ -1,0 +1,6 @@
+export { TaxPaymentsFlow } from './TaxPaymentsFlow/TaxPaymentsFlow'
+export type { TaxPaymentsFlowProps } from './TaxPaymentsFlow/TaxPaymentsFlowComponents'
+export { TaxPaymentsList } from './TaxPaymentsList/TaxPaymentsList'
+export type { TaxPaymentsListProps } from './TaxPaymentsList/TaxPaymentsList'
+export { TaxPaymentDetail } from './TaxPaymentDetail/TaxPaymentDetail'
+export type { TaxPaymentDetailProps } from './TaxPaymentDetail/TaxPaymentDetail'

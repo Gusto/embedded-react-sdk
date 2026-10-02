@@ -427,6 +427,8 @@ export { IdentityVerificationStatus } from '@gusto/embedded-api/models/component
 /** `SignatoryHomeAddress` entity from the Gusto Embedded API. */
 export type { SignatoryHomeAddress } from '@gusto/embedded-api/models/components/signatory'
 export type { Signatory } from '@gusto/embedded-api/models/components/signatory'
+export type { TaxPayment } from '@gusto/embedded-api/models/components/taxpayment'
+export type { TaxPaymentLineItem } from '@gusto/embedded-api/models/components/taxpaymentlineitem'
 /** `ApplicableIf` entity from the Gusto Embedded API. */
 export type { ApplicableIf } from '@gusto/embedded-api/models/components/taxrequirement'
 /** `TaxRequirement` entity from the Gusto Embedded API. */

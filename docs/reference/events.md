@@ -356,6 +356,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `RUN_PAYROLL_SUBMITTING` | `"runPayroll/submitting"` |
 | `RUN_PAYROLL_SUMMARY_VIEWED` | `"runPayroll/summary/viewed"` |
 | `RUN_TRANSITION_PAYROLL` | `"transition/runPayroll"` |
+| `TAX_PAYMENT_BACK` | `"payroll/taxPayments/back"` |
+| `TAX_PAYMENT_VIEW` | `"payroll/taxPayments/view"` |
 | `TIME_OFF_ADD_EMPLOYEES_BACK` | `"timeOff/addEmployees/back"` |
 | `TIME_OFF_ADD_EMPLOYEES_DONE` | `"timeOff/addEmployees/done"` |
 | `TIME_OFF_ADD_EMPLOYEES_ERROR` | `"timeOff/addEmployees/error"` |

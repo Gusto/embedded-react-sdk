@@ -384,6 +384,31 @@
         "recoveryCaseUuid"
       ]
     },
+    "Payroll.TaxPaymentsFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_payments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-tax-payments"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_payments/:uuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-tax-payment"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "payrollId",
+        "uuid"
+      ]
+    },
     "Payroll.PrintChecks": {
       "endpoints": [
         {
@@ -2736,6 +2761,9 @@
         "Payroll.PayrollReceipts",
         "Payroll.TransitionFlow"
       ]
+    },
+    "Payroll.TaxPaymentsFlow": {
+      "blocks": []
     },
     "Payroll.TransitionFlow": {
       "blocks": [
