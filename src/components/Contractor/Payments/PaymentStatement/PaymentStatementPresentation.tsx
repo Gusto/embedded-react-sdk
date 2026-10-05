@@ -63,19 +63,23 @@ export const PaymentStatementPresentation = ({
 
     return [
       {
+        label: t('receipt.receiptId'),
+        value: paymentReceipt.contractorPaymentUuid || '',
+      },
+      {
         label: t('receipt.from'),
         value: paymentReceipt.nameOfSender || '',
       },
       {
         label: t('receipt.to'),
-        value: getContractorDisplayName(contractor),
+        value: paymentReceipt.nameOfRecipient || '',
       },
       {
         label: t('receipt.debitDate'),
         value: paymentReceipt.debitDate ? formatLongWithYear(String(paymentReceipt.debitDate)) : '',
       },
     ]
-  }, [paymentReceipt, contractor, t, formatLongWithYear])
+  }, [paymentReceipt, t, formatLongWithYear])
 
   const statementRows = useMemo<PaymentStatementRow[]>(() => {
     const rows: PaymentStatementRow[] = [
