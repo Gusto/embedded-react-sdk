@@ -7787,8 +7787,12 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount must be less than or equal to 1,000,000"` */
+      maxReimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Hours must be less than or equal to 99,999"` */
+      maxHours: string
     }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
@@ -8673,10 +8677,14 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount must be less than or equal to 1,000,000"` */
+      maxReimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
       /** @defaultValue `"Enter an amount for every workweek"` */
       requiredWorkweek: string
+      /** @defaultValue `"Hours must be less than or equal to 99,999"` */
+      maxHours: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
