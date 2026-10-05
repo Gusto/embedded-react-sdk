@@ -3507,6 +3507,8 @@ export namespace Translations {
       totalLabel: string
       /** @defaultValue `"Receipt Details"` */
       detailsLabel: string
+      /** @defaultValue `"Receipt ID"` */
+      receiptId: string
       /** @defaultValue `"From"` */
       from: string
       /** @defaultValue `"To"` */
