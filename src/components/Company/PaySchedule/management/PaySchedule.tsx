@@ -67,6 +67,9 @@ function Root({
 }: Omit<PayScheduleProps, BaseComponentKeys>) {
   useI18n('Company.Management.PaySchedule')
   useComponentDictionary('Company.Management.PaySchedule', dictionary)
+  // AutoPilotDialog is an internal spoke off PayScheduleOverviewContextual, not standalone-
+  // mountable, so it has no dictionary prop of its own to override this namespace with.
+  useI18n('Company.Management.AutoPilotDialog')
   // PayScheduleEditFormContextual reuses the onboarding PayScheduleForm, whose translations
   // live under its own namespace and are otherwise never loaded from this flow.
   useI18n('Company.PaySchedule')

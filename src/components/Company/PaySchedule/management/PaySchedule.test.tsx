@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { PaySchedule } from './PaySchedule'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -9,6 +9,7 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import {
   createPaySchedule,
   getPaySchedules,
+  getPaySchedule,
   getPaySchedulePreview,
   updatePaySchedule,
   previewPayScheduleAssignment,
@@ -57,6 +58,7 @@ describe('PaySchedule (management)', () => {
     server.use(
       paymentConfigsMock,
       getPaySchedules,
+      getPaySchedule,
       getPaySchedulePreview,
       createPaySchedule,
       updatePaySchedule,
@@ -348,7 +350,7 @@ describe('PaySchedule (management)', () => {
     expect(screen.queryByText('Pay schedule assignment updated.')).toBeNull()
   })
 
-  it('fires PAY_SCHEDULE_AUTO_PILOT_EDIT when the AutoPilot Edit button is clicked, without navigating away', async () => {
+  it('opens the AutoPilot dialog when the AutoPilot Edit button is clicked, without navigating away', async () => {
     const user = userEvent.setup()
     const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
 
@@ -361,9 +363,272 @@ describe('PaySchedule (management)', () => {
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT,
-      expect.objectContaining({ uuid: expect.any(String) }),
+      expect.objectContaining({ schedule: expect.objectContaining({ uuid: expect.any(String) }) }),
     )
-    expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /pay schedule/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/enable autopilot/i)).toBeInTheDocument()
+  })
+
+  it('shows the known preflight blockers already on the schedule when the dialog opens', async () => {
+    server.use(
+      http.get(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
+        async () => {
+          const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+          return HttpResponse.json({
+            ...responseFixture.paySchedules[0],
+            auto_payroll_enablement_blockers: [{ key: 'employees_not_on_direct_deposit' }],
+          })
+        },
+      ),
+    )
+    const user = userEvent.setup()
+    renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    await waitFor(() => {
+      expect(screen.getByText(/some employees aren't on direct deposit/i)).toBeInTheDocument()
+    })
+  })
+
+  it('disables the toggle and never calls the update API when blockers prevent enabling', async () => {
+    server.use(
+      http.get(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
+        async () => {
+          const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+          return HttpResponse.json({
+            ...responseFixture.paySchedules[0],
+            auto_payroll_enablement_blockers: [{ key: 'employees_not_on_direct_deposit' }],
+          })
+        },
+      ),
+    )
+    const updateResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))
+    server.use(
+      http.put(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`,
+        updateResolver,
+      ),
+    )
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    await waitFor(() => {
+      expect(screen.getByText(/some employees aren't on direct deposit/i)).toBeInTheDocument()
+    })
+    const toggle = screen.getByLabelText(/enable autopilot/i)
+    expect(toggle).toBeDisabled()
+
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISMISSED, null)
+    })
+    expect(updateResolver).not.toHaveBeenCalled()
+  })
+
+  it('keeps the toggle enabled so an already-enabled schedule can still be disabled despite blockers', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async () => {
+        const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+        return HttpResponse.json([
+          {
+            ...responseFixture.paySchedules[0],
+            auto_payroll: true,
+            auto_payroll_enablement_blockers: [{ key: 'employees_not_on_direct_deposit' }],
+          },
+        ])
+      }),
+    )
+    const updateResolver = vi.fn<HttpResponseResolver>(async () => {
+      const responseFixture = await getFixture(
+        'put-v1-companies-company_id-pay_schedules-pay_schedule_id',
+      )
+      return HttpResponse.json({ ...responseFixture, auto_payroll: false })
+    })
+    server.use(
+      http.put(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`,
+        updateResolver,
+      ),
+    )
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    const toggle = await screen.findByLabelText(/enable autopilot/i)
+    expect(toggle).not.toBeDisabled()
+    // The blocker list is enable-only messaging and shouldn't show for an already-enabled schedule.
+    expect(screen.queryByText(/isn't available yet/i)).toBeNull()
+
+    await user.click(toggle)
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISABLED, null)
+    })
+    expect(updateResolver).toHaveBeenCalledTimes(1)
+  })
+
+  it('fires DISMISSED without calling the update API when Save is clicked with no change', async () => {
+    const updateResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))
+    server.use(
+      http.put(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`,
+        updateResolver,
+      ),
+    )
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    await screen.findByLabelText(/enable autopilot/i)
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISMISSED, null)
+    })
+    expect(updateResolver).not.toHaveBeenCalled()
+  })
+
+  it('enables AutoPilot and closes the dialog on save', async () => {
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    const toggle = await screen.findByLabelText(/enable autopilot/i)
+    await user.click(toggle)
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_AUTO_PILOT_ENABLED, null)
+    })
+    expect(screen.queryByLabelText(/enable autopilot/i)).toBeNull()
+  })
+
+  it('closes the AutoPilot dialog without firing enabled/disabled when canceled', async () => {
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    await screen.findByLabelText(/enable autopilot/i)
+    await user.click(screen.getByRole('button', { name: /cancel/i }))
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText(/enable autopilot/i)).toBeNull()
+    })
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISMISSED, null)
+    expect(onEvent).not.toHaveBeenCalledWith(
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_ENABLED,
+      expect.anything(),
+    )
+    expect(onEvent).not.toHaveBeenCalledWith(
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISABLED,
+      expect.anything(),
+    )
+  })
+
+  it('shows a generic error when the AutoPilot save fails with an unclassified 422', async () => {
+    server.use(
+      http.put(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`, () => {
+        return HttpResponse.json({ errors: [{ message: 'blocked' }] }, { status: 422 })
+      }),
+    )
+    const user = userEvent.setup()
+    renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    const toggle = await screen.findByLabelText(/enable autopilot/i)
+    await user.click(toggle)
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot can't be enabled right now/i)).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText(/enable autopilot/i)).toBeInTheDocument()
+  })
+
+  it('shows the backend-provided message when the AutoPilot save fails with a classified blocker', async () => {
+    server.use(
+      http.put(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`, () => {
+        return HttpResponse.json(
+          {
+            errors: [
+              {
+                error_key: 'auto_payroll',
+                category: 'invalid_attribute_value',
+                message: "AutoPilot isn't available for schedules using next-day ACH.",
+              },
+            ],
+          },
+          { status: 422 },
+        )
+      }),
+    )
+    const user = userEvent.setup()
+    renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    const toggle = await screen.findByLabelText(/enable autopilot/i)
+    await user.click(toggle)
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/autopilot isn't available for schedules using next-day ach/i),
+      ).toBeInTheDocument()
+    })
+    expect(screen.queryByText(/contact support if this continues/i)).toBeNull()
   })
 
   it('opens the existing edit form when the schedule Edit button is clicked', async () => {
