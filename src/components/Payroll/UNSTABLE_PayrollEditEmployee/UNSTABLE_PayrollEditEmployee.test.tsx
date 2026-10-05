@@ -279,7 +279,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     // blank -- a partial row. Saving must surface the required-workweek error.
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
-    expect(await screen.findAllByText('Enter an amount for every workweek')).not.toHaveLength(0)
+    expect(await screen.findAllByText('Enter hours for every workweek')).not.toHaveLength(0)
     expect(updateResolver).not.toHaveBeenCalled()
   })
 

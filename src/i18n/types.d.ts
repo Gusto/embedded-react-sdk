@@ -8673,7 +8673,7 @@ export namespace Translations {
       reimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
-      /** @defaultValue `"Enter an amount for every workweek"` */
+      /** @defaultValue `"Enter hours for every workweek"` */
       requiredWorkweek: string
     }
   }
