@@ -3,8 +3,17 @@
   width: 100%;
 }
 
+// In DataTable mode the field sits inside a <table> cell, so capping its width
+// keeps numeric Hours/Amount inputs from stretching to the column's full width.
+// In DataCards mode (narrow containers) there's no table cell to cap against —
+// the field is the only content in its card row, so it should fill the row
+// instead of shrinking to content width and leaving a dead gap beside it.
 .inputContainer {
-  max-width: toRem(160);
+  width: 100%;
+
+  :global(.react-aria-Cell) & {
+    max-width: toRem(160);
+  }
 }
 
 .earningsAlert {
