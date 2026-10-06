@@ -2661,7 +2661,7 @@ interface DismissalProps extends BaseComponentInterface<'Contractor.Dismissal'> 
 // @public
 export interface DocumentEmbedProps {
     className?: string;
-    title?: string;
+    title: string;
     url: string;
 }
 
