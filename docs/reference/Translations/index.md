@@ -44,7 +44,7 @@ Translation keys for the `common` i18n namespace.
 | `compensationRateFormats.weekly` | `"{{amount}} per week"` |
 | `compensationRateFormats.yearly` | `"{{amount}} per year"` |
 | <a id="property-commondocumentembed"></a> `documentEmbed` | |
-| `documentEmbed.defaultTitle` | `"PDF document"` |
+| `documentEmbed.defaultTitle` | `"Document"` |
 | <a id="property-commonerrors"></a> `errors` | |
 | `errors.ensureRequired` | `"Required prop is missing"` |
 | `errors.errorHeading` | `"Error"` |

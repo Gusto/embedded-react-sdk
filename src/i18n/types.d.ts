@@ -8765,7 +8765,7 @@ export namespace Translations {
       multipleErrorsEncountered: string
     }
     documentEmbed: {
-      /** @defaultValue `"PDF document"` */
+      /** @defaultValue `"Document"` */
       defaultTitle: string
     }
     /** @defaultValue `"Select an option..."` */
