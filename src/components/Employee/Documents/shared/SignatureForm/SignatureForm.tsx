@@ -51,6 +51,7 @@ export function SignatureForm(props: SignatureFormProps) {
 function Root({ employeeId, formId, className }: SignatureFormProps) {
   useI18n('Employee.DocumentSigner')
   const { t } = useTranslation('Employee.DocumentSigner')
+  const { t: tCommon } = useTranslation('common')
   const { onEvent } = useBase()
   const Components = useComponentContext()
 
@@ -108,7 +109,7 @@ function Root({ employeeId, formId, className }: SignatureFormProps) {
 
               <DocumentViewer
                 url={pdfUrl}
-                title={form.title}
+                title={form.title ?? tCommon('documentEmbed.defaultTitle')}
                 downloadInstructions={t('downloadAndReviewInstructions')}
                 viewDocumentLabel={t('viewDocumentCta')}
               />

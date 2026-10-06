@@ -56,6 +56,7 @@ export function I9SignatureForm(props: I9SignatureFormProps) {
 function Root({ employeeId, formId, className }: I9SignatureFormProps) {
   useI18n('Employee.I9SignatureForm')
   const { t } = useTranslation('Employee.I9SignatureForm')
+  const { t: tCommon } = useTranslation('common')
   const { onEvent } = useBase()
   const Components = useComponentContext()
 
@@ -131,7 +132,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
 
               <DocumentViewer
                 url={pdfUrl}
-                title={form.title}
+                title={form.title ?? tCommon('documentEmbed.defaultTitle')}
                 downloadInstructions={t('downloadInstructions')}
                 viewDocumentLabel={t('viewDocumentCta')}
               />

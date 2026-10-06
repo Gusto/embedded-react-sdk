@@ -4,9 +4,10 @@ import styles from './DocumentViewer.module.scss'
 import { DocumentEmbed } from '@/components/Common/DocumentEmbed'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
 interface DocumentViewerProps {
   url?: string | null
-  title?: string
+  title: string
   downloadInstructions?: string
   viewDocumentLabel: string
   headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -44,11 +45,9 @@ export function DocumentViewer({
             <DocumentEmbed key={url} url={url} title={title} className={styles.smallEmbedPdf} />
             <Flex flexDirection="column" gap={8}>
               <div>
-                {title && (
-                  <Components.Heading as={headingLevel} className={styles.heading}>
-                    {title}
-                  </Components.Heading>
-                )}
+                <Components.Heading as={headingLevel} className={styles.heading}>
+                  {title}
+                </Components.Heading>
                 {downloadInstructions && (
                   <Components.Text className={styles.downloadInstructions}>
                     {downloadInstructions}
