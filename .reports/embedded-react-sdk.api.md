@@ -1647,6 +1647,7 @@ export interface ComponentsContextType {
     DateRangePicker: FunctionComponent<DateRangePickerProps>;
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
+    DocumentEmbed?: FunctionComponent<DocumentEmbedProps>;
     FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
@@ -2655,6 +2656,13 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
 // @public
 interface DismissalProps extends BaseComponentInterface<'Contractor.Dismissal'> {
     contractorId: string;
+}
+
+// @public
+export interface DocumentEmbedProps {
+    className?: string;
+    title?: string;
+    url: string;
 }
 
 // @public
