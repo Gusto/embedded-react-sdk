@@ -115,7 +115,7 @@ function App() {
 | `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
 | `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
 | `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
-| `DocumentEmbed?` | `FunctionComponent`\<[`DocumentEmbedProps`](index.mdx#documentembedprops)\> | Inline PDF document renderer. Defaults to the SDK's built-in `<embed>`-based viewer when omitted; override to control how PDFs are rendered inline — especially useful if you have strict Content Security Policy directives. |
+| `DocumentEmbed?` | `FunctionComponent`\<[`DocumentEmbedProps`](#documentembedprops)\> | Inline PDF document renderer. Defaults to the SDK's built-in `<embed>`-based viewer when omitted; override to control how PDFs are rendered inline — especially useful if you have strict Content Security Policy directives. |
 | `FieldCaption?` | `FunctionComponent`\<[`FieldCaptionProps`](#fieldcaptionprops)\> | Label or legend caption for form controls, including the optional/required indicator. Defaults to the SDK's built-in caption UI when omitted. |
 | `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
 | `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
@@ -655,6 +655,24 @@ Renders a modal confirmation dialog with a primary action and a cancel action.
 | `onPrimaryActionClick?` | () => `void` | | Callback function called when the primary action button is clicked |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the dialog |
 | `title?` | `ReactNode` | | Optional title content to be displayed at the top of the dialog |
+
+***
+
+<a id="documentembedprops"></a>
+
+### DocumentEmbedProps
+
+Props your `DocumentEmbed` implementation must accept from the component adapter.
+Renders a PDF document inline. Override this to control how PDFs are rendered inline —
+especially useful if you have strict Content Security Policy directives.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `url` | `string` | The URL of the PDF document to render. Always a PDF today — the SDK does not render any other document type through this slot. |
+| `className?` | `string` | Additional class names appended to the root element. |
+| `title?` | `string` | Optional title describing the document, for assistive technology. |
 
 ***
 
