@@ -1077,6 +1077,7 @@ declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
         PayScheduleProps_2 as PayScheduleProps,
+        PayScheduleDictionary,
         PayScheduleAssignment,
         PayScheduleAssignmentProps
     }
@@ -4521,6 +4522,14 @@ type PayScheduleDefaultFields = {
 // @public
 type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefaultFields>>;
 
+// @alpha
+type PayScheduleDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.PaySchedule'?: DeepPartial<Resources['Company.Management.PaySchedule']>;
+        'Company.Management.AutoPilotDialog'?: DeepPartial<Resources['Company.Management.AutoPilotDialog']>;
+    };
+};
+
 // @public
 export type PayScheduleErrorCode = (typeof PayScheduleErrorCodes)[keyof typeof PayScheduleErrorCodes];
 
@@ -4567,8 +4576,9 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
 }
 
 // @alpha
-interface PayScheduleProps_2 extends BaseComponentInterface<'Company.Management.PaySchedule'> {
+interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Management.PaySchedule'>, 'dictionary'> {
     companyId: string;
+    dictionary?: PayScheduleDictionary;
     enableAutoPilot?: boolean;
     enableMultipleSchedules?: boolean;
 }
