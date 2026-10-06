@@ -135,9 +135,9 @@ function InjectedStyles({ css }: { css: string }) {
 
 ### Embedding PDF documents
 
-Signature and form flows (`SignatureForm`, `I9SignatureForm`, company and employee document signing) render the document's PDF inline using an `<embed>` element. Browsers gate `<embed>` under the `object-src` directive, not `img-src` or `frame-src` — allow the origin that serves your document URLs under `object-src` or these documents won't render. These documents are served from Amazon S3; the exact host (bucket/region-specific, e.g. `*.s3.<region>.amazonaws.com`) varies by environment, so confirm it against an actual `pdfUrl` value returned by a signature hook rather than assuming a fixed domain.
+Signature and form flows (`SignatureForm`, `I9SignatureForm`, company and employee document signing) render the document's PDF inline using an `<embed>` element, gated under `object-src`. Allow the origin that serves your document URLs under `object-src` or these documents won't render. These documents are served from Amazon S3; the exact host (bucket/region-specific, e.g. `*.s3.<region>.amazonaws.com`) varies by environment, so confirm it against an actual `pdfUrl` value returned by a signature hook rather than assuming a fixed domain.
 
-If your policy can't allow `object-src` at all, override the `DocumentEmbed` component instead of relying on the default `<embed>`:
+If your policy can't allow `object-src`, override the `DocumentEmbed` component to render with an `<iframe>` instead, gated under `frame-src`:
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
@@ -148,7 +148,7 @@ function IframeEmbed({
   className,
 }: {
   url: string
-  title?: string
+  title: string
   className?: string
 }) {
   return <iframe src={url} title={title} className={className} />
@@ -163,7 +163,10 @@ function App() {
 }
 ```
 
-An `<iframe>` is gated under `frame-src` instead, so you can leave `object-src 'none'` and allow the document origin under `frame-src` instead. Adding a `sandbox` attribute is optional and up to you — test it against your target browsers before relying on it, since sandboxed PDF rendering isn't consistently supported.
+Notes on the override:
+
+- `className` is passed through for sizing — without it, neither the default `<embed>` nor your override has any width or height.
+- The override receives the raw URL; the default `<embed>` appends parameters to hide the native PDF viewer's chrome, which your implementation is free to replicate or skip.
 
 ### Minimum policy
 
