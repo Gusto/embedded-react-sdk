@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
 import styles from './DocumentViewer.module.scss'
 import { DocumentEmbed } from '@/components/Common/DocumentEmbed'
@@ -7,7 +8,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 interface DocumentViewerProps {
   url?: string | null
-  title: string
+  title?: string
   downloadInstructions?: string
   viewDocumentLabel: string
   headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -22,6 +23,7 @@ export function DocumentViewer({
   headingLevel = 'h3',
 }: DocumentViewerProps) {
   const Components = useComponentContext()
+  const { t } = useTranslation('common')
   const containerRef = useRef<HTMLDivElement>(null)
   const matches = useContainerBreakpoints({
     ref: containerRef,
@@ -31,6 +33,8 @@ export function DocumentViewer({
 
   if (!url) return null
 
+  const resolvedTitle = title ?? t('documentEmbed.defaultTitle')
+
   // Keying the embed on the URL forces React to remount the element when the
   // URL changes (e.g. after signing replaces an unsigned PDF). Without this,
   // React reuses the existing DOM node, the browser's PDF plugin doesn't
@@ -38,15 +42,20 @@ export function DocumentViewer({
   return (
     <div className={styles.container} ref={containerRef}>
       {isContainerWidthSmallOrGreater ? (
-        <DocumentEmbed key={url} url={url} title={title} className={styles.embedPdf} />
+        <DocumentEmbed key={url} url={url} title={resolvedTitle} className={styles.embedPdf} />
       ) : (
         <div className={styles.smallEmbedPdfContainer}>
           <Flex gap={20}>
-            <DocumentEmbed key={url} url={url} title={title} className={styles.smallEmbedPdf} />
+            <DocumentEmbed
+              key={url}
+              url={url}
+              title={resolvedTitle}
+              className={styles.smallEmbedPdf}
+            />
             <Flex flexDirection="column" gap={8}>
               <div>
                 <Components.Heading as={headingLevel} className={styles.heading}>
-                  {title}
+                  {resolvedTitle}
                 </Components.Heading>
                 {downloadInstructions && (
                   <Components.Text className={styles.downloadInstructions}>
@@ -60,7 +69,7 @@ export function DocumentViewer({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                download={`${title || 'document'}.pdf`}
+                download={`${resolvedTitle}.pdf`}
               >
                 {viewDocumentLabel}
               </Components.Link>

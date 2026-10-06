@@ -57,7 +57,6 @@ function DocumentManagerRoot({
 }: Omit<DocumentManagerProps, BaseComponentKeys>) {
   useI18n('Employee.DocumentManager')
   const { t } = useTranslation('Employee.DocumentManager')
-  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
   const { onEvent } = useBase()
 
@@ -93,11 +92,7 @@ function DocumentManagerRoot({
           />
         </Components.Text>
       )}
-      <DocumentViewer
-        url={pdfUrl}
-        title={form.title ?? tCommon('documentEmbed.defaultTitle')}
-        viewDocumentLabel={t('viewDocumentCta')}
-      />
+      <DocumentViewer url={pdfUrl} title={form.title} viewDocumentLabel={t('viewDocumentCta')} />
 
       <ActionsLayout>
         <Components.Button

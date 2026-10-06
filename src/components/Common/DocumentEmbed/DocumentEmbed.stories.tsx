@@ -19,6 +19,6 @@ const IframeOverride = ({ url, title, className }: DocumentEmbedProps) => (
 
 export const WithIframeOverride = () => (
   <ComponentsProvider value={{ ...defaultComponents, DocumentEmbed: IframeOverride }}>
-    <DocumentEmbed url={exampleDocumentUrl} title="Employment Contract" />
+    <DocumentEmbed url={exampleDocumentUrl} title="W-9" />
   </ComponentsProvider>
 )

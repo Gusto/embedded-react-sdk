@@ -59,7 +59,6 @@ function Root({ formId, children, dictionary, className }: SignatureFormProps) {
   useComponentDictionary('Company.SignatureForm', dictionary)
   useI18n('Company.SignatureForm')
   const { t } = useTranslation('Company.SignatureForm')
-  const { t: tCommon } = useTranslation('common')
   const { onEvent } = useBase()
   const Components = useComponentContext()
 
@@ -120,7 +119,7 @@ function Root({ formId, children, dictionary, className }: SignatureFormProps) {
                 </section>
                 <DocumentViewer
                   url={pdfUrl}
-                  title={form.title ?? tCommon('documentEmbed.defaultTitle')}
+                  title={form.title}
                   downloadInstructions={t('downloadInstructions')}
                   viewDocumentLabel={t('viewDocumentCta')}
                 />
