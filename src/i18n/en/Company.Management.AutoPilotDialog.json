@@ -5,6 +5,10 @@
   "checkingEligibility": "Checking AutoPilot eligibility…",
   "saveCta": "Save",
   "cancelCta": "Cancel",
+  "saveError": {
+    "title": "AutoPilot settings couldn't be saved",
+    "description": "Something went wrong saving your AutoPilot changes. Contact support if this continues."
+  },
   "blockers": {
     "heading": "AutoPilot isn't available yet",
     "employees_not_on_direct_deposit": {

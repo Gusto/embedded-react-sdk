@@ -22,14 +22,21 @@ export function useAutoPilotDialog({ companyId, schedule, onEvent }: UseAutoPilo
   // The list call never returns `autoPayrollEnablementBlockers` -- only the show call does.
   // Blockers only gate enabling, so skip the fetch entirely when the schedule is already on.
   const shouldCheckBlockers = !schedule.autoPayroll
-  const { data: scheduleDetails, isLoading: isLoadingBlockers } = usePaySchedulesGet(
+  const {
+    data: scheduleDetails,
+    isLoading: isLoadingBlockers,
+    isError: hasBlockersError,
+  } = usePaySchedulesGet(
     { companyId, payScheduleId: schedule.uuid },
     { enabled: shouldCheckBlockers },
   )
 
   const blockers = scheduleDetails?.payScheduleShow?.autoPayrollEnablementBlockers ?? []
   // Named blockers only gate enabling; a schedule already enabled can always be disabled.
-  const isEnableBlocked = shouldCheckBlockers && (isLoadingBlockers || blockers.length > 0)
+  // A failed eligibility check also blocks enabling -- we can't confirm blockers are clear,
+  // so default to the safe outcome instead of letting the user bypass an unchecked blocker.
+  const isEnableBlocked =
+    shouldCheckBlockers && (isLoadingBlockers || hasBlockersError || blockers.length > 0)
 
   const hasChanges = nextEnabled !== Boolean(schedule.autoPayroll)
 

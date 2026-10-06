@@ -441,6 +441,44 @@ describe('PaySchedule (management)', () => {
     expect(updateResolver).not.toHaveBeenCalled()
   })
 
+  it('disables the toggle and never calls the update API when the eligibility check fails', async () => {
+    server.use(
+      http.get(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
+        () => new HttpResponse(null, { status: 500 }),
+      ),
+    )
+    const updateResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))
+    server.use(
+      http.put(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`,
+        updateResolver,
+      ),
+    )
+    const user = userEvent.setup()
+    const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot/i)).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: /edit/i })
+    await user.click(editButtons[editButtons.length - 1]!)
+
+    await waitFor(() => {
+      expect(screen.getByText(/autopilot can't be enabled right now/i)).toBeInTheDocument()
+    })
+    const toggle = screen.getByLabelText(/enable autopilot/i)
+    expect(toggle).toBeDisabled()
+
+    await user.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISMISSED, null)
+    })
+    expect(updateResolver).not.toHaveBeenCalled()
+  })
+
   it('keeps the toggle enabled so an already-enabled schedule can still be disabled despite blockers', async () => {
     server.use(
       http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async () => {
@@ -587,7 +625,7 @@ describe('PaySchedule (management)', () => {
     await user.click(screen.getByRole('button', { name: /save/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/autopilot can't be enabled right now/i)).toBeInTheDocument()
+      expect(screen.getByText(/autopilot settings couldn't be saved/i)).toBeInTheDocument()
     })
     expect(screen.getByLabelText(/enable autopilot/i)).toBeInTheDocument()
   })

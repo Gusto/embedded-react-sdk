@@ -34,6 +34,9 @@ export function AutoPilotDialogPresentation({
 }: AutoPilotDialogPresentationProps) {
   const { t } = useTranslation('Company.Management.AutoPilotDialog')
   const Components = useComponentContext()
+  const namedBlockers = blockers
+    .map(blocker => blocker.key)
+    .filter((key): key is string => Boolean(key))
 
   return (
     <Components.Dialog
@@ -58,31 +61,27 @@ export function AutoPilotDialogPresentation({
         ) : isEnableBlocked ? (
           <Components.Alert status="error" label={t('blockers.heading')} disableScrollIntoView>
             <Flex flexDirection="column" gap={12}>
-              {blockers.map(blocker => {
-                const key = blocker.key ?? 'generic'
-                return (
-                  <Flex key={key} flexDirection="column" gap={4}>
-                    <Components.Text weight="semibold">
-                      {t(`blockers.${key}.title`, { defaultValue: t('blockers.generic.title') })}
-                    </Components.Text>
-                    <Components.Text variant="supporting">
-                      {t(`blockers.${key}.description`, {
-                        defaultValue: t('blockers.generic.description'),
-                      })}
-                    </Components.Text>
-                  </Flex>
-                )
-              })}
+              {/* Blockers without a recognized key can't be labeled individually and would
+                  collide on a shared 'generic' React key, so drop them and fall back to a
+                  single generic entry if nothing named is left to show. */}
+              {(namedBlockers.length > 0 ? namedBlockers : ['generic']).map(key => (
+                <Flex key={key} flexDirection="column" gap={4}>
+                  <Components.Text weight="semibold">
+                    {t(`blockers.${key}.title`, { defaultValue: t('blockers.generic.title') })}
+                  </Components.Text>
+                  <Components.Text variant="supporting">
+                    {t(`blockers.${key}.description`, {
+                      defaultValue: t('blockers.generic.description'),
+                    })}
+                  </Components.Text>
+                </Flex>
+              ))}
             </Flex>
           </Components.Alert>
         ) : null}
         {hasGenericError ? (
-          <Components.Alert
-            status="error"
-            label={t('blockers.generic.title')}
-            disableScrollIntoView
-          >
-            {errorMessage ?? t('blockers.generic.description')}
+          <Components.Alert status="error" label={t('saveError.title')} disableScrollIntoView>
+            {errorMessage ?? t('saveError.description')}
           </Components.Alert>
         ) : null}
       </Flex>

@@ -961,6 +961,12 @@ export namespace Translations {
     saveCta: string
     /** @defaultValue `"Cancel"` */
     cancelCta: string
+    saveError: {
+      /** @defaultValue `"AutoPilot settings couldn't be saved"` */
+      title: string
+      /** @defaultValue `"Something went wrong saving your AutoPilot changes. Contact support if this continues."` */
+      description: string
+    }
     blockers: {
       /** @defaultValue `"AutoPilot isn't available yet"` */
       heading: string
