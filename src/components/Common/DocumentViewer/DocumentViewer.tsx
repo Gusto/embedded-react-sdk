@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Flex } from '../Flex/Flex'
 import styles from './DocumentViewer.module.scss'
+import { DocumentEmbed } from '@/components/Common/DocumentEmbed'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 interface DocumentViewerProps {
@@ -29,25 +30,18 @@ export function DocumentViewer({
 
   if (!url) return null
 
-  const commonEmbeddedPdfProps = {
-    src: `${url}#toolbar=0&navpanes=0`,
-    title,
-    type: 'application/pdf',
-  }
-
-  // Keying the `<embed>` on the URL forces React to remount the element when
-  // the URL changes (e.g. after signing replaces an unsigned PDF). Without
-  // this, React reuses the existing DOM node, the browser's PDF plugin
-  // doesn't reload the new src, and the viewer renders blank until a manual
-  // reload.
+  // Keying the embed on the URL forces React to remount the element when the
+  // URL changes (e.g. after signing replaces an unsigned PDF). Without this,
+  // React reuses the existing DOM node, the browser's PDF plugin doesn't
+  // reload the new src, and the viewer renders blank until a manual reload.
   return (
     <div className={styles.container} ref={containerRef}>
       {isContainerWidthSmallOrGreater ? (
-        <embed key={url} {...commonEmbeddedPdfProps} className={styles.embedPdf} />
+        <DocumentEmbed key={url} url={url} title={title} className={styles.embedPdf} />
       ) : (
         <div className={styles.smallEmbedPdfContainer}>
           <Flex gap={20}>
-            <embed key={url} {...commonEmbeddedPdfProps} className={styles.smallEmbedPdf} />
+            <DocumentEmbed key={url} url={url} title={title} className={styles.smallEmbedPdf} />
             <Flex flexDirection="column" gap={8}>
               <div>
                 {title && (
