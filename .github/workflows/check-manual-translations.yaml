@@ -6,8 +6,9 @@ on:
       - 'src/i18n/es_US/**.json'
 jobs:
   check-for-manual-translations:
-    runs-on:
-      group: gusto-ubuntu-default
+    # Fork PRs run on a GitHub-hosted runner. Same-repo PRs stay on the
+    # self-hosted group so the `gh pr comment` step below can post.
+    runs-on: ${{ github.event.pull_request.head.repo.full_name == github.repository && fromJSON('{"group":"gusto-ubuntu-default"}') || 'ubuntu-latest' }}
     permissions:
       contents: read
       pull-requests: write
