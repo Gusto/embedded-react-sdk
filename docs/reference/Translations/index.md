@@ -666,6 +666,9 @@ Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
 | <a id="property-companymanagementautopilotdialogcheckingeligibility"></a> `checkingEligibility` | `"Checking AutoPilot eligibility…"` |
 | <a id="property-companymanagementautopilotdialogdescription"></a> `description` | `"AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay deadline and funds are debited on your pay deadline."` |
 | <a id="property-companymanagementautopilotdialogsavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-companymanagementautopilotdialogsaveerror"></a> `saveError` | |
+| `saveError.description` | `"Something went wrong saving your AutoPilot changes. Contact support if this continues."` |
+| `saveError.title` | `"AutoPilot settings couldn't be saved"` |
 | <a id="property-companymanagementautopilotdialogtitle"></a> `title` | `"AutoPilot — {{scheduleName}}"` |
 | <a id="property-companymanagementautopilotdialogtogglelabel"></a> `toggleLabel` | `"Enable AutoPilot"` |
 
