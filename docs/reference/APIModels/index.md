@@ -6964,6 +6964,54 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/federaltaxde
 
 ***
 
+<a id="taxpayment"></a>
+
+## TaxPayment
+
+> **TaxPayment** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/taxpayment.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/taxpayment.ts#L19)
+
+Representation of a tax payment made by Gusto to a tax agency on behalf of a company
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-taxpaymentagencyname"></a> `agencyName` | `string` \| `null` | The name of the tax agency this payment is submitted to. Null for legacy tax payments whose agent has no reference-data agency. |
+| <a id="property-taxpaymentamount"></a> `amount` | `string` | Total amount owed for this tax payment. Can be negative for corrections, refunds, or credits. |
+| <a id="property-taxpaymentamountpaid"></a> `amountPaid` | `string` | Amount paid toward this tax payment so far, sourced from the payment's running balance. "0.00" until paid; equal to `amount` once fully paid. |
+| <a id="property-taxpaymentcompanyuuid"></a> `companyUuid` | `string` | Unique identifier of the company to which the tax payment belongs |
+| <a id="property-taxpaymentduedate"></a> `dueDate` | `RFCDate` \| `null` | The date this payment is due. Null for legacy tax payments where the due date was never recorded. |
+| <a id="property-taxpaymentjurisdiction"></a> `jurisdiction` | `string` \| `null` | The tax jurisdiction this payment is for. A two-letter state code, or US for federal. Null for legacy tax payments whose agent has no reference-data agency. |
+| <a id="property-taxpaymentperiodend"></a> `periodEnd` | `RFCDate` | The end date of the period this payment covers |
+| <a id="property-taxpaymentperiodstart"></a> `periodStart` | `RFCDate` \| `null` | The start date of the period this payment covers. Null for legacy tax payments where the period start was never recorded. |
+| <a id="property-taxpaymentuuid"></a> `uuid` | `string` | Unique identifier of the tax payment |
+| <a id="property-taxpaymentlineitems"></a> `lineItems?` | [`TaxPaymentLineItem`](#taxpaymentlineitem)[] | The payroll tax liabilities that make up this payment. Empty array when the payment has no associated payroll taxes. Only included in the response of GET /v1/companies/{company_uuid}/tax_payments/{uuid}. It is omitted from the list endpoint response. |
+| <a id="property-taxpaymentpaymentsenton"></a> `paymentSentOn?` | `RFCDate` \| `null` | The date Gusto submitted this payment to the tax agency. It is null until submitted, and also if the payment is returned or cancelled after being sent. It is not guaranteed to stay set once populated. |
+
+***
+
+<a id="taxpaymentlineitem"></a>
+
+## TaxPaymentLineItem
+
+> **TaxPaymentLineItem** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/taxpaymentlineitem.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/taxpaymentlineitem.ts#L14)
+
+A single payroll tax liability rolled up into a tax payment
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-taxpaymentlineitemamount"></a> `amount` | `string` | The amount of this liability included in the tax payment |
+| <a id="property-taxpaymentlineitempayrolluuid"></a> `payrollUuid` | `string` | Unique identifier of the payroll this liability came from |
+| <a id="property-taxpaymentlineitemuniquetaxid"></a> `uniqueTaxId` | `string` | Unique identifier of the tax type this liability is for |
+
+***
+
 <a id="taxrequirement"></a>
 
 ## TaxRequirement

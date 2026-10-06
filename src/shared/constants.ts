@@ -499,6 +499,21 @@ export const printChecksEvents = {
 } as const
 
 /**
+ * Event keys emitted by the tax payments components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a tax payments component and compare against the
+ * value of an entry on this object.
+ *
+ * @alpha
+ */
+export const taxPaymentEvents = {
+  TAX_PAYMENT_VIEW: 'payroll/taxPayments/view',
+  TAX_PAYMENT_BACK: 'payroll/taxPayments/back',
+} as const
+
+/**
  * Event keys emitted by off-cycle payroll and transition components.
  *
  * @remarks
@@ -601,6 +616,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...printChecksEvents,
+  ...taxPaymentEvents,
   ...contractorPaymentEvents,
   ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,

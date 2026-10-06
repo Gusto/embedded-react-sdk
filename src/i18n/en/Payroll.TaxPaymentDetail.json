@@ -1,0 +1,38 @@
+{
+  "backCta": "Back to tax payments",
+  "unknownAgency": "Unknown agency",
+  "federal": "Federal",
+  "state": "State · {{jurisdiction}}",
+  "periodRange": "{{start}} – {{end}}",
+  "notAvailable": "—",
+  "status": {
+    "paid": "Paid",
+    "scheduled": "Scheduled",
+    "overdue": "Overdue",
+    "refund": "Refund / Credit"
+  },
+  "overdueAlert": {
+    "label": "Payment overdue",
+    "description": "This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."
+  },
+  "details": {
+    "title": "Payment details",
+    "jurisdiction": "Jurisdiction",
+    "period": "Period",
+    "dueDate": "Due date",
+    "paymentSentOn": "Payment sent on",
+    "amount": "Amount",
+    "amountPaid": "Amount paid"
+  },
+  "liabilities": {
+    "title": "Tax liabilities",
+    "tableLabel": "Tax liabilities",
+    "taxIdColumn": "Tax ID",
+    "payrollColumn": "Payroll",
+    "amountColumn": "Amount",
+    "emptyState": "No tax liabilities."
+  },
+  "errors": {
+    "taxPaymentNotFound": "Tax payment not found"
+  }
+}

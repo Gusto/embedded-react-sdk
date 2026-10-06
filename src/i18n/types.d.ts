@@ -256,6 +256,10 @@ export interface Resources {
   /** */
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
   /** */
+  'Payroll.TaxPaymentDetail': Translations.PayrollTaxPaymentDetail
+  /** */
+  'Payroll.TaxPaymentsList': Translations.PayrollTaxPaymentsList
+  /** */
   'Payroll.Transition': Translations.PayrollTransition
   /** */
   'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
@@ -8491,6 +8495,146 @@ export namespace Translations {
         /** @defaultValue `""` */
         instruction: string
       }
+    }
+  }
+  /** Translation keys for the `Payroll.TaxPaymentDetail` i18n namespace. */
+  export interface PayrollTaxPaymentDetail {
+    /** @defaultValue `"Back to tax payments"` */
+    backCta: string
+    /** @defaultValue `"Unknown agency"` */
+    unknownAgency: string
+    /** @defaultValue `"Federal"` */
+    federal: string
+    /** @defaultValue `"State · {{jurisdiction}}"` */
+    state: string
+    /** @defaultValue `"{{start}} – {{end}}"` */
+    periodRange: string
+    /** @defaultValue `"—"` */
+    notAvailable: string
+    status: {
+      /** @defaultValue `"Paid"` */
+      paid: string
+      /** @defaultValue `"Scheduled"` */
+      scheduled: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"Refund / Credit"` */
+      refund: string
+    }
+    overdueAlert: {
+      /** @defaultValue `"Payment overdue"` */
+      label: string
+      /** @defaultValue `"This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."` */
+      description: string
+    }
+    details: {
+      /** @defaultValue `"Payment details"` */
+      title: string
+      /** @defaultValue `"Jurisdiction"` */
+      jurisdiction: string
+      /** @defaultValue `"Period"` */
+      period: string
+      /** @defaultValue `"Due date"` */
+      dueDate: string
+      /** @defaultValue `"Payment sent on"` */
+      paymentSentOn: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Amount paid"` */
+      amountPaid: string
+    }
+    liabilities: {
+      /** @defaultValue `"Tax liabilities"` */
+      title: string
+      /** @defaultValue `"Tax liabilities"` */
+      tableLabel: string
+      /** @defaultValue `"Tax ID"` */
+      taxIdColumn: string
+      /** @defaultValue `"Payroll"` */
+      payrollColumn: string
+      /** @defaultValue `"Amount"` */
+      amountColumn: string
+      /** @defaultValue `"No tax liabilities."` */
+      emptyState: string
+    }
+    errors: {
+      /** @defaultValue `"Tax payment not found"` */
+      taxPaymentNotFound: string
+    }
+  }
+  /** Translation keys for the `Payroll.TaxPaymentsList` i18n namespace. */
+  export interface PayrollTaxPaymentsList {
+    /** @defaultValue `"Tax payments"` */
+    title: string
+    /** @defaultValue `"Tax payments"` */
+    tableLabel: string
+    /** @defaultValue `"Search tax payments"` */
+    searchLabel: string
+    /** @defaultValue `"Search by agency..."` */
+    searchPlaceholder: string
+    /** @defaultValue `"Jurisdiction"` */
+    jurisdictionFilterLabel: string
+    /** @defaultValue `"All jurisdictions"` */
+    allJurisdictions: string
+    /** @defaultValue `"Federal (US)"` */
+    federalJurisdictionOption: string
+    /** @defaultValue `"Status"` */
+    statusFilterLabel: string
+    /** @defaultValue `"All statuses"` */
+    allStatuses: string
+    columns: {
+      /** @defaultValue `"Agency"` */
+      agency: string
+      /** @defaultValue `"Jurisdiction"` */
+      jurisdiction: string
+      /** @defaultValue `"Period"` */
+      period: string
+      /** @defaultValue `"Due date"` */
+      dueDate: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Status"` */
+      status: string
+    }
+    /** @defaultValue `"Federal"` */
+    federal: string
+    /** @defaultValue `"State · {{jurisdiction}}"` */
+    state: string
+    /** @defaultValue `"Unknown agency"` */
+    unknownAgency: string
+    /** @defaultValue `"{{start}} – {{end}}"` */
+    periodRange: string
+    /** @defaultValue `"View"` */
+    viewCta: string
+    /** @defaultValue `"View {{agency}} tax payment"` */
+    viewPaymentLabel: string
+    status: {
+      /** @defaultValue `"Paid"` */
+      paid: string
+      /** @defaultValue `"Scheduled"` */
+      scheduled: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"Refund / Credit"` */
+      refund: string
+    }
+    overdueAlert: {
+      /** @defaultValue `"{{count}} tax payment is overdue and may require immediate attention."` */
+      label_one: string
+      /** @defaultValue `"{{count}} tax payments are overdue and may require immediate attention."` */
+      label_other: string
+    }
+    emptyState: {
+      /** @defaultValue `"No tax payments yet"` */
+      title: string
+      /** @defaultValue `"Tax payments appear here after payroll is processed."` */
+      description: string
+    }
+    noResults: {
+      /** @defaultValue `"No matching tax payments"` */
+      title: string
+      /** @defaultValue `"Try a different search or adjust the filters."` */
+      description: string
     }
   }
   /** Translation keys for the `Payroll.Transition` i18n namespace. */

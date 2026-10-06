@@ -1,0 +1,33 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: toRem(12);
+
+  @container (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.filters {
+  display: flex;
+  flex-shrink: 0;
+  gap: toRem(12);
+
+  > * {
+    width: toRem(180);
+  }
+
+  @container (max-width: 640px) {
+    > * {
+      flex: 1 1 0;
+      width: auto;
+    }
+  }
+}
