@@ -4,11 +4,17 @@ import {
   payrollExecutionMachine,
   getPayrollExecutionBreadcrumbsNodes,
 } from './payrollExecutionMachine'
-import type { PayrollFlowContextInterface } from '../PayrollFlow/PayrollFlowComponents'
+import type {
+  PayrollFlowAlert,
+  PayrollFlowContextInterface,
+} from '../PayrollFlow/PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-function createTestMachine(initialState: 'configuration' | 'overview' = 'configuration') {
+function createTestMachine(
+  initialState: 'configuration' | 'overview' | 'editEmployee' = 'configuration',
+  alerts?: PayrollFlowAlert[],
+) {
   return createMachine(
     initialState,
     payrollExecutionMachine,
@@ -23,12 +29,16 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
         currentBreadcrumbId: initialState,
       },
       withReimbursements: true,
+      alerts,
     }),
   )
 }
 
-function createService(initialState: 'configuration' | 'overview' = 'configuration') {
-  const machine = createTestMachine(initialState)
+function createService(
+  initialState: 'configuration' | 'overview' | 'editEmployee' = 'configuration',
+  alerts?: PayrollFlowAlert[],
+) {
+  const machine = createTestMachine(initialState, alerts)
   return interpret(machine, () => {})
 }
 
@@ -321,6 +331,55 @@ describe('payrollExecutionMachine', () => {
 
       send(service, componentEvents.RUN_PAYROLL_EDIT)
       expect(service.machine.current).toBe('configuration')
+    })
+  })
+
+  describe('alert clearing on state transitions', () => {
+    const staleAlerts: PayrollFlowAlert[] = [
+      { type: 'success', title: 'Stale alert', alertKey: 'progressSaved' },
+    ]
+    const payPeriod = { startDate: '2026-01-01', endDate: '2026-01-15' }
+
+    it.each([
+      ['configuration', componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, 'editEmployee'],
+      ['configuration', componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL, 'blockers'],
+      ['overview', componentEvents.RUN_PAYROLL_RECEIPT_GET, 'receipts'],
+      ['overview', componentEvents.RUN_PAYROLL_EDIT, 'configuration'],
+      ['editEmployee', componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, 'configuration'],
+      ['editEmployee', componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED, 'configuration'],
+    ] as const)('clears alerts leaving %s on %s', (initialState, event, expectedState) => {
+      const service = createService(initialState, staleAlerts)
+
+      send(service, event, { employeeId: 'emp-1', firstName: 'Jane', lastName: 'Doe' })
+
+      expect(service.machine.current).toBe(expectedState)
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('replaces stale alerts with the calculated alert', () => {
+      const alert = { type: 'success' as const, title: 'Saved' }
+      const service = createService('configuration', [
+        { type: 'error', title: 'Stale', alertKey: 'alreadyProcessed' },
+      ])
+
+      send(service, componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollUuid: 'payroll-123',
+        payPeriod,
+        alert,
+      })
+
+      expect(service.context.alerts).toEqual([{ ...alert, alertKey: 'progressSaved' }])
+    })
+
+    it('drops stale alerts when calculated carries no alert', () => {
+      const service = createService('configuration', staleAlerts)
+
+      send(service, componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollUuid: 'payroll-123',
+        payPeriod,
+      })
+
+      expect(service.context.alerts).toBeUndefined()
     })
   })
 })

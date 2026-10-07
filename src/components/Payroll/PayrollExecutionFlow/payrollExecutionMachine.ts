@@ -135,11 +135,8 @@ export const calculatedTransition = transition(
         component: PayrollOverviewContextual,
         payPeriod: ev.payload.payPeriod ?? ctx.payPeriod,
         alerts: ev.payload.alert
-          ? [
-              ...(ctx.alerts ?? []).filter(a => a.alertKey !== 'progressSaved'),
-              { ...ev.payload.alert, alertKey: 'progressSaved' as const },
-            ]
-          : ctx.alerts,
+          ? [{ ...ev.payload.alert, alertKey: 'progressSaved' as const }]
+          : undefined,
         ctaConfig: {
           labelKey: 'exitFlowCta',
           namespace: 'Payroll.PayrollOverview',
@@ -170,11 +167,8 @@ export const alreadyProcessedTransition = transition(
         component: PayrollOverviewContextual,
         payPeriod,
         alerts: ev.payload.alert
-          ? [
-              ...(ctx.alerts ?? []).filter(a => a.alertKey !== 'alreadyProcessed'),
-              { ...ev.payload.alert, alertKey: 'alreadyProcessed' as const },
-            ]
-          : ctx.alerts,
+          ? [{ ...ev.payload.alert, alertKey: 'alreadyProcessed' as const }]
+          : undefined,
         ctaConfig: {
           labelKey: 'exitFlowCta',
           namespace: 'Payroll.PayrollOverview',
@@ -204,6 +198,7 @@ export const employeeEditTransition = transition(
         employeeId: ev.payload.employeeId,
         firstName: ev.payload.firstName,
         lastName: ev.payload.lastName,
+        alerts: undefined,
         ctaConfig: null,
       }
     },
@@ -218,6 +213,7 @@ export const blockersViewAllTransition = transition(
     return {
       ...updateBreadcrumbs('blockers', ctx),
       component: PayrollBlockerContextual,
+      alerts: undefined,
     }
   }),
 )
@@ -276,6 +272,7 @@ const employeeSavedTransition = transition(
   reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
     ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
     component: PayrollConfigurationContextual,
+    alerts: undefined,
     employeeId: undefined,
     firstName: undefined,
     lastName: undefined,
@@ -292,6 +289,7 @@ const employeeCancelledTransition = transition(
   reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
     ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
     component: PayrollConfigurationContextual,
+    alerts: undefined,
     employeeId: undefined,
     firstName: undefined,
     lastName: undefined,
