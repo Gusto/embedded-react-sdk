@@ -203,5 +203,6 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
   managePaySchedules: false,
+  payrollHistoryHooks: false,
   payrollRegularRateOfPay: false,
 }

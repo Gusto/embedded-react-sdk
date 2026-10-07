@@ -2,12 +2,11 @@ import { useTranslation } from 'react-i18next'
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
+import { getPayrollTypeLabel, getPayPeriodOrCheckDateLabel } from '../helpers'
 import {
-  getPayrollTypeLabel,
-  calculateTotalPayroll,
-  canCancelPayroll,
-  getPayPeriodOrCheckDateLabel,
-} from '../helpers'
+  getPayrollHistoryDetails,
+  type PayrollHistoryDetails,
+} from './shared/payrollHistoryHelpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import { DataView, Flex, DateRangeFilter } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -22,10 +21,12 @@ import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
 import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
 import { EmptyData } from '@/components/Common/'
 
+type PayrollHistoryRow = Payroll & { historyDetails?: PayrollHistoryDetails }
+
 interface PayrollHistoryPresentationProps {
   /** CSS class name applied to the root element. */
   className?: string
-  payrollHistory: Payroll[]
+  payrollHistory: PayrollHistoryRow[]
   wireInRequests: WireInRequest[]
   pagination: PaginationControlProps
   onViewSummary: (payrollId: string, startDate?: string, endDate?: string) => void
@@ -95,8 +96,12 @@ export const PayrollHistoryPresentation = ({
     }
   }
 
-  const getMenuItems = (item: Payroll): MenuItem[] => {
-    const payrollId = item.payrollUuid || item.uuid!
+  const getRowDetails = (item: PayrollHistoryRow) =>
+    item.historyDetails ?? getPayrollHistoryDetails(item, wireInRequests)
+
+  const getMenuItems = (item: PayrollHistoryRow): MenuItem[] => {
+    const details = getRowDetails(item)
+    const payrollId = details.payrollId!
     const items: MenuItem[] = [
       {
         label: t('menu.viewSummary'),
@@ -122,7 +127,7 @@ export const PayrollHistoryPresentation = ({
       },
     ]
 
-    if (canCancelPayroll(item)) {
+    if (details.canCancel) {
       items.push({
         label: t('menu.cancelPayroll'),
         icon: <TrashcanIcon aria-hidden />,
@@ -190,21 +195,20 @@ export const PayrollHistoryPresentation = ({
           },
           {
             title: t('columns.status'),
-            render: (item: Payroll) => {
-              const wireInRequest = wireInRequests.find(
-                wire => wire.paymentUuid === item.payrollUuid,
-              )
+            render: (item: PayrollHistoryRow) => {
+              const { wireInRequest } = getRowDetails(item)
               return <PayrollStatusBadges payroll={item} wireInRequest={wireInRequest} />
             },
           },
           {
             title: t('columns.totalPayroll'),
             justify: 'end',
-            render: (item: Payroll) => formatNumberAsCurrency(calculateTotalPayroll(item)),
+            render: (item: PayrollHistoryRow) =>
+              formatNumberAsCurrency(getRowDetails(item).totalAmount),
           },
         ]}
         data={payrollHistory}
-        itemMenu={(item: Payroll) => <HamburgerMenu items={getMenuItems(item)} />}
+        itemMenu={(item: PayrollHistoryRow) => <HamburgerMenu items={getMenuItems(item)} />}
       />
 
       <Dialog
