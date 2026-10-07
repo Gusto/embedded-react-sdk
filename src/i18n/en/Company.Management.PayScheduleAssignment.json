@@ -6,6 +6,10 @@
       "single": {
         "label": "Everyone on one schedule",
         "description": "Choose one pay schedule for all your employees"
+      },
+      "hourlySalaried": {
+        "label": "Separate schedules by compensation type",
+        "description": "Choose one pay schedule for hourly employees and another for salaried employees"
       }
     }
   },

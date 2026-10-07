@@ -9,7 +9,10 @@ import type { PayScheduleShow } from '@gusto/embedded-api/models/components/pays
 import { AssignmentTypeStepPresentation } from './AssignmentTypeStepPresentation'
 import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
-import type { PayScheduleAssignmentContextInterface } from './usePayScheduleAssignment'
+import type {
+  PayScheduleAssignmentContextInterface,
+  SupportedAssignmentType,
+} from './usePayScheduleAssignment'
 import { PayScheduleForm } from '@/components/Company/PaySchedule/PayScheduleForm'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useBase, BaseLayout } from '@/components/Base'
@@ -18,8 +21,10 @@ import { componentEvents } from '@/shared/constants'
 
 /** @internal */
 export type EventPayloads = {
-  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED]: { type: PayScheduleAssignmentBodyType }
-  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED]: { defaultPayScheduleUuid: string }
+  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED]: { type: SupportedAssignmentType }
+  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED]:
+    | { defaultPayScheduleUuid: string }
+    | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
   [componentEvents.PAY_SCHEDULE_ASSIGNED]: {
     type: PayScheduleAssignmentBodyType
@@ -34,9 +39,7 @@ export function AssignmentTypeStep() {
 
   return (
     <AssignmentTypeStepPresentation
-      defaultType={
-        assignmentType === PayScheduleAssignmentBodyType.Single ? assignmentType : undefined
-      }
+      defaultType={assignmentType}
       onBack={() => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_CANCEL)
       }}
