@@ -780,16 +780,14 @@ describe('PaySchedule (management)', () => {
         expect(screen.getByText('Salaried Team')).toBeInTheDocument()
       })
 
-      // react-aria names each row by its first cell, i.e. the compensation type.
-      const salariedRow = screen.getByRole('row', { name: 'Salaried' })
-      expect(salariedRow).toHaveTextContent('Salaried Team')
+      // react-aria names each row by its first cell: compensation type + schedule name.
+      const salariedRow = screen.getByRole('row', { name: 'Salaried Salaried Team' })
       expect(salariedRow).toHaveTextContent('Twice per month')
-      expect(salariedRow).toHaveTextContent('Enabled')
+      expect(within(salariedRow).getByText('Enabled')).toHaveAttribute('data-variant', 'success')
 
-      const hourlyRow = screen.getByRole('row', { name: 'Hourly' })
-      expect(hourlyRow).toHaveTextContent('Hourly Team')
+      const hourlyRow = screen.getByRole('row', { name: 'Hourly Hourly Team' })
       expect(hourlyRow).toHaveTextContent('Every week')
-      expect(hourlyRow).toHaveTextContent('Disabled')
+      expect(within(hourlyRow).getByText('Disabled')).toHaveAttribute('data-variant', 'info')
 
       expect(screen.getByRole('button', { name: /manage/i })).toBeInTheDocument()
     })
@@ -803,7 +801,7 @@ describe('PaySchedule (management)', () => {
         expect(screen.getByText('Hourly Team')).toBeInTheDocument()
       })
 
-      const hourlyRow = screen.getByRole('row', { name: 'Hourly' })
+      const hourlyRow = screen.getByRole('row', { name: 'Hourly Hourly Team' })
       await user.click(within(hourlyRow).getByRole('button', { name: /pay schedule actions/i }))
       await user.click(screen.getByRole('menuitem', { name: /edit schedule/i }))
 
@@ -821,7 +819,7 @@ describe('PaySchedule (management)', () => {
         expect(screen.getByText('Salaried Team')).toBeInTheDocument()
       })
 
-      const salariedRow = screen.getByRole('row', { name: 'Salaried' })
+      const salariedRow = screen.getByRole('row', { name: 'Salaried Salaried Team' })
       await user.click(within(salariedRow).getByRole('button', { name: /pay schedule actions/i }))
       await user.click(screen.getByRole('menuitem', { name: /^autopilot$/i }))
 
@@ -847,7 +845,7 @@ describe('PaySchedule (management)', () => {
 
       expect(screen.queryByText(/autopilot/i)).not.toBeInTheDocument()
 
-      const hourlyRow = screen.getByRole('row', { name: 'Hourly' })
+      const hourlyRow = screen.getByRole('row', { name: 'Hourly Hourly Team' })
       await user.click(within(hourlyRow).getByRole('button', { name: /pay schedule actions/i }))
       expect(screen.getAllByRole('menuitem')).toHaveLength(1)
     })
@@ -861,10 +859,10 @@ describe('PaySchedule (management)', () => {
       renderPaySchedule({ enableAutoPilot: true })
 
       await waitFor(() => {
-        expect(screen.getByRole('row', { name: 'Salaried' })).toBeInTheDocument()
+        expect(screen.getByRole('row', { name: 'Salaried Salaried Team' })).toBeInTheDocument()
       })
 
-      expect(screen.queryByRole('row', { name: 'Hourly' })).toBeNull()
+      expect(screen.queryByRole('row', { name: /^Hourly/ })).toBeNull()
     })
 
     it('falls back to the single-schedule overview for other assignment types', async () => {

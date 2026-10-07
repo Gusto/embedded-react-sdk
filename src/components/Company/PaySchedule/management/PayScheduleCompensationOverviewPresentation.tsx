@@ -45,14 +45,16 @@ export function PayScheduleCompensationOverviewPresentation({
     data: rows,
     columns: [
       {
-        key: 'compensationType',
-        title: t('labels.compensationType'),
-        render: ({ compensationType }) => t(`compensationTypes.${compensationType}`),
-      },
-      {
-        key: 'name',
-        title: t('labels.name'),
-        render: ({ schedule }) => schedule.customName,
+        key: 'schedule',
+        title: t('labels.schedule'),
+        render: ({ compensationType, schedule }) => (
+          <>
+            {t(`compensationTypes.${compensationType}`)}
+            <Components.Text variant="supporting" size="sm">
+              {schedule.customName}
+            </Components.Text>
+          </>
+        ),
       },
       {
         key: 'frequency',
@@ -64,8 +66,11 @@ export function PayScheduleCompensationOverviewPresentation({
             {
               key: 'autoPilot',
               title: t('autoPilot.label'),
-              render: ({ schedule }: PayScheduleCompensationRow) =>
-                schedule.autoPayroll ? t('autoPilot.enabled') : t('autoPilot.disabled'),
+              render: ({ schedule }: PayScheduleCompensationRow) => (
+                <Components.Badge status={schedule.autoPayroll ? 'success' : 'info'}>
+                  {schedule.autoPayroll ? t('autoPilot.enabled') : t('autoPilot.disabled')}
+                </Components.Badge>
+              ),
             },
           ]
         : []),
@@ -97,6 +102,7 @@ export function PayScheduleCompensationOverviewPresentation({
 
   return (
     <Components.Box
+      withPadding={false}
       header={
         <Components.BoxHeader
           title={t('title')}

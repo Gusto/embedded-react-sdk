@@ -699,6 +699,7 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
+| `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
 
