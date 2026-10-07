@@ -82,6 +82,15 @@ export const assignPaySchedules = http.post(
   () => new HttpResponse(null, { status: 200 }),
 )
 
+export const getPayScheduleAssignments = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`,
+  () =>
+    HttpResponse.json({
+      type: 'single',
+      default_pay_schedule_uuid: 'schedule-1',
+    }),
+)
+
 export default [
   getPaySchedules,
   getPaySchedule,
@@ -91,4 +100,5 @@ export default [
   getPayPeriods,
   previewPayScheduleAssignment,
   assignPaySchedules,
+  getPayScheduleAssignments,
 ]
