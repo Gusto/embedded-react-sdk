@@ -1073,6 +1073,12 @@ export namespace Translations {
           /** @defaultValue `"Choose one pay schedule for all your employees"` */
           description: string
         }
+        hourlySalaried: {
+          /** @defaultValue `"Separate schedules by compensation type"` */
+          label: string
+          /** @defaultValue `"Choose one pay schedule for hourly employees and another for salaried employees"` */
+          description: string
+        }
       }
     }
     scheduleStep: {

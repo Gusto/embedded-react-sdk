@@ -77,6 +77,24 @@ describe('PayScheduleAssignment', () => {
     })
   })
 
+  it('selects the compensation type option on the type step', async () => {
+    const user = userEvent.setup()
+    const { onEvent } = renderAssignment()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+    })
+    await user.click(
+      screen.getByRole('radio', { name: /separate schedules by compensation type/i }),
+    )
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED,
+      expect.objectContaining({ type: 'hourly_salaried' }),
+    )
+  })
+
   it('fires PAY_SCHEDULE_ASSIGNMENT_CANCEL when Back is clicked on the type step', async () => {
     const user = userEvent.setup()
     const { onEvent } = renderAssignment()
