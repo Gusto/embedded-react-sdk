@@ -703,9 +703,9 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
 | <a id="property-companymanagementpayscheduleeditschedulecta"></a> `editScheduleCta` | `"Edit schedule"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
-| `labels.compensationType` | `"Compensation type"` |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
+| `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
 | <a id="property-companymanagementpayschedulerowmenutriggerlabel"></a> `rowMenuTriggerLabel` | `"Pay schedule actions"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |

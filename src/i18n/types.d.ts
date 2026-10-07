@@ -1053,8 +1053,8 @@ export namespace Translations {
       name: string
       /** @defaultValue `"Frequency"` */
       frequency: string
-      /** @defaultValue `"Compensation type"` */
-      compensationType: string
+      /** @defaultValue `"Schedule"` */
+      schedule: string
     }
     compensationTypes: {
       /** @defaultValue `"Hourly"` */

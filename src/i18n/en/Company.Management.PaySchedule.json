@@ -12,7 +12,7 @@
   "labels": {
     "name": "Name",
     "frequency": "Frequency",
-    "compensationType": "Compensation type"
+    "schedule": "Schedule"
   },
   "compensationTypes": {
     "hourly": "Hourly",
