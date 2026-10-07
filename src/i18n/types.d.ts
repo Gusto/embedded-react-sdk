@@ -1091,6 +1091,20 @@ export namespace Translations {
       /** @defaultValue `"Add pay schedule"` */
       addPayScheduleCta: string
     }
+    compensationStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Hourly employees"` */
+      hourlyPayScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for hourly employees."` */
+      hourlyPayScheduleDescription: string
+      /** @defaultValue `"Salaried employees"` */
+      salariedPayScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for salaried employees."` */
+      salariedPayScheduleDescription: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
     reviewStep: {
       /** @defaultValue `"Review changes"` */
       heading: string

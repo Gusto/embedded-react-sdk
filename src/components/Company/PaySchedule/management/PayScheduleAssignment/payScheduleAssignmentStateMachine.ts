@@ -82,9 +82,6 @@ export const payScheduleAssignmentStateMachine = {
         ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
           component: AssignmentReviewStep as ComponentType,
-          defaultPayScheduleUuid: undefined,
-          hourlyPayScheduleUuid: undefined,
-          salariedPayScheduleUuid: undefined,
           ...ev.payload,
         }),
       ),
