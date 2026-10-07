@@ -11,6 +11,7 @@
 
 - Show the receipt ID and the correct recipient name on the contractor payment receipt, sourced from the receipt payload itself ([#2867](https://github.com/Gusto/embedded-react-sdk/issues/2867))
 - Cap payroll hours (99999) and reimbursement amounts (1,000,000) client-side to match server limits, so an out-of-range value is caught before submit instead of failing with a 422 ([#2870](https://github.com/Gusto/embedded-react-sdk/issues/2870))
+- Allow breadcrumb navigation from the receipts screen back to overview, instead of silently no-opping ([#2878](https://github.com/Gusto/embedded-react-sdk/issues/2878))
 
 ## [0.56.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.3...v0.56.4) (2026-10-02)
 
