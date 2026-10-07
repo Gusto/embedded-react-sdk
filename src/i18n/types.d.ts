@@ -1032,19 +1032,35 @@ export namespace Translations {
     title: string
     /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
     description: string
+    /** @defaultValue `"You have assigned employees to pay schedules by compensation type."` */
+    compensationDescription: string
+    /** @defaultValue `"Pay schedules by compensation type"` */
+    compensationTableLabel: string
     /** @defaultValue `"Manage"` */
     manageCta: string
     /** @defaultValue `"Edit"` */
     editCta: string
+    /** @defaultValue `"Edit schedule"` */
+    editScheduleCta: string
     /** @defaultValue `"Edit pay schedule"` */
     editScheduleAriaLabel: string
     /** @defaultValue `"Edit AutoPilot"` */
     editAutoPilotAriaLabel: string
+    /** @defaultValue `"Pay schedule actions"` */
+    rowMenuTriggerLabel: string
     labels: {
       /** @defaultValue `"Name"` */
       name: string
       /** @defaultValue `"Frequency"` */
       frequency: string
+      /** @defaultValue `"Compensation type"` */
+      compensationType: string
+    }
+    compensationTypes: {
+      /** @defaultValue `"Hourly"` */
+      hourly: string
+      /** @defaultValue `"Salaried"` */
+      salaried: string
     }
     autoPilot: {
       /** @defaultValue `"AutoPilot"` */
