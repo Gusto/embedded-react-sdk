@@ -76,7 +76,6 @@ import { CustomFieldType } from '@gusto/embedded-api/models/components/customfie
 import { CustomWithholdings } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
-import { Departments } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
 import { Document as Document_2 } from '@gusto/embedded-api/models/components/document';
 import { DocumentRecipientType } from '@gusto/embedded-api/models/components/document';
 import { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned';
@@ -251,12 +250,11 @@ import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/component
 import { PayrollUpdateReimbursements } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateState } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayScheduleAssignmentBody } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
-import { PayScheduleAssignmentBodyEmployees } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
 import { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange';
 import { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod';
 import { PayScheduleAssignmentTransitionPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmenttransitionpayperiod';
+import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment';
 import { PayScheduleAutoPayrollEnablementBlocker } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
@@ -687,9 +685,7 @@ declare namespace APIModels {
         PayrollUpdateEmployeeCompensationsOverrideType,
         PayrollUpdateOverrideType,
         PayrollUpdatePaymentMethod,
-        Departments,
-        PayScheduleAssignmentBody,
-        PayScheduleAssignmentBodyEmployees,
+        PayScheduleAssignmentType,
         PayScheduleAssignmentBodyType,
         PayScheduleAssignmentEmployeeChange,
         PayScheduleAssignmentPayPeriod,
