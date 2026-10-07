@@ -263,6 +263,41 @@ describe('payrollExecutionMachine', () => {
     })
   })
 
+  describe('receipts state', () => {
+    function toReceipts(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollUuid: 'payroll-123',
+        payPeriod: { startDate: '2026-01-01', endDate: '2026-01-15' },
+      })
+      send(service, componentEvents.RUN_PAYROLL_RECEIPT_GET)
+      expect(service.machine.current).toBe('receipts')
+    }
+
+    it('transitions to overview on breadcrumb navigation to overview', () => {
+      const service = createService()
+      toReceipts(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'overview',
+        onNavigate: (ctx: PayrollFlowContextInterface) => ctx,
+      })
+
+      expect(service.machine.current).toBe('overview')
+    })
+
+    it('transitions to configuration on breadcrumb navigation to configuration', () => {
+      const service = createService()
+      toReceipts(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'configuration',
+        onNavigate: (ctx: PayrollFlowContextInterface) => ctx,
+      })
+
+      expect(service.machine.current).toBe('configuration')
+    })
+  })
+
   describe('editEmployee state', () => {
     function toEditEmployee(service: ReturnType<typeof createService>) {
       send(service, componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, {
