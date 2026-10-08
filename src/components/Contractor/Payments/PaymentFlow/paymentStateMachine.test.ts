@@ -170,4 +170,37 @@ describe('paymentMachine', () => {
       expect(service.machine.current).toBe('landing')
     })
   })
+
+  describe('alert clearing across the information requests round-trip', () => {
+    function withLandingAlert() {
+      const service = createService()
+      send(service, payrollWireEvents.PAYROLL_WIRE_FORM_DONE, {
+        confirmationAlert: { title: 'Wire submitted' },
+      })
+      expect(service.context.alerts).toHaveLength(1)
+      return service
+    }
+
+    it('clears landing alerts on CONTRACTOR_PAYMENT_RFI_RESPOND', () => {
+      const service = withLandingAlert()
+
+      send(service, componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND)
+
+      expect(service.machine.current).toBe('informationRequests')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it.each([
+      informationRequestEvents.INFORMATION_REQUEST_FORM_DONE,
+      informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL,
+    ])('returns to landing without alerts on %s', event => {
+      const service = withLandingAlert()
+      send(service, componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND)
+
+      send(service, event)
+
+      expect(service.machine.current).toBe('landing')
+      expect(service.context.alerts).toBeUndefined()
+    })
+  })
 })
