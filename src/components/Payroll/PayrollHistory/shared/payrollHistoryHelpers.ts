@@ -15,12 +15,14 @@ export interface PayrollHistoryDetails {
 }
 
 /**
- * Historical payroll with its derived rendering data and cancellation eligibility.
+ * Resolves a historical payroll's identifier for row actions and cancellation.
  *
+ * @param payroll - Payroll whose identifier should be resolved.
+ * @returns The payroll UUID, fallback UUID, or `undefined` when neither is present.
  * @internal
  */
-export interface PayrollHistoryItem extends Payroll {
-  historyDetails: PayrollHistoryDetails
+export function getPayrollHistoryId(payroll: Payroll): string | undefined {
+  return payroll.payrollUuid || payroll.uuid || undefined
 }
 
 /**
@@ -35,10 +37,11 @@ export function getPayrollHistoryDetails(
   payroll: Payroll,
   wireInRequests: WireInRequest[],
 ): PayrollHistoryDetails {
+  const payrollId = getPayrollHistoryId(payroll)
   return {
-    payrollId: payroll.payrollUuid || payroll.uuid,
+    payrollId,
     totalAmount: calculateTotalPayroll(payroll),
-    canCancel: canCancelPayroll(payroll),
+    canCancel: !!payrollId && canCancelPayroll(payroll),
     wireInRequest: wireInRequests.find(wire => wire.paymentUuid === payroll.payrollUuid),
   }
 }

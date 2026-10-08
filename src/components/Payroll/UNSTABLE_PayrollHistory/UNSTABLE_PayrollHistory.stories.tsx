@@ -146,9 +146,7 @@ function MockPayrollHistory({ scenario }: { scenario: Scenario }) {
             })
           }
           if (url.pathname.endsWith('/wire_in_requests')) return Response.json(data.wires)
-          throw new globalThis.Error(
-            `Unexpected Storybook request: ${request.method} ${url.pathname}`,
-          )
+          throw new Error(`Unexpected Storybook request: ${request.method} ${url.pathname}`)
         },
       }),
     })
@@ -164,10 +162,8 @@ function MockPayrollHistory({ scenario }: { scenario: Scenario }) {
   )
 }
 
-export const Default = () => <MockPayrollHistory scenario="default" />
 export const Loading = () => <MockPayrollHistory scenario="loading" />
-export const Error = () => <MockPayrollHistory scenario="error" />
-export const Empty = () => <MockPayrollHistory scenario="empty" />
+export const QueryError = () => <MockPayrollHistory scenario="error" />
 export const CancellationError = () => <MockPayrollHistory scenario="cancel-error" />
 export const Paginated = () => <MockPayrollHistory scenario="paginated" />
 

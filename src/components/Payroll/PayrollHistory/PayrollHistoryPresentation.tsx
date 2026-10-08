@@ -3,10 +3,7 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel, getPayPeriodOrCheckDateLabel } from '../helpers'
-import {
-  getPayrollHistoryDetails,
-  type PayrollHistoryDetails,
-} from './shared/payrollHistoryHelpers'
+import { getPayrollHistoryDetails } from './shared/payrollHistoryHelpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import { DataView, Flex, DateRangeFilter } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -21,12 +18,10 @@ import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
 import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
 import { EmptyData } from '@/components/Common/'
 
-type PayrollHistoryRow = Payroll & { historyDetails?: PayrollHistoryDetails }
-
 interface PayrollHistoryPresentationProps {
   /** CSS class name applied to the root element. */
   className?: string
-  payrollHistory: PayrollHistoryRow[]
+  payrollHistory: Payroll[]
   wireInRequests: WireInRequest[]
   pagination: PaginationControlProps
   onViewSummary: (payrollId: string, startDate?: string, endDate?: string) => void
@@ -96,12 +91,12 @@ export const PayrollHistoryPresentation = ({
     }
   }
 
-  const getRowDetails = (item: PayrollHistoryRow) =>
-    item.historyDetails ?? getPayrollHistoryDetails(item, wireInRequests)
+  const getRowDetails = (item: Payroll) => getPayrollHistoryDetails(item, wireInRequests)
 
-  const getMenuItems = (item: PayrollHistoryRow): MenuItem[] => {
+  const getMenuItems = (item: Payroll): MenuItem[] => {
     const details = getRowDetails(item)
-    const payrollId = details.payrollId!
+    const payrollId = details.payrollId
+    if (!payrollId) return []
     const items: MenuItem[] = [
       {
         label: t('menu.viewSummary'),
@@ -195,7 +190,7 @@ export const PayrollHistoryPresentation = ({
           },
           {
             title: t('columns.status'),
-            render: (item: PayrollHistoryRow) => {
+            render: (item: Payroll) => {
               const { wireInRequest } = getRowDetails(item)
               return <PayrollStatusBadges payroll={item} wireInRequest={wireInRequest} />
             },
@@ -203,12 +198,14 @@ export const PayrollHistoryPresentation = ({
           {
             title: t('columns.totalPayroll'),
             justify: 'end',
-            render: (item: PayrollHistoryRow) =>
-              formatNumberAsCurrency(getRowDetails(item).totalAmount),
+            render: (item: Payroll) => formatNumberAsCurrency(getRowDetails(item).totalAmount),
           },
         ]}
         data={payrollHistory}
-        itemMenu={(item: PayrollHistoryRow) => <HamburgerMenu items={getMenuItems(item)} />}
+        itemMenu={(item: Payroll) => {
+          const items = getMenuItems(item)
+          return items.length > 0 ? <HamburgerMenu items={items} /> : null
+        }}
       />
 
       <Dialog

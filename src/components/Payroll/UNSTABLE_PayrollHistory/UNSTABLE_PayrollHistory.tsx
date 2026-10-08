@@ -3,6 +3,7 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollHistoryProps } from '../PayrollHistory/PayrollHistory'
 import { PayrollHistoryPresentation } from '../PayrollHistory/PayrollHistoryPresentation'
 import { usePayrollHistory } from '../PayrollHistory/shared/usePayrollHistory'
+import { getPayrollHistoryId } from '../PayrollHistory/shared/payrollHistoryHelpers'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -13,7 +14,7 @@ import { normalizeToSDKError } from '@/types/sdkError'
  * In-development hook-backed history selected by the `payrollHistoryHooks` unstable feature flag.
  *
  * @remarks
- * Consumes `usePayrollHistory` for fetching, filters, pagination, row helpers, and cancellation.
+ * Consumes `usePayrollHistory` for fetching, filters, pagination, and cancellation.
  * Keeps the cancellation dialog, dictionary overrides, and existing events in the UI layer.
  * Not part of the public SDK export surface.
  *
@@ -54,8 +55,11 @@ function Root({ companyId, onEvent, dictionary, className, LoaderComponent }: Pa
   const onCancelPayroll = async (payroll: Payroll) => {
     if (history.isLoading) return
     try {
-      const result = await history.actions.onCancel(payroll.payrollUuid || payroll.uuid!)
-      if (result) onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
+      const payrollId = getPayrollHistoryId(payroll)
+      if (!payrollId) return
+      await history.actions.onCancel(payrollId, result => {
+        onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
+      })
     } finally {
       setCancelDialogItem(null)
     }

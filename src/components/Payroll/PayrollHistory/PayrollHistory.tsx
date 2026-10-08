@@ -11,6 +11,7 @@ import {
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import { UNSTABLE_PayrollHistory } from '../UNSTABLE_PayrollHistory/UNSTABLE_PayrollHistory'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
+import { getPayrollHistoryId } from './shared/payrollHistoryHelpers'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, BaseLayout } from '@/components/Base/Base'
@@ -137,8 +138,9 @@ const Root = ({
   }
 
   const handleCancelPayroll = async (item: Payroll) => {
-    const payrollId = item.payrollUuid || item.uuid!
+    const payrollId = getPayrollHistoryId(item)
     try {
+      if (!payrollId) return
       await baseSubmitHandler(payrollId, async id => {
         const result = await cancelPayroll({
           request: {

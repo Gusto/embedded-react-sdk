@@ -1,4 +1,4 @@
-import type { FallbackProps } from 'react-error-boundary'
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -9,6 +9,7 @@ import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
 import { componentEvents } from '@/shared/constants'
+import { ObservabilityProvider } from '@/contexts/ObservabilityProvider/ObservabilityProvider'
 
 const companyId = 'company-123'
 const payroll = {
@@ -90,23 +91,81 @@ describe.each([
     expect(await screen.findByRole('heading', { name: copy.title })).toBeInTheDocument()
   })
 
-  it('emits the raw query error and supports retry through its custom fallback', async () => {
-    const resolver = vi.fn<HttpResponseResolver>(() => new HttpResponse(null, { status: 500 }))
-    server.use(http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, resolver))
-    const { onEvent } = renderComponent({
-      FallbackComponent: ({ resetErrorBoundary }: FallbackProps) => (
-        <button onClick={resetErrorBoundary}>Retry payroll history</button>
-      ),
+  it.each(['payrolls', 'wire_in_requests'] as const)(
+    'emits the raw %s query error and supports retry through its custom fallback',
+    async endpoint => {
+      const resolver = vi.fn<HttpResponseResolver>(() => new HttpResponse(null, { status: 500 }))
+      server.use(http.get(`${API_BASE_URL}/v1/companies/:company_id/${endpoint}`, resolver))
+      const { onEvent } = renderComponent({
+        FallbackComponent: ({ resetErrorBoundary }: FallbackProps) => (
+          <button onClick={resetErrorBoundary}>Retry payroll history</button>
+        ),
+      })
+      await screen.findByRole('button', { name: 'Retry payroll history' })
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.ERROR, expect.any(Error))
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/${endpoint}`, () =>
+          HttpResponse.json(endpoint === 'payrolls' ? [payroll] : []),
+        ),
+      )
+      await userEvent.click(screen.getByRole('button', { name: 'Retry payroll history' }))
+      expect(await screen.findByRole('heading', { name: copy.title })).toBeInTheDocument()
+    },
+  )
+
+  it('routes a thrown cancellation event callback to the applicable boundary and records a failed submit', async () => {
+    const callbackError = new Error('Cancellation callback failed')
+    const onEvent = vi.fn<PayrollHistoryProps['onEvent']>(event => {
+      if (event === componentEvents.RUN_PAYROLL_CANCELLED) {
+        throw callbackError
+      }
     })
-    await screen.findByRole('button', { name: 'Retry payroll history' })
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.ERROR, expect.any(Error))
-    server.use(
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () =>
-        HttpResponse.json([payroll]),
-      ),
+    const onMetric = vi.fn()
+    const onBoundaryError = vi.fn()
+    const resolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json({ ...payroll, processed: false }),
     )
-    await userEvent.click(screen.getByRole('button', { name: 'Retry payroll history' }))
-    expect(await screen.findByRole('heading', { name: copy.title })).toBeInTheDocument()
+    server.use(
+      http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`, resolver),
+    )
+    renderWithProviders(
+      <ObservabilityProvider observability={{ onMetric }}>
+        <ErrorBoundary
+          onError={onBoundaryError}
+          fallbackRender={({ error }: FallbackProps) => (
+            <div role="alert">{(error as Error).message}</div>
+          )}
+        >
+          <PayrollHistory
+            companyId={companyId}
+            dictionary={{ en: copy }}
+            onEvent={onEvent}
+            FallbackComponent={({ error }: FallbackProps) => (
+              <div role="alert">{(error as Error).message}</div>
+            )}
+          />
+        </ErrorBoundary>
+      </ObservabilityProvider>,
+      { unstableFeatures },
+    )
+    await userEvent.click(await openCancellationDialog())
+    expect(await screen.findByRole('alert')).toHaveTextContent(callbackError.message)
+    expect(resolver).toHaveBeenCalledTimes(1)
+    if (unstableFeatures.payrollHistoryHooks) {
+      expect(onBoundaryError.mock.calls).toEqual([])
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.ERROR, callbackError)
+    } else {
+      expect(onBoundaryError).toHaveBeenCalledWith(callbackError, expect.any(Object))
+      expect(onEvent.mock.calls.map(([event]) => event)).toEqual([
+        componentEvents.RUN_PAYROLL_CANCELLED,
+      ])
+    }
+    expect(onMetric).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'sdk.form.submit_duration',
+        tags: expect.objectContaining({ status: 'error' }),
+      }),
+    )
   })
 
   it('keeps cancellation pending and emits the complete API result before closing the dialog', async () => {

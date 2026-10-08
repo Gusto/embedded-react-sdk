@@ -12,7 +12,7 @@ import {
   QueryParamSortOrder,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { getPayrollHistoryDetails, type PayrollHistoryItem } from './payrollHistoryHelpers'
+import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
@@ -30,7 +30,11 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
  */
 export interface UsePayrollHistoryProps {
   companyId: string
-  /** Match the component's query boundaries, retaining cached wire data after refresh failures. */
+  /**
+   * Enables legacy component query behavior: payroll errors reach the boundary, while wire errors
+   * do so only without cached data. Cached wire refresh errors are omitted from `errorHandling`.
+   * Defaults to returning all query errors to headless consumers without throwing them.
+   */
   throwOnQueryError?: boolean
 }
 
@@ -45,29 +49,35 @@ export interface PayrollHistoryCancelResult {
 }
 
 /**
- * Loaded historical payroll data, derived row values, mutation state, and list controls.
+ * Loaded historical payroll data, mutation state, and list controls.
  *
  * @internal
  */
 export interface UsePayrollHistoryReady extends BaseHookReady<
-  { payrollHistory: PayrollHistoryItem[]; wireInRequests: WireInRequest[] },
-  { isFetching: boolean; isPending: boolean }
+  { payrollHistory: Payroll[]; wireInRequests: WireInRequest[] },
+  { isPending: boolean }
 > {
   pagination: PaginationControlProps
   dateRangeFilter: UseDateRangeFilterResult
   actions: {
-    onCancel: (payrollId: string) => Promise<PayrollHistoryCancelResult | undefined>
+    /** Runs the success callback inside submit error handling before returning the API response. */
+    onCancel: (
+      payrollId: string,
+      onSuccess?: (result: PayrollHistoryCancelResult) => void,
+    ) => Promise<PayrollHistoryCancelResult | undefined>
   }
 }
 
 /**
- * Fetches historical payrolls, exposes row rendering data, and cancels payrolls without rendering UI.
+ * Fetches historical payrolls and cancels payrolls without rendering UI.
  *
  * @remarks
  * Queries processed payrolls with totals and status metadata in descending order. The date range
  * defaults to six months back through three months ahead. Previous rows remain visible during
- * pagination and filter changes. Cancellation returns the full API response only after success;
- * handled failures return `undefined` and appear in `errorHandling`.
+ * pagination and filter changes. Cancellation runs an optional synchronous success callback within
+ * submit error handling and returns the full API response after the callback completes. Handled
+ * failures return `undefined` and appear in `errorHandling`; unexpected errors reach a React boundary.
+ * Row rendering helpers consume the returned payrolls and wire requests without enriching API models.
  * This in-development hook is consumed by `UNSTABLE_PayrollHistory` and is not exported publicly.
  *
  * @param props - Company identifier and optional component-boundary query error behavior.
@@ -123,11 +133,16 @@ export function usePayrollHistory({
     },
   )
 
-  const onCancel = async (payrollId: string) => {
+  const onCancel = async (
+    payrollId: string,
+    onSuccess?: (result: PayrollHistoryCancelResult) => void,
+  ) => {
     let result: PayrollHistoryCancelResult | undefined
     await baseSubmitHandler(payrollId, async id => {
       const response = await cancelMutation.mutateAsync({ request: { companyId, payrollId: id } })
-      result = { payrollId: id, result: response }
+      const cancelledPayroll = { payrollId: id, result: response }
+      onSuccess?.(cancelledPayroll)
+      result = cancelledPayroll
     })
     return result
   }
@@ -138,13 +153,10 @@ export function usePayrollHistory({
   return {
     isLoading: false,
     data: {
-      payrollHistory: (payrollsQuery.data.payrollList ?? []).map(payroll => ({
-        ...payroll,
-        historyDetails: getPayrollHistoryDetails(payroll, wireInRequests),
-      })),
+      payrollHistory: payrollsQuery.data.payrollList ?? [],
       wireInRequests,
     },
-    status: { isFetching: payrollsQuery.isFetching, isPending: cancelMutation.isPending },
+    status: { isPending: cancelMutation.isPending },
     pagination: getPaginationProps(
       payrollsQuery.data.httpMeta.response.headers,
       payrollsQuery.isFetching,

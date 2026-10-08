@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { usePayrollHistory } from './usePayrollHistory'
+import { getPayrollHistoryDetails } from './payrollHistoryHelpers'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
@@ -42,7 +43,10 @@ describe('usePayrollHistory headless contract', () => {
       expect(result.current.isLoading).toBe(false)
     })
     if (result.current.isLoading) throw new Error('Expected ready hook')
-    expect(result.current.data.payrollHistory[0]?.historyDetails).toEqual({
+    const row = result.current.data.payrollHistory[0]
+    if (!row) throw new Error('Expected payroll row')
+    expect(row).not.toHaveProperty('historyDetails')
+    expect(getPayrollHistoryDetails(row, result.current.data.wireInRequests)).toEqual({
       payrollId: payroll.payroll_uuid,
       totalAmount: 1150,
       canCancel: true,
@@ -70,7 +74,9 @@ describe('usePayrollHistory headless contract', () => {
       expect(result.current.isLoading).toBe(false)
     })
     if (result.current.isLoading) throw new Error('Expected ready hook')
-    expect(result.current.data.payrollHistory[0]?.historyDetails).toMatchObject({
+    const row = result.current.data.payrollHistory[0]
+    if (!row) throw new Error('Expected payroll row')
+    expect(getPayrollHistoryDetails(row, result.current.data.wireInRequests)).toMatchObject({
       payrollId: 'uuid-fallback',
       canCancel: false,
     })
@@ -96,6 +102,25 @@ describe('usePayrollHistory headless contract', () => {
       expect(result.current.isLoading).toBe(false)
     })
     expect(result.current.errorHandling.errors).toEqual([])
+  })
+
+  it('keeps identifier-less payroll data available without marking it cancellable', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () =>
+        HttpResponse.json([{ ...payroll, payroll_uuid: undefined }]),
+      ),
+    )
+    const { result } = renderHistoryHook()
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    if (result.current.isLoading) throw new Error('Expected ready hook')
+    const row = result.current.data.payrollHistory[0]
+    if (!row) throw new Error('Expected payroll row')
+    expect(getPayrollHistoryDetails(row, result.current.data.wireInRequests)).toMatchObject({
+      payrollId: undefined,
+      canCancel: false,
+    })
   })
 
   it('returns undefined for a failed cancellation and allows clearing its error', async () => {
@@ -146,15 +171,14 @@ describe('usePayrollHistory headless contract', () => {
       expect(result.current.errorHandling.errors).toHaveLength(1)
     })
     if (result.current.isLoading) throw new Error('Expected cached ready hook')
-    expect(result.current.data.payrollHistory[0]?.historyDetails.payrollId).toBe(
-      payroll.payroll_uuid,
-    )
+    expect(result.current.data.payrollHistory[0]?.payrollUuid).toBe(payroll.payroll_uuid)
     expect(result.current.status.isPending).toBe(false)
   })
 
   it('returns the complete cancel response and relies on SDK invalidation to refresh queries', async () => {
     const listResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json([payroll]))
     const wiresResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json([]))
+    const onSuccess = vi.fn()
     const cancelResolver = vi.fn<HttpResponseResolver>(() =>
       HttpResponse.json({ ...payroll, processed: false }),
     )
@@ -172,7 +196,8 @@ describe('usePayrollHistory headless contract', () => {
     })
     await act(async () => {
       if (result.current.isLoading) throw new Error('Expected ready hook')
-      const cancelled = await result.current.actions.onCancel(payroll.payroll_uuid)
+      const cancelled = await result.current.actions.onCancel(payroll.payroll_uuid, onSuccess)
+      expect(onSuccess).toHaveBeenCalledExactlyOnceWith(cancelled)
       expect(cancelled).toMatchObject({
         payrollId: payroll.payroll_uuid,
         result: { unprocessedPayroll: { payrollUuid: payroll.payroll_uuid, processed: false } },
