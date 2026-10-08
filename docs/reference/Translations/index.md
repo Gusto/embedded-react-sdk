@@ -692,15 +692,22 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `autoPilot.disabled` | `"Disabled"` |
 | `autoPilot.enabled` | `"Enabled"` |
 | `autoPilot.label` | `"AutoPilot"` |
+| <a id="property-companymanagementpayschedulecompensationdescription"></a> `compensationDescription` | `"You have assigned employees to pay schedules by compensation type."` |
+| <a id="property-companymanagementpayschedulecompensationtablelabel"></a> `compensationTableLabel` | `"Pay schedules by compensation type"` |
+| <a id="property-companymanagementpayschedulecompensationtypes"></a> `compensationTypes` | |
+| `compensationTypes.hourly` | `"Hourly"` |
+| `compensationTypes.salaried` | `"Salaried"` |
 | <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
 | <a id="property-companymanagementpayscheduleeditautopilotarialabel"></a> `editAutoPilotAriaLabel` | `"Edit AutoPilot"` |
 | <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
+| <a id="property-companymanagementpayscheduleeditschedulecta"></a> `editScheduleCta` | `"Edit schedule"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
 | `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
+| <a id="property-companymanagementpayschedulerowmenutriggerlabel"></a> `rowMenuTriggerLabel` | `"Pay schedule actions"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
 
 ***

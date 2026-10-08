@@ -257,6 +257,7 @@ import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/compon
 import { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange';
 import { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod';
 import { PayScheduleAssignmentTransitionPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmenttransitionpayperiod';
+import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment';
 import { PayScheduleAutoPayrollEnablementBlocker } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
@@ -687,6 +688,7 @@ declare namespace APIModels {
         PayrollUpdateEmployeeCompensationsOverrideType,
         PayrollUpdateOverrideType,
         PayrollUpdatePaymentMethod,
+        PayScheduleAssignmentType,
         Departments,
         PayScheduleAssignmentBody,
         PayScheduleAssignmentBodyEmployees,

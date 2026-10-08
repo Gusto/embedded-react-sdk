@@ -6234,6 +6234,39 @@ Pay schedule assignment transition pay period information.
 
 ***
 
+<a id="payscheduleassignmenttype"></a>
+
+## PayScheduleAssignmentType
+
+> `const` **PayScheduleAssignmentType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payscheduleassignment.ts:20](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/payscheduleassignment.ts#L20)
+
+`PayScheduleAssignmentType` entity from the Gusto Embedded API.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payscheduleassignmenttypebydepartment"></a> `ByDepartment` | `"by_department"` |
+| <a id="property-payscheduleassignmenttypebyemployee"></a> `ByEmployee` | `"by_employee"` |
+| <a id="property-payscheduleassignmenttypehourlysalaried"></a> `HourlySalaried` | `"hourly_salaried"` |
+| <a id="property-payscheduleassignmenttypesingle"></a> `Single` | `"single"` |
+
+***
+
+<a id="payscheduleassignmenttype-1"></a>
+
+## PayScheduleAssignmentType
+
+> **PayScheduleAssignmentType** = `ClosedEnum`\<*typeof* [`PayScheduleAssignmentType`](#payscheduleassignmenttype)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payscheduleassignment.ts:20](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/payscheduleassignment.ts#L20)
+
+`PayScheduleAssignmentType` entity from the Gusto Embedded API.
+
+***
+
 <a id="payscheduleautopayrollenablementblocker"></a>
 
 ## PayScheduleAutoPayrollEnablementBlocker

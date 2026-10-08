@@ -396,6 +396,8 @@ export {
   PayrollUpdateOverrideType,
   PayrollUpdatePaymentMethod,
 } from '@gusto/embedded-api/models/components/payrollupdate'
+/** `PayScheduleAssignmentType` entity from the Gusto Embedded API. */
+export { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
 /** `Departments` entity from the Gusto Embedded API. */
 export type { Departments } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
 /** `PayScheduleAssignmentBody` entity from the Gusto Embedded API. */
