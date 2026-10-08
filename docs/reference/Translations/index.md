@@ -715,6 +715,13 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-companymanagementpayscheduleassignmentbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-companymanagementpayscheduleassignmentcompensationstep"></a> `compensationStep` | |
+| `compensationStep.addPayScheduleCta` | `"Add pay schedule"` |
+| `compensationStep.heading` | `"Assign employees"` |
+| `compensationStep.hourlyPayScheduleDescription` | `"The pay schedule to use for hourly employees."` |
+| `compensationStep.hourlyPayScheduleLabel` | `"Hourly employees"` |
+| `compensationStep.salariedPayScheduleDescription` | `"The pay schedule to use for salaried employees."` |
+| `compensationStep.salariedPayScheduleLabel` | `"Salaried employees"` |
 | <a id="property-companymanagementpayscheduleassignmentcontinuecta"></a> `continueCta` | `"Continue"` |
 | <a id="property-companymanagementpayscheduleassignmentreviewstep"></a> `reviewStep` | |
 | `reviewStep.employeeChangesHeading` | `"Employees affected"` |
@@ -736,6 +743,9 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.description` | `"After you choose, you can create a pay schedule for each group."` |
 | `typeStep.heading` | `"Choose schedule type"` |
 | `typeStep.options` | |
+| `typeStep.options.hourlySalaried` | |
+| `typeStep.options.hourlySalaried.description` | `"Choose one pay schedule for hourly employees and another for salaried employees"` |
+| `typeStep.options.hourlySalaried.label` | `"Separate schedules by compensation type"` |
 | `typeStep.options.single` | |
 | `typeStep.options.single.description` | `"Choose one pay schedule for all your employees"` |
 | `typeStep.options.single.label` | `"Everyone on one schedule"` |
