@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { createMachine, interpret, type SendFunction } from 'robot3'
 import { payrollFlowMachine, payrollFlowBreadcrumbsNodes } from './payrollStateMachine'
-import type { PayrollFlowContextInterface } from './PayrollFlowComponents'
+import type { PayrollFlowAlert, PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-function createTestMachine() {
+function createTestMachine(
+  initialState: 'landing' | 'execution' | 'submittedOverview' = 'landing',
+  alerts?: PayrollFlowAlert[],
+) {
   return createMachine(
-    'landing',
+    initialState,
     payrollFlowMachine,
     (initialContext: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
       ...initialContext,
@@ -18,12 +21,16 @@ function createTestMachine() {
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
       },
       withReimbursements: true,
+      alerts,
     }),
   )
 }
 
-function createService() {
-  const machine = createTestMachine()
+function createService(
+  initialState: 'landing' | 'execution' | 'submittedOverview' = 'landing',
+  alerts?: PayrollFlowAlert[],
+) {
+  const machine = createTestMachine(initialState, alerts)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const service = interpret(machine, () => {}, {} as any)
   return service
@@ -411,6 +418,36 @@ describe('payrollFlowMachine', () => {
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('submittedOverview')
+    })
+  })
+
+  describe('alert clearing on state transitions', () => {
+    const staleAlerts: PayrollFlowAlert[] = [
+      { type: 'success', title: 'Stale alert', alertKey: 'progressSaved' },
+    ]
+
+    it.each([
+      ['landing', componentEvents.RUN_PAYROLL_SELECTED, 'execution'],
+      ['landing', componentEvents.REVIEW_PAYROLL, 'execution'],
+      ['landing', componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL, 'blockers'],
+      ['landing', componentEvents.RUN_TRANSITION_PAYROLL, 'transition'],
+      ['landing', componentEvents.RUN_OFF_CYCLE_PAYROLL, 'offCycle'],
+      ['execution', componentEvents.RUN_PAYROLL_PROCESSED, 'submittedOverview'],
+      ['execution', componentEvents.PAYROLL_EXIT_FLOW, 'landing'],
+      ['execution', componentEvents.RUN_PAYROLL_CANCELLED, 'landing'],
+      ['submittedOverview', componentEvents.RUN_PAYROLL_RECEIPT_GET, 'submittedReceipts'],
+    ] as const)('clears alerts leaving %s on %s', (initialState, event, expectedState) => {
+      const service = createService(initialState, staleAlerts)
+
+      send(service, event, {
+        payrollUuid: 'payroll-123',
+        startDate: '2026-01-01',
+        endDate: '2026-01-15',
+        payScheduleUuid: 'schedule-1',
+      })
+
+      expect(service.machine.current).toBe(expectedState)
+      expect(service.context.alerts).toBeUndefined()
     })
   })
 })
