@@ -250,7 +250,10 @@ import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/component
 import { PayrollUpdateReimbursements } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateState } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment';
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
+import { PayScheduleAssignmentDepartment } from '@gusto/embedded-api/models/components/payscheduleassignmentdepartment';
+import { PayScheduleAssignmentEmployee } from '@gusto/embedded-api/models/components/payscheduleassignmentemployee';
 import { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange';
 import { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod';
 import { PayScheduleAssignmentTransitionPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmenttransitionpayperiod';
@@ -686,7 +689,10 @@ declare namespace APIModels {
         PayrollUpdateOverrideType,
         PayrollUpdatePaymentMethod,
         PayScheduleAssignmentType,
+        PayScheduleAssignment,
         PayScheduleAssignmentBodyType,
+        PayScheduleAssignmentDepartment,
+        PayScheduleAssignmentEmployee,
         PayScheduleAssignmentEmployeeChange,
         PayScheduleAssignmentPayPeriod,
         PayScheduleAssignmentTransitionPayPeriod,
@@ -1074,7 +1080,7 @@ declare namespace CompanyManagement {
         PaySchedule_2 as PaySchedule,
         PayScheduleProps_2 as PayScheduleProps,
         PayScheduleDictionary,
-        PayScheduleAssignment,
+        PayScheduleAssignment_2 as PayScheduleAssignment,
         PayScheduleAssignmentProps
     }
 }
@@ -4511,7 +4517,7 @@ const PaySchedule: (input: PayScheduleProps) => JSX;
 const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
 
 // @alpha
-const PayScheduleAssignment: (input: PayScheduleAssignmentProps) => JSX;
+const PayScheduleAssignment_2: (input: PayScheduleAssignmentProps) => JSX;
 
 // @alpha
 interface PayScheduleAssignmentProps extends BaseComponentInterface<'Company.Management.PayScheduleAssignment'> {

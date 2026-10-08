@@ -93,6 +93,8 @@ export const getPayScheduleAssignments = http.get(
 
 export default [
   getPaySchedules,
+  // Must out-rank getPaySchedule, whose `:pay_schedule_id` pattern also matches /assignments.
+  getPayScheduleAssignments,
   getPaySchedule,
   createPaySchedule,
   updatePaySchedule,
@@ -100,5 +102,4 @@ export default [
   getPayPeriods,
   previewPayScheduleAssignment,
   assignPaySchedules,
-  getPayScheduleAssignments,
 ]

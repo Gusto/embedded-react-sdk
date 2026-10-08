@@ -398,8 +398,13 @@ export {
 } from '@gusto/embedded-api/models/components/payrollupdate'
 /** `PayScheduleAssignmentType` entity from the Gusto Embedded API. */
 export { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
+export type { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment'
 /** `PayScheduleAssignmentBodyType` entity from the Gusto Embedded API. */
 export { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentDepartment` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentDepartment } from '@gusto/embedded-api/models/components/payscheduleassignmentdepartment'
+/** `PayScheduleAssignmentEmployee` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentEmployee } from '@gusto/embedded-api/models/components/payscheduleassignmentemployee'
 /** `PayScheduleAssignmentEmployeeChange` entity from the Gusto Embedded API. */
 export type { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange'
 export type { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod'

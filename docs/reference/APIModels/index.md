@@ -6076,6 +6076,29 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollshow.
 
 ***
 
+<a id="payscheduleassignment"></a>
+
+## PayScheduleAssignment
+
+> **PayScheduleAssignment** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payscheduleassignment.ts:33](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/payscheduleassignment.ts#L33)
+
+The representation of a pay schedule assignment.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payscheduleassignmentdefaultpayscheduleuuid"></a> `defaultPayScheduleUuid?` | `string` \| `null` | Default pay schedule for employees. |
+| <a id="property-payscheduleassignmentdepartments"></a> `departments?` | [`PayScheduleAssignmentDepartment`](#payscheduleassignmentdepartment)[] \| `null` | List of departments and their pay schedules. |
+| <a id="property-payscheduleassignmentemployees"></a> `employees?` | [`PayScheduleAssignmentEmployee`](#payscheduleassignmentemployee)[] \| `null` | List of employees and their pay schedules. |
+| <a id="property-payscheduleassignmenthourlypayscheduleuuid"></a> `hourlyPayScheduleUuid?` | `string` \| `null` | Pay schedule for hourly employees. |
+| <a id="property-payscheduleassignmentsalariedpayscheduleuuid"></a> `salariedPayScheduleUuid?` | `string` \| `null` | Pay schedule for salaried employees. |
+| <a id="property-payscheduleassignmenttype"></a> `type?` | [`PayScheduleAssignmentType`](#payscheduleassignmenttype-1) \| `null` | The pay schedule assignment type. |
+
+***
+
 <a id="payscheduleassignmentbodytype"></a>
 
 ## PayScheduleAssignmentBodyType
@@ -6106,6 +6129,44 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payschedulea
 Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payscheduleassignmentbody.ts:9](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/payscheduleassignmentbody.ts#L9)
 
 `PayScheduleAssignmentBodyType` entity from the Gusto Embedded API.
+
+***
+
+<a id="payscheduleassignmentdepartment"></a>
+
+## PayScheduleAssignmentDepartment
+
+> **PayScheduleAssignmentDepartment** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payscheduleassignmentdepartment.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/payscheduleassignmentdepartment.ts#L11)
+
+`PayScheduleAssignmentDepartment` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payscheduleassignmentdepartmentdepartmentuuid"></a> `departmentUuid?` | `string` | The UUID of the department. |
+| <a id="property-payscheduleassignmentdepartmentpayscheduleuuid"></a> `payScheduleUuid?` | `string` | The department's pay schedule UUID. |
+
+***
+
+<a id="payscheduleassignmentemployee"></a>
+
+## PayScheduleAssignmentEmployee
+
+> **PayScheduleAssignmentEmployee** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payscheduleassignmentemployee.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/payscheduleassignmentemployee.ts#L11)
+
+`PayScheduleAssignmentEmployee` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payscheduleassignmentemployeeemployeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee. |
+| <a id="property-payscheduleassignmentemployeepayscheduleuuid"></a> `payScheduleUuid?` | `string` \| `null` | The employee's pay schedule UUID. |
 
 ***
 
