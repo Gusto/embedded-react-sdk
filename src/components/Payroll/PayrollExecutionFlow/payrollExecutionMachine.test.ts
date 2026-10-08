@@ -391,6 +391,15 @@ describe('payrollExecutionMachine', () => {
       expect(service.context.alerts).toBeUndefined()
     })
 
+    it('keeps alerts on RUN_PAYROLL_SUBMITTING since it stays on the overview screen', () => {
+      const service = createService('overview', staleAlerts)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+
+      expect(service.machine.current).toBe('overview')
+      expect(service.context.alerts).toEqual(staleAlerts)
+    })
+
     it('replaces stale alerts with the calculated alert', () => {
       const alert = { type: 'success' as const, title: 'Saved' }
       const service = createService('configuration', [
