@@ -75,15 +75,25 @@ const ReimbursementFormSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
+// Mirrors the server's fixed reimbursement cap (payroll_core_data's
+// Reimbursements::MAX_AMOUNT) so an over-limit value is caught inline instead
+// of round-tripping to a 422.
+const MAX_REIMBURSEMENT_AMOUNT = 1_000_000
+
 const DraftReimbursementSchema = z.object({
   description: z.string(),
-  amount: z.string().refine(
-    val => {
-      const num = parseFloat(val)
-      return !Number.isNaN(num) && num > 0
-    },
-    { message: 'validations.reimbursementAmount' },
-  ),
+  amount: z
+    .string()
+    .refine(
+      val => {
+        const num = parseFloat(val)
+        return !Number.isNaN(num) && num > 0
+      },
+      { message: 'validations.reimbursementAmount' },
+    )
+    .refine(val => parseFloat(val) <= MAX_REIMBURSEMENT_AMOUNT, {
+      message: 'validations.maxReimbursementAmount',
+    }),
 })
 
 // A native `min={0}` only constrains the stepper: it does not stop a typed "-50", and the
@@ -96,8 +106,17 @@ const nonNegativeAmountSchema = z
   .optional()
   .refine(val => !val || parseFloat(val) >= 0, { message: 'validations.negativeAmount' })
 
+// Mirrors the server's fixed hours cap (draft_payrolls' MAX_HOURS) so an
+// over-limit value is caught inline instead of round-tripping to a 422.
+const MAX_HOURS = 99_999
+
+const hoursAmountSchema = z
+  .string()
+  .optional()
+  .refine(val => !val || parseFloat(val) <= MAX_HOURS, { message: 'validations.maxHours' })
+
 const PayrollEditEmployeeFormSchema = z.object({
-  hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
+  hourlyCompensations: z.record(z.string(), z.record(z.string(), hoursAmountSchema)),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   finalPayoutCompensations: z.record(z.string(), z.string().optional()),
   fixedCompensations: z.record(z.string(), nonNegativeAmountSchema),
@@ -685,10 +704,12 @@ export const PayrollEditEmployeePresentation = ({
                             key={compensationName}
                             type="number"
                             min={0}
+                            max={MAX_HOURS}
                             transform={stripLeadingZeros}
                             adornmentEnd={t('hoursUnit')}
                             label={getCompensationLabel(compensationName)}
                             name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
+                            errorMessage={t('validations.maxHours')}
                           />
                         )
                       }
@@ -800,11 +821,17 @@ export const PayrollEditEmployeePresentation = ({
                         name="amount"
                         type="number"
                         min={0}
+                        max={MAX_REIMBURSEMENT_AMOUNT}
                         transform={stripLeadingZeros}
                         adornmentStart="$"
                         isRequired
                         label={t('reimbursementAmountLabel')}
-                        errorMessage={t('validations.reimbursementAmount')}
+                        errorMessage={
+                          draftForm.formState.errors.amount?.message ===
+                          'validations.maxReimbursementAmount'
+                            ? t('validations.maxReimbursementAmount')
+                            : t('validations.reimbursementAmount')
+                        }
                       />
                     </Grid>
                     <Flex gap={12}>

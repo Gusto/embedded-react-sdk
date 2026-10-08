@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.56.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.4...v0.56.5) (2026-10-07)
+
+### Features & Enhancements
+
+- Add a standalone `Dismissal` component (via `useDismissal`) for scheduling a contractor's dismissal date. `ContractorListFlow`'s "Dismiss contractor" action now opens this flow instead of only emitting an event ([#2862](https://github.com/Gusto/embedded-react-sdk/issues/2862))
+- Add an optional `DocumentEmbed` override to `ComponentsContext`, letting you replace the SDK's default PDF rendering — useful if your Content Security Policy can't allow `object-src`. Falls back to the existing rendering when no override is supplied ([#2876](https://github.com/Gusto/embedded-react-sdk/issues/2876))
+
+### Fixes
+
+- Show the receipt ID and the correct recipient name on the contractor payment receipt, sourced from the receipt payload itself ([#2867](https://github.com/Gusto/embedded-react-sdk/issues/2867))
+- Cap payroll hours (99999) and reimbursement amounts (1,000,000) client-side to match server limits, so an out-of-range value is caught before submit instead of failing with a 422 ([#2870](https://github.com/Gusto/embedded-react-sdk/issues/2870))
+- Allow breadcrumb navigation from the receipts screen back to overview, instead of silently no-opping ([#2878](https://github.com/Gusto/embedded-react-sdk/issues/2878))
+
 ## [0.56.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.3...v0.56.4) (2026-10-02)
 
 ### Fixes

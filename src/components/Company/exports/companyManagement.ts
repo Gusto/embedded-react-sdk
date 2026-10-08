@@ -1,4 +1,8 @@
-export { PaySchedule, type PayScheduleProps } from '../PaySchedule/management'
+export {
+  PaySchedule,
+  type PayScheduleProps,
+  type PayScheduleDictionary,
+} from '../PaySchedule/management'
 export {
   PayScheduleAssignment,
   type PayScheduleAssignmentProps,

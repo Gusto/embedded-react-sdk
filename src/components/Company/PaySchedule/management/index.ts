@@ -1,1 +1,1 @@
-export { PaySchedule, type PayScheduleProps } from './PaySchedule'
+export { PaySchedule, type PayScheduleProps, type PayScheduleDictionary } from './PaySchedule'

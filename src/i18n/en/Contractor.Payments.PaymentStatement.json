@@ -11,6 +11,7 @@
   "receipt": {
     "totalLabel": "Total",
     "detailsLabel": "Receipt Details",
+    "receiptId": "Receipt ID",
     "from": "From",
     "to": "To",
     "debitDate": "Debit date",
