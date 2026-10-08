@@ -2,7 +2,11 @@ import type { ComponentType } from 'react'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { NormalizedWorkweek } from './payrollEditEmployeeHelpers'
-import type { PayrollEditEmployeeErrorCode } from './payrollEditEmployeeSchema'
+import {
+  MAX_HOURS,
+  MAX_REIMBURSEMENT_AMOUNT,
+  type PayrollEditEmployeeErrorCode,
+} from './payrollEditEmployeeSchema'
 import { TextInputField } from '@/components/Common/Fields/TextInputField/TextInputField'
 import { useFieldErrorMessage } from '@/partner-hook-utils/form/useFieldErrorMessage'
 import { RadioGroupHookField } from '@/partner-hook-utils/form/fields'
@@ -297,13 +301,14 @@ export function isSplitByWorkweek<TEntry>(
 function createNumberField(
   name: string,
   errorMessages?: PayrollEditEmployeeErrorMessages,
+  max?: number,
 ): PayrollEditEmployeeFieldComponent {
   return function BoundNumberField(props: PayrollEditEmployeeFieldProps) {
     // The field resolves its own validation copy from its bound path, so the
     // consumer supplies error copy once (keyed by code) and never reconstructs
-    // form paths or guesses which rule a field can fail. name, type, min,
+    // form paths or guesses which rule a field can fail. name, type, min, max,
     // transform, and errorMessage are applied after the spread so callers can't
-    // override the binding or the non-negative numeric contract via custom props.
+    // override the binding or the numeric contract via custom props.
     const errorMessage = useFieldErrorMessage(
       name,
       errorMessages as ValidationMessages<PayrollEditEmployeeErrorCode> | undefined,
@@ -314,6 +319,7 @@ function createNumberField(
         name={name}
         type="number"
         min={0}
+        max={max}
         transform={stripLeadingZeros}
         errorMessage={errorMessage}
       />
@@ -348,7 +354,7 @@ export function createReimbursementDraftFields(
 ): ReimbursementDraftFields {
   return {
     Description: createTextField('reimbursementDraft.description'),
-    Amount: createNumberField('reimbursementDraft.amount', errorMessages),
+    Amount: createNumberField('reimbursementDraft.amount', errorMessages, MAX_REIMBURSEMENT_AMOUNT),
   }
 }
 
@@ -427,6 +433,7 @@ function buildBreakdownSection(
     Field: createNumberField(
       `${pathPrefix}.${row.jobUuid}.${row.name}.${weekStart}`,
       errorMessages,
+      pathPrefix === 'hours' ? MAX_HOURS : undefined,
     ),
   })
 

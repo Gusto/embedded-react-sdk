@@ -32,6 +32,8 @@ export interface Resources {
   /** */
   'Company.Locations': Translations.CompanyLocations
   /** */
+  'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+  /** */
   'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
   /** */
   'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
@@ -943,6 +945,85 @@ export namespace Translations {
       zip: string
       /** @defaultValue `"Please provide valid phone number"` */
       phone: string
+    }
+  }
+  /** Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace. */
+  export interface CompanyManagementAutoPilotDialog {
+    /** @defaultValue `"AutoPilot — {{scheduleName}}"` */
+    title: string
+    /** @defaultValue `"AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay deadline and funds are debited on your pay deadline."` */
+    description: string
+    /** @defaultValue `"Enable AutoPilot"` */
+    toggleLabel: string
+    /** @defaultValue `"Checking AutoPilot eligibility…"` */
+    checkingEligibility: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    saveError: {
+      /** @defaultValue `"AutoPilot settings couldn't be saved"` */
+      title: string
+      /** @defaultValue `"Something went wrong saving your AutoPilot changes. Contact support if this continues."` */
+      description: string
+    }
+    blockers: {
+      /** @defaultValue `"AutoPilot isn't available yet"` */
+      heading: string
+      employees_not_on_direct_deposit: {
+        /** @defaultValue `"Some employees aren't on direct deposit"` */
+        title: string
+        /** @defaultValue `"Every employee on this schedule needs to be set up with direct deposit before AutoPilot can run their payroll automatically."` */
+        description: string
+      }
+      employees_not_salaried: {
+        /** @defaultValue `"Some employees aren't salaried"` */
+        title: string
+        /** @defaultValue `"AutoPilot requires every employee on this schedule to be salaried."` */
+        description: string
+      }
+      missing_state_tax_requirements: {
+        /** @defaultValue `"State tax setup is incomplete"` */
+        title: string
+        /** @defaultValue `"Finish state tax setup for every state this schedule's employees work in before enabling AutoPilot."` */
+        description: string
+      }
+      missing_funding_method: {
+        /** @defaultValue `"No funding method on file"` */
+        title: string
+        /** @defaultValue `"Add a verified bank account to use as the default funding method before enabling AutoPilot."` */
+        description: string
+      }
+      one_day_ach_speed_not_supported: {
+        /** @defaultValue `"Payment speed isn't eligible"` */
+        title: string
+        /** @defaultValue `"AutoPilot isn't available for schedules using next-day ACH."` */
+        description: string
+      }
+      company_suspended: {
+        /** @defaultValue `"Company is suspended"` */
+        title: string
+        /** @defaultValue `"Resolve your company's suspension before enabling AutoPilot."` */
+        description: string
+      }
+      earned_fast_ach_not_met: {
+        /** @defaultValue `"Fast ACH threshold not met"` */
+        title: string
+        /** @defaultValue `"This company hasn't yet met the funding history needed to qualify for fast ACH payments."` */
+        description: string
+      }
+      hourly_employees_missing_default_hours: {
+        /** @defaultValue `"Some hourly employees are missing default hours"` */
+        title: string
+        /** @defaultValue `"Set default hours for every hourly employee on this schedule before enabling AutoPilot."` */
+        description: string
+      }
+      generic: {
+        /** @defaultValue `"AutoPilot can't be enabled right now"` */
+        title: string
+        /** @defaultValue `"Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."` */
+        description: string
+      }
     }
   }
   /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
@@ -3507,6 +3588,8 @@ export namespace Translations {
       totalLabel: string
       /** @defaultValue `"Receipt Details"` */
       detailsLabel: string
+      /** @defaultValue `"Receipt ID"` */
+      receiptId: string
       /** @defaultValue `"From"` */
       from: string
       /** @defaultValue `"To"` */
@@ -7785,8 +7868,12 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount must be less than or equal to 1,000,000"` */
+      maxReimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Hours must be less than or equal to 99,999"` */
+      maxHours: string
     }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
@@ -8671,10 +8758,14 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount must be less than or equal to 1,000,000"` */
+      maxReimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
       /** @defaultValue `"Enter an amount for every workweek"` */
       requiredWorkweek: string
+      /** @defaultValue `"Hours must be less than or equal to 99,999"` */
+      maxHours: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
@@ -8753,6 +8844,10 @@ export namespace Translations {
       errorEncountered: string
       /** @defaultValue `"There were multiple problems with your submission"` */
       multipleErrorsEncountered: string
+    }
+    documentEmbed: {
+      /** @defaultValue `"Document"` */
+      defaultTitle: string
     }
     /** @defaultValue `"Select an option..."` */
     selectPlaceholder: string

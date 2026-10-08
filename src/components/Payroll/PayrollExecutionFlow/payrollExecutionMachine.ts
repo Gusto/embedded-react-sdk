@@ -320,6 +320,9 @@ export const payrollExecutionMachine = {
     employeeSavedTransition,
     employeeCancelledTransition,
   ),
-  receipts: state<MachineTransition>(breadcrumbNavigateTransition('configuration')),
+  receipts: state<MachineTransition>(
+    breadcrumbNavigateTransition('configuration'),
+    breadcrumbNavigateTransition('overview'),
+  ),
   blockers: state<MachineTransition>(breadcrumbNavigateTransition('configuration')),
 }
