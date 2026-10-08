@@ -11,6 +11,7 @@ import {
   createPaySchedule,
   previewPayScheduleAssignment,
   assignPaySchedules,
+  getPayScheduleAssignments,
 } from '@/test/mocks/apis/payschedule'
 import { API_BASE_URL } from '@/test/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -66,6 +67,12 @@ async function continueThroughTypeStep(user: ReturnType<typeof userEvent.setup>)
   await user.click(screen.getByRole('button', { name: /continue/i }))
 }
 
+function scheduleSelectTrigger() {
+  const trigger = document.querySelector('button[aria-haspopup="listbox"]')
+  if (!trigger) throw new Error('no pay schedule select on screen')
+  return trigger
+}
+
 async function continueThroughScheduleStep(user: ReturnType<typeof userEvent.setup>) {
   await waitFor(() => {
     expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
@@ -79,6 +86,8 @@ describe('PayScheduleAssignment', () => {
     server.use(
       paymentConfigsMock,
       getPaySchedules,
+      // Must out-rank getPaySchedule, whose `:pay_schedule_id` pattern also matches /assignments.
+      getPayScheduleAssignments,
       createPaySchedule,
       previewPayScheduleAssignment,
       assignPaySchedules,
@@ -407,6 +416,109 @@ describe('PayScheduleAssignment', () => {
       expect(await screen.findByRole('button', { name: /salaried employees/i })).toHaveTextContent(
         'Weekly Schedule — Every week',
       )
+    })
+  })
+
+  describe("starting from the company's current assignment", () => {
+    const useStoredAssignment = (assignment: Record<string, unknown>) => {
+      server.use(twoPaySchedulesMock)
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`, () =>
+          HttpResponse.json(assignment),
+        ),
+      )
+    }
+
+    it('preselects the stored compensation-type schedules instead of the active one', async () => {
+      useStoredAssignment({
+        type: 'hourly_salaried',
+        hourly_pay_schedule_uuid: 'schedule-2',
+        salaried_pay_schedule_uuid: 'schedule-1',
+      })
+      const user = userEvent.setup()
+      renderAssignment()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+      })
+      expect(
+        screen.getByRole('radio', { name: /separate schedules by compensation type/i }),
+      ).toBeChecked()
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      // schedule-2 is the inactive schedule, so neither dropdown can be showing the
+      // active-schedule fallback.
+      expect(await screen.findByRole('button', { name: /hourly employees/i })).toHaveTextContent(
+        'Biweekly Schedule — Every other week',
+      )
+      expect(screen.getByRole('button', { name: /salaried employees/i })).toHaveTextContent(
+        'Weekly Schedule — Every week',
+      )
+    })
+
+    it('preselects the stored schedule for a single assignment', async () => {
+      useStoredAssignment({ type: 'single', default_pay_schedule_uuid: 'schedule-2' })
+      const user = userEvent.setup()
+      renderAssignment()
+
+      await continueThroughTypeStep(user)
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
+      })
+      expect(scheduleSelectTrigger()).toHaveTextContent('Biweekly Schedule — Every other week')
+    })
+
+    it('falls back to the active schedule when the stored schedule no longer exists', async () => {
+      useStoredAssignment({ type: 'single', default_pay_schedule_uuid: 'schedule-gone' })
+      const user = userEvent.setup()
+      renderAssignment()
+
+      await continueThroughTypeStep(user)
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /assign employees/i })).toBeInTheDocument()
+      })
+      expect(scheduleSelectTrigger()).toHaveTextContent('Weekly Schedule — Every week')
+    })
+
+    it('starts on the type step with nothing preselected for an unsupported assignment type', async () => {
+      useStoredAssignment({ type: 'by_department', departments: [] })
+      renderAssignment()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+      })
+      expect(screen.getByRole('radio', { name: /everyone on one schedule/i })).toBeChecked()
+    })
+
+    it('stays on the review step after submitting', async () => {
+      useStoredAssignment({
+        type: 'hourly_salaried',
+        hourly_pay_schedule_uuid: 'schedule-2',
+        salaried_pay_schedule_uuid: 'schedule-1',
+      })
+      const user = userEvent.setup()
+      const { onEvent } = renderAssignment()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /choose schedule type/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+      await user.click(await screen.findByRole('button', { name: /continue/i }))
+
+      await user.click(await screen.findByRole('button', { name: /submit/i }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_ASSIGNED,
+          expect.objectContaining({ type: 'hourly_salaried' }),
+        )
+      })
+      // Submitting invalidates the SDK namespace, which refetches the assignment the flow was
+      // seeded from. A recomputed seed would re-seat the machine back to the type step.
+      expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument()
     })
   })
 })

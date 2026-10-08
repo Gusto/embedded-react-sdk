@@ -80,13 +80,19 @@ export function AssignmentScheduleStep() {
   })
   const schedules = paySchedules.payScheduleShowResponse ?? []
   const activeSchedule = schedules.find(s => s.active)
+  /**
+   * A uuid carried in from the company's existing assignment has no option to select if the
+   * schedule is no longer in the company's list, which would leave the dropdown blank.
+   */
+  const preselect = (uuid: string | undefined) =>
+    schedules.some(s => s.uuid === uuid) ? uuid : activeSchedule?.uuid
 
   if (assignmentType === PayScheduleAssignmentBodyType.HourlySalaried) {
     return (
       <AssignmentCompensationStepPresentation
         schedules={schedules}
-        hourlyPayScheduleUuid={hourlyPayScheduleUuid ?? activeSchedule?.uuid}
-        salariedPayScheduleUuid={salariedPayScheduleUuid ?? activeSchedule?.uuid}
+        hourlyPayScheduleUuid={preselect(hourlyPayScheduleUuid)}
+        salariedPayScheduleUuid={preselect(salariedPayScheduleUuid)}
         onBack={() => {
           onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
         }}
@@ -103,7 +109,7 @@ export function AssignmentScheduleStep() {
   return (
     <AssignmentScheduleStepPresentation
       schedules={schedules}
-      defaultPayScheduleUuid={defaultPayScheduleUuid ?? activeSchedule?.uuid}
+      defaultPayScheduleUuid={preselect(defaultPayScheduleUuid)}
       onBack={() => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
       }}
