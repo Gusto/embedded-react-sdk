@@ -5,9 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: InformationRequests
 description: Flows and blocks for viewing and responding to information requests from Gusto.
-sidebar_position: 1
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # InformationRequests

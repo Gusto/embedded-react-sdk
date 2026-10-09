@@ -5,9 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: CompanyOnboarding
 description: Flows and blocks for onboarding a company.
-sidebar_position: 1
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # CompanyOnboarding

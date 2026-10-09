@@ -5,9 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Types
 description: Types reference.
-sidebar_position: 101
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 <a id="contractoronboardingstatus"></a>

@@ -6,7 +6,6 @@
 title: useContractorPaymentMethodForm
 description: useContractorPaymentMethodForm reference.
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # useContractorPaymentMethodForm

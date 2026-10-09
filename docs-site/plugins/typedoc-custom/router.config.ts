@@ -1,7 +1,7 @@
 /**
  * Single source of truth for the reference IA. `NAMESPACE_PATHS` (utils.ts), the
- * hub/hooks pages, and the `_category_.json` sidebar files are all derived from it.
- * Array order sets sidebar position (domains, then namespaces within each domain).
+ * hub/hooks pages are derived from it. Array order sets domain and namespace
+ * order in generated reference indexes.
  *
  * A multi-namespace domain (each namespace has a `subpath`) vs. a single-namespace
  * domain (no `subpath`) generate different trees:
@@ -264,7 +264,6 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     // No path matching; types must use `@page employee/types` to show up
     sources: [],
     displayName: 'Types',
-    sidebarPosition: 101,
     layout: { default: 'promote' },
   },
   {
@@ -272,7 +271,6 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     // No path matching; types must use `@page contractor/types` to show up
     sources: [],
     displayName: 'Types',
-    sidebarPosition: 101,
     layout: { default: 'promote' },
   },
 ]
@@ -354,13 +352,6 @@ export type StandalonePageConfig = {
    * in the top-level reference sidebar groups.
    */
   sidebarGroup?: SidebarGroup
-  /**
-   * Explicit Docusaurus `sidebar_position` for this page. When set, overrides the
-   * default position (`DOMAINS.length + standaloneIdx + 1`). Use for pages nested
-   * inside a domain directory (e.g. `employee/types`) that need to appear after
-   * subdirectory categories with high explicit positions (e.g. `hooks/` at 100).
-   */
-  sidebarPosition?: number
   /** Emoji prefix for the reference index card label. Does not affect the page H1. */
   emoji?: string
   /**

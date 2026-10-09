@@ -1,4 +1,4 @@
-import { Converter, RendererEvent } from 'typedoc'
+import { Converter } from 'typedoc'
 import { type MarkdownApplication, MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import { SDKRouter } from './router.ts'
 import { SDKTheme } from './theme.ts'
@@ -9,7 +9,6 @@ export function load(app: MarkdownApplication): void {
 
   app.renderer.on(MarkdownPageEvent.BEGIN, SDKTheme.injectFrontmatter)
   app.renderer.on(MarkdownPageEvent.END, SDKTheme.serializeFrontmatter)
-  app.renderer.on(RendererEvent.END, SDKRouter.emitCategoryFiles)
 
   app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKTheme.protectPropsInterfaces, 100)
   app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKRouter.excludeUnreleasedTags, 60)

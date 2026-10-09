@@ -6,7 +6,6 @@
 title: useDeductionForm
 description: useDeductionForm reference.
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # useDeductionForm

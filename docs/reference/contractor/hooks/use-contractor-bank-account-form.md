@@ -6,7 +6,6 @@
 title: useContractorBankAccountForm
 description: useContractorBankAccountForm reference.
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # useContractorBankAccountForm

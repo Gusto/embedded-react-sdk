@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import {
   ArrayType,
@@ -16,7 +16,6 @@ import {
   type Reflection,
   ReflectionGroup,
   ReflectionKind,
-  RendererEvent,
   Slugger,
   type SomeType,
   TupleType,
@@ -486,77 +485,6 @@ function groupSyntheticMembers(
 }
 
 export class SDKRouter extends MemberRouter {
-  // Populated by buildPages; used by emitCategoryFiles to create hooks subdirectories.
-  private static readonly domainsWithHooks = new Set<string>()
-
-  // Emit _category_.json files for each domain directory and namespace subdirectory
-  // so Docusaurus uses our labels and ordering in the sidebar rather than inferring
-  // them from directory names.
-  static emitCategoryFiles(event: RendererEvent): void {
-    const outDir = event.outputDirectory
-    for (const [idx, domain] of DOMAINS.entries()) {
-      const domainDir = join(outDir, domain.path)
-      mkdirSync(domainDir, { recursive: true })
-      writeFileSync(
-        join(domainDir, '_category_.json'),
-        JSON.stringify({ label: domain.label, position: idx + 1 }, null, 2) + '\n',
-      )
-      for (const [nsIdx, ns] of domain.namespaces.entries()) {
-        if (!ns.subpath) continue
-        const nsDir = join(domainDir, ns.subpath)
-        mkdirSync(nsDir, { recursive: true })
-        writeFileSync(
-          join(nsDir, '_category_.json'),
-          // index.md = position 1; namespace subdirs start at position 2
-          JSON.stringify({ label: ns.id, position: nsIdx + 2, collapsed: false }, null, 2) + '\n',
-        )
-      }
-      if (SDKRouter.domainsWithHooks.has(domain.path)) {
-        const hooksDir = join(domainDir, 'hooks')
-        mkdirSync(hooksDir, { recursive: true })
-        writeFileSync(
-          join(hooksDir, '_category_.json'),
-          JSON.stringify({ label: CUSTOM_GROUPS.hooks, position: 100, collapsed: true }, null, 2) +
-            '\n',
-        )
-      }
-    }
-
-    // APIModels re-exports embedded-API entity types. It's a TypeDoc namespace, but in the
-    // sidebar we present it as an ordinary collapsed section pinned to the end — after the
-    // domains and standalone pages — rather than letting it default to the top.
-    const apiModelsDir = join(outDir, API_MODELS_NAMESPACE)
-    mkdirSync(apiModelsDir, { recursive: true })
-    writeFileSync(
-      join(apiModelsDir, '_category_.json'),
-      JSON.stringify(
-        {
-          label: 'API models',
-          position: DOMAINS.length + STANDALONE_PAGES.length + 1,
-          collapsed: true,
-        },
-        null,
-        2,
-      ) + '\n',
-    )
-
-    // Translations (i18n translation keys) — pinned after API Models.
-    const translationsDir = join(outDir, TRANSLATIONS_NAMESPACE)
-    mkdirSync(translationsDir, { recursive: true })
-    writeFileSync(
-      join(translationsDir, '_category_.json'),
-      JSON.stringify(
-        {
-          label: 'Translations',
-          position: DOMAINS.length + STANDALONE_PAGES.length + 2,
-          collapsed: true,
-        },
-        null,
-        2,
-      ) + '\n',
-    )
-  }
-
   // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
   // ReferenceReflections in non-deprecated namespaces haven't yet been removed by
   // excludeNotDocumented. Priority 50 = after protectPropsInterfaces (100) but
@@ -1008,7 +936,6 @@ export class SDKRouter extends MemberRouter {
       hooksIndexNs.children = hookPageNsList
       this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages)
       this.hooksNsByDomain.set(domainPath, hooksIndexNs)
-      SDKRouter.domainsWithHooks.add(domainPath)
     }
 
     // Force-create standalone pages that rely entirely on crossDomainIndex.

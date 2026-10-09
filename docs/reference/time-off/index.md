@@ -5,10 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Time off policies
 description: Time off policies reference.
-sidebar_position: 1
-hide_table_of_contents: true
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # Time off policies

@@ -5,9 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Blocks
 description: Blocks reference.
-sidebar_position: 99
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 <a id="address"></a>

@@ -5,10 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Reference
 description: Reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.
-sidebar_position: 1
-hide_table_of_contents: true
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 ## Browse by domain

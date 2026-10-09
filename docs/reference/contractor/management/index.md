@@ -5,9 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: ContractorManagement
 description: Flows and blocks for managing contractors after onboarding — payments, payment methods, and profile details.
-sidebar_position: 1
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # ContractorManagement

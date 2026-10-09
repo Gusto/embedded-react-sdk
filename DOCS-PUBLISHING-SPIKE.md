@@ -40,6 +40,48 @@ Try the readable Markdown indexes first. Introduce declarative index data only
 if the publishing presentation needs it; its format and rendering adapter are
 not part of this experiment.
 
+## Sidebar ownership
+
+TypeDoc no longer emits `_category_.json` files. The renderer-end category writer
+and its hooks-directory tracking have been removed. All 16 previously generated
+category files are removed from the reference tree; the Markdown pages remain
+unchanged by this removal.
+
+The publisher already owns the sidebar configuration. Its authored-doc sections
+use an explicit page list; its Reference section starts with Docusaurus directory
+autogeneration and then applies custom grouping from publisher-owned domain and
+standalone-page configuration.
+
+Docusaurus can infer a directory category's label and landing page from its
+`index.md` title. Without category files, collapse behavior uses publisher
+settings/defaults, and category ordering falls back to index-page metadata and
+file/directory names. The previous `API models` category label becomes `APIModels`
+unless the publisher supplies a display override. Namespace categories no longer
+carry the SDK's explicit `collapsed: false` setting.
+
+The current publisher still has a hardcoded domain/namespace list and standalone
+page grouping. That is the next ownership question: derive the navigation tree
+from each version's fetched files, then apply publisher-owned ordering, grouping,
+and display overrides without silently dropping new pages. Authored sections'
+explicit lists also need to account for which pages exist in each version.
+
+Generated Markdown now contains only content frontmatter: `title`, `description`,
+and `generated_by: typedoc`. TypeDoc's sidebar-position helper and explicit
+position overrides have been removed, along with `sidebar_position`,
+`custom_edit_url`, and `hide_table_of_contents`. The authored introduction no
+longer sets `slug: /` or `displayed_sidebar: docs`. Authored `order` metadata
+remains a separate, custom content convention.
+
+The publisher owns page ordering, edit-link visibility, TOC visibility, sidebar
+selection, and the docs landing route. It can use `generated_by` to identify
+generated pages and index files to identify section landing pages. Removing the
+introduction's slug changes its default route; the publisher must explicitly
+assign the docs root if it wants to preserve `/docs/`.
+
+The earlier publishing preview was built with category files. A publishing build
+without category files or the removed frontmatter has not been verified; its previous sidebar-module
+adapter remains a separate publisher issue.
+
 ## Local authoring and validation
 
 Use regular Markdown previews for local authoring, with Mermaid support where
@@ -81,18 +123,22 @@ exits successfully with warnings.
 
 ## Markdown conversion verification
 
-- Standalone TypeDoc generation succeeds, producing the same 99 reference files
-  with Markdown indexes and no MDX. It reports the same 41 existing warnings.
+- Standalone TypeDoc generation succeeds, producing 83 Markdown reference files
+  with no MDX or `_category_.json` files. It reports the same 41 existing warnings.
 - All 94 former card entries retain their labels, descriptions, and footer text.
   Group headings, ordering, and domain guide prose remain intact.
-- The 87 reference files outside the converted indexes and the three
-  cross-domain link tables remain byte-for-byte unchanged.
+- At the Markdown conversion checkpoint, the 87 reference files outside the
+  converted indexes and three cross-domain link tables were byte-for-byte
+  unchanged. Category removal subsequently deletes 16 JSON files and preserves
+  all 83 Markdown reference files byte-for-byte. Subsequent frontmatter removal
+  preserves all page bodies, titles, descriptions, and generation markers.
 - Frontmatter validation passes across 117 files. Markdownlint passes across
   116 documents, including the converted authentication page and indexes.
   Spelling checks pass.
-- The TypeDoc router suite still reports 135 passing tests and the same failing
+- The TypeDoc router suite now reports 133 passing tests and the same failing
   test: `hooks from different directories get separate pages`. Index URL
-  expectations now use `.md`. Leave this unrelated failure outside the spike.
+  expectations use `.md`; two tests of the removed edit-link metadata were
+  deleted. Leave this unrelated failure outside the spike.
 
 ## Publishing-app verification
 
@@ -149,8 +195,9 @@ while a valid cross-file link passed.
 Older git tags still contain MDX, `DocCardList`, and the original `@site` auth
 diagram import. The publishing app must continue handling those historical
 formats when fetching earlier releases. This conversion changes current content
-only; it does not rewrite published tags. Generated frontmatter and category
-files remain compatible with the existing publisher.
+only; it does not rewrite published tags. Historical category files remain in
+older tags; the publisher can continue accepting them. Current content supplies
+Markdown directories and page titles instead.
 
 No changes to release automation, historical-version fetching, or the known
 router-test failure are included in this experiment.

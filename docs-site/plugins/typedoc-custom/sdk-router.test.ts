@@ -1577,7 +1577,6 @@ describe('serializeFrontmatter', () => {
   const sample = {
     title: 'Employee Hooks',
     description: 'Employee Hooks API reference.',
-    custom_edit_url: null,
   }
 
   it('wraps output in --- delimiters', () => {
@@ -1601,22 +1600,10 @@ describe('serializeFrontmatter', () => {
     expect(result).toContain('generated_by: typedoc')
   })
 
-  it('places generated_by before custom_edit_url', () => {
-    const result = serializeFrontmatter(sample)
-    const generatedByIndex = result.indexOf('generated_by:')
-    const customEditIndex = result.indexOf('custom_edit_url:')
-    expect(generatedByIndex).toBeLessThan(customEditIndex)
-  })
-
   it('preserves title and description from the input', () => {
     const result = serializeFrontmatter(sample)
     expect(result).toContain('title: Employee Hooks')
     expect(result).toContain('description: Employee Hooks API reference.')
-  })
-
-  it('serializes custom_edit_url: null as null', () => {
-    const result = serializeFrontmatter(sample)
-    expect(result).toContain('custom_edit_url: null')
   })
 })
 

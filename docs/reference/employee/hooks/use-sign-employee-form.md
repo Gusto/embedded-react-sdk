@@ -6,7 +6,6 @@
 title: useSignEmployeeForm
 description: useSignEmployeeForm reference.
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # useSignEmployeeForm

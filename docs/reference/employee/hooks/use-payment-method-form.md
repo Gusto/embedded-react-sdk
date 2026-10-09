@@ -6,7 +6,6 @@
 title: usePaymentMethodForm
 description: usePaymentMethodForm reference.
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # usePaymentMethodForm

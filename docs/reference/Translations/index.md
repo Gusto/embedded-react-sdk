@@ -9,9 +9,7 @@ description: |-
 
   Every key includes its English default; pass overrides through a component's
   `dictionary` prop or the global `GustoProvider` dictionary.
-sidebar_position: 1
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 # Translations

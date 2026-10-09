@@ -5,9 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: APIModels
 description: Entity types returned by the Gusto Embedded Payroll API.
-sidebar_position: 1
 generated_by: typedoc
-custom_edit_url: null
 ---
 
 Entity types returned by the Gusto Embedded Payroll API.
