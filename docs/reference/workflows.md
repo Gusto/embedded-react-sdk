@@ -16,22 +16,22 @@ Full multi-step user experiences as a single component — the fastest path to a
 
 | Component | Description |
 | --- | --- |
-| [CompanyOnboarding.OnboardingFlow](company/onboarding/onboarding-flow) | Guided flow to onboard a company to Gusto. |
-| [ContractorManagement.ContractorListFlow](contractor/management/contractor-list-flow) | Hub for viewing and managing a company's contractors, including onboarding new ones. |
-| [ContractorManagement.DashboardFlow](contractor/management/dashboard-flow) | Hub for viewing and managing a single contractor's details, pay, and documents. |
-| [ContractorManagement.PaymentFlow](contractor/management/payment-flow) | Hub for creating and managing contractor payments for a company. |
-| [ContractorOnboarding.OnboardingFlow](contractor/onboarding/onboarding-flow) | Guided flow for admins to onboard a contractor to the company. |
-| [ContractorOnboarding.SelfOnboardingFlow](contractor/onboarding/self-onboarding-flow) | Guided flow for contractors to complete their own onboarding. |
-| [EmployeeManagement.DashboardFlow](employee/management/dashboard-flow) | Hub for viewing and managing a single employee's profile, pay, and documents. |
-| [EmployeeManagement.EmployeeListFlow](employee/management/employee-list-flow) | Hub for viewing and managing all employees, including onboarding new ones. |
-| [EmployeeManagement.TerminationFlow](employee/management/termination-flow) | Guided flow to terminate an employee and arrange their final paycheck. |
-| [EmployeeOnboarding.OnboardingExecutionFlow](employee/onboarding/onboarding-execution-flow) | Guided flow to onboard an employee. |
-| [EmployeeOnboarding.OnboardingFlow](employee/onboarding/onboarding-flow) | Guided flow to onboard multiple employees, one at a time. |
-| [EmployeeOnboarding.SelfOnboardingFlow](employee/onboarding/self-onboarding-flow) | Guided flow for employees to complete their own onboarding. |
-| [InformationRequests.InformationRequestsFlow](company/information-requests/information-requests-flow) | Hub for viewing and responding to outstanding information requests from Gusto. |
-| [Payroll.DismissalFlow](payroll/dismissal-flow) | Guided flow to run a dismissed employee's final payroll. |
-| [Payroll.OffCycleFlow](payroll/off-cycle-flow) | Guided flow to create and run a bonus or correction payroll. |
-| [Payroll.PayrollExecutionFlow](payroll/payroll-execution-flow) | Guided flow to configure, review, and submit a single payroll. |
-| [Payroll.PayrollFlow](payroll/payroll-flow) | Hub for running and managing all payrolls across a company's pay schedules. |
-| [Payroll.TransitionFlow](payroll/transition-flow) | Macro flow that runs a transition payroll end to end: resolve or create the payroll, then configure, review, submit, and view receipts. |
-| [TimeOff.TimeOffFlow](time-off/time-off-flow) | Hub for creating and managing a company's time off policies. |
+| [CompanyOnboarding.OnboardingFlow](company/onboarding/onboarding-flow.md) | Guided flow to onboard a company to Gusto. |
+| [ContractorManagement.ContractorListFlow](contractor/management/contractor-list-flow.md) | Hub for viewing and managing a company's contractors, including onboarding new ones. |
+| [ContractorManagement.DashboardFlow](contractor/management/dashboard-flow.md) | Hub for viewing and managing a single contractor's details, pay, and documents. |
+| [ContractorManagement.PaymentFlow](contractor/management/payment-flow.md) | Hub for creating and managing contractor payments for a company. |
+| [ContractorOnboarding.OnboardingFlow](contractor/onboarding/onboarding-flow.md) | Guided flow for admins to onboard a contractor to the company. |
+| [ContractorOnboarding.SelfOnboardingFlow](contractor/onboarding/self-onboarding-flow.md) | Guided flow for contractors to complete their own onboarding. |
+| [EmployeeManagement.DashboardFlow](employee/management/dashboard-flow.md) | Hub for viewing and managing a single employee's profile, pay, and documents. |
+| [EmployeeManagement.EmployeeListFlow](employee/management/employee-list-flow.md) | Hub for viewing and managing all employees, including onboarding new ones. |
+| [EmployeeManagement.TerminationFlow](employee/management/termination-flow.md) | Guided flow to terminate an employee and arrange their final paycheck. |
+| [EmployeeOnboarding.OnboardingExecutionFlow](employee/onboarding/onboarding-execution-flow.md) | Guided flow to onboard an employee. |
+| [EmployeeOnboarding.OnboardingFlow](employee/onboarding/onboarding-flow.md) | Guided flow to onboard multiple employees, one at a time. |
+| [EmployeeOnboarding.SelfOnboardingFlow](employee/onboarding/self-onboarding-flow.md) | Guided flow for employees to complete their own onboarding. |
+| [InformationRequests.InformationRequestsFlow](company/information-requests/information-requests-flow.md) | Hub for viewing and responding to outstanding information requests from Gusto. |
+| [Payroll.DismissalFlow](payroll/dismissal-flow.md) | Guided flow to run a dismissed employee's final payroll. |
+| [Payroll.OffCycleFlow](payroll/off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
+| [Payroll.PayrollExecutionFlow](payroll/payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+| [Payroll.PayrollFlow](payroll/payroll-flow.md) | Hub for running and managing all payrolls across a company's pay schedules. |
+| [Payroll.TransitionFlow](payroll/transition-flow.md) | Macro flow that runs a transition payroll end to end: resolve or create the payroll, then configure, review, submit, and view receipts. |
+| [TimeOff.TimeOffFlow](time-off/time-off-flow.md) | Hub for creating and managing a company's time off policies. |

@@ -5,7 +5,7 @@
   //     `# H1` so the raw .md renders on GitHub. We tell MD025 to ignore the
   //     frontmatter title so the in-body H1 is the only "top-level" heading.
   //   - Lists use `-`, code fences carry a language tag
-  //   - Inline HTML is allowed because MDX uses it
+  //   - Inline HTML is allowed for explicit anchors and generated content
   //   - Long prose lines are intentional; no hard wrap is enforced
   //   - TypeDoc-generated pages legitimately repeat "Parameters"/"Returns"
   //     and the endpoint reference uses a `**Field**` pattern as in-row
@@ -29,15 +29,6 @@
   "customRules": ["markdownlint-rule-relative-links"],
   "overrides": [
     {
-      "filter": [
-        "docs/reference/blocks.md",
-        "docs/reference/hooks.md",
-        "docs/reference/workflows.md",
-      ],
-      "combine": "replace",
-      "config": { "default": false, "MD051": true },
-    },
-    {
       "filter": ["docs/reference/**", "docs/appendix/endpoint-reference.md"],
       "combine": "replace",
       "config": { "default": false, "MD051": true, "relative-links": true },
@@ -48,6 +39,6 @@
       "config": { "relative-links": true },
     },
   ],
-  "globs": ["docs/**/*.md", "docs/**/*.mdx"],
+  "globs": ["docs/**/*.md"],
   "ignores": ["**/node_modules/**", "docs/test-fests/**", "CHANGELOG.md"],
 }

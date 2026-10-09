@@ -403,15 +403,16 @@ for ownership rules, scope, and known gaps. This is not a production publishing
 migration.
 
 Generate reference docs with `npm run docs:api:generate`; the standalone
-TypeDoc configuration and plugins remain in `docs-site/`. Authored documentation,
-including content-specific components and assets, lives in `docs/`.
+TypeDoc configuration and plugins remain in `docs-site/`. Authored Markdown and
+content assets live in `docs/`. Authentication uses a fenced Mermaid diagram;
+the publishing app owns its rendering. Generated indexes use ordinary Markdown
+links and descriptions.
 
-The frontmatter, Markdown, and spelling checks remain available. A limited local
-MDX preview is available through npx; see the command and limitations in
-[Docs publishing spike](DOCS-PUBLISHING-SPIKE.md#npx-mdx-preview-experiment).
+Use a regular Markdown preview for local authoring, with Mermaid support where
+available. The frontmatter, Markdown, and spelling checks remain available.
 Run `npm run docs:lint:markdown` to check relative Markdown file links and `.md`
 anchors alongside the existing style rules. Generated reference docs receive
-only link checks. Website routes, scoped anchors, and MDX presentation links
+only link checks. Rendered website routes, navigation, and historical versions
 remain the publishing app's responsibility; see the spike notes for coverage.
 
 #### Markdown links

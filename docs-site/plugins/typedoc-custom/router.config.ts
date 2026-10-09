@@ -7,16 +7,16 @@
  * domain (no `subpath`) generate different trees:
  *
  *   {path}/                          ← multi-namespace, e.g. Employees
- *     index.mdx                      title: {label}        (domain hub)
+ *     index.md                      title: {label}        (domain hub)
  *     {namespace.subpath}/           e.g. onboarding/
  *       index.md                     title: {namespace.id}  (namespace hub)
  *       {flow}-flow.md               one page per *Flow component
  *       blocks.md                    all non-flow components
  *     hooks/                         (only if the domain has hooks)
- *       index.mdx, use-*.md
+ *       index.md, use-*.md
  *
  *   {path}/                          ← single-namespace, e.g. Payroll
- *     index.mdx                      title: {label}        (domain hub)
+ *     index.md                      title: {label}        (domain hub)
  *     namespace.md                   title: {namespace.id}  (namespace hub, no subpath)
  *     {flow}-flow.md, blocks.md
  *
@@ -307,7 +307,7 @@ export const I18N_RELOCATION: { sources: string[]; groups: CustomGroupTag[] } = 
   groups: [CUSTOM_GROUPS.utilityTypes],
 }
 
-/** Emoji for each content type — used in DocCardList item labels and hub section headings. */
+/** Emoji for each content type — used in index entry labels and hub section headings. */
 export const TYPE_EMOJIS = {
   namespace: '📁',
   flow: '🚂',

@@ -5,6 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Time off policies
 description: Time off policies reference.
+sidebar_position: 1
 hide_table_of_contents: true
 generated_by: typedoc
 custom_edit_url: null
@@ -15,7 +16,9 @@ custom_edit_url: null
 Create and manage policies for vacation, sick leave, and company holidays.
 
 ---
-## 📁 TimeOff {#time-off}
+<a id="time-off"></a>
+
+## 📁 TimeOff
 
 Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday.
 
@@ -23,4 +26,8 @@ Flows and blocks for creating and managing time-off policies — sick, vacation,
 import { TimeOff } from '@gusto/embedded-react-sdk'
 ```
 
-<DocCardList items={[{"type":"link","href":"time-off-flow","label":"🚂 TimeOffFlow","description":"Hub for creating and managing a company's time off policies."},{"type":"link","href":"blocks","label":"🧩 13 blocks"}]} />
+- [🚂 TimeOffFlow](time-off-flow.md)
+
+  Hub for creating and managing a company's time off policies.
+
+- [🧩 13 blocks](blocks.md)

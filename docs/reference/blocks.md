@@ -16,140 +16,140 @@ Individual form and UI components with SDK logic built in — use these for cust
 
 | Component | Description |
 | --- | --- |
-| [CompanyOnboarding.AssignSignatory](company/onboarding/blocks#assignsignatory) | Lets a user either create a new signatory with full details or invite someone else to become the signatory. |
-| [CompanyOnboarding.BankAccount](company/onboarding/blocks#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
-| [CompanyOnboarding.CreateSignatory](company/onboarding/blocks#createsignatory) | Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address. |
-| [CompanyOnboarding.DocumentList](company/onboarding/blocks#documentlist) | Displays the list of company documents to be signed and lets the user manage signatories. |
-| [CompanyOnboarding.DocumentSigner](company/onboarding/blocks#documentsigner) | Company onboarding step for reading and signing required company documents. |
-| [CompanyOnboarding.FederalTaxes](company/onboarding/blocks#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
-| [CompanyOnboarding.Industry](company/onboarding/blocks#industry) | Selects and saves the company's industry classification (NAICS code). |
-| [CompanyOnboarding.InviteSignatory](company/onboarding/blocks#invitesignatory) | Standalone form for inviting someone else to become the company signatory. |
-| [CompanyOnboarding.LocationForm](company/onboarding/blocks#locationform) | Standalone form for creating a new company location or editing an existing one. |
-| [CompanyOnboarding.Locations](company/onboarding/blocks#locations) | Orchestrated component for managing a company's mailing and filing addresses. |
-| [CompanyOnboarding.LocationsList](company/onboarding/blocks#locationslist) | Displays the list of work locations for a company. |
-| [CompanyOnboarding.OnboardingOverview](company/onboarding/blocks#onboardingoverview) | Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements. |
-| [CompanyOnboarding.PaySchedule](company/onboarding/blocks#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
-| [CompanyOnboarding.SignatureForm](company/onboarding/blocks#signatureform) | Standalone form for signing an individual company document. |
-| [CompanyOnboarding.StateTaxes](company/onboarding/blocks#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
-| [CompanyOnboarding.StateTaxesForm](company/onboarding/blocks#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
-| [CompanyOnboarding.StateTaxesList](company/onboarding/blocks#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
-| [CompanyOnboarding.TaxRateManagement](company/onboarding/blocks#taxratemanagement) | Standalone view of a company's effective-dated state tax rate history, with the ability to schedule a new future-dated rate. |
-| [ContractorManagement.Address](contractor/management/blocks#address) | Management surface for viewing and editing a contractor's mailing address after onboarding. |
-| [ContractorManagement.AddressCard](contractor/management/blocks#addresscard) | Read-only card showing a contractor's mailing address with an Edit action. |
-| [ContractorManagement.AddressEditForm](contractor/management/blocks#addresseditform) | Standalone edit form for a contractor's mailing address. |
-| [ContractorManagement.Compensation](contractor/management/blocks#compensation) | Management surface for viewing and editing a contractor's compensation after onboarding. |
-| [ContractorManagement.CompensationCard](contractor/management/blocks#compensationcard) | Read-only card showing a contractor's compensation type and rate with an Edit action. |
-| [ContractorManagement.CompensationEditForm](contractor/management/blocks#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
-| [ContractorManagement.ContractorList](contractor/management/blocks#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
-| [ContractorManagement.CreatePayment](contractor/management/blocks#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
-| [ContractorManagement.Dashboard](contractor/management/blocks#dashboard) | Contractor management dashboard summarizing a single contractor's basic details, pay, and documents. |
-| [ContractorManagement.Dismissal](contractor/management/blocks#dismissal) | Standalone form for scheduling a contractor's dismissal. |
-| [ContractorManagement.DocumentsCard](contractor/management/blocks#documentscard) | Standalone read-only "Documents" card. |
-| [ContractorManagement.PaymentHistory](contractor/management/blocks#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
-| [ContractorManagement.PaymentMethod](contractor/management/blocks#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
-| [ContractorManagement.PaymentMethodCard](contractor/management/blocks#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
-| [ContractorManagement.PaymentMethodEditForm](contractor/management/blocks#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
-| [ContractorManagement.PaymentsList](contractor/management/blocks#paymentslist) | Displays a list of contractor payment groups for a company. |
-| [ContractorManagement.PaymentStatement](contractor/management/blocks#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
-| [ContractorManagement.PaymentSummary](contractor/management/blocks#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
-| [ContractorManagement.Profile](contractor/management/blocks#profile) | Management surface for viewing and editing a contractor's basic profile details after onboarding. |
-| [ContractorManagement.ProfileCard](contractor/management/blocks#profilecard) | Read-only card showing a contractor's basic profile details with an Edit action. |
-| [ContractorManagement.ProfileEditForm](contractor/management/blocks#profileeditform) | Standalone edit form for a contractor's basic profile details. |
-| [ContractorOnboarding.Address](contractor/onboarding/blocks#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
-| [ContractorOnboarding.ContractorList](contractor/onboarding/blocks#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
-| [ContractorOnboarding.ContractorProfile](contractor/onboarding/blocks#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
-| [ContractorOnboarding.ContractorSubmit](contractor/onboarding/blocks#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
-| [ContractorOnboarding.DocumentSigner](contractor/onboarding/blocks#documentsigner) | Contractor onboarding step for reading and signing required contractor documents. |
-| [ContractorOnboarding.DocumentsList](contractor/onboarding/blocks#documentslist) | Lists a contractor's documents and lets the contractor open each one for signing. |
-| [ContractorOnboarding.Landing](contractor/onboarding/blocks#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
-| [ContractorOnboarding.NewHireReport](contractor/onboarding/blocks#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
-| [ContractorOnboarding.OnboardingSummary](contractor/onboarding/blocks#onboardingsummary) | Confirmation screen shown at the end of the contractor self-onboarding flow. Lets the contractor know their information has been submitted and emits `contractor/selfOnboarding/done` when they acknowledge it. |
-| [ContractorOnboarding.PaymentMethod](contractor/onboarding/blocks#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
-| [ContractorOnboarding.SignatureForm](contractor/onboarding/blocks#signatureform) | Standalone form for signing an individual contractor document (W-9). |
-| [EmployeeManagement.Compensation](employee/management/blocks#compensation) | Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
-| [EmployeeManagement.CompensationAddAnotherJobForm](employee/management/blocks#compensationaddanotherjobform) | Standalone form for adding a secondary job and compensation to an employee from the management surface. |
-| [EmployeeManagement.CompensationAddJobForm](employee/management/blocks#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
-| [EmployeeManagement.CompensationCard](employee/management/blocks#compensationcard) | Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances. |
-| [EmployeeManagement.CompensationEditForm](employee/management/blocks#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
-| [EmployeeManagement.Dashboard](employee/management/blocks#dashboard) | Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents. |
-| [EmployeeManagement.Deductions](employee/management/blocks#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
-| [EmployeeManagement.DeductionsCard](employee/management/blocks#deductionscard) | Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction. |
-| [EmployeeManagement.DeductionsEditForm](employee/management/blocks#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
-| [EmployeeManagement.DocumentManager](employee/management/blocks#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
-| [EmployeeManagement.Documents](employee/management/blocks#documents) | Standalone employee documents management flow. |
-| [EmployeeManagement.DocumentsCard](employee/management/blocks#documentscard) | Standalone "Documents" (forms) card. Owns its own data fetch via useDocumentsList and renders the employee's forms in a table with a per-row "View" action. Emits `employee/management/documents/card/viewRequested` with `{ employeeId, formId }` when a row's View CTA is clicked. The card is read-only — viewing or signing a form happens in the screen the parent routes to — and renders no alerts: alert rendering is the parent's responsibility. |
-| [EmployeeManagement.EmployeeList](employee/management/blocks#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no available actions, so no menu is rendered for them. |
-| [EmployeeManagement.FederalTaxes](employee/management/blocks#federaltaxes) | Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
-| [EmployeeManagement.FederalTaxesCard](employee/management/blocks#federaltaxescard) | Standalone "Federal taxes" card. Owns its own data fetch via `useFederalTaxesSummary` and emits `EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED` when the Edit button is clicked. The card has no alert API — alert rendering (when introduced) is the orchestrator's responsibility. |
-| [EmployeeManagement.FederalTaxesEditForm](employee/management/blocks#federaltaxeseditform) | Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
-| [EmployeeManagement.HomeAddress](employee/management/blocks#homeaddress) | Standalone employee home address management flow. |
-| [EmployeeManagement.HomeAddressCard](employee/management/blocks#homeaddresscard) | Standalone employee home address summary card. |
-| [EmployeeManagement.HomeAddressEditForm](employee/management/blocks#homeaddresseditform) | Standalone employee home address edit form for creating, updating, and deleting addresses. |
-| [EmployeeManagement.PaymentMethod](employee/management/blocks#paymentmethod) | Management flow for editing an employee's payment method. |
-| [EmployeeManagement.PaymentMethodBankForm](employee/management/blocks#paymentmethodbankform) | Standalone bank-account form for the management flow. |
-| [EmployeeManagement.PaymentMethodCard](employee/management/blocks#paymentmethodcard) | Standalone "Payment" card. |
-| [EmployeeManagement.PaymentMethodSplitForm](employee/management/blocks#paymentmethodsplitform) | Standalone split-paycheck form for the management flow. |
-| [EmployeeManagement.PaystubsCard](employee/management/blocks#paystubscard) | Standalone "Paystubs" card. Owns its own data fetch via usePaystubsList and renders the paginated paystubs table with a per-row PDF download action. Emits the management block's scoped events (`EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_*`) on download request and on download success. The card has no edit transitions and no alert API — paystubs is a read-only surface whose only action is a download side effect that opens the PDF in a new tab. |
-| [EmployeeManagement.Profile](employee/management/blocks#profile) | Management surface for viewing and editing an employee's basic profile details after onboarding. |
-| [EmployeeManagement.ProfileCard](employee/management/blocks#profilecard) | Read-only card showing an employee's basic profile details with an Edit action. |
-| [EmployeeManagement.ProfileEditForm](employee/management/blocks#profileeditform) | Standalone edit form for an employee's basic profile details. |
-| [EmployeeManagement.StateTaxes](employee/management/blocks#statetaxes) | Standalone state-tax management flow for a given employee. Renders the read-only summary card and the edit form, switching between them as the partner-emitted events from [StateTaxesCard](employee/management/blocks.md#statetaxescard) and [StateTaxesEditForm](employee/management/blocks.md#statetaxeseditform) drive the internal state machine. |
-| [EmployeeManagement.StateTaxesCard](employee/management/blocks#statetaxescard) | Standalone read-only summary card showing an employee's per-state tax withholding answers. Fetches its own data and surfaces an Edit button that emits an event for the orchestrator to swap in the edit form. |
-| [EmployeeManagement.StateTaxesEditForm](employee/management/blocks#statetaxeseditform) | Standalone edit screen for the state-tax management flow. Renders the shared state-tax form against the `Employee.Management.StateTaxes` namespace and emits scoped management events on submit and cancel, so partner copy overrides on the management namespace do not leak into the onboarding flow. |
-| [EmployeeManagement.TerminateEmployee](employee/management/blocks#terminateemployee) | Standalone form for capturing an employee's termination details — last day of work and how to process final payroll. |
-| [EmployeeManagement.TerminationSummary](employee/management/blocks#terminationsummary) | Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist. |
-| [EmployeeManagement.WorkAddress](employee/management/blocks#workaddress) | Standalone employee work address management flow. |
-| [EmployeeManagement.WorkAddressCard](employee/management/blocks#workaddresscard) | Standalone employee work address summary card. |
-| [EmployeeManagement.WorkAddressEditForm](employee/management/blocks#workaddresseditform) | Standalone employee work address edit form for creating, updating, and deleting addresses. |
-| [EmployeeOnboarding.Compensation](employee/onboarding/blocks#compensation) | Onboarding step for collecting an employee's role and compensation details. |
-| [EmployeeOnboarding.Deductions](employee/onboarding/blocks#deductions) | Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments. |
-| [EmployeeOnboarding.DocumentList](employee/onboarding/blocks#documentlist) | Lists the employee's documents pending signature. |
-| [EmployeeOnboarding.DocumentSigner](employee/onboarding/blocks#documentsigner) | Onboarding step for signing employee documents. |
-| [EmployeeOnboarding.EditCompensation](employee/onboarding/blocks#editcompensation) | Renders a form for creating or editing one of an employee's jobs together with its compensation. |
-| [EmployeeOnboarding.EmployeeDocuments](employee/onboarding/blocks#employeedocuments) | Onboarding step for selecting which documents the employee must complete. |
-| [EmployeeOnboarding.EmployeeList](employee/onboarding/blocks#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
-| [EmployeeOnboarding.EmploymentEligibility](employee/onboarding/blocks#employmenteligibility) | Captures the employee's I-9 employment eligibility (Section 1) before signing. |
-| [EmployeeOnboarding.FederalTaxes](employee/onboarding/blocks#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
-| [EmployeeOnboarding.I9SignatureForm](employee/onboarding/blocks#i9signatureform) | Presents the employee's I-9 form for review and signature. |
-| [EmployeeOnboarding.JobsList](employee/onboarding/blocks#jobslist) | Lists an employee's jobs alongside their compensation details, with controls to add, edit, or remove a job. |
-| [EmployeeOnboarding.Landing](employee/onboarding/blocks#landing) | Landing page for the employee self-onboarding flow. Displays a welcome message and the list of onboarding steps the employee needs to complete. |
-| [EmployeeOnboarding.OnboardingSummary](employee/onboarding/blocks#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
-| [EmployeeOnboarding.PaymentMethod](employee/onboarding/blocks#paymentmethod) | Onboarding step for setting up an employee's payment method. |
-| [EmployeeOnboarding.Profile](employee/onboarding/blocks#profile) | Onboarding step for collecting an employee's basic profile and addresses. |
-| [EmployeeOnboarding.SignatureForm](employee/onboarding/blocks#signatureform) | Presents a single employee document for review and signature. |
-| [EmployeeOnboarding.StateTaxes](employee/onboarding/blocks#statetaxes) | Onboarding step that collects an employee's per-state tax withholding answers. The set of fields is driven by the API response for each state on record. |
-| [InformationRequests.InformationRequestForm](company/information-requests/blocks#informationrequestform) | Dynamic response form for a single information request. |
-| [InformationRequests.InformationRequestList](company/information-requests/blocks#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |
-| [Payroll.ConfirmWireDetails](payroll/blocks#confirmwiredetails) | Wire transfer confirmation workflow for payroll funding. |
-| [Payroll.DismissalPayPeriodSelection](payroll/blocks#dismissalpayperiodselection) | Pay period selection step for the dismissal payroll workflow. |
-| [Payroll.OffCycleCreation](payroll/blocks#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
-| [Payroll.OffCycleDeductionsSetting](payroll/blocks#offcycledeductionssetting) | Radio control for choosing whether an off-cycle payroll skips regular deductions and contributions. |
-| [Payroll.OffCycleReasonSelection](payroll/blocks#offcyclereasonselection) | Presents the reason selection UI for choosing between a bonus and correction off-cycle payment. |
-| [Payroll.PayrollBlockerList](payroll/blocks#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
-| [Payroll.PayrollConfiguration](payroll/blocks#payrollconfiguration) | Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll. |
-| [Payroll.PayrollEditEmployee](payroll/blocks#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
-| [Payroll.PayrollHistory](payroll/blocks#payrollhistory) | Displays historical payroll records with filtering and management capabilities. |
-| [Payroll.PayrollLanding](payroll/blocks#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
-| [Payroll.PayrollList](payroll/blocks#payrolllist) | Lists upcoming payrolls and lets users start running them. |
-| [Payroll.PayrollOverview](payroll/blocks#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
-| [Payroll.PayrollReceipts](payroll/blocks#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
-| [Payroll.PrintChecks](payroll/blocks#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
-| [Payroll.RecoveryCases](payroll/blocks#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
-| [Payroll.TransitionCreation](payroll/blocks#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
-| [Payroll.TransitionPayroll](payroll/blocks#transitionpayroll) | Resolves and runs a transition payroll for a pay-schedule change, picking up an existing unprocessed transition payroll when one exists and creating one otherwise. |
-| [TimeOff.AddEmployeesHoliday](time-off/blocks#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |
-| [TimeOff.AddEmployeesToPolicy](time-off/blocks#addemployeestopolicy) | Employee selection screen for assigning employees to a sick or vacation time off policy. |
-| [TimeOff.HolidaySelectionForm](time-off/blocks#holidayselectionform) | Lets a user select which US federal holidays are observed by the company's holiday pay policy. |
-| [TimeOff.PolicyConfigurationForm](time-off/blocks#policyconfigurationform) | Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration. |
-| [TimeOff.PolicyList](time-off/blocks#policylist) | Displays all active time off policies (sick, vacation, and holiday) for a company. |
-| [TimeOff.PolicySettings](time-off/blocks#policysettings) | Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual. |
-| [TimeOff.PolicySettingsPresentation](time-off/blocks#policysettingspresentation) | Presentation-only form for configuring time off policy limits and rules. |
-| [TimeOff.PolicyTypeSelector](time-off/blocks#policytypeselector) | Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday. |
-| [TimeOff.TimeOffPolicyDetail](time-off/blocks#timeoffpolicydetail) | Detail view for a sick or vacation time-off policy. |
-| [TimeOff.TimeOffPolicyDetailPresentation](time-off/blocks#timeoffpolicydetailpresentation) | Presentational detail view for sick and vacation time-off policies. |
-| [TimeOff.ViewHolidayEmployees](time-off/blocks#viewholidayemployees) | Displays the holiday policy detail view with the employees tab selected. |
-| [TimeOff.ViewHolidayPolicyDetails](time-off/blocks#viewholidaypolicydetails) | Displays the holiday pay policy for a company with tabbed views of the included holidays and the enrolled employees. |
-| [TimeOff.ViewHolidaySchedule](time-off/blocks#viewholidayschedule) | Displays the holiday policy detail view with the holidays tab selected. |
+| [CompanyOnboarding.AssignSignatory](company/onboarding/blocks.md#assignsignatory) | Lets a user either create a new signatory with full details or invite someone else to become the signatory. |
+| [CompanyOnboarding.BankAccount](company/onboarding/blocks.md#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
+| [CompanyOnboarding.CreateSignatory](company/onboarding/blocks.md#createsignatory) | Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address. |
+| [CompanyOnboarding.DocumentList](company/onboarding/blocks.md#documentlist) | Displays the list of company documents to be signed and lets the user manage signatories. |
+| [CompanyOnboarding.DocumentSigner](company/onboarding/blocks.md#documentsigner) | Company onboarding step for reading and signing required company documents. |
+| [CompanyOnboarding.FederalTaxes](company/onboarding/blocks.md#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
+| [CompanyOnboarding.Industry](company/onboarding/blocks.md#industry) | Selects and saves the company's industry classification (NAICS code). |
+| [CompanyOnboarding.InviteSignatory](company/onboarding/blocks.md#invitesignatory) | Standalone form for inviting someone else to become the company signatory. |
+| [CompanyOnboarding.LocationForm](company/onboarding/blocks.md#locationform) | Standalone form for creating a new company location or editing an existing one. |
+| [CompanyOnboarding.Locations](company/onboarding/blocks.md#locations) | Orchestrated component for managing a company's mailing and filing addresses. |
+| [CompanyOnboarding.LocationsList](company/onboarding/blocks.md#locationslist) | Displays the list of work locations for a company. |
+| [CompanyOnboarding.OnboardingOverview](company/onboarding/blocks.md#onboardingoverview) | Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements. |
+| [CompanyOnboarding.PaySchedule](company/onboarding/blocks.md#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
+| [CompanyOnboarding.SignatureForm](company/onboarding/blocks.md#signatureform) | Standalone form for signing an individual company document. |
+| [CompanyOnboarding.StateTaxes](company/onboarding/blocks.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
+| [CompanyOnboarding.StateTaxesForm](company/onboarding/blocks.md#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
+| [CompanyOnboarding.StateTaxesList](company/onboarding/blocks.md#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
+| [CompanyOnboarding.TaxRateManagement](company/onboarding/blocks.md#taxratemanagement) | Standalone view of a company's effective-dated state tax rate history, with the ability to schedule a new future-dated rate. |
+| [ContractorManagement.Address](contractor/management/blocks.md#address) | Management surface for viewing and editing a contractor's mailing address after onboarding. |
+| [ContractorManagement.AddressCard](contractor/management/blocks.md#addresscard) | Read-only card showing a contractor's mailing address with an Edit action. |
+| [ContractorManagement.AddressEditForm](contractor/management/blocks.md#addresseditform) | Standalone edit form for a contractor's mailing address. |
+| [ContractorManagement.Compensation](contractor/management/blocks.md#compensation) | Management surface for viewing and editing a contractor's compensation after onboarding. |
+| [ContractorManagement.CompensationCard](contractor/management/blocks.md#compensationcard) | Read-only card showing a contractor's compensation type and rate with an Edit action. |
+| [ContractorManagement.CompensationEditForm](contractor/management/blocks.md#compensationeditform) | Standalone edit form for a contractor's compensation type and rate. |
+| [ContractorManagement.ContractorList](contractor/management/blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
+| [ContractorManagement.CreatePayment](contractor/management/blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [ContractorManagement.Dashboard](contractor/management/blocks.md#dashboard) | Contractor management dashboard summarizing a single contractor's basic details, pay, and documents. |
+| [ContractorManagement.Dismissal](contractor/management/blocks.md#dismissal) | Standalone form for scheduling a contractor's dismissal. |
+| [ContractorManagement.DocumentsCard](contractor/management/blocks.md#documentscard) | Standalone read-only "Documents" card. |
+| [ContractorManagement.PaymentHistory](contractor/management/blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
+| [ContractorManagement.PaymentMethod](contractor/management/blocks.md#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
+| [ContractorManagement.PaymentMethodCard](contractor/management/blocks.md#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
+| [ContractorManagement.PaymentMethodEditForm](contractor/management/blocks.md#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
+| [ContractorManagement.PaymentsList](contractor/management/blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
+| [ContractorManagement.PaymentStatement](contractor/management/blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
+| [ContractorManagement.PaymentSummary](contractor/management/blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+| [ContractorManagement.Profile](contractor/management/blocks.md#profile) | Management surface for viewing and editing a contractor's basic profile details after onboarding. |
+| [ContractorManagement.ProfileCard](contractor/management/blocks.md#profilecard) | Read-only card showing a contractor's basic profile details with an Edit action. |
+| [ContractorManagement.ProfileEditForm](contractor/management/blocks.md#profileeditform) | Standalone edit form for a contractor's basic profile details. |
+| [ContractorOnboarding.Address](contractor/onboarding/blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
+| [ContractorOnboarding.ContractorList](contractor/onboarding/blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
+| [ContractorOnboarding.ContractorProfile](contractor/onboarding/blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
+| [ContractorOnboarding.ContractorSubmit](contractor/onboarding/blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
+| [ContractorOnboarding.DocumentSigner](contractor/onboarding/blocks.md#documentsigner) | Contractor onboarding step for reading and signing required contractor documents. |
+| [ContractorOnboarding.DocumentsList](contractor/onboarding/blocks.md#documentslist) | Lists a contractor's documents and lets the contractor open each one for signing. |
+| [ContractorOnboarding.Landing](contractor/onboarding/blocks.md#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
+| [ContractorOnboarding.NewHireReport](contractor/onboarding/blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
+| [ContractorOnboarding.OnboardingSummary](contractor/onboarding/blocks.md#onboardingsummary) | Confirmation screen shown at the end of the contractor self-onboarding flow. Lets the contractor know their information has been submitted and emits `contractor/selfOnboarding/done` when they acknowledge it. |
+| [ContractorOnboarding.PaymentMethod](contractor/onboarding/blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [ContractorOnboarding.SignatureForm](contractor/onboarding/blocks.md#signatureform) | Standalone form for signing an individual contractor document (W-9). |
+| [EmployeeManagement.Compensation](employee/management/blocks.md#compensation) | Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [EmployeeManagement.CompensationAddAnotherJobForm](employee/management/blocks.md#compensationaddanotherjobform) | Standalone form for adding a secondary job and compensation to an employee from the management surface. |
+| [EmployeeManagement.CompensationAddJobForm](employee/management/blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
+| [EmployeeManagement.CompensationCard](employee/management/blocks.md#compensationcard) | Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances. |
+| [EmployeeManagement.CompensationEditForm](employee/management/blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
+| [EmployeeManagement.Dashboard](employee/management/blocks.md#dashboard) | Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents. |
+| [EmployeeManagement.Deductions](employee/management/blocks.md#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [EmployeeManagement.DeductionsCard](employee/management/blocks.md#deductionscard) | Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction. |
+| [EmployeeManagement.DeductionsEditForm](employee/management/blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
+| [EmployeeManagement.DocumentManager](employee/management/blocks.md#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
+| [EmployeeManagement.Documents](employee/management/blocks.md#documents) | Standalone employee documents management flow. |
+| [EmployeeManagement.DocumentsCard](employee/management/blocks.md#documentscard) | Standalone "Documents" (forms) card. Owns its own data fetch via useDocumentsList and renders the employee's forms in a table with a per-row "View" action. Emits `employee/management/documents/card/viewRequested` with `{ employeeId, formId }` when a row's View CTA is clicked. The card is read-only — viewing or signing a form happens in the screen the parent routes to — and renders no alerts: alert rendering is the parent's responsibility. |
+| [EmployeeManagement.EmployeeList](employee/management/blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss). Dismissed rows have no available actions, so no menu is rendered for them. |
+| [EmployeeManagement.FederalTaxes](employee/management/blocks.md#federaltaxes) | Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [EmployeeManagement.FederalTaxesCard](employee/management/blocks.md#federaltaxescard) | Standalone "Federal taxes" card. Owns its own data fetch via `useFederalTaxesSummary` and emits `EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED` when the Edit button is clicked. The card has no alert API — alert rendering (when introduced) is the orchestrator's responsibility. |
+| [EmployeeManagement.FederalTaxesEditForm](employee/management/blocks.md#federaltaxeseditform) | Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [EmployeeManagement.HomeAddress](employee/management/blocks.md#homeaddress) | Standalone employee home address management flow. |
+| [EmployeeManagement.HomeAddressCard](employee/management/blocks.md#homeaddresscard) | Standalone employee home address summary card. |
+| [EmployeeManagement.HomeAddressEditForm](employee/management/blocks.md#homeaddresseditform) | Standalone employee home address edit form for creating, updating, and deleting addresses. |
+| [EmployeeManagement.PaymentMethod](employee/management/blocks.md#paymentmethod) | Management flow for editing an employee's payment method. |
+| [EmployeeManagement.PaymentMethodBankForm](employee/management/blocks.md#paymentmethodbankform) | Standalone bank-account form for the management flow. |
+| [EmployeeManagement.PaymentMethodCard](employee/management/blocks.md#paymentmethodcard) | Standalone "Payment" card. |
+| [EmployeeManagement.PaymentMethodSplitForm](employee/management/blocks.md#paymentmethodsplitform) | Standalone split-paycheck form for the management flow. |
+| [EmployeeManagement.PaystubsCard](employee/management/blocks.md#paystubscard) | Standalone "Paystubs" card. Owns its own data fetch via usePaystubsList and renders the paginated paystubs table with a per-row PDF download action. Emits the management block's scoped events (`EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_*`) on download request and on download success. The card has no edit transitions and no alert API — paystubs is a read-only surface whose only action is a download side effect that opens the PDF in a new tab. |
+| [EmployeeManagement.Profile](employee/management/blocks.md#profile) | Management surface for viewing and editing an employee's basic profile details after onboarding. |
+| [EmployeeManagement.ProfileCard](employee/management/blocks.md#profilecard) | Read-only card showing an employee's basic profile details with an Edit action. |
+| [EmployeeManagement.ProfileEditForm](employee/management/blocks.md#profileeditform) | Standalone edit form for an employee's basic profile details. |
+| [EmployeeManagement.StateTaxes](employee/management/blocks.md#statetaxes) | Standalone state-tax management flow for a given employee. Renders the read-only summary card and the edit form, switching between them as the partner-emitted events from [StateTaxesCard](employee/management/blocks.md#statetaxescard) and [StateTaxesEditForm](employee/management/blocks.md#statetaxeseditform) drive the internal state machine. |
+| [EmployeeManagement.StateTaxesCard](employee/management/blocks.md#statetaxescard) | Standalone read-only summary card showing an employee's per-state tax withholding answers. Fetches its own data and surfaces an Edit button that emits an event for the orchestrator to swap in the edit form. |
+| [EmployeeManagement.StateTaxesEditForm](employee/management/blocks.md#statetaxeseditform) | Standalone edit screen for the state-tax management flow. Renders the shared state-tax form against the `Employee.Management.StateTaxes` namespace and emits scoped management events on submit and cancel, so partner copy overrides on the management namespace do not leak into the onboarding flow. |
+| [EmployeeManagement.TerminateEmployee](employee/management/blocks.md#terminateemployee) | Standalone form for capturing an employee's termination details — last day of work and how to process final payroll. |
+| [EmployeeManagement.TerminationSummary](employee/management/blocks.md#terminationsummary) | Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist. |
+| [EmployeeManagement.WorkAddress](employee/management/blocks.md#workaddress) | Standalone employee work address management flow. |
+| [EmployeeManagement.WorkAddressCard](employee/management/blocks.md#workaddresscard) | Standalone employee work address summary card. |
+| [EmployeeManagement.WorkAddressEditForm](employee/management/blocks.md#workaddresseditform) | Standalone employee work address edit form for creating, updating, and deleting addresses. |
+| [EmployeeOnboarding.Compensation](employee/onboarding/blocks.md#compensation) | Onboarding step for collecting an employee's role and compensation details. |
+| [EmployeeOnboarding.Deductions](employee/onboarding/blocks.md#deductions) | Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments. |
+| [EmployeeOnboarding.DocumentList](employee/onboarding/blocks.md#documentlist) | Lists the employee's documents pending signature. |
+| [EmployeeOnboarding.DocumentSigner](employee/onboarding/blocks.md#documentsigner) | Onboarding step for signing employee documents. |
+| [EmployeeOnboarding.EditCompensation](employee/onboarding/blocks.md#editcompensation) | Renders a form for creating or editing one of an employee's jobs together with its compensation. |
+| [EmployeeOnboarding.EmployeeDocuments](employee/onboarding/blocks.md#employeedocuments) | Onboarding step for selecting which documents the employee must complete. |
+| [EmployeeOnboarding.EmployeeList](employee/onboarding/blocks.md#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
+| [EmployeeOnboarding.EmploymentEligibility](employee/onboarding/blocks.md#employmenteligibility) | Captures the employee's I-9 employment eligibility (Section 1) before signing. |
+| [EmployeeOnboarding.FederalTaxes](employee/onboarding/blocks.md#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [EmployeeOnboarding.I9SignatureForm](employee/onboarding/blocks.md#i9signatureform) | Presents the employee's I-9 form for review and signature. |
+| [EmployeeOnboarding.JobsList](employee/onboarding/blocks.md#jobslist) | Lists an employee's jobs alongside their compensation details, with controls to add, edit, or remove a job. |
+| [EmployeeOnboarding.Landing](employee/onboarding/blocks.md#landing) | Landing page for the employee self-onboarding flow. Displays a welcome message and the list of onboarding steps the employee needs to complete. |
+| [EmployeeOnboarding.OnboardingSummary](employee/onboarding/blocks.md#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
+| [EmployeeOnboarding.PaymentMethod](employee/onboarding/blocks.md#paymentmethod) | Onboarding step for setting up an employee's payment method. |
+| [EmployeeOnboarding.Profile](employee/onboarding/blocks.md#profile) | Onboarding step for collecting an employee's basic profile and addresses. |
+| [EmployeeOnboarding.SignatureForm](employee/onboarding/blocks.md#signatureform) | Presents a single employee document for review and signature. |
+| [EmployeeOnboarding.StateTaxes](employee/onboarding/blocks.md#statetaxes) | Onboarding step that collects an employee's per-state tax withholding answers. The set of fields is driven by the API response for each state on record. |
+| [InformationRequests.InformationRequestForm](company/information-requests/blocks.md#informationrequestform) | Dynamic response form for a single information request. |
+| [InformationRequests.InformationRequestList](company/information-requests/blocks.md#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |
+| [Payroll.ConfirmWireDetails](payroll/blocks.md#confirmwiredetails) | Wire transfer confirmation workflow for payroll funding. |
+| [Payroll.DismissalPayPeriodSelection](payroll/blocks.md#dismissalpayperiodselection) | Pay period selection step for the dismissal payroll workflow. |
+| [Payroll.OffCycleCreation](payroll/blocks.md#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
+| [Payroll.OffCycleDeductionsSetting](payroll/blocks.md#offcycledeductionssetting) | Radio control for choosing whether an off-cycle payroll skips regular deductions and contributions. |
+| [Payroll.OffCycleReasonSelection](payroll/blocks.md#offcyclereasonselection) | Presents the reason selection UI for choosing between a bonus and correction off-cycle payment. |
+| [Payroll.PayrollBlockerList](payroll/blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
+| [Payroll.PayrollConfiguration](payroll/blocks.md#payrollconfiguration) | Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll. |
+| [Payroll.PayrollEditEmployee](payroll/blocks.md#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
+| [Payroll.PayrollHistory](payroll/blocks.md#payrollhistory) | Displays historical payroll records with filtering and management capabilities. |
+| [Payroll.PayrollLanding](payroll/blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
+| [Payroll.PayrollList](payroll/blocks.md#payrolllist) | Lists upcoming payrolls and lets users start running them. |
+| [Payroll.PayrollOverview](payroll/blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [Payroll.PayrollReceipts](payroll/blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [Payroll.PrintChecks](payroll/blocks.md#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
+| [Payroll.RecoveryCases](payroll/blocks.md#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
+| [Payroll.TransitionCreation](payroll/blocks.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
+| [Payroll.TransitionPayroll](payroll/blocks.md#transitionpayroll) | Resolves and runs a transition payroll for a pay-schedule change, picking up an existing unprocessed transition payroll when one exists and creating one otherwise. |
+| [TimeOff.AddEmployeesHoliday](time-off/blocks.md#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |
+| [TimeOff.AddEmployeesToPolicy](time-off/blocks.md#addemployeestopolicy) | Employee selection screen for assigning employees to a sick or vacation time off policy. |
+| [TimeOff.HolidaySelectionForm](time-off/blocks.md#holidayselectionform) | Lets a user select which US federal holidays are observed by the company's holiday pay policy. |
+| [TimeOff.PolicyConfigurationForm](time-off/blocks.md#policyconfigurationform) | Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration. |
+| [TimeOff.PolicyList](time-off/blocks.md#policylist) | Displays all active time off policies (sick, vacation, and holiday) for a company. |
+| [TimeOff.PolicySettings](time-off/blocks.md#policysettings) | Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual. |
+| [TimeOff.PolicySettingsPresentation](time-off/blocks.md#policysettingspresentation) | Presentation-only form for configuring time off policy limits and rules. |
+| [TimeOff.PolicyTypeSelector](time-off/blocks.md#policytypeselector) | Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday. |
+| [TimeOff.TimeOffPolicyDetail](time-off/blocks.md#timeoffpolicydetail) | Detail view for a sick or vacation time-off policy. |
+| [TimeOff.TimeOffPolicyDetailPresentation](time-off/blocks.md#timeoffpolicydetailpresentation) | Presentational detail view for sick and vacation time-off policies. |
+| [TimeOff.ViewHolidayEmployees](time-off/blocks.md#viewholidayemployees) | Displays the holiday policy detail view with the employees tab selected. |
+| [TimeOff.ViewHolidayPolicyDetails](time-off/blocks.md#viewholidaypolicydetails) | Displays the holiday pay policy for a company with tabbed views of the included holidays and the enrolled employees. |
+| [TimeOff.ViewHolidaySchedule](time-off/blocks.md#viewholidayschedule) | Displays the holiday policy detail view with the holidays tab selected. |
 
 <a id="basecomponentinterface"></a>
 

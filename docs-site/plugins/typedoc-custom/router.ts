@@ -907,18 +907,6 @@ export class SDKRouter extends MemberRouter {
 
     const pages = super.buildPages(project)
 
-    // The project index is rendered as .mdx (JSX required for DocCardList).
-    // Update the pages array entry and all fullUrls that reference index.md so
-    // TypeDoc generates cross-links with the correct extension. This must happen
-    // after super.buildPages(), which sets fullUrls for anchored project members.
-    const projectPage = pages.find(p => p.model === project)
-    if (projectPage) projectPage.url = projectPage.url.replace(/index\.md$/, 'index.mdx')
-    for (const [refl, url] of this.fullUrls) {
-      if (url === 'index.md' || url.startsWith('index.md#')) {
-        this.fullUrls.set(refl, url.replace('index.md', 'index.mdx'))
-      }
-    }
-
     for (const [domainPath, hooks] of hooksByDomain) {
       // Group hooks by hook directory name (e.g. 'useCompensationForm').
       const byHookDir = new Map<string, DeclarationReflection[]>()
@@ -1018,8 +1006,7 @@ export class SDKRouter extends MemberRouter {
       hooksIndexNs.comment = new Comment()
       hooksIndexNs.comment.blockTags.push(new CommentTag('@hooksIndex', []))
       hooksIndexNs.children = hookPageNsList
-      const hooksIndexUrl = this.getFileName(`${domainPath}/hooks/index`).replace(/\.md$/, '.mdx')
-      this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages, hooksIndexUrl)
+      this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages)
       this.hooksNsByDomain.set(domainPath, hooksIndexNs)
       SDKRouter.domainsWithHooks.add(domainPath)
     }
@@ -1081,8 +1068,7 @@ export class SDKRouter extends MemberRouter {
         new CommentTag('@domainPath', [{ kind: 'text', text: domain.path }]),
       )
       hubNs.children = nsReflections
-      const hubUrl = this.getFileName(`${domain.path}/index`).replace(/\.md$/, '.mdx')
-      this.buildSyntheticPage(`${domain.path}/index`, hubNs, [], pages, hubUrl)
+      this.buildSyntheticPage(`${domain.path}/index`, hubNs, [], pages)
     }
 
     return pages
@@ -1320,18 +1306,14 @@ export class SDKRouter extends MemberRouter {
   /**
    * Register a synthetic namespace page and make every member an anchor on it.
    * Returns the page's URL.
-   *
-   * Pass `explicitUrl` to override the default URL derived from `basePath` — used
-   * for domain hubs which need a `.mdx` extension so Docusaurus enables JSX processing.
    */
   private buildSyntheticPage(
     basePath: string,
     ns: DeclarationReflection,
     members: DeclarationReflection[],
     outPages: PageDefinition[],
-    explicitUrl?: string,
   ): string {
-    const url = explicitUrl ?? this.getFileName(basePath)
+    const url = this.getFileName(basePath)
     this.fullUrls.set(ns, url)
     const slugger = new Slugger(this.sluggerConfiguration)
     this.sluggers.set(ns, slugger)

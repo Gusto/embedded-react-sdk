@@ -36,7 +36,7 @@ Explore the [Example app](./example-app.md) guide to learn more, or see the [dem
 
 A backend proxy is required when building with the React SDK. SDK components don't call the Gusto Embedded API directly—they call your proxy, which forwards requests with the correct auth headers attached. The proxy gives you a place to handle three things:
 
-- **Authentication.** Your proxy acquires OAuth2 tokens from the Gusto Embedded API on behalf of the authenticated user. See [Authentication](./authentication.mdx) for the full setup.
+- **Authentication.** Your proxy acquires OAuth2 tokens from the Gusto Embedded API on behalf of the authenticated user. See [Authentication](./authentication.md) for the full setup.
 - **User IP address.** Some workflows require users to sign forms, which needs the user's IP. Your proxy must add the `x-gusto-client-ip` header to forwarded requests so the IP can't be spoofed client-side.
 - **Authorization.** User-level authorization is your responsibility. At minimum, your proxy should authenticate every request, allowlist endpoints, validate resource ownership, and log proxied traffic. See [Proxy security](./proxy-security-partner-guidance.md) for detailed practices.
 
@@ -72,7 +72,7 @@ The SDK is designed to take on your application's look and feel via theming and 
 
 ## Next steps
 
-- Read [Authentication](./authentication.mdx) for the full picture on how your proxy should acquire and use OAuth tokens in production
+- Read [Authentication](./authentication.md) for the full picture on how your proxy should acquire and use OAuth tokens in production
 - Review [Proxy security](./proxy-security-partner-guidance.md) before pointing a proxy at real partner traffic
 - Explore [Workflows overview](../guides/workflows-overview.md) for the pre-built flows you can drop into your app
 - Dig into the [Integration guide](../guides/integration-guide/integration-guide.md) for more detailed guides on building with the SDK, covering topics like versioning, events, customization, and observability

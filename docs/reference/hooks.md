@@ -16,36 +16,36 @@ Headless utilities that handle data fetching, form state, validation, and API su
 
 | Hook | Description |
 | --- | --- |
-| [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list) | Standalone data hook for a contractor's documents. |
-| [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
+| [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list.md) | Standalone data hook for a contractor's documents. |
+| [useEmployeeList](employee/hooks/use-employee-list.md) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
 
 ## ✍️ Form hooks
 
 | Hook | Description |
 | --- | --- |
-| [useBankForm](employee/hooks/use-bank-form) | Headless React Hook Form hook for creating an employee bank account. |
-| [useChildSupportGarnishmentForm](employee/hooks/use-child-support-garnishment-form) | Headless hook for creating or updating a child-support garnishment. |
-| [useCompensationForm](employee/hooks/use-compensation-form) | Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment. |
-| [useContractorAddressForm](contractor/hooks/use-contractor-address-form) | Form hook for editing a contractor's address. |
-| [useContractorBankAccountForm](contractor/hooks/use-contractor-bank-account-form) | Headless React Hook Form hook for creating a contractor's bank account. |
-| [useContractorDetailsForm](contractor/hooks/use-contractor-details-form) | Headless hook for creating or updating a contractor's profile details — individual vs. business type, wage type, names, SSN/EIN, work state, and the self-onboarding preference. |
-| [useContractorPayForm](contractor/hooks/use-contractor-pay-form) | Headless React Hook Form hook for editing a contractor's compensation. |
-| [useContractorPaymentMethodForm](contractor/hooks/use-contractor-payment-method-form) | Headless React Hook Form hook for managing a contractor's payment method type. |
-| [useContractorSignatureForm](contractor/hooks/use-contractor-signature-form) | Headless hook for signing a contractor document — collects the document's fields plus a typed signature and consent. |
-| [useCurrentHomeAddressForm](employee/hooks/use-current-home-address-form) | Convenience wrapper around [useHomeAddressForm](employee/hooks/use-home-address-form.md#usehomeaddressform) that auto-resolves the employee's current home address. |
-| [useCurrentWorkAddressForm](employee/hooks/use-current-work-address-form) | Convenience wrapper around [useWorkAddressForm](employee/hooks/use-work-address-form.md#useworkaddressform) that auto-resolves the employee's current work address. |
-| [useDeductionForm](employee/hooks/use-deduction-form) | Headless hook for creating or updating a non-child-support deduction. |
-| [useEmployeeDetailsForm](employee/hooks/use-employee-details-form) | Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference. |
-| [useEmployeeStateTaxesForm](employee/hooks/use-employee-state-taxes-form) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
-| [useFederalTaxesForm](employee/hooks/use-federal-taxes-form) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
-| [useHomeAddressForm](employee/hooks/use-home-address-form) | Form hook for creating or editing an employee's home address. |
-| [useJobForm](employee/hooks/use-job-form) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
-| [usePaymentMethodForm](employee/hooks/use-payment-method-form) | Headless React Hook Form hook for updating an employee's payment method. |
-| [usePayScheduleForm](company/hooks/use-pay-schedule-form) | Form hook for creating or updating a company pay schedule. |
-| [useSignCompanyForm](company/hooks/use-sign-company-form) | Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox. |
-| [useSignEmployeeForm](employee/hooks/use-sign-employee-form) | Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification. |
-| [useSplitPaymentsForm](employee/hooks/use-split-payments-form) | Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts. |
-| [useWorkAddressForm](employee/hooks/use-work-address-form) | Form hook for creating or editing an employee's work address. |
+| [useBankForm](employee/hooks/use-bank-form.md) | Headless React Hook Form hook for creating an employee bank account. |
+| [useChildSupportGarnishmentForm](employee/hooks/use-child-support-garnishment-form.md) | Headless hook for creating or updating a child-support garnishment. |
+| [useCompensationForm](employee/hooks/use-compensation-form.md) | Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment. |
+| [useContractorAddressForm](contractor/hooks/use-contractor-address-form.md) | Form hook for editing a contractor's address. |
+| [useContractorBankAccountForm](contractor/hooks/use-contractor-bank-account-form.md) | Headless React Hook Form hook for creating a contractor's bank account. |
+| [useContractorDetailsForm](contractor/hooks/use-contractor-details-form.md) | Headless hook for creating or updating a contractor's profile details — individual vs. business type, wage type, names, SSN/EIN, work state, and the self-onboarding preference. |
+| [useContractorPayForm](contractor/hooks/use-contractor-pay-form.md) | Headless React Hook Form hook for editing a contractor's compensation. |
+| [useContractorPaymentMethodForm](contractor/hooks/use-contractor-payment-method-form.md) | Headless React Hook Form hook for managing a contractor's payment method type. |
+| [useContractorSignatureForm](contractor/hooks/use-contractor-signature-form.md) | Headless hook for signing a contractor document — collects the document's fields plus a typed signature and consent. |
+| [useCurrentHomeAddressForm](employee/hooks/use-current-home-address-form.md) | Convenience wrapper around [useHomeAddressForm](employee/hooks/use-home-address-form.md#usehomeaddressform) that auto-resolves the employee's current home address. |
+| [useCurrentWorkAddressForm](employee/hooks/use-current-work-address-form.md) | Convenience wrapper around [useWorkAddressForm](employee/hooks/use-work-address-form.md#useworkaddressform) that auto-resolves the employee's current work address. |
+| [useDeductionForm](employee/hooks/use-deduction-form.md) | Headless hook for creating or updating a non-child-support deduction. |
+| [useEmployeeDetailsForm](employee/hooks/use-employee-details-form.md) | Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference. |
+| [useEmployeeStateTaxesForm](employee/hooks/use-employee-state-taxes-form.md) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
+| [useFederalTaxesForm](employee/hooks/use-federal-taxes-form.md) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [useHomeAddressForm](employee/hooks/use-home-address-form.md) | Form hook for creating or editing an employee's home address. |
+| [useJobForm](employee/hooks/use-job-form.md) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
+| [usePaymentMethodForm](employee/hooks/use-payment-method-form.md) | Headless React Hook Form hook for updating an employee's payment method. |
+| [usePayScheduleForm](company/hooks/use-pay-schedule-form.md) | Form hook for creating or updating a company pay schedule. |
+| [useSignCompanyForm](company/hooks/use-sign-company-form.md) | Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox. |
+| [useSignEmployeeForm](employee/hooks/use-sign-employee-form.md) | Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification. |
+| [useSplitPaymentsForm](employee/hooks/use-split-payments-form.md) | Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts. |
+| [useWorkAddressForm](employee/hooks/use-work-address-form.md) | Form hook for creating or editing an employee's work address. |
 
 <a id="sdkformprovider"></a>
 

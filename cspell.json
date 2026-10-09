@@ -3,7 +3,7 @@
   "version": "0.2",
   "language": "en",
   "dictionaries": ["en_US", "node", "typescript", "npm", "softwareTerms", "html", "css"],
-  "files": ["docs/**/*.{md,mdx,tsx}"],
+  "files": ["docs/**/*.md"],
   "ignorePaths": [
     "**/node_modules/**",
     "docs/reference/**",

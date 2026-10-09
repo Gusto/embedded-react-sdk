@@ -182,12 +182,31 @@ function stripMarkdownLinks(text: string): string {
   return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
 }
 
+interface IndexEntry {
+  href: string
+  label: string
+  description?: string
+  footer?: string
+}
+
+function renderIndexEntries(entries: IndexEntry[]): string {
+  return entries
+    .map(entry => {
+      const paragraphs = [entry.description, ...(entry.footer?.split('\n') ?? [])].filter(
+        (paragraph): paragraph is string => Boolean(paragraph),
+      )
+      const details = paragraphs.map(paragraph => paragraph.replace(/^/gm, '  '))
+      return [`- [${entry.label}](${entry.href})`, ...details].join('\n\n')
+    })
+    .join('\n\n')
+}
+
 function renderProjectIndex(context: SDKThemeContext): string {
   const project = context.page.project
   const parts: string[] = []
 
-  // Domain cards — one per domain, linking to the domain hub page.
-  const domainCards = DOMAINS.map(domain => {
+  // Domain entries — one per domain, linking to the domain hub page.
+  const domainEntries = DOMAINS.map(domain => {
     const description =
       domain.description ??
       (() => {
@@ -245,31 +264,27 @@ function renderProjectIndex(context: SDKThemeContext): string {
     }
     const footer = footerParts.join('\n')
 
-    const item: Record<string, unknown> = { type: 'link', href: domain.path, label: domain.label }
+    const item: IndexEntry = { href: `${domain.path}/index.md`, label: domain.label }
     if (description) item.description = description
-    if (footer) item.customProps = { footer }
+    if (footer) item.footer = footer
     return item
   })
   const domainsGroup = SIDEBAR_GROUPS.find(g => g.id === 'domains')!
-  parts.push(`## ${domainsGroup.header}`, `<DocCardList items={${JSON.stringify(domainCards)}} />`)
+  parts.push(`## ${domainsGroup.header}`, renderIndexEntries(domainEntries))
 
   const buildTypeGroup = SIDEBAR_GROUPS.find(g => g.id === 'build-type')!
-  const buildCards = STANDALONE_PAGES.filter(p => p.sidebarGroup === 'build-type')
+  const buildEntries = STANDALONE_PAGES.filter(p => p.sidebarGroup === 'build-type')
     .sort((a, b) => a.displayName.localeCompare(b.displayName))
     .map(p => {
       const raw = p.intro ? stripMarkdownLinks(p.intro) : ''
       const description = raw ? (raw.split(/\.(?:\s|$)/)[0]! + '.').trim() : ''
       const label = p.emoji ? `${p.emoji} ${p.displayName}` : p.displayName
-      const item: Record<string, string> = { type: 'link', href: p.id, label }
+      const item: IndexEntry = { href: `${p.id}.md`, label }
       if (description) item.description = description
       return item
     })
-  if (buildCards.length > 0) {
-    parts.push(
-      '---',
-      `## ${buildTypeGroup.header}`,
-      `<DocCardList items={${JSON.stringify(buildCards)}} />`,
-    )
+  if (buildEntries.length > 0) {
+    parts.push('---', `## ${buildTypeGroup.header}`, renderIndexEntries(buildEntries))
   }
 
   const defaultGroup = SIDEBAR_GROUPS.find(g => g.id === 'default')!
@@ -280,13 +295,13 @@ function renderProjectIndex(context: SDKThemeContext): string {
       c.name === 'Translations' &&
       c.kind === ReflectionKind.Namespace,
   )
-  const configItems: Record<string, string>[] = STANDALONE_PAGES.filter(
+  const configItems: IndexEntry[] = STANDALONE_PAGES.filter(
     p => !p.sidebarGroup && !p.id.includes('/'),
   ).map(p => {
     const raw = p.intro ? stripMarkdownLinks(p.intro) : ''
     const description = raw ? (raw.split(/\.(?:\s|$)/)[0]! + '.').trim() : ''
     const label = p.emoji ? `${p.emoji} ${p.displayName}` : p.displayName
-    const item: Record<string, string> = { type: 'link', href: p.id, label }
+    const item: IndexEntry = { href: `${p.id}.md`, label }
     if (description) item.description = description
     return item
   })
@@ -294,9 +309,8 @@ function renderProjectIndex(context: SDKThemeContext): string {
     const description = translationsNs.comment
       ? (context.helpers.getDescriptionForComment(translationsNs.comment) ?? '')
       : ''
-    const item: Record<string, string> = {
-      type: 'link',
-      href: 'Translations/',
+    const item: IndexEntry = {
+      href: 'Translations/index.md',
       label: '🌍 Translations',
     }
     if (description) item.description = description
@@ -312,9 +326,8 @@ function renderProjectIndex(context: SDKThemeContext): string {
     const description = apiModelsNs.comment
       ? (context.helpers.getDescriptionForComment(apiModelsNs.comment) ?? '')
       : ''
-    const item: Record<string, string> = {
-      type: 'link',
-      href: 'APIModels/',
+    const item: IndexEntry = {
+      href: 'APIModels/index.md',
       label: '🔷 API models',
     }
     if (description) item.description = description
@@ -324,11 +337,7 @@ function renderProjectIndex(context: SDKThemeContext): string {
   const labelText = (label: string) => label.replace(/^[^\w]+/, '').trim()
   configItems.sort((a, b) => labelText(a.label ?? '').localeCompare(labelText(b.label ?? '')))
   if (configItems.length > 0) {
-    parts.push(
-      '---',
-      `## ${defaultGroup.header}`,
-      `<DocCardList items={${JSON.stringify(configItems)}} />`,
-    )
+    parts.push('---', `## ${defaultGroup.header}`, renderIndexEntries(configItems))
   }
 
   return parts.join('\n\n')
@@ -345,7 +354,7 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
 
   const domainGuide = readDomainGuide(domainPath)
   if (domainGuide?.slots.overview) {
-    parts.push(fenceSlot(domainGuide.slots.overview, domainGuide.source, 'overview', true), '')
+    parts.push(fenceSlot(domainGuide.slots.overview, domainGuide.source, 'overview'), '')
   }
 
   const namespaces = (model.children ?? []).filter(
@@ -356,7 +365,7 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
   for (const ns of namespaces) {
     parts.push('---')
     const nsAnchor = ns.name.replace(/([A-Z])/g, m => `-${m.toLowerCase()}`).replace(/^-/, '')
-    parts.push(`## ${TYPE_EMOJIS.namespace} ${ns.name} {#${nsAnchor}}`, '')
+    parts.push(`<a id="${nsAnchor}"></a>`, '', `## ${TYPE_EMOJIS.namespace} ${ns.name}`, '')
 
     const nsDesc = ns.comment ? (context.helpers.getDescriptionForComment(ns.comment) ?? '') : ''
     if (nsDesc) parts.push(nsDesc, '')
@@ -376,11 +385,10 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
         c instanceof DeclarationReflection && isComponent(c) && !c.name.endsWith('Flow'),
     )
 
-    const cards: Record<string, string>[] = flows.map(comp => {
-      const href = context.urlTo(comp).replace(/\.md$/, '')
+    const entries: IndexEntry[] = flows.map(comp => {
+      const href = context.urlTo(comp)
       const description = getReflectionDescription(comp, context)
-      const item: Record<string, string> = {
-        type: 'link',
+      const item: IndexEntry = {
         href,
         label: `${TYPE_EMOJIS.flow} ${comp.name}`,
       }
@@ -394,15 +402,14 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
         ? nsPath.slice(domainPath.length + 1)
         : ''
       const subComponentsHref = nsRelPath ? `${nsRelPath}/blocks` : 'blocks'
-      cards.push({
-        type: 'link',
-        href: subComponentsHref,
+      entries.push({
+        href: `${subComponentsHref}.md`,
         label: `${TYPE_EMOJIS.block} ${blocks.length} block${blocks.length === 1 ? '' : 's'}`,
       })
     }
 
-    if (cards.length > 0) {
-      parts.push(`<DocCardList items={${JSON.stringify(cards)}} />`, '')
+    if (entries.length > 0) {
+      parts.push(renderIndexEntries(entries), '')
     }
   }
 
@@ -413,20 +420,20 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
     if (namespaces.length > 0) parts.push('---', '')
     parts.push(`## ${TYPE_EMOJIS.hooks} Hooks`, '')
     const hookItems = hookPages.map(hookNs => {
-      const href = context.urlTo(hookNs).replace(/\.md$/, '')
+      const href = context.urlTo(hookNs)
       const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
         hookNs.children?.[0]) as DeclarationReflection | undefined
       const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
       const emoji = hookNs.name.endsWith('Form') ? TYPE_EMOJIS.formHook : TYPE_EMOJIS.dataHook
-      const item: Record<string, string> = { type: 'link', href, label: `${emoji} ${hookNs.name}` }
+      const item: IndexEntry = { href, label: `${emoji} ${hookNs.name}` }
       if (description) item.description = description
       return item
     })
-    parts.push(`<DocCardList items={${JSON.stringify(hookItems)}} />`, '')
+    parts.push(renderIndexEntries(hookItems), '')
   }
 
   if (domainGuide?.slots.appendix) {
-    parts.push(fenceSlot(domainGuide.slots.appendix, domainGuide.source, 'appendix', true), '')
+    parts.push(fenceSlot(domainGuide.slots.appendix, domainGuide.source, 'appendix'), '')
   }
 
   return parts.join('\n')
@@ -435,16 +442,16 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
 function renderHooksIndex(context: SDKThemeContext, model: DeclarationReflection): string {
   const parts: string[] = [`# ${model.name}`, '']
   const hookItems = (model.children ?? ([] as DeclarationReflection[])).map(hookNs => {
-    const href = context.urlTo(hookNs).replace(/\.md$/, '')
+    const href = context.urlTo(hookNs)
     const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
       hookNs.children?.[0]) as DeclarationReflection | undefined
     const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
     const emoji = hookNs.name.endsWith('Form') ? TYPE_EMOJIS.formHook : TYPE_EMOJIS.dataHook
-    const item: Record<string, string> = { type: 'link', href, label: `${emoji} ${hookNs.name}` }
+    const item: IndexEntry = { href, label: `${emoji} ${hookNs.name}` }
     if (description) item.description = description
     return item
   })
-  parts.push(`<DocCardList items={${JSON.stringify(hookItems)}} />`)
+  parts.push(renderIndexEntries(hookItems))
   return parts.join('\n')
 }
 
@@ -489,17 +496,10 @@ function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflec
 /**
  * Wrap injected guide prose in a provenance comment naming its source GUIDE.md
  * and slot, so the content is traceable from the generated page (whose
- * frontmatter banner otherwise points only at TSDoc). `.md` pages parse as
- * CommonMark (HTML comments); `.mdx` hubs need MDX expression comments.
+ * frontmatter banner otherwise points only at TSDoc).
  */
-function fenceSlot(content: string, source: string, slot: GuideSlot, mdx: boolean): string {
-  const open = mdx
-    ? `{/* guide-source: ${source} (slot: ${slot}) */}`
-    : `<!-- guide-source: ${source} (slot: ${slot}) -->`
-  const close = mdx
-    ? `{/* /guide-source (slot: ${slot}) */}`
-    : `<!-- /guide-source (slot: ${slot}) -->`
-  return `${open}\n${content}\n${close}`
+function fenceSlot(content: string, source: string, slot: GuideSlot): string {
+  return `<!-- guide-source: ${source} (slot: ${slot}) -->\n${content}\n<!-- /guide-source (slot: ${slot}) -->`
 }
 
 /**
@@ -514,7 +514,7 @@ function renderGuidePage(rendered: string, guide: Guide): string {
   let result = rendered
 
   if (guide.slots.overview) {
-    const fenced = fenceSlot(guide.slots.overview, guide.source, 'overview', false)
+    const fenced = fenceSlot(guide.slots.overview, guide.source, 'overview')
     const lines = result.split('\n')
     // Insert before the first non-Example `##` heading: this keeps the overview
     // below a quick-start Example when one exists, and otherwise right after the
@@ -528,7 +528,7 @@ function renderGuidePage(rendered: string, guide: Guide): string {
   }
 
   if (guide.slots.appendix) {
-    result = `${result.trimEnd()}\n\n${fenceSlot(guide.slots.appendix, guide.source, 'appendix', false)}\n`
+    result = `${result.trimEnd()}\n\n${fenceSlot(guide.slots.appendix, guide.source, 'appendix')}\n`
   }
 
   return result
@@ -563,7 +563,7 @@ function bumpHeadings(md: string): string {
 function renderHookGuidePage(rendered: string, guide: Guide): string {
   const content = guide.slots.advanced
   if (!content) return rendered
-  const fenced = fenceSlot(bumpHeadings(content), guide.source, 'advanced', false)
+  const fenced = fenceSlot(bumpHeadings(content), guide.source, 'advanced')
   return `${rendered.trimEnd()}\n\n## Advanced\n\n${fenced}\n`
 }
 
@@ -712,7 +712,7 @@ function renderStandalonePage(
               continue
             rows.push({
               name: `${nsConfig.id}.${comp.name}`,
-              href: context.urlTo(comp).replace(/\.md(?=#|$)/, ''),
+              href: context.urlTo(comp),
               description: getReflectionDescription(comp, context),
             })
           }
@@ -732,7 +732,7 @@ function renderStandalonePage(
             hookNs.children?.[0]) as DeclarationReflection | undefined
           rows.push({
             name: hookNs.name,
-            href: context.urlTo(hookNs).replace(/\.md$/, ''),
+            href: context.urlTo(hookNs),
             description: primaryHook ? getReflectionDescription(primaryHook, context) : '',
           })
         }

@@ -4,8 +4,6 @@ description: Authenticate SDK requests to the Gusto Embedded API via a backend p
 order: 0
 ---
 
-import { AuthFlowDiagram } from './AuthFlowDiagram/index'
-
 To get started, you'll need to create a way to properly create and retrieve access tokens on behalf of your authenticated user from your application.
 
 Since there are a vast number of ways this might work for a partner, what we can suggest to get up and running is to implement a proxy server that handles translating requests from the SDK to the Gusto Embedded API.
@@ -18,7 +16,14 @@ To maximize compatibility with a wide range of partner security postures and imp
 
 The most simple implementation is one where a partner has a backend service that acquires OAuth2 tokens from the Gusto Embedded API on behalf of an authenticated user and then proxies calls to the Gusto Embedded API using those tokens. The following provides a high level graphical representation of how that configuration would look:
 
-<AuthFlowDiagram />
+```mermaid
+flowchart LR
+  app["Your app<br/>Renders SDK components and calls the proxy"]
+  proxy["Your backend proxy<br/>Authenticates, retrieves an OAuth2 token, and forwards requests"]
+  api["Gusto Embedded API<br/>Returns payroll data and resources"]
+  app -->|SDK request| proxy
+  proxy -->|Request with OAuth2 token| api
+```
 
 The `<GustoProvider>` can receive a `baseUrl` that can be configured with the address of your backend proxy service and can also be used if necessary to pass along vendor authentication credentials.
 
