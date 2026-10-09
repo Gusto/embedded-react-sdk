@@ -14,12 +14,18 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 export interface EmployeeListFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
+  /** When true, presents the self-onboarding toggle in the onboarding flow. Defaults to `true`. */
+  isSelfOnboardingEnabled?: boolean
+  /** When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. */
+  withEmployeeI9?: boolean
 }
 
 /** @internal */
 export interface EmployeeListFlowContextInterface extends FlowContextInterface {
   companyId: string
   employeeId?: string
+  isSelfOnboardingEnabled?: boolean
+  withEmployeeI9?: boolean
 }
 
 /** @internal */
@@ -48,6 +54,14 @@ export function TerminationFlowContextual() {
 
 /** @internal */
 export function OnboardingExecutionFlowContextual() {
-  const { companyId, onEvent } = useFlow<EmployeeListFlowContextInterface>()
-  return <OnboardingExecutionFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, onEvent, isSelfOnboardingEnabled, withEmployeeI9 } =
+    useFlow<EmployeeListFlowContextInterface>()
+  return (
+    <OnboardingExecutionFlow
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      isSelfOnboardingEnabled={isSelfOnboardingEnabled}
+      withEmployeeI9={withEmployeeI9}
+    />
+  )
 }
