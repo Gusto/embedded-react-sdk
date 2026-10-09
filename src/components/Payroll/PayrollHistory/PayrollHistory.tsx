@@ -9,7 +9,10 @@ import {
   QueryParamSortOrder as SortOrder,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
+import { UNSTABLE_PayrollHistory } from '../UNSTABLE_PayrollHistory/UNSTABLE_PayrollHistory'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
+import { getPayrollHistoryId } from './shared/payrollHistoryHelpers'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, BaseLayout } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -49,6 +52,8 @@ export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.Pay
  * @public
  */
 export function PayrollHistory(props: PayrollHistoryProps) {
+  const isHooksEnabled = useUnstableFeature('payrollHistoryHooks')
+  if (isHooksEnabled) return <UNSTABLE_PayrollHistory {...props} />
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -133,8 +138,9 @@ const Root = ({
   }
 
   const handleCancelPayroll = async (item: Payroll) => {
-    const payrollId = item.payrollUuid || item.uuid!
+    const payrollId = getPayrollHistoryId(item)
     try {
+      if (!payrollId) return
       await baseSubmitHandler(payrollId, async id => {
         const result = await cancelPayroll({
           request: {

@@ -69,6 +69,18 @@ const defaultProps = {
 }
 
 describe('PayrollHistoryPresentation', () => {
+  it('renders payrolls without identifiers without exposing actions that require an ID', async () => {
+    renderWithProviders(
+      <PayrollHistoryPresentation
+        {...defaultProps}
+        payrollHistory={[{ ...mockRegularPayroll, payrollUuid: undefined }]}
+      />,
+    )
+
+    expect(await screen.findByText('January 1–January 15, 2025')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Open menu' })).not.toBeInTheDocument()
+  })
+
   describe('tax reconciliation payrolls', () => {
     it('shows the check date in the pay period column instead of a blank cell', async () => {
       renderWithProviders(

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -12,7 +13,11 @@ import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 const mockEmptyPayrollData: never[] = []
 
-describe('PayrollHistory', () => {
+describe.each([
+  { implementation: 'legacy', unstableFeatures: {} },
+  { implementation: 'hooks', unstableFeatures: { payrollHistoryHooks: true } },
+])('PayrollHistory ($implementation)', ({ unstableFeatures }) => {
+  const renderComponent = (ui: ReactElement) => renderWithProviders(ui, { unstableFeatures })
   const onEvent = vi.fn()
   const user = userEvent.setup()
   const defaultProps = {
@@ -48,7 +53,7 @@ describe('PayrollHistory', () => {
 
   describe('rendering', () => {
     it('renders payroll history data correctly', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       // Wait for data to load and verify content
       await waitFor(() => {
@@ -82,7 +87,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('No payroll history')).toBeInTheDocument()
@@ -96,7 +101,7 @@ describe('PayrollHistory', () => {
     })
 
     test('applies custom className', async () => {
-      const { container } = renderWithProviders(
+      const { container } = renderComponent(
         <PayrollHistory {...defaultProps} className="custom-class" />,
       )
 
@@ -110,7 +115,7 @@ describe('PayrollHistory', () => {
 
   describe('payroll actions', () => {
     it('emits view summary event when summary is clicked', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       // Wait for data to load
       await waitFor(() => {
@@ -137,7 +142,7 @@ describe('PayrollHistory', () => {
     })
 
     it('emits view receipt event when receipt is clicked', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -174,7 +179,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -207,7 +212,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -259,7 +264,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -292,7 +297,7 @@ describe('PayrollHistory', () => {
 
   describe('API integration', () => {
     it('calls payrolls API with correct parameters', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -311,14 +316,14 @@ describe('PayrollHistory', () => {
 
       // Should throw error due to Suspense pattern
       expect(() => {
-        renderWithProviders(<PayrollHistory {...defaultProps} />)
+        renderComponent(<PayrollHistory {...defaultProps} />)
       }).not.toThrow()
     })
   })
 
   describe('internationalization', () => {
     it('uses correct i18n namespace', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       // Wait for component to render - this verifies i18n setup works
       await waitFor(() => {
@@ -329,7 +334,7 @@ describe('PayrollHistory', () => {
 
   describe('accessibility', () => {
     it('has proper heading structure', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: 'Payroll history' })).toBeInTheDocument()
@@ -337,7 +342,7 @@ describe('PayrollHistory', () => {
     })
 
     it('has accessible menu buttons', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         const menuButtons = screen.getAllByRole('button', { name: /open menu/i })
@@ -348,7 +353,7 @@ describe('PayrollHistory', () => {
 
   describe('totals handling', () => {
     it('displays amounts when totals are included in API response', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -391,7 +396,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -436,7 +441,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -478,7 +483,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -525,7 +530,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -572,7 +577,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -641,7 +646,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -689,7 +694,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
@@ -701,7 +706,7 @@ describe('PayrollHistory', () => {
 
   describe('date range filter', () => {
     it('renders filter trigger and shows date range picker in popover', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Payroll history')).toBeInTheDocument()
@@ -722,7 +727,7 @@ describe('PayrollHistory', () => {
     })
 
     it('passes default date params (6 months back through 3 months ahead) to the API', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(capturedPayrollListUrl).not.toBeNull()
@@ -754,7 +759,7 @@ describe('PayrollHistory', () => {
 
   describe('pagination', () => {
     it('includes page, per, and sort_order params in the API request', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(capturedPayrollListUrl).not.toBeNull()
@@ -779,7 +784,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
@@ -799,7 +804,7 @@ describe('PayrollHistory', () => {
         }),
       )
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('No payroll history')).toBeInTheDocument()
@@ -852,7 +857,7 @@ describe('PayrollHistory', () => {
       })
       server.use(http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, payrollsResolver))
 
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
+      renderComponent(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
