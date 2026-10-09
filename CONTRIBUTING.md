@@ -406,9 +406,10 @@ Generate reference docs with `npm run docs:api:generate`; the standalone
 TypeDoc configuration and plugins remain in `docs-site/`. Authored documentation,
 including content-specific components and assets, lives in `docs/`.
 
-The frontmatter, Markdown, and spelling checks remain available. There is no
-local MDX preview or replacement for the removed website build's page/anchor
-checks yet.
+The frontmatter, Markdown, and spelling checks remain available. A limited local
+MDX preview is available through npx; see the command and limitations in
+[Docs publishing spike](DOCS-PUBLISHING-SPIKE.md#npx-mdx-preview-experiment).
+There is no replacement for the removed website build's page/anchor checks yet.
 
 #### Markdown links
 

@@ -11,7 +11,34 @@ The monorepo experiment starts by checking in the current Docusaurus site
 configuration wholesale in a private static site app. That app owns website
 builds and publication, and fetches SDK documentation content from git tags.
 
-## Ownership rules
+## Recommended direction after the preview experiment
+
+The local MDX preview is clunky and adds an awkward authoring workflow. Do not
+pursue it as the recommended docs development experience. The long-term goal is
+Markdown-only documentation here, with no authored or generated MDX and no
+documentation-specific React components in the SDK repository.
+
+- Replace the one-off `AuthFlowDiagram` component with a Mermaid diagram inside
+  `authentication.md`. The diagram remains versioned documentation content;
+  the publishing app owns its rendering and styling.
+- Consider replacing generated `index.mdx` pages with declarative index data.
+  Preserve entries, headings/groups, ordering, labels, descriptions, relative
+  links, and summary/footer content alongside each SDK version.
+- Have TypeDoc emit that content data here and let the web app's build turn it
+  into MDX using the app-owned presentation components. Generated presentation
+  MDX would exist only in the publishing build, not in this repository.
+- The data format is still undecided. Structured frontmatter in `index.md` could
+  keep documentation files Markdown-only; a YAML/JSON manifest is another option
+  if separate content data files are acceptable. The web build would need an
+  explicit adapter for whichever format we choose.
+- Use regular Markdown previews for local authoring, with Mermaid support where
+  available. Keep broken-link and anchor checking as a separate unresolved need.
+
+These are recommendations to investigate, not implemented changes. They
+supersede the initial React/MDX ownership assumptions below. The preview is
+stopped; its code remains as a record of the experiment.
+
+## Initial spike ownership rules
 
 - The SDK repository owns authored Markdown/MDX, generated reference docs,
   content-specific React components, and their styles/assets.
@@ -71,8 +98,8 @@ not provide those checks.
 - The auth diagram uses an Infima border variable and a `data-theme="dark"`
   styling convention. Preserve dark-mode selectors and add a border fallback
   so it can render outside the website theme.
-- Local MDX preview and replacement page/anchor checking are not implemented
-  in the initial removal.
+- A limited local MDX preview is now available through the npx experiment below.
+  Replacement page/anchor checking remains unimplemented.
 - Older git tags still contain the original `@site` import. The web app must
   account for those historical paths when fetching earlier releases.
 
@@ -93,3 +120,71 @@ not provide those checks.
 - Local MDX rendering, rendered page/anchor validation, and the web app's tagged
   content build remain unverified. Bundling the diagram does not verify those
   behaviors.
+
+## npx MDX preview experiment
+
+From the repository root, with its existing dependencies installed:
+
+```sh
+npx --yes --package=@mdx-js/rollup@3.1.1 --package=remark-frontmatter@5.0.0 -- node build/previewMdx.mjs docs/getting-started/authentication.mdx
+```
+
+Open <http://127.0.0.1:5300/>. Stop the server with Ctrl+C. Supply another `.mdx`
+path as the last argument to preview a different document; omit it to default
+to authentication.
+
+The two temporary packages are fetched into npm's npx cache. The preview uses
+the repository's existing Vite, React, React DOM, and YAML dependencies. It adds
+no dependencies and changes no package manifest or lockfile. The launcher finds
+the temporary packages through the executable directories npx adds to `PATH`;
+npx does not automatically make those packages importable from repository files.
+Vite's generated cache goes into the system temporary directory.
+
+The small preview script handles frontmatter, provides a title and basic page
+styles, and compiles MDX plus relative TSX/CSS imports. It has no website
+navigation, Docusaurus theme, Mermaid renderer, syntax highlighting, or
+route/anchor checking. Cross-document links are not rewritten into preview
+routes. The title is read at startup; restart after changing it.
+
+Verified in visible Chrome using the look skill:
+
+- The authentication document renders with its colocated, styled diagram.
+- Frontmatter is hidden and its title appears as the page heading.
+- Temporary edits to both MDX text and the imported React component update the
+  preview. Those edits were restored afterward.
+- An initial React root warning during updates was fixed by disposing of the
+  previous root. Subsequent document/component updates produce no new errors.
+
+This verifies the authentication page only. Loading the reference index failed
+because its generated MDX requires a supplied `DocCardList`. A basic preview-only
+renderer was added, but browser verification was stopped before completion.
+Other MDX files may require extra components or rendering plugins.
+
+## Next work: broken internal links
+
+Read this file first when resuming. Work next on replacing the removed
+Docusaurus build's failures for broken internal page links, Markdown links,
+and anchors. Do not restart the preview experiment or implement the Mermaid
+and index-data recommendations as part of that work.
+
+- The repository currently has no replacement page/anchor checker. The existing
+  frontmatter, Markdown, and spelling commands do not provide that guarantee.
+- TypeDoc's `validation.invalidLink` is enabled, but its current generation run
+  exits successfully with warnings. Treat symbol-link validation separately
+  from checking links between documentation files and their anchors.
+- Begin by inspecting actual link forms in authored and generated docs. Account
+  for relative `.md`/`.mdx` links, paths without file extensions, directory indexes,
+  frontmatter slugs, explicit HTML anchors, and heading-derived anchors where
+  those occur. Current MDX also embeds link targets in `DocCardList` data.
+- The deleted scoped-heading Remark plugin supplied additional member-scoped
+  anchors at site-build time. Its original source is available in git history;
+  determine how those conventions affect validation without bringing the
+  Docusaurus site build back into this repository.
+- Keep the first implementation focused on internal links in the current docs
+  tree. Checking remote websites or the web app's historical-version builds is
+  a separate concern. Make any coverage limitations explicit.
+- Preserve TypeDoc generation and avoid unrelated router-test cleanup. The
+  existing router-test failure is documented above.
+
+The remaining preview experiment and recommendations are saved together for
+reference. No servers or browser review sessions are running.
