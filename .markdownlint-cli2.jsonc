@@ -1,6 +1,5 @@
 {
-  // Markdownlint config for the partner-facing docs at docs/**/*.md and the
-  // Docusaurus site source under docs-site/**/*.md(x). Rules are tuned to
+  // Markdownlint config for authored documentation. Rules are tuned to
   // match existing conventions:
   //   - YAML frontmatter supplies the page title; bodies still open with an
   //     `# H1` so the raw .md renders on GitHub. We tell MD025 to ignore the
@@ -26,15 +25,12 @@
     "MD046": { "style": "fenced" },
     "MD060": false,
   },
-  "globs": ["docs/**/*.md", "docs-site/**/*.md", "docs-site/**/*.mdx"],
+  "globs": ["docs/**/*.md", "docs/**/*.mdx"],
   "ignores": [
     "**/node_modules/**",
     "docs/reference/**",
     "docs/appendix/endpoint-reference.md",
     "docs/test-fests/**",
-    "docs-site/build/**",
-    "docs-site/.docusaurus/**",
-    "docs-site/versioned_docs/**",
     "CHANGELOG.md",
   ],
 }

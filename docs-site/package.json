@@ -1,61 +1,17 @@
 {
-  "name": "embedded-react-sdk-docs",
+  "name": "embedded-react-sdk-docs-generator",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
     "typedoc": "typedoc --options typedoc.config.ts",
-    "test": "vitest run",
-    "docs:version": "docusaurus docs:version"
-  },
-  "dependencies": {
-    "@docusaurus/core": "^3.7.0",
-    "@docusaurus/preset-classic": "^3.7.0",
-    "@docusaurus/theme-mermaid": "^3.10.1",
-    "@easyops-cn/docusaurus-search-local": "^0.55.1",
-    "@mdx-js/react": "^3.0.0",
-    "clsx": "^2.0.0",
-    "prism-react-renderer": "^2.3.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "test": "vitest run"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.7.0",
-    "@docusaurus/tsconfig": "^3.7.0",
-    "@docusaurus/types": "^3.7.0",
-    "docusaurus-plugin-typedoc": "^1.4.2",
     "typedoc": "^0.28.19",
     "typedoc-plugin-markdown": "^4.12.0",
     "typescript": "~5.8.0",
     "vite": "^8.0.16",
     "vitest": "^5.0.0"
-  },
-  "overrides": {
-    "joi": "^17.13.7",
-    "js-yaml": "^4.2.0",
-    "gray-matter": {
-      "js-yaml": "^3.13.1"
-    },
-    "serialize-javascript": "^7.0.5",
-    "uuid": "^11.1.1"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 3 chrome version",
-      "last 3 firefox version",
-      "last 5 safari version"
-    ]
   },
   "engines": {
     "node": ">=18.0"

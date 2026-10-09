@@ -494,10 +494,8 @@ jobs:
       - name: Build Storybook
         run: npm run build-storybook
 
-  # Docs build job: validates the Docusaurus site compiles, catching broken
-  # links/anchors (onBrokenLinks: 'throw') at PR time rather than at release
-  # time. Uses its own node_modules under docs-site/ — not the root cache.
-  docs-build:
+  # Independent documentation checks; website builds live in the web app.
+  docs-lint:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -521,13 +519,6 @@ jobs:
 
       - name: Spell check docs
         run: npm run docs:lint:spell
-
-      - name: Install docs dependencies
-        working-directory: docs-site
-        run: npm ci
-
-      - name: Build docs
-        run: npm run docs:build
 
   # SDK app build job: validates the dev app's vite config and entry compile
   sdk-app-build:

@@ -14,7 +14,7 @@
   gap: 0.35rem;
   padding: 1rem 1.25rem;
   background-color: #ffffff;
-  border: 1px solid var(--ifm-toc-border-color);
+  border: 1px solid var(--ifm-toc-border-color, #dadde1);
   border-radius: 10px;
   text-align: center;
 }

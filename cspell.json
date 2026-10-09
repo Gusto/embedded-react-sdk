@@ -3,18 +3,13 @@
   "version": "0.2",
   "language": "en",
   "dictionaries": ["en_US", "node", "typescript", "npm", "softwareTerms", "html", "css"],
-  "files": ["docs/**/*.md", "docs-site/**/*.{md,mdx,ts,tsx}"],
+  "files": ["docs/**/*.{md,mdx,tsx}"],
   "ignorePaths": [
     "**/node_modules/**",
     "docs/reference/**",
     "docs/guides/endpoint-reference.md",
     "docs/guides/endpoint-inventory.json",
     "docs/test-fests/**",
-    "docs-site/**/*.ts",
-    "docs-site/build/**",
-    "docs-site/.docusaurus/**",
-    "docs-site/versioned_docs/**",
-    "docs-site/plugins/typedoc-custom/**",
     "CHANGELOG.md"
   ],
   "ignoreRegExpList": [
