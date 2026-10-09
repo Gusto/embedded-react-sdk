@@ -32,7 +32,7 @@ documentation-specific React components in the SDK repository.
   if separate content data files are acceptable. The web build would need an
   explicit adapter for whichever format we choose.
 - Use regular Markdown previews for local authoring, with Mermaid support where
-  available. Keep broken-link and anchor checking as a separate unresolved need.
+  available. Use the Markdownlint link checks described below.
 
 These are recommendations to investigate, not implemented changes. They
 supersede the initial React/MDX ownership assumptions below. The preview is
@@ -70,8 +70,8 @@ of that as part of the initial removal.
 Keep existing frontmatter, Markdown, and spelling checks. TypeDoc's
 `validation.invalidLink` remains enabled, but does not replace rendered-site
 link checking. We want errors on broken internal page links, Markdown links,
-and anchors; record the gap until a replacement exists. Compilation alone does
-not provide those checks.
+and anchors; the Markdownlint rules below cover ordinary Markdown links.
+Compilation alone does not provide those checks.
 
 ## Initial removal
 
@@ -99,7 +99,7 @@ not provide those checks.
   styling convention. Preserve dark-mode selectors and add a border fallback
   so it can render outside the website theme.
 - A limited local MDX preview is now available through the npx experiment below.
-  Replacement page/anchor checking remains unimplemented.
+  Markdown source-link checking is now available as described below.
 - Older git tags still contain the original `@site` import. The web app must
   account for those historical paths when fetching earlier releases.
 
@@ -160,14 +160,46 @@ because its generated MDX requires a supplied `DocCardList`. A basic preview-onl
 renderer was added, but browser verification was stopped before completion.
 Other MDX files may require extra components or rendering plugins.
 
-## Next work: broken internal links
+## Markdown link checking
+
+Run `npm run docs:lint:markdown` from the repository root. The existing docs CI
+step runs the same command. Link validation uses existing Markdownlint rules;
+there is no custom checker or separate link-check command.
+
+- Built-in `MD051` checks same-document heading fragments and explicit anchors.
+- `markdownlint-rule-relative-links` checks that relative Markdown links and
+  images target existing files, and validates cross-file anchors for `.md`
+  targets. It skips external URLs and absolute paths.
+- Generated reference docs are included with only these link rules enabled;
+  authored docs retain their existing style rules as well.
+- The generated `reference/blocks.md`, `hooks.md`, and `workflows.md` indexes
+  receive only `MD051`: their website routes without file extensions are not filesystem
+  links and must be validated by the publishing app.
+
+Verification: Markdownlint passes across 116 documents. A temporary fixture
+confirmed failures for a missing file, a missing cross-file `.md` anchor, and a
+missing local anchor, while a valid cross-file link passed.
+
+This is source-file validation, not a replacement for every Docusaurus build
+check. The rule does not validate cross-file anchors on `.mdx` targets, HTML/JSX
+links, `DocCardList` data, frontmatter slugs, or website routes without file extensions.
+It does not reproduce the deleted scoped-heading plugin's member anchors.
+The publishing app owns rendered routes, scoped anchors, navigation, historical
+versions, and any pages built from index data. TypeDoc's symbol-link validation
+remains separate.
+
+This fits the recommended Markdown-only direction: replace MDX presentation with
+versioned index data and render it in the publishing app. Converting that content
+is still future work; the link-check change does not remove current MDX files.
+
+## Original handoff: broken internal links
 
 Read this file first when resuming. Work next on replacing the removed
 Docusaurus build's failures for broken internal page links, Markdown links,
 and anchors. Do not restart the preview experiment or implement the Mermaid
 and index-data recommendations as part of that work.
 
-- The repository currently has no replacement page/anchor checker. The existing
+- At handoff the repository had no replacement page/anchor checker. The existing
   frontmatter, Markdown, and spelling commands do not provide that guarantee.
 - TypeDoc's `validation.invalidLink` is enabled, but its current generation run
   exits successfully with warnings. Treat symbol-link validation separately

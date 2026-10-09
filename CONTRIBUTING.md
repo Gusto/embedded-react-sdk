@@ -409,7 +409,10 @@ including content-specific components and assets, lives in `docs/`.
 The frontmatter, Markdown, and spelling checks remain available. A limited local
 MDX preview is available through npx; see the command and limitations in
 [Docs publishing spike](DOCS-PUBLISHING-SPIKE.md#npx-mdx-preview-experiment).
-There is no replacement for the removed website build's page/anchor checks yet.
+Run `npm run docs:lint:markdown` to check relative Markdown file links and `.md`
+anchors alongside the existing style rules. Generated reference docs receive
+only link checks. Website routes, scoped anchors, and MDX presentation links
+remain the publishing app's responsibility; see the spike notes for coverage.
 
 #### Markdown links
 

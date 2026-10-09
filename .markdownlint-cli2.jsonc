@@ -24,13 +24,30 @@
     "MD041": false,
     "MD046": { "style": "fenced" },
     "MD060": false,
+    "relative-links": false,
   },
-  "globs": ["docs/**/*.md", "docs/**/*.mdx"],
-  "ignores": [
-    "**/node_modules/**",
-    "docs/reference/**",
-    "docs/appendix/endpoint-reference.md",
-    "docs/test-fests/**",
-    "CHANGELOG.md",
+  "customRules": ["markdownlint-rule-relative-links"],
+  "overrides": [
+    {
+      "filter": [
+        "docs/reference/blocks.md",
+        "docs/reference/hooks.md",
+        "docs/reference/workflows.md",
+      ],
+      "combine": "replace",
+      "config": { "default": false, "MD051": true },
+    },
+    {
+      "filter": ["docs/reference/**", "docs/appendix/endpoint-reference.md"],
+      "combine": "replace",
+      "config": { "default": false, "MD051": true, "relative-links": true },
+    },
+    {
+      "filter": ["docs/**"],
+      "combine": "merge",
+      "config": { "relative-links": true },
+    },
   ],
+  "globs": ["docs/**/*.md", "docs/**/*.mdx"],
+  "ignores": ["**/node_modules/**", "docs/test-fests/**", "CHANGELOG.md"],
 }
