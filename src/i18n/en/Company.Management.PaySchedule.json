@@ -1,13 +1,22 @@
 {
   "title": "Pay schedule",
   "description": "You have assigned everyone to be on one pay schedule.",
+  "compensationDescription": "You have assigned employees to pay schedules by compensation type.",
+  "compensationTableLabel": "Pay schedules by compensation type",
   "manageCta": "Manage",
   "editCta": "Edit",
+  "editScheduleCta": "Edit schedule",
   "editScheduleAriaLabel": "Edit pay schedule",
   "editAutoPilotAriaLabel": "Edit AutoPilot",
+  "rowMenuTriggerLabel": "Pay schedule actions",
   "labels": {
     "name": "Name",
-    "frequency": "Frequency"
+    "frequency": "Frequency",
+    "schedule": "Schedule"
+  },
+  "compensationTypes": {
+    "hourly": "Hourly",
+    "salaried": "Salaried"
   },
   "autoPilot": {
     "label": "AutoPilot",
