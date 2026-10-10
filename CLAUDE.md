@@ -13,7 +13,7 @@ npm run test:e2e       # Run E2E tests (requires gws-flows + ZenPayroll running)
 npm run dev:setup      # Link SDK into gws-flows for local development
 npm run i18n:generate  # Generate translation types
 npm run derive         # Regenerate all derived files (runs build first; standalone)
-                       # Prerequisite: cd docs-site && npm ci (if docs-site deps not yet installed)
+                       # Prerequisite: cd typedoc && npm ci (if typedoc deps not yet installed)
 ```
 
 ## SDK Dev App

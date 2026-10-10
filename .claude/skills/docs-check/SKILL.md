@@ -1,42 +1,49 @@
 ---
 name: docs-check
 description: >-
-  Verify the docs site is publish-ready: frontmatter lint + production build
-  (catches broken links/anchors the dev server tolerates). Use before finishing
-  docs work or opening a docs PR, or on "check/verify the docs".
+  Verify documentation source: frontmatter, Markdown links and anchors, spelling,
+  and generated reference content. Use before finishing docs work or opening a
+  docs PR, or on "check/verify the docs".
 ---
 
-# Check the docs before you're done
+# Check the documentation source
 
-Run from the repo root, in order. Stop at the first failure and report its output.
+Run from the repository root. If TSDoc or reference generation configuration
+changed, regenerate first:
 
 ```bash
-test -d docs-site/node_modules || npm run docs:install
-npm run derive        # 1. regenerate reference so checks run against what publishes
-npm run docs:lint     # 2. every docs/**/*.md needs title + description frontmatter
-npm run docs:build    # 3. the real gate — broken links/anchors throw
+test -d typedoc/node_modules || npm run docs:install
+npm run docs:api:generate
+git diff -- docs/reference/
 ```
 
-- **`derive`** rebuilds the generated reference. If TSDoc or reference config changed
-  since the last regen, the build would otherwise pass against stale content. After it
-  runs, review `git diff docs/reference/` — unexpected churn is itself a finding.
-  (`docs-regen` has the fast iterate-only path; for a publish check, `derive` is right.)
-- **`docs:build`** is configured to throw on any broken link or anchor
-  (`onBrokenLinks` / `onBrokenAnchors` / `onBrokenMarkdownLinks` are all `'throw'`), so
-  it catches what the dev server tolerates. The release build fails the same way.
+Use `npm run derive` when the task also changes artifacts needed by generation,
+such as the SDK build, API models, or endpoint inventory.
 
-## When a build check fails
+Then run the source checks:
 
-- **Broken link/anchor** — the error names the source page and bad target. Fix the
-  relative markdown link, or the navbar/footer `to:` path in `docs-site/docusaurus.config.ts`.
-- **Missing frontmatter** — add `title` and `description` to the named file.
-- **Failure under `docs/reference/**`** — don't hand-edit generated files; see
-  `docs-regen` and `docs-change-ia`.
+```bash
+npm run docs:lint
+npm run docs:lint:markdown
+npm run docs:lint:spell
+```
+
+Review unexpected generated diffs. These commands check documentation source;
+they do not build the publishing app or prove that rendered routes and navigation
+work. See [docs-shared.md](../../doc-guides/docs-shared.md) for coverage and ownership.
+
+## When a check fails
+
+- Missing frontmatter: add `title` and `description` to the source file.
+- Broken Markdown link or anchor: fix the relative file target or heading/anchor.
+- Generated reference failure: fix TSDoc or TypeDoc configuration and regenerate;
+  never patch `docs/reference/**` directly.
+- Rendered-site failure: investigate in the separate publishing app.
 
 ## Verifying a Flow component's reference page
 
 When a task touches a Flow component's generated page, check these by reading the source
-(`*StateMachine.ts`, `*Components.tsx`, TSDoc on the flow function) — the build won't
+(`*StateMachine.ts`, `*Components.tsx`, TSDoc on the flow function) — the source checks won't
 catch them, but they're the difference between a good and a misleading reference.
 
 ### 1. Does it have a GUIDE.md with a step-flow diagram?

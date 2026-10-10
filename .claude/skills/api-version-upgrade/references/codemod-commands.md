@@ -73,7 +73,7 @@ Instruction docs name the pinned version in prose (import paths there already us
 
 - `CHANGELOG.md` — historical; previous version mentions are correct as-is.
 - `.reports/*` — auto-generated; regenerates via `npm run derive`.
-- `docs/` / `docs-site/` partner-facing samples — these must reference the **real published package name** (`@gusto/embedded-api-v-<DATE>`), since integrators don't have our internal alias. If the reference docs embed the version, they regenerate from TSDoc via `npm run derive`; don't hand-edit.
+- `docs/` partner-facing samples — these must reference the **real published package name** (`@gusto/embedded-api-v-<DATE>`), since integrators don't have our internal alias. If the reference docs embed the version, they regenerate from TSDoc via `npm run derive`; don't hand-edit.
 - `.claude/worktrees/` — sibling worktrees; not part of this checkout.
 
 ### 6. `sdk-app` prototype query-key literals

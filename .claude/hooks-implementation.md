@@ -424,7 +424,7 @@ runtime" symptom, opposite answer — the universe-finiteness is what decides.
   in the emitted `.d.ts` to the concrete object type and removes the orphaned
   unexported `declare function`, so API Extractor emits no `ae-forgotten-export`
   for the builder.
-- `renderFieldsMetadataAlias` in `docs-site/plugins/typedoc-custom/theme.ts`
+- `renderFieldsMetadataAlias` in `typedoc/typedoc-custom/theme.ts`
   collapses the expanded ready-state rows into a single link and renders the
   `### {Domain}FieldsMetadata` section as the per-field table. For a pure
   index-signature alias (no per-field rows to collapse) it just links the

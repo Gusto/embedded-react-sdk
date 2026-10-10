@@ -1,7 +1,7 @@
 import { ESLintUtils } from '@typescript-eslint/utils'
 import type { TSESTree } from '@typescript-eslint/utils'
 import { getTSDocComment } from './utils'
-import { VALID_GROUPS } from '../docs-site/typedoc-utils.ts'
+import { VALID_GROUPS } from '../typedoc/typedoc-utils.ts'
 
 const SORTED_VALID_GROUPS = [...VALID_GROUPS].sort()
 

@@ -261,9 +261,9 @@ jobs:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
-      - name: Install docs-site dependencies
+      - name: Install typedoc dependencies
         run: npm ci
-        working-directory: docs-site
+        working-directory: typedoc
 
       # TypeDoc reads src/models/external.ts; use the single canonical barrel from
       # derive-models so the docs reflect the same external.ts as the API report.

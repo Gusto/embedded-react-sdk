@@ -2,6 +2,6 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    include: ['plugins/**/*.test.ts'],
+    include: ['typedoc-custom/**/*.test.ts'],
   },
 })

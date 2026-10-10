@@ -1,101 +1,74 @@
 ---
 name: docs-change-ia
 description: >-
-  Reorganize the docs site's IA — move/split pages, reorder/relabel the sidebar,
-  restructure the reference. Use when a docs task touches docs-site/sidebars.ts,
-  page placement, or nav structure, or on "reorganize docs"/"move this page".
-argument-hint: '[what you want to reorganize — e.g. "move theming guide next to the reference"]'
+  Reorganize documentation content: move or split authored Markdown pages, change
+  generated reference routing, or inject GUIDE.md prose. Use for page placement,
+  reference structure, or "reorganize docs"/"move this page". Website navigation
+  changes belong in the separate publishing app.
+argument-hint: '[what documentation content to reorganize]'
 ---
 
-# Reorganize the docs-site IA
+# Reorganize documentation content
 
-The docs site is a [Docusaurus](https://docusaurus.io) site. For the script map and the
-hand-authored-vs-generated content model (which everything below hinges on), see
-[`docs-shared.md`](../../doc-guides/docs-shared.md). Deep reference internals are in `REFERENCE.md` in
-this folder. The docs are **partner-facing** — follow the writing rules in the root
-`CLAUDE.md`.
-
-**Never hand-edit a file under `docs/reference/`** — it's regenerated and your changes
-are overwritten. To change generated content or structure, see `REFERENCE.md`.
+See [docs-shared.md](../../doc-guides/docs-shared.md) for commands, content ownership,
+and source-check coverage. Read `REFERENCE.md` before touching generated reference
+structure, TypeDoc configuration, or `GUIDE.md` files. Follow the partner-facing
+writing rules in root `CLAUDE.md`.
 
 ## Where things live
 
-- `docs/` — all content (hand-authored markdown + generated reference output).
-- `docs-site/sidebars.ts` — the sidebar tree. **This is your main lever.**
-- `docs-site/docusaurus.config.ts` — site config, **navbar/footer links**. These are
-  hardcoded `to:` paths; if you move a page they point to, update them here too.
-- `docs-site/plugins/typedoc-custom/router.config.ts` — the reference IA (see `REFERENCE.md`).
+- `docs/`: authored Markdown and generated content.
+- `typedoc/typedoc-custom/router.config.ts`: reference page structure and routing.
+- `typedoc/typedoc.config.ts` and `typedoc/typedoc-utils.ts`: TypeDoc configuration
+  and group ordering.
+- The separate publishing app: sidebar grouping, website routes, search,
+  version selection, and presentation.
 
-## Verify before you're done
+## Create a standalone page
 
-```bash
-npm run docs:lint       # frontmatter valid (title + description on every page)
-npm run docs:build      # production build — REQUIRED; broken links/anchors throw
-```
-
-`docs:build` is non-negotiable: the dev server tolerates broken links, the build (and
-the release build) does not. If you touched reference _structure_, also run
-`npm run derive` first — see `REFERENCE.md`.
-
-## Common tasks
-
-### Create a standalone page
-
-Create `docs/<section>/<slug>.md` with required frontmatter (both fields, or lint/build
-fails):
+Create `docs/<section>/<slug>.md` with required frontmatter:
 
 ```markdown
 ---
 title: Your Page Title
-description: One-sentence summary — shows in search results and link previews.
+description: One-sentence summary of the content.
 ---
 ```
 
-Register it in `docs-site/sidebars.ts` by doc id (path under `docs/`, no extension), or
-the object form for a custom sidebar label:
+Link to it with relative Markdown file paths. Registration in website navigation
+is publishing-app work; adding a file here does not guarantee a sidebar entry.
 
-```ts
-items: [
-  'getting-started/quick-start',
-  'getting-started/your-new-page', // by id
-  { type: 'doc', id: 'getting-started/your-new-page', label: 'Short label' },
-]
+## Move or split a page
+
+1. Move authored content into its new Markdown file, preserving required frontmatter.
+2. Update inbound relative links and affected anchors. For links emitted by a
+   generator, update its source and regenerate instead of editing its output.
+3. Identify any website routes or navigation entries that need corresponding
+   changes in the publisher. Source-file checks cannot validate those entries.
+
+## Change generated reference structure
+
+Never hand-edit `docs/reference/**`. Change source TSDoc or the TypeDoc plugin's
+configuration and regenerate. Domain and standalone-page configuration controls
+which pages exist and how indexes group their content; it does not emit website
+sidebar positions or category files.
+
+Fold authored prose into a generated domain, flow, or hook page through `GUIDE.md`
+slots. Change on-page ordering through TypeDoc group configuration and `@group`
+tags. Both mechanisms are documented in `REFERENCE.md`.
+
+## Verify the change
+
+After changing reference content or structure, run `npm run docs:api:generate`
+and inspect `git diff -- docs/reference/`. Use the full `npm run derive` pipeline
+when upstream generated artifacts also changed.
+
+```bash
+npm run docs:lint
+npm run docs:lint:markdown
+npm run docs:lint:spell
 ```
 
-### Move content into a standalone page
-
-1. Create the new page (above) and cut the content over.
-2. **Fix every inbound link** — relative markdown links, navbar/footer `to:` paths in
-   `docusaurus.config.ts`, cross-references in other pages. Broken links fail the build.
-3. Add the new page to `sidebars.ts`.
-
-### Reorder or relabel sidebar items
-
-Edit `docs-site/sidebars.ts`. Order within a category's `items` array **is** the sidebar
-order; labels come from `label`; categories take `collapsed` / `collapsible`. Items under
-the **Reference** category are auto-generated — their order/labels are set in `REFERENCE.md`.
-
-### Group hand-authored pages with auto-generated reference
-
-A category's `items` can mix manually listed docs with the autogenerated block. Two ways:
-
-- **Sidebar grouping** — put a hand-authored page and a generated reference page in the
-  same category. ⚠️ The generated page is _already_ in the `{ type: 'autogenerated' }`
-  block, so listing it again makes it appear twice; drop the duplicate via the
-  `sidebarItemsGenerator` hook in `docusaurus.config.ts` (worked example in `REFERENCE.md`).
-- **Page-level prose injection** — fold hand-authored prose _into_ a generated hub/flow
-  page via a `GUIDE.md` slot, so narrative and generated API tables read as one page
-  (mechanism in `REFERENCE.md`).
-
-If you only need the pages _near_ the reference (not merged), sidebar grouping is simpler
-— or just reorder the top-level categories so e.g. **Theming** sits next to **Reference**.
-
-### Order content within a generated reference page
-
-Pages like `reference/theme-variables` are generated; on-page order comes from TypeDoc
-config and `@group` tags in source, not from editing the page. See `REFERENCE.md`.
-
----
-
-Read `REFERENCE.md` before any task touching `docs/reference/**`, `router.config.ts`, or
-`GUIDE.md` files.
+Run `npm --prefix typedoc run test` when changing plugin logic. See the publishing
+spike for the known router-test failure. Rendered navigation, routes, Mermaid,
+and historical versions require separate publishing-app verification.

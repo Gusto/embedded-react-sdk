@@ -403,7 +403,7 @@ for ownership rules, scope, and known gaps. This is not a production publishing
 migration.
 
 Generate reference docs with `npm run docs:api:generate`; the standalone
-TypeDoc configuration and plugins remain in `docs-site/`. Authored Markdown and
+TypeDoc configuration and plugins remain in `typedoc/`. Authored Markdown and
 content assets live in `docs/`. Authentication uses a fenced Mermaid diagram;
 the publishing app owns its rendering. Generated indexes use ordinary Markdown
 links and descriptions.

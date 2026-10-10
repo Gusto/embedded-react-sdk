@@ -29,7 +29,7 @@ import {
   STANDALONE_PAGES,
   type PageLayout,
 } from './router.config.ts'
-import { CUSTOM_GROUPS, GROUP_ORDER } from '../../typedoc-utils.ts'
+import { CUSTOM_GROUPS, GROUP_ORDER } from '../typedoc-utils.ts'
 import {
   findHookResultAlias,
   getFormHookModel,
@@ -65,7 +65,7 @@ const API_MODELS_NAMESPACE = 'APIModels'
  * behavior (unlike `@internal`, which `excludeInternal` strips) — left alone
  * they render as an "Alpha"/"Beta" badge instead of disappearing. Kept as
  * `@alpha`/`@beta` in source (rather than `@internal`) so API Extractor's
- * release-tag report ({@link file://../../../.reports/embedded-react-sdk.api.md})
+ * release-tag report ({@link file://../../.reports/embedded-react-sdk.api.md})
  * still classifies these exports correctly; this list only controls the docs site.
  */
 const UNRELEASED_MODIFIER_TAGS = ['@alpha', '@beta'] as const

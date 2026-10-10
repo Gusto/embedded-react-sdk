@@ -55,7 +55,7 @@ export type CustomGroupTag = (typeof CUSTOM_GROUPS)[keyof typeof CUSTOM_GROUPS]
  * `ReflectionKind`, exactly as `ReflectionKind.pluralString` emits them. TypeDoc
  * owns these strings; they're mirrored here (rather than imported) so this module
  * stays dependency-free and importable by the eslint rule, which runs outside
- * docs-site where `typedoc` isn't resolvable. Referenced by name in
+ * typedoc where `typedoc` isn't resolvable. Referenced by name in
  * {@link GROUP_ORDER} so the built-in groups slot in alongside {@link CUSTOM_GROUPS}.
  */
 export const DEFAULT_GROUPS = {

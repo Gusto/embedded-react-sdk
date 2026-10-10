@@ -31,9 +31,10 @@ documentation-specific React components.
   consent, analytics, and publishing configuration. The website homepage also
   belongs to that app. The latest published version supplies the default
   documentation index.
-- Keep TypeDoc configuration, its custom router/theme, and generation commands
-  in `docs-site/` for now to avoid unrelated tooling path changes. That directory
-  contains generation tooling only.
+- TypeDoc configuration and generation commands live in `typedoc/`.
+  Its custom router/theme plugin lives directly in `typedoc/typedoc-custom/`.
+  The directory contains generation tooling only; it was renamed from `docs-site/`
+  after removing the site runtime.
 
 The intentional presentation tradeoff is losing the `DocCardList` card layout.
 Try the readable Markdown indexes first. Introduce declarative index data only
@@ -96,7 +97,7 @@ npm run docs:api:generate
 npm run docs:lint
 npm run docs:lint:markdown
 npm run docs:lint:spell
-npm --prefix docs-site run test
+npm --prefix typedoc run test
 ```
 
 The last command runs Vitest once and exits. It currently includes the known

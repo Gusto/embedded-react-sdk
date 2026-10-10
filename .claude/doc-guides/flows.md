@@ -137,7 +137,7 @@ Don't reach for: prefix-stripping event names (breaks the verbatim-event convent
 ### Styling
 
 - Double round-trip edges (`<-->`) get a slightly thicker stroke: `linkStyle <indices> stroke-width:2.5px`.
-- Color vars, the handDrawn theme, and the `branch`/`flow` classes are centralized in `docs-site/docusaurus.config.ts` — don't add per-diagram `classDef`s.
+- The publishing app owns Mermaid theme colors and styling for the `branch`/`flow` classes. Keep diagram structure and labels here; use a Mermaid-capable Markdown preview or the publishing app to check rendering.
 
 ### Verify before finalizing
 

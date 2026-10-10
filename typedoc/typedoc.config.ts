@@ -3,7 +3,7 @@ import { type PluginOptions } from 'typedoc-plugin-markdown'
 import { GROUP_ORDER } from './typedoc-utils.ts'
 
 export const baseOptions = {
-  plugin: ['./plugins/typedoc-custom/index.ts'],
+  plugin: ['./typedoc-custom/index.ts'],
   name: '@gusto/embedded-react-sdk',
   tsconfig: 'tsconfig.typedoc.json',
   entryPoints: ['../src/index.ts'],

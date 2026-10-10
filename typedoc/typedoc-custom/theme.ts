@@ -51,7 +51,7 @@ import {
   TYPE_EMOJIS,
   type PageLayout,
 } from './router.config.ts'
-import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
+import { CUSTOM_GROUPS } from '../typedoc-utils.ts'
 import {
   findHookResultAlias,
   formHookModelForPage,
@@ -90,7 +90,7 @@ function getEndpointInventory(): EndpointInventory {
   if (!cachedInventory) {
     const inventoryPath = posix.join(
       posix.dirname(fileURLToPath(import.meta.url)),
-      '../../../docs/guides/endpoint-inventory.json',
+      '../../docs/guides/endpoint-inventory.json',
     )
     if (!existsSync(inventoryPath)) {
       throw new Error(

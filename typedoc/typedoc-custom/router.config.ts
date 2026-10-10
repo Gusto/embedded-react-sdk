@@ -25,7 +25,7 @@
  * To add a domain: append an entry. `path` doubles as the source-dir lookup
  * (`time-off` → `src/components/TimeOff`), so a GUIDE.md there is slotted into the hub.
  */
-import { CUSTOM_GROUPS, type CustomGroupTag } from '../../typedoc-utils.ts'
+import { CUSTOM_GROUPS, type CustomGroupTag } from '../typedoc-utils.ts'
 
 export const SIDEBAR_GROUPS = [
   { id: 'domains', header: 'Browse by domain' },
@@ -327,13 +327,13 @@ type NamespaceConfig = {
   subpath?: string
 }
 type DomainConfig = {
-  /** Sidebar category label and domain hub H1 (e.g. `Employees`). */
+  /** Domain hub title and reference index label (e.g. `Employees`). */
   label: string
   /** Lowercase output slug and source-dir lookup key (e.g. `employee`, `time-off`). */
   path: string
   /** Namespaces under this domain, in render order. */
   namespaces: NamespaceConfig[]
-  /** Description for the reference index card. Describes the full domain scope across all namespaces. */
+  /** Description for the reference index entry. Describes the full domain scope across all namespaces. */
   description?: string
 }
 
@@ -347,12 +347,12 @@ export type StandalonePageConfig = {
   /** Page H1 and synthetic namespace name. */
   displayName: string
   /**
-   * Which top-level sidebar section this page belongs to. Omit for domain-scoped pages
+   * Which reference index section this page belongs to. Omit for domain-scoped pages
    * (e.g. `employee/types`) that live inside a domain directory rather than appearing
-   * in the top-level reference sidebar groups.
+   * in the top-level reference index groups.
    */
   sidebarGroup?: SidebarGroup
-  /** Emoji prefix for the reference index card label. Does not affect the page H1. */
+  /** Emoji prefix for the reference index entry label. Does not affect the page H1. */
   emoji?: string
   /**
    * Optional Markdown prose rendered as the page's leading description, above
