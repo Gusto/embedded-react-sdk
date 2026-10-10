@@ -80,8 +80,8 @@ introduction's slug changes its default route; the publisher must explicitly
 assign the docs root if it wants to preserve `/docs/`.
 
 The earlier publishing preview was built with category files. A publishing build
-without category files or the removed frontmatter has not been verified; its previous sidebar-module
-adapter remains a separate publisher issue.
+without category files or the removed frontmatter has not been verified; its
+previous sidebar-module adapter remains a separate publisher issue.
 
 ## Local authoring and validation
 
@@ -90,9 +90,21 @@ available. The experimental MDX preview launcher and its preview-only
 `DocCardList` component have been removed. No preview-specific dependencies were
 added to or removed from package manifests or lock files.
 
-From the repository root, with dependencies installed:
+From the repository root, install both the root and standalone TypeDoc
+dependencies. Installing root dependencies does not install the `typedoc/`
+package:
 
 ```sh
+npm ci
+npm run docs:install
+```
+
+Refresh the endpoint inventory before generating reference docs; the TypeDoc
+theme reads it to render each page's Endpoints section. Then run the documentation
+checks:
+
+```sh
+npm run endpoints:derive
 npm run docs:api:generate
 npm run docs:lint
 npm run docs:lint:markdown
@@ -100,8 +112,7 @@ npm run docs:lint:spell
 npm --prefix typedoc run test
 ```
 
-The last command runs Vitest once and exits. It currently includes the known
-router-test failure described below.
+The last command runs Vitest once and exits.
 
 `docs:lint:markdown` uses existing Markdownlint rules; there is no custom checker
 or separate link-check command. The existing docs CI step runs the same command.
@@ -136,35 +147,41 @@ exits successfully with warnings.
 - Frontmatter validation passes across 117 files. Markdownlint passes across
   116 documents, including the converted authentication page and indexes.
   Spelling checks pass.
-- The TypeDoc router suite now reports 133 passing tests and the same failing
-  test: `hooks from different directories get separate pages`. Index URL
-  expectations use `.md`; two tests of the removed edit-link metadata were
-  deleted. Leave this unrelated failure outside the spike.
+- The TypeDoc router suite now reports 134 passing tests. The previously failing
+  `hooks from different directories get separate pages` fixture now includes the
+  real `useStateFields` function's `@group Utility hooks` tag and verifies that
+  the helper stays on the state-tax form page. Index URL expectations use `.md`;
+  two tests of the removed edit-link metadata were deleted.
 
-## Publishing-app verification
+## Publishing-app verification: Markdown conversion checkpoint
 
-The converted docs were copied into a temporary copy of the monorepo publishing
-app at `/private/tmp/sdk-docs-markdown-publishing-spike`. Its existing Mermaid
+At the Markdown conversion checkpoint, the converted docs were copied into a
+temporary copy of the monorepo publishing app at
+`/private/tmp/sdk-docs-markdown-publishing-spike`. Its existing Mermaid
 support, reference sidebar logic, and scoped-heading plugin were retained. No
 publishing-app source files were changed in the monorepo.
 
-- The production build succeeds with broken Markdown links, rendered links, and
-  anchors configured to throw. This checks current content only; tagged fetching
-  and historical-version builds were not exercised.
+This preview predates category-file removal, frontmatter removal, and the move
+from `docs-site/` to `typedoc/`. It does not verify the current branch's content
+in the publishing app.
+
+- The production build succeeded with broken Markdown links, rendered links, and
+  anchors configured to throw. This checked content at that checkpoint only;
+  tagged fetching and historical-version builds were not exercised.
 - The app's existing `sidebars.mjs` exports caused a sidebar normalization stack
-  overflow in this local build. The temporary copy uses the same sidebar data
+  overflow in this local build. The temporary copy used the same sidebar data
   serialized into `sidebars.cjs`, with only its `sidebarPath` adjusted. This
   adapter is outside the SDK repository and is not a production publishing fix.
-- Visible Chrome verification using the look skill confirms the authentication
-  Mermaid diagram and the Markdown reference index render. The index shows
+- Visible Chrome verification using the look skill confirmed the authentication
+  Mermaid diagram and the Markdown reference index rendered. The index showed
   domain links, descriptions, and count summaries in a list instead of cards.
 - Browser error history contained previous webpack development-server failures
   and the initial connection attempt before the preview server started. The
   rendered production preview added no new console errors.
 
-The temporary preview uses port 5300. Build logs are saved in
+The temporary preview used port 5300. Build logs were saved in
 `/private/tmp/docs-markdown-publishing-build.log`; generation and router-test logs
-are saved in `/private/tmp/docs-markdown-generation.log` and
+were saved in `/private/tmp/docs-markdown-generation.log` and
 `/private/tmp/docs-markdown-router-tests.log`.
 
 ## Earlier experiments and historical versions
@@ -174,8 +191,9 @@ site plugins, commands, and dependencies. It also removed the PR site build,
 legacy source-sync workflow, and snapshot script while retaining independent
 docs linters. Those publishing scripts copied the SDK's site configuration
 downstream and could not work with the new ownership boundary. This branch has
-no replacement release publishing path; release automation remains outside the
-spike.
+no replacement documentation release publishing path. SDK release preparation,
+tagging, and npm publishing remain in place; replacement documentation release
+automation remains outside the spike.
 
 TypeDoc previously loaded `typedoc-docusaurus-theme` indirectly through
 `docusaurus-plugin-typedoc`. Our custom theme extends the Markdown theme, so the
@@ -200,5 +218,5 @@ only; it does not rewrite published tags. Historical category files remain in
 older tags; the publisher can continue accepting them. Current content supplies
 Markdown directories and page titles instead.
 
-No changes to release automation, historical-version fetching, or the known
-router-test failure are included in this experiment.
+No changes to release automation or historical-version fetching are included in
+this experiment.

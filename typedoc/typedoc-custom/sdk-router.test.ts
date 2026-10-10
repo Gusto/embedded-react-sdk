@@ -1109,6 +1109,10 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     stateTaxHelper.sources = sourceRef(
       '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fields.tsx',
     )
+    stateTaxHelper.comment = new Comment()
+    stateTaxHelper.comment.blockTags.push(
+      new CommentTag('@group', [{ kind: 'text', text: 'Utility hooks' }]),
+    )
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
@@ -1117,14 +1121,21 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     expect(urls).toContain('employee/hooks/use-compensation-form.md')
     expect(urls).toContain('employee/hooks/use-job-form.md')
     expect(urls).toContain('employee/hooks/use-employee-state-taxes-form.md')
+    expect(urls).not.toContain('employee/hooks/use-state-fields.md')
 
     const compPage = pages.find(p => p.url === 'employee/hooks/use-compensation-form.md')
       ?.model as DeclarationReflection
     const jobPage = pages.find(p => p.url === 'employee/hooks/use-job-form.md')
       ?.model as DeclarationReflection
+    const stateTaxPage = pages.find(
+      p => p.url === 'employee/hooks/use-employee-state-taxes-form.md',
+    )?.model as DeclarationReflection
     expect(compPage.children).toContain(compHook)
     expect(jobPage.children).toContain(jobHook)
+    expect(stateTaxPage.children).toContain(stateTaxHelper)
     expect(compPage.children).not.toContain(jobHook)
+    expect(compPage.children).not.toContain(stateTaxHelper)
+    expect(jobPage.children).not.toContain(stateTaxHelper)
   })
 
   it('hook page members are grouped by kind within the page', () => {
