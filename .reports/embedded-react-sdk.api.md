@@ -2847,6 +2847,8 @@ const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 // @public
 interface EmployeeListFlowProps extends BaseComponentInterface<never> {
     companyId: string;
+    isSelfOnboardingEnabled?: boolean;
+    withEmployeeI9?: boolean;
 }
 
 // @public
