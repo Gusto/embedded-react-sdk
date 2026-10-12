@@ -46,6 +46,7 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
         ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
         component: PayrollLandingContextual,
+        alerts: undefined,
         payrollUuid: undefined,
         executionInitialState: undefined,
       })) as (context: unknown) => unknown,
@@ -84,6 +85,7 @@ function toLandingReducer(ctx: PayrollFlowContextInterface): PayrollFlowContextI
   return {
     ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
     component: PayrollLandingContextual,
+    alerts: undefined,
     payrollUuid: undefined,
     payPeriod: undefined,
     executionInitialState: undefined,
@@ -98,6 +100,7 @@ function toExecutionReducer(
   return {
     ...ctx,
     component: PayrollExecutionFlowContextual,
+    alerts: undefined,
     payrollUuid: ev.payload.payrollUuid,
     showPayrollCancelledAlert: false,
     executionInitialState,
@@ -144,6 +147,7 @@ const processedToSubmittedOverviewTransition = transition(
           endDate: payPeriod?.endDate ?? '',
         }),
         component: PayrollOverviewContextual,
+        alerts: undefined,
         payrollUuid: ev.payload.payrollUuid ?? ctx.payrollUuid,
         payPeriod,
         executionInitialState: undefined,
@@ -188,6 +192,7 @@ export const payrollFlowMachine = {
       reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
         ...updateBreadcrumbs('blockers', ctx),
         component: PayrollBlockerContextual,
+        alerts: undefined,
         showPayrollCancelledAlert: false,
         ctaConfig: {
           labelKey: 'exitFlowCta',
@@ -216,6 +221,7 @@ export const payrollFlowMachine = {
         ): PayrollFlowContextInterface => ({
           ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: TransitionFlowContextual,
+          alerts: undefined,
           transitionStartDate: ev.payload.startDate,
           transitionEndDate: ev.payload.endDate,
           transitionPayScheduleUuid: ev.payload.payScheduleUuid,
@@ -229,6 +235,7 @@ export const payrollFlowMachine = {
       reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
         ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
         component: OffCycleFlowContextual,
+        alerts: undefined,
         showPayrollCancelledAlert: false,
       })),
     ),

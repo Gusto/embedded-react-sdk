@@ -48,7 +48,12 @@ import { Flow } from '@/components/Flow/Flow'
  * }
  * ```
  */
-export const EmployeeListFlow = ({ companyId, onEvent }: EmployeeListFlowProps) => {
+export const EmployeeListFlow = ({
+  companyId,
+  onEvent,
+  isSelfOnboardingEnabled,
+  withEmployeeI9,
+}: EmployeeListFlowProps) => {
   const machine = useMemo(
     () =>
       createMachine(
@@ -58,8 +63,14 @@ export const EmployeeListFlow = ({ companyId, onEvent }: EmployeeListFlowProps) 
           ...initialContext,
           component: EmployeeListContextual,
           companyId,
+          isSelfOnboardingEnabled,
+          withEmployeeI9,
         }),
       ),
+    // `isSelfOnboardingEnabled`/`withEmployeeI9` are intentionally omitted: they only
+    // seed the initial context once, and reacting to a later change would discard the
+    // machine's current navigation state (see Compensation.tsx for the same pattern).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [companyId],
   )
   return <Flow machine={machine} onEvent={onEvent} />

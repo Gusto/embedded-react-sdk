@@ -243,6 +243,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       'components/Common/PaginationControl',
       'components/Common/PayrollLoading',
       'components/Common/HorizontalFieldLayout',
+      'components/Common/DocumentEmbed',
       'contexts/ComponentAdapter',
     ],
     displayName: 'UI component inventory',

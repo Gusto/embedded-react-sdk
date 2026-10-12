@@ -90,6 +90,25 @@ describe('createPayrollEditEmployeeSchema', () => {
     expect(result.success).toBe(true)
   })
 
+  it('accepts hours at the server cap', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Regular Hours': { '2025-01-01': '99999' } } },
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects hours over the server cap with the MAX_HOURS code', () => {
+    const result = schema.safeParse({
+      ...baseFormData,
+      hours: { 'job-1': { 'Double Overtime': { '2025-01-01': '40000000' } } },
+    })
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.message).toBe(PayrollEditEmployeeErrorCodes.MAX_HOURS)
+  })
+
   it('allows paymentMethod to be omitted', () => {
     const result = schema.safeParse(baseFormData)
 
@@ -191,6 +210,21 @@ describe('reimbursementDraftSchema', () => {
         PayrollEditEmployeeErrorCodes.REIMBURSEMENT_AMOUNT,
       )
     }
+  })
+
+  it('accepts an amount at the server cap', () => {
+    const result = reimbursementDraftSchema.safeParse({ description: 'Travel', amount: '1000000' })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects an amount over the server cap with the MAX_REIMBURSEMENT_AMOUNT code', () => {
+    const result = reimbursementDraftSchema.safeParse({ description: 'Travel', amount: '1000001' })
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.message).toBe(
+      PayrollEditEmployeeErrorCodes.MAX_REIMBURSEMENT_AMOUNT,
+    )
   })
 })
 

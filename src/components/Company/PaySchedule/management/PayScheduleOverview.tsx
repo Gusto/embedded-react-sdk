@@ -40,7 +40,7 @@ export function PayScheduleOverview({
         onEvent(componentEvents.PAY_SCHEDULE_MANAGE_ASSIGNMENT)
       }}
       onEditAutoPilot={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT, { uuid: schedule.uuid })
+        onEvent(componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT, { schedule })
       }}
     />
   )
