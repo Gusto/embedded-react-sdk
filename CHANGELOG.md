@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.56.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.5...v0.56.6) (2026-10-12)
+
+### Features & Enhancements
+
+- Add the alpha `AutoPilotDialog` to `CompanyManagement.PaySchedule`'s overview, letting a company toggle AutoPilot for its pay schedule and see any blocking eligibility issues inline. Gated behind the `managePaySchedules` unstable feature flag ([#2871](https://github.com/Gusto/embedded-react-sdk/issues/2871))
+- Add `isSelfOnboardingEnabled` and `withEmployeeI9` props to `EmployeeListFlow`, matching the options already available on the standalone onboarding flow ([#2885](https://github.com/Gusto/embedded-react-sdk/issues/2885))
+
+### Fixes
+
+- Stop stale alerts from persisting across payroll run screens after transitioning between states ([#2879](https://github.com/Gusto/embedded-react-sdk/issues/2879))
+- Stop stale alerts from reappearing in the contractor payment information-request round-trip and on the wire-confirmation screen ([#2882](https://github.com/Gusto/embedded-react-sdk/issues/2882))
+
 ## [0.56.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.4...v0.56.5) (2026-10-07)
 
 ### Features & Enhancements
