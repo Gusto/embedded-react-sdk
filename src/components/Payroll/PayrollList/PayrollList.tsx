@@ -17,10 +17,12 @@ import {
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
+import { UNSTABLE_PayrollList } from '../UNSTABLE_PayrollList/UNSTABLE_PayrollList'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, BaseLayout, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
@@ -68,6 +70,8 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * @public
  */
 export function PayrollList(props: PayrollListBlockProps) {
+  const isHooksEnabled = useUnstableFeature('payrollListHooks')
+  if (isHooksEnabled) return <UNSTABLE_PayrollList {...props} />
   return (
     <BaseComponent {...props}>
       <Root {...props} />
