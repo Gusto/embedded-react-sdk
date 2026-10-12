@@ -51,7 +51,7 @@ export interface NormalizedWorkweek {
  */
 export function normalizeWorkweeks(
   workweeks: Array<{ startDate?: RFCDate; endDate?: RFCDate }> | null | undefined,
-  payPeriod: { startDate?: string; endDate?: string } | undefined,
+  payPeriod: { startDate?: string | null; endDate?: string | null } | undefined,
 ): NormalizedWorkweek[] {
   const normalized = (workweeks ?? []).flatMap(week =>
     week.startDate && week.endDate

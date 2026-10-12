@@ -55,4 +55,21 @@ describe('EmployeeListFlow', () => {
     expect(screen.getByLabelText(/first name/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/last name/i)).toBeInTheDocument()
   })
+
+  it('hides the self-onboarding toggle on the Profile step when isSelfOnboardingEnabled is false', async () => {
+    const user = userEvent.setup()
+    render(
+      <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+        <EmployeeListFlow companyId="123" isSelfOnboardingEnabled={false} onEvent={() => {}} />
+      </GustoProvider>,
+    )
+
+    await user.click(await screen.findByRole('button', { name: /Add/i }))
+
+    await screen.findByLabelText(/social/i)
+    expect(screen.getByLabelText(/first name/i)).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText(/Invite this employee to enter their own details/),
+    ).not.toBeInTheDocument()
+  })
 })

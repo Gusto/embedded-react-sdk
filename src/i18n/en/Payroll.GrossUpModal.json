@@ -4,7 +4,6 @@
   "warning": "This will override any previously entered amounts.",
   "netPayLabel": "Net amount",
   "calculateCta": "Calculate",
-  "calculatingCta": "Calculating...",
   "applyCta": "Apply",
   "applyHint": "Calculate a gross amount first to apply it.",
   "cancelCta": "Cancel",

@@ -7,6 +7,7 @@ import {
 import {
   ContractorListContextual,
   DashboardFlowContextual,
+  DismissalContextual,
   type ContractorListFlowContextInterface,
 } from './ContractorListFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -15,6 +16,12 @@ import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_VIEW]: { contractorId: string }
+  [componentEvents.CONTRACTOR_DISMISS]: { contractorId: string }
+  [componentEvents.CONTRACTOR_DISMISSAL_SCHEDULED]: {
+    contractorId: string
+    endDate: string
+    message: string
+  }
 }
 
 const backToListHeader: FlowHeaderConfig = {
@@ -32,6 +39,7 @@ const returnToList = reduce(
     component: ContractorListContextual,
     header: null,
     contractorId: undefined,
+    successMessage: undefined,
   }),
 )
 
@@ -53,11 +61,50 @@ export const contractorListStateMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.CONTRACTOR_DISMISS,
+      'dismiss',
+      reduce(
+        (
+          ctx: ContractorListFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_DISMISS>,
+        ): ContractorListFlowContextInterface => ({
+          ...ctx,
+          component: DismissalContextual,
+          header: backToListHeader,
+          contractorId: ev.payload.contractorId,
+          successMessage: undefined,
+        }),
+      ),
+    ),
     contractorCreateTransition,
     contractorUpdateTransition,
   ),
   dashboard: state<MachineTransition>(
     transition(componentEvents.CONTRACTOR_RETURN_TO_LIST, 'list', returnToList),
+  ),
+  dismiss: state<MachineTransition>(
+    transition(componentEvents.CONTRACTOR_RETURN_TO_LIST, 'list', returnToList),
+    transition(componentEvents.CANCEL, 'list', returnToList),
+    transition(
+      componentEvents.CONTRACTOR_DISMISSAL_SCHEDULED,
+      'list',
+      reduce(
+        (
+          ctx: ContractorListFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.CONTRACTOR_DISMISSAL_SCHEDULED
+          >,
+        ): ContractorListFlowContextInterface => ({
+          ...ctx,
+          component: ContractorListContextual,
+          header: null,
+          contractorId: undefined,
+          successMessage: ev.payload.message,
+        }),
+      ),
+    ),
   ),
   // Spreads in the same Profile → Address → Payment Method → New Hire Report → Submit states
   // ContractorOnboarding.OnboardingFlow uses, rather than mounting that flow as a nested

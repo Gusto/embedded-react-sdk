@@ -1,0 +1,21 @@
+{
+  "title": "Dismiss {{name}}",
+  "subtitle": "Schedule a dismissal date for this contractor.",
+  "alert": {
+    "label": "This can be cancelled",
+    "text": "The dismissal can be cancelled from the contractor list any time before the dismissal date takes effect."
+  },
+  "form": {
+    "endDate": {
+      "label": "Dismissal date"
+    }
+  },
+  "validation": {
+    "endDateRequired": "Enter a dismissal date"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "submit": "Dismiss contractor"
+  },
+  "successMessage": "Dismissal scheduled"
+}

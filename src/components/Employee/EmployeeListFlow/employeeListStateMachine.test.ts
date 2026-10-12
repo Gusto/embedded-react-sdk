@@ -6,7 +6,10 @@ import { componentEvents } from '@/shared/constants'
 
 type EmployeeListState = 'list' | 'dashboard' | 'terminate' | 'onboard'
 
-function createService(initialState: EmployeeListState = 'list') {
+function createService(
+  initialState: EmployeeListState = 'list',
+  contextOverrides: Partial<EmployeeListFlowContextInterface> = {},
+) {
   const machine = createMachine(
     initialState,
     employeeListStateMachine,
@@ -14,6 +17,7 @@ function createService(initialState: EmployeeListState = 'list') {
       ...initialContext,
       component: () => null,
       companyId: 'company-123',
+      ...contextOverrides,
     }),
   )
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,5 +60,16 @@ describe('employeeListStateMachine', () => {
     send(service, componentEvents.CANCEL)
     expect(service.machine.current).toBe('list')
     expect(service.context.employeeId).toBeUndefined()
+  })
+
+  it('carries isSelfOnboardingEnabled and withEmployeeI9 into the onboard state on EMPLOYEE_CREATE', () => {
+    const service = createService('list', {
+      isSelfOnboardingEnabled: false,
+      withEmployeeI9: true,
+    })
+    send(service, componentEvents.EMPLOYEE_CREATE)
+    expect(service.machine.current).toBe('onboard')
+    expect(service.context.isSelfOnboardingEnabled).toBe(false)
+    expect(service.context.withEmployeeI9).toBe(true)
   })
 })

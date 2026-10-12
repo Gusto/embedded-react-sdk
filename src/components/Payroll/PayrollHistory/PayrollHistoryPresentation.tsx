@@ -2,7 +2,12 @@ import { useTranslation } from 'react-i18next'
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
-import { getPayrollTypeLabel, calculateTotalPayroll, canCancelPayroll } from '../helpers'
+import {
+  getPayrollTypeLabel,
+  calculateTotalPayroll,
+  canCancelPayroll,
+  getPayPeriodOrCheckDateLabel,
+} from '../helpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import { DataView, Flex, DateRangeFilter } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -97,14 +102,22 @@ export const PayrollHistoryPresentation = ({
         label: t('menu.viewSummary'),
         icon: <FileIcon aria-hidden />,
         onClick: () => {
-          onViewSummary(payrollId, item.payPeriod?.startDate, item.payPeriod?.endDate)
+          onViewSummary(
+            payrollId,
+            item.payPeriod?.startDate ?? undefined,
+            item.payPeriod?.endDate ?? undefined,
+          )
         },
       },
       {
         label: t('menu.viewReceipt'),
         icon: <ReceiptIcon aria-hidden />,
         onClick: () => {
-          onViewReceipt(payrollId, item.payPeriod?.startDate, item.payPeriod?.endDate)
+          onViewReceipt(
+            payrollId,
+            item.payPeriod?.startDate ?? undefined,
+            item.payPeriod?.endDate ?? undefined,
+          )
         },
       },
     ]
@@ -165,11 +178,7 @@ export const PayrollHistoryPresentation = ({
         columns={[
           {
             title: t('columns.payPeriod'),
-            render: (item: Payroll) =>
-              dateFormatter.formatPayPeriodRange(
-                item.payPeriod?.startDate,
-                item.payPeriod?.endDate,
-              ),
+            render: (item: Payroll) => getPayPeriodOrCheckDateLabel(item, dateFormatter),
           },
           {
             title: t('columns.type'),
@@ -209,10 +218,7 @@ export const PayrollHistoryPresentation = ({
         title={
           cancelDialogItem
             ? t('cancelDialog.title', {
-                payPeriod: dateFormatter.formatPayPeriodRange(
-                  cancelDialogItem.payPeriod?.startDate,
-                  cancelDialogItem.payPeriod?.endDate,
-                ),
+                payPeriod: getPayPeriodOrCheckDateLabel(cancelDialogItem, dateFormatter),
               })
             : ''
         }

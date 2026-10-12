@@ -256,6 +256,22 @@ export const removeNonDigits = (value: string): string => {
 }
 
 /**
+ * Removes redundant leading zeros from a numeric input string.
+ *
+ * @remarks Intended as a `transform` for controlled `type="number"` text
+ * fields, which store their value verbatim. Several payroll inputs are
+ * seeded with `"0"`, so typing into one without clearing it would otherwise
+ * leave a value like `"05"`. Only zeros immediately followed by another
+ * digit are stripped, so `"0"`, `"0.5"`, and an empty string are preserved,
+ * and any leading sign is retained (`"-05"` becomes `"-5"`).
+ *
+ * @param value - The raw input string.
+ * @returns The input with redundant leading zeros removed.
+ * @internal
+ */
+export const stripLeadingZeros = (value: string): string => value.replace(/^(-?)0+(?=\d)/, '$1')
+
+/**
  * Strips the trailing `.value` segment from an API error path.
  *
  * @remarks API validation errors target a `.value` field on the inner

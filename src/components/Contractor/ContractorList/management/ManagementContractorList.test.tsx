@@ -49,6 +49,72 @@ describe('ManagementContractorList — Active tab', () => {
     expect(screen.getByText('Hourly — $50.00/hr')).toBeInTheDocument()
   })
 
+  it('renders the success alert when successMessage is provided', async () => {
+    mockList([{ ...baseContractor }])
+
+    renderWithProviders(
+      <ManagementContractorList
+        companyId="company-123"
+        onEvent={() => {}}
+        successMessage="Dismissal scheduled"
+      />,
+    )
+
+    await screen.findByText('Ada Lovelace')
+    expect(screen.getByText('Dismissal scheduled')).toBeInTheDocument()
+  })
+
+  it('clears the success alert once the user switches tabs', async () => {
+    mockList([{ ...baseContractor }])
+
+    const user = userEvent.setup()
+    renderWithProviders(
+      <ManagementContractorList
+        companyId="company-123"
+        onEvent={() => {}}
+        successMessage="Dismissal scheduled"
+      />,
+    )
+
+    await screen.findByText('Ada Lovelace')
+    expect(screen.getByText('Dismissal scheduled')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Dismissed' }))
+
+    expect(screen.queryByText('Dismissal scheduled')).not.toBeInTheDocument()
+  })
+
+  it('clears the success alert once a scheduled dismissal is cancelled', async () => {
+    mockList([
+      {
+        ...baseContractor,
+        dismissal_date: '2026-08-15',
+        dismissal_cancellation_eligible: true,
+      },
+    ])
+    server.use(handleCancelContractorDismissal(() => new HttpResponse(null, { status: 204 })))
+
+    const user = userEvent.setup()
+    renderWithProviders(
+      <ManagementContractorList
+        companyId="company-123"
+        onEvent={() => {}}
+        successMessage="Dismissal scheduled"
+      />,
+    )
+
+    await screen.findByText('Ada Lovelace')
+    expect(screen.getByText('Dismissal scheduled')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Actions for Ada Lovelace' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Cancel dismissal' }))
+    await user.click(await screen.findByRole('button', { name: 'Yes, cancel dismissal' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Dismissal scheduled')).not.toBeInTheDocument()
+    })
+  })
+
   it('applies custom className', async () => {
     mockList([{ ...baseContractor }])
 

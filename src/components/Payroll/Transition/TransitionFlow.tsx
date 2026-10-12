@@ -119,6 +119,11 @@ function Root({
         payrollUuid: initialPayrollUuid,
         withReimbursements,
         withOffcyclePayroll: true,
+        // employeeEditTransition (shared with PayrollFlow via payrollExecutionMachine) reads
+        // ctx.payPeriod for the edit-employee breadcrumb's date range. Regular payrolls get this
+        // from PayrollExecutionFlowContextual's fetch; a transition payroll's pay period is these
+        // same gap dates, so seed it here rather than duplicating a fetch.
+        payPeriod: { startDate, endDate, payScheduleUuid },
       }),
     )
   })

@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
 import { useEarningTypesListSuspense } from '@gusto/embedded-api/react-query/earningTypesList'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
@@ -44,7 +45,11 @@ import {
   type ReimbursementRow,
 } from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { derivePayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
+import {
+  derivePayrollCategory,
+  isOffCyclePayroll,
+  PayrollCategory,
+} from '@/components/Payroll/payrollTypes'
 import { PREPARE_QUERY_KEY } from '@/components/Payroll/PayrollConfiguration/usePayrollConfigurationData'
 import { isOvertimeEligibleFlsaStatus } from '@/components/Payroll/helpers'
 import { retryAsync } from '@/helpers/retryAsync'
@@ -250,6 +255,9 @@ export function usePayrollEditEmployeeForm({
     employeeId,
   })
   const { data: earningTypesData } = useEarningTypesListSuspense({ companyId })
+  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+  const isTransitionPayroll =
+    derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition
 
   const queryClient = useQueryClient()
   const { mutateAsync: preparePayroll } = usePayrollsPrepareMutation()
@@ -265,7 +273,11 @@ export function usePayrollEditEmployeeForm({
       const result = await retryAsync(
         () =>
           preparePayroll({
-            request: { companyId, payrollId, requestBody: { employeeUuids: [employeeId] } },
+            request: {
+              companyId,
+              payrollId,
+              requestBody: { employeeUuids: isTransitionPayroll ? undefined : [employeeId] },
+            },
           }),
         {
           maxAttempts: PREPARE_MAX_ATTEMPTS,
@@ -277,7 +289,7 @@ export function usePayrollEditEmployeeForm({
     } catch (error) {
       setPrepareError(error as Error)
     }
-  }, [companyId, payrollId, employeeId, preparePayroll])
+  }, [companyId, payrollId, employeeId, preparePayroll, isTransitionPayroll])
 
   useEffect(() => {
     if (hasFiredRef.current) return
@@ -291,7 +303,9 @@ export function usePayrollEditEmployeeForm({
   )
 
   const employee = employeeData.employee
-  const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
+  const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
+    comp => comp.employeeUuid === employeeId,
+  )
   const payrollCategory = derivePayrollCategory(preparedPayroll ?? {})
   const hasDirectDepositSetup = (bankAccountsList.employeeBankAccounts?.length ?? 0) > 0
 

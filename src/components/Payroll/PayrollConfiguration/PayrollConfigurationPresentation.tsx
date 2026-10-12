@@ -269,7 +269,7 @@ export const PayrollConfigurationPresentation = ({
                         ? calculateGrossPay(
                             item,
                             employee,
-                            payPeriod?.startDate,
+                            payPeriod?.startDate ?? undefined,
                             paySchedule,
                             payrollCategory,
                           )

@@ -72,3 +72,35 @@ describe('PaginationControl Visibility', () => {
     })
   })
 })
+
+describe('PaginationControl page-size options', () => {
+  const getVisibleOptionValues = () =>
+    Array.from(screen.getByTestId('hidden-select-container').querySelectorAll('option'))
+      .map(option => option.value)
+      .filter(value => value !== '')
+
+  test('hides options >= totalCount, keeping the smallest option that covers all items', () => {
+    renderPaginationControl({ totalCount: 11, itemsPerPage: 5 })
+    expect(getVisibleOptionValues()).toEqual(['5', '10', '25'])
+  })
+
+  test('keeps the full option list when totalCount is larger than every option', () => {
+    renderPaginationControl({ totalCount: 30, itemsPerPage: 5 })
+    expect(getVisibleOptionValues()).toEqual(['5', '10', '25', '50'])
+  })
+
+  test('keeps only options below the smallest option covering totalCount just above the minimum', () => {
+    renderPaginationControl({ totalCount: 6, itemsPerPage: 5 })
+    expect(getVisibleOptionValues()).toEqual(['5', '10'])
+  })
+
+  test('shows every option when totalCount is undefined', () => {
+    renderPaginationControl({ totalCount: undefined, itemsPerPage: 5 })
+    expect(getVisibleOptionValues()).toEqual(['5', '10', '25', '50'])
+  })
+
+  test('never hides the currently selected itemsPerPage, even if it would otherwise be filtered out', () => {
+    renderPaginationControl({ totalCount: 11, itemsPerPage: 50 })
+    expect(getVisibleOptionValues()).toEqual(['5', '10', '25', '50'])
+  })
+})

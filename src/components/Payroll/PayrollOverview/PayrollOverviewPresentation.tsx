@@ -4,7 +4,6 @@ import type {
   EmployeeCompensations,
   PayrollShow,
 } from '@gusto/embedded-api/models/components/payrollshow'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type {
@@ -15,6 +14,7 @@ import type { PaymentSpeed } from '@gusto/embedded-api/models/components/payment
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
+  getPayPeriodOrCheckDateLabel,
   getPayrollTypeLabel,
   getReimbursements,
   isDismissalPayroll,
@@ -62,16 +62,6 @@ interface PayrollOverviewProps {
   withReimbursements?: boolean
   paymentSpeed?: PaymentSpeed
   downloadingEmployeeIds?: ReadonlySet<string>
-}
-
-const getPayrollOverviewTitle = (
-  payPeriod: PayrollPayPeriodType | undefined,
-  dateFormatter: ReturnType<typeof useDateFormatter>,
-) => {
-  if (payPeriod?.startDate && payPeriod.endDate) {
-    return dateFormatter.formatPayPeriod(payPeriod.startDate, payPeriod.endDate)
-  }
-  return { startDate: '', endDate: '' }
 }
 
 /** @internal */
@@ -135,7 +125,7 @@ export const PayrollOverviewPresentation = ({
         t={t}
         components={{ dateWrapper: <Text weight="bold" as="span" /> }}
         values={{
-          ...getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter),
+          payPeriod: getPayPeriodOrCheckDateLabel(payrollData, dateFormatter),
           payrollType: getPayrollTypeLabel(payrollData),
         }}
       />
@@ -840,8 +830,7 @@ export const PayrollOverviewPresentation = ({
                 isDestructive={true}
                 closeActionLabel={t('declineCancelCta')}
                 title={t(isDismissal ? 'cancelDialogTitleDismissal' : 'cancelDialogTitle', {
-                  startDate: dateFormatter.formatLong(payrollData.payPeriod?.startDate),
-                  endDate: dateFormatter.formatLongWithYear(payrollData.payPeriod?.endDate),
+                  payPeriod: getPayPeriodOrCheckDateLabel(payrollData, dateFormatter),
                 })}
               >
                 <Flex gap={14} flexDirection="column">

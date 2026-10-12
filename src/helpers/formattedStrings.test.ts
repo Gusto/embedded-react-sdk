@@ -2,6 +2,7 @@ import { expect, describe, it } from 'vitest'
 import type { TFunction } from 'i18next'
 import {
   removeNonDigits,
+  stripLeadingZeros,
   snakeCaseToCamelCase,
   camelCaseToSnakeCase,
   formatNumberAsCurrency,
@@ -37,6 +38,36 @@ describe('formattedStrings', () => {
 
     it('should remove non-digits', () => {
       expect(removeNonDigits('a12-34/5 6b_78@90)')).toBe('1234567890')
+    })
+  })
+
+  describe('stripLeadingZeros', () => {
+    it('strips redundant leading zeros', () => {
+      expect(stripLeadingZeros('05')).toBe('5')
+      expect(stripLeadingZeros('0123')).toBe('123')
+      expect(stripLeadingZeros('000')).toBe('0')
+      expect(stripLeadingZeros('00')).toBe('0')
+    })
+
+    it('preserves a lone zero and an empty string', () => {
+      expect(stripLeadingZeros('0')).toBe('0')
+      expect(stripLeadingZeros('')).toBe('')
+    })
+
+    it('preserves a leading zero before a decimal point', () => {
+      expect(stripLeadingZeros('0.5')).toBe('0.5')
+      expect(stripLeadingZeros('00.5')).toBe('0.5')
+    })
+
+    it('leaves non-leading zeros untouched', () => {
+      expect(stripLeadingZeros('10')).toBe('10')
+      expect(stripLeadingZeros('100')).toBe('100')
+      expect(stripLeadingZeros('40.00')).toBe('40.00')
+    })
+
+    it('retains a leading sign', () => {
+      expect(stripLeadingZeros('-05')).toBe('-5')
+      expect(stripLeadingZeros('-0')).toBe('-0')
     })
   })
 

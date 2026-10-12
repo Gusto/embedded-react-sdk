@@ -14,6 +14,7 @@ import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/
 import { GrossUpModal } from '../GrossUpModal'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
+import { derivePayrollCategory, PayrollCategory } from '../payrollTypes'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
@@ -215,6 +216,8 @@ const Root = ({
     // calculated when we opened (e.g. clicking Edit), we do prepare so it can be edited.
     disablePrepare: isPolling || isCalculatingPayroll || hasSeenCalculatingRef.current,
     excludedEmployeeUuids,
+    isTransitionPayroll:
+      derivePayrollCategory(payrollData.payrollShow ?? {}) === PayrollCategory.Transition,
   })
 
   const alreadyProcessedAlert: PayrollFlowAlert = useMemo(

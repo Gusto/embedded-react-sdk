@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
+import { PayrollCategory } from '../payrollTypes'
 import { PayrollConfiguration } from './PayrollConfiguration'
 import {
   createEmployee,
@@ -1492,6 +1493,52 @@ describe('PayrollConfiguration', () => {
           expect.objectContaining({ payrollPrepared: expect.anything() }),
         )
       })
+    })
+  })
+
+  describe('transition payroll', () => {
+    it('omits employeeUuids from the prepare request and renders the full roster (SDK-1202)', async () => {
+      currentPayrollData = buildPayrollData({
+        offCycle: true,
+        offCycleReason: PayrollCategory.Transition,
+        employeeCompensations: [createCompensation('emp-1'), createCompensation('emp-2')],
+      })
+
+      let prepareBody: { employee_uuids?: string[] } | null = null
+      const prepareResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        prepareBody = (await request.json()) as { employee_uuids?: string[] } | null
+        return HttpResponse.json(currentPayrollData)
+      })
+
+      server.use(
+        ...buildPayrollConfigurationHandlers({
+          getPayrollData: () => currentPayrollData,
+          employees: [
+            createEmployee('emp-1', 'Alice', 'Anderson'),
+            createEmployee('emp-2', 'Bob', 'Baker'),
+          ],
+        }),
+      )
+      // A separate `server.use` call takes priority as a whole batch over the one above,
+      // regardless of position within either -- see the note on this pattern further up this file.
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          prepareResolver,
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Bob Baker')).toBeInTheDocument()
+
+      expect(prepareResolver).toHaveBeenCalled()
+      // The API rejects employeeUuids for a transition payroll -- its roster is fixed by the
+      // pay-schedule transition -- so the request must omit the field entirely.
+      expect(prepareBody!.employee_uuids).toBeUndefined()
     })
   })
 })

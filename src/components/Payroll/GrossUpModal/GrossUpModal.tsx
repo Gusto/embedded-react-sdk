@@ -136,10 +136,10 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
             <Button
               variant="secondary"
               className={styles.calculateButton}
-              isDisabled={isCalculating}
+              isLoading={isCalculating}
               onClick={formHandlers.handleSubmit(handleCalculate)}
             >
-              {isCalculating ? t('calculatingCta') : t('calculateCta')}
+              {t('calculateCta')}
             </Button>
           </Flex>
 

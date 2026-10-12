@@ -126,6 +126,7 @@ export const paymentMachine = {
         return {
           ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: InformationRequestsContextual,
+          alerts: undefined,
         }
       }),
     ),
@@ -206,6 +207,7 @@ export const paymentMachine = {
         return {
           ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: PaymentListContextual,
+          alerts: undefined,
         }
       }),
     ),
@@ -216,6 +218,7 @@ export const paymentMachine = {
         return {
           ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: PaymentListContextual,
+          alerts: undefined,
         }
       }),
     ),

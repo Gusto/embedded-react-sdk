@@ -76,6 +76,7 @@ import { CustomFieldType } from '@gusto/embedded-api/models/components/customfie
 import { CustomWithholdings } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
+import { Departments } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
 import { Document as Document_2 } from '@gusto/embedded-api/models/components/document';
 import { DocumentRecipientType } from '@gusto/embedded-api/models/components/document';
 import { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned';
@@ -250,6 +251,12 @@ import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/component
 import { PayrollUpdateReimbursements } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateState } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayScheduleAssignmentBody } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
+import { PayScheduleAssignmentBodyEmployees } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
+import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
+import { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange';
+import { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod';
+import { PayScheduleAssignmentTransitionPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmenttransitionpayperiod';
 import { PayScheduleAutoPayrollEnablementBlocker } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
@@ -680,6 +687,13 @@ declare namespace APIModels {
         PayrollUpdateEmployeeCompensationsOverrideType,
         PayrollUpdateOverrideType,
         PayrollUpdatePaymentMethod,
+        Departments,
+        PayScheduleAssignmentBody,
+        PayScheduleAssignmentBodyEmployees,
+        PayScheduleAssignmentBodyType,
+        PayScheduleAssignmentEmployeeChange,
+        PayScheduleAssignmentPayPeriod,
+        PayScheduleAssignmentTransitionPayPeriod,
         PayScheduleAutoPayrollEnablementBlocker,
         PayScheduleAutoPayrollEnablementBlockerMetadata,
         WorkweekStartDay,
@@ -1059,6 +1073,16 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
     dictionary?: ResourceDictionary<TResourceKey>;
 }
 
+declare namespace CompanyManagement {
+    export {
+        PaySchedule_2 as PaySchedule,
+        PayScheduleProps_2 as PayScheduleProps,
+        PayScheduleDictionary,
+        PayScheduleAssignment,
+        PayScheduleAssignmentProps
+    }
+}
+
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
@@ -1410,6 +1434,7 @@ export const componentEvents: {
     readonly CONTRACTOR_DISMISS: "contractor/dismiss";
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
+    readonly CONTRACTOR_DISMISSAL_SCHEDULED: "contractor/dismissal/scheduled";
     readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: "contractor/management/profile/editRequested";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
@@ -1440,6 +1465,17 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_DELETE: "paySchedule/delete";
     readonly PAY_SCHEDULE_DELETED: "paySchedule/deleted";
     readonly PAY_SCHEDULE_DONE: "paySchedule/done";
+    readonly PAY_SCHEDULE_MANAGE_ASSIGNMENT: "paySchedule/management/manageAssignment";
+    readonly PAY_SCHEDULE_AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
+    readonly PAY_SCHEDULE_AUTO_PILOT_ENABLED: "paySchedule/management/autoPilotEnabled";
+    readonly PAY_SCHEDULE_AUTO_PILOT_DISABLED: "paySchedule/management/autoPilotDisabled";
+    readonly PAY_SCHEDULE_AUTO_PILOT_DISMISSED: "paySchedule/management/autoPilotDismissed";
+    readonly PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED: "paySchedule/management/assignment/typeSelected";
+    readonly PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED: "paySchedule/management/assignment/scheduleSelected";
+    readonly PAY_SCHEDULE_ASSIGNMENT_BACK: "paySchedule/management/assignment/back";
+    readonly PAY_SCHEDULE_ASSIGNMENT_CANCEL: "paySchedule/management/assignment/cancel";
+    readonly PAY_SCHEDULE_ASSIGNED: "paySchedule/management/assignment/assigned";
+    readonly PAY_SCHEDULE_MANAGEMENT_ALERT_DISMISSED: "paySchedule/management/alertDismissed";
     readonly COMPANY_INDUSTRY: "company/industry";
     readonly COMPANY_INDUSTRY_SELECTED: "company/industry/selected";
     readonly COMPANY_FEDERAL_TAXES_UPDATED: "company/federalTaxes/updated";
@@ -1615,6 +1651,7 @@ export interface ComponentsContextType {
     DateRangePicker: FunctionComponent<DateRangePickerProps>;
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
+    DocumentEmbed?: FunctionComponent<DocumentEmbedProps>;
     FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
@@ -1917,6 +1954,8 @@ declare namespace ContractorManagement {
         ContractorTab,
         ContractorListFlow,
         ContractorListFlowProps,
+        Dismissal,
+        DismissalProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,
@@ -2595,6 +2634,9 @@ export interface DialogProps {
 }
 
 // @public
+function Dismissal(input: DismissalProps): JSX;
+
+// @public
 function DismissalFlow(input: DismissalFlowProps): JSX;
 
 // @public
@@ -2613,6 +2655,18 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
     companyId: string;
     employeeId?: string;
     payrollId?: string;
+}
+
+// @public
+interface DismissalProps extends BaseComponentInterface<'Contractor.Dismissal'> {
+    contractorId: string;
+}
+
+// @public
+export interface DocumentEmbedProps {
+    className?: string;
+    title: string;
+    url: string;
 }
 
 // @public
@@ -2793,6 +2847,8 @@ const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 // @public
 interface EmployeeListFlowProps extends BaseComponentInterface<never> {
     companyId: string;
+    isSelfOnboardingEnabled?: boolean;
+    withEmployeeI9?: boolean;
 }
 
 // @public
@@ -3733,6 +3789,7 @@ function ManagementContractorList(input: ManagementContractorListProps): JSX;
 interface ManagementContractorListProps extends BaseComponentInterface<'Contractor.ManagementContractorList'> {
     companyId: string;
     initialTab?: ContractorTab;
+    successMessage?: string;
 }
 
 // @public
@@ -4456,6 +4513,17 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 // @public
 const PaySchedule: (input: PayScheduleProps) => JSX;
 
+// @alpha
+const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
+
+// @alpha
+const PayScheduleAssignment: (input: PayScheduleAssignmentProps) => JSX;
+
+// @alpha
+interface PayScheduleAssignmentProps extends BaseComponentInterface<'Company.Management.PayScheduleAssignment'> {
+    companyId: string;
+}
+
 // @public
 type PayScheduleDefaultFields = {
     [K in keyof Pick<PayScheduleFormData, 'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency' | 'workweekStartDay'>]: NonNullable<PayScheduleFormData[K]>;
@@ -4463,6 +4531,14 @@ type PayScheduleDefaultFields = {
 
 // @public
 type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefaultFields>>;
+
+// @alpha
+type PayScheduleDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.PaySchedule'?: DeepPartial<Resources['Company.Management.PaySchedule']>;
+        'Company.Management.AutoPilotDialog'?: DeepPartial<Resources['Company.Management.AutoPilotDialog']>;
+    };
+};
 
 // @public
 export type PayScheduleErrorCode = (typeof PayScheduleErrorCodes)[keyof typeof PayScheduleErrorCodes];
@@ -4507,6 +4583,14 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
     defaultValues?: PayScheduleDefaultValues;
     // @alpha
     disableWorkweekStartDayEditing?: boolean;
+}
+
+// @alpha
+interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Management.PaySchedule'>, 'dictionary'> {
+    companyId: string;
+    dictionary?: PayScheduleDictionary;
+    enableAutoPilot?: boolean;
+    enableMultipleSchedules?: boolean;
 }
 
 // @public
@@ -4895,6 +4979,12 @@ export interface Resources {
     // (undocumented)
     'Company.Locations': Translations.CompanyLocations
     // (undocumented)
+    'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+    // (undocumented)
+    'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
+    // (undocumented)
+    'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
+    // (undocumented)
     'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
     // (undocumented)
     'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -4928,6 +5018,8 @@ export interface Resources {
     'Contractor.ContractorList': Translations.ContractorContractorList
     // (undocumented)
     'Contractor.Dashboard': Translations.ContractorDashboard
+    // (undocumented)
+    'Contractor.Dismissal': Translations.ContractorDismissal
     // (undocumented)
     'Contractor.DocumentsList': Translations.ContractorDocumentsList
     // (undocumented)
@@ -5942,6 +6034,7 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     historicalPayments?: boolean;
+    managePaySchedules?: boolean;
     payrollRegularRateOfPay?: boolean;
 }
 

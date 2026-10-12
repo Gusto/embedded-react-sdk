@@ -1,0 +1,85 @@
+{
+  "company_uuid": "6c14eac3-0da2-474d-bda1-786b3602d381",
+  "state": "CO",
+  "requirement_sets": [
+    {
+      "state": "CO",
+      "key": "registrations",
+      "label": "Registrations",
+      "effective_from": null,
+      "requirements": [
+        {
+          "key": "colorado-account-number",
+          "applicable_if": [],
+          "label": "Colorado Account Number",
+          "description": "Find your account number on notices from the Colorado Department of Revenue, or call the agency at (303) 238-7378. If you don't have one yet, <a target='_blank' data-bypass href='https://www.colorado.gov/revenueonline'>register the business online</a>.",
+          "value": null,
+          "metadata": {
+            "type": "text"
+          }
+        },
+        {
+          "key": "cdle-account-number",
+          "applicable_if": [],
+          "label": "CDLE Account Number",
+          "description": "Find your account number on notices from the Colorado Department of Labor and Employment, or call the agency at (303) 318-9100.",
+          "value": null,
+          "metadata": {
+            "type": "text"
+          }
+        }
+      ]
+    },
+    {
+      "state": "CO",
+      "key": "taxrates",
+      "label": "Tax Rates",
+      "effective_from": "2022-01-01",
+      "requirements": [
+        {
+          "key": "sui-rate",
+          "applicable_if": [],
+          "label": "Total Tax Rate",
+          "description": "Haven't received your assigned rate yet? Find the new employer rate and enter it here.",
+          "value": "0.017",
+          "metadata": {
+            "type": "tax_rate",
+            "validation": {
+              "type": "min_max",
+              "min": "0.0064",
+              "max": "0.09"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "state": "CO",
+      "key": "depositschedules",
+      "label": "Deposit Schedules",
+      "effective_from": "2022-01-01",
+      "requirements": [
+        {
+          "key": "deposit-schedule",
+          "applicable_if": [],
+          "label": "Deposit Schedule",
+          "description": "Colorado assigns your deposit schedule on your registration verification letter.",
+          "value": "Quarterly",
+          "metadata": {
+            "type": "select",
+            "options": [
+              {
+                "label": "Quarterly",
+                "value": "Quarterly"
+              },
+              {
+                "label": "Monthly",
+                "value": "Monthly"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

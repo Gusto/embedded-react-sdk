@@ -41,6 +41,7 @@ export const confirmWireDetailsMachine = {
       reduce((ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
         ...ctx,
         component: WireInstructionsContextual,
+        confirmationAlert: undefined,
       })),
     ),
   ),

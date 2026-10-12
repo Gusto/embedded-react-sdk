@@ -11,10 +11,28 @@ import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
 
 const MINIMUM_PAGE_SIZE = 5
 
+const ITEMS_PER_PAGE_OPTIONS: PaginationItemsPerPage[] = [5, 10, 25, 50]
+
 const shouldShowPagination = (totalCount: number | undefined): boolean => {
   if (totalCount === undefined) return true
   if (totalCount === 0) return false
   return totalCount > MINIMUM_PAGE_SIZE
+}
+
+const getVisibleItemsPerPageOptions = (
+  totalCount: number | undefined,
+  itemsPerPage: PaginationItemsPerPage,
+): PaginationItemsPerPage[] => {
+  if (totalCount === undefined) return ITEMS_PER_PAGE_OPTIONS
+
+  const smallestOptionCoveringAll = ITEMS_PER_PAGE_OPTIONS.find(option => option >= totalCount)
+  const visible = new Set<PaginationItemsPerPage>(
+    ITEMS_PER_PAGE_OPTIONS.filter(option => option < totalCount),
+  )
+  visible.add(itemsPerPage)
+  if (smallestOptionCoveringAll !== undefined) visible.add(smallestOptionCoveringAll)
+
+  return ITEMS_PER_PAGE_OPTIONS.filter(option => visible.has(option))
 }
 
 const DefaultPaginationControl = ({
@@ -49,12 +67,10 @@ const DefaultPaginationControl = ({
               onChange={n => {
                 handleItemsPerPageChange(Number(n) as PaginationItemsPerPage)
               }}
-              options={[
-                { value: '5', label: '5' },
-                { value: '10', label: '10' },
-                { value: '25', label: '25' },
-                { value: '50', label: '50' },
-              ]}
+              options={getVisibleItemsPerPageOptions(totalCount, itemsPerPage).map(option => ({
+                value: option.toString(),
+                label: option.toString(),
+              }))}
             />
           </section>
         </div>

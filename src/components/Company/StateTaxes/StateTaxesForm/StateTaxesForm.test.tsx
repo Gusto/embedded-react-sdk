@@ -564,4 +564,43 @@ describe('StateTaxesForm', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
     })
   })
+
+  // SDK-1180: submitting a requirement set (e.g. Registrations) with required fields left blank
+  // returns a `requirement_sets`/`nested_errors` error with no leaf detail — the SDK must show a
+  // friendly, actionable message naming the incomplete section, not the raw API error payload.
+  describe('Incomplete requirement set error', () => {
+    it('shows a friendly message naming the incomplete section instead of the raw API error', async () => {
+      setupApiTestMocks()
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'requirement_sets',
+                  category: 'nested_errors',
+                  metadata: { key: 'registrations', state: 'CO' },
+                  errors: [],
+                },
+              ],
+            },
+            { status: 422 },
+          ),
+        ),
+      )
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CO" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      const submitButton = await screen.findByRole('button', { name: /Save/i })
+      await user.click(submitButton)
+
+      const alert = await screen.findByRole('alert')
+      expect(alert).toHaveTextContent('Registrations for CO is incomplete')
+      expect(alert).not.toHaveTextContent('API error occurred')
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+    })
+  })
 })

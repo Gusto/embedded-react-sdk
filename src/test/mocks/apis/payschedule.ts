@@ -68,6 +68,20 @@ export const getPayPeriods = http.get(`${API_BASE_URL}/v1/companies/:company_id/
   HttpResponse.json([]),
 )
 
+export const previewPayScheduleAssignment = http.post(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignment_preview`,
+  () =>
+    HttpResponse.json({
+      type: 'single',
+      employee_changes: [],
+    }),
+)
+
+export const assignPaySchedules = http.post(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assign`,
+  () => new HttpResponse(null, { status: 200 }),
+)
+
 export default [
   getPaySchedules,
   getPaySchedule,
@@ -75,4 +89,6 @@ export default [
   updatePaySchedule,
   getPaySchedulePreview,
   getPayPeriods,
+  previewPayScheduleAssignment,
+  assignPaySchedules,
 ]

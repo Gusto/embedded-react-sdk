@@ -1,5 +1,6 @@
 import { ManagementContractorList } from '../ContractorList/management/ManagementContractorList'
 import { DashboardFlow } from '../Dashboard'
+import { Dismissal } from '../Dismissal/Dismissal'
 import { type OnboardingFlowContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -25,12 +26,24 @@ export type ContractorListFlowContextInterface = OnboardingFlowContextInterface
 
 /** @internal */
 export function ContractorListContextual() {
-  const { companyId, onEvent } = useFlow<ContractorListFlowContextInterface>()
-  return <ManagementContractorList companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, onEvent, successMessage } = useFlow<ContractorListFlowContextInterface>()
+  return (
+    <ManagementContractorList
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      successMessage={successMessage}
+    />
+  )
 }
 
 /** @internal */
 export function DashboardFlowContextual() {
   const { contractorId, onEvent } = useFlow<ContractorListFlowContextInterface>()
   return <DashboardFlow contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function DismissalContextual() {
+  const { contractorId, onEvent } = useFlow<ContractorListFlowContextInterface>()
+  return <Dismissal contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
 }

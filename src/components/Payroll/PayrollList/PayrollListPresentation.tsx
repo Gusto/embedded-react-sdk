@@ -191,7 +191,10 @@ export const PayrollListPresentation = ({
     }
   }
 
-  const formatPayPeriod = (startDate: string | undefined, endDate: string | undefined) => {
+  const formatPayPeriod = (
+    startDate: string | null | undefined,
+    endDate: string | null | undefined,
+  ) => {
     const formattedStartDate = dateFormatter.formatShort(startDate)
     const formattedEndDate = dateFormatter.formatShortWithYear(endDate)
 

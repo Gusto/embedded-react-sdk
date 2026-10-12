@@ -1,0 +1,7 @@
+.rows {
+  .row:not(:last-child) {
+    padding-bottom: toRem(24);
+    margin-bottom: toRem(24);
+    border-bottom: 1px solid var(--g-colorBorderSecondary);
+  }
+}

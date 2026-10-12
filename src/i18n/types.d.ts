@@ -32,6 +32,12 @@ export interface Resources {
   /** */
   'Company.Locations': Translations.CompanyLocations
   /** */
+  'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+  /** */
+  'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
+  /** */
+  'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -65,6 +71,8 @@ export interface Resources {
   'Contractor.ContractorList': Translations.ContractorContractorList
   /** */
   'Contractor.Dashboard': Translations.ContractorDashboard
+  /** */
+  'Contractor.Dismissal': Translations.ContractorDismissal
   /** */
   'Contractor.DocumentsList': Translations.ContractorDocumentsList
   /** */
@@ -939,6 +947,171 @@ export namespace Translations {
       phone: string
     }
   }
+  /** Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace. */
+  export interface CompanyManagementAutoPilotDialog {
+    /** @defaultValue `"AutoPilot — {{scheduleName}}"` */
+    title: string
+    /** @defaultValue `"AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay deadline and funds are debited on your pay deadline."` */
+    description: string
+    /** @defaultValue `"Enable AutoPilot"` */
+    toggleLabel: string
+    /** @defaultValue `"Checking AutoPilot eligibility…"` */
+    checkingEligibility: string
+    /** @defaultValue `"Save"` */
+    saveCta: string
+    /** @defaultValue `"Cancel"` */
+    cancelCta: string
+    saveError: {
+      /** @defaultValue `"AutoPilot settings couldn't be saved"` */
+      title: string
+      /** @defaultValue `"Something went wrong saving your AutoPilot changes. Contact support if this continues."` */
+      description: string
+    }
+    blockers: {
+      /** @defaultValue `"AutoPilot isn't available yet"` */
+      heading: string
+      employees_not_on_direct_deposit: {
+        /** @defaultValue `"Some employees aren't on direct deposit"` */
+        title: string
+        /** @defaultValue `"Every employee on this schedule needs to be set up with direct deposit before AutoPilot can run their payroll automatically."` */
+        description: string
+      }
+      employees_not_salaried: {
+        /** @defaultValue `"Some employees aren't salaried"` */
+        title: string
+        /** @defaultValue `"AutoPilot requires every employee on this schedule to be salaried."` */
+        description: string
+      }
+      missing_state_tax_requirements: {
+        /** @defaultValue `"State tax setup is incomplete"` */
+        title: string
+        /** @defaultValue `"Finish state tax setup for every state this schedule's employees work in before enabling AutoPilot."` */
+        description: string
+      }
+      missing_funding_method: {
+        /** @defaultValue `"No funding method on file"` */
+        title: string
+        /** @defaultValue `"Add a verified bank account to use as the default funding method before enabling AutoPilot."` */
+        description: string
+      }
+      one_day_ach_speed_not_supported: {
+        /** @defaultValue `"Payment speed isn't eligible"` */
+        title: string
+        /** @defaultValue `"AutoPilot isn't available for schedules using next-day ACH."` */
+        description: string
+      }
+      company_suspended: {
+        /** @defaultValue `"Company is suspended"` */
+        title: string
+        /** @defaultValue `"Resolve your company's suspension before enabling AutoPilot."` */
+        description: string
+      }
+      earned_fast_ach_not_met: {
+        /** @defaultValue `"Fast ACH threshold not met"` */
+        title: string
+        /** @defaultValue `"This company hasn't yet met the funding history needed to qualify for fast ACH payments."` */
+        description: string
+      }
+      hourly_employees_missing_default_hours: {
+        /** @defaultValue `"Some hourly employees are missing default hours"` */
+        title: string
+        /** @defaultValue `"Set default hours for every hourly employee on this schedule before enabling AutoPilot."` */
+        description: string
+      }
+      generic: {
+        /** @defaultValue `"AutoPilot can't be enabled right now"` */
+        title: string
+        /** @defaultValue `"Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.PaySchedule` i18n namespace. */
+  export interface CompanyManagementPaySchedule {
+    /** @defaultValue `"Pay schedule"` */
+    title: string
+    /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
+    description: string
+    /** @defaultValue `"Manage"` */
+    manageCta: string
+    /** @defaultValue `"Edit"` */
+    editCta: string
+    /** @defaultValue `"Edit pay schedule"` */
+    editScheduleAriaLabel: string
+    /** @defaultValue `"Edit AutoPilot"` */
+    editAutoPilotAriaLabel: string
+    labels: {
+      /** @defaultValue `"Name"` */
+      name: string
+      /** @defaultValue `"Frequency"` */
+      frequency: string
+    }
+    autoPilot: {
+      /** @defaultValue `"AutoPilot"` */
+      label: string
+      /** @defaultValue `"Enabled"` */
+      enabled: string
+      /** @defaultValue `"Disabled"` */
+      disabled: string
+    }
+    alerts: {
+      /** @defaultValue `"Pay schedule assignment updated."` */
+      assignmentUpdated: string
+    }
+  }
+  /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
+  export interface CompanyManagementPayScheduleAssignment {
+    typeStep: {
+      /** @defaultValue `"Choose schedule type"` */
+      heading: string
+      /** @defaultValue `"After you choose, you can create a pay schedule for each group."` */
+      description: string
+      options: {
+        single: {
+          /** @defaultValue `"Everyone on one schedule"` */
+          label: string
+          /** @defaultValue `"Choose one pay schedule for all your employees"` */
+          description: string
+        }
+      }
+    }
+    scheduleStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Pay schedule"` */
+      payScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for all employees."` */
+      payScheduleDescription: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
+    reviewStep: {
+      /** @defaultValue `"Review changes"` */
+      heading: string
+      /** @defaultValue `"There are no changes to review."` */
+      noChangesHeading: string
+      /** @defaultValue `"If you intended to make changes, please go back and make them."` */
+      noChangesDescription: string
+      /** @defaultValue `"Employees affected"` */
+      employeeChangesHeading: string
+      /** @defaultValue `"Name"` */
+      nameLabel: string
+      /** @defaultValue `"Transition pay period"` */
+      transitionPayPeriodLabel: string
+      /** @defaultValue `"New pay frequency"` */
+      payFrequencyLabel: string
+      /** @defaultValue `"First pay period"` */
+      firstPayPeriodLabel: string
+      /** @defaultValue `"No transition needed"` */
+      noTransitionNeeded: string
+    }
+    /** @defaultValue `"Back"` */
+    backCta: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    /** @defaultValue `"Submit"` */
+    submitCta: string
+  }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {
     /** @defaultValue `"Nice! We’ll take it from here."` */
@@ -1235,6 +1408,10 @@ export namespace Translations {
       noEditableRequirementsTitle: string
       /** @defaultValue `"This state does not have any editable tax requirements."` */
       noEditableRequirementsDescription: string
+      errors: {
+        /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
+        incompleteRequirementSet: string
+      }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
         minValue: string
@@ -2348,6 +2525,37 @@ export namespace Translations {
       compensationUpdated: string
     }
   }
+  /** Translation keys for the `Contractor.Dismissal` i18n namespace. */
+  export interface ContractorDismissal {
+    /** @defaultValue `"Dismiss {{name}}"` */
+    title: string
+    /** @defaultValue `"Schedule a dismissal date for this contractor."` */
+    subtitle: string
+    alert: {
+      /** @defaultValue `"This can be cancelled"` */
+      label: string
+      /** @defaultValue `"The dismissal can be cancelled from the contractor list any time before the dismissal date takes effect."` */
+      text: string
+    }
+    form: {
+      endDate: {
+        /** @defaultValue `"Dismissal date"` */
+        label: string
+      }
+    }
+    validation: {
+      /** @defaultValue `"Enter a dismissal date"` */
+      endDateRequired: string
+    }
+    actions: {
+      /** @defaultValue `"Cancel"` */
+      cancel: string
+      /** @defaultValue `"Dismiss contractor"` */
+      submit: string
+    }
+    /** @defaultValue `"Dismissal scheduled"` */
+    successMessage: string
+  }
   /** Translation keys for the `Contractor.DocumentsList` i18n namespace. */
   export interface ContractorDocumentsList {
     /** @defaultValue `"Documents"` */
@@ -3380,6 +3588,8 @@ export namespace Translations {
       totalLabel: string
       /** @defaultValue `"Receipt Details"` */
       detailsLabel: string
+      /** @defaultValue `"Receipt ID"` */
+      receiptId: string
       /** @defaultValue `"From"` */
       from: string
       /** @defaultValue `"To"` */
@@ -6980,8 +7190,6 @@ export namespace Translations {
     netPayLabel: string
     /** @defaultValue `"Calculate"` */
     calculateCta: string
-    /** @defaultValue `"Calculating..."` */
-    calculatingCta: string
     /** @defaultValue `"Apply"` */
     applyCta: string
     /** @defaultValue `"Calculate a gross amount first to apply it."` */
@@ -7660,8 +7868,12 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount must be less than or equal to 1,000,000"` */
+      maxReimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
+      /** @defaultValue `"Hours must be less than or equal to 99,999"` */
+      maxHours: string
     }
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
@@ -7882,7 +8094,7 @@ export namespace Translations {
     overviewTitle: string
     /** @defaultValue `"Payroll summary"` */
     summaryTitle: string
-    /** @defaultValue `"{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>"` */
+    /** @defaultValue `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` */
     pageSubtitle: string
     /** @defaultValue `"{{payrollType}} payroll"` */
     pageSubtitleDismissal: string
@@ -7892,7 +8104,7 @@ export namespace Translations {
     editCta: string
     /** @defaultValue `"Cancel payroll"` */
     cancelCta: string
-    /** @defaultValue `"Cancel {{startDate}} - {{endDate}} payroll?"` */
+    /** @defaultValue `"Cancel {{payPeriod}} payroll?"` */
     cancelDialogTitle: string
     /** @defaultValue `"Cancel payroll?"` */
     cancelDialogTitleDismissal: string
@@ -8546,10 +8758,14 @@ export namespace Translations {
     validations: {
       /** @defaultValue `"Amount must be greater than zero"` */
       reimbursementAmount: string
+      /** @defaultValue `"Amount must be less than or equal to 1,000,000"` */
+      maxReimbursementAmount: string
       /** @defaultValue `"Amount cannot be negative"` */
       negativeAmount: string
       /** @defaultValue `"Enter an amount for every workweek"` */
       requiredWorkweek: string
+      /** @defaultValue `"Hours must be less than or equal to 99,999"` */
+      maxHours: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
@@ -8629,8 +8845,10 @@ export namespace Translations {
       /** @defaultValue `"There were multiple problems with your submission"` */
       multipleErrorsEncountered: string
     }
-    /** @defaultValue `"(optional)"` */
-    optionalLabel: string
+    documentEmbed: {
+      /** @defaultValue `"Document"` */
+      defaultTitle: string
+    }
     /** @defaultValue `"Select an option..."` */
     selectPlaceholder: string
     /** @defaultValue `"You are on step {{currentStep}} of {{totalSteps}}"` */

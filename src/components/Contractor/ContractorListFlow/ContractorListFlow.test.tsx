@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { ContractorListFlow } from './ContractorListFlow'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
-import { handleGetContractor, handleGetContractorsList } from '@/test/mocks/apis/contractors'
+import {
+  handleGetContractor,
+  handleGetContractorsList,
+  handleScheduleContractorDismissal,
+} from '@/test/mocks/apis/contractors'
 
 const contractorFixture = {
   uuid: 'contractor-123',
@@ -65,15 +69,52 @@ describe('ContractorListFlow', () => {
     expect(onEvent).toHaveBeenCalledWith('contractor/returnToList', undefined)
   })
 
-  it('leaves the list mounted when "Dismiss contractor" is chosen — no built-in navigation or mutation', async () => {
+  it('routes "Dismiss contractor" to the dismissal form, schedules the dismissal, and returns to the list with a success banner', async () => {
     const user = userEvent.setup()
+
+    const dismissResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 204 }),
+    )
+    server.use(handleScheduleContractorDismissal(dismissResolver))
+
     renderWithProviders(<ContractorListFlow companyId="123" onEvent={onEvent} />)
 
     await user.click(await screen.findByRole('button', { name: 'Actions for Ada Lovelace' }))
     await user.click(await screen.findByRole('menuitem', { name: 'Dismiss contractor' }))
 
     expect(onEvent).toHaveBeenCalledWith('contractor/dismiss', { contractorId: 'contractor-123' })
-    expect(screen.getByRole('tab', { name: 'Active' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Dismiss Ada Lovelace' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Back to contractors' })).toBeInTheDocument()
+
+    const dateGroup = screen.getByRole('group', { name: /Dismissal date/i })
+    await user.type(within(dateGroup).getByRole('spinbutton', { name: /^month/i }), '09')
+    await user.type(within(dateGroup).getByRole('spinbutton', { name: /^day/i }), '01')
+    await user.type(within(dateGroup).getByRole('spinbutton', { name: /^year/i }), '2026')
+
+    await user.click(screen.getByRole('button', { name: 'Dismiss contractor' }))
+
+    expect(await screen.findByRole('tab', { name: 'Active' })).toBeInTheDocument()
+    expect(await screen.findByText('Dismissal scheduled')).toBeInTheDocument()
+    expect(dismissResolver).toHaveBeenCalledTimes(1)
+    expect(onEvent).toHaveBeenCalledWith('contractor/dismissal/scheduled', {
+      contractorId: 'contractor-123',
+      endDate: '2026-09-01',
+      message: 'Dismissal scheduled',
+    })
+  })
+
+  it('leaves the list mounted and returns with no banner when dismissal is cancelled', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<ContractorListFlow companyId="123" onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Actions for Ada Lovelace' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Dismiss contractor' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(await screen.findByRole('tab', { name: 'Active' })).toBeInTheDocument()
+    expect(onEvent).toHaveBeenCalledWith('CANCEL', undefined)
+    expect(screen.queryByText('Dismissal scheduled')).not.toBeInTheDocument()
   })
 
   it('routes "Add contractor" directly to the Profile step (skipping OnboardingFlow\'s own list), and Cancel returns to this list', async () => {

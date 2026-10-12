@@ -23,6 +23,12 @@ interface TransitionPayrollAlertPresentationProps {
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
   skippingPayPeriod: PayPeriod | null
+  /**
+   * When true, a payroll blocker is present. Running or skipping the
+   * transition payroll would dead-end, so both actions are disabled. The
+   * blocker itself is surfaced separately by `PayrollBlockerAlerts`.
+   */
+  hasBlockers?: boolean
 }
 
 /** @internal */
@@ -33,6 +39,7 @@ export function TransitionPayrollAlertPresentation({
   showSkipSuccessAlert,
   onDismissSkipSuccessAlert,
   skippingPayPeriod,
+  hasBlockers = false,
 }: TransitionPayrollAlertPresentationProps) {
   useI18n('Payroll.TransitionPayrollAlert')
   const { t } = useTranslation('Payroll.TransitionPayrollAlert')
@@ -85,6 +92,7 @@ export function TransitionPayrollAlertPresentation({
                         onClick={() => {
                           onRunPayroll(payPeriod)
                         }}
+                        isDisabled={hasBlockers}
                       >
                         {t('runPayroll')}
                       </Button>
@@ -95,6 +103,7 @@ export function TransitionPayrollAlertPresentation({
                         setSkipDialogPayPeriod(payPeriod)
                       }}
                       isLoading={isSkipping}
+                      isDisabled={hasBlockers}
                     >
                       {t('skipPayroll')}
                     </Button>
