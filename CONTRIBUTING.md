@@ -438,6 +438,6 @@ See the [Getting Started guide](/docs/getting-started/index.md).
 
 ### After the PR is merged
 
-Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM.
+Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM. This workflow has no manual trigger — if it didn't fire (e.g. CI needs a rerun on that commit), re-run CI for that commit on `main`; a successful completion re-evaluates the gate and publishes automatically.
 
-If you need to trigger a publish manually (e.g. CI was re-run after the auto-trigger fired, or something went wrong), you can still run the workflow manually from the Actions UI (`Run workflow`).
+To publish an on-demand build from any branch or commit — for testing a fix before it's merged, for example — use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) instead, which publishes under the `rc` dist-tag and takes a `dry_run` option to validate and build without publishing.
