@@ -69,6 +69,24 @@ export const categorizedRegistry: CategorizedRegistry = {
       description:
         'View agency tax payments for a company — filter, sort, and drill into tax-liability detail.',
     },
+    {
+      name: 'Time Tracking',
+      path: '/design/time-tracking',
+      description:
+        'Employer time tracking — review and approve timesheets by pay period, edit shifts and breaks, and manage overtime and break policies and who they apply to.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/time-tracking',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/time-tracking/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
   ],
   Contractors: [
     {

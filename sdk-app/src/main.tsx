@@ -44,6 +44,10 @@ import {
   ManagePaySchedulesPrototype,
   ManagePaySchedulesStates,
 } from './design/prototypes/company-management/ManagePaySchedules'
+import {
+  TimeTrackingPrototype,
+  TimeTrackingStates,
+} from './design/prototypes/company-management/TimeTracking'
 import { TaxFilings } from './design/prototypes/tax-filings'
 import { AgentPayments } from './design/prototypes/agent-payments'
 import './app.scss'
@@ -179,6 +183,22 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <ManagePaySchedulesStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'time-tracking',
+            children: [
+              { index: true, element: <TimeTrackingPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <TimeTrackingStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <TimeTrackingStates />,
                   },
                 ],
               },
