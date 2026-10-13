@@ -25,7 +25,7 @@ case "$kind" in
     pattern='^[A-Za-z0-9][A-Za-z0-9._/-]*$'
     ;;
   rc-number)
-    pattern='^[0-9]+$'
+    pattern='^[1-9][0-9]*$'
     ;;
   boolean)
     pattern='^(true|false)$'

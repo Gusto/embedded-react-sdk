@@ -37,7 +37,7 @@ assert_valid semver "0.56.7-rc.12"
 assert_invalid semver ""
 assert_invalid semver "0.56.7; curl evil.example"
 assert_invalid semver "\$(whoami)"
-assert_invalid semver "0.56.7-rc.1\nNODE_OPTIONS=--require=/tmp/x"
+assert_invalid semver $'0.56.7-rc.1\nNODE_OPTIONS=--require=/tmp/x'
 
 # semver-base
 assert_valid semver-base "0.56.7"
@@ -63,6 +63,8 @@ assert_valid rc-number "1"
 assert_valid rc-number "42"
 assert_invalid rc-number "1; rm -rf /"
 assert_invalid rc-number "one"
+assert_invalid rc-number "01"
+assert_invalid rc-number "0"
 
 # boolean
 assert_valid boolean "true"

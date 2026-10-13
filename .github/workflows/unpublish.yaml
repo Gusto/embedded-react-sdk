@@ -16,6 +16,17 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    # Deliberately no actions/cache here: this job holds NPM_TOKEN, and a
+    # dispatch from any branch can write under a cache key keyed only on
+    # lockfile hash or github.sha, which lands in main's cache scope and
+    # would be restored here on a later run — i.e. a cache-poisoning path
+    # into the job that publishes/unpublishes. See validate-release-workflows.sh.
+    #
+    # Every dispatch input is read into one of these env vars and validated
+    # below before any step uses it — never reference
+    # `${{ github.event.inputs.* }}` directly inside a `run:` script, since
+    # Actions does literal string substitution into the shell before
+    # execution, making it injectable. env: assignment itself is safe.
     env:
       UNPUBLISH_VERSION: ${{ github.event.inputs.version }}
       DRY_RUN: ${{ github.event.inputs.dry_run }}

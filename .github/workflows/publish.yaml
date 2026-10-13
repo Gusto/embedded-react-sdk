@@ -1,3 +1,7 @@
+# No workflow_dispatch: a stable release always follows a merged "chore:
+# release" commit on main, verified by CI, so there is no legitimate
+# manual-trigger path to expose here. RC releases are the dispatchable,
+# throwaway counterpart (publish-rc.yaml) for testing this pipeline.
 name: Publish to NPM
 on:
   workflow_run:
@@ -5,10 +9,16 @@ on:
     types: [completed]
     branches: [main]
 jobs:
-  publish:
+  build:
     if: |
       github.event.workflow_run.conclusion == 'success' &&
       startsWith(github.event.workflow_run.head_commit.message, 'chore: release')
+    uses: ./.github/workflows/build-sdk.yaml
+    with:
+      ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+  publish:
+    needs: build
     # Needs gusto-ubuntu-default: this job pushes a release tag to the repo,
     # and the org IP allowlist blocks pushes from GitHub-hosted runner IPs.
     runs-on:
@@ -16,22 +26,29 @@ jobs:
     permissions:
       contents: write
       id-token: write
+    # Deliberately no actions/cache and no npm ci here: this job holds
+    # NPM_TOKEN, and build-sdk.yaml already produced dist/ on a separate,
+    # secret-less runner. Keeping that separation means nothing this job
+    # runs (git tag/push, npm version/publish) ever executes devDependency
+    # or plugin code in the same runner as the token. A dispatch from any
+    # branch writing to a cache key keyed on lockfile hash/github.sha would
+    # otherwise land in main's cache scope and be restored here on a later
+    # run — see validate-release-workflows.sh, which guards against both.
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate i18n translations
-        run: npm run i18n:generate
-
-      - name: Build
-        run: npx vite build
+      - name: Download build artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: dist
+          path: dist
 
       - name: Tag release
         run: |
