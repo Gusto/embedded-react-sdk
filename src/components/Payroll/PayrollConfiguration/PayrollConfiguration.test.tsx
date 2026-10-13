@@ -38,6 +38,46 @@ describe('PayrollConfiguration', () => {
   })
 
   describe('initial render', () => {
+    it('shows a prepare validation failure instead of an empty employee list', async () => {
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`, () =>
+          HttpResponse.json({
+            ...mockPayrollData,
+            employee_compensations: [
+              {
+                ...createCompensation('emp-1'),
+                deductions: [{ amount: 'invalid' }],
+              },
+            ],
+          }),
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      expect(
+        await screen.findByTestId('internal-error-card', {}, { timeout: 10000 }),
+      ).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /calculate/i })).not.toBeInTheDocument()
+    }, 15000)
+
+    it.each(['percent', 'fixed'])(
+      'renders employees with string %s deduction amounts',
+      async amountType => {
+        currentPayrollData = buildPayrollData({
+          employeeCompensations: allCompensations.map(compensation => ({
+            ...compensation,
+            deductions: [{ name: 'Deduction', amount: '10.00', amount_type: amountType }],
+          })),
+        })
+
+        renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+        expect(await screen.findByText('Alice Anderson')).toBeInTheDocument()
+        expect(screen.getByText('Bob Baker')).toBeInTheDocument()
+      },
+    )
+
     it('renders employee data correctly on initial load', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
