@@ -1,8 +1,11 @@
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
 import styles from './DocumentViewer.module.scss'
+import { DocumentEmbed } from '@/components/Common/DocumentEmbed'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
 interface DocumentViewerProps {
   url?: string | null
   title?: string
@@ -20,6 +23,7 @@ export function DocumentViewer({
   headingLevel = 'h3',
 }: DocumentViewerProps) {
   const Components = useComponentContext()
+  const { t } = useTranslation('common')
   const containerRef = useRef<HTMLDivElement>(null)
   const matches = useContainerBreakpoints({
     ref: containerRef,
@@ -29,32 +33,30 @@ export function DocumentViewer({
 
   if (!url) return null
 
-  const commonEmbeddedPdfProps = {
-    src: `${url}#toolbar=0&navpanes=0`,
-    title,
-    type: 'application/pdf',
-  }
+  const resolvedTitle = title ?? t('documentEmbed.defaultTitle')
 
-  // Keying the `<embed>` on the URL forces React to remount the element when
-  // the URL changes (e.g. after signing replaces an unsigned PDF). Without
-  // this, React reuses the existing DOM node, the browser's PDF plugin
-  // doesn't reload the new src, and the viewer renders blank until a manual
-  // reload.
+  // Keying the embed on the URL forces React to remount the element when the
+  // URL changes (e.g. after signing replaces an unsigned PDF). Without this,
+  // React reuses the existing DOM node, the browser's PDF plugin doesn't
+  // reload the new src, and the viewer renders blank until a manual reload.
   return (
     <div className={styles.container} ref={containerRef}>
       {isContainerWidthSmallOrGreater ? (
-        <embed key={url} {...commonEmbeddedPdfProps} className={styles.embedPdf} />
+        <DocumentEmbed key={url} url={url} title={resolvedTitle} className={styles.embedPdf} />
       ) : (
         <div className={styles.smallEmbedPdfContainer}>
           <Flex gap={20}>
-            <embed key={url} {...commonEmbeddedPdfProps} className={styles.smallEmbedPdf} />
+            <DocumentEmbed
+              key={url}
+              url={url}
+              title={resolvedTitle}
+              className={styles.smallEmbedPdf}
+            />
             <Flex flexDirection="column" gap={8}>
               <div>
-                {title && (
-                  <Components.Heading as={headingLevel} className={styles.heading}>
-                    {title}
-                  </Components.Heading>
-                )}
+                <Components.Heading as={headingLevel} className={styles.heading}>
+                  {resolvedTitle}
+                </Components.Heading>
                 {downloadInstructions && (
                   <Components.Text className={styles.downloadInstructions}>
                     {downloadInstructions}
@@ -67,7 +69,7 @@ export function DocumentViewer({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                download={`${title || 'document'}.pdf`}
+                download={`${resolvedTitle}.pdf`}
               >
                 {viewDocumentLabel}
               </Components.Link>

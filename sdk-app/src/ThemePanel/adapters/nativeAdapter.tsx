@@ -39,6 +39,7 @@ import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
+import type { DocumentEmbedProps } from '@/contexts'
 
 const inputStyle: React.CSSProperties = {
   border: '1px solid #d1d5db',
@@ -1429,6 +1430,10 @@ function NativeFileInput({
   )
 }
 
+function NativeEmbed({ url, title, className }: DocumentEmbedProps) {
+  return <iframe className={className} title={title} src={url} />
+}
+
 export const nativeComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <NativeAlert {...props} />,
   Badge: (props: BadgeProps) => <NativeBadge {...props} />,
@@ -1471,4 +1476,6 @@ export const nativeComponents: ComponentsContextType = {
   LoadingSpinner: (props: LoadingSpinnerProps) => <NativeLoadingSpinner {...props} />,
   DescriptionList: (props: DescriptionListProps) => <NativeDescriptionList {...props} />,
   FileInput: (props: FileInputProps) => <NativeFileInput {...props} />,
+
+  DocumentEmbed: (props: DocumentEmbedProps) => <NativeEmbed {...props} />,
 }

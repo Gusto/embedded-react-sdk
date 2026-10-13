@@ -376,6 +376,24 @@ describe('PayrollEditEmployeePresentation', () => {
     )
   })
 
+  it('shows a validation error and blocks save when hours exceed the server cap', async () => {
+    const onSave = vi.fn()
+    const user = userEvent.setup()
+    renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
+
+    const regularHoursInputs = await screen.findAllByLabelText(/^Regular Hours\b/)
+    await user.clear(regularHoursInputs[0]!)
+    await user.type(regularHoursInputs[0]!, '100000')
+
+    const saveButton = screen.getByText('Save')
+    await user.click(saveButton)
+
+    await waitFor(() => {
+      expect(screen.getByText('Hours must be less than or equal to 99,999')).toBeInTheDocument()
+    })
+    expect(onSave).not.toHaveBeenCalled()
+  })
+
   it('shows loading state on save button when isPending is true', async () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} isPending={true} />)
 
@@ -1697,6 +1715,29 @@ describe('PayrollEditEmployeePresentation', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Amount must be greater than zero')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
+    })
+
+    it('shows a validation error when an amount over the server cap is entered', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const descriptionInput = await screen.findByLabelText(/Description/i)
+      await user.type(descriptionInput, 'Office supplies')
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.type(amountInput, '1000001')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Amount must be less than or equal to 1,000,000'),
+        ).toBeInTheDocument()
       })
       expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
     })

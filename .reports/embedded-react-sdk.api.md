@@ -76,7 +76,6 @@ import { CustomFieldType } from '@gusto/embedded-api/models/components/customfie
 import { CustomWithholdings } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
-import { Departments } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
 import { Document as Document_2 } from '@gusto/embedded-api/models/components/document';
 import { DocumentRecipientType } from '@gusto/embedded-api/models/components/document';
 import { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned';
@@ -251,12 +250,14 @@ import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/component
 import { PayrollUpdateReimbursements } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateState } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayScheduleAssignmentBody } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
-import { PayScheduleAssignmentBodyEmployees } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
+import { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment';
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
+import { PayScheduleAssignmentDepartment } from '@gusto/embedded-api/models/components/payscheduleassignmentdepartment';
+import { PayScheduleAssignmentEmployee } from '@gusto/embedded-api/models/components/payscheduleassignmentemployee';
 import { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange';
 import { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod';
 import { PayScheduleAssignmentTransitionPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmenttransitionpayperiod';
+import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment';
 import { PayScheduleAutoPayrollEnablementBlocker } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
@@ -687,10 +688,11 @@ declare namespace APIModels {
         PayrollUpdateEmployeeCompensationsOverrideType,
         PayrollUpdateOverrideType,
         PayrollUpdatePaymentMethod,
-        Departments,
-        PayScheduleAssignmentBody,
-        PayScheduleAssignmentBodyEmployees,
+        PayScheduleAssignmentType,
+        PayScheduleAssignment,
         PayScheduleAssignmentBodyType,
+        PayScheduleAssignmentDepartment,
+        PayScheduleAssignmentEmployee,
         PayScheduleAssignmentEmployeeChange,
         PayScheduleAssignmentPayPeriod,
         PayScheduleAssignmentTransitionPayPeriod,
@@ -1077,7 +1079,8 @@ declare namespace CompanyManagement {
     export {
         PaySchedule_2 as PaySchedule,
         PayScheduleProps_2 as PayScheduleProps,
-        PayScheduleAssignment,
+        PayScheduleDictionary,
+        PayScheduleAssignment_2 as PayScheduleAssignment,
         PayScheduleAssignmentProps
     }
 }
@@ -1466,6 +1469,9 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_DONE: "paySchedule/done";
     readonly PAY_SCHEDULE_MANAGE_ASSIGNMENT: "paySchedule/management/manageAssignment";
     readonly PAY_SCHEDULE_AUTO_PILOT_EDIT: "paySchedule/management/autoPilotEdit";
+    readonly PAY_SCHEDULE_AUTO_PILOT_ENABLED: "paySchedule/management/autoPilotEnabled";
+    readonly PAY_SCHEDULE_AUTO_PILOT_DISABLED: "paySchedule/management/autoPilotDisabled";
+    readonly PAY_SCHEDULE_AUTO_PILOT_DISMISSED: "paySchedule/management/autoPilotDismissed";
     readonly PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED: "paySchedule/management/assignment/typeSelected";
     readonly PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED: "paySchedule/management/assignment/scheduleSelected";
     readonly PAY_SCHEDULE_ASSIGNMENT_BACK: "paySchedule/management/assignment/back";
@@ -1647,6 +1653,7 @@ export interface ComponentsContextType {
     DateRangePicker: FunctionComponent<DateRangePickerProps>;
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
+    DocumentEmbed?: FunctionComponent<DocumentEmbedProps>;
     FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
@@ -2658,6 +2665,13 @@ interface DismissalProps extends BaseComponentInterface<'Contractor.Dismissal'> 
 }
 
 // @public
+export interface DocumentEmbedProps {
+    className?: string;
+    title: string;
+    url: string;
+}
+
+// @public
 function DocumentList(props: DocumentListProps): JSX;
 
 // @public
@@ -2835,6 +2849,8 @@ const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 // @public
 interface EmployeeListFlowProps extends BaseComponentInterface<never> {
     companyId: string;
+    isSelfOnboardingEnabled?: boolean;
+    withEmployeeI9?: boolean;
 }
 
 // @public
@@ -4503,7 +4519,7 @@ const PaySchedule: (input: PayScheduleProps) => JSX;
 const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
 
 // @alpha
-const PayScheduleAssignment: (input: PayScheduleAssignmentProps) => JSX;
+const PayScheduleAssignment_2: (input: PayScheduleAssignmentProps) => JSX;
 
 // @alpha
 interface PayScheduleAssignmentProps extends BaseComponentInterface<'Company.Management.PayScheduleAssignment'> {
@@ -4517,6 +4533,14 @@ type PayScheduleDefaultFields = {
 
 // @public
 type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefaultFields>>;
+
+// @alpha
+type PayScheduleDictionary = {
+    [Lang in SupportedLanguages]?: {
+        'Company.Management.PaySchedule'?: DeepPartial<Resources['Company.Management.PaySchedule']>;
+        'Company.Management.AutoPilotDialog'?: DeepPartial<Resources['Company.Management.AutoPilotDialog']>;
+    };
+};
 
 // @public
 export type PayScheduleErrorCode = (typeof PayScheduleErrorCodes)[keyof typeof PayScheduleErrorCodes];
@@ -4564,8 +4588,9 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
 }
 
 // @alpha
-interface PayScheduleProps_2 extends BaseComponentInterface<'Company.Management.PaySchedule'> {
+interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Management.PaySchedule'>, 'dictionary'> {
     companyId: string;
+    dictionary?: PayScheduleDictionary;
     enableAutoPilot?: boolean;
     enableMultipleSchedules?: boolean;
 }
@@ -4955,6 +4980,8 @@ export interface Resources {
     'Company.Industry': Translations.CompanyIndustry
     // (undocumented)
     'Company.Locations': Translations.CompanyLocations
+    // (undocumented)
+    'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
     // (undocumented)
     'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)

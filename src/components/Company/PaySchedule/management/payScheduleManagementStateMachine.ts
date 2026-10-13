@@ -1,5 +1,6 @@
 import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { PayScheduleManagementContextInterface } from './PayScheduleManagementComponents'
 import {
   PayScheduleOverviewContextual,
@@ -12,6 +13,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_UPDATE]: { uuid: string }
   [componentEvents.PAY_SCHEDULE_CREATED]: undefined
+  [componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT]: { schedule: PayScheduleShow }
 }
 
 const toOverview = reduce(
@@ -19,6 +21,7 @@ const toOverview = reduce(
     ...ctx,
     component: PayScheduleOverviewContextual as ComponentType,
     payScheduleId: undefined,
+    autoPilotSchedule: undefined,
     successAlert: null,
   }),
 )
@@ -28,6 +31,7 @@ const toOverviewWithAlert = (alert: PayScheduleManagementContextInterface['succe
     ...ctx,
     component: PayScheduleOverviewContextual as ComponentType,
     payScheduleId: undefined,
+    autoPilotSchedule: undefined,
     successAlert: alert,
   }))
 
@@ -60,6 +64,49 @@ export const payScheduleManagementStateMachine = {
       ),
     ),
     transition(componentEvents.PAY_SCHEDULE_MANAGEMENT_ALERT_DISMISSED, 'overview', toOverview),
+    transition(
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT,
+      'overview',
+      reduce(
+        (
+          ctx: PayScheduleManagementContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT>,
+        ): PayScheduleManagementContextInterface => ({
+          ...ctx,
+          autoPilotSchedule: ev.payload.schedule,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_ENABLED,
+      'overview',
+      reduce(
+        (ctx: PayScheduleManagementContextInterface): PayScheduleManagementContextInterface => ({
+          ...ctx,
+          autoPilotSchedule: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISABLED,
+      'overview',
+      reduce(
+        (ctx: PayScheduleManagementContextInterface): PayScheduleManagementContextInterface => ({
+          ...ctx,
+          autoPilotSchedule: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.PAY_SCHEDULE_AUTO_PILOT_DISMISSED,
+      'overview',
+      reduce(
+        (ctx: PayScheduleManagementContextInterface): PayScheduleManagementContextInterface => ({
+          ...ctx,
+          autoPilotSchedule: undefined,
+        }),
+      ),
+    ),
   ),
   editSchedule: state<MachineTransition>(
     transition(componentEvents.PAY_SCHEDULE_UPDATED, 'overview', toOverview),

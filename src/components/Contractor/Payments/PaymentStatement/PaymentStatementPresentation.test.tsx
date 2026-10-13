@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { screen, within } from '@testing-library/react'
 import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
+import type { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/contractorpaymentreceipt'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { PaymentStatementPresentation } from './PaymentStatementPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { buildContractorIndividual } from '@/test/factories/contractor'
@@ -42,5 +44,33 @@ describe('PaymentStatementPresentation', () => {
     const table = await screen.findByTestId('data-table')
     const row = await within(table).findByRole('row', { name: 'Direct Deposit' })
     expect(getCellByColumnHeader(table, row, 'Amount')).toHaveTextContent('$260.00')
+  })
+
+  it('renders the receipt card with values sourced from the receipt payload', async () => {
+    const fundedPayment: ContractorPaymentForGroup = {
+      ...payment,
+      status: 'Funded',
+    }
+    const paymentReceipt: ContractorPaymentReceipt = {
+      contractorPaymentUuid: 'receipt-uuid-123',
+      nameOfSender: 'Capture Inc.',
+      nameOfRecipient: 'Jordan Payee',
+      debitDate: new RFCDate('2026-07-10'),
+      totals: { companyDebit: '260.00' },
+    }
+
+    renderWithProviders(
+      <PaymentStatementPresentation
+        payment={fundedPayment}
+        contractor={contractor}
+        paymentReceipt={paymentReceipt}
+        checkDate="2026-07-15"
+      />,
+    )
+
+    expect(await screen.findByText('receipt-uuid-123')).toBeInTheDocument()
+    expect(screen.getByText('Capture Inc.')).toBeInTheDocument()
+    expect(screen.getByText('Jordan Payee')).toBeInTheDocument()
+    expect(screen.getByText('July 10, 2026')).toBeInTheDocument()
   })
 })

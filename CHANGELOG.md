@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.56.7](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.6...v0.56.7) (2026-10-13)
+
+### Fixes
+
+- Fix employees going missing from the payroll configuration screen when the API returns a deduction amount as a decimal string rather than a number. Prepare-payroll failures now surface as errors instead of silently rendering an incomplete employee list ([#2890](https://github.com/Gusto/embedded-react-sdk/issues/2890))
+
+### Chores & Maintenance
+
+- Bump `dompurify` to 3.4.16 ([#2888](https://github.com/Gusto/embedded-react-sdk/issues/2888))
+- Bump dev dependencies (`prettier`, `typescript-eslint`, `sass-embedded`, `dotenv`) ([#2852](https://github.com/Gusto/embedded-react-sdk/issues/2852), [#2853](https://github.com/Gusto/embedded-react-sdk/issues/2853), [#2854](https://github.com/Gusto/embedded-react-sdk/issues/2854), [#2855](https://github.com/Gusto/embedded-react-sdk/issues/2855))
+- Bump transitive dependencies for security advisories (`axios`, `brace-expansion`, `markdown-it`, `shell-quote`, `undici`, `qs`, `ip-address`, and others) ([#2857](https://github.com/Gusto/embedded-react-sdk/issues/2857), [#2858](https://github.com/Gusto/embedded-react-sdk/issues/2858), [#2888](https://github.com/Gusto/embedded-react-sdk/issues/2888), [#2889](https://github.com/Gusto/embedded-react-sdk/issues/2889))
+
+## [0.56.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.5...v0.56.6) (2026-10-12)
+
+### Features & Enhancements
+
+- Add the alpha `AutoPilotDialog` to `CompanyManagement.PaySchedule`'s overview, letting a company toggle AutoPilot for its pay schedule and see any blocking eligibility issues inline. Gated behind the `managePaySchedules` unstable feature flag ([#2871](https://github.com/Gusto/embedded-react-sdk/issues/2871))
+- Add `isSelfOnboardingEnabled` and `withEmployeeI9` props to `EmployeeListFlow`, matching the options already available on the standalone onboarding flow ([#2885](https://github.com/Gusto/embedded-react-sdk/issues/2885))
+
+### Fixes
+
+- Stop stale alerts from persisting across payroll run screens after transitioning between states ([#2879](https://github.com/Gusto/embedded-react-sdk/issues/2879))
+- Stop stale alerts from reappearing in the contractor payment information-request round-trip and on the wire-confirmation screen ([#2882](https://github.com/Gusto/embedded-react-sdk/issues/2882))
+
+## [0.56.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.4...v0.56.5) (2026-10-07)
+
+### Features & Enhancements
+
+- Add a standalone `Dismissal` component (via `useDismissal`) for scheduling a contractor's dismissal date. `ContractorListFlow`'s "Dismiss contractor" action now opens this flow instead of only emitting an event ([#2862](https://github.com/Gusto/embedded-react-sdk/issues/2862))
+- Add an optional `DocumentEmbed` override to `ComponentsContext`, letting you replace the SDK's default PDF rendering — useful if your Content Security Policy can't allow `object-src`. Falls back to the existing rendering when no override is supplied ([#2876](https://github.com/Gusto/embedded-react-sdk/issues/2876))
+
+### Fixes
+
+- Show the receipt ID and the correct recipient name on the contractor payment receipt, sourced from the receipt payload itself ([#2867](https://github.com/Gusto/embedded-react-sdk/issues/2867))
+- Cap payroll hours (99999) and reimbursement amounts (1,000,000) client-side to match server limits, so an out-of-range value is caught before submit instead of failing with a 422 ([#2870](https://github.com/Gusto/embedded-react-sdk/issues/2870))
+- Allow breadcrumb navigation from the receipts screen back to overview, instead of silently no-opping ([#2878](https://github.com/Gusto/embedded-react-sdk/issues/2878))
+
 ## [0.56.4](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.3...v0.56.4) (2026-10-02)
 
 ### Fixes

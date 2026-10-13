@@ -43,6 +43,8 @@ Translation keys for the `common` i18n namespace.
 | `compensationRateFormats.paycheck` | `"{{amount}} per paycheck"` |
 | `compensationRateFormats.weekly` | `"{{amount}} per week"` |
 | `compensationRateFormats.yearly` | `"{{amount}} per year"` |
+| <a id="property-commondocumentembed"></a> `documentEmbed` | |
+| `documentEmbed.defaultTitle` | `"Document"` |
 | <a id="property-commonerrors"></a> `errors` | |
 | `errors.ensureRequired` | `"Required prop is missing"` |
 | `errors.errorHeading` | `"Error"` |
@@ -623,6 +625,57 @@ Translation keys for the `Company.Locations` i18n namespace.
 
 ***
 
+<a id="companymanagementautopilotdialog"></a>
+
+### CompanyManagementAutoPilotDialog
+
+Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementautopilotdialogblockers"></a> `blockers` | |
+| `blockers.company_suspended` | |
+| `blockers.company_suspended.description` | `"Resolve your company's suspension before enabling AutoPilot."` |
+| `blockers.company_suspended.title` | `"Company is suspended"` |
+| `blockers.earned_fast_ach_not_met` | |
+| `blockers.earned_fast_ach_not_met.description` | `"This company hasn't yet met the funding history needed to qualify for fast ACH payments."` |
+| `blockers.earned_fast_ach_not_met.title` | `"Fast ACH threshold not met"` |
+| `blockers.employees_not_on_direct_deposit` | |
+| `blockers.employees_not_on_direct_deposit.description` | `"Every employee on this schedule needs to be set up with direct deposit before AutoPilot can run their payroll automatically."` |
+| `blockers.employees_not_on_direct_deposit.title` | `"Some employees aren't on direct deposit"` |
+| `blockers.employees_not_salaried` | |
+| `blockers.employees_not_salaried.description` | `"AutoPilot requires every employee on this schedule to be salaried."` |
+| `blockers.employees_not_salaried.title` | `"Some employees aren't salaried"` |
+| `blockers.generic` | |
+| `blockers.generic.description` | `"Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."` |
+| `blockers.generic.title` | `"AutoPilot can't be enabled right now"` |
+| `blockers.heading` | `"AutoPilot isn't available yet"` |
+| `blockers.hourly_employees_missing_default_hours` | |
+| `blockers.hourly_employees_missing_default_hours.description` | `"Set default hours for every hourly employee on this schedule before enabling AutoPilot."` |
+| `blockers.hourly_employees_missing_default_hours.title` | `"Some hourly employees are missing default hours"` |
+| `blockers.missing_funding_method` | |
+| `blockers.missing_funding_method.description` | `"Add a verified bank account to use as the default funding method before enabling AutoPilot."` |
+| `blockers.missing_funding_method.title` | `"No funding method on file"` |
+| `blockers.missing_state_tax_requirements` | |
+| `blockers.missing_state_tax_requirements.description` | `"Finish state tax setup for every state this schedule's employees work in before enabling AutoPilot."` |
+| `blockers.missing_state_tax_requirements.title` | `"State tax setup is incomplete"` |
+| `blockers.one_day_ach_speed_not_supported` | |
+| `blockers.one_day_ach_speed_not_supported.description` | `"AutoPilot isn't available for schedules using next-day ACH."` |
+| `blockers.one_day_ach_speed_not_supported.title` | `"Payment speed isn't eligible"` |
+| <a id="property-companymanagementautopilotdialogcancelcta"></a> `cancelCta` | `"Cancel"` |
+| <a id="property-companymanagementautopilotdialogcheckingeligibility"></a> `checkingEligibility` | `"Checking AutoPilot eligibility…"` |
+| <a id="property-companymanagementautopilotdialogdescription"></a> `description` | `"AutoPilot takes care of payroll for you. Payrolls are editable until 1 day before your pay deadline and funds are debited on your pay deadline."` |
+| <a id="property-companymanagementautopilotdialogsavecta"></a> `saveCta` | `"Save"` |
+| <a id="property-companymanagementautopilotdialogsaveerror"></a> `saveError` | |
+| `saveError.description` | `"Something went wrong saving your AutoPilot changes. Contact support if this continues."` |
+| `saveError.title` | `"AutoPilot settings couldn't be saved"` |
+| <a id="property-companymanagementautopilotdialogtitle"></a> `title` | `"AutoPilot — {{scheduleName}}"` |
+| <a id="property-companymanagementautopilotdialogtogglelabel"></a> `toggleLabel` | `"Enable AutoPilot"` |
+
+***
+
 <a id="companymanagementpayschedule"></a>
 
 ### CompanyManagementPaySchedule
@@ -639,14 +692,22 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `autoPilot.disabled` | `"Disabled"` |
 | `autoPilot.enabled` | `"Enabled"` |
 | `autoPilot.label` | `"AutoPilot"` |
+| <a id="property-companymanagementpayschedulecompensationdescription"></a> `compensationDescription` | `"You have assigned employees to pay schedules by compensation type."` |
+| <a id="property-companymanagementpayschedulecompensationtablelabel"></a> `compensationTableLabel` | `"Pay schedules by compensation type"` |
+| <a id="property-companymanagementpayschedulecompensationtypes"></a> `compensationTypes` | |
+| `compensationTypes.hourly` | `"Hourly"` |
+| `compensationTypes.salaried` | `"Salaried"` |
 | <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
 | <a id="property-companymanagementpayscheduleeditautopilotarialabel"></a> `editAutoPilotAriaLabel` | `"Edit AutoPilot"` |
 | <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
+| <a id="property-companymanagementpayscheduleeditschedulecta"></a> `editScheduleCta` | `"Edit schedule"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
+| `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
+| <a id="property-companymanagementpayschedulerowmenutriggerlabel"></a> `rowMenuTriggerLabel` | `"Pay schedule actions"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
 
 ***
@@ -662,6 +723,13 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-companymanagementpayscheduleassignmentbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-companymanagementpayscheduleassignmentcompensationstep"></a> `compensationStep` | |
+| `compensationStep.addPayScheduleCta` | `"Add pay schedule"` |
+| `compensationStep.heading` | `"Assign employees"` |
+| `compensationStep.hourlyPayScheduleDescription` | `"The pay schedule to use for hourly employees."` |
+| `compensationStep.hourlyPayScheduleLabel` | `"Hourly employees"` |
+| `compensationStep.salariedPayScheduleDescription` | `"The pay schedule to use for salaried employees."` |
+| `compensationStep.salariedPayScheduleLabel` | `"Salaried employees"` |
 | <a id="property-companymanagementpayscheduleassignmentcontinuecta"></a> `continueCta` | `"Continue"` |
 | <a id="property-companymanagementpayscheduleassignmentreviewstep"></a> `reviewStep` | |
 | `reviewStep.employeeChangesHeading` | `"Employees affected"` |
@@ -683,6 +751,9 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.description` | `"After you choose, you can create a pay schedule for each group."` |
 | `typeStep.heading` | `"Choose schedule type"` |
 | `typeStep.options` | |
+| `typeStep.options.hourlySalaried` | |
+| `typeStep.options.hourlySalaried.description` | `"Choose one pay schedule for hourly employees and another for salaried employees"` |
+| `typeStep.options.hourlySalaried.label` | `"Separate schedules by compensation type"` |
 | `typeStep.options.single` | |
 | `typeStep.options.single.description` | `"Choose one pay schedule for all your employees"` |
 | `typeStep.options.single.label` | `"Everyone on one schedule"` |
@@ -2363,6 +2434,7 @@ Translation keys for the `Contractor.Payments.PaymentStatement` i18n namespace.
 | `receipt.detailsLabel` | `"Receipt Details"` |
 | `receipt.disclaimer` | `"This receipt confirms funds have been electronically transferred to the recipient's bank account. Money transmission services are provided by Gusto, Inc. pursuant to its <licensesLink>licenses</licensesLink>."` |
 | `receipt.from` | `"From"` |
+| `receipt.receiptId` | `"Receipt ID"` |
 | `receipt.to` | `"To"` |
 | `receipt.totalLabel` | `"Total"` |
 | <a id="property-contractorpaymentspaymentstatementreimbursement"></a> `reimbursement` | `"Reimbursement"` |
@@ -5190,6 +5262,8 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
 | <a id="property-payrollpayrolleditemployeevalidations"></a> `validations` | |
+| `validations.maxHours` | `"Hours must be less than or equal to 99,999"` |
+| `validations.maxReimbursementAmount` | `"Amount must be less than or equal to 1,000,000"` |
 | `validations.negativeAmount` | `"Amount cannot be negative"` |
 | `validations.reimbursementAmount` | `"Amount must be greater than zero"` |
 
@@ -5864,6 +5938,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
+| <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |

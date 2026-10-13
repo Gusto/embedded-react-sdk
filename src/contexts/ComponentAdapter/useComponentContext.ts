@@ -40,6 +40,7 @@ import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/Fo
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 import type { FieldCaptionProps } from '@/components/Common/FieldCaption/FieldCaptionTypes'
+import type { DocumentEmbedProps } from '@/components/Common/DocumentEmbed/DocumentEmbedTypes'
 
 /**
  * Full map of UI components used by the SDK. Every property is a React component that the
@@ -50,8 +51,8 @@ import type { FieldCaptionProps } from '@/components/Common/FieldCaption/FieldCa
  *
  * To take full control of every UI component (and eliminate the React Aria dependency),
  * pass a complete {@link ComponentsContextType} to {@link GustoProviderCustomUIAdapter} instead.
- * All properties are then required except `PaginationControl`, `PayrollLoading`, and `FieldCaption`,
- * which fall back to built-in SDK implementations when omitted.
+ * All properties are then required except `PaginationControl`, `PayrollLoading`, `FieldCaption`,
+ * and `DocumentEmbed`, which fall back to built-in SDK implementations when omitted.
  *
  * @public
  * @group Component adapter
@@ -183,6 +184,8 @@ export interface ComponentsContextType {
   PaginationControl?: FunctionComponent<PaginationControlProps>
   /** Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. */
   PayrollLoading?: FunctionComponent<PayrollLoadingProps>
+  /** Inline PDF document renderer. Defaults to the SDK's built-in `<embed>`-based viewer when omitted; override to control how PDFs are rendered inline — especially useful if you have strict Content Security Policy directives. */
+  DocumentEmbed?: FunctionComponent<DocumentEmbedProps>
 }
 
 /** @internal */
