@@ -155,8 +155,10 @@ jobs:
         run: |
           PACKAGE_NAME="@gusto/embedded-react-sdk"
           UNPUBLISH_FLAGS=""
+          SUCCESS_LABEL="Successfully unpublished"
           if [ "${DRY_RUN:-false}" = "true" ]; then
             UNPUBLISH_FLAGS="--dry-run"
+            SUCCESS_LABEL="Dry run only — would unpublish"
           fi
 
           echo "🗑️  Starting unpublish process..."
@@ -169,7 +171,7 @@ jobs:
               if [ -n "$version" ]; then
                 echo "🗑️  Unpublishing $PACKAGE_NAME@$version..."
                 if npm unpublish "$PACKAGE_NAME@$version" $UNPUBLISH_FLAGS; then
-                  echo "✅ Successfully unpublished $version"
+                  echo "✅ $SUCCESS_LABEL $version"
                 else
                   echo "❌ Failed to unpublish $version"
                   exit 1
@@ -181,7 +183,7 @@ jobs:
             # Single version
             echo "🗑️  Unpublishing $PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH..."
             if npm unpublish "$PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH" $UNPUBLISH_FLAGS; then
-              echo "✅ Successfully unpublished $VERSIONS_TO_UNPUBLISH"
+              echo "✅ $SUCCESS_LABEL $VERSIONS_TO_UNPUBLISH"
             else
               echo "❌ Failed to unpublish $VERSIONS_TO_UNPUBLISH"
               exit 1
@@ -192,7 +194,11 @@ jobs:
         env:
           VERSIONS_TO_UNPUBLISH: ${{ steps.determine-versions.outputs.versions_to_unpublish }}
         run: |
-          echo "📋 Unpublish Summary:"
+          if [ "${DRY_RUN:-false}" = "true" ]; then
+            echo "📋 Unpublish Summary (dry run — nothing was actually unpublished):"
+          else
+            echo "📋 Unpublish Summary:"
+          fi
           echo "Type: $UNPUBLISH_TYPE"
           echo "Versions unpublished:"
           echo "$VERSIONS_TO_UNPUBLISH" | sed 's/^/  ✅ /'

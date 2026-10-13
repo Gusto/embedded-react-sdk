@@ -178,7 +178,11 @@ jobs:
 
       - name: Output published version
         run: |
-          echo "✅ Published RC version: $RC_VERSION"
+          if [ "${INPUT_DRY_RUN:-false}" = "true" ]; then
+            echo "✅ Dry run only — $RC_VERSION was NOT published"
+          else
+            echo "✅ Published RC version: $RC_VERSION"
+          fi
           echo "📦 Install with: npm install @gusto/embedded-react-sdk@rc"
           echo "🔗 Or specific version: npm install @gusto/embedded-react-sdk@$RC_VERSION"
           echo "🌿 Released from $REF_TYPE: $REF_NAME"
