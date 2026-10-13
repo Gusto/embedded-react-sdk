@@ -1,7 +1,6 @@
-# No workflow_dispatch: a stable release always follows a merged "chore:
-# release" commit on main, verified by CI, so there is no legitimate
-# manual-trigger path to expose here. RC releases are the dispatchable,
-# throwaway counterpart (publish-rc.yaml) for testing this pipeline.
+# No workflow_dispatch: a stable release always follows a verified "chore:
+# release" commit on main, so there's no legitimate manual-trigger path to
+# expose here.
 name: Publish to NPM
 on:
   workflow_run:
@@ -26,14 +25,9 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    # Deliberately no actions/cache and no npm ci here: this job holds
-    # NPM_TOKEN, and build-sdk.yaml already produced dist/ on a separate,
-    # secret-less runner. Keeping that separation means nothing this job
-    # runs (git tag/push, npm version/publish) ever executes devDependency
-    # or plugin code in the same runner as the token. A dispatch from any
-    # branch writing to a cache key keyed on lockfile hash/github.sha would
-    # otherwise land in main's cache scope and be restored here on a later
-    # run — see validate-release-workflows.test.sh, which guards against both.
+    # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
+    # build-sdk.yaml already built dist/ on a separate, secret-less runner.
+    # See validate-release-workflows.test.sh.
     steps:
       - uses: actions/checkout@v6
         with:

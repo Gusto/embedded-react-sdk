@@ -27,35 +27,26 @@ jobs:
       group: gusto-ubuntu-default
     permissions:
       contents: read
-    # Every dispatch input is read into one of these env vars and validated
-    # below before any step uses it — never reference
-    # `${{ github.event.inputs.* }}` directly inside a `run:` script, since
-    # Actions does literal string substitution into the shell before
-    # execution, making it injectable. env: assignment itself is safe.
+    # Inputs land here, validated below, before any step touches them —
+    # never inline github.event.inputs.* in a run: script (shell-injectable).
     env:
       INPUT_RC_NUMBER: ${{ github.event.inputs.rc_number }}
       INPUT_BRANCH: ${{ github.event.inputs.branch }}
       INPUT_COMMIT: ${{ github.event.inputs.commit }}
       INPUT_DRY_RUN: ${{ github.event.inputs.dry_run }}
     outputs:
-      # Pinned to a resolved commit SHA (see Resolve ref to commit SHA
-      # below), not the branch/commit input verbatim — build and publish
-      # run as separate jobs, minutes apart, and a branch name is mutable
-      # in between. Checking out the same branch name twice could silently
-      # build dist/ from one commit and publish package.json/CHANGELOG.md
-      # from a later one if the branch moved in that window.
+      # Resolved commit SHA, not the raw branch/commit input — see
+      # "Resolve ref to commit SHA" below for why.
       ref: ${{ steps.resolve-ref.outputs.sha }}
       ref_type: ${{ steps.checkout-ref.outputs.ref_type }}
       ref_name: ${{ steps.checkout-ref.outputs.ref_name }}
       rc_number: ${{ env.INPUT_RC_NUMBER }}
       dry_run: ${{ env.INPUT_DRY_RUN }}
     steps:
-      # This checkout is deliberate and intentionally untargeted: it pulls
-      # validate-release-input.sh from the trusted dispatch ref (the ref
-      # the workflow itself runs from), not from the untrusted
-      # user-supplied branch/commit input, so the validator below can't be
-      # swapped out by whatever is being released. Keep the Validate step
-      # before the second (ref-targeted) checkout below.
+      # Untargeted on purpose: pulls validate-release-input.sh from the
+      # trusted dispatch ref, not the untrusted branch/commit input, so the
+      # validator can't be swapped out. Keep this before the ref-targeted
+      # checkout below.
       - uses: actions/checkout@v6
 
       - name: Validate inputs
@@ -109,11 +100,9 @@ jobs:
             exit 1
           fi
 
-      # Resolves whatever was checked out above (a branch's current HEAD,
-      # or a commit) to an immutable SHA, so build and publish — separate
-      # jobs, run minutes apart — check out the identical commit instead
-      # of each independently re-resolving a branch name that could have
-      # moved in between.
+      # Pins to an immutable SHA so build and publish — separate jobs,
+      # minutes apart — check out the identical commit instead of each
+      # re-resolving a branch name that could move in between.
       - name: Resolve ref to commit SHA
         id: resolve-ref
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -131,14 +120,9 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    # Deliberately no actions/cache and no npm ci here: this job holds
-    # NPM_TOKEN, and build-sdk.yaml already produced dist/ on a separate,
-    # secret-less runner. Keeping that separation means nothing this job
-    # runs (npm version/publish) ever executes devDependency or plugin
-    # code in the same runner as the token. A dispatch from any branch
-    # writing to a cache key keyed on lockfile hash/github.sha would
-    # otherwise land in main's cache scope and be restored here on a later
-    # run — see validate-release-workflows.test.sh, which guards against both.
+    # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
+    # build-sdk.yaml already built dist/ on a separate, secret-less runner.
+    # See validate-release-workflows.test.sh.
     env:
       INPUT_RC_NUMBER: ${{ needs.validate.outputs.rc_number }}
       INPUT_DRY_RUN: ${{ needs.validate.outputs.dry_run }}
