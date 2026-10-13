@@ -27,6 +27,8 @@ An identifier that is neither bound nor owned is never turned into a wildcard. S
 
 Inventory paths name some identifiers differently (`:employeeId` in some paths and `:employeeUuid` in others for the same employee), so bind every name a role's endpoints use.
 
+Binding a company identifier also allows every company-scoped endpoint in the chosen blocks and flows, such as `POST /v1/companies/:companyId/employees`. Use `exclude` to drop endpoints a role shouldn't reach.
+
 ```typescript
 interface Endpoint {
   method: string
@@ -63,7 +65,7 @@ function getAllowlistForUser(user: SessionUser): ResolvedEndpoint[] {
       return buildAllowlistFromInventory(
         { flows: ['EmployeeOnboarding.OnboardingFlow', 'Payroll.PayrollFlow'] },
         {
-          bindings: { companyId: user.companyId, companyUuid: user.companyId },
+          bindings: { companyId: user.companyId },
           ownedIdentifiers: ownedBy({ companyId: user.companyId }, [
             'employeeId',
             'employeeUuid',
@@ -74,9 +76,6 @@ function getAllowlistForUser(user: SessionUser): ResolvedEndpoint[] {
             'homeAddressUuid',
             'workAddressUuid',
             'payrollId',
-            'payrollUuid',
-            'payScheduleId',
-            'wireInRequestUuid',
           ]),
         },
       )
@@ -85,11 +84,11 @@ function getAllowlistForUser(user: SessionUser): ResolvedEndpoint[] {
       return buildAllowlistFromInventory(
         {
           blocks: [
-            'EmployeeManagement.EmployeeList',
-            'EmployeeManagement.Profile',
-            'EmployeeManagement.Compensation',
-            'EmployeeManagement.FederalTaxes',
-            'EmployeeManagement.StateTaxes',
+            'EmployeeOnboarding.EmployeeList',
+            'EmployeeOnboarding.Profile',
+            'EmployeeOnboarding.Compensation',
+            'EmployeeOnboarding.FederalTaxes',
+            'EmployeeOnboarding.StateTaxes',
           ],
         },
         {
@@ -97,14 +96,21 @@ function getAllowlistForUser(user: SessionUser): ResolvedEndpoint[] {
           ownedIdentifiers: ownedBy({ companyId: user.companyId }, [
             'employeeId',
             'employeeUuid',
+            'compensationId',
             'jobId',
+            'locationUuid',
+            'homeAddressUuid',
+            'workAddressUuid',
           ]),
         },
       )
 
     case 'employee_self_service':
       return buildAllowlistFromInventory(
-        { flows: ['EmployeeOnboarding.SelfOnboardingFlow'] },
+        {
+          flows: ['EmployeeOnboarding.SelfOnboardingFlow'],
+          exclude: ['POST /v1/companies/:companyId/employees'],
+        },
         {
           bindings: {
             companyId: user.companyId,
@@ -125,14 +131,15 @@ function getAllowlistForUser(user: SessionUser): ResolvedEndpoint[] {
 }
 
 function buildAllowlistFromInventory(
-  config: { flows?: string[]; blocks?: string[] },
+  config: { flows?: string[]; blocks?: string[]; exclude?: string[] },
   scope: Scope,
 ): ResolvedEndpoint[] {
   const names = [...(config.flows ?? []), ...(config.blocks ?? [])]
-  return resolveEndpoints(
-    names.flatMap(name => collectEndpoints(name)),
-    scope,
-  )
+  const excluded = new Set(config.exclude ?? [])
+  const endpoints = names
+    .flatMap(name => collectEndpoints(name))
+    .filter(endpoint => !excluded.has(`${endpoint.method} ${endpoint.path}`))
+  return resolveEndpoints(endpoints, scope)
 }
 
 function collectEndpoints(name: string, visited = new Set<string>()): Endpoint[] {
@@ -194,11 +201,12 @@ async function enforceAllowlist(
 ) {
   try {
     const allowlist = getAllowlistForUser(req.session.user)
+    const apiPath = req.path.replace(/^\/gusto-api/, '')
 
     for (const endpoint of allowlist) {
       if (endpoint.method !== req.method) continue
 
-      const match = endpoint.pattern.exec(req.path)
+      const match = endpoint.pattern.exec(apiPath)
       if (!match) continue
 
       const results = await Promise.all(

@@ -20,7 +20,7 @@ Every SDK component makes a known set of API calls. Paths use named parameters (
 
 | What you bind                                          | Use case                                                                                                  |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| Nothing                                                | Generic allowlisting, no user scoping. Each identifier is an explicit, shape-constrained wildcard         |
+| Nothing                                                | Not supported. Every identifier must be bound or covered by an ownership check                            |
 | Company identifiers only                               | Admin who can access any employee in their company, with ownership checks for employee-level identifiers  |
 | Company and employee identifiers (every name for each) | Self-service employee, restricted to their own data, with ownership checks for child resource identifiers |
 
