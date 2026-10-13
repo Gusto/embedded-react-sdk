@@ -69,32 +69,59 @@ export interface ObservabilityMetric {
  * names (`password`, `ssn`, `bankAccount`, etc.) from metadata. The `raw`
  * error object is excluded unless `includeRawError` is set to `true`.
  *
+ * Custom sanitizers add a layer of redaction on top of these protections; they
+ * do not replace them. The SDK applies its redaction to the data before your
+ * function runs and again to the value it returns, so a custom sanitizer
+ * receives already-redacted data and cannot restore redacted values or `raw`.
+ * Properties your function adds beyond the standard error and metric fields are not redacted.
+ * Pattern-based redaction cannot detect every possible PII value, so use
+ * `additionalSensitiveFields` and your own sanitizer for application-specific data.
+ *
  * @public
  */
 export interface SanitizationConfig {
   /**
-   * Whether to sanitize error data. Default: true
+   * Whether to apply the SDK's built-in redaction of messages, metadata, and tags. Default: true
+   *
+   * @remarks
+   * Setting this to `false` opts out of built-in redaction only. The `raw` error
+   * is still removed unless `includeRawError` is `true`.
    */
   enabled?: boolean
 
   /**
    * Whether to include the raw error object on SDKError. Default: false
-   * WARNING: Raw errors may contain sensitive data from form inputs or API responses
+   *
+   * @remarks
+   * WARNING: Raw errors may contain sensitive data from form inputs or API responses.
+   * When `false`, `raw` is removed from the error before and after `customErrorSanitizer`
+   * runs, regardless of `enabled`. When `true`, `raw` is passed through without redaction.
    */
   includeRawError?: boolean
 
   /**
-   * Custom sanitization function for errors
+   * Additional sanitization function for errors, composed with the SDK's built-in redaction.
+   *
+   * @remarks
+   * Runs after the SDK has redacted the error and removed `raw` (per `enabled` and
+   * `includeRawError`). The SDK applies the same redaction to the returned `message`,
+   * `fieldErrors`, and `raw`, so values your function puts there are redacted as well.
+   * Other properties your function adds are passed through unchanged.
    */
   customErrorSanitizer?: (error: ObservabilityError) => ObservabilityError
 
   /**
-   * Custom sanitization function for metrics
+   * Additional sanitization function for metrics, composed with the SDK's built-in redaction.
+   *
+   * @remarks
+   * Runs after the SDK has redacted the metric's `tags` (per `enabled`). The SDK applies the
+   * same redaction to the returned metric, so tags your function adds are redacted as well.
    */
   customMetricSanitizer?: (metric: ObservabilityMetric) => ObservabilityMetric
 
   /**
-   * Additional field names to treat as sensitive (case-insensitive)
+   * Additional field names to treat as sensitive (case-insensitive substring match).
+   * Applied to error field metadata and metric tags, including values returned by custom sanitizers.
    */
   additionalSensitiveFields?: string[]
 }

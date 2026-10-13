@@ -258,7 +258,7 @@ const observability: ObservabilityHook = {
     additionalSensitiveFields: ['customerId', 'employeeId'],
     customErrorSanitizer: error => ({
       ...error,
-      message: 'Custom sanitized message',
+      message: error.message.replace(/INTERNAL-\d+/g, '[INTERNAL-ID]'),
     }),
   },
 }
@@ -276,6 +276,22 @@ const observability: ObservabilityHook = {
 **Metrics:**
 
 - `tags` — sensitive field names and PII patterns are sanitized
+
+Pattern-based redaction cannot detect every possible PII value. Use `additionalSensitiveFields` and a custom sanitizer for data specific to your application.
+
+### Custom Sanitizers
+
+`customErrorSanitizer` and `customMetricSanitizer` add a layer of redaction on top of the SDK's built-in protections. They do not replace them. For each error or metric, the SDK:
+
+1. Applies its built-in redaction and removes `raw` according to `enabled`, `includeRawError`, and `additionalSensitiveFields`.
+2. Calls your function with that already-sanitized value.
+3. Applies the same redaction and `raw` removal to the value your function returns.
+
+This means:
+
+- With `enabled: true`, your function never receives messages, metadata, or tags that still contain PII. It never receives `raw` unless `includeRawError: true`.
+- Redaction is re-applied to the `message`, `fieldErrors`, and `tags` your function returns, and a returned `raw` is removed unless `includeRawError: true`. Other properties your function adds are passed through unchanged.
+- `enabled: false` skips built-in redaction (steps 1 and 3) but `raw` is still removed unless `includeRawError: true`. `includeRawError` is a separate, explicit opt-in.
 
 ### Best Practices
 

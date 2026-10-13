@@ -105,79 +105,34 @@ export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[]
   return obj
 }
 
-/**
- * Returns a copy of an observability error with PII redacted from messages and field-error metadata.
- *
- * @remarks
- * If `config.customErrorSanitizer` is provided, it is invoked and its result returned directly.
- * When sanitization is disabled, the error passes through unchanged except that `raw` is stripped
- * unless `includeRawError` is true. When enabled, `message` and each `fieldErrors[].message` run
- * through {@link sanitizeString}, and each `fieldErrors[].metadata` runs through {@link sanitizeObject}
- * with `additionalSensitiveFields` applied.
- *
- * @param error - The error reported by SDK error boundaries or form submissions.
- * @param config - Optional sanitization configuration; defaults to enabled with `raw` stripped.
- * @returns The sanitized error suitable for forwarding to a partner observability hook.
- * @internal
- */
-export function sanitizeError(
+function applyErrorPolicy(
   error: ObservabilityError,
-  config: SanitizationConfig = {},
+  { enabled = true, includeRawError = false, additionalSensitiveFields = [] }: SanitizationConfig,
 ): ObservabilityError {
-  const {
-    enabled = true,
-    includeRawError = false,
-    customErrorSanitizer,
-    additionalSensitiveFields = [],
-  } = config
-
-  if (customErrorSanitizer) {
-    return customErrorSanitizer(error)
-  }
+  const raw = includeRawError ? error.raw : undefined
 
   if (!enabled) {
-    return includeRawError ? error : { ...error, raw: undefined }
+    return { ...error, raw }
   }
-
-  const sanitizedFieldErrors = error.fieldErrors.map(fe => ({
-    ...fe,
-    message: sanitizeString(fe.message),
-    metadata: fe.metadata
-      ? (sanitizeObject(fe.metadata, additionalSensitiveFields) as Record<string, unknown>)
-      : undefined,
-  }))
 
   return {
     ...error,
     message: sanitizeString(error.message),
-    fieldErrors: sanitizedFieldErrors,
-    raw: includeRawError ? error.raw : undefined,
+    fieldErrors: error.fieldErrors.map(fe => ({
+      ...fe,
+      message: sanitizeString(fe.message),
+      metadata: fe.metadata
+        ? (sanitizeObject(fe.metadata, additionalSensitiveFields) as Record<string, unknown>)
+        : undefined,
+    })),
+    raw,
   }
 }
 
-/**
- * Returns a copy of an observability metric with sensitive values redacted from its tags.
- *
- * @remarks
- * If `config.customMetricSanitizer` is provided, it is invoked and its result returned directly.
- * When sanitization is disabled, the metric passes through unchanged. Otherwise the `tags` record
- * is run through {@link sanitizeObject} with `additionalSensitiveFields` applied.
- *
- * @param metric - The metric reported by SDK component instrumentation.
- * @param config - Optional sanitization configuration; defaults to enabled.
- * @returns The sanitized metric suitable for forwarding to a partner observability hook.
- * @internal
- */
-export function sanitizeMetric(
+function applyMetricPolicy(
   metric: ObservabilityMetric,
-  config: SanitizationConfig = {},
+  { enabled = true, additionalSensitiveFields = [] }: SanitizationConfig,
 ): ObservabilityMetric {
-  const { enabled = true, customMetricSanitizer, additionalSensitiveFields = [] } = config
-
-  if (customMetricSanitizer) {
-    return customMetricSanitizer(metric)
-  }
-
   if (!enabled) {
     return metric
   }
@@ -188,4 +143,63 @@ export function sanitizeMetric(
       ? (sanitizeObject(metric.tags, additionalSensitiveFields) as Record<string, string>)
       : undefined,
   }
+}
+
+/**
+ * Returns a copy of an observability error with PII redacted from messages and field-error metadata.
+ *
+ * @remarks
+ * The SDK policy is applied around `config.customErrorSanitizer`, never in place of it. The policy
+ * redacts `message` and each `fieldErrors[].message` with {@link sanitizeString}, redacts each
+ * `fieldErrors[].metadata` with {@link sanitizeObject} (honoring `additionalSensitiveFields`), and
+ * removes `raw` unless `includeRawError` is true. When `enabled` is false the redaction is skipped,
+ * but `raw` is still removed unless `includeRawError` is true.
+ *
+ * With a custom sanitizer the order is: policy on the input, custom sanitizer, policy on the output.
+ * The custom sanitizer therefore never receives data the SDK would redact, or `raw` (unless `includeRawError`
+ * is true), and cannot reintroduce either.
+ *
+ * @param error - The error reported by SDK error boundaries or form submissions.
+ * @param config - Optional sanitization configuration; defaults to enabled with `raw` stripped.
+ * @returns The sanitized error suitable for forwarding to a partner observability hook.
+ * @internal
+ */
+export function sanitizeError(
+  error: ObservabilityError,
+  config: SanitizationConfig = {},
+): ObservabilityError {
+  const policyApplied = applyErrorPolicy(error, config)
+
+  if (!config.customErrorSanitizer) {
+    return policyApplied
+  }
+
+  return applyErrorPolicy(config.customErrorSanitizer(policyApplied), config)
+}
+
+/**
+ * Returns a copy of an observability metric with sensitive values redacted from its tags.
+ *
+ * @remarks
+ * The SDK policy is applied around `config.customMetricSanitizer`, never in place of it. The `tags`
+ * record is run through {@link sanitizeObject} with `additionalSensitiveFields` applied, unless
+ * `enabled` is false. With a custom sanitizer the order is: policy on the input, custom sanitizer,
+ * policy on the output.
+ *
+ * @param metric - The metric reported by SDK component instrumentation.
+ * @param config - Optional sanitization configuration; defaults to enabled.
+ * @returns The sanitized metric suitable for forwarding to a partner observability hook.
+ * @internal
+ */
+export function sanitizeMetric(
+  metric: ObservabilityMetric,
+  config: SanitizationConfig = {},
+): ObservabilityMetric {
+  const policyApplied = applyMetricPolicy(metric, config)
+
+  if (!config.customMetricSanitizer) {
+    return policyApplied
+  }
+
+  return applyMetricPolicy(config.customMetricSanitizer(policyApplied), config)
 }

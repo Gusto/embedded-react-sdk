@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { sanitizeString, sanitizeObject, sanitizeError, sanitizeMetric } from './sanitization'
 import type { ObservabilityError, ObservabilityMetric } from '@/types/observability'
 
@@ -187,6 +187,96 @@ describe('sanitizeError', () => {
     expect(result.message).toBe('CUSTOM')
   })
 
+  describe('with customErrorSanitizer', () => {
+    const identity = (error: ObservabilityError) => ({ ...error })
+
+    it('applies built-in redaction and strips raw for an identity hook', () => {
+      const result = sanitizeError(mockError, {
+        customErrorSanitizer: identity,
+        includeRawError: false,
+      })
+
+      expect(result).toMatchObject({
+        message: 'Validation failed for email: [EMAIL-REDACTED]',
+        raw: undefined,
+        fieldErrors: [
+          {
+            message: '[EMAIL-REDACTED] is not a valid email',
+            metadata: { password: '[REDACTED]' },
+          },
+        ],
+      })
+    })
+
+    it('passes the hook already-redacted input without raw', () => {
+      const customErrorSanitizer = vi.fn(identity)
+
+      sanitizeError(mockError, { customErrorSanitizer })
+
+      expect(customErrorSanitizer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Validation failed for email: [EMAIL-REDACTED]',
+          raw: undefined,
+        }),
+      )
+    })
+
+    it('redacts PII and sensitive metadata that the hook adds', () => {
+      const result = sanitizeError(mockError, {
+        customErrorSanitizer: error => ({
+          ...error,
+          message: 'Failed for 123-45-6789',
+          fieldErrors: [
+            { ...error.fieldErrors[0]!, metadata: { ssn: '123-45-6789', note: 'a@b.com' } },
+          ],
+        }),
+      })
+
+      expect(result).toMatchObject({
+        message: 'Failed for [SSN-REDACTED]',
+        fieldErrors: [{ metadata: { ssn: '[REDACTED]', note: '[EMAIL-REDACTED]' } }],
+      })
+    })
+
+    it('strips raw that the hook reintroduces', () => {
+      const result = sanitizeError(mockError, {
+        customErrorSanitizer: error => ({ ...error, raw: mockError.raw }),
+      })
+
+      expect(result.raw).toBeUndefined()
+    })
+
+    it('keeps raw when includeRawError is true', () => {
+      const result = sanitizeError(mockError, {
+        customErrorSanitizer: identity,
+        includeRawError: true,
+      })
+
+      expect(result.raw).toBe(mockError.raw)
+    })
+
+    it('skips redaction but still strips raw when enabled is false', () => {
+      const result = sanitizeError(mockError, {
+        customErrorSanitizer: identity,
+        enabled: false,
+      })
+
+      expect(result).toMatchObject({ message: mockError.message, raw: undefined })
+    })
+
+    it('honors additionalSensitiveFields on the hook output', () => {
+      const result = sanitizeError(mockError, {
+        additionalSensitiveFields: ['customerId'],
+        customErrorSanitizer: error => ({
+          ...error,
+          fieldErrors: [{ ...error.fieldErrors[0]!, metadata: { customerId: '12345' } }],
+        }),
+      })
+
+      expect(result.fieldErrors[0]!.metadata).toEqual({ customerId: '[REDACTED]' })
+    })
+  })
+
   it('should add additional sensitive fields to metadata sanitization', () => {
     const errorWithCustomFields: ObservabilityError = {
       ...mockError,
@@ -302,15 +392,55 @@ describe('sanitizeMetric', () => {
     expect(result.tags).toEqual(mockMetric.tags)
   })
 
-  it('should use custom sanitizer when provided', () => {
-    const customSanitizer = (metric: ObservabilityMetric) => ({
-      ...metric,
-      tags: { custom: 'tags' },
+  describe('with customMetricSanitizer', () => {
+    it('applies built-in redaction to tags for an identity hook', () => {
+      const result = sanitizeMetric(mockMetric, {
+        customMetricSanitizer: metric => ({ ...metric }),
+      })
+
+      expect(result.tags).toEqual({
+        component: 'UserForm',
+        email: '[EMAIL-REDACTED]',
+        password: '[REDACTED]',
+      })
     })
 
-    const result = sanitizeMetric(mockMetric, { customMetricSanitizer: customSanitizer })
+    it('passes the hook already-redacted input', () => {
+      const customMetricSanitizer = vi.fn((metric: ObservabilityMetric) => metric)
 
-    expect(result.tags).toEqual({ custom: 'tags' })
+      sanitizeMetric(mockMetric, { customMetricSanitizer })
+
+      expect(customMetricSanitizer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: { component: 'UserForm', email: '[EMAIL-REDACTED]', password: '[REDACTED]' },
+        }),
+      )
+    })
+
+    it('redacts sensitive tags that the hook adds, including additionalSensitiveFields', () => {
+      const result = sanitizeMetric(mockMetric, {
+        additionalSensitiveFields: ['customerId'],
+        customMetricSanitizer: metric => ({
+          ...metric,
+          tags: { customerId: '12345', ssn: '123-45-6789', note: 'a@b.com' },
+        }),
+      })
+
+      expect(result.tags).toEqual({
+        customerId: '[REDACTED]',
+        ssn: '[REDACTED]',
+        note: '[EMAIL-REDACTED]',
+      })
+    })
+
+    it('leaves the hook output untouched when enabled is false', () => {
+      const result = sanitizeMetric(mockMetric, {
+        enabled: false,
+        customMetricSanitizer: metric => ({ ...metric, tags: { custom: 'a@b.com' } }),
+      })
+
+      expect(result.tags).toEqual({ custom: 'a@b.com' })
+    })
   })
 
   it('should handle metrics without tags', () => {
