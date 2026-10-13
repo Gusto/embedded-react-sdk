@@ -138,7 +138,7 @@ jobs:
     # code in the same runner as the token. A dispatch from any branch
     # writing to a cache key keyed on lockfile hash/github.sha would
     # otherwise land in main's cache scope and be restored here on a later
-    # run — see validate-release-workflows.sh, which guards against both.
+    # run — see validate-release-workflows.test.sh, which guards against both.
     env:
       INPUT_RC_NUMBER: ${{ needs.validate.outputs.rc_number }}
       INPUT_DRY_RUN: ${{ needs.validate.outputs.dry_run }}

@@ -65,7 +65,7 @@
     "pack": "npm run build && npm pack",
     "release": "release-it",
     "postversion": "git push",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "prepublishOnly": "npm run build",
     "preversion": "npm test",
     "test": "vitest",

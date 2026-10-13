@@ -58,7 +58,7 @@ jobs:
       - name: validate-release-input
         run: bash -euo pipefail .github/scripts/validate-release-input.test.sh
       - name: validate-release-workflows
-        run: bash -euo pipefail .github/scripts/validate-release-workflows.sh
+        run: bash -euo pipefail .github/scripts/validate-release-workflows.test.sh
 
   # derive-models: Generate the API models barrel (src/models/external.ts) exactly once.
   # Both `build` (→ dist → API report) and `derive-check-src` (→ TypeDoc) consume this single
