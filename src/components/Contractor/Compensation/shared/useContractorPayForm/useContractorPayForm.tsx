@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { buildContractorWagePayload, buildWageTypeFieldMetadata } from '../wageType'
 import {
   createContractorPaySchema,
   WageType,
@@ -17,7 +18,6 @@ import { WageTypeField, HourlyRateField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
-import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
@@ -83,9 +83,8 @@ export interface UseContractorPayFormReady extends BaseFormHookReady<
 function buildContractorPayFieldsMetadata(
   base: Record<keyof ContractorPayFormData, FieldMetadata>,
 ) {
-  const wageTypeOptions = [WageType.Fixed, WageType.Hourly].map(value => ({ value, label: value }))
   return {
-    wageType: withOptions(base.wageType, wageTypeOptions, [WageType.Fixed, WageType.Hourly]),
+    wageType: buildWageTypeFieldMetadata(base.wageType, [WageType.Fixed, WageType.Hourly]),
     hourlyRate: base.hourlyRate,
   } satisfies FieldsMetadata
 }
@@ -194,9 +193,7 @@ export function useContractorPayForm({
                 contractorUpdateRequestBody: {
                   version: contractorVersion,
                   type: contractorType,
-                  wageType: payload.wageType,
-                  hourlyRate:
-                    payload.wageType === WageType.Hourly ? String(payload.hourlyRate) : undefined,
+                  ...buildContractorWagePayload(payload),
                 },
               },
             })

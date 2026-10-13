@@ -10,7 +10,6 @@ import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/
 import type { SelectHookFieldProps } from '@/partner-hook-utils/form/fields/SelectHookField'
 import {
   TextInputHookField,
-  NumberInputHookField,
   DatePickerHookField,
   SwitchHookField,
   RadioGroupHookField,
@@ -101,11 +100,6 @@ export type WageTypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>
 >
 
-/** @internal */
-export function WageTypeField(props: WageTypeFieldProps) {
-  return <RadioGroupHookField {...props} name="wageType" />
-}
-
 /**
  * Props accepted by {@link useContractorDetailsForm}'s `Fields.StartDate` component.
  *
@@ -126,11 +120,6 @@ export function StartDateField(props: StartDateFieldProps) {
 export type HourlyRateFieldProps = HookFieldProps<
   NumberInputHookFieldProps<RequiredValidation | MaxHourlyRateValidation>
 >
-
-/** @internal */
-export function HourlyRateField(props: HourlyRateFieldProps) {
-  return <NumberInputHookField {...props} name="hourlyRate" />
-}
 
 /**
  * Props accepted by {@link useContractorDetailsForm}'s `Fields.SelfOnboarding` component.
@@ -275,3 +264,8 @@ export type WorkStateFieldProps = HookFieldProps<SelectHookFieldProps<RequiredVa
 export function WorkStateField(props: WorkStateFieldProps) {
   return <SelectHookField {...props} name="workState" />
 }
+
+export {
+  WageTypeField,
+  HourlyRateField,
+} from '@/components/Contractor/Compensation/shared/wageType'
