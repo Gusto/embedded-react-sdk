@@ -683,7 +683,7 @@ Format-validation error code emitted by the `ssn` field of [useContractorDetails
 
 ### ContractorDetailsErrorCode
 
-> **ContractorDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"INVALID_EIN"` \| `"MAX_HOURLY_RATE"`
+> **ContractorDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"MAX_HOURLY_RATE"` \| `"INVALID_EIN"`
 
 Union of validation error code strings emitted by the contractor details
 form schema.

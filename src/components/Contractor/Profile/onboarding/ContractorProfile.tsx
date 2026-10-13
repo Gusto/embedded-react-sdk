@@ -21,6 +21,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { WageTypeSelector } from '@/components/Contractor/Compensation/shared/wageType'
 import { useContractorHasSignedW9 } from '@/components/Contractor/shared/useContractorHasSignedW9'
 import type { LoaderComponentType } from '@/components/Base'
 
@@ -377,7 +378,16 @@ function ContractorProfileReady({
                 </>
               )}
 
-              <Fields.WageType label={t('fields.wageType.label')} />
+              <WageTypeSelector
+                Field={Fields.WageType}
+                copy={{
+                  label: t('fields.wageType.label'),
+                  fixedLabel: t('fields.wageType.fixedLabel'),
+                  hourlyLabel: t('fields.wageType.hourlyLabel'),
+                  fixedDescription: t('fields.wageType.fixedDescription'),
+                  hourlyDescription: t('fields.wageType.hourlyDescription'),
+                }}
+              />
 
               {Fields.HourlyRate && (
                 <Fields.HourlyRate

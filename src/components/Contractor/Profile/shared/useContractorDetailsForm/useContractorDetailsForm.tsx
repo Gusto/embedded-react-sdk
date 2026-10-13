@@ -49,6 +49,10 @@ import type {
   EinFieldProps,
   WorkStateFieldProps,
 } from './fields'
+import {
+  buildContractorWagePayload,
+  buildWageTypeFieldMetadata,
+} from '@/components/Contractor/Compensation/shared/wageType'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -221,18 +225,13 @@ function buildContractorDetailsFieldsMetadata(
   base: Record<keyof ContractorDetailsFormData, FieldMetadata>,
 ) {
   const typeEntries = [ContractorType.Individual, ContractorType.Business]
-  const wageTypeEntries = [WageType.Hourly, WageType.Fixed]
   return {
     type: withOptions(
       base.type,
       typeEntries.map(value => ({ value, label: value })),
       typeEntries,
     ),
-    wageType: withOptions(
-      base.wageType,
-      wageTypeEntries.map(value => ({ value, label: value })),
-      wageTypeEntries,
-    ),
+    wageType: buildWageTypeFieldMetadata(base.wageType, [WageType.Hourly, WageType.Fixed]),
     startDate: base.startDate,
     hourlyRate: base.hourlyRate,
     selfOnboarding: base.selfOnboarding,
@@ -425,13 +424,11 @@ export function useContractorDetailsForm({
 
             const requestBody: ContractorCreateRequestBody = {
               type: payload.type,
-              wageType: payload.wageType,
+              ...buildContractorWagePayload(payload),
               startDate: payload.startDate,
               selfOnboarding: selfOnboardingEnabled,
               email:
                 showEmailField || selfOnboardingEnabled ? payload.email || undefined : undefined,
-              hourlyRate:
-                payload.wageType === WageType.Hourly ? String(payload.hourlyRate) : undefined,
               ...(payload.type === ContractorType.Individual
                 ? {
                     firstName: payload.firstName,

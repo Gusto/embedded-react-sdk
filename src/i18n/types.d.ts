@@ -3806,6 +3806,14 @@ export namespace Translations {
       wageType: {
         /** @defaultValue `"Wage Type"` */
         label: string
+        /** @defaultValue `"Fixed"` */
+        fixedLabel: string
+        /** @defaultValue `"Hourly"` */
+        hourlyLabel: string
+        /** @defaultValue `"Pay a fixed amount each pay period."` */
+        fixedDescription: string
+        /** @defaultValue `"Pay based on hours worked."` */
+        hourlyDescription: string
       }
       hourlyRate: {
         /** @defaultValue `"Hourly Rate"` */

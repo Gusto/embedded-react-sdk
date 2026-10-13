@@ -1,7 +1,6 @@
 import type { ContractorPayErrorCodes, ContractorPayFormData } from './contractorPaySchema'
 import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/RadioGroupHookField'
 import type { NumberInputHookFieldProps } from '@/partner-hook-utils/form/fields/NumberInputHookField'
-import { RadioGroupHookField, NumberInputHookField } from '@/partner-hook-utils/form/fields'
 import type { HookFieldProps } from '@/partner-hook-utils/types'
 
 /**
@@ -27,11 +26,6 @@ export type WageTypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<never, ContractorPayFormData['wageType']>
 >
 
-/** @internal */
-export function WageTypeField(props: WageTypeFieldProps) {
-  return <RadioGroupHookField {...props} name="wageType" />
-}
-
 /**
  * Props accepted by {@link useContractorPayForm}'s `Fields.HourlyRate` component.
  *
@@ -41,7 +35,4 @@ export type HourlyRateFieldProps = HookFieldProps<
   NumberInputHookFieldProps<RequiredValidation | MaxHourlyRateValidation>
 >
 
-/** @internal */
-export function HourlyRateField(props: HourlyRateFieldProps) {
-  return <NumberInputHookField {...props} name="hourlyRate" />
-}
+export { WageTypeField, HourlyRateField } from '../wageType'

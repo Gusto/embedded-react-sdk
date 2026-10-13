@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { useContractorPayForm, WageType } from '../shared/useContractorPayForm'
+import { useContractorPayForm } from '../shared/useContractorPayForm'
+import { WageTypeSelector } from '../shared/wageType'
 import styles from './CompensationEditForm.module.scss'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
@@ -10,7 +11,6 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
 /**
  * Props for {@link CompensationEditForm}.
@@ -92,19 +92,6 @@ function CompensationEditFormRoot({
     onEvent(componentEvents.CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED)
   }
 
-  const WageTypeFieldComponent = (radioProps: RadioGroupProps) => (
-    <Components.RadioGroup
-      {...radioProps}
-      options={radioProps.options.map(option => ({
-        ...option,
-        description:
-          option.value === WageType.Hourly
-            ? t('form.hourlyDescription')
-            : t('form.fixedDescription'),
-      }))}
-    />
-  )
-
   return (
     <section className={classNames(styles.container, className)}>
       <BaseLayout error={payForm.errorHandling.errors} LoaderComponent={LoaderComponent}>
@@ -114,12 +101,15 @@ function CompensationEditFormRoot({
               <Components.Heading as="h2">{t('form.title')}</Components.Heading>
               <Components.Text variant="supporting">{t('form.description')}</Components.Text>
             </Flex>
-            <Fields.WageType
-              label={t('form.wageTypeLabel')}
-              getOptionLabel={(value: string) =>
-                value === WageType.Hourly ? t('hourlyLabel') : t('fixedLabel')
-              }
-              FieldComponent={WageTypeFieldComponent}
+            <WageTypeSelector
+              Field={Fields.WageType}
+              copy={{
+                label: t('form.wageTypeLabel'),
+                fixedLabel: t('fixedLabel'),
+                hourlyLabel: t('hourlyLabel'),
+                fixedDescription: t('form.fixedDescription'),
+                hourlyDescription: t('form.hourlyDescription'),
+              }}
             />
             {payForm.status.isHourly && (
               <Fields.HourlyRate
