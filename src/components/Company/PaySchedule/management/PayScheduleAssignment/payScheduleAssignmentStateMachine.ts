@@ -31,11 +31,20 @@ export const payScheduleAssignmentStateMachine = {
             EventPayloads,
             typeof componentEvents.PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED
           >,
-        ): PayScheduleAssignmentContextInterface => ({
-          ...ctx,
-          component: AssignmentScheduleStep as ComponentType,
-          assignmentType: ev.payload.type,
-        }),
+        ): PayScheduleAssignmentContextInterface => {
+          // Switching type invalidates every schedule already picked under the old one, so a
+          // Single → HourlySalaried → Back → Single round trip can't resurrect a stale uuid.
+          const isSameType = ctx.assignmentType === ev.payload.type
+
+          return {
+            ...ctx,
+            component: AssignmentScheduleStep as ComponentType,
+            assignmentType: ev.payload.type,
+            defaultPayScheduleUuid: isSameType ? ctx.defaultPayScheduleUuid : undefined,
+            hourlyPayScheduleUuid: isSameType ? ctx.hourlyPayScheduleUuid : undefined,
+            salariedPayScheduleUuid: isSameType ? ctx.salariedPayScheduleUuid : undefined,
+          }
+        },
       ),
     ),
   ),
@@ -73,7 +82,7 @@ export const payScheduleAssignmentStateMachine = {
         ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
           component: AssignmentReviewStep as ComponentType,
-          defaultPayScheduleUuid: ev.payload.defaultPayScheduleUuid,
+          ...ev.payload,
         }),
       ),
     ),

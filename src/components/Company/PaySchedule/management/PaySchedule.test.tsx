@@ -14,6 +14,7 @@ import {
   updatePaySchedule,
   previewPayScheduleAssignment,
   assignPaySchedules,
+  getPayScheduleAssignments,
 } from '@/test/mocks/apis/payschedule'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
@@ -58,6 +59,8 @@ describe('PaySchedule (management)', () => {
     server.use(
       paymentConfigsMock,
       getPaySchedules,
+      // Out-ranks getPaySchedule, whose `:pay_schedule_id` pattern also matches /assignments.
+      getPayScheduleAssignments,
       getPaySchedule,
       getPaySchedulePreview,
       createPaySchedule,
@@ -448,6 +451,9 @@ describe('PaySchedule (management)', () => {
         () => new HttpResponse(null, { status: 500 }),
       ),
     )
+    // Re-assert the assignments handler so the 500 above applies only to the single-schedule
+    // fetch the AutoPilot dialog makes.
+    server.use(getPayScheduleAssignments)
     const updateResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))
     server.use(
       http.put(
@@ -725,5 +731,149 @@ describe('PaySchedule (management)', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_UPDATED, expect.any(Object))
     })
     expect(screen.getByRole('heading', { name: /pay schedule/i })).toBeInTheDocument()
+  })
+
+  describe('assignment by compensation type', () => {
+    const hourlySalariedSchedules = [
+      {
+        uuid: 'schedule-hourly',
+        frequency: 'Every week',
+        custom_name: 'Hourly Team',
+        active: true,
+        auto_payroll: false,
+        version: 'v1',
+      },
+      {
+        uuid: 'schedule-salaried',
+        frequency: 'Twice per month',
+        custom_name: 'Salaried Team',
+        active: true,
+        auto_payroll: true,
+        version: 'v2',
+      },
+    ]
+
+    const useHourlySalariedAssignment = (
+      assignment: Record<string, unknown> = {
+        type: 'hourly_salaried',
+        hourly_pay_schedule_uuid: 'schedule-hourly',
+        salaried_pay_schedule_uuid: 'schedule-salaried',
+      },
+    ) => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+          HttpResponse.json(hourlySalariedSchedules),
+        ),
+      )
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`, () =>
+          HttpResponse.json(assignment),
+        ),
+      )
+    }
+
+    it('renders a row per compensation type', async () => {
+      useHourlySalariedAssignment()
+      renderPaySchedule({ enableAutoPilot: true, enableMultipleSchedules: true })
+
+      await waitFor(() => {
+        expect(screen.getByText('Salaried Team')).toBeInTheDocument()
+      })
+
+      // react-aria names each row by its first cell: compensation type + schedule name.
+      const salariedRow = screen.getByRole('row', { name: 'Salaried Salaried Team' })
+      expect(salariedRow).toHaveTextContent('Twice per month')
+      expect(within(salariedRow).getByText('Enabled')).toHaveAttribute('data-variant', 'success')
+
+      const hourlyRow = screen.getByRole('row', { name: 'Hourly Hourly Team' })
+      expect(hourlyRow).toHaveTextContent('Every week')
+      expect(within(hourlyRow).getByText('Disabled')).toHaveAttribute('data-variant', 'info')
+
+      expect(screen.getByRole('button', { name: /manage/i })).toBeInTheDocument()
+    })
+
+    it('edits the schedule for the row whose menu was used', async () => {
+      useHourlySalariedAssignment()
+      const user = userEvent.setup()
+      const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+      await waitFor(() => {
+        expect(screen.getByText('Hourly Team')).toBeInTheDocument()
+      })
+
+      const hourlyRow = screen.getByRole('row', { name: 'Hourly Hourly Team' })
+      await user.click(within(hourlyRow).getByRole('button', { name: /pay schedule actions/i }))
+      await user.click(screen.getByRole('menuitem', { name: /edit schedule/i }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_UPDATE, {
+        uuid: 'schedule-hourly',
+      })
+    })
+
+    it('opens the AutoPilot dialog for the row whose menu was used', async () => {
+      useHourlySalariedAssignment()
+      const user = userEvent.setup()
+      const { onEvent } = renderPaySchedule({ enableAutoPilot: true })
+
+      await waitFor(() => {
+        expect(screen.getByText('Salaried Team')).toBeInTheDocument()
+      })
+
+      const salariedRow = screen.getByRole('row', { name: 'Salaried Salaried Team' })
+      await user.click(within(salariedRow).getByRole('button', { name: /pay schedule actions/i }))
+      await user.click(screen.getByRole('menuitem', { name: /^autopilot$/i }))
+
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.PAY_SCHEDULE_AUTO_PILOT_EDIT,
+        expect.objectContaining({
+          schedule: expect.objectContaining({ uuid: 'schedule-salaried' }),
+        }),
+      )
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+    })
+
+    it('omits the AutoPilot column and row action when enableAutoPilot is false', async () => {
+      useHourlySalariedAssignment()
+      const user = userEvent.setup()
+      renderPaySchedule({ enableAutoPilot: false })
+
+      await waitFor(() => {
+        expect(screen.getByText('Hourly Team')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText(/autopilot/i)).not.toBeInTheDocument()
+
+      const hourlyRow = screen.getByRole('row', { name: 'Hourly Hourly Team' })
+      await user.click(within(hourlyRow).getByRole('button', { name: /pay schedule actions/i }))
+      expect(screen.getAllByRole('menuitem')).toHaveLength(1)
+    })
+
+    it('omits a row whose assigned schedule is missing from the company schedules', async () => {
+      useHourlySalariedAssignment({
+        type: 'hourly_salaried',
+        hourly_pay_schedule_uuid: 'schedule-gone',
+        salaried_pay_schedule_uuid: 'schedule-salaried',
+      })
+      renderPaySchedule({ enableAutoPilot: true })
+
+      await waitFor(() => {
+        expect(screen.getByRole('row', { name: 'Salaried Salaried Team' })).toBeInTheDocument()
+      })
+
+      expect(screen.queryByRole('row', { name: /^Hourly/ })).toBeNull()
+    })
+
+    it('falls back to the single-schedule overview for other assignment types', async () => {
+      useHourlySalariedAssignment({ type: 'by_department', departments: [] })
+      renderPaySchedule({ enableAutoPilot: true, enableMultipleSchedules: true })
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/you have assigned everyone to be on one pay schedule/i),
+        ).toBeInTheDocument()
+      })
+    })
   })
 })
