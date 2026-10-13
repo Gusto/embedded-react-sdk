@@ -710,4 +710,362 @@ describe('Contractor profile component behavior', () => {
       expect(documentsResolver).not.toHaveBeenCalled()
     })
   })
+
+  describe('SDK-1157 wage type / hourly rate regression net', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+    })
+
+    const companyId = 'company-123'
+
+    const hourlyIndividual = {
+      uuid: 'contractor_id',
+      version: 'version-1',
+      type: 'Individual',
+      wage_type: 'Hourly',
+      hourly_rate: '25.50',
+      start_date: '2024-01-01',
+      first_name: 'John',
+      last_name: 'Doe',
+      has_ssn: true,
+      has_ein: false,
+      is_active: true,
+      file_new_hire_report: false,
+      onboarding_status: 'admin_onboarding_incomplete',
+    }
+
+    const { hourly_rate: _omittedRate, ...hourlyIndividualWithoutRate } = hourlyIndividual
+
+    const fillBusinessBasics = async (user: ReturnType<typeof userEvent.setup>) => {
+      await user.type(screen.getByLabelText('Business Name'), 'Acme LLC')
+      await user.type(screen.getByLabelText('EIN'), '12-3456789')
+    }
+
+    it('renders the Wage Type radios Hourly then Fixed, with no option descriptions, defaulting to Fixed', async () => {
+      renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByText('Wage Type')).toBeInTheDocument()
+
+      const hourlyRadio = screen.getByRole('radio', { name: 'Hourly' })
+      const fixedRadio = screen.getByRole('radio', { name: 'Fixed' })
+      expect(
+        screen.getAllByRole('radio').filter(radio => radio === hourlyRadio || radio === fixedRadio),
+      ).toEqual([hourlyRadio, fixedRadio])
+      expect(fixedRadio).toBeChecked()
+      expect(hourlyRadio).toHaveAccessibleDescription('')
+      expect(fixedRadio).toHaveAccessibleDescription('')
+    })
+
+    it('shows the required message when Hourly is submitted with no rate', async () => {
+      const user = userEvent.setup()
+      const createResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({ uuid: 'x' }, { status: 201 }),
+      )
+      server.use(handleCreateContractor(createResolver))
+
+      renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
+
+      await screen.findByText('Contractor profile')
+      await fillBusinessBasics(user)
+      await user.click(screen.getByRole('radio', { name: 'Hourly' }))
+      await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
+
+      expect(
+        await screen.findByText('Hourly rate is required for hourly contractors'),
+      ).toBeInTheDocument()
+      expect(createResolver).not.toHaveBeenCalled()
+    })
+
+    it('blocks an hourly rate above the server cap (regression for SDK-1297)', async () => {
+      const user = userEvent.setup()
+      const createResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({ uuid: 'x' }, { status: 201 }),
+      )
+      server.use(handleCreateContractor(createResolver))
+
+      renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
+
+      await screen.findByText('Contractor profile')
+      await fillBusinessBasics(user)
+      await user.click(screen.getByRole('radio', { name: 'Hourly' }))
+      await user.type(screen.getByLabelText('Hourly Rate'), '1000000000001')
+      await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
+
+      expect(
+        await screen.findByText("Hourly rate can't exceed $1,000,000,000,000.00"),
+      ).toBeInTheDocument()
+      expect(createResolver).not.toHaveBeenCalled()
+    })
+
+    it('hides the rate field and its error after switching Hourly -> Fixed, then creates without hourly_rate', async () => {
+      const user = userEvent.setup()
+      let body: Record<string, unknown> | null = null
+      const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          { uuid: 'new-contractor-uuid', type: 'Business', is_active: true },
+          { status: 201 },
+        )
+      })
+      server.use(handleCreateContractor(createResolver))
+
+      renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
+
+      await screen.findByText('Contractor profile')
+      await fillBusinessBasics(user)
+      await user.click(screen.getByRole('radio', { name: 'Hourly' }))
+      await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
+      await screen.findByText('Hourly rate is required for hourly contractors')
+
+      await user.click(screen.getByRole('radio', { name: 'Fixed' }))
+
+      await waitFor(() => {
+        expect(screen.queryByLabelText('Hourly Rate')).toBeNull()
+      })
+      expect(screen.queryByText('Hourly rate is required for hourly contractors')).toBeNull()
+
+      await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
+
+      await waitFor(() => {
+        expect(createResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(body).toMatchObject({ type: 'Business', wage_type: 'Fixed' })
+      expect(body).not.toHaveProperty('hourly_rate')
+    })
+
+    it.each([
+      ['25', '25'],
+      ['25.50', '25.5'],
+      ['0', '0'],
+    ])('creates an hourly contractor with typed rate %s as hourly_rate %j', async (typed, wire) => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      let body: Record<string, unknown> | null = null
+      const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          { uuid: 'new-contractor-uuid', type: 'Business', is_active: true },
+          { status: 201 },
+        )
+      })
+      server.use(handleCreateContractor(createResolver))
+
+      renderWithProviders(<ContractorProfile companyId={companyId} onEvent={onEvent} />)
+
+      await screen.findByText('Contractor profile')
+      await fillBusinessBasics(user)
+      await user.click(screen.getByRole('radio', { name: 'Hourly' }))
+      await user.type(screen.getByLabelText('Hourly Rate'), typed)
+      await user.click(screen.getByRole('button', { name: 'Create Contractor' }))
+
+      await waitFor(() => {
+        expect(createResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(body).toMatchObject({ wage_type: 'Hourly', hourly_rate: wire, is_active: true })
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_CREATED,
+        expect.objectContaining({ uuid: 'new-contractor-uuid' }),
+      )
+    })
+
+    it('pre-selects Hourly and pre-fills the rate for an existing hourly contractor, round-tripping 25.50 as "25.5"', async () => {
+      const user = userEvent.setup()
+      let body: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ ...hourlyIndividual, version: 'version-2' })
+      })
+      server.use(
+        handleGetContractor(() => HttpResponse.json(hourlyIndividual)),
+        handleUpdateContractor(updateResolver),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      expect(screen.getByRole('radio', { name: 'Hourly' })).toBeChecked()
+      expect(screen.getByLabelText('Hourly Rate')).toHaveValue('25.50')
+
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(updateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(body).toMatchObject({
+        version: 'version-1',
+        wage_type: 'Hourly',
+        hourly_rate: '25.5',
+      })
+      expect(body).not.toHaveProperty('is_active')
+    })
+
+    it('requires the hourly rate on update (promoted by ContractorProfile)', async () => {
+      const user = userEvent.setup()
+      const updateResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({ ...hourlyIndividual, version: 'version-2' }),
+      )
+      server.use(
+        handleGetContractor(() => HttpResponse.json(hourlyIndividualWithoutRate)),
+        handleUpdateContractor(updateResolver),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={vi.fn()} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      expect(
+        await screen.findByText('Hourly rate is required for hourly contractors'),
+      ).toBeInTheDocument()
+      expect(updateResolver).not.toHaveBeenCalled()
+    })
+
+    it('shows the API error banner and inline hourly rate error on a 422', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      const updateResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json(
+          {
+            errors: [
+              {
+                error_key: 'hourly_rate',
+                category: 'invalid_attribute_value',
+                message: 'Hourly rate is invalid',
+              },
+            ],
+          },
+          { status: 422 },
+        ),
+      )
+      server.use(
+        handleGetContractor(() => HttpResponse.json(hourlyIndividual)),
+        handleUpdateContractor(updateResolver),
+      )
+
+      renderWithProviders(
+        <ContractorProfile companyId={companyId} contractorId="contractor_id" onEvent={onEvent} />,
+      )
+
+      await screen.findByText('Contractor profile')
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      expect(
+        await screen.findByText('There was a problem with your submission'),
+      ).toBeInTheDocument()
+      expect(screen.getAllByText('Hourly rate is invalid').length).toBeGreaterThanOrEqual(2)
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+      expect(onEvent).not.toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_UPDATED,
+        expect.anything(),
+      )
+    })
+
+    it('shows a loader while the contractor loads and an error banner when the fetch fails', async () => {
+      server.use(
+        handleGetContractor(() =>
+          HttpResponse.json(
+            { errors: [{ category: 'server_error', message: 'Boom' }] },
+            { status: 500 },
+          ),
+        ),
+      )
+
+      renderWithProviders(
+        <ContractorProfile
+          companyId={companyId}
+          contractorId="contractor_id"
+          onEvent={vi.fn()}
+          LoaderComponent={() => <div>Loading contractor</div>}
+        />,
+      )
+
+      expect(screen.getByText('Loading contractor')).toBeInTheDocument()
+      expect(
+        await screen.findByText('There was a problem with your submission'),
+      ).toBeInTheDocument()
+      expect(screen.queryByText('Contractor profile')).toBeNull()
+    })
+
+    describe('self-onboarding profiles (isAdmin=false)', () => {
+      const selfOnboardingHourly = {
+        ...hourlyIndividual,
+        email: 'john.doe@example.com',
+        has_ssn: false,
+        onboarding_status: 'self_onboarding_invited',
+      }
+
+      it('does not render wage fields for an hourly individual, and echoes the stored rate on submit', async () => {
+        const user = userEvent.setup()
+        let body: Record<string, unknown> | null = null
+        const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+          body = (await request.json()) as Record<string, unknown>
+          return HttpResponse.json({ ...selfOnboardingHourly, version: 'version-2' })
+        })
+        server.use(
+          handleGetContractor(() => HttpResponse.json(selfOnboardingHourly)),
+          handleUpdateContractor(updateResolver),
+        )
+
+        renderWithProviders(
+          <ContractorProfile
+            companyId={companyId}
+            contractorId="contractor_id"
+            isAdmin={false}
+            onEvent={vi.fn()}
+          />,
+        )
+
+        await screen.findByText('Complete your profile')
+        expect(screen.queryByText('Wage Type')).toBeNull()
+        expect(screen.queryByRole('radio', { name: 'Hourly' })).toBeNull()
+        expect(screen.queryByLabelText('Hourly Rate')).toBeNull()
+
+        await user.type(screen.getByLabelText('Social Security Number'), '123-45-6789')
+        await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+        await waitFor(() => {
+          expect(updateResolver).toHaveBeenCalledTimes(1)
+        })
+        expect(body).toMatchObject({
+          ssn: '123456789',
+          wage_type: 'Hourly',
+          hourly_rate: '25.5',
+        })
+      })
+
+      it('does not render wage fields for an hourly business', async () => {
+        server.use(
+          handleGetContractor(() =>
+            HttpResponse.json({
+              ...selfOnboardingHourly,
+              type: 'Business',
+              business_name: 'Acme LLC',
+              first_name: undefined,
+              last_name: undefined,
+            }),
+          ),
+        )
+
+        renderWithProviders(
+          <ContractorProfile
+            companyId={companyId}
+            contractorId="contractor_id"
+            isAdmin={false}
+            onEvent={vi.fn()}
+          />,
+        )
+
+        await screen.findByText('Complete your profile')
+        expect(screen.getByLabelText('Business Name')).toBeInTheDocument()
+        expect(screen.queryByText('Wage Type')).toBeNull()
+        expect(screen.queryByRole('radio', { name: 'Hourly' })).toBeNull()
+        expect(screen.queryByLabelText('Hourly Rate')).toBeNull()
+      })
+    })
+  })
 })
