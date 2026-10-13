@@ -11,18 +11,20 @@ The Gusto API enforces application-level protections (scopes, company-bound toke
 
 1. **Authenticate every request.** Verify the user's session on every proxied request, not just at sign-in.
 2. **Allowlist endpoints.** Only forward requests to API endpoints your application actually uses. Deny everything else.
-3. **Validate resource ownership.** Verify that the authenticated user is authorized to access the resource in the URL (for example, an employee should only reach their own employee ID).
+3. **Validate resource ownership.** Verify that the authenticated user is authorized to access the resource in the URL (for example, an employee should only reach their own employee ID). Every identifier in an endpoint path must be either bound to a session value or covered by an ownership check. See [Identifier placeholders](#identifier-placeholders).
 4. **Log proxied requests.** Maintain audit logs for security monitoring and incident response.
 
 ## Getting the endpoint list
 
-Every SDK component makes a known set of API calls. Paths use named parameters (`:companyId`, `:employeeId`, and so on) that you replace with session values. The more you resolve, the tighter the allowlist:
+Every SDK component makes a known set of API calls. Paths use named parameters (`:companyId`, `:employeeUuid`, and so on) that you replace with session values. The more you bind, the tighter the allowlist:
 
-| What you resolve             | Use case                                            |
-| ---------------------------- | --------------------------------------------------- |
-| Nothing                      | Generic allowlisting, no user scoping               |
-| `:companyId` only            | Admin who can access any employee in their company  |
-| `:companyId` + `:employeeId` | Self-service employee, restricted to their own data |
+| What you bind                                          | Use case                                                                                                  |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Nothing                                                | Generic allowlisting, no user scoping. Each identifier is an explicit, shape-constrained wildcard         |
+| Company identifiers only                               | Admin who can access any employee in their company, with ownership checks for employee-level identifiers  |
+| Company and employee identifiers (every name for each) | Self-service employee, restricted to their own data, with ownership checks for child resource identifiers |
+
+An identifier you haven't bound or covered with an ownership check must cause an error or a denial, never an unrestricted path. See [Identifier placeholders](#identifier-placeholders).
 
 ### Option A: JSON endpoint inventory (recommended, any platform)
 
@@ -82,11 +84,27 @@ The JSON structure:
 }
 ```
 
-Each endpoint's `docsUrl` links to its page in the API reference (omitted for the few endpoints without a public reference page). Blocks and hooks list their `endpoints` directly; a flow lists the `blocks` it composes, and its endpoints are the union of those blocks' endpoints. Look up the flows, blocks, or hooks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
+Each endpoint's `docsUrl` links to its page in the API reference (omitted for the few endpoints without a public reference page). Blocks and hooks list their `endpoints` directly; a flow lists the `blocks` it composes (a flow can also list other flows), and its endpoints are the union of the endpoints of everything it composes. Look up the flows, blocks, or hooks your app uses, resolve every `:param` placeholder as described in [Identifier placeholders](#identifier-placeholders), and use the result as your allowlist.
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list grouped by domain. Each component, flow, and hook's own [reference page](../reference/index.mdx) also lists the endpoints it calls. Copy the method + path pairs for the components and hooks you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list grouped by domain. Each component, flow, and hook's own [reference page](../reference/index.mdx) also lists the endpoints it calls. Copy the method + path pairs for the components and hooks you use and resolve `:param` placeholders as described in [Identifier placeholders](#identifier-placeholders).
+
+## Identifier placeholders
+
+The inventory doesn't name identifiers uniformly. The employee's ID appears as `:employeeId` in some paths and `:employeeUuid` in others, and the company's ID as `:companyId` or `:companyUuid`. Binding one spelling doesn't bind the other: a role that binds only `:employeeId` leaves `/v1/employees/:employeeUuid/federal_taxes` and `/v1/employees/:employeeUuid/state_taxes` unscoped, which would let a self-service employee read or update any employee's tax settings.
+
+Check the `variables` list of every block and hook a role uses, and bind or check each name in it. Treat an unresolved placeholder as an error, or deny the endpoint. Don't substitute a catch-all pattern such as `[^/]+`. The [proxy examples](../guides/integration-guide/proxy-examples.md) build their allowlists this way.
+
+Every variable in the inventory falls into one of three kinds:
+
+| Kind                        | Variables                                                                                                                                                                                                                                                                                                                                                                                                      | What to do                                                                                                                                                                                                                                                                     |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Session-resolvable          | `companyId`, `companyUuid`, `employeeId`, `employeeUuid`, `contractorUuid`                                                                                                                                                                                                                                                                                                                                     | Bind to the authenticated user's own company, employee, or contractor, using every name the role's endpoints use. A role that reaches many employees or contractors in a company can't bind `employeeId`, `employeeUuid`, or `contractorUuid`. Use an ownership check instead. |
+| Requires an ownership check | `bankAccountUuid`, `compensationId`, `contractorPaymentGroupUuid`, `contractorPaymentId`, `contractorPaymentUuid`, `documentUuid`, `formId`, `garnishmentId`, `homeAddressUuid`, `informationRequestUuid`, `jobId`, `locationId`, `locationUuid`, `payScheduleId`, `payrollId`, `payrollUuid`, `recoveryCaseUuid`, `requestUuid`, `signatoryUuid`, `timeOffPolicyUuid`, `wireInRequestUuid`, `workAddressUuid` | These identify child resources and can't be derived from the session. Before forwarding, verify on every request that the resource belongs to the user (self-service roles) or to the user's company (admin roles). Constrain the path segment to the expected ID shape.       |
+| Enumerated value            | `state`, `documentType`                                                                                                                                                                                                                                                                                                                                                                                        | These aren't resource IDs. Allow only the values your integration uses.                                                                                                                                                                                                        |
+
+A variable that appears in a newer SDK version and isn't listed here requires an ownership check until you determine otherwise. Run your allowlist build against the inventory in your tests when you upgrade the SDK so a new identifier fails loudly.
 
 ## Content Security Policy
 
@@ -188,7 +206,7 @@ Content-Security-Policy:
 ## FAQ
 
 **Can an authenticated employee access another employee's data?**
-Not if you substitute the employee ID—the resulting paths only match that employee's endpoints.
+Not if every identifier in the allowed paths is resolved. Bind the employee's own ID under every name the inventory uses (`:employeeId` and `:employeeUuid`), and verify ownership of child resources such as forms and addresses. An identifier you leave unresolved, or resolve as a wildcard, matches any employee's data. See [Identifier placeholders](#identifier-placeholders).
 
 **How do we restrict some admins from running payroll?**
 Only include payroll endpoints for roles that need them, or request removal of the `payrolls:run` scope entirely.
