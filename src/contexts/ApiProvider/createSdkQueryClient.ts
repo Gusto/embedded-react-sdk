@@ -7,6 +7,8 @@ import { API_QUERY_NAMESPACE } from './apiVersion'
  * @remarks
  * Defaults applied:
  * - `retry: false` on both queries and mutations.
+ * - `networkMode: 'always'` on both queries and mutations, so requests made while the browser reports offline fail with an error instead of
+ *   staying paused (and showing an indefinite loading state) until connectivity returns.
  * - On any successful mutation, every SDK query under the namespace is invalidated so the next read refetches fresh data.
  *
  * {@link ApiProvider} uses this when no `queryClient` prop is supplied, and `GustoTestProvider` uses it so tests faithfully replicate production
@@ -18,9 +20,10 @@ import { API_QUERY_NAMESPACE } from './apiVersion'
  */
 export function createSdkQueryClient(): QueryClient {
   const client = new QueryClient()
-  client.setQueryDefaults([API_QUERY_NAMESPACE], { retry: false })
+  client.setQueryDefaults([API_QUERY_NAMESPACE], { retry: false, networkMode: 'always' })
   client.setMutationDefaults([API_QUERY_NAMESPACE], {
     retry: false,
+    networkMode: 'always',
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey: [API_QUERY_NAMESPACE] })
     },
