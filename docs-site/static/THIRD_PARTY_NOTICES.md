@@ -1,24 +1,16 @@
 # Third-Party Notices
 
-This documentation site is built with the open source software listed below.
-Notices for most other bundled libraries are written by Docusaurus to the
-`*.LICENSE.txt` files next to the built JavaScript. The library below is
-compiled without an embedded notice, so its license is reproduced here.
+This documentation site bundles elkjs 0.9.3 in its built JavaScript output
+(via mermaid and `@docusaurus/theme-mermaid`). elkjs is included unmodified,
+as published on npm. It ships a LICENSE.md and no NOTICE file, and the
+compiled bundle carries no license text of its own. Its LICENSE is
+reproduced in full below.
 
-## elkjs 0.9.3
+# elkjs
 
-- License: Eclipse Public License 2.0 (EPL-2.0)
-- Source code: https://github.com/kieler/elkjs
-- Package: https://www.npmjs.com/package/elkjs/v/0.9.3
-- Used for: diagram rendering in this documentation site (via mermaid and
-  `@docusaurus/theme-mermaid`).
-- Modifications: none. elkjs is bundled unmodified, as published on npm. The
-  Source Code is available at the link above under the EPL-2.0.
+Licensed under the Eclipse Public License, Version 2.0.
 
-The license text, copied verbatim from the elkjs 0.9.3 package
-(`LICENSE.md`), follows.
-
----
+Source code: https://github.com/kieler/elkjs
 
 # Eclipse Public License - v 2.0
 
@@ -284,3 +276,9 @@ version(s), and exceptions or additional permissions here}.”
 > look for such a notice.
 >
 > You may add additional accurate notices of copyright ownership.
+
+# Modules covered by this file
+
+| Module | License | Source |
+|---|---|---|
+| elkjs 0.9.3 | EPL-2.0 | https://github.com/kieler/elkjs |
