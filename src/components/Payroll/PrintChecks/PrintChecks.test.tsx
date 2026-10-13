@@ -52,13 +52,15 @@ describe('PrintChecks', () => {
 
     await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
 
-    expect(await screen.findByText('Choose check stock')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { level: 2, name: 'Choose check stock' }),
+    ).toBeInTheDocument()
     expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_START, undefined)
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('Choose check stock')).toBeNull()
+      expect(screen.queryByRole('heading', { name: 'Choose check stock' })).toBeNull()
     })
   })
 
@@ -118,6 +120,8 @@ describe('PrintChecks', () => {
 
     await user.click(screen.getByRole('button', { name: 'Try again' }))
 
-    expect(await screen.findByText('Choose check stock')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { level: 2, name: 'Choose check stock' }),
+    ).toBeInTheDocument()
   })
 })

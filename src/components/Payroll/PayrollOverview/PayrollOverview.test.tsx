@@ -700,7 +700,9 @@ describe('PayrollOverview print checks modal', () => {
 
     await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
 
-    expect(await screen.findByText('Choose check stock')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { level: 2, name: 'Choose check stock' }),
+    ).toBeInTheDocument()
   })
 })
 
