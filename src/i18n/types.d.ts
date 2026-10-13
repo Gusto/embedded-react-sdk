@@ -380,9 +380,9 @@ export namespace Translations {
       email: string
       /** @defaultValue `"Email addresses must match"` */
       emailMismatch: string
-      /** @defaultValue `"First name is required"` */
+      /** @defaultValue `"Enter a valid first name"` */
       firstName: string
-      /** @defaultValue `"Last name is required"` */
+      /** @defaultValue `"Enter a valid last name"` */
       lastName: string
       /** @defaultValue `"Phone number must be 10 digits"` */
       phone: string
