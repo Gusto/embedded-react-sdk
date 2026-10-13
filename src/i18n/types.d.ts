@@ -1032,19 +1032,35 @@ export namespace Translations {
     title: string
     /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
     description: string
+    /** @defaultValue `"You have assigned employees to pay schedules by compensation type."` */
+    compensationDescription: string
+    /** @defaultValue `"Pay schedules by compensation type"` */
+    compensationTableLabel: string
     /** @defaultValue `"Manage"` */
     manageCta: string
     /** @defaultValue `"Edit"` */
     editCta: string
+    /** @defaultValue `"Edit schedule"` */
+    editScheduleCta: string
     /** @defaultValue `"Edit pay schedule"` */
     editScheduleAriaLabel: string
     /** @defaultValue `"Edit AutoPilot"` */
     editAutoPilotAriaLabel: string
+    /** @defaultValue `"Pay schedule actions"` */
+    rowMenuTriggerLabel: string
     labels: {
       /** @defaultValue `"Name"` */
       name: string
       /** @defaultValue `"Frequency"` */
       frequency: string
+      /** @defaultValue `"Schedule"` */
+      schedule: string
+    }
+    compensationTypes: {
+      /** @defaultValue `"Hourly"` */
+      hourly: string
+      /** @defaultValue `"Salaried"` */
+      salaried: string
     }
     autoPilot: {
       /** @defaultValue `"AutoPilot"` */
@@ -1073,6 +1089,12 @@ export namespace Translations {
           /** @defaultValue `"Choose one pay schedule for all your employees"` */
           description: string
         }
+        hourlySalaried: {
+          /** @defaultValue `"Separate schedules by compensation type"` */
+          label: string
+          /** @defaultValue `"Choose one pay schedule for hourly employees and another for salaried employees"` */
+          description: string
+        }
       }
     }
     scheduleStep: {
@@ -1082,6 +1104,20 @@ export namespace Translations {
       payScheduleLabel: string
       /** @defaultValue `"The pay schedule to use for all employees."` */
       payScheduleDescription: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
+    compensationStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Hourly employees"` */
+      hourlyPayScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for hourly employees."` */
+      hourlyPayScheduleDescription: string
+      /** @defaultValue `"Salaried employees"` */
+      salariedPayScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for salaried employees."` */
+      salariedPayScheduleDescription: string
       /** @defaultValue `"Add pay schedule"` */
       addPayScheduleCta: string
     }

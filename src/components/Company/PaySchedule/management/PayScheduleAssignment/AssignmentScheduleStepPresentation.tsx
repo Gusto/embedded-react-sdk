@@ -3,6 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import { scheduleLabel } from './scheduleLabel'
 import { Flex, SelectField, ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -21,10 +22,6 @@ const ScheduleStepSchema = z.object({
 })
 
 type ScheduleStepInputs = z.infer<typeof ScheduleStepSchema>
-
-function scheduleLabel(schedule: PayScheduleShow): string {
-  return [schedule.customName, schedule.frequency].filter(Boolean).join(' — ')
-}
 
 /** @internal */
 export function AssignmentScheduleStepPresentation({
