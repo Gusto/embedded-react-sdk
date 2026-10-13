@@ -23,6 +23,11 @@ on:
         description: 'Type "CONFIRM" to proceed with unpublishing'
         required: true
         type: string
+      dry_run:
+        description: 'Validate and preview only — run npm unpublish with --dry-run'
+        required: false
+        type: boolean
+        default: false
 jobs:
   unpublish:
     runs-on:
@@ -30,6 +35,12 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      UNPUBLISH_TYPE: ${{ github.event.inputs.unpublish_type }}
+      VERSION: ${{ github.event.inputs.version }}
+      BASE_VERSION: ${{ github.event.inputs.base_version }}
+      CONFIRM: ${{ github.event.inputs.confirm }}
+      DRY_RUN: ${{ github.event.inputs.dry_run }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -39,18 +50,13 @@ jobs:
 
       - name: Validate confirmation
         run: |
-          if [ "${{ github.event.inputs.confirm }}" != "CONFIRM" ]; then
-            echo "❌ Error: You must type 'CONFIRM' to proceed with unpublishing"
-            echo "   This is a safety measure to prevent accidental unpublishing"
-            exit 1
-          fi
+          .github/scripts/validate-release-input.sh confirm "$CONFIRM"
           echo "✅ Confirmation received"
 
       - name: Validate inputs
         run: |
-          UNPUBLISH_TYPE="${{ github.event.inputs.unpublish_type }}"
-          VERSION="${{ github.event.inputs.version }}"
-          BASE_VERSION="${{ github.event.inputs.base_version }}"
+          .github/scripts/validate-release-input.sh unpublish-type "$UNPUBLISH_TYPE"
+          .github/scripts/validate-release-input.sh boolean "${DRY_RUN:-false}"
 
           case "$UNPUBLISH_TYPE" in
             "specific_version")
@@ -58,12 +64,14 @@ jobs:
                 echo "❌ Error: Version is required for specific_version unpublish type"
                 exit 1
               fi
+              .github/scripts/validate-release-input.sh semver "$VERSION"
               ;;
             "all_rc_for_version")
               if [ -z "$BASE_VERSION" ]; then
                 echo "❌ Error: Base version is required for all_rc_for_version unpublish type"
                 exit 1
               fi
+              .github/scripts/validate-release-input.sh semver-base "$BASE_VERSION"
               ;;
           esac
 
@@ -82,7 +90,7 @@ jobs:
           echo "🏷️  Regular versions:"
           echo "$ALL_VERSIONS" | grep -v "\-rc\." | tail -5 | sed 's/^/  /'
 
-          # Show RC versions  
+          # Show RC versions
           echo ""
           echo "🧪 RC versions:"
           RC_VERSIONS=$(echo "$ALL_VERSIONS" | grep "\-rc\." | tail -10)
@@ -99,9 +107,6 @@ jobs:
         id: determine-versions
         run: |
           PACKAGE_NAME="@gusto/embedded-react-sdk"
-          UNPUBLISH_TYPE="${{ github.event.inputs.unpublish_type }}"
-          VERSION="${{ github.event.inputs.version }}"
-          BASE_VERSION="${{ github.event.inputs.base_version }}"
 
           case "$UNPUBLISH_TYPE" in
             "specific_version")
@@ -114,7 +119,7 @@ jobs:
                 exit 1
               fi
               ;;
-              
+
             "latest_rc")
               # Find the latest RC version
               LATEST_RC=$(npm view $PACKAGE_NAME versions --json | jq -r '.[]' | grep "\-rc\." | sort -V | tail -1)
@@ -126,7 +131,7 @@ jobs:
                 exit 1
               fi
               ;;
-              
+
             "all_rc_for_version")
               # Find all RC versions for the base version
               ALL_RC_FOR_VERSION=$(npm view $PACKAGE_NAME versions --json | jq -r '.[]' | grep "^${BASE_VERSION}-rc\." | sort -V)
@@ -144,9 +149,15 @@ jobs:
           esac
 
       - name: Unpublish versions
+        env:
+          VERSIONS_TO_UNPUBLISH: ${{ steps.determine-versions.outputs.versions_to_unpublish }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           PACKAGE_NAME="@gusto/embedded-react-sdk"
-          VERSIONS_TO_UNPUBLISH="${{ steps.determine-versions.outputs.versions_to_unpublish }}"
+          UNPUBLISH_FLAGS=""
+          if [ "${DRY_RUN:-false}" = "true" ]; then
+            UNPUBLISH_FLAGS="--dry-run"
+          fi
 
           echo "🗑️  Starting unpublish process..."
           echo ""
@@ -157,7 +168,7 @@ jobs:
             echo "$VERSIONS_TO_UNPUBLISH" | while read -r version; do
               if [ -n "$version" ]; then
                 echo "🗑️  Unpublishing $PACKAGE_NAME@$version..."
-                if npm unpublish "$PACKAGE_NAME@$version"; then
+                if npm unpublish "$PACKAGE_NAME@$version" $UNPUBLISH_FLAGS; then
                   echo "✅ Successfully unpublished $version"
                 else
                   echo "❌ Failed to unpublish $version"
@@ -169,22 +180,22 @@ jobs:
           else
             # Single version
             echo "🗑️  Unpublishing $PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH..."
-            if npm unpublish "$PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH"; then
+            if npm unpublish "$PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH" $UNPUBLISH_FLAGS; then
               echo "✅ Successfully unpublished $VERSIONS_TO_UNPUBLISH"
             else
               echo "❌ Failed to unpublish $VERSIONS_TO_UNPUBLISH"
               exit 1
             fi
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Summary
+        env:
+          VERSIONS_TO_UNPUBLISH: ${{ steps.determine-versions.outputs.versions_to_unpublish }}
         run: |
           echo "📋 Unpublish Summary:"
-          echo "Type: ${{ github.event.inputs.unpublish_type }}"
+          echo "Type: $UNPUBLISH_TYPE"
           echo "Versions unpublished:"
-          echo "${{ steps.determine-versions.outputs.versions_to_unpublish }}" | sed 's/^/  ✅ /'
+          echo "$VERSIONS_TO_UNPUBLISH" | sed 's/^/  ✅ /'
           echo ""
           echo "🔗 Check remaining versions:"
           echo "   npm view @gusto/embedded-react-sdk versions --json"

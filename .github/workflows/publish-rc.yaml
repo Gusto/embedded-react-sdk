@@ -16,6 +16,11 @@ on:
         description: 'Specific commit to release from (overrides branch if provided)'
         required: false
         type: string
+      dry_run:
+        description: 'Validate and build only — run npm publish with --dry-run'
+        required: false
+        type: boolean
+        default: false
 jobs:
   publish:
     runs-on:
@@ -23,20 +28,40 @@ jobs:
     permissions:
       contents: write
       id-token: write
+    env:
+      INPUT_RC_NUMBER: ${{ github.event.inputs.rc_number }}
+      INPUT_BRANCH: ${{ github.event.inputs.branch }}
+      INPUT_COMMIT: ${{ github.event.inputs.commit }}
+      INPUT_DRY_RUN: ${{ github.event.inputs.dry_run }}
     steps:
+      - uses: actions/checkout@v6
+
+      - name: Validate inputs
+        run: |
+          RC_NUMBER="${INPUT_RC_NUMBER:-1}"
+          .github/scripts/validate-release-input.sh rc-number "$RC_NUMBER"
+          .github/scripts/validate-release-input.sh boolean "${INPUT_DRY_RUN:-false}"
+
+          if [ -n "$INPUT_COMMIT" ]; then
+            .github/scripts/validate-release-input.sh commit-sha "$INPUT_COMMIT"
+          else
+            .github/scripts/validate-release-input.sh branch-name "${INPUT_BRANCH:-main}"
+          fi
+
       - name: Determine checkout ref
         id: checkout-ref
         run: |
-          if [ -n "${{ github.event.inputs.commit }}" ]; then
-            echo "Using commit: ${{ github.event.inputs.commit }}"
-            echo "ref=${{ github.event.inputs.commit }}" >> $GITHUB_OUTPUT
-            echo "ref_type=commit" >> $GITHUB_OUTPUT
-            echo "ref_name=${{ github.event.inputs.commit }}" >> $GITHUB_OUTPUT
+          if [ -n "$INPUT_COMMIT" ]; then
+            echo "Using commit: $INPUT_COMMIT"
+            echo "ref=$INPUT_COMMIT" >> "$GITHUB_OUTPUT"
+            echo "ref_type=commit" >> "$GITHUB_OUTPUT"
+            echo "ref_name=$INPUT_COMMIT" >> "$GITHUB_OUTPUT"
           else
-            echo "Using branch: ${{ github.event.inputs.branch }}"
-            echo "ref=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
-            echo "ref_type=branch" >> $GITHUB_OUTPUT
-            echo "ref_name=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
+            BRANCH="${INPUT_BRANCH:-main}"
+            echo "Using branch: $BRANCH"
+            echo "ref=$BRANCH" >> "$GITHUB_OUTPUT"
+            echo "ref_type=branch" >> "$GITHUB_OUTPUT"
+            echo "ref_name=$BRANCH" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/checkout@v6
@@ -45,14 +70,15 @@ jobs:
 
       - name: Validate branch exists
         if: github.event.inputs.commit == ''
+        env:
+          BRANCH_NAME: ${{ steps.checkout-ref.outputs.ref_name }}
         run: |
-          BRANCH_NAME="${{ github.event.inputs.branch }}"
           echo "Validating branch '$BRANCH_NAME' exists..."
 
           # Fetch all branches to ensure we have the latest
           git fetch --all
 
-          if git show-ref --verify --quiet refs/remotes/origin/$BRANCH_NAME; then
+          if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH_NAME"; then
             echo "✅ Branch '$BRANCH_NAME' found and is valid"
           else
             echo "❌ Error: Branch '$BRANCH_NAME' not found"
@@ -66,50 +92,22 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Restore node_modules cache
-        id: cache-node-modules
-        uses: actions/cache/restore@v5
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
-
       - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Save node_modules cache
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
-
-      - name: Restore build cache
-        id: cache-build
-        uses: actions/cache/restore@v5
-        with:
-          path: dist
-          key: build-${{ github.sha }}
-
       - name: Generate i18n translations
-        if: steps.cache-build.outputs.cache-hit != 'true'
         run: npm run i18n:generate
 
       - name: Build
-        if: steps.cache-build.outputs.cache-hit != 'true'
         run: npx vite build
 
-      - name: Save build cache
-        if: steps.cache-build.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: dist
-          key: build-${{ github.sha }}
-
       - name: Show release info
+        env:
+          REF_TYPE: ${{ steps.checkout-ref.outputs.ref_type }}
+          REF_NAME: ${{ steps.checkout-ref.outputs.ref_name }}
         run: |
           echo "🚀 RC Release Information:"
-          echo "Source: ${{ steps.checkout-ref.outputs.ref_type }} -> ${{ steps.checkout-ref.outputs.ref_name }}"
+          echo "Source: $REF_TYPE -> $REF_NAME"
           echo "Full Commit: $(git rev-parse HEAD)"
           echo "Short Commit: $(git rev-parse --short HEAD)"
           echo "Current Version: $(node -p "require('./package.json').version")"
@@ -120,15 +118,16 @@ jobs:
           git log -1 --pretty=format:"  Author: %an <%ae>%n  Date: %ad%n  Message: %s" --date=short
 
       - name: Prepare RC version
+        env:
+          REF_TYPE: ${{ steps.checkout-ref.outputs.ref_type }}
+          REF_NAME: ${{ steps.checkout-ref.outputs.ref_name }}
         run: |
           # Get current version from package.json
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           PACKAGE_NAME="@gusto/embedded-react-sdk"
-          REF_TYPE="${{ steps.checkout-ref.outputs.ref_type }}"
-          REF_NAME="${{ steps.checkout-ref.outputs.ref_name }}"
 
           # Starting RC number (from input or default to 1)
-          RC_NUMBER="${{ github.event.inputs.rc_number || '1' }}"
+          RC_NUMBER="${INPUT_RC_NUMBER:-1}"
 
           # Function to check if version exists on npm
           check_version_exists() {
@@ -139,9 +138,9 @@ jobs:
           # Find the next available RC number
           while true; do
             RC_VERSION="${CURRENT_VERSION}-rc.${RC_NUMBER}"
-            
+
             echo "Checking if version $RC_VERSION exists..."
-            
+
             if check_version_exists "$RC_VERSION"; then
               echo "Version $RC_VERSION already exists, incrementing to rc.$((RC_NUMBER + 1))"
               RC_NUMBER=$((RC_NUMBER + 1))
@@ -149,7 +148,7 @@ jobs:
               echo "Version $RC_VERSION is available!"
               break
             fi
-            
+
             # Safety check to prevent infinite loops
             if [ $RC_NUMBER -gt 100 ]; then
               echo "❌ Error: RC number exceeded 100, something might be wrong"
@@ -168,7 +167,12 @@ jobs:
           echo "REF_NAME=$REF_NAME" >> $GITHUB_ENV
 
       - name: Publish RC version
-        run: npm publish --access public --tag rc
+        run: |
+          if [ "${INPUT_DRY_RUN:-false}" = "true" ]; then
+            npm publish --access public --tag rc --ignore-scripts --dry-run
+          else
+            npm publish --access public --tag rc --ignore-scripts
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

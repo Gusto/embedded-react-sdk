@@ -43,6 +43,21 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
+  # Exercises this repo's CI/workflow helper scripts directly (no
+  # node_modules needed), so a broken allowlist or helper regression fails
+  # here instead of only surfacing on a real workflow_dispatch run.
+  # Deliberately not glob-based: each helper gets its own step, so what CI
+  # executes is visible in this file's diff rather than implicit in a
+  # directory listing. `-euo pipefail` is passed explicitly at the call
+  # site rather than relied on from the script's own shebang, so a future
+  # edit that drops the script's `set` line doesn't silently weaken CI.
+  validate-ci-helpers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: validate-release-input
+        run: bash -euo pipefail .github/scripts/validate-release-input.test.sh
+
   # derive-models: Generate the API models barrel (src/models/external.ts) exactly once.
   # Both `build` (→ dist → API report) and `derive-check-src` (→ TypeDoc) consume this single
   # artifact, so every derived output in a run reflects the same barrel and derive-commit
