@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.56.7](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.6...v0.56.7) (2026-10-13)
+
+### Fixes
+
+- Fix employees going missing from the payroll configuration screen when the API returns a deduction amount as a decimal string rather than a number. Prepare-payroll failures now surface as errors instead of silently rendering an incomplete employee list ([#2890](https://github.com/Gusto/embedded-react-sdk/issues/2890))
+
+### Chores & Maintenance
+
+- Bump `dompurify` to 3.4.16 ([#2888](https://github.com/Gusto/embedded-react-sdk/issues/2888))
+- Bump dev dependencies (`prettier`, `typescript-eslint`, `sass-embedded`, `dotenv`) ([#2852](https://github.com/Gusto/embedded-react-sdk/issues/2852), [#2853](https://github.com/Gusto/embedded-react-sdk/issues/2853), [#2854](https://github.com/Gusto/embedded-react-sdk/issues/2854), [#2855](https://github.com/Gusto/embedded-react-sdk/issues/2855))
+- Bump transitive dependencies for security advisories (`axios`, `brace-expansion`, `markdown-it`, `shell-quote`, `undici`, `qs`, `ip-address`, and others) ([#2857](https://github.com/Gusto/embedded-react-sdk/issues/2857), [#2858](https://github.com/Gusto/embedded-react-sdk/issues/2858), [#2888](https://github.com/Gusto/embedded-react-sdk/issues/2888), [#2889](https://github.com/Gusto/embedded-react-sdk/issues/2889))
+
 ## [0.56.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.5...v0.56.6) (2026-10-12)
 
 ### Features & Enhancements
