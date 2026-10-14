@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
+import { useForm } from 'react-hook-form'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { EarningTypeList } from '@gusto/embedded-api/models/components/earningtypelist'
@@ -286,6 +288,145 @@ describe('derivePayrollEditEmployeeDefaults', () => {
 
     expect(defaults.hours['job-1']!['Regular Hours']).toEqual({ '2024-01-01': '40' })
     expect(defaults.overtimeIncludedEarnings['job-1']!['Bonus']).toEqual({ '2024-01-01': '500' })
+  })
+
+  describe('API-supplied dictionary keys that collide with Object members', () => {
+    const HOSTILE_KEYS = ['__proto__', 'constructor', 'prototype']
+
+    const snapshotObjectPrototypes = () => ({
+      objectPrototypeKeys: Object.getOwnPropertyNames(Object.prototype).sort(),
+      objectConstructorKeys: Object.getOwnPropertyNames(Object).sort(),
+      objectPrototypeParent: Object.getPrototypeOf(Object.prototype) as unknown,
+    })
+
+    const derive = (
+      lines: PayrollEmployeeCompensationsType['hourlyCompensations'],
+      fixed: PayrollEmployeeCompensationsType['fixedCompensations'],
+      overtimeEarningNames: Set<string>,
+    ) =>
+      derivePayrollEditEmployeeDefaults(
+        { ...compensation, hourlyCompensations: lines, fixedCompensations: fixed },
+        [WEEK_ONE, WEEK_TWO],
+        true,
+        overtimeEarningNames,
+        true,
+        true,
+      )
+
+    const cases = HOSTILE_KEYS.flatMap(outer => HOSTILE_KEYS.map(inner => ({ outer, inner })))
+
+    it.each(cases)(
+      'hourly: jobUuid "$outer" and name "$inner" become own keys without touching Object',
+      ({ outer, inner }) => {
+        const before = snapshotObjectPrototypes()
+
+        const defaults = derive(
+          [
+            { jobUuid: outer, name: inner, hours: '40' },
+            { jobUuid: outer, name: 'Regular Hours', hours: '8' },
+          ],
+          [],
+          new Set(),
+        )
+
+        expect(snapshotObjectPrototypes()).toEqual(before)
+        expect(Object.keys(defaults.hours)).toEqual([outer])
+        expect(Object.keys(defaults.hours[outer]!)).toEqual([inner, 'Regular Hours'])
+        expect(defaults.hours[outer]![inner]).toEqual({ '2024-01-01': '40', '2024-01-08': '' })
+        expect(defaults.hours[outer]!['Regular Hours']).toEqual({
+          '2024-01-01': '8',
+          '2024-01-08': '',
+        })
+      },
+    )
+
+    it.each(cases)(
+      'overtime-included earnings: jobUuid "$outer" and name "$inner" become own keys without touching Object',
+      ({ outer, inner }) => {
+        const before = snapshotObjectPrototypes()
+
+        const defaults = derive(
+          [],
+          [
+            { jobUuid: outer, name: inner, amount: '500' },
+            { jobUuid: outer, name: 'Bonus', amount: '20' },
+          ],
+          new Set([inner, 'Bonus']),
+        )
+
+        expect(snapshotObjectPrototypes()).toEqual(before)
+        expect(Object.keys(defaults.overtimeIncludedEarnings)).toEqual([outer])
+        expect(Object.keys(defaults.overtimeIncludedEarnings[outer]!)).toEqual([inner, 'Bonus'])
+        expect(defaults.overtimeIncludedEarnings[outer]![inner]).toEqual({
+          '2024-01-01': '500',
+          '2024-01-08': '',
+        })
+        expect(defaults.overtimeIncludedEarnings[outer]!['Bonus']).toEqual({
+          '2024-01-01': '20',
+          '2024-01-08': '',
+        })
+      },
+    )
+
+    it.each(cases)(
+      'overtime-excluded earnings: jobUuid "$outer" and name "$inner" become own keys without touching Object',
+      ({ outer, inner }) => {
+        const before = snapshotObjectPrototypes()
+
+        const defaults = derive(
+          [],
+          [
+            { jobUuid: outer, name: inner, amount: '25.00' },
+            { jobUuid: outer, name: 'Cash Tips', amount: '3.50' },
+          ],
+          new Set(),
+        )
+
+        expect(snapshotObjectPrototypes()).toEqual(before)
+        expect(Object.keys(defaults.overtimeExcludedEarnings)).toEqual([outer])
+        expect(defaults.overtimeExcludedEarnings[outer]![inner]).toBe('25')
+        expect(defaults.overtimeExcludedEarnings[outer]!['Cash Tips']).toBe('3.5')
+      },
+    )
+
+    it('returns ordinary objects that react-hook-form clones, so edits never mutate the defaults and stay dirty-tracked', () => {
+      const defaults = derive(
+        [
+          { jobUuid: '__proto__', name: 'Regular Hours', hours: '1' },
+          { jobUuid: 'job-1', name: 'Regular Hours', hours: '40' },
+        ],
+        [],
+        new Set(),
+      )
+      expect(Object.getPrototypeOf(defaults.hours)).toBe(Object.prototype)
+      expect(Object.getPrototypeOf(defaults.hours['job-1'])).toBe(Object.prototype)
+
+      const { result } = renderHook(() =>
+        useForm<PayrollEditEmployeeFormData>({ defaultValues: defaults, values: defaults }),
+      )
+      act(() => {
+        result.current.setValue('hours.job-1.Regular Hours.2024-01-01', '99', { shouldDirty: true })
+      })
+
+      expect(result.current.getValues('hours.job-1.Regular Hours.2024-01-01')).toBe('99')
+      expect(defaults.hours['job-1']!['Regular Hours']!['2024-01-01']).toBe('40')
+      expect(result.current.formState.dirtyFields.hours?.['job-1']).toBeDefined()
+    })
+
+    it('keeps ordinary job and compensation keys accumulating alongside hostile ones', () => {
+      const defaults = derive(
+        [
+          { jobUuid: '__proto__', name: 'Regular Hours', hours: '1' },
+          { jobUuid: 'job-1', name: 'Regular Hours', hours: '40' },
+          { jobUuid: 'job-1', name: 'Overtime', hours: '5' },
+        ],
+        [],
+        new Set(),
+      )
+
+      expect(Object.keys(defaults.hours).sort()).toEqual(['__proto__', 'job-1'])
+      expect(Object.keys(defaults.hours['job-1']!)).toEqual(['Regular Hours', 'Overtime'])
+    })
   })
 })
 
