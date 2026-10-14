@@ -36,7 +36,7 @@ const sidebars: SidebarsConfig = {
             'guides/integration-guide/error-handling',
             'guides/integration-guide/observability',
             'guides/integration-guide/observability-examples',
-            'guides/integration-guide/proxy-examples',
+            'guides/integration-guide/content-security-policy',
           ],
         },
         'guides/theming',

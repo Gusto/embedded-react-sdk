@@ -1,204 +1,97 @@
 ---
 title: Proxy security
-description: Secure the SDK proxy with per-request authentication, endpoint allowlisting, resource ownership checks, and audit logging using the SDK endpoint inventory.
+description: Enforce user permissions before forwarding SDK requests with a company access token, and use the endpoint inventory to review API access.
 ---
 
 # Proxy security
 
-The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary—UI-level restrictions alone aren't sufficient because users can make API requests directly.
+A Gusto company access token authorizes API calls on behalf of a company. Your application decides which people may use SDK components and which actions they may perform. Your backend proxy must enforce those decisions before forwarding requests with the company token. See [Authentication](./authentication.md) for the distinction between application users and Gusto tokens.
 
-## What to do
+## Start with the session's permissions
 
-1. **Authenticate every request.** Verify the user's session on every proxied request, not just at sign-in.
-2. **Allowlist endpoints.** Only forward requests to API endpoints your application actually uses. Deny everything else.
-3. **Validate resource ownership.** Verify that the authenticated user is authorized to access the resource in the URL (for example, an employee should only reach their own employee ID).
-4. **Log proxied requests.** Maintain audit logs for security monitoring and incident response.
+Authenticate the user on every request to your proxy. Establish which company they may access and which actions and resources they may access within it. Use those permissions both to choose the SDK components they see and to decide whether to forward requests with that company's token. Reject requests when you cannot establish permission.
 
-## Getting the endpoint list
-
-Every SDK component makes a known set of API calls. Paths use named parameters (`:companyId`, `:employeeId`, and so on) that you replace with session values. The more you resolve, the tighter the allowlist:
-
-| What you resolve             | Use case                                            |
-| ---------------------------- | --------------------------------------------------- |
-| Nothing                      | Generic allowlisting, no user scoping               |
-| `:companyId` only            | Admin who can access any employee in their company  |
-| `:companyId` + `:employeeId` | Self-service employee, restricted to their own data |
-
-### Option A: JSON endpoint inventory (recommended, any platform)
-
-The SDK ships a machine-readable JSON file listing every block, flow, and headless hook with their endpoints and required variables. It's auto-generated from source on every build and verified in CI.
-
-Import it from the package:
-
-```typescript
-import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
+```mermaid
+flowchart TD
+    Session[Authenticated session] --> Company[Establish authorized company]
+    Company --> Permissions[Determine permitted actions and resources]
+    Permissions --> UI[Display appropriate SDK components]
+    Permissions --> Policy[Define proxy authorization policy]
+    Inventory[SDK endpoint inventory] --> Expected[Review calls used by those components]
+    Expected --> Policy
+    Request[Incoming request] --> Check{Permitted by this session's policy?}
+    Policy --> Check
+    Check -->|Yes| Forward[Forward with the authorized company's token]
+    Check -->|No or unknown| Reject[Reject request]
 ```
 
-Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/guides/endpoint-inventory.json` in any language.
+Your application's permission model is the source of truth. The inventory helps you identify the API calls needed to support those permissions. Component visibility does not enforce API access: users can change identifiers or send requests directly to your proxy without using a component.
 
-The JSON structure:
+## Match component access to request access
 
-```json
-{
-  "blocks": {
-    "EmployeeManagement.FederalTaxes": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
-        }
-      ],
-      "variables": ["employeeUuid"]
-    }
-  },
-  "flows": {
-    "CompanyOnboarding.OnboardingFlow": {
-      "blocks": ["CompanyOnboarding.FederalTaxes", "CompanyOnboarding.PaySchedule", "..."]
-    }
-  },
-  "hooks": {
-    "useFederalTaxesForm": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
-        }
-      ],
-      "variables": ["employeeUuid"]
-    }
-  }
-}
+If every user has full administrative access to their authorized company, the policy can be relatively simple. Every request still requires authentication and verification of company access. You may also restrict the proxy to the endpoints your integration uses, limiting what a compromised session can do with your company's token.
+
+For users with restricted access, define both the actions they may perform and the resources they may act on. Employee or contractor self-onboarding, for example, should not grant access to payrolls or other people's data.
+
+The examples below illustrate permissions your application might grant. They are not built-in SDK roles or complete allowlists.
+
+| Session permissions                                           | Components to display                                                               | Requests the proxy may forward                                                                                                                    |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full administrator for company A                              | The company, employee, contractor, and payroll components your integration supports | The methods and endpoints needed for those capabilities, restricted to company A and its resources.                                               |
+| Employee Alice completing her own onboarding at company A     | Employee self-onboarding components for Alice                                       | Requests needed for Alice's onboarding, including reading and updating her tax settings. Deny access to Bob's employee data and company payrolls. |
+| Contractor Casey completing their own onboarding at company A | Contractor self-onboarding components for Casey                                     | Requests needed for Casey's onboarding, including reading and updating their profile. Deny access to other contractors and company payrolls.      |
+
+Review the inventory for the components you display to identify their API calls, then decide which calls are appropriate for each session. A component may support multiple capabilities: for example, the contractor profile's endpoint list includes creating a contractor as well as reading and updating one. Displaying it to an existing contractor does not grant permission to create other contractors.
+
+For a session permitted to edit only its own details, the distinction can be as specific as:
+
+| Session          | Endpoint and requested resource                  | Decision                                                                |
+| ---------------- | ------------------------------------------------ | ----------------------------------------------------------------------- |
+| Employee Alice   | `GET` or `PUT /v1/employees/ALICE/federal_taxes` | Forward if Alice is permitted to read or update her own taxes.          |
+| Employee Alice   | `GET` or `PUT /v1/employees/BOB/federal_taxes`   | Deny: the requested employee is outside Alice's permissions.            |
+| Contractor Casey | `GET` or `PUT /v1/contractors/CASEY`             | Forward if Casey is permitted to read or update their own profile.      |
+| Contractor Casey | `POST /v1/companies/COMPANY-A/contractors`       | Deny: editing Casey's own profile does not permit creating contractors. |
+
+Check resources identified in the request path, query, or body as appropriate for the API operation. For an address or a form, establish its relationship to the authorized employee or company before permitting access. Some onboarding requests also read company information, such as work locations; authorize those supporting requests deliberately rather than granting broad company access.
+
+### Example: the same endpoint, different permissions
+
+Alice and Bob work at the same company. Your application grants Alice access to her own tax settings. Both employees' tax endpoints are reachable with the company token, but your proxy should forward only Alice's authorized request.
+
+```mermaid
+sequenceDiagram
+    participant Alice as Alice's browser
+    participant Proxy as Your backend proxy
+    participant API as Gusto Embedded API
+    Alice->>Proxy: GET Alice's federal tax settings
+    Proxy->>Proxy: Authenticate Alice and authorize access to her taxes
+    Proxy->>API: Forward request + company token
+    API-->>Proxy: Alice's tax settings
+    Proxy-->>Alice: Return Alice's tax settings
+    Alice->>Proxy: GET or PUT Bob's federal tax settings
+    Proxy->>Proxy: Authenticate Alice and deny access to Bob's taxes
+    Proxy-->>Alice: Reject request
+    Note over Proxy,API: The unauthorized request never reaches Gusto
 ```
 
-Each endpoint's `docsUrl` links to its page in the API reference (omitted for the few endpoints without a public reference page). Blocks and hooks list their `endpoints` directly; a flow lists the `blocks` it composes, and its endpoints are the union of those blocks' endpoints. Look up the flows, blocks, or hooks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
+The same check is necessary whether Alice uses an SDK component or sends the request directly. Allowlisting the tax endpoint alone would admit both requests; authorization must account for the requested employee and action.
 
-### Option B: Static reference
+## Use the endpoint inventory as a reference
 
-See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list grouped by domain. Each component, flow, and hook's own [reference page](../reference/index.mdx) also lists the endpoints it calls. Copy the method + path pairs for the components and hooks you use and substitute `:param` placeholders with session values at runtime.
+The SDK publishes `@gusto/embedded-react-sdk/endpoint-inventory.json`, a generated inventory of the API endpoints its components and hooks use. You can also read the [endpoint reference tables](../guides/endpoint-reference.md) and endpoint lists on individual [reference pages](../reference/index.mdx). Use these lists to review reasonable requests for a session after determining its permissions.
 
-## Content Security Policy
+An endpoint allowlist can restrict requests to known methods and paths. It does not by itself establish permission to access the requested resource. Review changes when upgrading the SDK; a newly listed endpoint does not automatically belong in a session's permitted requests.
 
-The SDK ships a static stylesheet at `@gusto/embedded-react-sdk/style.css` and injects two runtime `<style>` elements at the browser: one for active theme variables, and one inside the new window opened during a paystub PDF download. Both accept a CSP nonce.
+If you use inventory paths in an allowlist, consult each block or hook's `variables` metadata. Names are not uniform: employee identifiers may be called `employeeId` or `employeeUuid`, and company identifiers may be called `companyId` or `companyUuid`. Binding one name does not bind the other. Every placeholder needs an explicit rule:
 
-`react-aria-components`, a dependency the SDK uses for accessible UI primitives, separately injects one global `<style>` element of its own (a `touch-action` rule that lets pressable elements distinguish a tap from a scroll gesture) the first time any pressable component mounts. This element has no nonce and the library exposes no option to add one, so it's blocked under a `style-src` policy that doesn't also allow `'unsafe-inline'`. Its content is static and version-pinned, so as a narrower alternative to `'unsafe-inline'`, you can allow it by hash instead — see [Minimum policy](#minimum-policy).
+- Bind resource identifiers to authorized values, or check access to the requested resource before forwarding.
+- Restrict non-resource values, such as `state` or `documentType`, to permitted values.
+- Reject missing bindings or authorization rules. Never automatically turn an unresolved placeholder into a wildcard. Any intentional wildcard must constrain accepted values and preserve the resource authorization checks.
 
-### Passing a nonce
+Verify that your proxy rejects unauthorized actions and requests for other users' resources. Record authorization decisions and proxied actions for auditing without logging credentials or sensitive request and response bodies.
 
-Pass the same per-request nonce your app uses for `style-src 'nonce-…'` to `GustoProvider`. The SDK applies it to every `<style>` element it creates.
+## Working proxy example
 
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
+The [demo application's proxy](https://github.com/Gusto/embedded-react-sdk-demo-app/blob/main/backend/src/proxy.ts) demonstrates token management and request forwarding. It does not currently implement user authentication, endpoint allowlisting, or user-level authorization. Implement those controls before using a proxy for real users.
 
-function App({ cspNonce }: { cspNonce: string }) {
-  return (
-    <GustoProvider config={{ baseUrl: '/proxy/' }} nonce={cspNonce}>
-      …
-    </GustoProvider>
-  )
-}
-```
-
-The same prop is available on `GustoProviderCustomUIAdapter`. If a custom UI component you supply injects its own runtime `<style>` or `<script>`, read the nonce with `useNonce`:
-
-```tsx
-import { useEffect } from 'react'
-import { useNonce } from '@gusto/embedded-react-sdk'
-
-function InjectedStyles({ css }: { css: string }) {
-  const nonce = useNonce()
-  useEffect(() => {
-    const el = document.createElement('style')
-    if (nonce) el.nonce = nonce
-    el.textContent = css
-    document.head.appendChild(el)
-    return () => {
-      el.remove()
-    }
-  }, [css, nonce])
-  return null
-}
-```
-
-`useNonce` returns `undefined` when no nonce was supplied.
-
-### Embedding PDF documents
-
-Signature and form flows (`SignatureForm`, `I9SignatureForm`, company and employee document signing) render the document's PDF inline using an `<embed>` element, gated under `object-src`. Allow the origin that serves your document URLs under `object-src` or these documents won't render. These documents are served from Amazon S3; the exact host (bucket/region-specific, e.g. `*.s3.<region>.amazonaws.com`) varies by environment, so confirm it against an actual `pdfUrl` value returned by a signature hook rather than assuming a fixed domain.
-
-If your policy can't allow `object-src`, override the `DocumentEmbed` component to render with an `<iframe>` instead, gated under `frame-src`:
-
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-
-function IframeEmbed({
-  url,
-  title,
-  className,
-}: {
-  url: string
-  title: string
-  className?: string
-}) {
-  return <iframe src={url} title={title} className={className} />
-}
-
-function App() {
-  return (
-    <GustoProvider config={{ baseUrl: '/proxy/' }} components={{ DocumentEmbed: IframeEmbed }}>
-      …
-    </GustoProvider>
-  )
-}
-```
-
-Notes on the override:
-
-- `className` is passed through for sizing — without it, neither the default `<embed>` nor your override has any width or height.
-- The override receives the raw URL; the default `<embed>` appends parameters to hide the native PDF viewer's chrome, which your implementation is free to replicate or skip.
-
-### Minimum policy
-
-```http
-Content-Security-Policy:
-  style-src 'self' 'nonce-XYZ' 'sha256-38RhXrc7EdReTKsOm23ZPOCUgniTUUcjky8QOOrQx6o=';
-  style-src-attr 'unsafe-inline';
-  script-src 'self' 'nonce-XYZ';
-  img-src 'self' data:;
-  object-src <your-s3-document-host>;
-```
-
-- `style-src 'self' 'nonce-XYZ'` covers the bundled stylesheet and the two runtime `<style>` elements once the nonce is wired through `GustoProvider`. The additional hash covers the one `<style>` element `react-aria-components` injects that can't be given a nonce (see above), as pinned in the SDK version you're on; without it, or `'unsafe-inline'`, that one rule is dropped and pressable elements fall back to default touch-action handling. Because the hash is tied to that exact dependency version, verify it against your own build rather than trusting this value indefinitely — recompute it from the CSP violation report, or from `sha256(document.getElementById('react-aria-pressable-style').textContent)`, after any SDK upgrade.
-- `style-src-attr 'unsafe-inline'` is required by inline `style="…"` attributes the SDK uses to apply runtime-computed CSS custom properties (responsive flex and grid layouts, progress-bar fill width, animation timings) and by `react-aria-components` for overlay positioning. The CSP specification does not allow per-attribute nonces, so this directive cannot be tightened further without dropping these features upstream.
-- `script-src 'self' 'nonce-XYZ'` — the SDK does not use `eval` or inject `<script>` elements. The nonce is for your own scripts.
-- `img-src 'self' data:` is only required if your integration uploads images. The SDK converts uploaded files to `data:` URLs before submitting them.
-- `object-src <your-s3-document-host>` is required for the default PDF `<embed>` to render. Documents are served from Amazon S3; the exact host varies by environment, so inspect a `pdfUrl` value returned by a signature hook (e.g. `useSignEmployeeForm`) rather than assuming a fixed domain. Replace this with a `frame-src` entry instead if you provide your own `DocumentEmbed` override (see [Embedding PDF documents](#embedding-pdf-documents)).
-
-## FAQ
-
-**Can an authenticated employee access another employee's data?**
-Not if you substitute the employee ID—the resulting paths only match that employee's endpoints.
-
-**How do we restrict some admins from running payroll?**
-Only include payroll endpoints for roles that need them, or request removal of the `payrolls:run` scope entirely.
-
-**How do we keep the allowlist up to date?**
-The JSON inventory is auto-derived on every build and verified in CI. Upgrading the SDK automatically reflects endpoint changes.
-
-## Further reading
-
-- [Proxy examples with role-based access](../guides/integration-guide/proxy-examples.md)
-- [Endpoint reference tables](../guides/endpoint-reference.md)
-- [Gusto API scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
-- [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)
+For browser policies governing SDK styles and embedded documents, see [Content Security Policy](../guides/integration-guide/content-security-policy.md).
