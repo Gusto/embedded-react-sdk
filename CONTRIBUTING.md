@@ -394,6 +394,51 @@ gh pr create --title "chore: release <version>"
 
 Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow from the Actions UI (`Run workflow`). It accepts an optional version override; if left blank it auto-detects from commits. The workflow creates the branch, commits the changes, and opens a PR automatically.
 
+### Stable release after merge
+
+Merge the release PR with a commit message starting with `chore: release`. After CI succeeds on that commit on `main`, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) runs this sequence using the same source commit:
+
+1. Build the SDK on a separate runner without npm publishing credentials.
+2. Publish the built package to npm under `latest`, using GitHub Actions OIDC through the `npm-release` environment.
+3. Create the annotated Git tag `v<version>` after npm publishing succeeds.
+4. Create a GitHub Release for that tag using the version's `CHANGELOG.md` entry, then attempt the Slack release notification.
+
+The npm job is subject to the environment's branch restrictions and any configured required reviewers. Review the source SHA and version in the build summary before approving. The tag and GitHub Release jobs follow the successful npm job without separate environment approvals. Existing GitHub Releases are skipped; missing changelog notes or Release creation errors fail the job.
+
+This workflow has no manual trigger. If CI has not completed successfully for the release commit, rerun CI on that commit. If publishing succeeded but tagging or GitHub Release creation failed, rerun the failed jobs from the publish run; rerunning the entire workflow would attempt to publish the same immutable npm version again. Check npm and GitHub before retrying a partially completed release.
+
+### Publishing an RC
+
+Run [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) from workflow ref `main`. Supply a source `branch` (defaults to `main`) or a `commit` SHA, which takes precedence over the branch. The workflow resolves that source to an immutable SHA for both build and publish. The environment's branch restriction applies to the workflow ref, so a workflow dispatched from `main` can build a selected feature-branch commit.
+
+1. Set `dry_run=true` to validate the inputs, build, and preview npm publishing without changing the registry.
+2. Review the source SHA, base version, and starting RC number in the run summary.
+3. Dispatch again with the same source, preferably pinned with `commit`, and `dry_run=false` to publish. The default for RC publishing is `false`, so select preview explicitly when needed.
+
+The version is `<package.json version>-rc.<number>`, starting at `rc_number` (default `1`) and incrementing past already published versions. The final RC number is determined in the publish job, so it can differ from the starting number shown before approval.
+
+RC publishing uses OIDC through `npm-release`. It sets the `rc` dist-tag without changing `latest` and creates no Git tag or GitHub Release. Install using `npm install @gusto/embedded-react-sdk@rc`, or pin the exact version shown in the run output. A successful dry run verifies packaging; a real publish is required to verify registry write permission.
+
+### De-listing an RC
+
+Run [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml) from workflow ref `main` to remove the `rc` dist-tag. First inspect its current target:
+
+```bash
+npm view @gusto/embedded-react-sdk dist-tags --json
+```
+
+1. Set `expected_version` to the exact version currently tagged `rc`, such as `0.56.7-rc.1`.
+2. Leave `dry_run=true` (the default) to preview the operation.
+3. Dispatch again with the same expected version and `dry_run=false` to remove the tag using OIDC through `npm-release`.
+
+If the tag points to a different version, retirement fails without removing it. If the tag is already absent, retirement succeeds without a mutation. Registry lookup and removal failures fail the job. RC publishing and retirement share a concurrency group to prevent those jobs from changing the tag simultaneously; changes made outside these workflows are not covered by that concurrency group.
+
+After retirement, `@rc` stops resolving until another RC publish recreates the tag. Exact-version installs remain available, `latest` stays unchanged, and no version is deleted or deprecated. A preview reads public registry metadata and does not exercise OIDC write permission.
+
+### Stable unpublish
+
+Ask an npm maintainer to unpublish or deprecate the affected version as needed, subject to [npm's unpublish policy](https://docs.npmjs.com/policies/unpublish). This is a manual maintainer operation; there is no unpublish workflow. Coordinate any corresponding GitHub Release cleanup and preserve the Git tag as the audit trail.
+
 ### Documentation versioning
 
 The published docs site uses Docusaurus versioning so partners on older SDK versions can read the docs that match their installed version. **All versioned content lives in `Gusto/embedded-sdk-docs`, not this repo.** This repo only ever carries the live (current) docs in `docs/`; versioned snapshots (`versioned_docs/version-X.Y/`, `versions.json`, `versioned_sidebars/`) accumulate in the downstream repo as releases land.
@@ -435,9 +480,3 @@ See the [Getting Started guide](../getting-started/index.md).
 
 See the [Getting Started guide](/docs/getting-started/index.md).
 ```
-
-### After the PR is merged
-
-Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM. This workflow has no manual trigger — if it didn't fire (e.g. CI needs a rerun on that commit), re-run CI for that commit on `main`; a successful completion re-evaluates the gate and publishes automatically.
-
-To publish an on-demand build from any branch or commit — for testing a fix before it's merged, for example — use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) instead, which publishes under the `rc` dist-tag and takes a `dry_run` option to validate and build without publishing.
