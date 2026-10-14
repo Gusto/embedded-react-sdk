@@ -110,7 +110,7 @@ sequenceDiagram
 
 Gusto does not authenticate the person signed in to your application or evaluate their session permissions. Even when a company token permits an operation, your proxy must reject requests outside the user's permissions.
 
-Use those permissions to decide which SDK components to display, and enforce them on every proxy request. See [Proxy security](./proxy-security-partner-guidance.md) for examples of mapping session permissions to components and API requests.
+Use those permissions to decide which SDK components to display, and enforce them on every proxy request. See [Reviewing SDK API access](./reviewing-sdk-api-access.md) to identify the requests your components use when defining your proxy's authorization policies.
 
 ## Connecting the SDK to your proxy
 

@@ -21,7 +21,7 @@ It's the best place to see how the individual pieces connect into a cohesive int
 
 ## What it doesn't yet demonstrate
 
-- **User authentication and authorization.** The proxy forwards requests with the configured company token. It does not implement user sessions, endpoint allowlisting, or resource authorization. See [Proxy security](./proxy-security-partner-guidance.md) for the decisions your own proxy must enforce.
+- **User authentication and authorization.** The proxy forwards requests with the configured company token. It does not implement user sessions, endpoint allowlisting, or resource authorization. See [Authentication](./authentication.md) for the decisions your own proxy must enforce and [Reviewing SDK API access](./reviewing-sdk-api-access.md) to identify the requests your components use.
 
 - **Hooks.** The demo app uses the component-based workflows to show the end-to-end experience. If you prefer a headless integration, the SDK also exports [hooks](../reference/hooks.md) that give you full control over UI and state management. You can use hooks to replicate the experience shown in the demo app in a way that aligns better with your own design system.
 - **Contractor functionality.** The SDK includes components for contractor onboarding and payments. These will be added to the demo app soon. In the meantime, you can learn more about contractor workflows in the [Contractor onboarding](../reference/contractor/onboarding/onboarding-flow.md) and [Contractor payments](../reference/contractor/management/payment-flow.md) reference pages.

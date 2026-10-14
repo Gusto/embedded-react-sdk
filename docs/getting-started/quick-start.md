@@ -38,7 +38,7 @@ A backend proxy is required when building with the React SDK. SDK components don
 
 - **Authentication.** Your proxy authenticates the user in your application and keeps Gusto company tokens on the backend. See [Authentication](./authentication.md) for how application users and Gusto tokens relate.
 - **User IP address.** Some workflows require users to sign forms, which needs the user's IP. Your proxy must add the `x-gusto-client-ip` header to forwarded requests so the IP can't be spoofed client-side.
-- **Authorization.** Before forwarding a request with a company token, verify that the user may perform the requested action on the requested resource. See [Proxy security](./proxy-security-partner-guidance.md) for guidance.
+- **Authorization.** Before forwarding a request with a company token, verify that the user may perform the requested action on the requested resource. See [Authentication](./authentication.md) for your proxy's authorization responsibilities.
 
 For a runnable forwarding example, see [`proxy.ts`](https://github.com/Gusto/embedded-react-sdk-demo-app/blob/main/backend/src/proxy.ts) in the [demo application](./example-app.md), which implements OAuth token management, IP forwarding, and request proxying in Express. It does not currently implement user authentication or authorization.
 
@@ -73,6 +73,6 @@ The SDK is designed to take on your application's look and feel via theming and 
 ## Next steps
 
 - Read [Authentication](./authentication.md) for how your proxy uses company tokens and authenticates application users
-- Review [Proxy security](./proxy-security-partner-guidance.md) before pointing a proxy at real partner traffic
+- Read [Reviewing SDK API access](./reviewing-sdk-api-access.md) to identify the requests your components use when deciding what to allow for a session
 - Explore [Workflows overview](../guides/workflows-overview.md) for the pre-built flows you can drop into your app
 - Dig into the [Integration guide](../guides/integration-guide/integration-guide.md) for more detailed guides on building with the SDK, covering topics like versioning, events, customization, and observability

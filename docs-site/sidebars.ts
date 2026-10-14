@@ -10,7 +10,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'getting-started/quick-start',
         'getting-started/authentication',
-        'getting-started/proxy-security-partner-guidance',
+        'getting-started/reviewing-sdk-api-access',
         'getting-started/component-types',
         'getting-started/example-app',
       ],
