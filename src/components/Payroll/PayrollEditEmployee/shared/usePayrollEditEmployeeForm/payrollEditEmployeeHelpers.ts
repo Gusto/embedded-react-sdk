@@ -282,6 +282,29 @@ function buildWeekMap(
 }
 
 /**
+ * Dictionaries indexed by API-supplied keys need a null prototype (or a Map):
+ * `Record` types don't stop `__proto__` writes at runtime.
+ */
+function createDictionary<T>(): Record<string, T> {
+  return Object.create(null) as Record<string, T>
+}
+
+/**
+ * react-hook-form aliases (rather than clones) null-prototype objects, so
+ * defaults must be plain objects; `Object.fromEntries` keeps `__proto__` as data.
+ */
+function toPlainDictionary<T>(
+  dictionary: Record<string, Record<string, T>>,
+): Record<string, Record<string, T>> {
+  return Object.fromEntries(
+    Object.entries(dictionary).map(([key, inner]) => [
+      key,
+      Object.fromEntries(Object.entries(inner)),
+    ]),
+  )
+}
+
+/**
  * Derives the form's default values from the employee's prepared compensation.
  *
  * @remarks
@@ -310,10 +333,10 @@ export function derivePayrollEditEmployeeDefaults(
   // seeds) flat, even on a multi-workweek payroll.
   const isSplit = workweeks.length > 1 && isOvertimeEligible && withOvertime
 
-  const hours: PayrollEditEmployeeFormData['hours'] = {}
+  const hours: PayrollEditEmployeeFormData['hours'] = createDictionary()
   for (const compensation of employeeCompensation?.hourlyCompensations ?? []) {
     if (!compensation.jobUuid || !compensation.name) continue
-    const jobHours = (hours[compensation.jobUuid] ??= {})
+    const jobHours = (hours[compensation.jobUuid] ??= createDictionary())
     jobHours[compensation.name] = buildWeekMap(
       workweeks,
       compensation.hours,
@@ -325,12 +348,14 @@ export function derivePayrollEditEmployeeDefaults(
   // Earnings whose earning type is included in the regular-rate-of-pay overtime
   // calculation stay workweek-breakdown; the rest are flat and land in `overtimeExcludedEarnings`.
   // The hook owns this bucketing so the UI just renders each section.
-  const overtimeIncludedEarnings: PayrollEditEmployeeFormData['overtimeIncludedEarnings'] = {}
-  const overtimeExcludedEarnings: PayrollEditEmployeeFormData['overtimeExcludedEarnings'] = {}
+  const overtimeIncludedEarnings: PayrollEditEmployeeFormData['overtimeIncludedEarnings'] =
+    createDictionary()
+  const overtimeExcludedEarnings: PayrollEditEmployeeFormData['overtimeExcludedEarnings'] =
+    createDictionary()
   for (const compensation of fixedCompensations) {
     if (!compensation.jobUuid || !compensation.name) continue
     if (overtimeEarningNames.has(compensation.name)) {
-      const jobEarnings = (overtimeIncludedEarnings[compensation.jobUuid] ??= {})
+      const jobEarnings = (overtimeIncludedEarnings[compensation.jobUuid] ??= createDictionary())
       jobEarnings[compensation.name] = buildWeekMap(
         workweeks,
         compensation.amount,
@@ -338,7 +363,7 @@ export function derivePayrollEditEmployeeDefaults(
         isSplit,
       )
     } else {
-      const jobOther = (overtimeExcludedEarnings[compensation.jobUuid] ??= {})
+      const jobOther = (overtimeExcludedEarnings[compensation.jobUuid] ??= createDictionary())
       jobOther[compensation.name] = formatAmountInput(compensation.amount)
     }
   }
@@ -361,9 +386,9 @@ export function derivePayrollEditEmployeeDefaults(
   }))
 
   return {
-    hours,
-    overtimeIncludedEarnings,
-    overtimeExcludedEarnings,
+    hours: toPlainDictionary(hours),
+    overtimeIncludedEarnings: toPlainDictionary(overtimeIncludedEarnings),
+    overtimeExcludedEarnings: toPlainDictionary(overtimeExcludedEarnings),
     timeOff,
     finalPayout,
     reimbursements,
