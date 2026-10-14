@@ -287,8 +287,8 @@ Translation keys for the `Company.AssignSignatory` i18n namespace.
 | `validations.dob` | `"Date of birth is required"` |
 | `validations.email` | `"Email address is required and must be valid"` |
 | `validations.emailMismatch` | `"Email addresses must match"` |
-| `validations.firstName` | `"First name is required"` |
-| `validations.lastName` | `"Last name is required"` |
+| `validations.firstName` | `"Enter a valid first name"` |
+| `validations.lastName` | `"Enter a valid last name"` |
 | `validations.phone` | `"Phone number must be 10 digits"` |
 | `validations.title` | `"Title is required"` |
 
