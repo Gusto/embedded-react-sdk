@@ -43,6 +43,10 @@ The inventory describes methods and path templates. Your application supplies th
 
 For each request you intend to support, identify the requested resource and how it relates to the session's permissions. A path such as `/v1/contractors/:contractorUuid` identifies a contractor but does not establish whether the session may access that contractor. Other operations identify resources in query parameters or request bodies. For resources such as addresses or documents, you may also need to establish their relationship to an authorized employee, contractor, or company.
 
+Some resource identifiers become available during a session, so a fixed set of identifiers captured at sign-in may not cover the requests your integration needs. Establish access using trusted resource relationships, including relationships your backend learns from API responses when creating or retrieving resources. Your backend can retain those associations to authorize subsequent requests without a separate lookup before every forwarded request. When it cannot establish access from trusted information, an additional lookup may be necessary.
+
+The endpoint inventory identifies request parameters; it does not describe resource ownership or provide a complete authorization policy. Restricting an identifier to a valid UUID format does not establish permission to access that resource.
+
 An endpoint allowlist can limit the methods and paths your proxy accepts. Resource authorization still applies to each incoming request, including requests sent directly to the proxy without using an SDK component.
 
 ### If you build an allowlist from the inventory
