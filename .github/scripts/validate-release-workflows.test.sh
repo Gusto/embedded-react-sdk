@@ -72,6 +72,46 @@ for f in "${dispatch_workflows[@]}"; do
   fi
 done
 
+job_body() {
+  awk -v job="$2" '
+    /^  [[:alnum:]_-]+:$/ { in_job = ($0 == "  " job ":") }
+    in_job && $0 !~ /^[[:space:]]*#/ { print }
+  ' "$1"
+}
+
+require_job_pattern() {
+  if ! job_body "$1" "$2" | grep -qE "$3"; then
+    echo "FAIL: $1 job $2 must contain $3"
+    fail=1
+  fi
+}
+
+reject_job_pattern() {
+  if job_body "$1" "$2" | grep -qE "$3"; then
+    echo "FAIL: $1 job $2 must not contain $3"
+    fail=1
+  fi
+}
+
+for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish'; do
+  read -r workflow job <<< "$workflow_job"
+  f="workflows/$workflow"
+  require_job_pattern "$f" "$job" '^    runs-on: ubuntu-latest$'
+  require_job_pattern "$f" "$job" '^      contents: read$'
+  require_job_pattern "$f" "$job" '^      id-token: write$'
+  require_job_pattern "$f" "$job" 'NODE_AUTH_TOKEN:.*secrets.NPM_TOKEN'
+  require_job_pattern "$f" "$job" 'npm publish .*--ignore-scripts'
+  reject_job_pattern "$f" "$job" 'contents: write|actions/cache'
+  reject_job_pattern "$f" "$job" '^[[:space:]]*(- run: )?(git push|npm ci|npm install)([[:space:]]|$)'
+done
+
+require_job_pattern workflows/publish.yaml npm-publish '^    needs: build$'
+require_job_pattern workflows/publish.yaml tag '^    needs: npm-publish$'
+require_job_pattern workflows/publish.yaml tag '^      group: gusto-ubuntu-default$'
+require_job_pattern workflows/publish.yaml tag '^      contents: write$'
+require_job_pattern workflows/publish.yaml tag 'git push origin'
+reject_job_pattern workflows/publish.yaml tag 'NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
+
 if [ "$fail" -eq 0 ]; then
   echo "All release-workflow guard checks passed."
 fi

@@ -115,10 +115,9 @@ jobs:
 
   publish:
     needs: [validate, build]
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
     # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
     # build-sdk.yaml already built dist/ on a separate, secret-less runner.

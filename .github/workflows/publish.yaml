@@ -16,14 +16,11 @@ jobs:
     with:
       ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-  publish:
+  npm-publish:
     needs: build
-    # Needs gusto-ubuntu-default: this job pushes a release tag to the repo,
-    # and the org IP allowlist blocks pushes from GitHub-hosted runner IPs.
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
     # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
     # build-sdk.yaml already built dist/ on a separate, secret-less runner.
@@ -44,6 +41,26 @@ jobs:
           name: dist
           path: dist
 
+      - name: Publish to NPM
+        run: npm publish --access public --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  tag:
+    needs: npm-publish
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
       - name: Tag release
         run: |
           VERSION=$(node -p "require('./package.json').version")
@@ -55,11 +72,6 @@ jobs:
             git tag -a "v$VERSION" -m "Release v$VERSION"
             git push origin "v$VERSION"
           fi
-
-      - name: Publish to NPM
-        run: npm publish --access public --ignore-scripts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Extract changelog for current version
         id: changelog
