@@ -44,13 +44,13 @@ sequenceDiagram
     participant API as Gusto Embedded API
 
     rect rgba(70, 160, 110, 0.12)
-        Note over SDK: #60;EmployeeManagement.EmployeeList companyId=#quot;A_UUID#quot; /#62;
-        SDK->>Backend: GET /v1/companies/A_UUID/employees
+        Note over SDK: Render employee list
+        SDK->>Backend: GET …/A_UUID/employees
         Backend->>Backend: Authenticate session and identify user
         Backend->>Backend: Authorize user's access to company A's employees
         Backend->>Backend: Select company A's stored token
         Note right of Backend: Authorization: Bearer COMPANY_A_TOKEN
-        Backend->>API: GET /v1/companies/A_UUID/employees
+        Backend->>API: GET …/A_UUID/employees
         API-->>Backend: Company A's employees
         Backend-->>SDK: Company A's employees
     end
@@ -73,7 +73,7 @@ sequenceDiagram
 
     rect rgba(80, 130, 200, 0.12)
         Note right of Backend: Authorization: Bearer COMPANY_A_TOKEN
-        Backend->>API: GET /v1/companies/A_UUID/payrolls
+        Backend->>API: GET …/A_UUID/payrolls
         API-->>Backend: Company A's payrolls
     end
 ```
@@ -89,19 +89,19 @@ sequenceDiagram
     participant API as Gusto Embedded API
 
     rect rgba(70, 160, 110, 0.12)
-        Note over SDK: Session for payroll administrator at company A
-        SDK->>Backend: GET /v1/companies/A_UUID/payrolls
+        Note over SDK: Payroll admin session
+        SDK->>Backend: GET …/A_UUID/payrolls
         Backend->>Backend: Authenticate session and identify administrator
         Backend->>Backend: Authorize access to company A's payrolls
         Note right of Backend: Authorization: Bearer COMPANY_A_TOKEN
-        Backend->>API: GET /v1/companies/A_UUID/payrolls
+        Backend->>API: GET …/A_UUID/payrolls
         API-->>Backend: Company A's payrolls
         Backend-->>SDK: Company A's payrolls
     end
 
     rect rgba(200, 90, 90, 0.12)
-        Note over SDK: Session for contractor self-onboarding at company A
-        SDK->>Backend: GET /v1/companies/A_UUID/payrolls
+        Note over SDK: Contractor session
+        SDK->>Backend: GET …/A_UUID/payrolls
         Backend->>Backend: Authenticate session and identify contractor
         Backend->>Backend: Deny access to company A's payrolls
         Backend-->>SDK: 403 Forbidden

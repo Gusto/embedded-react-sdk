@@ -41,9 +41,13 @@ Also account for supporting requests. A component may read resources beyond the 
 
 The inventory describes methods and path templates. Your application supplies the rules for which resources a session may access and which actions it may perform on them.
 
-For each request you intend to support, identify the requested resource and how it relates to the session's permissions. A path such as `/v1/contractors/:contractorUuid` identifies a contractor but does not establish whether the session may access that contractor. Other operations identify resources in query parameters or request bodies. For resources such as addresses or documents, you may also need to establish their relationship to an authorized employee, contractor, or company.
+For each request you intend to support:
 
-Some resource identifiers become available during a session, so a fixed set of identifiers captured at sign-in may not cover the requests your integration needs. Establish access using trusted resource relationships, including relationships your backend learns from API responses when creating or retrieving resources. Your backend can retain those associations to authorize subsequent requests without a separate lookup before every forwarded request. When it cannot establish access from trusted information, an additional lookup may be necessary.
+1. **Find the resource ID** in the path, query parameters, or request body.
+2. **Check the session's permissions** for that resource and action. A path such as `/v1/contractors/:contractorUuid` identifies a contractor; it does not grant access to that contractor.
+3. **Verify resource relationships** where needed. An address or document may require a link to an authorized employee, contractor, or company.
+
+Resource IDs may become available after sign-in. Your backend can use trusted relationships learned from API responses to authorize later requests—for example, linking a newly created resource to an authorized company. Retain these associations to avoid repeated lookups; fetch additional information when needed to establish access.
 
 The endpoint inventory identifies request parameters; it does not describe resource ownership or provide a complete authorization policy. Restricting an identifier to a valid UUID format does not establish permission to access that resource.
 
@@ -53,7 +57,11 @@ An endpoint allowlist can limit the methods and paths your proxy accepts. Resour
 
 Use each block or hook's `variables` metadata to review its path placeholders. Names are not uniform: employee identifiers may be called `employeeId` or `employeeUuid`, and company identifiers may be called `companyId` or `companyUuid`.
 
-Give each placeholder an explicit rule. Bind resource identifiers to authorized values or check access to the requested resource. Restrict non-resource placeholders, such as `state` or `documentType`, to the values your integration supports. Reject requests with missing bindings or authorization rules; do not automatically replace unresolved placeholders with wildcards.
+Give each placeholder an explicit rule:
+
+- **Resource IDs:** Bind them to authorized values or check access to the requested resource.
+- **Other placeholders:** Restrict values such as `state` or `documentType` to those your integration supports.
+- **Missing rules or bindings:** Reject the request. Do not replace unresolved placeholders with wildcards.
 
 ## Review access when upgrading the SDK
 
