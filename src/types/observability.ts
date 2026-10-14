@@ -60,41 +60,80 @@ export interface ObservabilityMetric {
 }
 
 /**
- * Configuration for sanitizing error and metric data before it reaches observability hooks.
+ * Configures redaction and raw-error inclusion for observability callbacks.
  *
  * @remarks
- * Sanitization runs by default to prevent PII leakage. When enabled, the SDK
- * pattern-redacts SSNs, emails, phone numbers, credit card numbers, and API
- * tokens from messages and tags, and removes values for fields with sensitive
- * names (`password`, `ssn`, `bankAccount`, etc.) from metadata. The `raw`
- * error object is excluded unless `includeRawError` is set to `true`.
+ * By default, the SDK redacts recognized string patterns in error `message` and
+ * `fieldErrors[].message`, and recursively redacts sensitive keys and recognized string
+ * patterns in `fieldErrors[].metadata` and metric `tags`. Sensitive keys include credentials,
+ * financial identifiers, personal names, birth dates, addresses, and document identifiers.
+ * Values are replaced with placeholders; keys are retained. Other properties are not redacted.
+ *
+ * Pattern and key matching do not detect every sensitive value. Free-text names and addresses,
+ * for example, may remain in messages. Select which fields to forward in your callbacks and
+ * use additional sensitive keys or custom sanitizers for further processing.
+ *
+ * Processing order is SDK redaction/raw exclusion, custom sanitizer, SDK redaction/raw
+ * exclusion again, then the observability callback. Custom functions receive processed input
+ * and their output follows the same configuration. `enabled` controls redaction independently
+ * of `includeRawError`; opted-in raw errors pass through without redaction.
+ *
+ * This configuration applies only to observability callbacks. It does not sanitize form-hook
+ * errors, component events, request hooks, or data added by your monitoring integration.
  *
  * @public
  */
 export interface SanitizationConfig {
   /**
-   * Whether to sanitize error data. Default: true
+   * Whether to redact recognized sensitive values in messages, field-error metadata, and
+   * metric tags. Default: true.
+   *
+   * @remarks
+   * When `false`, built-in and additional-sensitive-key redaction is skipped before and after
+   * custom sanitizers. Custom sanitizers still run. Raw errors remain excluded unless
+   * `includeRawError` is `true`.
    */
   enabled?: boolean
 
   /**
-   * Whether to include the raw error object on SDKError. Default: false
-   * WARNING: Raw errors may contain sensitive data from form inputs or API responses
+   * Whether to include the original error as `raw` in observability errors. Default: false.
+   *
+   * @remarks
+   * When `false`, `raw` is set to `undefined` before and after a custom error sanitizer,
+   * regardless of `enabled`. When `true`, `raw` passes through without redaction and can
+   * contain form inputs, API response bodies, and request headers, including credentials.
    */
   includeRawError?: boolean
 
   /**
-   * Custom sanitization function for errors
+   * Transforms an error between applications of the configured SDK processing.
+   *
+   * @remarks
+   * Receives an error after configured redaction and raw exclusion. The SDK processes the
+   * returned `message`, `fieldErrors[].message`, `fieldErrors[].metadata`, and `raw` again
+   * according to `enabled`, `includeRawError`, and `additionalSensitiveFields`. Other properties
+   * are preserved without redaction. Return an error of the same type; messages may be replaced
+   * and metadata omitted for additional control over emitted data.
    */
   customErrorSanitizer?: (error: ObservabilityError) => ObservabilityError
 
   /**
-   * Custom sanitization function for metrics
+   * Transforms a metric between applications of the configured SDK redaction.
+   *
+   * @remarks
+   * Receives a metric after configured tag redaction. Returned `tags` are redacted again,
+   * including keys added by your function. Both passes honor `enabled` and
+   * `additionalSensitiveFields`. Other properties are preserved without redaction.
    */
   customMetricSanitizer?: (metric: ObservabilityMetric) => ObservabilityMetric
 
   /**
-   * Additional field names to treat as sensitive (case-insensitive)
+   * Additional sensitive keys in field-error metadata and metric tags.
+   *
+   * @remarks
+   * Uses case-insensitive substring matching in nested objects and arrays, before and after
+   * custom sanitizers when redaction is enabled. Matching values are replaced with `[REDACTED]`.
+   * Does not match field-error paths, message text, or properties outside metadata and tags.
    */
   additionalSensitiveFields?: string[]
 }
@@ -105,8 +144,10 @@ export interface SanitizationConfig {
  * @remarks
  * Pass an instance to {@link GustoProvider} via `config.observability` to forward
  * errors to services like Sentry or Datadog and to capture performance metrics
- * for form submissions and component loading. Sanitization is applied before
- * the hooks are invoked; see {@link SanitizationConfig}.
+ * for form submissions and component loading. Recognized sensitive values are redacted and
+ * raw errors excluded by default before callbacks run; see {@link SanitizationConfig}.
+ * Select which payload fields to forward. This processing does not detect every PII value
+ * or cover data independently collected by your monitoring tool.
  *
  * @public
  * @group Observability
@@ -114,11 +155,11 @@ export interface SanitizationConfig {
  * @example
  * ```tsx
  * import * as Sentry from '@sentry/react'
- * import { GustoProvider, type ObservabilityHook } from '@gusto/embedded-react-sdk'
+ * import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
  *
- * const observability: ObservabilityHook = {
+ * export const observability: ObservabilityHook = {
  *   onError: error => {
- *     Sentry.captureException(error.raw ?? new Error(error.message), {
+ *     Sentry.captureException(new Error(error.message), {
  *       level: error.category === 'validation_error' ? 'warning' : 'error',
  *       tags: {
  *         error_category: error.category,
@@ -132,9 +173,7 @@ export interface SanitizationConfig {
  *   },
  * }
  *
- * <GustoProvider config={{ baseUrl: '/api/', observability }}>
- *   <YourApp />
- * </GustoProvider>
+ * // Pass observability to GustoProvider through config.observability.
  * ```
  */
 export interface ObservabilityHook {
