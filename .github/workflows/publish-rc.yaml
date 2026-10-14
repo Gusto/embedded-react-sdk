@@ -107,6 +107,16 @@ jobs:
         id: resolve-ref
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Summarize RC source for approval
+        run: |
+          {
+            echo '## RC publish request'
+            printf 'Source commit: `%s`\n\n' "$(git rev-parse HEAD)"
+            printf 'Base version: `%s`\n\n' "$(jq -r .version package.json)"
+            printf 'Starting RC number: `%s` (increments if already published)\n\n' "$INPUT_RC_NUMBER"
+            printf 'Dry run: `%s`\n' "${INPUT_DRY_RUN:-false}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   build:
     needs: validate
     uses: ./.github/workflows/build-sdk.yaml
@@ -115,11 +125,15 @@ jobs:
 
   publish:
     needs: [validate, build]
+    concurrency:
+      group: npm-rc
+      cancel-in-progress: false
+    environment: npm-release
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
-    # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
+    # No actions/cache or npm ci here — this job can request npm OIDC credentials, and
     # build-sdk.yaml already built dist/ on a separate, secret-less runner.
     # See validate-release-workflows.test.sh.
     env:
@@ -136,6 +150,10 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Install OIDC-compatible npm
+        run: npm install --global npm@11.21.0 --ignore-scripts
 
       - name: Download build artifact
         uses: actions/download-artifact@v6
@@ -207,8 +225,6 @@ jobs:
           else
             npm publish --access public --tag rc --ignore-scripts
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Output published version
         run: |

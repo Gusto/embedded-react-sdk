@@ -18,11 +18,12 @@ jobs:
 
   npm-publish:
     needs: build
+    environment: npm-release
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
-    # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
+    # No actions/cache or npm ci here — this job can request npm OIDC credentials, and
     # build-sdk.yaml already built dist/ on a separate, secret-less runner.
     # See validate-release-workflows.test.sh.
     steps:
@@ -34,6 +35,10 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Install OIDC-compatible npm
+        run: npm install --global npm@11.21.0 --ignore-scripts
 
       - name: Download build artifact
         uses: actions/download-artifact@v6
@@ -43,8 +48,6 @@ jobs:
 
       - name: Publish to NPM
         run: npm publish --access public --ignore-scripts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   tag:
     needs: npm-publish
@@ -73,19 +76,46 @@ jobs:
             git push origin "v$VERSION"
           fi
 
+  release:
+    needs: [npm-publish, tag]
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
       - name: Extract changelog for current version
         id: changelog
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           CHANGELOG_FILE=$(mktemp)
-          awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{if(found) exit} found{print}" CHANGELOG.md > "$CHANGELOG_FILE"
+          awk -v version="$VERSION" 'index($0, "## [" version "]") == 1 {found=1; next} /^## \[/ {if(found) exit} found {print}' CHANGELOG.md > "$CHANGELOG_FILE"
+          if ! grep -q '[^[:space:]]' "$CHANGELOG_FILE"; then
+            echo "No changelog entry for $VERSION" >&2
+            exit 1
+          fi
+          echo "notes_file=$CHANGELOG_FILE" >> "$GITHUB_OUTPUT"
           {
             echo "content<<CHANGELOG_EOF"
             cat "$CHANGELOG_FILE"
             echo "CHANGELOG_EOF"
           } >> "$GITHUB_OUTPUT"
-          rm -f "$CHANGELOG_FILE"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ steps.changelog.outputs.version }}
+          NOTES_FILE: ${{ steps.changelog.outputs.notes_file }}
+        run: bash .github/scripts/github-release.sh "$VERSION" "$NOTES_FILE"
 
       - name: Generate release summary
         id: summary

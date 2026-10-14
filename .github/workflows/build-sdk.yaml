@@ -2,10 +2,10 @@
 # ref, so stable and RC publish run the exact same build steps and that
 # logic lives in one place. Deliberately takes no secrets and requests
 # only read permissions — this job runs npm ci/i18n:generate/vite build,
-# which execute devDependency and plugin code, so NPM_TOKEN must never be
+# which execute devDependency and plugin code, so npm OIDC credentials must never be
 # reachable here. The caller's separate publish job downloads this job's
 # `dist` artifact and never runs npm ci itself, keeping dependency/build
-# code execution out of the runner that holds the token.
+# code execution out of the runner that can request npm credentials.
 name: Build SDK
 on:
   workflow_call:
@@ -44,3 +44,11 @@ jobs:
           path: dist/
           retention-days: 1
           if-no-files-found: error
+
+      - name: Summarize build for approval
+        run: |
+          {
+            echo '## SDK build'
+            printf 'Source commit: `%s`\n\n' "$(git rev-parse HEAD)"
+            printf 'Package version: `%s`\n' "$(node -p "require('./package.json').version")"
+          } >> "$GITHUB_STEP_SUMMARY"

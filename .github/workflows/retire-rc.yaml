@@ -1,0 +1,45 @@
+name: Retire RC
+on:
+  workflow_dispatch:
+    inputs:
+      expected_version:
+        description: 'Expected version currently tagged rc (e.g., 0.56.7-rc.1)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Preview retirement without changing the registry'
+        required: false
+        type: boolean
+        default: true
+jobs:
+  retire:
+    environment: npm-release
+    concurrency:
+      group: npm-rc
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      EXPECTED_VERSION: ${{ inputs.expected_version }}
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Validate inputs
+        run: |
+          .github/scripts/validate-release-input.sh rc-version "$EXPECTED_VERSION"
+          .github/scripts/validate-release-input.sh boolean "$DRY_RUN"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Install OIDC-compatible npm
+        run: npm install --global npm@11.21.0 --ignore-scripts
+
+      - name: Retire RC tag
+        run: bash .github/scripts/retire-rc.sh "$EXPECTED_VERSION" "$DRY_RUN"

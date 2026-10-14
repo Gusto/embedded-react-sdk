@@ -1,23 +1,12 @@
 #!/usr/bin/env bash
-# Guards the npm publish/unpublish release workflows against regressions
-# this hardening pass fixed: a cache action reintroduced into an
-# NPM_TOKEN-bearing job, an untrusted dispatch input/event value
-# interpolated directly into a shell script instead of passed through
-# `env:`, or a workflow that stops calling the input validator.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 fail=0
-# Workflows that hold NPM_TOKEN at some point (directly, or via a job in
-# the same file) — the cache-poisoning risk this guards against.
-token_bearing_workflows=(workflows/publish.yaml workflows/publish-rc.yaml workflows/unpublish.yaml workflows/unpublish-rc.yaml)
-# Also includes build-sdk.yaml: it's secret-less, but it still consumes an
-# untrusted-ish `ref` input forwarded from publish-rc.yaml, so a future
-# edit that starts interpolating it directly into a run: script instead of
-# via env:/action inputs is still worth catching here.
-input_consuming_workflows=("${token_bearing_workflows[@]}" workflows/build-sdk.yaml)
-dispatch_workflows=(workflows/publish-rc.yaml workflows/unpublish.yaml workflows/unpublish-rc.yaml)
+registry_workflows=(workflows/publish.yaml workflows/publish-rc.yaml workflows/retire-rc.yaml)
+input_consuming_workflows=("${registry_workflows[@]}" workflows/build-sdk.yaml)
+dispatch_workflows=(workflows/publish-rc.yaml workflows/retire-rc.yaml)
 
 # Extracts the shell content of every `run:` step — both block-scalar
 # (`run: |`/`run: >`, body = lines indented further than the `run:` key)
@@ -39,9 +28,9 @@ run_block_bodies() {
   ' "$1"
 }
 
-for f in "${token_bearing_workflows[@]}"; do
+for f in "${registry_workflows[@]}"; do
   if grep -q 'uses:.*actions/cache' "$f"; then
-    echo "FAIL: $f uses actions/cache in an NPM_TOKEN-bearing workflow"
+    echo "FAIL: $f uses actions/cache in a registry workflow"
     fail=1
   fi
 done
@@ -93,24 +82,64 @@ reject_job_pattern() {
   fi
 }
 
-for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish'; do
+for f in "${registry_workflows[@]}"; do
+  if grep -v '^[[:space:]]*#' "$f" | grep -qE 'NPM_TOKEN|NODE_AUTH_TOKEN|npm (unpublish|deprecate)|github-release.sh delete'; then
+    echo "FAIL: $f contains reusable npm authentication or unsupported registry operations"
+    fail=1
+  fi
+done
+
+for f in workflows/unpublish.yaml workflows/unpublish-rc.yaml; do
+  if [ -e "$f" ]; then
+    echo "FAIL: obsolete workflow $f must be removed"
+    fail=1
+  fi
+done
+
+for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'retire-rc.yaml retire'; do
   read -r workflow job <<< "$workflow_job"
   f="workflows/$workflow"
   require_job_pattern "$f" "$job" '^    runs-on: ubuntu-latest$'
+  require_job_pattern "$f" "$job" '^    environment: npm-release$'
   require_job_pattern "$f" "$job" '^      contents: read$'
   require_job_pattern "$f" "$job" '^      id-token: write$'
-  require_job_pattern "$f" "$job" 'NODE_AUTH_TOKEN:.*secrets.NPM_TOKEN'
-  require_job_pattern "$f" "$job" 'npm publish .*--ignore-scripts'
-  reject_job_pattern "$f" "$job" 'contents: write|actions/cache'
-  reject_job_pattern "$f" "$job" '^[[:space:]]*(- run: )?(git push|npm ci|npm install)([[:space:]]|$)'
+  require_job_pattern "$f" "$job" 'npm install --global npm@11.21.0 --ignore-scripts'
+  require_job_pattern "$f" "$job" 'package-manager-cache: false'
+  reject_job_pattern "$f" "$job" 'contents: write|actions/cache|secrets\.'
+  reject_job_pattern "$f" "$job" 'git push'
+  if job_body "$f" "$job" | grep -E '^[[:space:]]*((- )?run: )?npm (ci|install)|(&&|;|[|])[[:space:]]*npm (ci|install)' | grep -vE '^[[:space:]]+run: npm install --global npm@11[.]21[.]0 --ignore-scripts$'; then
+    echo "FAIL: $f job $job installs dependencies beyond the pinned npm CLI"
+    fail=1
+  fi
 done
 
+for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish'; do
+  read -r workflow job <<< "$workflow_job"
+  require_job_pattern "workflows/$workflow" "$job" 'npm publish .*--ignore-scripts'
+  require_job_pattern "workflows/$workflow" "$job" 'uses: actions/download-artifact@'
+done
+
+for workflow_job in 'publish-rc.yaml publish' 'retire-rc.yaml retire'; do
+  read -r workflow job <<< "$workflow_job"
+  require_job_pattern "workflows/$workflow" "$job" '^      group: npm-rc$'
+  require_job_pattern "workflows/$workflow" "$job" '^      cancel-in-progress: false$'
+done
+
+require_job_pattern workflows/retire-rc.yaml retire 'retire-rc[.]sh'
 require_job_pattern workflows/publish.yaml npm-publish '^    needs: build$'
 require_job_pattern workflows/publish.yaml tag '^    needs: npm-publish$'
-require_job_pattern workflows/publish.yaml tag '^      group: gusto-ubuntu-default$'
-require_job_pattern workflows/publish.yaml tag '^      contents: write$'
 require_job_pattern workflows/publish.yaml tag 'git push origin'
-reject_job_pattern workflows/publish.yaml tag 'NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
+require_job_pattern workflows/publish.yaml release '^    needs: \[npm-publish, tag\]$'
+require_job_pattern workflows/publish.yaml release 'github-release[.]sh'
+
+for job in tag release; do
+  f=workflows/publish.yaml
+  require_job_pattern "$f" "$job" '^      group: gusto-ubuntu-default$'
+  require_job_pattern "$f" "$job" '^      contents: write$'
+  reject_job_pattern "$f" "$job" 'environment:|NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
+done
+
+reject_job_pattern workflows/build-sdk.yaml build 'environment:|secrets\.|id-token:|contents: write'
 
 if [ "$fail" -eq 0 ]; then
   echo "All release-workflow guard checks passed."
