@@ -80,6 +80,9 @@ describe('Contractor/Address', () => {
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
 
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_ADDRESS_DONE)
+      })
       expect(mockOnEvent).toHaveBeenNthCalledWith(
         1,
         contractorEvents.CONTRACTOR_ADDRESS_UPDATED,

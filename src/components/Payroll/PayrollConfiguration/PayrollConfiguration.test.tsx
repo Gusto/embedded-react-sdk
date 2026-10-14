@@ -566,8 +566,20 @@ describe('PayrollConfiguration', () => {
 
     it('keeps reporting the deadline while the payroll stays in calculating', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let calculatingReadCount = 0
 
       server.use(
+        // Listed before the payroll route below, which would otherwise match
+        // `/payrolls/blockers` via its `:payroll_id` segment.
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+          return HttpResponse.json([])
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+          if (currentPayrollData.processing_request?.status === 'calculating') {
+            calculatingReadCount += 1
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
           currentPayrollData = {
             ...mockPayrollData,
@@ -585,6 +597,11 @@ describe('PayrollConfiguration', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // Wait for the poll's first read so its deadline is anchored before the clock jumps.
+      await waitFor(() => {
+        expect(calculatingReadCount).toBeGreaterThan(0)
+      })
 
       // A payroll the server never moves off `calculating` is picked back up by the
       // start-on-calculating effect after each deadline, so the failure is reported once per

@@ -1253,7 +1253,11 @@ describe('Dashboard', () => {
       await waitFor(() => {
         expect(deleteResolver).toHaveBeenCalledTimes(1)
       })
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(
+          within(screen.getByRole('dialog')).getAllByRole('button', { name: 'Cancel change' }),
+        ).toHaveLength(cancelButtons.length - 1)
+      })
 
       const remainingCancelButtons = within(screen.getByRole('dialog')).getAllByRole('button', {
         name: 'Cancel change',

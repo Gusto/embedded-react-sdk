@@ -135,6 +135,7 @@ export interface PollingTask {
  * - Each tick bumps internal state, which gives the calling component a render source
  *   independent of any query observer. Fresh cache data is then picked up on that render.
  * - `stop()` and unmount abort the in-flight read and guarantee no further callbacks fire.
+ *   `start()` called after unmount is a no-op.
  *
  * Callbacks are read through a ref, so changing their identity between renders never restarts
  * the loop.
@@ -152,6 +153,7 @@ export function usePollingTask<TData, TValue>(
   optionsRef.current = options
 
   const runIdRef = useRef(0)
+  const isMountedRef = useRef(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
   const [isPolling, setIsPolling] = useState(false)
@@ -173,6 +175,7 @@ export function usePollingTask<TData, TValue>(
   }, [teardown])
 
   const start = useCallback(() => {
+    if (!isMountedRef.current) return
     teardown()
 
     const runId = runIdRef.current
@@ -231,7 +234,13 @@ export function usePollingTask<TData, TValue>(
     void tick()
   }, [teardown, stop])
 
-  useEffect(() => teardown, [teardown])
+  useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+      teardown()
+    }
+  }, [teardown])
 
   return { start, stop, isPolling }
 }
