@@ -189,7 +189,7 @@
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.9.1",
     "@internationalized/date": "^3.12.4",
-    "@internationalized/number": "^3.6.8",
+    "@internationalized/number": "^3.6.9",
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.4.16",
