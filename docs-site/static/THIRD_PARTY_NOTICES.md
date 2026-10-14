@@ -6,13 +6,13 @@ as published on npm. It ships a LICENSE.md and no NOTICE file, and the
 compiled bundle carries no license text of its own. Its LICENSE is
 reproduced in full below.
 
-# elkjs
+## elkjs
 
 Licensed under the Eclipse Public License, Version 2.0.
 
 Source code: https://github.com/kieler/elkjs
 
-# Eclipse Public License - v 2.0
+## Eclipse Public License - v 2.0
 
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE
 PUBLIC LICENSE (“AGREEMENT”). ANY USE, REPRODUCTION OR DISTRIBUTION OF
@@ -22,18 +22,18 @@ THE PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE OF THIS AGREEMENT.
 
 “Contribution” means:
 
--   a\) in the case of the initial Contributor, the initial content
-    Distributed under this Agreement, and
--   b\) in the case of each subsequent Contributor:
-    -   i\) changes to the Program, and
-    -   ii\) additions to the Program;
+- a\) in the case of the initial Contributor, the initial content
+  Distributed under this Agreement, and
+- b\) in the case of each subsequent Contributor:
+  - i\) changes to the Program, and
+  - ii\) additions to the Program;
 
-    where such changes and/or additions to the Program originate from
-    and are Distributed by that particular Contributor. A Contribution
-    “originates” from a Contributor if it was added to the Program by
-    such Contributor itself or anyone acting on such Contributor's
-    behalf. Contributions do not include changes or additions to the
-    Program that are not Modified Works.
+  where such changes and/or additions to the Program originate from
+  and are Distributed by that particular Contributor. A Contribution
+  “originates” from a Contributor if it was added to the Program by
+  such Contributor itself or anyone acting on such Contributor's
+  behalf. Contributions do not include changes or additions to the
+  Program that are not Modified Works.
 
 “Contributor” means any person or entity that Distributes the Program.
 
@@ -74,83 +74,83 @@ additional permissions as identified by the initial Contributor.
 
 ## 2. GRANT OF RIGHTS
 
--   a\) Subject to the terms of this Agreement, each Contributor hereby
-    grants Recipient a non-exclusive, worldwide, royalty-free copyright
-    license to reproduce, prepare Derivative Works of, publicly display,
-    publicly perform, Distribute and sublicense the Contribution of such
-    Contributor, if any, and such Derivative Works.
--   b\) Subject to the terms of this Agreement, each Contributor hereby
-    grants Recipient a non-exclusive, worldwide, royalty-free patent license
-    under Licensed Patents to make, use, sell, offer to sell, import and
-    otherwise transfer the Contribution of such Contributor, if any, in
-    Source Code or other form. This patent license shall apply to the
-    combination of the Contribution and the Program if, at the time the
-    Contribution is added by the Contributor, such addition of the
-    Contribution causes such combination to be covered by the
-    Licensed Patents. The patent license shall not apply to any other
-    combinations which include the Contribution. No hardware per se is
-    licensed hereunder.
--   c\) Recipient understands that although each Contributor grants the
-    licenses to its Contributions set forth herein, no assurances are
-    provided by any Contributor that the Program does not infringe the
-    patent or other intellectual property rights of any other entity. Each
-    Contributor disclaims any liability to Recipient for claims brought by
-    any other entity based on infringement of intellectual property rights
-    or otherwise. As a condition to exercising the rights and licenses
-    granted hereunder, each Recipient hereby assumes sole responsibility to
-    secure any other intellectual property rights needed, if any. For
-    example, if a third party patent license is required to allow Recipient
-    to Distribute the Program, it is Recipient's responsibility to acquire
-    that license before distributing the Program.
--   d\) Each Contributor represents that to its knowledge it has sufficient
-    copyright rights in its Contribution, if any, to grant the copyright
-    license set forth in this Agreement.
--   e\) Notwithstanding the terms of any Secondary License, no Contributor
-    makes additional grants to any Recipient (other than those set forth in
-    this Agreement) as a result of such Recipient's receipt of the Program
-    under the terms of a Secondary License (if permitted under the terms of
-    Section 3).
+- a\) Subject to the terms of this Agreement, each Contributor hereby
+  grants Recipient a non-exclusive, worldwide, royalty-free copyright
+  license to reproduce, prepare Derivative Works of, publicly display,
+  publicly perform, Distribute and sublicense the Contribution of such
+  Contributor, if any, and such Derivative Works.
+- b\) Subject to the terms of this Agreement, each Contributor hereby
+  grants Recipient a non-exclusive, worldwide, royalty-free patent license
+  under Licensed Patents to make, use, sell, offer to sell, import and
+  otherwise transfer the Contribution of such Contributor, if any, in
+  Source Code or other form. This patent license shall apply to the
+  combination of the Contribution and the Program if, at the time the
+  Contribution is added by the Contributor, such addition of the
+  Contribution causes such combination to be covered by the
+  Licensed Patents. The patent license shall not apply to any other
+  combinations which include the Contribution. No hardware per se is
+  licensed hereunder.
+- c\) Recipient understands that although each Contributor grants the
+  licenses to its Contributions set forth herein, no assurances are
+  provided by any Contributor that the Program does not infringe the
+  patent or other intellectual property rights of any other entity. Each
+  Contributor disclaims any liability to Recipient for claims brought by
+  any other entity based on infringement of intellectual property rights
+  or otherwise. As a condition to exercising the rights and licenses
+  granted hereunder, each Recipient hereby assumes sole responsibility to
+  secure any other intellectual property rights needed, if any. For
+  example, if a third party patent license is required to allow Recipient
+  to Distribute the Program, it is Recipient's responsibility to acquire
+  that license before distributing the Program.
+- d\) Each Contributor represents that to its knowledge it has sufficient
+  copyright rights in its Contribution, if any, to grant the copyright
+  license set forth in this Agreement.
+- e\) Notwithstanding the terms of any Secondary License, no Contributor
+  makes additional grants to any Recipient (other than those set forth in
+  this Agreement) as a result of such Recipient's receipt of the Program
+  under the terms of a Secondary License (if permitted under the terms of
+  Section 3).
 
 ## 3. REQUIREMENTS
 
 3.1 If a Contributor Distributes the Program in any form, then:
 
--   a\) the Program must also be made available as Source Code, in accordance
-    with section 3.2, and the Contributor must accompany the Program with a
-    statement that the Source Code for the Program is available under this
-    Agreement, and informs Recipients how to obtain it in a reasonable
-    manner on or through a medium customarily used for software exchange;
-    and
--   b\) the Contributor may Distribute the Program under a license different
-    than this Agreement, provided that such license:
-    -   i\) effectively disclaims on behalf of all other Contributors all
-        warranties and conditions, express and implied, including warranties or
-        conditions of title and non-infringement, and implied warranties or
-        conditions of merchantability and fitness for a particular purpose;
-    -   ii\) effectively excludes on behalf of all other Contributors all
-        liability for damages, including direct, indirect, special, incidental
-        and consequential damages, such as lost profits;
-    -   iii\) does not attempt to limit or alter the recipients' rights in the
-        Source Code under section 3.2; and
-    -   iv\) requires any subsequent distribution of the Program by any party to
-        be under a license that satisfies the requirements of this section 3.
+- a\) the Program must also be made available as Source Code, in accordance
+  with section 3.2, and the Contributor must accompany the Program with a
+  statement that the Source Code for the Program is available under this
+  Agreement, and informs Recipients how to obtain it in a reasonable
+  manner on or through a medium customarily used for software exchange;
+  and
+- b\) the Contributor may Distribute the Program under a license different
+  than this Agreement, provided that such license:
+  - i\) effectively disclaims on behalf of all other Contributors all
+    warranties and conditions, express and implied, including warranties or
+    conditions of title and non-infringement, and implied warranties or
+    conditions of merchantability and fitness for a particular purpose;
+  - ii\) effectively excludes on behalf of all other Contributors all
+    liability for damages, including direct, indirect, special, incidental
+    and consequential damages, such as lost profits;
+  - iii\) does not attempt to limit or alter the recipients' rights in the
+    Source Code under section 3.2; and
+  - iv\) requires any subsequent distribution of the Program by any party to
+    be under a license that satisfies the requirements of this section 3.
 
-3.2 When the Program is Distributed as Source Code:
+    3.2 When the Program is Distributed as Source Code:
 
--   a\) it must be made available under this Agreement, or if the Program (i)
-    is combined with other material in a separate file or files made
-    available under a Secondary License, and (ii) the initial Contributor
-    attached to the Source Code the notice described in Exhibit A of this
-    Agreement, then the Program may be made available under the terms of
-    such Secondary Licenses, and
--   b\) a copy of this Agreement must be included with each copy of
-    the Program.
+- a\) it must be made available under this Agreement, or if the Program (i)
+  is combined with other material in a separate file or files made
+  available under a Secondary License, and (ii) the initial Contributor
+  attached to the Source Code the notice described in Exhibit A of this
+  Agreement, then the Program may be made available under the terms of
+  such Secondary Licenses, and
+- b\) a copy of this Agreement must be included with each copy of
+  the Program.
 
-3.3 Contributors may not remove or alter any copyright, patent,
-trademark, attribution notices, disclaimers of warranty, or limitations
-of liability (‘notices’) contained within the Program from any copy of
-the Program which they Distribute, provided that Contributors may add
-their own appropriate notices.
+  3.3 Contributors may not remove or alter any copyright, patent,
+  trademark, attribution notices, disclaimers of warranty, or limitations
+  of liability (‘notices’) contained within the Program from any copy of
+  the Program which they Distribute, provided that Contributors may add
+  their own appropriate notices.
 
 ## 4. COMMERCIAL DISTRIBUTION
 
@@ -277,8 +277,8 @@ version(s), and exceptions or additional permissions here}.”
 >
 > You may add additional accurate notices of copyright ownership.
 
-# Modules covered by this file
+## Modules covered by this file
 
-| Module | License | Source |
-|---|---|---|
+| Module      | License | Source                          |
+| ----------- | ------- | ------------------------------- |
 | elkjs 0.9.3 | EPL-2.0 | https://github.com/kieler/elkjs |
