@@ -9,6 +9,7 @@
   "cancelCta": "Cancel",
   "submitCta": "View checks",
   "submitCtaLoading": "Generating...",
+  "generatingChecksMessage": "Generating checks…",
   "validations": {
     "startingCheckNumber": "Enter a valid check number"
   }

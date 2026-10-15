@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +18,8 @@ import { ActionsLayout, Flex, NumberInputField, RadioGroupField } from '@/compon
 import { Form } from '@/components/Common/Form'
 import { printChecksEvents, type EventType } from '@/shared/constants'
 import type { RadioGroupOption } from '@/index'
+import { openPdfInNewTab, type PdfTabHandle } from '@/helpers/openPdfInNewTab'
+import { useNonce } from '@/contexts/NonceProvider/useNonce'
 
 interface PrintChecksFormProps extends BaseComponentInterface<'Payroll.PrintChecksForm'> {
   payrollId: string
@@ -64,21 +67,6 @@ const buildRequestBody = (data: PrintChecksFormValues): PrintablePayrollChecksBo
     : {}),
 })
 
-// Navigates directly to `url` via a synthetic anchor click rather than `fetch`-ing it into a blob:
-// the generated-document URL is a signed, cross-origin S3 URL with `response-content-disposition:
-// attachment` baked into its query string, so a direct browser-level request downloads it via that
-// response header — but a `fetch()` from JS is subject to CORS, which the bucket doesn't allow, and
-// fails outright. A plain navigation isn't subject to CORS and never opens a new tab or navigates
-// the host page, since the browser intercepts the download instead of rendering a response.
-const downloadGeneratedChecks = (url: string) => {
-  const link = document.createElement('a')
-  link.href = url
-  link.rel = 'noopener noreferrer'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
-
 /** @internal */
 export function PrintChecksForm(props: PrintChecksFormProps) {
   return (
@@ -94,6 +82,10 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
   const { t } = useTranslation('Payroll.PrintChecksForm')
   const { Heading } = useComponentContext()
   const { onEvent, baseSubmitHandler } = useBase()
+  const nonce = useNonce()
+  // Reserved synchronously on submit (before the generate mutation and poll resolve), since
+  // window.open must happen within the user gesture's call stack to avoid popup blocking.
+  const pdfTabRef = useRef<PdfTabHandle | null>(null)
 
   const formMethods = useForm<PrintChecksFormValues>({
     resolver: zodResolver(PrintChecksFormSchema),
@@ -111,16 +103,22 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
     onSucceeded: url => {
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: url })
       if (url) {
-        downloadGeneratedChecks(url)
+        pdfTabRef.current?.navigateToUrl(url)
+      } else {
+        pdfTabRef.current?.close()
       }
+      pdfTabRef.current = null
     },
     onFailed: () => {
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
+      pdfTabRef.current?.close()
+      pdfTabRef.current = null
     },
   })
 
   const onSubmit = async (formData: PrintChecksFormValues) => {
     onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_START)
+    pdfTabRef.current = openPdfInNewTab({ loadingMessage: t('generatingChecksMessage'), nonce })
 
     await baseSubmitHandler(formData, async submittedData => {
       try {
@@ -138,6 +136,8 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
 
         startGenerationPoll(nextRequestUuid)
       } catch (err) {
+        pdfTabRef.current?.close()
+        pdfTabRef.current = null
         onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, {
           errorMessage: extractErrorMessage(err),
         })

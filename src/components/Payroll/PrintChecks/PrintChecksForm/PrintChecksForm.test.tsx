@@ -17,7 +17,8 @@ import { FlowContext } from '@/components/Flow/useFlow'
 describe('PrintChecksForm', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
-  let anchorClickSpy: ReturnType<typeof vi.spyOn>
+  let openSpy: ReturnType<typeof vi.spyOn>
+  let fakeTab: { document: Document; location: { href: string }; close: () => void }
 
   const flowContextValue = {
     component: null,
@@ -34,9 +35,15 @@ describe('PrintChecksForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    // The download is triggered via a synthetic anchor click rather than a real navigation —
-    // jsdom throws "Not implemented: navigation" if this isn't stubbed.
-    anchorClickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    // openPdfInNewTab reserves a real browser tab via window.open -- jsdom can open a blank
+    // document, but stub it with a lightweight fake so tests can assert on navigation/close
+    // without "Not implemented: navigation" errors from a real cross-origin href assignment.
+    fakeTab = {
+      document: document.implementation.createHTMLDocument(),
+      location: { href: '' },
+      close: vi.fn(),
+    }
+    openSpy = vi.spyOn(window, 'open').mockReturnValue(fakeTab as unknown as Window)
   })
 
   it('omits starting_check_number from the request body for custom check stock', async () => {
@@ -154,7 +161,7 @@ describe('PrintChecksForm', () => {
     expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_GENERATE_START)
   })
 
-  it('fires PRINT_CHECKS_GENERATE_SUCCEEDED with the document URL once the poll succeeds', async () => {
+  it('fires PRINT_CHECKS_GENERATE_SUCCEEDED and navigates the reserved tab to the document URL once the poll succeeds', async () => {
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
         HttpResponse.json(createPayrollCheck(), { status: 200 }),
@@ -180,14 +187,11 @@ describe('PrintChecksForm', () => {
         documentUrl: 'https://example.com/checks.pdf',
       })
     })
-    await waitFor(() => {
-      expect(anchorClickSpy).toHaveBeenCalledTimes(1)
-    })
-    expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('href', 'https://example.com/checks.pdf')
+    expect(fakeTab.location.href).toBe('https://example.com/checks.pdf')
+    expect(fakeTab.close).not.toHaveBeenCalled()
   })
 
-  it('does not open any window or navigate anywhere when generation succeeds', async () => {
-    const openSpy = vi.spyOn(window, 'open')
+  it('reserves exactly one new tab, with opener isolation, at submit time', async () => {
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
         HttpResponse.json(createPayrollCheck(), { status: 200 }),
@@ -195,12 +199,7 @@ describe('PrintChecksForm', () => {
     )
     server.use(
       handleGeneratedDocumentsGet(() =>
-        HttpResponse.json(
-          createGeneratedDocument({
-            status: 'succeeded',
-            document_urls: ['https://example.com/checks.pdf'],
-          }),
-        ),
+        HttpResponse.json(createGeneratedDocument({ status: 'pending' })),
       ),
     )
 
@@ -209,12 +208,12 @@ describe('PrintChecksForm', () => {
     await user.click(await screen.findByRole('button', { name: 'View checks' }))
 
     await waitFor(() => {
-      expect(anchorClickSpy).toHaveBeenCalledTimes(1)
+      expect(openSpy).toHaveBeenCalledTimes(1)
     })
-    expect(openSpy).not.toHaveBeenCalled()
+    expect(openSpy).toHaveBeenCalledWith('', '_blank', 'noopener')
   })
 
-  it('fires PRINT_CHECKS_GENERATE_FAILED when the poll reports failure', async () => {
+  it('fires PRINT_CHECKS_GENERATE_FAILED and closes the reserved tab when the poll reports failure', async () => {
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
         HttpResponse.json(createPayrollCheck(), { status: 200 }),
@@ -235,7 +234,47 @@ describe('PrintChecksForm', () => {
         errorMessage: null,
       })
     })
+    expect(fakeTab.close).toHaveBeenCalledTimes(1)
   })
+
+  it.each([
+    ['javascript:alert(1)'],
+    ['data:text/html,<script>alert(1)</script>'],
+    ['http://example.com/checks.pdf'],
+    ['not a url'],
+  ])(
+    'fires PRINT_CHECKS_GENERATE_FAILED instead of navigating when the document URL is %s',
+    async rawUrl => {
+      server.use(
+        handlePayrollsGeneratePrintableChecks(() =>
+          HttpResponse.json(createPayrollCheck(), { status: 200 }),
+        ),
+      )
+      server.use(
+        handleGeneratedDocumentsGet(() =>
+          HttpResponse.json(
+            createGeneratedDocument({ status: 'succeeded', document_urls: [rawUrl] }),
+          ),
+        ),
+      )
+
+      renderForm()
+
+      await user.click(await screen.findByRole('button', { name: 'View checks' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, {
+          errorMessage: null,
+        })
+      })
+      expect(onEvent).not.toHaveBeenCalledWith(
+        printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED,
+        expect.anything(),
+      )
+      expect(fakeTab.location.href).toBe('')
+      expect(fakeTab.close).toHaveBeenCalledTimes(1)
+    },
+  )
 
   it('fires PRINT_CHECKS_GENERATE_FAILED with the server error message when the mutation itself is rejected', async () => {
     server.use(

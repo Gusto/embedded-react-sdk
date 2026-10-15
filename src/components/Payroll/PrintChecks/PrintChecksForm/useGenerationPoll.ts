@@ -15,10 +15,23 @@ import {
 } from '@/hooks/usePollingTask/usePollingTask'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { normalizeToSDKError } from '@/types/sdkError'
+import { isValidHttpsUrl } from '@/helpers/openPdfInNewTab'
 
 const COMPONENT_NAME = 'Payroll.PrintChecksForm'
 
 type PrintChecksOutcome = { type: 'succeeded'; url: string | null } | { type: 'failed' }
+
+// A malformed or non-HTTPS document URL (e.g. javascript:, data:, http:) is treated as a
+// generation failure rather than a success with a dangerous URL -- see SDK-1380.
+const toPrintChecksOutcome = (
+  generatedDocument: GeneratedDocumentsGetQueryData['generatedDocument'] | undefined,
+): PrintChecksOutcome => {
+  const rawUrl = generatedDocument?.documentUrls?.[0] ?? null
+  if (rawUrl !== null && !isValidHttpsUrl(rawUrl)) {
+    return { type: 'failed' }
+  }
+  return { type: 'succeeded', url: rawUrl }
+}
 
 // Verify against the last-known data before reporting failure: a document that already
 // finished generating must never be reported as a failure just because the deadline hit first.
@@ -27,7 +40,7 @@ const verifiedPrintChecksOutcome = (
 ): PrintChecksOutcome => {
   const status = lastData?.generatedDocument?.status
   if (status === GeneratedDocumentStatus.Succeeded) {
-    return { type: 'succeeded', url: lastData?.generatedDocument?.documentUrls?.[0] ?? null }
+    return toPrintChecksOutcome(lastData?.generatedDocument)
   }
   return { type: 'failed' }
 }
@@ -43,10 +56,7 @@ const evaluatePrintChecksOutcome = (
 
   const status = outcome.data.generatedDocument?.status
   if (status === GeneratedDocumentStatus.Succeeded) {
-    return {
-      status: 'done',
-      value: { type: 'succeeded', url: outcome.data.generatedDocument?.documentUrls?.[0] ?? null },
-    }
+    return { status: 'done', value: toPrintChecksOutcome(outcome.data.generatedDocument) }
   }
   if (status === GeneratedDocumentStatus.Failed) {
     return { status: 'done', value: { type: 'failed' } }

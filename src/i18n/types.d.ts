@@ -8466,6 +8466,8 @@ export namespace Translations {
     submitCta: string
     /** @defaultValue `"Generating..."` */
     submitCtaLoading: string
+    /** @defaultValue `"Generating checks…"` */
+    generatingChecksMessage: string
     validations: {
       /** @defaultValue `"Enter a valid check number"` */
       startingCheckNumber: string

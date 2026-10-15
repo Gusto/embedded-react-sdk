@@ -42,9 +42,9 @@ describe('PrintChecks', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    // The download is triggered via a synthetic anchor click rather than a real navigation —
-    // jsdom throws "Not implemented: navigation" if this isn't stubbed.
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    // Submitting the form reserves a new tab via window.open -- jsdom throws
+    // "Not implemented: window.open" if this isn't stubbed.
+    vi.spyOn(window, 'open').mockReturnValue(null)
   })
 
   it('opens the form from the banner CTA and cancels back to the banner', async () => {
