@@ -400,15 +400,17 @@ PRs that change the root `package.json` version are checked by `release-readines
 
 The check updates independently of the build when a PR or review changes, or when `main` advances. Merge queue checks use approvals of the original PR commits. To refresh the result manually, run [Release Readiness](https://github.com/Gusto/embedded-react-sdk/actions/workflows/release-readiness.yaml) from `main`.
 
-After a release PR merges to `main` with a `chore: release` commit and CI passes, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) starts automatically. Approve npm publishing through `npm-release`; the workflow publishes to npm, creates a Git tag and GitHub Release with changelog notes, and sends the release notification.
+After a release PR merges to `main` with a `chore: release` commit and CI passes, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) starts automatically. The workflow uses `npm-release` to publish to npm, create a Git tag and GitHub Release with changelog notes, and send the release notification.
 
-The release owner arranges approval by another member of the Embedded SDK team through the workflow run's **Review deployments** prompt. Publishing waits for this approval, enforced by the `npm-release` environment settings. Before approving, check the run's source commit, release diff and changelog, and successful CI.
+The intended configuration for `npm-release` allows workflows from `main` without a separate publishing approval once `release-readiness` is enforced. During rollout, keep the existing publishing approval until the new check is verified and required.
 
 ### One-off builds
 
 Use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) for a one-off build from a branch or commit. Run the workflow from `main` and choose the source using its inputs. It publishes under `rc`, leaving `latest` unchanged, with no Git tag or GitHub Release.
 
-When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag. Both RC publishing and retirement require the same approval by another member of the Embedded SDK team through **Review deployments**, enforced by the `npm-release` environment settings.
+When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag.
+
+Both RC publishing and retirement use `npm-release-rc` and wait for another member of the Embedded SDK team to approve through the workflow run's **Review deployments** prompt. The release owner arranges this approval. Before approving, check the selected source commit and version in the run summary, or the expected version for retirement.
 
 ### Retiring a stable version
 
@@ -434,7 +436,13 @@ Run release readiness tests without installing dependencies:
 node --test .github/scripts/release-readiness.test.cjs
 ```
 
-After the readiness workflows land on `main`, verify PR push, review approval/dismissal, `main` advancement, and merge queue events. Then add `release-readiness` as a required check on `main`, selecting GitHub Actions as its source. The event workflow is read-only; the evaluator runs trusted code from `main` and reads candidate files through the GitHub API without executing them. Publishing approval remains controlled separately by the `npm-release` environment settings.
+The event workflow is read-only; the evaluator runs trusted code from `main` and reads candidate files through the GitHub API without executing them.
+
+To roll out the approval changes:
+
+1. Configure `npm-release-rc` to require another Embedded SDK team member's approval and prevent self-approval. Both environments must permit workflows from `main` only; RC source branches are selected through workflow inputs. Update the npm trusted publisher configuration for RC publishing and retirement to match `npm-release-rc`, then verify both workflows' OIDC and approval behavior.
+2. After the readiness workflows land on `main`, verify PR push, review approval/dismissal, `main` advancement, and merge queue events. Add `release-readiness` as a required check on `main`, selecting GitHub Actions as its source.
+3. Only after the check is verified and required, remove the stable publishing approval from `npm-release`. Keep approval required in `npm-release-rc`.
 
 ### Documentation versioning
 

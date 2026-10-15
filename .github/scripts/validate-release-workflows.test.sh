@@ -101,7 +101,6 @@ for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'retire
   read -r workflow job <<< "$workflow_job"
   f="workflows/$workflow"
   require_job_pattern "$f" "$job" '^    runs-on: ubuntu-latest$'
-  require_job_pattern "$f" "$job" '^    environment: npm-release$'
   require_job_pattern "$f" "$job" '^      contents: read$'
   require_job_pattern "$f" "$job" '^      id-token: write$'
   require_job_pattern "$f" "$job" 'npm install --global npm@11.21.0 --ignore-scripts'
@@ -113,6 +112,10 @@ for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'retire
     fail=1
   fi
 done
+
+require_job_pattern workflows/publish.yaml npm-publish '^    environment: npm-release$'
+require_job_pattern workflows/publish-rc.yaml publish '^    environment: npm-release-rc$'
+require_job_pattern workflows/retire-rc.yaml retire '^    environment: npm-release-rc$'
 
 for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish'; do
   read -r workflow job <<< "$workflow_job"
