@@ -1,11 +1,15 @@
 const checkName = 'release-readiness'
 
-async function versionAt(github, repo, ref) {
-  const { data } = await github.rest.repos.getContent({ ...repo, path: 'package.json', ref })
+async function contentAt(github, repo, ref, path) {
+  const { data } = await github.rest.repos.getContent({ ...repo, path, ref })
   if (data.type !== 'file' || data.encoding !== 'base64') {
-    throw new Error(`Cannot read package.json at ${ref}`)
+    throw new Error(`Cannot read ${path} at ${ref}`)
   }
-  const { version } = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'))
+  return Buffer.from(data.content, 'base64').toString('utf8')
+}
+
+async function versionAt(github, repo, ref) {
+  const { version } = JSON.parse(await contentAt(github, repo, ref, 'package.json'))
   if (typeof version !== 'string' || !version.trim()) {
     throw new Error(`Missing package.json version at ${ref}`)
   }
@@ -16,7 +20,68 @@ function result(conclusion, title, summary) {
   return { conclusion, title, summary }
 }
 
-async function evaluatePullRequest(github, repo, pull, mainSha) {
+function stableVersion(version) {
+  if (typeof version !== 'string' || !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(version)) {
+    throw new Error(`Expected a stable release version, received ${version}`)
+  }
+  return version.split('.').map(BigInt)
+}
+
+function allowedVersions(baseVersion, recommendedVersion) {
+  const [major, minor, patch] = stableVersion(baseVersion)
+  const recommended = stableVersion(recommendedVersion)
+  const increments = [
+    [major, minor, patch + 1n],
+    [major, minor + 1n, 0n],
+    [major + 1n, 0n, 0n],
+  ]
+  return increments
+    .filter(increment => {
+      const difference = increment.findIndex((part, index) => part !== recommended[index])
+      return difference === -1 || increment[difference] > recommended[difference]
+    })
+    .map(increment => increment.join('.'))
+}
+
+async function recommendedVersionAt(mainSha, cwd = process.cwd()) {
+  const { execFile } = require('node:child_process')
+  const { promisify } = require('node:util')
+  const execute = promisify(execFile)
+  const options = { cwd, timeout: 120_000, maxBuffer: 10 * 1024 * 1024 }
+  const { stdout: checkedOutSha } = await execute('git', ['rev-parse', 'HEAD'], options)
+  if (checkedOutSha.trim() !== mainSha) {
+    throw new Error('Checked-out main is stale. Run Release Readiness again.')
+  }
+  const { stdout: latestTag } = await execute(
+    'git',
+    ['describe', '--tags', '--match=*', '--abbrev=0'],
+    options,
+  )
+  const plugin = '--plugins.@release-it/conventional-changelog'
+  const { stdout } = await execute(
+    process.execPath,
+    [
+      require('node:path').join(require.resolve('release-it/package.json'), '../bin/release-it.js'),
+      '--release-version',
+      '--dry-run',
+      '--no-git',
+      `${plugin}.commitsOpts.from=${latestTag.trim()}`,
+      `${plugin}.gitRawCommitsOpts.from=${latestTag.trim()}`,
+    ],
+    options,
+  )
+  const version = stdout.trim()
+  stableVersion(version)
+  return version
+}
+
+async function evaluatePullRequest(
+  github,
+  repo,
+  pull,
+  mainSha,
+  recommendVersion = recommendedVersionAt,
+) {
   const headSha = pull.head.sha
   const { data: comparison } = await github.rest.repos.compareCommitsWithBasehead({
     ...repo,
@@ -39,6 +104,25 @@ async function evaluatePullRequest(github, repo, pull, mainSha) {
       'failure',
       'Release branch is behind main',
       'Update the branch with main, refresh the changelog, then request approval of the new commit.',
+    )
+  }
+
+  const recommendedVersion = await recommendVersion(mainSha)
+  const allowed = allowedVersions(baseVersion, recommendedVersion)
+  if (!allowed.includes(headVersion)) {
+    return result(
+      'failure',
+      'Release version does not match release-it',
+      `release-it recommends ${recommendedVersion}. Set package.json to one of: ${allowed.join(', ')}. Received ${headVersion}.`,
+    )
+  }
+  const changelog = await contentAt(github, repo, headSha, 'CHANGELOG.md')
+  const firstEntry = changelog.match(/^##[ \t]+(.+)$/m)?.[1]
+  if (!firstEntry?.startsWith(`[${headVersion}]`)) {
+    return result(
+      'failure',
+      'Changelog version does not match package.json',
+      `The first CHANGELOG.md entry must be ## [${headVersion}].`,
     )
   }
 
@@ -146,7 +230,7 @@ async function report(github, repo, sha, evaluate) {
   return outcome
 }
 
-async function run({ github, context, core }) {
+async function run({ github, context, core, recommendVersion = recommendedVersionAt }) {
   const repo = context.repo
   const mainSha = await mainCommit(github, repo)
   const pulls = await github.paginate(github.rest.pulls.list, {
@@ -156,9 +240,11 @@ async function run({ github, context, core }) {
     per_page: 100,
   })
   const outcomes = new Map()
+  let recommendation
+  const cachedRecommendation = () => (recommendation ??= recommendVersion(mainSha))
   for (const pull of pulls) {
     const outcome = await report(github, repo, pull.head.sha, async () => {
-      const evaluated = await evaluatePullRequest(github, repo, pull, mainSha)
+      const evaluated = await evaluatePullRequest(github, repo, pull, mainSha, cachedRecommendation)
       if (!(await stillCurrent(github, repo, [pull], mainSha))) {
         return result(
           'failure',
@@ -210,4 +296,4 @@ async function run({ github, context, core }) {
   }
 }
 
-module.exports = { evaluatePullRequest, queueMembers, run }
+module.exports = { allowedVersions, evaluatePullRequest, recommendedVersionAt, queueMembers, run }

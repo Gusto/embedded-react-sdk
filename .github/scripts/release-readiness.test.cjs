@@ -1,6 +1,11 @@
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
-const { evaluatePullRequest, queueMembers, run } = require('./release-readiness.cjs')
+const {
+  allowedVersions,
+  evaluatePullRequest,
+  queueMembers,
+  run,
+} = require('./release-readiness.cjs')
 
 const repo = { owner: 'example', repo: 'sdk' }
 const pull = {
@@ -29,6 +34,10 @@ function fixture(options = {}) {
   let refReads = 0
   let queueReads = 0
   const github = {
+    recommendVersion: async () => {
+      if (options.recommendationError) throw new Error('release-it failed')
+      return options.recommendedVersion ?? '1.2.4'
+    },
     rest: {
       git: {
         getRef: async () => ({
@@ -41,13 +50,18 @@ function fixture(options = {}) {
           return { data: { status, merge_base_commit: { sha: 'base' } } }
         },
         getContent: async ({ ref, path }) => {
-          assert.equal(path, 'package.json')
+          assert.ok(['package.json', 'CHANGELOG.md'].includes(path))
           if (options.apiError) throw new Error('API unavailable')
           return {
             data: {
               type: 'file',
               encoding: 'base64',
-              content: Buffer.from(JSON.stringify({ version: versions[ref] })).toString('base64'),
+              content: Buffer.from(
+                path === 'package.json'
+                  ? JSON.stringify({ version: versions[ref] })
+                  : (options.changelog ??
+                      `# Changelog\n\n## [${versions.head}]\n\nRelease notes\n`),
+              ).toString('base64'),
             },
           }
         },
@@ -83,13 +97,16 @@ function fixture(options = {}) {
 
 test('ordinary PRs pass without approval, even when main has advanced', async () => {
   const { github } = fixture({ versions: { base: '1.2.3', head: '1.2.3' }, status: 'diverged' })
-  assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).conclusion, 'success')
+  assert.equal(
+    (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).conclusion,
+    'success',
+  )
 })
 
 for (const status of ['behind', 'diverged']) {
   test(`version-changing PRs fail when ${status} from main, even with approval`, async () => {
     const { github } = fixture({ status, reviews: [review(1, 'APPROVED')] })
-    const outcome = await evaluatePullRequest(github, repo, pull, 'main')
+    const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
     assert.equal(outcome.conclusion, 'failure')
     assert.equal(outcome.title, 'Release branch is behind main')
   })
@@ -98,27 +115,36 @@ for (const status of ['behind', 'diverged']) {
 test('version changes require approval of the current SHA after every push', async () => {
   for (const reviews of [[], [review(1, 'APPROVED', 'old-head')]]) {
     const { github } = fixture({ reviews })
-    const outcome = await evaluatePullRequest(github, repo, pull, 'main')
+    const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
     assert.equal(outcome.conclusion, 'failure')
     assert.equal(outcome.title, 'Latest release commit needs approval')
   }
   const { github } = fixture({
     reviews: [review(1, 'APPROVED', 'old-head'), review(2, 'APPROVED')],
   })
-  assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).conclusion, 'success')
+  assert.equal(
+    (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).conclusion,
+    'success',
+  )
 })
 
 test('comments and pending reviews do not erase an existing approval', async () => {
   const { github } = fixture({
     reviews: [review(3, 'PENDING'), review(2, 'COMMENTED'), review(1, 'APPROVED')],
   })
-  assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).conclusion, 'success')
+  assert.equal(
+    (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).conclusion,
+    'success',
+  )
 })
 
 test('dismissal or a later request for changes supersedes approval', async () => {
   for (const state of ['DISMISSED', 'CHANGES_REQUESTED']) {
     const { github } = fixture({ reviews: [review(1, 'APPROVED'), review(2, state)] })
-    assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).conclusion, 'failure')
+    assert.equal(
+      (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).conclusion,
+      'failure',
+    )
   }
 })
 
@@ -126,7 +152,10 @@ test('another maintainer requesting changes blocks an approved release', async (
   const { github } = fixture({
     reviews: [review(1, 'APPROVED'), review(2, 'CHANGES_REQUESTED', 'old-head', 'other')],
   })
-  assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).title, 'Changes requested')
+  assert.equal(
+    (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).title,
+    'Changes requested',
+  )
 })
 
 test('self-approval, bots, and reviewers without write access cannot approve releases', async () => {
@@ -137,18 +166,29 @@ test('self-approval, bots, and reviewers without write access cannot approve rel
     { reviews: [review(1, 'APPROVED')], permission: 'triage' },
   ]) {
     const { github } = fixture(options)
-    assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).conclusion, 'failure')
+    assert.equal(
+      (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).conclusion,
+      'failure',
+    )
   }
 })
 
 test('any version change triggers the check, including a downgrade', async () => {
   const { github } = fixture({ versions: { base: '1.2.3', head: '1.2.2' } })
-  assert.equal((await evaluatePullRequest(github, repo, pull, 'main')).conclusion, 'failure')
+  assert.equal(
+    (await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)).conclusion,
+    'failure',
+  )
 })
 
 async function execute(options) {
   const state = fixture(options)
-  await run({ github: state.github, context: { repo }, core: { info() {} } })
+  await run({
+    github: state.github,
+    context: { repo },
+    core: { info() {} },
+    recommendVersion: state.github.recommendVersion,
+  })
   return state.reports
 }
 
@@ -228,4 +268,87 @@ test('each merge group includes preceding queued PRs, but not subsequent ones', 
     entry,
     { ...second, headCommit: entry.headCommit },
   ])
+})
+
+test('release versions allow only the recommended bump or the next higher version levels', () => {
+  assert.deepEqual(allowedVersions('1.2.3', '1.2.4'), ['1.2.4', '1.3.0', '2.0.0'])
+  assert.deepEqual(allowedVersions('1.2.3', '1.3.0'), ['1.3.0', '2.0.0'])
+  assert.deepEqual(allowedVersions('1.2.3', '2.0.0'), ['2.0.0'])
+  assert.deepEqual(allowedVersions('0.56.7', '0.57.0'), ['0.57.0', '1.0.0'])
+  assert.deepEqual(allowedVersions('1.2.9', '1.2.10'), ['1.2.10', '1.3.0', '2.0.0'])
+  for (const version of ['1.2.4-rc.1', '1.2.4+build', '01.2.4', '', undefined]) {
+    assert.throws(() => allowedVersions('1.2.3', version), /stable release version/)
+  }
+})
+
+test('approved release PRs must use a permitted release-it version', async () => {
+  for (const head of ['1.2.4', '1.3.0', '2.0.0']) {
+    const { github } = fixture({
+      versions: { base: '1.2.3', head },
+      reviews: [review(1, 'APPROVED')],
+    })
+    const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
+    assert.equal(outcome.conclusion, 'success', head)
+  }
+  for (const head of [
+    '1.2.2',
+    '1.2.5',
+    '1.2.6',
+    '1.3.1',
+    '1.4.0',
+    '2.0.1',
+    '3.0.0',
+    '1.2.4-rc.1',
+  ]) {
+    const { github } = fixture({
+      versions: { base: '1.2.3', head },
+      reviews: [review(1, 'APPROVED')],
+    })
+    const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
+    assert.equal(outcome.title, 'Release version does not match release-it', head)
+  }
+  const { github } = fixture({ recommendedVersion: '1.3.0', reviews: [review(1, 'APPROVED')] })
+  const outcome = await evaluatePullRequest(github, repo, pull, 'main', github.recommendVersion)
+  assert.equal(outcome.title, 'Release version does not match release-it')
+})
+
+test('the first changelog entry must match the package version', async () => {
+  for (const changelog of [
+    '# Changelog\n\n## [1.2.3]\nOld notes\n\n## [1.2.4]\nRelease notes',
+    '# Changelog\n\n## [Unreleased]\nNotes\n\n## [1.2.4]\nRelease notes',
+    '# Changelog\n\n## [1.2.40]\nNotes',
+    '# Changelog\n\nNo entries',
+  ]) {
+    const reports = await execute({ changelog, reviews: [review(1, 'APPROVED')] })
+    assert.equal(reports[0].conclusion, 'failure')
+    assert.equal(reports[0].output.title, 'Changelog version does not match package.json')
+  }
+  const reports = await execute({
+    changelog:
+      '# Changelog\r\n\r\n## [1.2.4](https://example.com/compare) (2026-10-15)\r\n\r\nNotes',
+    reviews: [review(1, 'APPROVED')],
+  })
+  assert.equal(reports[0].conclusion, 'success')
+})
+
+test('release-it failures fail closed for PRs and merge groups', async () => {
+  const reports = await execute({
+    recommendationError: true,
+    entries: [entry],
+    reviews: [review(1, 'APPROVED')],
+  })
+  assert.deepEqual(
+    reports.map(check => check.conclusion),
+    ['failure', 'failure'],
+  )
+  assert.equal(reports[0].output.title, 'Unable to verify release readiness')
+})
+
+test('ordinary PRs do not need release-it or changelog validation', async () => {
+  const reports = await execute({
+    versions: { base: '1.2.3', head: '1.2.3' },
+    recommendationError: true,
+    changelog: '',
+  })
+  assert.equal(reports[0].conclusion, 'success')
 })

@@ -595,6 +595,9 @@ jobs:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
+      - name: Test release-it version calculation
+        run: node --test .github/scripts/release-version.test.cjs
+
       - name: Test with coverage
         run: npm run test:ci
 
