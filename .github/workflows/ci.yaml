@@ -61,6 +61,8 @@ jobs:
         run: bash -euo pipefail .github/scripts/validate-release-workflows.test.sh
       - name: retire-rc
         run: bash -euo pipefail .github/scripts/retire-rc.test.sh
+      - name: publish-helpers
+        run: bash -euo pipefail .github/scripts/publish-helpers.test.sh
       - name: github-release
         run: bash -euo pipefail .github/scripts/github-release.test.sh
 

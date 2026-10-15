@@ -5,6 +5,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 fail=0
 registry_workflows=(workflows/publish.yaml workflows/publish-rc.yaml workflows/retire-rc.yaml)
+registry_scripts=(scripts/prepare-rc.sh scripts/publish-rc.sh scripts/retire-rc.sh scripts/validate-release-input.sh)
 input_consuming_workflows=("${registry_workflows[@]}" workflows/build-sdk.yaml)
 dispatch_workflows=(workflows/publish-rc.yaml workflows/retire-rc.yaml)
 
@@ -82,7 +83,7 @@ reject_job_pattern() {
   fi
 }
 
-for f in "${registry_workflows[@]}"; do
+for f in "${registry_workflows[@]}" "${registry_scripts[@]}"; do
   if grep -v '^[[:space:]]*#' "$f" | grep -qE 'NPM_TOKEN|NODE_AUTH_TOKEN|npm (unpublish|deprecate)|github-release.sh delete'; then
     echo "FAIL: $f contains reusable npm authentication or unsupported registry operations"
     fail=1
@@ -115,7 +116,6 @@ done
 
 for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish'; do
   read -r workflow job <<< "$workflow_job"
-  require_job_pattern "workflows/$workflow" "$job" 'npm publish .*--ignore-scripts'
   require_job_pattern "workflows/$workflow" "$job" 'uses: actions/download-artifact@'
 done
 
@@ -125,10 +125,27 @@ for workflow_job in 'publish-rc.yaml publish' 'retire-rc.yaml retire'; do
   require_job_pattern "workflows/$workflow" "$job" '^      cancel-in-progress: false$'
 done
 
+# Scripts invoked by the credentialed jobs are part of the same permission boundary.
+for f in "${registry_scripts[@]}"; do
+  if grep -v '^[[:space:]]*#' "$f" | grep -qE '(^|[;&|])[[:space:]]*(npm (ci|install|exec)|npx |git push)|\$\{\{'; then
+    echo "FAIL: $f executes dependencies, writes GitHub state or embeds Actions expressions"
+    fail=1
+  fi
+done
+require_job_pattern workflows/publish.yaml npm-publish 'npm publish .*--ignore-scripts'
+require_job_pattern workflows/publish-rc.yaml publish 'bash [.]release-workflow/[.]github/scripts/prepare-rc[.]sh'
+require_job_pattern workflows/publish-rc.yaml publish 'bash [.]release-workflow/[.]github/scripts/publish-rc[.]sh'
+require_job_pattern workflows/publish-rc.yaml publish '^          path: [.]release-workflow$'
+require_job_pattern workflows/publish-rc.yaml publish '^          ref: \$\{\{ github.sha \}\}$'
+require_job_pattern workflows/publish-rc.yaml publish '^          persist-credentials: false$'
+require_job_pattern workflows/publish.yaml release 'release-changelog[.]sh'
+require_job_pattern workflows/publish.yaml release 'release-summary[.]sh'
+require_job_pattern workflows/publish.yaml release 'release-notification[.]sh'
+
 require_job_pattern workflows/retire-rc.yaml retire 'retire-rc[.]sh'
 require_job_pattern workflows/publish.yaml npm-publish '^    needs: build$'
 require_job_pattern workflows/publish.yaml tag '^    needs: npm-publish$'
-require_job_pattern workflows/publish.yaml tag 'git push origin'
+require_job_pattern workflows/publish.yaml tag 'tag-release[.]sh'
 require_job_pattern workflows/publish.yaml release '^    needs: \[npm-publish, tag\]$'
 require_job_pattern workflows/publish.yaml release 'github-release[.]sh'
 

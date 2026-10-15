@@ -412,6 +412,16 @@ Stable versions should normally remain available. If one needs to be retired, as
 
 If a version accidentally contains secrets or malicious content, ask an npm maintainer to fully unpublish that version, subject to [npm's unpublish policy](https://docs.npmjs.com/policies/unpublish). RC retirement leaves the package downloadable and is insufficient for this case. Rotate any exposed credentials and coordinate GitHub Release cleanup.
 
+### Testing release workflows
+
+Publishing helpers live in `.github/scripts/`; each helper documents its invocation. Run the publishing helper tests locally with:
+
+```bash
+bash .github/scripts/publish-helpers.test.sh
+```
+
+These tests use mocked npm and HTTP responses plus local Git repositories, without publishing or sending notifications. CI also runs input validation, workflow guards, GitHub Release creation tests, and RC retirement tests. Live workflow runs are still needed to verify npm trust, environment approvals, and runner configuration.
+
 ### Documentation versioning
 
 The published docs site uses Docusaurus versioning so partners on older SDK versions can read the docs that match their installed version. **All versioned content lives in `Gusto/embedded-sdk-docs`, not this repo.** This repo only ever carries the live (current) docs in `docs/`; versioned snapshots (`versioned_docs/version-X.Y/`, `versions.json`, `versioned_sidebars/`) accumulate in the downstream repo as releases land.

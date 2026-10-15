@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Create a GitHub Release unless it exists; requires GH_TOKEN and GH_REPO.
+# Usage: bash .github/scripts/github-release.sh <version> <notes-file>
 set -euo pipefail
 
 version="${1:?usage: github-release.sh <version> <notes-file>}"

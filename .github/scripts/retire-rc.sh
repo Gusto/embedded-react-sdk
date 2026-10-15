@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Remove the npm rc tag only if it matches the expected version.
+# Usage: bash .github/scripts/retire-rc.sh <expected-rc-version> <dry-run:true|false>
 set -euo pipefail
 
 expected_version="${1:?expected RC version required}"

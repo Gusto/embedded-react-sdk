@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Unit test for github-release.sh
 set -euo pipefail
 
 script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
