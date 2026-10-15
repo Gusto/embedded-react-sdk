@@ -599,6 +599,70 @@ describe('PayrollOverview calculatedAt guard', () => {
     expect(screen.getAllByText(/Sep 30, 2026/i).length).toBeGreaterThan(0)
   })
 
+  const processedWithoutCalculation: Array<[string, Partial<PayrollShow>]> = [
+    ['wage correction', { offCycleReason: OffCycleReasonType.WageCorrection }],
+    ['benefit reversal', { offCycleReason: OffCycleReasonType.BenefitReversal }],
+    ['reversal', { offCycleReason: OffCycleReasonType.Reversal }],
+    [
+      'disability insurance distribution',
+      { offCycleReason: OffCycleReasonType.DisabilityInsuranceDistribution },
+    ],
+    ['off-cycle with an unrecognized reason', { offCycleReason: null }],
+    ['external', { offCycle: false, offCycleReason: null, external: true }],
+  ]
+
+  it('renders a submitted payroll that is not yet marked processed despite a null calculatedAt', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      calculatedAt: null,
+      processingRequest: { status: 'submit_success', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /Payroll summary/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('throws to the error boundary on an unprocessed tax reconciliation payroll with a null calculatedAt', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      calculatedAt: null,
+      offCycleReason: OffCycleReasonType.TaxReconciliation,
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+  })
+
+  it.each(processedWithoutCalculation)(
+    'renders a processed %s payroll despite a null calculatedAt',
+    async (_label, overrides) => {
+      mockPayrollData = {
+        ...basePayrollData,
+        processed: true,
+        calculatedAt: null,
+        ...overrides,
+      }
+
+      renderWithProviders(
+        <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+      )
+
+      expect(
+        await screen.findByRole('heading', { level: 1, name: /Payroll summary/i }),
+      ).toBeInTheDocument()
+    },
+  )
+
   it('throws to the error boundary instead of loading forever when the payroll query itself errors', async () => {
     mockIsError = true
     mockError = new Error('network error')

@@ -686,21 +686,6 @@ export const isDismissalPayroll = (offCycleReason?: string | null): boolean =>
   offCycleReason === OffCycleReasonType.DismissedEmployee
 
 /**
- * Returns whether an off-cycle reason indicates a tax reconciliation payroll.
- *
- * @remarks
- * Tax reconciliation payrolls are created by Gusto rather than run by the partner. They come
- * back processed with no pay period and no `calculatedAt`, so callers use this to grant them a
- * targeted exception from checks that otherwise assume every payroll has both.
- *
- * @param offCycleReason - The payroll's off-cycle reason string.
- * @returns `true` when the reason matches the tax reconciliation reason.
- * @internal
- */
-export const isTaxReconciliationPayroll = (offCycleReason?: string | null): boolean =>
-  offCycleReason === OffCycleReasonType.TaxReconciliation
-
-/**
  * Returns a formatted pay-period range, falling back to the formatted check date when the
  * payroll has no pay period.
  *
