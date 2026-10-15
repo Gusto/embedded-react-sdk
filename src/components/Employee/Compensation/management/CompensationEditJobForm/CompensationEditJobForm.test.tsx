@@ -178,7 +178,7 @@ describe('management/CompensationEditJobForm', () => {
     )
 
     const updateJobResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 500 }),
+      () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
     )
     const createCompensationResolver = vi.fn<HttpResponseResolver>(() =>
       HttpResponse.json(

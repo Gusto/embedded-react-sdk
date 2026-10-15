@@ -164,7 +164,7 @@ describe('ManagementContractorList — Active tab', () => {
     mockList([{ ...baseContractor }])
 
     const dismissResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 200 }),
+      () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
     )
     server.use(handleScheduleContractorDismissal(dismissResolver))
 
@@ -328,7 +328,7 @@ describe('ManagementContractorList — Dismissed tab', () => {
     ])
 
     const rehireResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 200 }),
+      () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
     )
     server.use(handleScheduleContractorRehire(rehireResolver))
 

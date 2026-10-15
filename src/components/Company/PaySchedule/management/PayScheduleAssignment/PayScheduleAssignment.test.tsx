@@ -265,7 +265,7 @@ describe('PayScheduleAssignment', () => {
       })
       assignResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
         assignBody = await request.json()
-        return new HttpResponse(null, { status: 200 })
+        return new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } })
       })
 
       server.use(

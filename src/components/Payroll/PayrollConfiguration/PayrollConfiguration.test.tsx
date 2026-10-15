@@ -437,7 +437,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: new Date().toISOString(),
             processing_request: { status: 'calculate_success', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -472,7 +472,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: new Date().toISOString(),
             processing_request: null,
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -507,7 +507,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'processing_failed', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -542,7 +542,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -586,7 +586,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -638,7 +638,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -706,7 +706,7 @@ describe('PayrollConfiguration', () => {
           // Fail exactly one read, and only once polling is underway.
           if (hasCalculated && !hasFailedOnce) {
             hasFailedOnce = true
-            return new HttpResponse(null, { status: 500 })
+            return new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } })
           }
           return HttpResponse.json(currentPayrollData)
         }),
@@ -717,7 +717,7 @@ describe('PayrollConfiguration', () => {
             processing_request: { status: 'calculate_success', errors: [] },
           }
           hasCalculated = true
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -751,7 +751,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculate_success', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -785,7 +785,7 @@ describe('PayrollConfiguration', () => {
 
       server.use(
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -853,7 +853,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -889,7 +889,7 @@ describe('PayrollConfiguration', () => {
 
       server.use(
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -932,12 +932,12 @@ describe('PayrollConfiguration', () => {
           // First two reads match baseline exactly, so the freshness check reports 'polling' not
           // 'calculated'; the third 401s and must rescue that snapshot instead of a false failure.
           if (showCallCount > 2) {
-            return new HttpResponse(null, { status: 401 })
+            return new HttpResponse(null, { status: 401, headers: { 'content-length': '0' } })
           }
           return HttpResponse.json(currentPayrollData)
         }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -982,7 +982,7 @@ describe('PayrollConfiguration', () => {
           prepareResolver,
         ),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1012,7 +1012,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: new Date().toISOString(),
             processing_request: { status: 'calculate_success', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1044,7 +1044,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1076,7 +1076,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
         // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
         // shadow its handler.
@@ -1090,7 +1090,7 @@ describe('PayrollConfiguration', () => {
           if (showCallCount <= 2) {
             return HttpResponse.json(currentPayrollData)
           }
-          return new HttpResponse(null, { status: 401 })
+          return new HttpResponse(null, { status: 401, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1162,7 +1162,7 @@ describe('PayrollConfiguration', () => {
             processingRequest: { status: 'calculating', errors: [] },
             employeeCompensations: [createCompensation('emp-1')],
           })
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
         // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
         // shadow its handler.
@@ -1171,7 +1171,7 @@ describe('PayrollConfiguration', () => {
           if (showCallCount <= 2) {
             return HttpResponse.json(currentPayrollData)
           }
-          return new HttpResponse(null, { status: 401 })
+          return new HttpResponse(null, { status: 401, headers: { 'content-length': '0' } })
         }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () =>
           HttpResponse.json(currentPayrollData),
@@ -1261,7 +1261,7 @@ describe('PayrollConfiguration', () => {
           if (params.employee_id === 'emp-excluded') {
             return HttpResponse.json(excludedEmployee)
           }
-          return new HttpResponse(null, { status: 404 })
+          return new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } })
         }),
 
         http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {

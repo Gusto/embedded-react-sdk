@@ -25,7 +25,10 @@ export function handleGetContractorPaymentGroup(resolver: HttpResponseResolver) 
 }
 
 export function handleCancelContractorPaymentGroup(resolver: HttpResponseResolver) {
-  return http.delete(`${API_BASE_URL}/v1/contractor_payments/:contractor_payment_id`, resolver)
+  return http.delete(
+    `${API_BASE_URL}/v1/companies/:company_id/contractor_payments/:contractor_payment_id`,
+    resolver,
+  )
 }
 
 const mockPaymentGroupWithBlockers = {
