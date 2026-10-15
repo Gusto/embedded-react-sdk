@@ -65,6 +65,12 @@ jobs:
         run: bash -euo pipefail .github/scripts/publish-helpers.test.sh
       - name: github-release
         run: bash -euo pipefail .github/scripts/github-release.test.sh
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          package-manager-cache: false
+      - name: release-readiness
+        run: node --test .github/scripts/release-readiness.test.cjs
 
   # derive-models: Generate the API models barrel (src/models/external.ts) exactly once.
   # Both `build` (→ dist → API report) and `derive-check-src` (→ TypeDoc) consume this single

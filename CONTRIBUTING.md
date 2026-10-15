@@ -396,6 +396,10 @@ Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/action
 
 ### Stable releases
 
+PRs that change the root `package.json` version are checked by `release-readiness`, regardless of branch name or PR title. Update the branch with the latest `main`, refresh the changelog, then get approval from another maintainer on the final commit. Any subsequent commit, including a merge from `main`, requires fresh approval. PRs without a version change pass this check without additional review requirements.
+
+The check updates independently of the build when a PR or review changes, or when `main` advances. Merge queue checks use approvals of the original PR commits. To refresh the result manually, run [Release Readiness](https://github.com/Gusto/embedded-react-sdk/actions/workflows/release-readiness.yaml) from `main`.
+
 After a release PR merges to `main` with a `chore: release` commit and CI passes, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) starts automatically. Approve npm publishing through `npm-release`; the workflow publishes to npm, creates a Git tag and GitHub Release with changelog notes, and sends the release notification.
 
 The release owner arranges approval by another member of the Embedded SDK team through the workflow run's **Review deployments** prompt. Publishing waits for this approval, enforced by the `npm-release` environment settings. Before approving, check the run's source commit, release diff and changelog, and successful CI.
@@ -423,6 +427,14 @@ bash .github/scripts/publish-helpers.test.sh
 ```
 
 These tests exercise inline publishing commands and helpers using mocked npm and HTTP responses plus local Git repositories, without publishing or sending notifications. CI also runs input validation, workflow guards, GitHub Release creation tests, and RC retirement tests. Live workflow runs are still needed to verify npm trust, environment approvals, and runner configuration.
+
+Run release readiness tests without installing dependencies:
+
+```bash
+node --test .github/scripts/release-readiness.test.cjs
+```
+
+After the readiness workflows land on `main`, verify PR push, review approval/dismissal, `main` advancement, and merge queue events. Then add `release-readiness` as a required check on `main`, selecting GitHub Actions as its source. The event workflow is read-only; the evaluator runs trusted code from `main` and reads candidate files through the GitHub API without executing them. Publishing approval remains controlled separately by the `npm-release` environment settings.
 
 ### Documentation versioning
 
