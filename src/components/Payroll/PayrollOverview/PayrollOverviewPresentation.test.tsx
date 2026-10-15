@@ -679,6 +679,8 @@ describe('PayrollOverviewPresentation', () => {
             hourlyCompensations: [],
             paidTimeOff: [],
             employeeUuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
           },
         ],
       }
@@ -717,6 +719,8 @@ describe('PayrollOverviewPresentation', () => {
             hourlyCompensations: [],
             paidTimeOff: [],
             employeeUuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
           },
         ],
       }
@@ -776,6 +780,8 @@ describe('PayrollOverviewPresentation', () => {
             hourlyCompensations: [],
             paidTimeOff: [],
             employeeUuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
           },
         ],
       }
