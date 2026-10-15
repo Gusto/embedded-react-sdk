@@ -10,19 +10,22 @@ export GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false
 export GIT_CONFIG_KEY_1=tag.gpgsign GIT_CONFIG_VALUE_1=false
 export PATH="$fixture/bin:$PATH"
 
-# Extract inline publish commands so tests exercise the workflow itself.
-node --input-type=module - "$script_directory/../workflows" "$fixture" <<'NODE'
-import { readFileSync, writeFileSync } from 'node:fs'
-import { parse } from 'yaml'
-const [workflows, fixture] = process.argv.slice(2)
-for (const [workflow, job, name, file] of [
-  ['publish.yaml', 'npm-publish', 'Publish to NPM', 'publish-stable.sh'],
-  ['publish-rc.yaml', 'publish', 'Publish RC version', 'publish-rc.sh'],
-]) {
-  const steps = parse(readFileSync(`${workflows}/${workflow}`, 'utf8')).jobs[job].steps
-  writeFileSync(`${fixture}/${file}`, steps.find(step => step.name === name).run)
+# Extract the named run blocks without installing dependencies in validate-ci-helpers.
+extract_publish_step() {
+  awk -v step="$2" '
+    /^      - / { in_step = ($0 == "      - name: " step); in_run = 0 }
+    in_step && /^        run: \|$/ { in_run = 1; next }
+    in_run && /^          / { sub(/^          /, ""); print; next }
+    in_run && /^[[:space:]]*$/ { print; next }
+    in_run { exit }
+  ' "$script_directory/../workflows/$1" > "$fixture/$3"
+  if [ ! -s "$fixture/$3" ]; then
+    echo "FAIL: could not extract $2 from $1" >&2
+    exit 1
+  fi
 }
-NODE
+extract_publish_step publish.yaml 'Publish to NPM' publish-stable.sh
+extract_publish_step publish-rc.yaml 'Publish RC version' publish-rc.sh
 
 export NPM_CALLS="$fixture/npm-calls"
 export GITHUB_OUTPUT="$fixture/output"
