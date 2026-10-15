@@ -24,6 +24,21 @@ interface TokenCache {
 /** Refresh this far before actual expiry so an in-flight request never races expiry. */
 const TOKEN_EXPIRY_BUFFER_MS = 5 * 60 * 1000
 
+/**
+ * Upstream response headers not copied onto the proxied response: hop-by-hop headers, and
+ * body-framing headers that no longer match once `fetch` has decoded and buffered the body.
+ * Everything else (notably the `x-total-pages` / `x-total-count` pagination headers the SDK
+ * reads) passes through, matching what the gws-flows proxy forwards.
+ */
+const UNFORWARDED_RESPONSE_HEADERS: ReadonlySet<string> = new Set([
+  'connection',
+  'keep-alive',
+  'transfer-encoding',
+  'content-encoding',
+  'content-length',
+  'set-cookie',
+])
+
 // Also caches the access token + expiry, not just the refresh token: Vite restarts on
 // every edit to this file or vite.config.ts, and without this, each restart would hit
 // the refresh grant unconditionally even when the previous access token is still valid
@@ -161,7 +176,10 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
 
         const text = await upstream.text()
         res.statusCode = upstream.status
-        res.setHeader('Content-Type', upstream.headers.get('content-type') ?? 'application/json')
+        upstream.headers.forEach((value, name) => {
+          if (!UNFORWARDED_RESPONSE_HEADERS.has(name)) res.setHeader(name, value)
+        })
+        if (!upstream.headers.has('content-type')) res.setHeader('Content-Type', 'application/json')
         res.end(text)
       } catch (err) {
         res.statusCode = 502
