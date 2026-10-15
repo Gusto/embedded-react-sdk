@@ -191,4 +191,10 @@ jobs:
       - name: Publish RC version
         env:
           RC_VERSION: ${{ steps.rc-version.outputs.version }}
-        run: bash .release-workflow/.github/scripts/publish-rc.sh "${INPUT_DRY_RUN:-false}"
+        run: |
+          if [ "$INPUT_DRY_RUN" = true ]; then
+            npm publish --access public --tag rc --ignore-scripts --dry-run
+          else
+            npm publish --access public --tag rc --ignore-scripts
+          fi
+          printf 'Install with: npm install @gusto/embedded-react-sdk@%s\n' "$RC_VERSION"

@@ -49,12 +49,19 @@ jobs:
           path: dist
 
       - name: Publish to NPM
-        run: npm publish --access public --ignore-scripts
+        run: |
+          version=$(jq -er '.version' package.json)
+          versions=$(npm view '@gusto/embedded-react-sdk' versions --json)
+          jq -e 'type == "array" and all(.[]; type == "string")' <<< "$versions" >/dev/null
+          if jq -e --arg version "$version" 'index($version) != null' <<< "$versions" >/dev/null; then
+            echo "$version is already on npm, skipping publish."
+          else
+            npm publish --access public --ignore-scripts
+          fi
 
-  tag:
+  release:
     needs: npm-publish
-    # Requires Gusto's allowlisted runner IPs to push the release tag;
-    # GitHub-hosted runner IPs are blocked by the org IP allowlist.
+    # Tag pushes and GitHub Release API writes require Gusto's allowlisted runner IPs.
     runs-on:
       group: gusto-ubuntu-default
     permissions:
@@ -70,23 +77,6 @@ jobs:
 
       - name: Tag release
         run: bash .github/scripts/tag-release.sh
-
-  release:
-    needs: [npm-publish, tag]
-    # Creating the GitHub Release writes to the repo through the API,
-    # which also requires Gusto's allowlisted runner IPs.
-    runs-on:
-      group: gusto-ubuntu-default
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
 
       - name: Extract changelog for current version
         id: changelog

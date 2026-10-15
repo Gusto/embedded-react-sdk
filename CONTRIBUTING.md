@@ -398,11 +398,13 @@ Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/action
 
 After a release PR merges to `main` with a `chore: release` commit and CI passes, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) starts automatically. Approve npm publishing through `npm-release`; the workflow publishes to npm, creates a Git tag and GitHub Release with changelog notes, and sends the release notification.
 
+The release owner arranges approval by another member of the Embedded SDK team through the workflow run's **Review deployments** prompt. Publishing waits for this approval, enforced by the `npm-release` environment settings. Before approving, check the run's source commit, release diff and changelog, and successful CI.
+
 ### One-off builds
 
 Use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) for a one-off build from a branch or commit. Run the workflow from `main` and choose the source using its inputs. It publishes under `rc`, leaving `latest` unchanged, with no Git tag or GitHub Release.
 
-When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag.
+When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag. Both RC publishing and retirement require the same approval by another member of the Embedded SDK team through **Review deployments**, enforced by the `npm-release` environment settings.
 
 ### Retiring a stable version
 
@@ -420,7 +422,7 @@ Publishing helpers live in `.github/scripts/`; each helper documents its invocat
 bash .github/scripts/publish-helpers.test.sh
 ```
 
-These tests use mocked npm and HTTP responses plus local Git repositories, without publishing or sending notifications. CI also runs input validation, workflow guards, GitHub Release creation tests, and RC retirement tests. Live workflow runs are still needed to verify npm trust, environment approvals, and runner configuration.
+These tests exercise inline publishing commands and helpers using mocked npm and HTTP responses plus local Git repositories, without publishing or sending notifications. CI also runs input validation, workflow guards, GitHub Release creation tests, and RC retirement tests. Live workflow runs are still needed to verify npm trust, environment approvals, and runner configuration.
 
 ### Documentation versioning
 

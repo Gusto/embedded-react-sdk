@@ -9,6 +9,21 @@ export GIT_CONFIG_COUNT=2
 export GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false
 export GIT_CONFIG_KEY_1=tag.gpgsign GIT_CONFIG_VALUE_1=false
 export PATH="$fixture/bin:$PATH"
+
+# Extract inline publish commands so tests exercise the workflow itself.
+node --input-type=module - "$script_directory/../workflows" "$fixture" <<'NODE'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { parse } from 'yaml'
+const [workflows, fixture] = process.argv.slice(2)
+for (const [workflow, job, name, file] of [
+  ['publish.yaml', 'npm-publish', 'Publish to NPM', 'publish-stable.sh'],
+  ['publish-rc.yaml', 'publish', 'Publish RC version', 'publish-rc.sh'],
+]) {
+  const steps = parse(readFileSync(`${workflows}/${workflow}`, 'utf8')).jobs[job].steps
+  writeFileSync(`${fixture}/${file}`, steps.find(step => step.name === name).run)
+}
+NODE
+
 export NPM_CALLS="$fixture/npm-calls"
 export GITHUB_OUTPUT="$fixture/output"
 cd "$fixture/source"
@@ -40,6 +55,7 @@ assert_no_version_change() {
   [ ! -s "$GITHUB_OUTPUT" ]
 }
 
+# RC preparation: version selection, input limits, and registry failures.
 export REGISTRY_VERSIONS='["1.2.2", "1.2.3-rc.1", "1.2.3-rc.2", "1.2.3-rc.4"]'
 run_prepare 1
 grep -Fx 'version=1.2.3-rc.3' "$GITHUB_OUTPUT"
@@ -81,24 +97,46 @@ if run_prepare 1; then exit 1; fi
 assert_no_version_change
 printf '{"version":"1.2.3"}\n' > package.json
 
-export RC_VERSION=1.2.3-rc.1
-for dry_run in true false; do
+# Stable publishing: new versions, safe reruns, and failure handling.
+run_publish() {
   : > "$NPM_CALLS"
-  bash "$script_directory/publish-rc.sh" "$dry_run" > "$fixture/log"
+  bash -euo pipefail "$fixture/publish-$1.sh" > "$fixture/log" 2>&1
+}
+
+export REGISTRY_VERSIONS='["1.2.2"]'
+run_publish stable
+grep -Fx 'publish --access public --ignore-scripts' "$NPM_CALLS"
+export REGISTRY_VERSIONS='["1.2.2", "1.2.3"]'
+run_publish stable
+if grep -q '^publish ' "$NPM_CALLS"; then exit 1; fi
+for registry_versions in '' 'not json' 'null' '{}' '[null]'; do
+  export REGISTRY_VERSIONS="$registry_versions"
+  if run_publish stable; then exit 1; fi
+  if grep -q '^publish ' "$NPM_CALLS"; then exit 1; fi
+done
+export REGISTRY_VERSIONS='["1.2.2"]' READ_STATUS=1
+if run_publish stable; then exit 1; fi
+if grep -q '^publish ' "$NPM_CALLS"; then exit 1; fi
+unset READ_STATUS
+export PUBLISH_STATUS=1
+if run_publish stable; then exit 1; fi
+unset PUBLISH_STATUS
+
+# RC publishing: dry runs and publish failures.
+export RC_VERSION=1.2.3-rc.1
+for INPUT_DRY_RUN in true false; do
+  export INPUT_DRY_RUN
+  run_publish rc
   expected='publish --access public --tag rc --ignore-scripts'
-  if [ "$dry_run" = true ]; then expected="$expected --dry-run"; fi
+  if [ "$INPUT_DRY_RUN" = true ]; then expected="$expected --dry-run"; fi
   [ "$(cat "$NPM_CALLS")" = "$expected" ]
 done
 export PUBLISH_STATUS=1
-if bash "$script_directory/publish-rc.sh" false > "$fixture/log" 2>&1; then exit 1; fi
-if grep -q 'Published RC version' "$fixture/log"; then exit 1; fi
+if run_publish rc; then exit 1; fi
+if grep -q 'Install with:' "$fixture/log"; then exit 1; fi
 unset PUBLISH_STATUS
-: > "$NPM_CALLS"
-if bash "$script_directory/publish-rc.sh" invalid > "$fixture/log" 2>&1; then exit 1; fi
-export RC_VERSION=latest
-if bash "$script_directory/publish-rc.sh" false > "$fixture/log" 2>&1; then exit 1; fi
-[ ! -s "$NPM_CALLS" ]
 
+# Changelog extraction: exact version boundaries and missing notes.
 cat > CHANGELOG.md <<'CHANGELOG'
 # Changelog
 ## [1.2.30]
@@ -125,6 +163,7 @@ for changelog in '## [1.2.30]' '## [1.2.3]'; do
   [ ! -s "$GITHUB_OUTPUT" ]
 done
 
+# Release summaries: request payloads, fallback text, and API failures.
 export CURL_PAYLOAD="$fixture/payload"
 cat > "$fixture/bin/curl" <<'MOCK'
 #!/usr/bin/env bash
@@ -152,6 +191,8 @@ if bash "$script_directory/release-summary.sh" > "$fixture/log" 2>&1; then exit 
 export CURL_RESPONSE='{}' CURL_STATUS=22
 if bash "$script_directory/release-summary.sh" > "$fixture/log" 2>&1; then exit 1; fi
 unset CURL_STATUS
+
+# Slack notifications: payloads, fallback text, and API failures.
 export SUMMARY=$'- Summary with "quotes"\n- Another change' CURL_RESPONSE='{"ok":true}'
 bash "$script_directory/release-notification.sh"
 jq -e --arg summary "$SUMMARY" '.channel == "C04JMFQ001K" and (.text | contains($summary)) and (.text | contains("releases/tag/v1.2.3")) and .unfurl_links == false' "$CURL_PAYLOAD" >/dev/null

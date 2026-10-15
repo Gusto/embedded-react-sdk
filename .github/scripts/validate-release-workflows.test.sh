@@ -5,7 +5,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 fail=0
 registry_workflows=(workflows/publish.yaml workflows/publish-rc.yaml workflows/retire-rc.yaml)
-registry_scripts=(scripts/prepare-rc.sh scripts/publish-rc.sh scripts/retire-rc.sh scripts/validate-release-input.sh)
+registry_scripts=(scripts/prepare-rc.sh scripts/retire-rc.sh scripts/validate-release-input.sh)
 input_consuming_workflows=("${registry_workflows[@]}" workflows/build-sdk.yaml)
 dispatch_workflows=(workflows/publish-rc.yaml workflows/retire-rc.yaml)
 
@@ -134,7 +134,7 @@ for f in "${registry_scripts[@]}"; do
 done
 require_job_pattern workflows/publish.yaml npm-publish 'npm publish .*--ignore-scripts'
 require_job_pattern workflows/publish-rc.yaml publish 'bash [.]release-workflow/[.]github/scripts/prepare-rc[.]sh'
-require_job_pattern workflows/publish-rc.yaml publish 'bash [.]release-workflow/[.]github/scripts/publish-rc[.]sh'
+require_job_pattern workflows/publish-rc.yaml publish 'npm publish .*--tag rc --ignore-scripts'
 require_job_pattern workflows/publish-rc.yaml publish '^          path: [.]release-workflow$'
 require_job_pattern workflows/publish-rc.yaml publish '^          ref: \$\{\{ github.sha \}\}$'
 require_job_pattern workflows/publish-rc.yaml publish '^          persist-credentials: false$'
@@ -144,17 +144,13 @@ require_job_pattern workflows/publish.yaml release 'release-notification[.]sh'
 
 require_job_pattern workflows/retire-rc.yaml retire 'retire-rc[.]sh'
 require_job_pattern workflows/publish.yaml npm-publish '^    needs: build$'
-require_job_pattern workflows/publish.yaml tag '^    needs: npm-publish$'
-require_job_pattern workflows/publish.yaml tag 'tag-release[.]sh'
-require_job_pattern workflows/publish.yaml release '^    needs: \[npm-publish, tag\]$'
+require_job_pattern workflows/publish.yaml release '^    needs: npm-publish$'
+require_job_pattern workflows/publish.yaml release 'tag-release[.]sh'
 require_job_pattern workflows/publish.yaml release 'github-release[.]sh'
 
-for job in tag release; do
-  f=workflows/publish.yaml
-  require_job_pattern "$f" "$job" '^      group: gusto-ubuntu-default$'
-  require_job_pattern "$f" "$job" '^      contents: write$'
-  reject_job_pattern "$f" "$job" 'environment:|NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
-done
+require_job_pattern workflows/publish.yaml release '^      group: gusto-ubuntu-default$'
+require_job_pattern workflows/publish.yaml release '^      contents: write$'
+reject_job_pattern workflows/publish.yaml release 'environment:|NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
 
 reject_job_pattern workflows/build-sdk.yaml build 'environment:|secrets\.|id-token:|contents: write'
 
