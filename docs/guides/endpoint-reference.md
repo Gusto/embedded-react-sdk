@@ -7,7 +7,7 @@ description: Auto-generated list of every Gusto Embedded API endpoint each SDK b
 
 # Endpoint reference
 
-Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.mdx) navigation. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).
+Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.mdx) navigation. For guidance on using these lists to decide which requests to allow for a session, see [Reviewing SDK API access](../getting-started/reviewing-sdk-api-access.md).
 
 Within each domain, **Components** and **Hooks** list the endpoints they call, and **Flows** list the blocks they compose (a flow's endpoints are the union of its blocks' endpoints).
 
@@ -55,6 +55,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
 |  | POST | [`/v1/companies/:companyId/pay_schedules/assign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign) |
 |  | POST | [`/v1/companies/:companyId/pay_schedules/assignment_preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview) |
+|  | GET | [`/v1/companies/:companyId/pay_schedules/assignments`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-assignments) |
 |  | GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview) |
 |  | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
 | **CompanyOnboarding.FederalTaxes** | GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-federal_tax_details) |
@@ -545,6 +546,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
 |  | POST | [`/v1/companies/:companyId/pay_schedules/assign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign) |
 |  | POST | [`/v1/companies/:companyId/pay_schedules/assignment_preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview) |
+|  | GET | [`/v1/companies/:companyId/pay_schedules/assignments`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-assignments) |
 | **CompanyManagement.PayScheduleAssignment** | GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
 |  | POST | [`/v1/companies/:companyId/pay_schedules/assign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assign) |
 |  | POST | [`/v1/companies/:companyId/pay_schedules/assignment_preview`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview) |
+|  | GET | [`/v1/companies/:companyId/pay_schedules/assignments`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-assignments) |

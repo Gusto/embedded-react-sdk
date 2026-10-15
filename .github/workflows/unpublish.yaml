@@ -5,18 +5,44 @@ on:
       version:
         description: 'Version to unpublish'
         required: true
+      dry_run:
+        description: 'Validate only — run npm unpublish with --dry-run'
+        required: false
+        type: boolean
+        default: false
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
+    # No actions/cache here — this job holds NPM_TOKEN. See
+    # validate-release-workflows.test.sh.
+    #
+    # Inputs land here, validated below, before any step touches them —
+    # never inline github.event.inputs.* in a run: script (shell-injectable).
+    env:
+      UNPUBLISH_VERSION: ${{ github.event.inputs.version }}
+      DRY_RUN: ${{ github.event.inputs.dry_run }}
     steps:
       - uses: actions/checkout@v6
+
+      - name: Validate inputs
+        run: |
+          .github/scripts/validate-release-input.sh semver "$UNPUBLISH_VERSION"
+          .github/scripts/validate-release-input.sh boolean "${DRY_RUN:-false}"
+
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm unpublish @gusto/embedded-react-sdk@${{ github.event.inputs.version }}
+
+      - name: Unpublish
+        run: |
+          if [ "${DRY_RUN:-false}" = "true" ]; then
+            npm unpublish "@gusto/embedded-react-sdk@$UNPUBLISH_VERSION" --dry-run
+          else
+            npm unpublish "@gusto/embedded-react-sdk@$UNPUBLISH_VERSION"
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

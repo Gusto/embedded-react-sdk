@@ -115,11 +115,7 @@ const Root = ({
       processingStatuses: [ProcessingStatuses.Unprocessed],
       startDate: dateFilterParams.startDate,
       endDate: dateFilterParams.endDate,
-      payrollTypes: [
-        QueryParamPayrollTypes.Regular,
-        QueryParamPayrollTypes.OffCycle,
-        QueryParamPayrollTypes.External,
-      ],
+      payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
       includeOffCycle: true,
       page: currentPage,
       per: itemsPerPage,

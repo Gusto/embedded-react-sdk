@@ -92,6 +92,7 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
   useComponentDictionary('Payroll.PrintChecksForm', dictionary)
   useI18n('Payroll.PrintChecksForm')
   const { t } = useTranslation('Payroll.PrintChecksForm')
+  const { Heading } = useComponentContext()
   const { onEvent, baseSubmitHandler } = useBase()
 
   const formMethods = useForm<PrintChecksFormValues>({
@@ -171,9 +172,11 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
         className={className}
       >
         <Flex flexDirection="column" gap={20}>
+          <Heading as="h2">{t('modalTitle')}</Heading>
           <RadioGroupField
             name="printingFormat"
             label={t('modalTitle')}
+            shouldVisuallyHideLabel
             options={printingFormatOptions}
             isRequired
             isDisabled={isGenerating}

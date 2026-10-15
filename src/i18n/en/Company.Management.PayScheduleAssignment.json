@@ -6,6 +6,10 @@
       "single": {
         "label": "Everyone on one schedule",
         "description": "Choose one pay schedule for all your employees"
+      },
+      "hourlySalaried": {
+        "label": "Separate schedules by compensation type",
+        "description": "Choose one pay schedule for hourly employees and another for salaried employees"
       }
     }
   },
@@ -13,6 +17,14 @@
     "heading": "Assign employees",
     "payScheduleLabel": "Pay schedule",
     "payScheduleDescription": "The pay schedule to use for all employees.",
+    "addPayScheduleCta": "Add pay schedule"
+  },
+  "compensationStep": {
+    "heading": "Assign employees",
+    "hourlyPayScheduleLabel": "Hourly employees",
+    "hourlyPayScheduleDescription": "The pay schedule to use for hourly employees.",
+    "salariedPayScheduleLabel": "Salaried employees",
+    "salariedPayScheduleDescription": "The pay schedule to use for salaried employees.",
     "addPayScheduleCta": "Add pay schedule"
   },
   "reviewStep": {
