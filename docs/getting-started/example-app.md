@@ -11,7 +11,7 @@ It's the best place to see how the individual pieces connect into a cohesive int
 ## What it demonstrates
 
 - **Composing workflows behind a router.** Each flow is split into its own steps and mapped to routes with [React Router](https://reactrouter.com/), driven by the SDK's `onEvent` callbacks. This is the same pattern described in [Routing](../guides/integration-guide/routing.md) and [Composition](../guides/integration-guide/composition.md), realized as working code.
-- **A backend proxy.** An Express server sits in front of the Gusto Embedded API, handling OAuth token acquisition and refresh and forwarding authenticated requests—the proxy layer described in [Getting started](./getting-started.md) and [Authentication](./authentication.mdx).
+- **A backend proxy.** An Express server sits in front of the Gusto Embedded API, handling OAuth token acquisition and refresh and forwarding requests with Gusto access tokens—the proxy layer described in [Getting started](./getting-started.md) and [Authentication](./authentication.md).
 - **Theming.** SDK components are restyled through the `theme` prop on `GustoProvider`, with an interactive tray for experimenting with overrides.
 - **Multiple complete flows in one app**, including:
   - Company onboarding
@@ -20,6 +20,8 @@ It's the best place to see how the individual pieces connect into a cohesive int
   - An onboarded-company experience covering running payrolls as well as management of employees, time off, terminations, bank accounts, locations, documents, pay schedules, and tax setup
 
 ## What it doesn't yet demonstrate
+
+- **User authentication and authorization.** The proxy forwards requests with the configured company token. It does not implement user sessions, endpoint allowlisting, or resource authorization. See [Authentication](./authentication.md) for the decisions your own proxy must enforce and [Reviewing SDK API access](./reviewing-sdk-api-access.md) to identify the requests your components use.
 
 - **Hooks.** The demo app uses the component-based workflows to show the end-to-end experience. If you prefer a headless integration, the SDK also exports [hooks](../reference/hooks.md) that give you full control over UI and state management. You can use hooks to replicate the experience shown in the demo app in a way that aligns better with your own design system.
 - **Contractor functionality.** The SDK includes components for contractor onboarding and payments. These will be added to the demo app soon. In the meantime, you can learn more about contractor workflows in the [Contractor onboarding](../reference/contractor/onboarding/onboarding-flow.md) and [Contractor payments](../reference/contractor/management/payment-flow.md) reference pages.

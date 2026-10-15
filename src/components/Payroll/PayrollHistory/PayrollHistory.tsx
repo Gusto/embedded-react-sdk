@@ -98,11 +98,7 @@ const Root = ({
     {
       companyId,
       processingStatuses: [ProcessingStatuses.Processed],
-      payrollTypes: [
-        QueryParamPayrollTypes.Regular,
-        QueryParamPayrollTypes.OffCycle,
-        QueryParamPayrollTypes.External,
-      ],
+      payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
       includeOffCycle: true,
       include: ['totals', 'payroll_status_meta'],
       sortOrder: SortOrder.Desc,
