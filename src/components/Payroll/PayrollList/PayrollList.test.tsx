@@ -390,7 +390,7 @@ describe('PayrollList', () => {
       let skipBody: Record<string, unknown> | null = null
       const skipResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
         skipBody = (await request.json()) as Record<string, unknown>
-        return new HttpResponse(null, { status: 202 })
+        return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
       })
       server.use(
         ...buildPayrollListHandlers({ payrolls: [createListPayroll()] }),
@@ -421,7 +421,7 @@ describe('PayrollList', () => {
       let skipBody: Record<string, unknown> | null = null
       const skipResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
         skipBody = (await request.json()) as Record<string, unknown>
-        return new HttpResponse(null, { status: 202 })
+        return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
       })
       server.use(
         ...buildPayrollListHandlers({

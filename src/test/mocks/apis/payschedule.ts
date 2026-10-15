@@ -79,7 +79,7 @@ export const previewPayScheduleAssignment = http.post(
 
 export const assignPaySchedules = http.post(
   `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assign`,
-  () => new HttpResponse(null, { status: 200 }),
+  () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
 )
 
 export const getPayScheduleAssignments = http.get(

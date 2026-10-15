@@ -142,7 +142,7 @@ describe('management/CompensationAddAnotherJobForm', () => {
 
   it('does not touch compensation endpoints or emit events when the job POST fails', async () => {
     const createJobResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 500 }),
+      () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
     )
     const updateCompensationResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))
     const createCompensationResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))

@@ -372,7 +372,9 @@ describe('useContractorList', () => {
         await act(async () => {
           await currentResult.actions.onDelete('contractor-1')
         })
-        expect(result.current.status.isPending).toBe(false)
+        await waitFor(() => {
+          expect(result.current).toMatchObject({ status: { isPending: false } })
+        })
       }
     })
 

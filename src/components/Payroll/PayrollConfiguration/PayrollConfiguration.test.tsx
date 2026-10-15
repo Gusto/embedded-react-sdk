@@ -437,7 +437,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: new Date().toISOString(),
             processing_request: { status: 'calculate_success', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -472,7 +472,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: new Date().toISOString(),
             processing_request: null,
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -507,7 +507,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'processing_failed', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -542,7 +542,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -566,15 +566,27 @@ describe('PayrollConfiguration', () => {
 
     it('keeps reporting the deadline while the payroll stays in calculating', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let calculatingReadCount = 0
 
       server.use(
+        // Listed before the payroll route below, which would otherwise match
+        // `/payrolls/blockers` via its `:payroll_id` segment.
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+          return HttpResponse.json([])
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+          if (currentPayrollData.processing_request?.status === 'calculating') {
+            calculatingReadCount += 1
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
           currentPayrollData = {
             ...mockPayrollData,
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -585,6 +597,11 @@ describe('PayrollConfiguration', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+      // Wait for the poll's first read so its deadline is anchored before the clock jumps.
+      await waitFor(() => {
+        expect(calculatingReadCount).toBeGreaterThan(0)
+      })
 
       // A payroll the server never moves off `calculating` is picked back up by the
       // start-on-calculating effect after each deadline, so the failure is reported once per
@@ -621,7 +638,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -689,7 +706,7 @@ describe('PayrollConfiguration', () => {
           // Fail exactly one read, and only once polling is underway.
           if (hasCalculated && !hasFailedOnce) {
             hasFailedOnce = true
-            return new HttpResponse(null, { status: 500 })
+            return new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } })
           }
           return HttpResponse.json(currentPayrollData)
         }),
@@ -700,7 +717,7 @@ describe('PayrollConfiguration', () => {
             processing_request: { status: 'calculate_success', errors: [] },
           }
           hasCalculated = true
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -734,7 +751,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculate_success', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -768,7 +785,7 @@ describe('PayrollConfiguration', () => {
 
       server.use(
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -836,7 +853,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -872,7 +889,7 @@ describe('PayrollConfiguration', () => {
 
       server.use(
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -915,12 +932,12 @@ describe('PayrollConfiguration', () => {
           // First two reads match baseline exactly, so the freshness check reports 'polling' not
           // 'calculated'; the third 401s and must rescue that snapshot instead of a false failure.
           if (showCallCount > 2) {
-            return new HttpResponse(null, { status: 401 })
+            return new HttpResponse(null, { status: 401, headers: { 'content-length': '0' } })
           }
           return HttpResponse.json(currentPayrollData)
         }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -965,7 +982,7 @@ describe('PayrollConfiguration', () => {
           prepareResolver,
         ),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -995,7 +1012,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: new Date().toISOString(),
             processing_request: { status: 'calculate_success', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1019,15 +1036,27 @@ describe('PayrollConfiguration', () => {
 
     it('reports nothing after the component unmounts mid-calculation', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let calculatingReadCount = 0
 
       server.use(
+        // Listed before the payroll route below, which would otherwise match
+        // `/payrolls/blockers` via its `:payroll_id` segment.
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+          return HttpResponse.json([])
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+          if (currentPayrollData.processing_request?.status === 'calculating') {
+            calculatingReadCount += 1
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
           currentPayrollData = {
             ...mockPayrollData,
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1038,6 +1067,10 @@ describe('PayrollConfiguration', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /calculate/i }))
+      // Unmount once polling is underway, so the test covers a running poll being torn down.
+      await waitFor(() => {
+        expect(calculatingReadCount).toBeGreaterThan(0)
+      })
       unmount()
       onEvent.mockClear()
 
@@ -1059,7 +1092,7 @@ describe('PayrollConfiguration', () => {
             calculated_at: null,
             processing_request: { status: 'calculating', errors: [] },
           }
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
         // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
         // shadow its handler.
@@ -1073,7 +1106,7 @@ describe('PayrollConfiguration', () => {
           if (showCallCount <= 2) {
             return HttpResponse.json(currentPayrollData)
           }
-          return new HttpResponse(null, { status: 401 })
+          return new HttpResponse(null, { status: 401, headers: { 'content-length': '0' } })
         }),
       )
 
@@ -1145,7 +1178,7 @@ describe('PayrollConfiguration', () => {
             processingRequest: { status: 'calculating', errors: [] },
             employeeCompensations: [createCompensation('emp-1')],
           })
-          return new HttpResponse(null, { status: 202 })
+          return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
         }),
         // Literal payroll_id segment -- `:payroll_id` would also match `/payrolls/blockers` and
         // shadow its handler.
@@ -1154,7 +1187,7 @@ describe('PayrollConfiguration', () => {
           if (showCallCount <= 2) {
             return HttpResponse.json(currentPayrollData)
           }
-          return new HttpResponse(null, { status: 401 })
+          return new HttpResponse(null, { status: 401, headers: { 'content-length': '0' } })
         }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () =>
           HttpResponse.json(currentPayrollData),
@@ -1190,8 +1223,8 @@ describe('PayrollConfiguration', () => {
       await user.click(screen.getByRole('button', { name: 'Edit' }))
       await user.click(await screen.findByRole('menuitem', { name: 'Skip employee' }))
 
+      expect(await screen.findByText('Alice Anderson')).toBeInTheDocument()
       expect(screen.queryByRole('heading', { name: 'Calculating payroll...' })).toBeNull()
-      expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
       // The unrelated submit clears `error` too (as `baseSubmitHandler`'s first step), so the
       // alert itself disappears here even though `hasProcessingFailedAlert` -- the separate flag
       // that keeps the loader gate closed -- stays true. Documenting that trade-off rather than
@@ -1244,7 +1277,7 @@ describe('PayrollConfiguration', () => {
           if (params.employee_id === 'emp-excluded') {
             return HttpResponse.json(excludedEmployee)
           }
-          return new HttpResponse(null, { status: 404 })
+          return new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } })
         }),
 
         http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {

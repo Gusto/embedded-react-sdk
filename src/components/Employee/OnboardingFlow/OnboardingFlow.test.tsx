@@ -149,7 +149,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation pt 2
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await screen.findByLabelText('List of all jobs for the employee') // Wait for the page to load
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal Taxes (separate step)
