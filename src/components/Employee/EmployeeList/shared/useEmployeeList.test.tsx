@@ -277,7 +277,9 @@ describe('useEmployeeList', () => {
           await act(async () => {
             await currentResult.actions.onDelete('employee-1')
           })
-          expect(result.current.status.isPending).toBe(false)
+          await waitFor(() => {
+            expect(result.current).toMatchObject({ status: { isPending: false } })
+          })
         }
       })
     })
