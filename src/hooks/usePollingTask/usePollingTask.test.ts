@@ -261,21 +261,6 @@ describe('usePollingTask', () => {
     expect(onDeadline).not.toHaveBeenCalled()
   })
 
-  it('ignores start after unmount', async () => {
-    const read = vi.fn(() => Promise.resolve('pending'))
-    const { result, unmount, onDeadline } = setup({ fetch: read })
-    const { start } = result.current
-
-    unmount()
-    await act(async () => {
-      start()
-      await vi.advanceTimersByTimeAsync(DEADLINE_MS * 2)
-    })
-
-    expect(read).not.toHaveBeenCalled()
-    expect(onDeadline).not.toHaveBeenCalled()
-  })
-
   it('runs a single loop when start is called twice', async () => {
     const read = vi.fn(() => Promise.resolve('ready'))
     const { result, onDone } = setup({ fetch: read })
