@@ -1,3 +1,4 @@
+import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 
 function hasMetadataKey(metadata: unknown): metadata is { key: string; state?: string } {
@@ -10,20 +11,49 @@ function hasMetadataKey(metadata: unknown): metadata is { key: string; state?: s
 }
 
 /**
- * `{ key, state }` identifying which requirement set an incomplete-requirement-set error targets.
+ * A server-reported problem with a single requirement's submitted value.
+ *
+ * @internal
+ */
+export interface RequirementValueError {
+  requirementKey: string
+  message: string
+}
+
+/**
+ * Identifies which requirement set a requirement-set error targets, plus any per-requirement
+ * value errors the server reported inside it.
  *
  * @internal
  */
 export interface RequirementSetError {
   key: string
   state?: string
+  effectiveFrom?: string
+  valueErrors: RequirementValueError[]
+}
+
+function extractValueErrors(requirementSetError: EntityErrorObject): RequirementValueError[] {
+  return (requirementSetError.errors ?? []).flatMap(requirementError => {
+    if (
+      requirementError.errorKey !== 'requirements' ||
+      !hasMetadataKey(requirementError.metadata)
+    ) {
+      return []
+    }
+    const { key } = requirementError.metadata
+    return (requirementError.errors ?? [])
+      .filter(valueError => typeof valueError.message === 'string')
+      .map(valueError => ({ requirementKey: key, message: valueError.message as string }))
+  })
 }
 
 /**
  * Extracts `{ key, state }` from a tax-requirements-update error shaped as
  * `{ errorKey: "requirement_sets", category: "nested_errors", metadata: { key, state } }` —
- * the update endpoint's response when a requirement set (e.g. "registrations") was submitted
- * incomplete. Returns `null` for any other error shape.
+ * the update endpoint's response when a requirement set (e.g. "registrations") was rejected —
+ * along with the nested per-requirement value errors (e.g. an invalid ID format). Returns `null`
+ * for any other error shape.
  *
  * @internal
  */
@@ -35,5 +65,12 @@ export function parseRequirementSetError(error: unknown): RequirementSetError | 
   )
   if (!match || !hasMetadataKey(match.metadata)) return null
 
-  return { key: match.metadata.key, state: match.metadata.state }
+  const { effective_from: effectiveFrom } = match.metadata as { effective_from?: unknown }
+
+  return {
+    key: match.metadata.key,
+    state: match.metadata.state,
+    effectiveFrom: typeof effectiveFrom === 'string' ? effectiveFrom : undefined,
+    valueErrors: extractValueErrors(match),
+  }
 }

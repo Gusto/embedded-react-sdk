@@ -1447,6 +1447,8 @@ export namespace Translations {
       errors: {
         /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
         incompleteRequirementSet: string
+        /** @defaultValue `"{{section}} for {{state}} has invalid values. Correct the highlighted fields and try again."` */
+        invalidRequirementSet: string
       }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
