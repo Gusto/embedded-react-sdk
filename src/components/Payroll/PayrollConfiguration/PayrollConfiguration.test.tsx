@@ -1036,8 +1036,20 @@ describe('PayrollConfiguration', () => {
 
     it('reports nothing after the component unmounts mid-calculation', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let calculatingReadCount = 0
 
       server.use(
+        // Listed before the payroll route below, which would otherwise match
+        // `/payrolls/blockers` via its `:payroll_id` segment.
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+          return HttpResponse.json([])
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+          if (currentPayrollData.processing_request?.status === 'calculating') {
+            calculatingReadCount += 1
+          }
+          return HttpResponse.json(currentPayrollData)
+        }),
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
           currentPayrollData = {
             ...mockPayrollData,
@@ -1055,6 +1067,10 @@ describe('PayrollConfiguration', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /calculate/i }))
+      // Unmount once polling is underway, so the test covers a running poll being torn down.
+      await waitFor(() => {
+        expect(calculatingReadCount).toBeGreaterThan(0)
+      })
       unmount()
       onEvent.mockClear()
 
