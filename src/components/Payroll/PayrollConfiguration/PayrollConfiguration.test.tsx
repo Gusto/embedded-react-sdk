@@ -1207,8 +1207,8 @@ describe('PayrollConfiguration', () => {
       await user.click(screen.getByRole('button', { name: 'Edit' }))
       await user.click(await screen.findByRole('menuitem', { name: 'Skip employee' }))
 
+      expect(await screen.findByText('Alice Anderson')).toBeInTheDocument()
       expect(screen.queryByRole('heading', { name: 'Calculating payroll...' })).toBeNull()
-      expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
       // The unrelated submit clears `error` too (as `baseSubmitHandler`'s first step), so the
       // alert itself disappears here even though `hasProcessingFailedAlert` -- the separate flag
       // that keeps the loader gate closed -- stays true. Documenting that trade-off rather than
