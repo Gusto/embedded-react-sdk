@@ -86,10 +86,12 @@ describe('Contractor DocumentSigner', () => {
       expect(signResolver).toHaveBeenCalledTimes(1)
     })
 
-    expect(onEvent).toHaveBeenCalledWith(
-      contractorEvents.CONTRACTOR_SIGN_DOCUMENT,
-      expect.objectContaining({ uuid: W9_DOCUMENT_UUID }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_SIGN_DOCUMENT,
+        expect.objectContaining({ uuid: W9_DOCUMENT_UUID }),
+      )
+    })
     await screen.findByText('Documents')
     expect(screen.getByRole('button', { name: 'Sign document' })).toBeInTheDocument()
   })

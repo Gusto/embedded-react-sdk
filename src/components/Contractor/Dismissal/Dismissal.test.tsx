@@ -64,10 +64,12 @@ describe('Dismissal', () => {
     await vi.waitFor(() => {
       expect(dismissResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith('contractor/dismissal/scheduled', {
-      contractorId: 'contractor-123',
-      endDate: '2026-09-01',
-      message: 'Dismissal scheduled',
+    await vi.waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith('contractor/dismissal/scheduled', {
+        contractorId: 'contractor-123',
+        endDate: '2026-09-01',
+        message: 'Dismissal scheduled',
+      })
     })
   })
 

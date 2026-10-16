@@ -251,10 +251,12 @@ describe('Contractor/Address', () => {
       await waitFor(() => {
         expect(updateResolver).toHaveBeenCalledTimes(1)
       })
-      expect(mockOnEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
-        expect.anything(),
-      )
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
+          expect.anything(),
+        )
+      })
     })
   })
 

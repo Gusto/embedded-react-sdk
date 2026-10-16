@@ -381,10 +381,12 @@ describe('CreateHistoricalPayment', () => {
     })
     expect(createRequestBody?.creation_token).toBe('preview-token-123')
 
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
-      expect.objectContaining({ uuid: 'created-group-uuid' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
+        expect.objectContaining({ uuid: 'created-group-uuid' }),
+      )
+    })
   })
 
   it('replaces the Back and Submit buttons with a success message after submission', async () => {
