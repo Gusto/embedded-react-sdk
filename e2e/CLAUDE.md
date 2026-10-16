@@ -109,10 +109,6 @@ The check is scoped to `<main>` (`e2e/main.tsx` wraps every flow in one), not th
 
 Call `expectNoAxeViolations(page)` manually mid-test only when you need to check an intermediate screen the test navigates away from before ending (see `e2e/tests/contractor/04-cancel-mid-onboarding.spec.ts` for an example) — the automatic check only sees the final state.
 
-## Playwright MCP Server
-
-Use the Playwright MCP server for browser debugging and automation during E2E development.
-
 ## Serving the E2E App
 
 ```bash
