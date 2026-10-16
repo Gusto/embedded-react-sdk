@@ -216,5 +216,18 @@ export default [
     },
   },
 
+  {
+    ...tseslint.configs.disableTypeChecked,
+    files: ['.github/scripts/*.cjs'],
+    languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
+      globals: globals.node,
+      sourceType: 'commonjs',
+    },
+    rules: {
+      ...tseslint.configs.disableTypeChecked.rules,
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
   ...storybook.configs['flat/recommended'],
 ] satisfies Config
