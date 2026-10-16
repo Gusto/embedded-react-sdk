@@ -853,23 +853,62 @@ const getPacificTimeOffset = (date: Date): number => {
   return isDST ? -7 : -8
 }
 
+const API_EDITABLE_OFF_CYCLE_REASONS = new Set<string>([
+  OffCycleReasonType.Bonus,
+  OffCycleReasonType.Correction,
+  OffCycleReasonType.Adhoc,
+  OffCycleReasonType.BenefitReversal,
+  OffCycleReasonType.HiredEmployee,
+  OffCycleReasonType.DismissedEmployee,
+  OffCycleReasonType.TransitionFromOldPaySchedule,
+])
+
+const isApiEditablePayrollType = (payroll: Payroll): boolean => {
+  if (payroll.external) return false
+  if (!payroll.offCycle) return true
+  return !!payroll.offCycleReason && API_EDITABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
+}
+
 /**
- * Determines whether a payroll can be cancelled based on its status, deadline, and the 4:00 PM PT cutoff.
+ * Determines whether the API will accept a cancel request for a payroll, so the cancel action is
+ * only offered when it can succeed.
  *
  * @remarks
- * Returns `true` only when the payroll has been processed, `payrollStatusMeta.cancellable` is not explicitly `false`,
- * the payroll has a `payrollDeadline`, and the current time is before 4:00 PM Pacific Time on that deadline date.
+ * The payroll cancel endpoint succeeds only when two server-side rules both hold, and this helper
+ * mirrors both:
  *
- * @param payroll - The payroll to evaluate.
- * @returns `true` if the payroll is still cancellable, `false` otherwise.
+ * 1. `payrollStatusMeta.cancellable` is `true`. The server derives it from the processing state,
+ *    the debit date, the 4:00 PM PT cutoff on that date, and the payroll type (it is `false` for
+ *    tax reconciliation and wage correction payrolls, and for regular payrolls on an inactive pay
+ *    schedule). A missing flag is treated as not cancellable, so the payroll request must include
+ *    `payroll_status_meta`.
+ * 2. The payroll type is editable through the API: not external, and either a regular payroll or
+ *    an off-cycle payroll whose reason is Bonus, Correction, Adhoc, Benefit reversal, Hired
+ *    employee, Dismissed employee, or Transition from old pay schedule. The `cancellable` flag does
+ *    not account for this rule, so the API rejects any other off-cycle reason (or a missing one)
+ *    even when the flag is `true`.
+ *
+ * The payroll must also be processed, and the current time must be before 4:00 PM Pacific Time on
+ * the `payrollDeadline` date. That client-side check keeps a screen left open past the cutoff from
+ * offering a cancel the server will no longer accept.
+ *
+ * The API also rejects cancellation once a tax filing has been submitted for the payroll; that
+ * state is not exposed on the payroll, so it is not checked here.
+ *
+ * @param payroll - The payroll to evaluate, fetched with `payroll_status_meta` included.
+ * @returns `true` if the API will accept a cancel request for the payroll, `false` otherwise.
  * @internal
  */
 export const canCancelPayroll = (payroll: Payroll): boolean => {
-  if (payroll.payrollStatusMeta?.cancellable === false) {
+  if (payroll.payrollStatusMeta?.cancellable !== true) {
     return false
   }
 
   if (!payroll.processed) {
+    return false
+  }
+
+  if (!isApiEditablePayrollType(payroll)) {
     return false
   }
 
