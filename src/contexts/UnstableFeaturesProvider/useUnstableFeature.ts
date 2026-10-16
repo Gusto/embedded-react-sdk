@@ -23,6 +23,8 @@ export interface UnstableFeatures {
   payrollRegularRateOfPay?: boolean
   /** Enables the in-development `CompanyManagement.PaySchedule` flow for managing pay schedules and their assignments after onboarding. */
   managePaySchedules?: boolean
+  /** Enables the in-development `Payroll.TaxPaymentsFlow` for reviewing a company's tax payments and their liabilities. */
+  taxPayments?: boolean
 }
 
 /**
