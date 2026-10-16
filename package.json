@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.56.7",
+  "version": "0.57.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -99,7 +99,7 @@
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.2",
     "@eslint/js": "^9.39.5",
-    "@microsoft/api-extractor": "^7.59.1",
+    "@microsoft/api-extractor": "^7.59.4",
     "@playwright/test": "^1.64.0",
     "@release-it/conventional-changelog": "^12.0.2",
     "@storybook/addon-a11y": "^10.6.1",
@@ -118,7 +118,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.3.0",
     "@typescript-eslint/parser": "^8.70.1",
-    "@typescript-eslint/rule-tester": "^8.70.1",
+    "@typescript-eslint/rule-tester": "^8.71.2",
     "@typescript-eslint/utils": "^8.70.1",
     "@vitejs/plugin-react-swc": "^4.3.3",
     "@vitest/coverage-v8": "^5.0.0",
@@ -143,7 +143,7 @@
     "json-schema-to-typescript": "^16.0.0",
     "lint-staged": "^17.5.1",
     "markdownlint-cli2": "^0.23.3",
-    "msw": "^2.15.0",
+    "msw": "^3.0.3",
     "npm-run-all": "^4.1.5",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
@@ -182,7 +182,10 @@
     "@babel/core": "^7.29.6",
     "markdown-it": "^14.3.2",
     "conventional-commits-parser": "^7.1.0",
-    "conventional-commits-filter": "^5.0.0"
+    "conventional-commits-filter": "^5.0.0",
+    "@vitest/mocker": {
+      "msw": "$msw"
+    }
   },
   "dependencies": {
     "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-06-15@0.3.1",
@@ -192,12 +195,12 @@
     "@internationalized/number": "^3.6.9",
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
-    "dompurify": "^3.4.16",
-    "i18next": "^26.4.2",
+    "dompurify": "^3.4.17",
+    "i18next": "^26.4.4",
     "react-aria": "^3.47.0",
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.6",
-    "react-hook-form": "^7.88.0",
+    "react-hook-form": "^7.90.0",
     "react-i18next": "^17.0.14",
     "react-robot": "^1.2.1",
     "robot3": "^1.2.0",

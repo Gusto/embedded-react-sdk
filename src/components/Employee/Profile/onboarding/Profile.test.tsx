@@ -115,7 +115,7 @@ function setupEmployeeHandlers({
       const uuid = String(params.home_address_uuid)
       const row = homeAddresses.find(a => String(a.uuid) === uuid)
       if (!row) {
-        return new HttpResponse(null, { status: 404 })
+        return new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } })
       }
       return HttpResponse.json(row)
     }),
@@ -126,7 +126,7 @@ function setupEmployeeHandlers({
       const uuid = String(params.work_address_uuid)
       const row = workAddresses.find(a => String(a.uuid) === uuid)
       if (!row) {
-        return new HttpResponse(null, { status: 404 })
+        return new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } })
       }
       return HttpResponse.json(row)
     }),

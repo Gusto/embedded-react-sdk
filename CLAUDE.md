@@ -38,6 +38,8 @@ See [sdk-app/README.md](sdk-app/README.md) for all available commands and enviro
 - Use descriptive variable/function names that eliminate the need for comments
 - NEVER use `!important` in CSS/SCSS files — use proper CSS specificity instead
 - Do not include `@use` imports in `.module.scss` for modules globally available via Vite (e.g., `@/styles/Helpers` is auto-injected)
+- Avoid `useMemo`, `useCallback`, or `React.memo` unless there's a demonstrated or obvious performance problem. Memoizing a deep object that's recreated every render fails its own equality check on re-render — it buys nothing and adds a maintenance trap.
+- Avoid `as SomeType` casts unless there's clearly no alternative — every cast bypasses TypeScript's safety checks. Prefer a type guard, discriminated union narrowing, or a generic instead.
 
 ## Documentation
 
@@ -63,6 +65,8 @@ return <Components.TextInput {...props} />
 ### Field Components for react-hook-form
 
 Use Field components from `src/components/Common/Fields/` inside `FormProvider`. For inputs outside react-hook-form, use UI primitives from `useComponentContext()` directly.
+
+**No react-hook-form internals in SDK components (non-negotiable).** Components must consume form hooks only through their documented surface (`data`, `status`, `actions`, `errorHandling`, `form.Fields`, etc.) — never raw `useForm`, `useWatch`, `setValue`, `watch`, `getValues`, `trigger`, `register`, or `hookResult.form.hookFormInternals.formMethods.*`. Each such use is a sign the hook is missing functionality; move the logic into the hook instead. (`AdminProfile.tsx`'s screen-local `startDate` `useForm` is a documented historical exception, not a template.) New or migrated partner-facing `use*Form` hooks must follow the scaffolding in `.claude/commands/create-hook.md` and the playbook in `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md`.
 
 ### Component Organization
 
@@ -154,6 +158,8 @@ Durable conventions that apply SDK-wide to any component or feature:
 - **One i18n namespace per self-contained component.** A self-contained component owns a single translation namespace and reads only from it — never reach across namespaces. Run `npm run i18n:generate` after changing translations.
 - **Scoped, unique events.** Prefer unique event names scoped to the component/surface that fires them over sharing or borrowing names across flows (e.g. don't reuse an onboarding event from a different surface).
 - **Standalone components take IDs, not entities.** Public/standalone components accept entity IDs (e.g. `employeeId`, `jobId`) and fetch their own data rather than receiving full entity objects across the public API. Passing data structures is fine for internal-only components.
+- **Partner-facing component APIs stay minimal.** The primary prop is typically an entity ID; feature flags and opt-in behaviors (e.g. `withI9`, `isSelfOnboardingEnabled`) are fine as named booleans. Internal implementation details — sub-component props, internal state shapes, handler signatures — shouldn't leak into the public surface. If a new prop doesn't clearly belong in a partner integration contract, question it.
+- **API response data in `onEvent`.** Any `onEvent` call following a mutation should include the API response as payload, across every event type (not just `_DONE`). Pass the inner data value (e.g. `result.data`), not the top-level mutation result, which includes transport fields like `httpMeta` that partners don't need.
 - **Non-form data hooks return the standard union.** Data-fetching hooks return the `HookLoadingResult | BaseHookReady<…>` discriminated union (see `src/partner-hook-utils/types.ts`) for consistent loading/error/action ergonomics.
 - **Shared UI stays presentational.** UI reused across multiple flows takes its copy via props or an injected `dictionary` so a partner's copy override in one surface doesn't leak into another (e.g. the `DeductionsForm` + `useFormDictionary` pattern).
 - **Partial, in-place loading.** Prefer consistent partial loading — component chrome plus an inline loader — over full-surface loaders.
@@ -190,6 +196,7 @@ Build and test components in Storybook (`npm run storybook`) before integrating 
 - Run with coverage: `npm run test -- --run --coverage`
 - Update snapshots: `npm run test -- --run -u`
 - E2E tests require gws-flows and ZenPayroll running. See `e2e/local.config.example.env`.
+- Prefer a small set of representative test cases (happy path, key error path, meaningful edge case) over many shallow variations that assert the same behavior with different data — e.g. don't write separate tests for rendering with the name "Alice", "Bob", and "Charlie" when one case covers the behavior.
 
 ### Assertion style: prefer positive contracts
 

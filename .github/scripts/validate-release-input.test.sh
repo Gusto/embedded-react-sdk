@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Exercises validate-release-input.sh's allowlists directly, so the
-# publish/unpublish workflows' input validation can be checked locally
+# publish/retire workflows' input validation can be checked locally
 # and in CI without dispatching a real workflow or touching the npm
 # registry. Run: bash .github/scripts/validate-release-input.test.sh
 set -euo pipefail
@@ -39,10 +39,12 @@ assert_invalid semver "0.56.7; curl evil.example"
 assert_invalid semver "\$(whoami)"
 assert_invalid semver $'0.56.7-rc.1\nNODE_OPTIONS=--require=/tmp/x'
 
-# semver-base
-assert_valid semver-base "0.56.7"
-assert_invalid semver-base "0.56.7-rc.1"
-assert_invalid semver-base "latest"
+# rc-version
+assert_valid rc-version "0.56.7-rc.12"
+assert_invalid rc-version "0.56.7"
+assert_invalid rc-version "latest"
+assert_invalid rc-version "0.56.7-rc.0"
+assert_invalid rc-version '0.56.7-rc.1; echo unsafe'
 
 # commit-sha
 assert_valid commit-sha "a1b2c3d"
@@ -71,18 +73,6 @@ assert_valid boolean "true"
 assert_valid boolean "false"
 assert_invalid boolean "TRUE"
 assert_invalid boolean "true; echo pwned"
-
-# confirm
-assert_valid confirm "CONFIRM"
-assert_invalid confirm "confirm"
-assert_invalid confirm "CONFIRM\" || npm publish \""
-
-# unpublish-type
-assert_valid unpublish-type "specific_version"
-assert_valid unpublish-type "latest_rc"
-assert_valid unpublish-type "all_rc_for_version"
-assert_invalid unpublish-type "specific_version; rm -rf /"
-assert_invalid unpublish-type "anything_else"
 
 # unknown kind fails closed
 assert_invalid made-up-kind "whatever"

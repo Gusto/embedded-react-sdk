@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
 import { DataCards } from '@/components/Common/DataView/DataCards/DataCards'
@@ -172,5 +172,32 @@ describe('DataCards', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(3)
     expect(screen.getByText('Total Records:')).toBeInTheDocument()
     expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
+  test('labels footer values with their column titles', () => {
+    renderCards({ footer: () => ({ name: 'Totals', age: '55' }) })
+    const footerCard = within(screen.getAllByRole('listitem').at(-1)!)
+    expect(footerCard.getByText('Age')).toBeInTheDocument()
+    expect(footerCard.getByText('55')).toBeInTheDocument()
+  })
+
+  test('renders the first column footer as the row label without its column title', () => {
+    renderCards({ footer: () => ({ name: 'Totals', age: '55' }) })
+    const footerCard = within(screen.getAllByRole('listitem').at(-1)!)
+    expect(footerCard.getByText('Totals').className).toMatch(/footerRowLabel/)
+    expect(footerCard.queryByText('Name')).toBeNull()
+  })
+
+  test('labels footer values for columns without a key by index', () => {
+    renderCards({
+      columns: [
+        { key: 'name', title: 'Name' },
+        { title: 'Summary', render: (item: MockData) => `${item.name} (${item.age})` },
+      ],
+      footer: () => ({ 'column-1': 'All records' }),
+    })
+    const footerCard = within(screen.getAllByRole('listitem').at(-1)!)
+    expect(footerCard.getByText('Summary')).toBeInTheDocument()
+    expect(footerCard.getByText('All records')).toBeInTheDocument()
   })
 })

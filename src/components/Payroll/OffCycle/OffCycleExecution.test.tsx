@@ -278,9 +278,9 @@ describe('OffCycleExecution - prepare call stability', () => {
       ).toBeInTheDocument()
     })
 
-    const editEmployeePrepareCount = prepareCallCount - configurationPrepareCount
-
-    expect(editEmployeePrepareCount).toBe(1)
+    await waitFor(() => {
+      expect(prepareCallCount - configurationPrepareCount).toBe(1)
+    })
   })
 })
 

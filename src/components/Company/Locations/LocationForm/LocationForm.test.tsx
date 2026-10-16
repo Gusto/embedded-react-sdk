@@ -216,7 +216,9 @@ describe('LocationForm (cross-location cache refresh)', () => {
       ),
       http.get(`${API_BASE_URL}/v1/locations/:location_id`, ({ params }) => {
         const loc = store[params.location_id as string]
-        return loc ? HttpResponse.json(loc) : new HttpResponse(null, { status: 404 })
+        return loc
+          ? HttpResponse.json(loc)
+          : new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } })
       }),
       http.put(`${API_BASE_URL}/v1/locations/:location_id`, async ({ params, request }) => {
         const body = (await request.json()) as Record<string, unknown>

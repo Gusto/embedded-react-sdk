@@ -448,7 +448,7 @@ describe('PaySchedule (management)', () => {
     server.use(
       http.get(
         `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
-        () => new HttpResponse(null, { status: 500 }),
+        () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
       ),
     )
     // Re-assert the assignments handler so the 500 above applies only to the single-schedule
