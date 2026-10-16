@@ -227,6 +227,11 @@ interface PayrollHandlersOptions {
   getPayrollData: () => ReturnType<typeof buildPayrollData>
   /** Employees returned by the paginated list endpoint. Defaults to all 27. */
   employees?: Array<ReturnType<typeof createEmployee>>
+  /**
+   * Employees per page returned by the list endpoint, overriding the requested `per`.
+   * Lets pagination tests page through a few rows instead of rendering 25 per page.
+   */
+  pageSize?: number
   /** Pay schedule returned by the pay-schedule endpoint. */
   paySchedule?: typeof mockPaySchedule
   /** Blockers returned by the blockers endpoint. Defaults to none. */
@@ -244,6 +249,7 @@ export const buildPayrollConfigurationHandlers = ({
   employees = allEmployees,
   paySchedule = mockPaySchedule,
   blockers = [],
+  pageSize,
 }: PayrollHandlersOptions): HttpHandler[] => [
   http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () =>
     HttpResponse.json(blockers),
@@ -252,7 +258,7 @@ export const buildPayrollConfigurationHandlers = ({
   http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, ({ request }) => {
     const url = new URL(request.url)
     const page = parseInt(url.searchParams.get('page') || '1', 10)
-    const per = parseInt(url.searchParams.get('per') || '10', 10)
+    const per = pageSize ?? parseInt(url.searchParams.get('per') || '10', 10)
 
     const totalCount = employees.length
     const totalPages = Math.ceil(totalCount / per)
