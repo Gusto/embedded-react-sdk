@@ -10,7 +10,7 @@ import { isRequirementApplicable, type StateTaxesFormValues } from '../shared/ap
 import { prepareRequirements } from '../shared/prepareRequirements'
 import { buildRequirementSchema } from '../shared/buildRequirementSchema'
 import { stringifyRequirementValue } from '../shared/requirementValue'
-import { parseRequirementSetError, type RequirementSetError } from '../shared/requirementSetError'
+import { parseRequirementSetErrors, type RequirementSetError } from '../shared/requirementSetError'
 import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
@@ -206,20 +206,27 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           },
         })
       } catch (error) {
-        const requirementSetError = parseRequirementSetError(error)
-        if (!requirementSetError) throw error
+        const requirementSetErrors = parseRequirementSetErrors(error)
+        if (!requirementSetErrors) throw error
 
-        const hasInvalidValues = applyServerValueErrors(requirementSetError)
-
-        const section =
-          stateTaxRequirements.requirementSets?.find(
-            requirementSet => requirementSet.key === requirementSetError.key,
-          )?.label ?? requirementSetError.key
+        const invalidSetErrors = requirementSetErrors.filter(applyServerValueErrors)
+        const reportedSetErrors =
+          invalidSetErrors.length > 0 ? invalidSetErrors : requirementSetErrors
+        const sections = reportedSetErrors
+          .map(
+            ({ key }) =>
+              stateTaxRequirements.requirementSets?.find(
+                requirementSet => requirementSet.key === key,
+              )?.label ?? key,
+          )
+          .join(', ')
         throw new SDKInternalError(
-          t(hasInvalidValues ? 'errors.invalidRequirementSet' : 'errors.incompleteRequirementSet', {
-            section,
-            state: requirementSetError.state ?? state,
-          }),
+          t(
+            invalidSetErrors.length > 0
+              ? 'errors.invalidRequirementSet'
+              : 'errors.incompleteRequirementSet',
+            { section: sections, state: reportedSetErrors[0]!.state ?? state },
+          ),
           'api_error',
         )
       }

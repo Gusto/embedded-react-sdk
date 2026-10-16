@@ -49,28 +49,31 @@ function extractValueErrors(requirementSetError: EntityErrorObject): Requirement
 }
 
 /**
- * Extracts `{ key, state }` from a tax-requirements-update error shaped as
+ * Extracts every requirement-set error from a tax-requirements-update error shaped as
  * `{ errorKey: "requirement_sets", category: "nested_errors", metadata: { key, state } }` —
- * the update endpoint's response when a requirement set (e.g. "registrations") was rejected —
- * along with the nested per-requirement value errors (e.g. an invalid ID format). Returns `null`
- * for any other error shape.
+ * the update endpoint's response when requirement sets (e.g. "registrations", "taxrates") were
+ * rejected; one response can carry several sets. Each result includes the nested per-requirement
+ * value errors (e.g. an invalid ID format). Returns `null` when no entry has that shape.
  *
  * @internal
  */
-export function parseRequirementSetError(error: unknown): RequirementSetError | null {
+export function parseRequirementSetErrors(error: unknown): RequirementSetError[] | null {
   if (!(error instanceof UnprocessableEntityError)) return null
 
-  const match = error.errors.find(
-    err => err.errorKey === 'requirement_sets' && err.category === 'nested_errors',
-  )
-  if (!match || !hasMetadataKey(match.metadata)) return null
+  const requirementSetErrors = error.errors
+    .filter(err => err.errorKey === 'requirement_sets' && err.category === 'nested_errors')
+    .flatMap(err => {
+      if (!hasMetadataKey(err.metadata)) return []
+      const { effective_from: effectiveFrom } = err.metadata as { effective_from?: unknown }
+      return [
+        {
+          key: err.metadata.key,
+          state: err.metadata.state,
+          effectiveFrom: typeof effectiveFrom === 'string' ? effectiveFrom : undefined,
+          valueErrors: extractValueErrors(err),
+        },
+      ]
+    })
 
-  const { effective_from: effectiveFrom } = match.metadata as { effective_from?: unknown }
-
-  return {
-    key: match.metadata.key,
-    state: match.metadata.state,
-    effectiveFrom: typeof effectiveFrom === 'string' ? effectiveFrom : undefined,
-    valueErrors: extractValueErrors(match),
-  }
+  return requirementSetErrors.length > 0 ? requirementSetErrors : null
 }

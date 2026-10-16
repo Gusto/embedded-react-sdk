@@ -29,7 +29,7 @@
     "noEditableRequirementsDescription": "This state does not have any editable tax requirements.",
     "errors": {
       "incompleteRequirementSet": "{{section}} for {{state}} is incomplete. Complete all required fields and try again.",
-      "invalidRequirementSet": "{{section}} for {{state}} has invalid values. Correct the highlighted fields and try again."
+      "invalidRequirementSet": "Some values in {{section}} for {{state}} are invalid. Correct the highlighted fields and try again."
     },
     "validations": {
       "minValue": "Minimum value is {{min}}%",
