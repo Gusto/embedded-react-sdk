@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
@@ -104,6 +105,80 @@ describe('PayrollHistoryPresentation', () => {
 
       expect(await screen.findByText('January 1–January 15, 2025')).toBeInTheDocument()
       expect(screen.getAllByText('Sep 30, 2026').length).toBe(2)
+    })
+  })
+
+  describe('cancel action', () => {
+    const cancellableRegularPayroll: Payroll = {
+      ...mockRegularPayroll,
+      payrollDeadline: new Date('2025-01-14T23:00:00Z'),
+      payrollStatusMeta: {
+        cancellable: true,
+        expectedCheckDate: '2025-01-15',
+        initialCheckDate: '2025-01-15',
+        expectedDebitTime: '2025-01-14T23:00:00Z',
+        payrollLate: false,
+        initialDebitCutoffTime: '2025-01-14T23:00:00Z',
+      },
+    }
+
+    const openRowMenu = async () => {
+      const user = userEvent.setup()
+      await user.click(await screen.findByRole('button', { name: 'Open menu' }))
+      await screen.findByRole('menuitem', { name: 'View payroll summary' })
+    }
+
+    beforeEach(() => {
+      vi.setSystemTime(new Date('2025-01-13T18:00:00Z'))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('offers Cancel payroll for a processed regular payroll the API flags cancellable', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[cancellableRegularPayroll]}
+        />,
+      )
+
+      await openRowMenu()
+
+      expect(screen.getByRole('menuitem', { name: 'Cancel payroll' })).toBeInTheDocument()
+    })
+
+    it('hides Cancel payroll when the payroll has no cancellable flag', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[{ ...cancellableRegularPayroll, payrollStatusMeta: undefined }]}
+        />,
+      )
+
+      await openRowMenu()
+
+      expect(screen.queryByRole('menuitem', { name: 'Cancel payroll' })).toBeNull()
+    })
+
+    it('hides Cancel payroll for a disability insurance distribution even when flagged cancellable', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[
+            {
+              ...cancellableRegularPayroll,
+              offCycle: true,
+              offCycleReason: OffCycleReasonType.DisabilityInsuranceDistribution,
+            },
+          ]}
+        />,
+      )
+
+      await openRowMenu()
+
+      expect(screen.queryByRole('menuitem', { name: 'Cancel payroll' })).toBeNull()
     })
   })
 })

@@ -854,22 +854,57 @@ const getPacificTimeOffset = (date: Date): number => {
 }
 
 /**
- * Determines whether a payroll can be cancelled based on its status, deadline, and the 4:00 PM PT cutoff.
+ * Off-cycle reasons the cancel endpoint accepts. The API rejects any other reason, even when
+ * `payrollStatusMeta.cancellable` is `true`.
+ *
+ * TODO: remove once the API's `cancellable` flag also checks the payroll type.
+ */
+const API_EDITABLE_OFF_CYCLE_REASONS = new Set<string>([
+  OffCycleReasonType.Bonus,
+  OffCycleReasonType.Correction,
+  OffCycleReasonType.Adhoc,
+  OffCycleReasonType.BenefitReversal,
+  OffCycleReasonType.HiredEmployee,
+  OffCycleReasonType.DismissedEmployee,
+  OffCycleReasonType.TransitionFromOldPaySchedule,
+])
+
+const isApiEditablePayrollType = (payroll: Payroll): boolean => {
+  if (payroll.external) return false
+  if (!payroll.offCycle) return true
+  return !!payroll.offCycleReason && API_EDITABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
+}
+
+/**
+ * Returns whether to show the cancel action for a payroll.
  *
  * @remarks
- * Returns `true` only when the payroll has been processed, `payrollStatusMeta.cancellable` is not explicitly `false`,
- * the payroll has a `payrollDeadline`, and the current time is before 4:00 PM Pacific Time on that deadline date.
+ * Shows cancel only when the API will accept it:
  *
- * @param payroll - The payroll to evaluate.
- * @returns `true` if the payroll is still cancellable, `false` otherwise.
+ * - `payrollStatusMeta.cancellable` is `true`. A missing flag hides cancel, so fetch the payroll
+ *   with `payroll_status_meta`.
+ * - The payroll is processed and not external.
+ * - It is a regular payroll, or an off-cycle payroll with one of the reasons listed above. The
+ *   `cancellable` flag does not check the payroll type yet, so this helper does.
+ * - It is before 4:00 PM PT on the `payrollDeadline` date, so a page left open past the cutoff
+ *   stops offering cancel.
+ *
+ * The API can still refuse if a tax filing was already sent. The payroll data doesn't show that.
+ *
+ * @param payroll - The payroll to check, fetched with `payroll_status_meta`.
+ * @returns `true` if cancel should be shown.
  * @internal
  */
 export const canCancelPayroll = (payroll: Payroll): boolean => {
-  if (payroll.payrollStatusMeta?.cancellable === false) {
+  if (payroll.payrollStatusMeta?.cancellable !== true) {
     return false
   }
 
   if (!payroll.processed) {
+    return false
+  }
+
+  if (!isApiEditablePayrollType(payroll)) {
     return false
   }
 
