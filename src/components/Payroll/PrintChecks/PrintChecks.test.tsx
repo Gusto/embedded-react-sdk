@@ -64,7 +64,7 @@ describe('PrintChecks', () => {
     })
   })
 
-  it('walks through a successful generate flow to the summary screen and back', async () => {
+  it('keeps the ready link available when automatic document opening is blocked', async () => {
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
         HttpResponse.json(createPayrollCheck(), { status: 200 }),
@@ -90,6 +90,11 @@ describe('PrintChecks', () => {
     expect(screen.getByRole('link', { name: 'View checks' })).toHaveAttribute(
       'href',
       'https://example.com/checks.pdf',
+    )
+    expect(screen.getByRole('link', { name: 'View checks' })).toHaveAttribute('target', '_blank')
+    expect(screen.getByRole('link', { name: 'View checks' })).toHaveAttribute(
+      'rel',
+      'noopener noreferrer',
     )
 
     await user.click(screen.getByRole('button', { name: 'Close' }))

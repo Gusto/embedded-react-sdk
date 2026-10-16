@@ -64,19 +64,14 @@ const buildRequestBody = (data: PrintChecksFormValues): PrintablePayrollChecksBo
     : {}),
 })
 
-// Navigates directly to `url` via a synthetic anchor click rather than `fetch`-ing it into a blob:
-// the generated-document URL is a signed, cross-origin S3 URL with `response-content-disposition:
-// attachment` baked into its query string, so a direct browser-level request downloads it via that
-// response header — but a `fetch()` from JS is subject to CORS, which the bucket doesn't allow, and
-// fails outright. A plain navigation isn't subject to CORS and never opens a new tab or navigates
-// the host page, since the browser intercepts the download instead of rendering a response.
 const downloadGeneratedChecks = (url: string) => {
   const link = document.createElement('a')
   link.href = url
+  link.target = '_blank'
   link.rel = 'noopener noreferrer'
   document.body.appendChild(link)
   link.click()
-  document.body.removeChild(link)
+  link.remove()
 }
 
 /** @internal */
@@ -109,10 +104,8 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
 
   const { start: startGenerationPoll } = useGenerationPoll({
     onSucceeded: url => {
+      if (url) downloadGeneratedChecks(url)
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: url })
-      if (url) {
-        downloadGeneratedChecks(url)
-      }
     },
     onFailed: () => {
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
