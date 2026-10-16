@@ -13,6 +13,7 @@
     "dueInDays_other": "Due in {{count}} days",
     "daysLate_one": "{{count}} day late",
     "daysLate_other": "{{count}} days late",
+    "skipped": "Skipped",
     "pending": "Pending",
     "paid": "Paid",
     "complete": "Complete",

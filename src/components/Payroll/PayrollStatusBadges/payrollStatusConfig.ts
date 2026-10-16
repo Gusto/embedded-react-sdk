@@ -1,5 +1,6 @@
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
 import { normalizeToDate, getHoursUntil, getDaysUntil } from '@/helpers/dateFormatting'
 
 /** @internal */
@@ -14,6 +15,7 @@ export type PayrollStatusTranslationKey =
   | 'dueInHours'
   | 'dueInDays'
   | 'daysLate'
+  | 'skipped'
   | 'pending'
   | 'paid'
   | 'complete'
@@ -55,6 +57,15 @@ export type PayrollInput = {
     /** Errors surfaced by the processing request, when any. */
     errors?: unknown[]
   } | null
+  /** Off-cycle reason; used to identify transition payrolls for the `skipped` status. */
+  offCycleReason?: OffCycleReasonType | null
+  /** Payroll subtotals; used to detect a skipped (all-employees-excluded) payroll. */
+  totals?: {
+    grossPay?: string | null
+    employerTaxes?: string | null
+    reimbursements?: string | null
+    benefits?: string | null
+  } | null
 }
 
 /** @internal */
@@ -86,6 +97,21 @@ const ACTIVE_PROCESSING_STATUSES: PayrollProcessingRequestStatus[] = [
   PayrollProcessingRequestStatus.Submitting,
   PayrollProcessingRequestStatus.ProcessingFailed,
 ]
+
+/**
+ * Sums the money moved by a payroll (gross pay, employer taxes, reimbursements, benefits).
+ * A skipped payroll excludes every employee, so each of these is zero.
+ */
+const getTotalPayrollAmount = (totals: PayrollInput['totals']): number => {
+  if (!totals) return 0
+
+  return (
+    Number(totals.grossPay ?? 0) +
+    Number(totals.employerTaxes ?? 0) +
+    Number(totals.reimbursements ?? 0) +
+    Number(totals.benefits ?? 0)
+  )
+}
 
 /** @internal */
 export const STATUS_CONFIG: StatusConfig[] = [
@@ -255,6 +281,23 @@ export const STATUS_CONFIG: StatusConfig[] = [
 
       return hoursDiff > 0 && hoursDiff >= 24 && Math.ceil(daysDiff) <= 14
     },
+  },
+  {
+    name: 'skipped',
+    badge: {
+      variant: 'info',
+      translationKey: 'skipped',
+    },
+    // A skipped transition payroll is recorded as a *processed* payroll with every employee
+    // excluded, so it is otherwise indistinguishable from a real processed payroll — except that
+    // it moves no money. The list API exposes no skipped flag and can't return per-employee
+    // `excluded` data, so we infer a skip from a zero-total processed transition payroll. Scoped to
+    // transition payrolls because a genuine transition run always pays wages (non-zero gross pay),
+    // which makes a false positive effectively impossible. See SDK-1350.
+    condition: payroll =>
+      !!payroll.processed &&
+      payroll.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule &&
+      getTotalPayrollAmount(payroll.totals) === 0,
   },
   {
     name: 'paid',
