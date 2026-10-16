@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.57.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.7...v0.57.0) (2026-10-15)
+
+### ⚠ BREAKING CHANGES
+
+- `customErrorSanitizer` and `customMetricSanitizer` (via `ObservabilityProvider`'s `sanitization` config) now run **inside** the SDK's own redaction instead of replacing it — your function receives already-redacted input, and its output is redacted again before being forwarded. Raw errors are stripped unless `includeRawError: true`, even if your sanitizer re-adds them, and this applies independently of `enabled: false`. Built-in sensitive-key coverage has also expanded ([#2908](https://github.com/Gusto/embedded-react-sdk/issues/2908))
+
+  ```tsx
+  // Before — sanitizer output was forwarded as-is, so returning the raw
+  // error bypassed SDK redaction entirely.
+  sanitization={{
+    customErrorSanitizer: (error) => ({ ...error, raw: originalError }),
+  }}
+
+  // After — raw is stripped again after your sanitizer runs unless you opt in.
+  sanitization={{
+    includeRawError: true,
+    customErrorSanitizer: (error) => ({ ...error, raw: originalError }),
+  }}
+  ```
+
+### Features & Enhancements
+
+- Add support for assignment by compensation type ([#2881](https://github.com/Gusto/embedded-react-sdk/issues/2881))
+
+### Fixes
+
+- Fix external payrolls incorrectly appearing in the payroll list and history ([#2909](https://github.com/Gusto/embedded-react-sdk/issues/2909))
+- `@gusto/embedded-api` queries and mutations now run regardless of network state, instead of silently stalling when the browser reports itself offline ([#2895](https://github.com/Gusto/embedded-react-sdk/issues/2895))
+- Trim whitespace from name fields and clarify the invalid-name error copy ([#2896](https://github.com/Gusto/embedded-react-sdk/issues/2896))
+- Fix payroll employee edit defaults being skipped for employees with a `constructor`, `toString`, or other inherited `Object.prototype` key as their UUID ([#2900](https://github.com/Gusto/embedded-react-sdk/issues/2900))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@internationalized/number`, `@playwright/test`, `@storybook/addon-a11y`, `@storybook/addon-onboarding`, `axe-core`, `cspell`, `eslint-plugin-tsdoc`, `vite`, `vite-plugin-dts`) ([#2907](https://github.com/Gusto/embedded-react-sdk/issues/2907), [#2905](https://github.com/Gusto/embedded-react-sdk/issues/2905), [#2912](https://github.com/Gusto/embedded-react-sdk/issues/2912), [#2903](https://github.com/Gusto/embedded-react-sdk/issues/2903), [#2914](https://github.com/Gusto/embedded-react-sdk/issues/2914), [#2851](https://github.com/Gusto/embedded-react-sdk/issues/2851), [#2904](https://github.com/Gusto/embedded-react-sdk/issues/2904), [#2915](https://github.com/Gusto/embedded-react-sdk/issues/2915), [#2913](https://github.com/Gusto/embedded-react-sdk/issues/2913))
+- Bump `msw` to 3.0.3 ([#2916](https://github.com/Gusto/embedded-react-sdk/issues/2916))
+- Bump `katex` in `/docs-site` ([#2891](https://github.com/Gusto/embedded-react-sdk/issues/2891))
+
 ## [0.56.7](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.6...v0.56.7) (2026-10-13)
 
 ### Fixes

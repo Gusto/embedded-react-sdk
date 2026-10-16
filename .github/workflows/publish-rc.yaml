@@ -107,6 +107,16 @@ jobs:
         id: resolve-ref
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Summarize RC source for approval
+        run: |
+          {
+            echo '## RC publish request'
+            printf 'Source commit: `%s`\n\n' "$(git rev-parse HEAD)"
+            printf 'Base version: `%s`\n\n' "$(jq -r .version package.json)"
+            printf 'Starting RC number: `%s` (increments if already published)\n\n' "$INPUT_RC_NUMBER"
+            printf 'Dry run: `%s`\n' "${INPUT_DRY_RUN:-false}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   build:
     needs: validate
     uses: ./.github/workflows/build-sdk.yaml
@@ -115,12 +125,17 @@ jobs:
 
   publish:
     needs: [validate, build]
-    runs-on:
-      group: gusto-ubuntu-default
+    concurrency:
+      group: npm-rc
+      cancel-in-progress: false
+    environment: npm-release-rc
+    # npm trusted publishing requires a GitHub-hosted runner.
+    # GitHub writes run separately on Gusto's allowlisted runners.
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
-    # No actions/cache or npm ci here — this job holds NPM_TOKEN, and
+    # No actions/cache or npm ci here — this job can request npm OIDC credentials, and
     # build-sdk.yaml already built dist/ on a separate, secret-less runner.
     # See validate-release-workflows.test.sh.
     env:
@@ -133,10 +148,22 @@ jobs:
         with:
           ref: ${{ needs.validate.outputs.ref }}
 
+      # Publishing helpers come from the dispatch SHA, not the selected RC source.
+      # Keep this checkout separate so a release branch cannot replace them.
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          path: .release-workflow
+          persist-credentials: false
+
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Install OIDC-compatible npm
+        run: npm install --global npm@11.21.0 --ignore-scripts
 
       - name: Download build artifact
         uses: actions/download-artifact@v6
@@ -158,67 +185,16 @@ jobs:
           git log -1 --pretty=format:"  Author: %an <%ae>%n  Date: %ad%n  Message: %s" --date=short
 
       - name: Prepare RC version
-        run: |
-          # Get current version from package.json
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          PACKAGE_NAME="@gusto/embedded-react-sdk"
-
-          # Starting RC number (from input or default to 1)
-          RC_NUMBER="${INPUT_RC_NUMBER:-1}"
-
-          # Function to check if version exists on npm
-          check_version_exists() {
-            local version=$1
-            npm view "${PACKAGE_NAME}@${version}" version 2>/dev/null
-          }
-
-          # Find the next available RC number
-          while true; do
-            RC_VERSION="${CURRENT_VERSION}-rc.${RC_NUMBER}"
-
-            echo "Checking if version $RC_VERSION exists..."
-
-            if check_version_exists "$RC_VERSION"; then
-              echo "Version $RC_VERSION already exists, incrementing to rc.$((RC_NUMBER + 1))"
-              RC_NUMBER=$((RC_NUMBER + 1))
-            else
-              echo "Version $RC_VERSION is available!"
-              break
-            fi
-
-            # Safety check to prevent infinite loops
-            if [ $RC_NUMBER -gt 100 ]; then
-              echo "❌ Error: RC number exceeded 100, something might be wrong"
-              exit 1
-            fi
-          done
-
-          echo "Publishing RC version: $RC_VERSION from $REF_TYPE: $REF_NAME"
-
-          # Update package.json with RC version (disable git operations and lifecycle scripts)
-          npm version $RC_VERSION --no-git-tag-version --ignore-scripts
-
-          # Set environment variable for later steps
-          echo "RC_VERSION=$RC_VERSION" >> $GITHUB_ENV
+        id: rc-version
+        run: bash .release-workflow/.github/scripts/prepare-rc.sh "${INPUT_RC_NUMBER:-1}"
 
       - name: Publish RC version
+        env:
+          RC_VERSION: ${{ steps.rc-version.outputs.version }}
         run: |
-          if [ "${INPUT_DRY_RUN:-false}" = "true" ]; then
+          if [ "$INPUT_DRY_RUN" = true ]; then
             npm publish --access public --tag rc --ignore-scripts --dry-run
           else
             npm publish --access public --tag rc --ignore-scripts
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Output published version
-        run: |
-          if [ "${INPUT_DRY_RUN:-false}" = "true" ]; then
-            echo "✅ Dry run only — $RC_VERSION was NOT published"
-          else
-            echo "✅ Published RC version: $RC_VERSION"
-          fi
-          echo "📦 Install with: npm install @gusto/embedded-react-sdk@rc"
-          echo "🔗 Or specific version: npm install @gusto/embedded-react-sdk@$RC_VERSION"
-          echo "🌿 Released from $REF_TYPE: $REF_NAME"
-          echo "📋 Full commit: $(git rev-parse HEAD)"
+          printf 'Install with: npm install @gusto/embedded-react-sdk@%s\n' "$RC_VERSION"
