@@ -12,7 +12,7 @@ const pull = {
   number: 12,
   state: 'open',
   base: { ref: 'main' },
-  head: { sha: 'head' },
+  head: { sha: 'head', ref: 'chore/release-1.2.4' },
   user: { login: 'author' },
 }
 
@@ -26,7 +26,8 @@ function fixture(options = {}) {
     status = 'ahead',
     reviews = [],
     permission = 'write',
-    currentPull = pull,
+    pull: evaluatedPull = pull,
+    currentPull = evaluatedPull,
     entries = [],
     currentEntries = entries,
   } = options
@@ -80,7 +81,7 @@ function fixture(options = {}) {
         update: async parameters => Object.assign(reports[parameters.check_run_id - 1], parameters),
       },
     },
-    paginate: async endpoint => (endpoint === github.rest.pulls.list ? [pull] : reviews),
+    paginate: async endpoint => (endpoint === github.rest.pulls.list ? [evaluatedPull] : reviews),
     graphql: async () => ({
       repository: {
         mergeQueue: {
@@ -204,6 +205,27 @@ test('main advancing during evaluation fails the check', async () => {
   const reports = await execute({ reviews: [review(1, 'APPROVED')], mainMoved: true })
   assert.equal(reports[0].conclusion, 'failure')
   assert.equal(reports[0].output.title, 'PR or main changed during evaluation')
+})
+
+test('non-release branches skip the freshness check entirely, even when main is moving', async () => {
+  const nonReleasePull = { ...pull, head: { ...pull.head, ref: 'fix/off-cycle-reason-enum-hook' } }
+  const reports = await execute({ pull: nonReleasePull, mainMoved: true })
+  assert.equal(reports[0].conclusion, 'success')
+  assert.equal(reports[0].output.title, 'Not a release branch')
+})
+
+test('a merge queue group with no release branches skips the freshness check too', async () => {
+  const nonReleasePull = { ...pull, head: { ...pull.head, ref: 'fix/off-cycle-reason-enum-hook' } }
+  const reports = await execute({
+    pull: nonReleasePull,
+    entries: [entry],
+    currentEntries: [],
+    mainMoved: true,
+  })
+  assert.deepEqual(
+    reports.map(check => check.conclusion),
+    ['success', 'success'],
+  )
 })
 
 test('a push, close, or base change during evaluation cannot produce a passing check', async () => {
