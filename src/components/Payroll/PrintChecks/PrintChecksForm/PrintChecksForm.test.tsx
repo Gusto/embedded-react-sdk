@@ -18,6 +18,7 @@ describe('PrintChecksForm', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
   let anchorClickSpy: ReturnType<typeof vi.spyOn>
+
   const flowContextValue = {
     component: null,
     onEvent,
@@ -179,7 +180,9 @@ describe('PrintChecksForm', () => {
         documentUrl: 'https://example.com/checks.pdf',
       })
     })
-    expect(anchorClickSpy).toHaveBeenCalledTimes(1)
+    await waitFor(() => {
+      expect(anchorClickSpy).toHaveBeenCalledTimes(1)
+    })
     expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('href', 'https://example.com/checks.pdf')
   })
 

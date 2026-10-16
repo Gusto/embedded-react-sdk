@@ -30,7 +30,7 @@ const Root = ({ dictionary, documentUrl, className }: PrintChecksSummaryProps) =
       <Heading as="h2">{t('succeededTitle')}</Heading>
       <Text variant="supporting">{t('succeededDescription')}</Text>
       {documentUrl && (
-        <Link href={documentUrl} target="_blank" rel="noopener noreferrer">
+        <Link href={documentUrl} target="_blank" rel="noreferrer">
           {t('viewChecksCta')}
         </Link>
       )}

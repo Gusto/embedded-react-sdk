@@ -71,7 +71,7 @@ const downloadGeneratedChecks = (url: string) => {
   link.rel = 'noopener noreferrer'
   document.body.appendChild(link)
   link.click()
-  link.remove()
+  document.body.removeChild(link)
 }
 
 /** @internal */
@@ -104,8 +104,10 @@ const Root = ({ dictionary, payrollId, isGenerating, className }: PrintChecksFor
 
   const { start: startGenerationPoll } = useGenerationPoll({
     onSucceeded: url => {
-      if (url) downloadGeneratedChecks(url)
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED, { documentUrl: url })
+      if (url) {
+        downloadGeneratedChecks(url)
+      }
     },
     onFailed: () => {
       onEvent(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, { errorMessage: null })
