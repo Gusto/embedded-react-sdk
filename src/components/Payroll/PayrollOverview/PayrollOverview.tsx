@@ -181,7 +181,14 @@ const Root = ({
     () => ({
       companyId,
       payrollId,
-      include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
+      include: [
+        'taxes',
+        'benefits',
+        'deductions',
+        'totals',
+        'payroll_taxes',
+        'payroll_status_meta',
+      ],
       page: currentPage,
       per: itemsPerPage,
       sortBy: 'last_name',
