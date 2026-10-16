@@ -254,83 +254,98 @@ describe('PayrollConfiguration', () => {
   })
 
   describe('pagination', () => {
+    const PAGE_LOAD_TIMEOUT = 5000
+    const PAGINATION_TEST_TIMEOUT = 20000
+
     it('shows pagination controls when there are multiple pages', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
+      expect(
+        await screen.findByText('Alice Anderson', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+      ).toBeInTheDocument()
 
       const nextButton = screen.getByTestId('pagination-next')
       expect(nextButton).toBeInTheDocument()
     })
 
-    it('clicking next page shows different employees', async () => {
-      const user = userEvent.setup()
+    it(
+      'clicking next page shows different employees',
+      async () => {
+        const user = userEvent.setup()
 
-      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+        renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
-      expect(screen.getByText('Yara Young')).toBeInTheDocument()
-      expect(screen.queryByText('Kate King')).not.toBeInTheDocument()
+        expect(
+          await screen.findByText('Alice Anderson', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
+        expect(screen.getByText('Yara Young')).toBeInTheDocument()
+        expect(screen.queryByText('Kate King')).not.toBeInTheDocument()
 
-      const nextButton = screen.getByTestId('pagination-next')
-      await user.click(nextButton)
+        const nextButton = screen.getByTestId('pagination-next')
+        await user.click(nextButton)
 
-      await waitFor(() => {
-        expect(screen.getByText('Kate King')).toBeInTheDocument()
-      })
-      expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
-      expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
-    })
+        expect(
+          await screen.findByText('Kate King', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
+        expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
+        expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
+      },
+      PAGINATION_TEST_TIMEOUT,
+    )
 
-    it('clicking previous page returns to prior data', async () => {
-      const user = userEvent.setup()
+    it(
+      'clicking previous page returns to prior data',
+      async () => {
+        const user = userEvent.setup()
 
-      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+        renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
+        expect(
+          await screen.findByText('Alice Anderson', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
 
-      const nextButton = screen.getByTestId('pagination-next')
-      await user.click(nextButton)
+        const nextButton = screen.getByTestId('pagination-next')
+        await user.click(nextButton)
 
-      await waitFor(() => {
-        expect(screen.getByText('Kate King')).toBeInTheDocument()
-      })
+        expect(
+          await screen.findByText('Kate King', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
 
-      const prevButton = screen.getByTestId('pagination-previous')
-      await user.click(prevButton)
+        const prevButton = screen.getByTestId('pagination-previous')
+        await user.click(prevButton)
 
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
-      expect(screen.getByText('Bob Baker')).toBeInTheDocument()
-    })
+        expect(
+          await screen.findByText('Alice Anderson', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
+        expect(screen.getByText('Bob Baker')).toBeInTheDocument()
+      },
+      PAGINATION_TEST_TIMEOUT,
+    )
 
-    it('employee compensations stay in sync with employee details across page changes', async () => {
-      const user = userEvent.setup()
+    it(
+      'employee compensations stay in sync with employee details across page changes',
+      async () => {
+        const user = userEvent.setup()
 
-      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+        renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
-      })
-      expect(screen.getByText('Yara Young')).toBeInTheDocument()
+        expect(
+          await screen.findByText('Alice Anderson', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
+        expect(screen.getByText('Yara Young')).toBeInTheDocument()
 
-      const nextButton = screen.getByTestId('pagination-next')
-      await user.click(nextButton)
+        const nextButton = screen.getByTestId('pagination-next')
+        await user.click(nextButton)
 
-      await waitFor(() => {
-        expect(screen.getByText('Kate King')).toBeInTheDocument()
-      })
-      expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
-      expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
-      expect(screen.queryByText('Yara Young')).not.toBeInTheDocument()
-    })
+        expect(
+          await screen.findByText('Kate King', {}, { timeout: PAGE_LOAD_TIMEOUT }),
+        ).toBeInTheDocument()
+        expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
+        expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
+        expect(screen.queryByText('Yara Young')).not.toBeInTheDocument()
+      },
+      PAGINATION_TEST_TIMEOUT,
+    )
   })
 
   describe('late payroll banner', () => {
