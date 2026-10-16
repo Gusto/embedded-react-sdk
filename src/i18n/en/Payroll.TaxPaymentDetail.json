@@ -3,7 +3,6 @@
   "unknownAgency": "Unknown agency",
   "federal": "Federal",
   "state": "State · {{jurisdiction}}",
-  "periodRange": "{{start}} – {{end}}",
   "notAvailable": "—",
   "status": {
     "paid": "Paid",

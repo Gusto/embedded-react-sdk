@@ -53,6 +53,25 @@ const rows: TaxPaymentRow[] = [
   },
 ]
 
+/** Legacy payments predate the period/due-date columns, so the API sends them as null. */
+const legacyRows: TaxPaymentRow[] = [
+  {
+    payment: createPayment({
+      uuid: 'tax-payment-legacy',
+      agencyName: null,
+      jurisdiction: null,
+      periodStart: null,
+      dueDate: null,
+    }),
+    status: 'scheduled',
+  },
+  {
+    payment: createPayment({ uuid: 'tax-payment-zero', amount: '0.00', amountPaid: '0.00' }),
+    status: 'scheduled',
+  },
+  ...rows,
+]
+
 const pagination = (totalCount: number): PaginationControlProps => ({
   currentPage: 1,
   totalPages: 1,
@@ -68,9 +87,11 @@ const pagination = (totalCount: number): PaginationControlProps => ({
 function Story({
   storyRows,
   hasPayments = true,
+  isTruncated = false,
 }: {
   storyRows: TaxPaymentRow[]
   hasPayments?: boolean
+  isTruncated?: boolean
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [jurisdictionFilter, setJurisdictionFilter] = useState('')
@@ -82,6 +103,7 @@ function Story({
       overdueCount={storyRows.filter(({ status }) => status === 'overdue').length}
       jurisdictions={['US', 'CA']}
       hasPayments={hasPayments}
+      isTruncated={isTruncated}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
       jurisdictionFilter={jurisdictionFilter}
@@ -103,3 +125,7 @@ export const NoOverdue = () => (
 export const Empty = () => <Story storyRows={[]} hasPayments={false} />
 
 export const NoMatchingResults = () => <Story storyRows={[]} />
+
+export const LegacyAndEdgeCasePayments = () => <Story storyRows={legacyRows} />
+
+export const Truncated = () => <Story storyRows={rows} isTruncated />

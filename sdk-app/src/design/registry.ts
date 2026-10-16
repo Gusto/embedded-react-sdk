@@ -63,12 +63,6 @@ export const categorizedRegistry: CategorizedRegistry = {
       description:
         'View tax filing status for a company — filter, sort, and drill into individual filings.',
     },
-    {
-      name: 'Agent Payments',
-      path: '/design/agent-payments',
-      description:
-        'View agency tax payments for a company — filter, sort, and drill into tax-liability detail.',
-    },
   ],
   Contractors: [
     {

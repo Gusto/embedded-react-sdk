@@ -3,14 +3,19 @@ import { useTranslation } from 'react-i18next'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { useTaxPaymentsGetTaxPaymentSuspense } from '@gusto/embedded-api/react-query/taxPaymentsGetTaxPayment'
+import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { buildPayrollsGetQuery } from '@gusto/embedded-api/react-query/payrollsGet'
+import {
+  ProcessingStatuses,
+  QueryParamPayrollTypes,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import { deriveTaxPaymentStatus } from '../shared/taxPaymentStatus'
 import { TaxPaymentDetailPresentation, type PayPeriodRange } from './TaxPaymentDetailPresentation'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { addDays, formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
 
 /**
  * Props for {@link TaxPaymentDetail}.
@@ -30,7 +35,8 @@ export interface TaxPaymentDetailProps extends BaseComponentInterface<'Payroll.T
  *
  * @remarks
  * Requires the `taxPayments` flag in {@link UnstableFeatures}. Each liability is labeled with the
- * pay period of the payroll it came from.
+ * pay period of the payroll it came from, resolved through a single payroll lookup windowed around
+ * the payment's tax period rather than one request per payroll.
  *
  * @events
  * | Event | Description | Data |
@@ -42,12 +48,24 @@ export interface TaxPaymentDetailProps extends BaseComponentInterface<'Payroll.T
  * @alpha
  */
 export function TaxPaymentDetail(props: TaxPaymentDetailProps) {
+  useUnstableFeature('taxPayments', { throwIfDisabled: true })
+
   return (
     <BaseComponent {...props}>
       <Root {...props} />
     </BaseComponent>
   )
 }
+
+/**
+ * Days of slack added to each end of the tax period when looking up the payrolls behind a payment's
+ * liabilities. A liability's pay period can fall outside the tax deposit period it was remitted in,
+ * so the window is padded rather than matched exactly.
+ */
+const PAYROLL_WINDOW_PADDING_DAYS = 45
+
+/** Maximum payrolls fetched per windowed lookup; matches the endpoint's page-size ceiling. */
+const PAYROLL_LOOKUP_PER_PAGE = 100
 
 const Root = ({
   companyId,
@@ -56,7 +74,6 @@ const Root = ({
   dictionary,
   onEvent,
 }: TaxPaymentDetailProps) => {
-  useUnstableFeature('taxPayments', { throwIfDisabled: true })
   useComponentDictionary('Payroll.TaxPaymentDetail', dictionary)
   useI18n('Payroll.TaxPaymentDetail')
   const { t } = useTranslation('Payroll.TaxPaymentDetail')
@@ -66,31 +83,71 @@ const Root = ({
     data: { taxPayment },
   } = useTaxPaymentsGetTaxPaymentSuspense({ companyUuid: companyId, uuid: taxPaymentId })
 
-  if (!taxPayment) {
-    throw new Error(t('errors.taxPaymentNotFound'))
-  }
-
   const payrollIds = useMemo(
-    () => [...new Set((taxPayment.lineItems ?? []).map(lineItem => lineItem.payrollUuid))],
-    [taxPayment.lineItems],
+    () => [...new Set((taxPayment?.lineItems ?? []).map(lineItem => lineItem.payrollUuid))],
+    [taxPayment?.lineItems],
   )
 
-  const payrollResults = useSuspenseQueries({
-    queries: payrollIds.map(payrollId =>
+  // One windowed list request resolves the pay period for every liability, instead of a GET per
+  // payroll. `payrollsList` filters on pay period when `dateFilterBy` is omitted, which is what the
+  // liabilities are keyed by.
+  const periodStart = normalizeToDate(
+    (taxPayment?.periodStart ?? taxPayment?.periodEnd)?.toString(),
+  )
+  const periodEnd = normalizeToDate(taxPayment?.periodEnd.toString())
+
+  const { data: payrollsData } = usePayrollsListSuspense({
+    companyId,
+    processingStatuses: [ProcessingStatuses.Processed, ProcessingStatuses.Unprocessed],
+    payrollTypes: [
+      QueryParamPayrollTypes.Regular,
+      QueryParamPayrollTypes.OffCycle,
+      QueryParamPayrollTypes.External,
+    ],
+    startDate:
+      (periodStart && formatDateToStringDate(addDays(periodStart, -PAYROLL_WINDOW_PADDING_DAYS))) ??
+      undefined,
+    endDate:
+      (periodEnd && formatDateToStringDate(addDays(periodEnd, PAYROLL_WINDOW_PADDING_DAYS))) ??
+      undefined,
+    per: PAYROLL_LOOKUP_PER_PAGE,
+  })
+
+  const windowedPayPeriods = useMemo(() => {
+    const byPayrollId = new Map<string, PayPeriodRange | undefined>()
+    for (const payroll of payrollsData.payrollList ?? []) {
+      if (payroll.payrollUuid) byPayrollId.set(payroll.payrollUuid, payroll.payPeriod)
+    }
+    return byPayrollId
+  }, [payrollsData.payrollList])
+
+  // Safety net for liabilities whose payroll fell outside the padded window, so correctness does
+  // not depend on the padding being wide enough. Normally resolves to zero extra requests.
+  const unresolvedPayrollIds = useMemo(
+    () => payrollIds.filter(payrollId => !windowedPayPeriods.has(payrollId)),
+    [payrollIds, windowedPayPeriods],
+  )
+
+  const fallbackResults = useSuspenseQueries({
+    queries: unresolvedPayrollIds.map(payrollId =>
       buildPayrollsGetQuery(gustoClient, { companyId, payrollId }),
     ),
   })
 
-  const payPeriodsByPayrollId = useMemo(
-    () =>
-      Object.fromEntries(
-        payrollIds.map((payrollId, index): [string, PayPeriodRange | undefined] => [
-          payrollId,
-          payrollResults[index]?.data.payrollShow?.payPeriod,
-        ]),
-      ),
-    [payrollIds, payrollResults],
-  )
+  const payPeriodsByPayrollId = useMemo(() => {
+    const resolved: Record<string, PayPeriodRange | undefined> = {}
+    for (const payrollId of payrollIds) {
+      resolved[payrollId] = windowedPayPeriods.get(payrollId)
+    }
+    unresolvedPayrollIds.forEach((payrollId, index) => {
+      resolved[payrollId] = fallbackResults[index]?.data.payrollShow?.payPeriod
+    })
+    return resolved
+  }, [payrollIds, windowedPayPeriods, unresolvedPayrollIds, fallbackResults])
+
+  if (!taxPayment) {
+    throw new Error(t('errors.taxPaymentNotFound'))
+  }
 
   const status = deriveTaxPaymentStatus(taxPayment, formatDateToStringDate(new Date()) ?? '')
 

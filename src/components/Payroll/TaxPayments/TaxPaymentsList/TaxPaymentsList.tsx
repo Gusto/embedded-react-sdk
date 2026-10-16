@@ -37,6 +37,8 @@ export interface TaxPaymentsListProps extends BaseComponentInterface<'Payroll.Ta
  * @alpha
  */
 export function TaxPaymentsList(props: TaxPaymentsListProps) {
+  useUnstableFeature('taxPayments', { throwIfDisabled: true })
+
   return (
     <BaseComponent {...props}>
       <Root {...props} />
@@ -49,21 +51,17 @@ function matchesAgencySearch({ payment }: TaxPaymentRow, query: string): boolean
 }
 
 const Root = ({ companyId, className, dictionary, onEvent }: TaxPaymentsListProps) => {
-  useUnstableFeature('taxPayments', { throwIfDisabled: true })
   useComponentDictionary('Payroll.TaxPaymentsList', dictionary)
   useI18n('Payroll.TaxPaymentsList')
 
-  const payments = useAllTaxPayments(companyId)
+  const { taxPayments: payments, isTruncated } = useAllTaxPayments(companyId)
   const [jurisdictionFilter, setJurisdictionFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
+  // Already ordered newest due date first by the server, so no client-side sort is needed.
   const allRows = useMemo<TaxPaymentRow[]>(() => {
     const today = formatDateToStringDate(new Date()) ?? ''
-    return payments
-      .map(payment => ({ payment, status: deriveTaxPaymentStatus(payment, today) }))
-      .sort((a, b) =>
-        (b.payment.dueDate?.toString() ?? '').localeCompare(a.payment.dueDate?.toString() ?? ''),
-      )
+    return payments.map(payment => ({ payment, status: deriveTaxPaymentStatus(payment, today) }))
   }, [payments])
 
   const jurisdictions = useMemo(
@@ -98,6 +96,7 @@ const Root = ({ companyId, className, dictionary, onEvent }: TaxPaymentsListProp
       overdueCount={overdueCount}
       jurisdictions={jurisdictions}
       hasPayments={payments.length > 0}
+      isTruncated={isTruncated}
       searchValue={searchValue}
       onSearchChange={actions.onSearchChange}
       jurisdictionFilter={jurisdictionFilter}

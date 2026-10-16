@@ -8624,8 +8624,6 @@ export namespace Translations {
     federal: string
     /** @defaultValue `"State · {{jurisdiction}}"` */
     state: string
-    /** @defaultValue `"{{start}} – {{end}}"` */
-    periodRange: string
     /** @defaultValue `"—"` */
     notAvailable: string
     status: {
@@ -8719,8 +8717,8 @@ export namespace Translations {
     state: string
     /** @defaultValue `"Unknown agency"` */
     unknownAgency: string
-    /** @defaultValue `"{{start}} – {{end}}"` */
-    periodRange: string
+    /** @defaultValue `"—"` */
+    notAvailable: string
     /** @defaultValue `"View"` */
     viewCta: string
     /** @defaultValue `"View {{agency}} tax payment"` */
@@ -8752,6 +8750,10 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Try a different search or adjust the filters."` */
       description: string
+    }
+    truncatedAlert: {
+      /** @defaultValue `"Showing the most recent tax payments. Older payments are not included."` */
+      label: string
     }
   }
   /** Translation keys for the `Payroll.Transition` i18n namespace. */

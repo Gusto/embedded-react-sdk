@@ -3,7 +3,7 @@ import type { TaxPayment } from '@gusto/embedded-api/models/components/taxpaymen
 import type { TaxPaymentLineItem } from '@gusto/embedded-api/models/components/taxpaymentlineitem'
 import {
   TAX_PAYMENT_STATUS_BADGES,
-  isFederalTaxPayment,
+  getJurisdictionLabel,
   type TaxPaymentStatus,
 } from '../shared/taxPaymentStatus'
 import styles from './TaxPaymentDetailPresentation.module.scss'
@@ -43,23 +43,17 @@ export function TaxPaymentDetailPresentation({
   useI18n('Payroll.TaxPaymentDetail')
   const { t } = useTranslation('Payroll.TaxPaymentDetail')
   const currencyFormatter = useNumberFormatter('currency')
-  const { formatShort, formatShortWithYear, formatLongWithYear } = useDateFormatter()
+  const { formatLongWithYear, formatPayPeriodRange } = useDateFormatter()
 
-  const jurisdictionLabel = isFederalTaxPayment(payment)
-    ? t('federal')
-    : t('state', { jurisdiction: payment.jurisdiction ?? '' })
+  const { key: jurisdictionKey, values: jurisdictionValues } = getJurisdictionLabel(payment)
+  const jurisdictionLabel = t(jurisdictionKey, jurisdictionValues)
 
   const formatTaxPeriod = (start?: string | null, end?: string | null) =>
-    start && end
-      ? t('periodRange', { start: formatLongWithYear(start), end: formatLongWithYear(end) })
-      : t('notAvailable')
+    start && end ? formatPayPeriodRange(start, end) : t('notAvailable')
 
   const formatPayPeriod = (payPeriod?: PayPeriodRange) =>
     payPeriod?.startDate && payPeriod.endDate
-      ? t('periodRange', {
-          start: formatShort(payPeriod.startDate),
-          end: formatShortWithYear(payPeriod.endDate),
-        })
+      ? formatPayPeriodRange(payPeriod.startDate, payPeriod.endDate, { useShortMonth: true })
       : t('notAvailable')
 
   const liabilitiesDataView = useDataView<TaxPaymentLineItem>({

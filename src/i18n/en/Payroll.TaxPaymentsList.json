@@ -19,7 +19,7 @@
   "federal": "Federal",
   "state": "State · {{jurisdiction}}",
   "unknownAgency": "Unknown agency",
-  "periodRange": "{{start}} – {{end}}",
+  "notAvailable": "—",
   "viewCta": "View",
   "viewPaymentLabel": "View {{agency}} tax payment",
   "status": {
@@ -39,5 +39,8 @@
   "noResults": {
     "title": "No matching tax payments",
     "description": "Try a different search or adjust the filters."
+  },
+  "truncatedAlert": {
+    "label": "Showing the most recent tax payments. Older payments are not included."
   }
 }

@@ -4,7 +4,7 @@ import {
   FEDERAL_JURISDICTION,
   TAX_PAYMENT_STATUS_BADGES,
   TAX_PAYMENT_STATUSES,
-  isFederalTaxPayment,
+  getJurisdictionLabel,
   type TaxPaymentStatus,
 } from '../shared/taxPaymentStatus'
 import styles from './TaxPaymentsListPresentation.module.scss'
@@ -34,6 +34,8 @@ export interface TaxPaymentsListPresentationProps {
   jurisdictions: string[]
   /** Whether the company has any tax payments at all, before filtering. */
   hasPayments: boolean
+  /** Whether the fetched list hit the page cap and omits older payments. */
+  isTruncated: boolean
   searchValue: string
   onSearchChange: (value: string) => void
   jurisdictionFilter: string
@@ -51,6 +53,7 @@ export function TaxPaymentsListPresentation({
   overdueCount,
   jurisdictions,
   hasPayments,
+  isTruncated,
   searchValue,
   onSearchChange,
   jurisdictionFilter,
@@ -64,14 +67,14 @@ export function TaxPaymentsListPresentation({
   useI18n('Payroll.TaxPaymentsList')
   const { t } = useTranslation('Payroll.TaxPaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
-  const { formatShortWithYear } = useDateFormatter()
+  const { formatShortWithYear, formatPayPeriodRange } = useDateFormatter()
 
   const agencyLabel = (payment: TaxPayment) => payment.agencyName ?? t('unknownAgency')
 
-  const jurisdictionLabel = (payment: TaxPayment) =>
-    isFederalTaxPayment(payment)
-      ? t('federal')
-      : t('state', { jurisdiction: payment.jurisdiction ?? '' })
+  const jurisdictionLabel = (payment: TaxPayment) => {
+    const { key, values } = getJurisdictionLabel(payment)
+    return t(key, values)
+  }
 
   const jurisdictionOptions = [
     { value: '', label: t('allJurisdictions') },
@@ -107,15 +110,17 @@ export function TaxPaymentsListPresentation({
         key: 'period',
         title: t('columns.period'),
         render: ({ payment }) =>
-          t('periodRange', {
-            start: formatShortWithYear(payment.periodStart?.toString()),
-            end: formatShortWithYear(payment.periodEnd.toString()),
-          }),
+          payment.periodStart
+            ? formatPayPeriodRange(payment.periodStart.toString(), payment.periodEnd.toString(), {
+                useShortMonth: true,
+              })
+            : t('notAvailable'),
       },
       {
         key: 'dueDate',
         title: t('columns.dueDate'),
-        render: ({ payment }) => formatShortWithYear(payment.dueDate?.toString()),
+        render: ({ payment }) =>
+          payment.dueDate ? formatShortWithYear(payment.dueDate.toString()) : t('notAvailable'),
       },
       {
         key: 'amount',
@@ -158,6 +163,8 @@ export function TaxPaymentsListPresentation({
       {overdueCount > 0 && (
         <Alert status="warning" label={t('overdueAlert.label', { count: overdueCount })} />
       )}
+
+      {isTruncated && <Alert status="info" label={t('truncatedAlert.label')} />}
 
       {hasPayments && (
         <div className={styles.toolbar}>
