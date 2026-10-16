@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate'
 import type { PayrollEditEmployeeProps } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { usePayrollEditEmployeeForm } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm'
@@ -23,6 +24,7 @@ import {
   COMPENSATION_NAME_CASH_TIPS,
   COMPENSATION_NAME_PAYCHECK_TIPS,
   COMPENSATION_NAME_REIMBURSEMENT,
+  BREAKPOINTS,
 } from '@/shared/constants'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -299,7 +301,7 @@ const Root = ({
     const rows = getSectionRows(section)
 
     const renderField = (entry: HourEntry, fieldLabel: string) => (
-      <div className={styles.inputContainer}>
+      <div className={classNames(styles.inputContainer, split && styles.workweekInputContainer)}>
         <entry.Field
           label={fieldLabel}
           shouldVisuallyHideLabel
@@ -340,7 +342,21 @@ const Root = ({
       ...(split ? workweekColumns : [valueColumn]),
     ]
 
-    return <DataView label={label} isWithinBox columns={columns} data={rows} />
+    if (!split) {
+      return <DataView label={label} isWithinBox columns={columns} data={rows} />
+    }
+
+    return (
+      <div className={styles.workweekTableScroll}>
+        <DataView
+          label={label}
+          isWithinBox
+          columns={columns}
+          data={rows}
+          breakAt={BREAKPOINTS.SMALL}
+        />
+      </div>
+    )
   }
 
   const renderBreakdownSection = (
