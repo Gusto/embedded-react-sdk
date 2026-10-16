@@ -79,7 +79,7 @@ describe('Dashboard', () => {
     await user.click(screen.getByRole('tab', { name: 'Pay' }))
 
     expect(await screen.findByText('Payment')).toBeInTheDocument()
-    expect(screen.getByText('Compensation')).toBeInTheDocument()
+    expect(await screen.findByText('Compensation')).toBeInTheDocument()
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_DASHBOARD_TAB_CHANGE, {
       tab: 'pay',
     })
