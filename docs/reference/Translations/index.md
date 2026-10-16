@@ -5642,6 +5642,7 @@ Translation keys for the `Payroll.PrintChecksForm` i18n namespace.
 | <a id="property-payrollprintchecksformcancelcta"></a> `cancelCta` | `"Cancel"` |
 | <a id="property-payrollprintchecksformcustomstockdescription"></a> `customStockDescription` | `"Use this check stock if you have check stock that is pre-printed with your company and bank information. The physical check will appear on the top of the check PDF. Check numbers should already be pre-printed on the check stock you purchased."` |
 | <a id="property-payrollprintchecksformcustomstocklabel"></a> `customStockLabel` | `"Custom check stock"` |
+| <a id="property-payrollprintchecksformgeneratingchecksmessage"></a> `generatingChecksMessage` | `"Generating checks…"` |
 | <a id="property-payrollprintchecksformmodaltitle"></a> `modalTitle` | `"Choose check stock"` |
 | <a id="property-payrollprintchecksformstartingchecknumberdescription"></a> `startingCheckNumberDescription` | `"This will be the first check number, all other checks will follow sequentially."` |
 | <a id="property-payrollprintchecksformstartingchecknumberlabel"></a> `startingCheckNumberLabel` | `"Check number starts with"` |
