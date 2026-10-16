@@ -1087,11 +1087,19 @@ describe('Employee Profile', () => {
       )
 
       await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith('employee/updated', expect.anything())
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          'employee/addresses/work/updated',
+          expect.anything(),
+        )
       })
+      expect(mockOnEvent).toHaveBeenCalledWith('employee/updated', expect.anything())
       expect(mockOnEvent).toHaveBeenCalledWith('employee/addresses/home/updated', expect.anything())
-      expect(mockOnEvent).toHaveBeenCalledWith('employee/addresses/work/updated', expect.anything())
-      expect(mockOnEvent).toHaveBeenCalledWith('employee/profile/done', expect.anything())
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          'employee/profile/done',
+          expect.objectContaining({ startDate: '2026-05-20' }),
+        )
+      })
     })
 
     it('includes courtesyWithholding in home address update payload', async () => {

@@ -7,6 +7,7 @@ import { apiVersionHook } from './apiVersionHook'
 import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import { informationRequestEnumHook } from './informationRequestEnumHook'
 import { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
+import { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
@@ -67,6 +68,7 @@ export function ApiProvider({
     sdkHooks.registerAfterErrorHook(apiVersionMismatchHook)
     sdkHooks.registerAfterSuccessHook(informationRequestEnumHook)
     sdkHooks.registerAfterSuccessHook(payrollDeductionAmountHook)
+    sdkHooks.registerAfterSuccessHook(payrollOffCycleReasonEnumHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
