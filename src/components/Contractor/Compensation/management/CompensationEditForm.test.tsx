@@ -83,10 +83,12 @@ describe('CompensationEditForm', () => {
       expect(updateResolver).toHaveBeenCalledTimes(1)
     })
     expect(requestBody).toMatchObject({ type: 'Individual', wage_type: 'Hourly' })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED,
-      expect.objectContaining({ hourlyRate: '50.00' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_MANAGEMENT_COMPENSATION_UPDATED,
+        expect.objectContaining({ hourlyRate: '50.00' }),
+      )
+    })
   })
 
   it('blocks an hourly rate above the server cap (regression for SDK-1297)', async () => {

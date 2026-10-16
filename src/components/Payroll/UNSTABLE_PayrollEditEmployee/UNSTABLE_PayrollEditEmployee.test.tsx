@@ -257,10 +257,14 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     await waitFor(() => {
       expect(updateResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
-      expect.objectContaining({ payrollPrepared: expect.objectContaining({ uuid: 'payroll-1' }) }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
+        expect.objectContaining({
+          payrollPrepared: expect.objectContaining({ uuid: 'payroll-1' }),
+        }),
+      )
+    })
     expect(updateBody).not.toBeNull()
   })
 

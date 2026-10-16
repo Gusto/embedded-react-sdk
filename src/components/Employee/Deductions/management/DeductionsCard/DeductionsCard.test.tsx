@@ -151,9 +151,11 @@ describe('DeductionsCard (standalone)', () => {
     })
     expect(updatePath).toBe('/v1/garnishments/d-1')
     expect(updateBody).toMatchObject({ active: false, version: 'version-d-1' })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
-      expect.objectContaining({ uuid: 'd-1', active: false }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
+        expect.objectContaining({ uuid: 'd-1', active: false }),
+      )
+    })
   })
 })

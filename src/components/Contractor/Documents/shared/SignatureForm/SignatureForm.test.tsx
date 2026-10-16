@@ -296,10 +296,12 @@ describe('Contractor SignatureForm', () => {
     expect(signBody!.fields).toContainEqual({ key: 'c_corporation', value: '1' })
     expect(signBody!.fields).toContainEqual({ key: 'signature_text', value: 'Klay Thompson' })
 
-    expect(onEvent).toHaveBeenCalledWith(
-      contractorEvents.CONTRACTOR_SIGN_DOCUMENT,
-      expect.objectContaining({ uuid: W9_DOCUMENT_UUID }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_SIGN_DOCUMENT,
+        expect.objectContaining({ uuid: W9_DOCUMENT_UUID }),
+      )
+    })
   })
 
   it('links to the IRS W-9 instructions and a downloadable PDF', async () => {
