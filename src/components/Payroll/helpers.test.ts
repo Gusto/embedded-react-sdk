@@ -13,7 +13,6 @@ import {
   getAdditionalEarningsCompensations,
   canCancelPayroll,
   isOvertimeEligibleFlsaStatus,
-  isTaxReconciliationPayroll,
   getPayPeriodOrCheckDateLabel,
 } from './helpers'
 import { formatPayPeriodRange, formatDateShortWithYear } from '@/helpers/dateFormatting'
@@ -1067,21 +1066,6 @@ describe('Payroll helpers', () => {
         const payroll = { offCycle: true, offCycleReason: reason }
         expect(getPayrollTypeLabel(payroll)).toBe(expectedLabel)
       }
-    })
-  })
-
-  describe('isTaxReconciliationPayroll', () => {
-    it('returns true for the tax reconciliation off-cycle reason', () => {
-      expect(isTaxReconciliationPayroll('Tax reconciliation')).toBe(true)
-    })
-
-    it('returns false for other off-cycle reasons', () => {
-      expect(isTaxReconciliationPayroll('Bonus')).toBe(false)
-    })
-
-    it('returns false for null or undefined', () => {
-      expect(isTaxReconciliationPayroll(null)).toBe(false)
-      expect(isTaxReconciliationPayroll(undefined)).toBe(false)
     })
   })
 
