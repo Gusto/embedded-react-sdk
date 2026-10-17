@@ -138,7 +138,10 @@ describe('PayrollLanding', () => {
     })
   })
 
-  describe('receipt and summary navigation', () => {
+  describe.each([
+    { implementation: 'legacy', unstableFeatures: {} },
+    { implementation: 'hooks', unstableFeatures: { payrollHistoryHooks: true } },
+  ])('receipt and summary navigation ($implementation)', ({ unstableFeatures }) => {
     beforeEach(async () => {
       // Mock payroll history data
       const mockPayrollHistoryData = await getFixture('payroll-history-test-data')
@@ -158,7 +161,7 @@ describe('PayrollLanding', () => {
         }),
       )
 
-      renderWithProviders(<PayrollLanding {...defaultProps} />)
+      renderWithProviders(<PayrollLanding {...defaultProps} />, { unstableFeatures })
 
       // Switch to payroll history tab
       await waitFor(() => {
@@ -188,7 +191,7 @@ describe('PayrollLanding', () => {
     it('shows summary when RUN_PAYROLL_SUMMARY_VIEWED event is emitted', async () => {
       const user = userEvent.setup()
 
-      renderWithProviders(<PayrollLanding {...defaultProps} />)
+      renderWithProviders(<PayrollLanding {...defaultProps} />, { unstableFeatures })
 
       // Switch to payroll history tab
       await waitFor(() => {
@@ -229,7 +232,7 @@ describe('PayrollLanding', () => {
     it('emits events correctly through the wrapper', async () => {
       const user = userEvent.setup()
 
-      renderWithProviders(<PayrollLanding {...defaultProps} />)
+      renderWithProviders(<PayrollLanding {...defaultProps} />, { unstableFeatures })
 
       // Switch to payroll history tab
       await waitFor(() => {
