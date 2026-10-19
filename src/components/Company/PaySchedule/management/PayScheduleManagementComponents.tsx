@@ -76,11 +76,17 @@ export function PayScheduleAssignmentContextual() {
 
 /** @internal */
 export function PayScheduleEditFormContextual() {
+  const { t } = useTranslation('Company.Management.PaySchedule')
   const { companyId, payScheduleId, defaultValues, onEvent } =
     useFlow<PayScheduleManagementContextInterface>()
 
   return (
     <PayScheduleForm
+      variant="management"
+      copy={{
+        anchorEndOfPayPeriodDescription: t('scheduleForm.anchorEndOfPayPeriodDescription'),
+        payrollDeadline: t('scheduleForm.payrollDeadline'),
+      }}
       companyId={ensureRequired(companyId)}
       payScheduleId={payScheduleId}
       defaultValues={defaultValues}
