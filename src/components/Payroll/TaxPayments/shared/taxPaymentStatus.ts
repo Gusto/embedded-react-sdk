@@ -11,6 +11,18 @@ export const TAX_PAYMENT_STATUSES: readonly TaxPaymentStatus[] = [
   'refund',
 ]
 
+/**
+ * Value of the "show everything" entry in the jurisdiction and status filters.
+ *
+ * @remarks
+ * A non-empty sentinel rather than `''` so the filter has a real selected key — an empty key reads
+ * as "no selection" to the underlying select, which renders the placeholder instead of the option
+ * and cannot be distinguished from being cleared.
+ *
+ * @internal
+ */
+export const ALL_FILTER_VALUE = 'all'
+
 /** @internal */
 export const FEDERAL_JURISDICTION = 'US'
 

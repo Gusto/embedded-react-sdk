@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { TaxPayment } from '@gusto/embedded-api/models/components/taxpayment'
 import {
+  ALL_FILTER_VALUE,
   FEDERAL_JURISDICTION,
   TAX_PAYMENT_STATUS_BADGES,
   TAX_PAYMENT_STATUSES,
@@ -77,7 +78,7 @@ export function TaxPaymentsListPresentation({
   }
 
   const jurisdictionOptions = [
-    { value: '', label: t('allJurisdictions') },
+    { value: ALL_FILTER_VALUE, label: t('allJurisdictions') },
     ...jurisdictions.map(jurisdiction => ({
       value: jurisdiction,
       label: jurisdiction === FEDERAL_JURISDICTION ? t('federalJurisdictionOption') : jurisdiction,
@@ -85,7 +86,7 @@ export function TaxPaymentsListPresentation({
   ]
 
   const statusOptions = [
-    { value: '', label: t('allStatuses') },
+    { value: ALL_FILTER_VALUE, label: t('allStatuses') },
     ...TAX_PAYMENT_STATUSES.map(status => ({ value: status, label: t(`status.${status}`) })),
   ]
 

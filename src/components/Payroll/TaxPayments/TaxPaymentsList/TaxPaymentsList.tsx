@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAllTaxPayments } from '../shared/useAllTaxPayments'
-import { deriveTaxPaymentStatus } from '../shared/taxPaymentStatus'
+import { ALL_FILTER_VALUE, deriveTaxPaymentStatus } from '../shared/taxPaymentStatus'
 import { TaxPaymentsListPresentation, type TaxPaymentRow } from './TaxPaymentsListPresentation'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
@@ -55,8 +55,8 @@ const Root = ({ companyId, className, dictionary, onEvent }: TaxPaymentsListProp
   useI18n('Payroll.TaxPaymentsList')
 
   const { taxPayments: payments, isTruncated } = useAllTaxPayments(companyId)
-  const [jurisdictionFilter, setJurisdictionFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [jurisdictionFilter, setJurisdictionFilter] = useState<string>(ALL_FILTER_VALUE)
+  const [statusFilter, setStatusFilter] = useState<string>(ALL_FILTER_VALUE)
 
   // Already ordered newest due date first by the server, so no client-side sort is needed.
   const allRows = useMemo<TaxPaymentRow[]>(() => {
@@ -78,8 +78,9 @@ const Root = ({ companyId, className, dictionary, onEvent }: TaxPaymentsListProp
     () =>
       allRows.filter(
         ({ payment, status }) =>
-          (!jurisdictionFilter || payment.jurisdiction === jurisdictionFilter) &&
-          (!statusFilter || status === statusFilter),
+          (jurisdictionFilter === ALL_FILTER_VALUE ||
+            payment.jurisdiction === jurisdictionFilter) &&
+          (statusFilter === ALL_FILTER_VALUE || status === statusFilter),
       ),
     [allRows, jurisdictionFilter, statusFilter],
   )

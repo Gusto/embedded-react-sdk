@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { TaxPayment } from '@gusto/embedded-api/models/components/taxpayment'
+import { ALL_FILTER_VALUE } from '../shared/taxPaymentStatus'
 import type { TaxPaymentRow } from './TaxPaymentsListPresentation'
 import { TaxPaymentsListPresentation } from './TaxPaymentsListPresentation'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -94,8 +95,8 @@ function Story({
   isTruncated?: boolean
 }) {
   const [searchValue, setSearchValue] = useState('')
-  const [jurisdictionFilter, setJurisdictionFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [jurisdictionFilter, setJurisdictionFilter] = useState<string>(ALL_FILTER_VALUE)
+  const [statusFilter, setStatusFilter] = useState<string>(ALL_FILTER_VALUE)
 
   return (
     <TaxPaymentsListPresentation

@@ -7,7 +7,11 @@ import { server } from '@/test/mocks/server'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
-import { handleGetTaxPayments } from '@/test/mocks/apis/tax_payments'
+import {
+  handleGetTaxPayment,
+  handleGetTaxPayments,
+  mockTaxPaymentWithLineItems,
+} from '@/test/mocks/apis/tax_payments'
 import { handleGetPayrolls, handleGetPayroll } from '@/test/mocks/apis/payrolls'
 
 const enabledFlag = { unstableFeatures: { taxPayments: true } }
@@ -79,6 +83,34 @@ describe('TaxPaymentsFlow', () => {
     })
   })
 
+  // Narrowing a filter and then widening it again has to round-trip: the "all" entries previously
+  // used an empty-string value, which the select treated as "no selection" and never emitted.
+  it('can filter by jurisdiction and then return to all jurisdictions', async () => {
+    renderWithProviders(<TaxPaymentsFlow companyId="company-123" onEvent={onEvent} />, enabledFlag)
+
+    const rowAgencies = () =>
+      screen
+        .getAllByRole('button', { name: /^View .* tax payment$/ })
+        .map(button => button.getAttribute('aria-label'))
+
+    expect(await screen.findByRole('heading', { name: 'Tax payments' })).toBeInTheDocument()
+    expect(rowAgencies()).toHaveLength(2)
+
+    await user.click(screen.getByRole('button', { name: /Jurisdiction/ }))
+    await user.click(await screen.findByRole('option', { name: 'Federal (US)' }))
+
+    await waitFor(() => {
+      expect(rowAgencies()).toEqual(['View Internal Revenue Service tax payment'])
+    })
+
+    await user.click(screen.getByRole('button', { name: /Jurisdiction/ }))
+    await user.click(await screen.findByRole('option', { name: 'All jurisdictions' }))
+
+    await waitFor(() => {
+      expect(rowAgencies()).toHaveLength(2)
+    })
+  })
+
   it('shows the empty state when the company has no tax payments', async () => {
     server.use(
       handleGetTaxPayments(() =>
@@ -142,6 +174,42 @@ describe('TaxPaymentsFlow', () => {
       isIntegrationTest: true,
       rules: { 'heading-order': { enabled: true } },
     })
+  })
+
+  // An annual tax period padded on both ends exceeds two limits the payrolls endpoint enforces --
+  // a 367-day maximum span and an end_date no more than 93 days out -- which produced a 422 that
+  // took down the whole detail view.
+  it('keeps the payroll lookup window inside the API limits for an annual tax period', async () => {
+    let payrollsUrl: URL | null = null
+    server.use(
+      handleGetTaxPayment(() =>
+        HttpResponse.json({
+          ...mockTaxPaymentWithLineItems,
+          period_start: '2026-01-01',
+          period_end: '2026-12-31',
+          due_date: '2027-02-01',
+        }),
+      ),
+      handleGetPayrolls(({ request }) => {
+        payrollsUrl = new URL(request.url)
+        return HttpResponse.json(payrollListResponse)
+      }),
+    )
+
+    renderWithProviders(<TaxPaymentsFlow companyId="company-123" onEvent={onEvent} />, enabledFlag)
+
+    await user.click(
+      await screen.findByRole('button', { name: 'View Internal Revenue Service tax payment' }),
+    )
+
+    expect(await screen.findByRole('heading', { name: 'Payment details' })).toBeInTheDocument()
+
+    const startDate = Date.parse(payrollsUrl!.searchParams.get('start_date')!)
+    const endDate = Date.parse(payrollsUrl!.searchParams.get('end_date')!)
+    const dayMs = 86_400_000
+
+    expect((endDate - startDate) / dayMs).toBeLessThanOrEqual(367)
+    expect((endDate - Date.now()) / dayMs).toBeLessThanOrEqual(93)
   })
 
   it('resolves every liability pay period from one windowed payroll lookup', async () => {

@@ -10,12 +10,13 @@ import {
   QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import { deriveTaxPaymentStatus } from '../shared/taxPaymentStatus'
+import { buildPayrollLookupWindow } from '../shared/payrollLookupWindow'
 import { TaxPaymentDetailPresentation, type PayPeriodRange } from './TaxPaymentDetailPresentation'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
-import { addDays, formatDateToStringDate, normalizeToDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 /**
  * Props for {@link TaxPaymentDetail}.
@@ -57,13 +58,6 @@ export function TaxPaymentDetail(props: TaxPaymentDetailProps) {
   )
 }
 
-/**
- * Days of slack added to each end of the tax period when looking up the payrolls behind a payment's
- * liabilities. A liability's pay period can fall outside the tax deposit period it was remitted in,
- * so the window is padded rather than matched exactly.
- */
-const PAYROLL_WINDOW_PADDING_DAYS = 45
-
 /** Maximum payrolls fetched per windowed lookup; matches the endpoint's page-size ceiling. */
 const PAYROLL_LOOKUP_PER_PAGE = 100
 
@@ -91,10 +85,11 @@ const Root = ({
   // One windowed list request resolves the pay period for every liability, instead of a GET per
   // payroll. `payrollsList` filters on pay period when `dateFilterBy` is omitted, which is what the
   // liabilities are keyed by.
-  const periodStart = normalizeToDate(
-    (taxPayment?.periodStart ?? taxPayment?.periodEnd)?.toString(),
+  const lookupWindow = buildPayrollLookupWindow(
+    taxPayment?.periodStart?.toString(),
+    taxPayment?.periodEnd.toString(),
+    formatDateToStringDate(new Date()) ?? '',
   )
-  const periodEnd = normalizeToDate(taxPayment?.periodEnd.toString())
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
@@ -104,12 +99,8 @@ const Root = ({
       QueryParamPayrollTypes.OffCycle,
       QueryParamPayrollTypes.External,
     ],
-    startDate:
-      (periodStart && formatDateToStringDate(addDays(periodStart, -PAYROLL_WINDOW_PADDING_DAYS))) ??
-      undefined,
-    endDate:
-      (periodEnd && formatDateToStringDate(addDays(periodEnd, PAYROLL_WINDOW_PADDING_DAYS))) ??
-      undefined,
+    startDate: lookupWindow?.startDate,
+    endDate: lookupWindow?.endDate,
     per: PAYROLL_LOOKUP_PER_PAGE,
   })
 
