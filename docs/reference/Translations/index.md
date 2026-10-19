@@ -763,8 +763,8 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.heading` | `"Choose schedule type"` |
 | `typeStep.options` | |
 | `typeStep.options.byDepartment` | |
-| `typeStep.options.byDepartment.description` | `"Choose a pay schedule for each department"` |
-| `typeStep.options.byDepartment.label` | `"Separate schedules by department"` |
+| `typeStep.options.byDepartment.description` | `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` |
+| `typeStep.options.byDepartment.label` | `"By department"` |
 | `typeStep.options.hourlySalaried` | |
 | `typeStep.options.hourlySalaried.description` | `"Choose one pay schedule for hourly employees and another for salaried employees"` |
 | `typeStep.options.hourlySalaried.label` | `"Separate schedules by compensation type"` |
@@ -869,6 +869,9 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | <a id="property-companypayschedulelistdescription"></a> `listDescription` | `"Pick what frequency you'd like to run payroll. If you need help, you can read more about <ScheduleLink href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</ScheduleLink>"` |
 | <a id="property-companypayschedulelistdescription2"></a> `listDescription2` | `"Why do we need to ask for this? We need to know when to pay your employees. Some states have <PaymentLawLink href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</PaymentLawLink> Please choose pay schedules that are legal for your employees."` |
 | <a id="property-companypayscheduleloading"></a> `loading` | `"Loading..."` |
+| <a id="property-companypayschedulemanagement"></a> `management` | |
+| `management.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
+| `management.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companypayschedulepaypreview"></a> `payPreview` | |
 | `payPreview.payday` | `"Payday"` |
 | `payPreview.payPeriod` | `"Pay period"` |
