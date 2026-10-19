@@ -90,6 +90,26 @@ describe('Select Component', () => {
     expect(onChange).toHaveBeenCalledWith('1')
   })
 
+  // A filter's "show everything" entry is naturally modeled as an empty-string value. Guarding the
+  // selection handler on truthiness instead of null silently swallowed it, so the filter could be
+  // narrowed but never widened again.
+  test('calls onChange when an option whose value is an empty string is selected', async () => {
+    const onChange = vi.fn()
+    renderSelect({
+      onChange,
+      value: '1',
+      options: [
+        { label: 'All', value: '' },
+        { label: 'Option 1', value: '1' },
+      ],
+    })
+
+    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('option', { name: 'All' }))
+
+    expect(onChange).toHaveBeenCalledWith('')
+  })
+
   test('should call onBlur when focus is lost', () => {
     const onBlur = vi.fn()
     renderSelect({ onBlur })
