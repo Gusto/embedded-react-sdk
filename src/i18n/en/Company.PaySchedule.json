@@ -83,5 +83,9 @@
   "previewAlert": {
     "title": "Pay Schedule Preview",
     "description": "Complete all the required fields to see a preview of your pay schedule."
+  },
+  "management": {
+    "anchorEndOfPayPeriodDescription": "The last date of the first pay period; can be the same as the first pay date.",
+    "payrollDeadline": "Run payroll by"
   }
 }

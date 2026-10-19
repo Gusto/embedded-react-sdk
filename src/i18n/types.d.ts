@@ -1106,9 +1106,9 @@ export namespace Translations {
           description: string
         }
         byDepartment: {
-          /** @defaultValue `"Separate schedules by department"` */
+          /** @defaultValue `"By department"` */
           label: string
-          /** @defaultValue `"Choose a pay schedule for each department"` */
+          /** @defaultValue `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` */
           description: string
         }
       }
@@ -1390,6 +1390,12 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Complete all the required fields to see a preview of your pay schedule."` */
       description: string
+    }
+    management: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
     }
   }
   /** Translation keys for the `Company.SignatureForm` i18n namespace. */

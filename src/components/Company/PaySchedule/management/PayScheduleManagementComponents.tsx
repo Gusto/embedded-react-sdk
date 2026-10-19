@@ -81,6 +81,7 @@ export function PayScheduleEditFormContextual() {
 
   return (
     <PayScheduleForm
+      variant="management"
       companyId={ensureRequired(companyId)}
       payScheduleId={payScheduleId}
       defaultValues={defaultValues}

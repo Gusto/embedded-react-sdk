@@ -44,7 +44,7 @@ function renderAssignment() {
 }
 
 async function enterDepartments(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(await screen.findByRole('radio', { name: /separate schedules by department/i }))
+  await user.click(await screen.findByRole('radio', { name: /by department/i }))
   await user.click(screen.getByRole('button', { name: /continue/i }))
   await screen.findByRole('button', { name: /engineering/i })
 }

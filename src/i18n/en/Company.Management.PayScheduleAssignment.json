@@ -12,8 +12,8 @@
         "description": "Choose one pay schedule for hourly employees and another for salaried employees"
       },
       "byDepartment": {
-        "label": "Separate schedules by department",
-        "description": "Choose a pay schedule for each department"
+        "label": "By department",
+        "description": "Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."
       }
     }
   },

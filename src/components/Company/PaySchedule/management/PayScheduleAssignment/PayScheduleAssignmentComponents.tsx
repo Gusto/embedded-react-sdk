@@ -202,7 +202,9 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
 export function AssignmentCreateScheduleStep() {
   const { companyId, onEvent } = useFlow<PayScheduleAssignmentContextInterface>()
 
-  return <PayScheduleForm companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return (
+    <PayScheduleForm variant="management" companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  )
 }
 
 /** @internal */
