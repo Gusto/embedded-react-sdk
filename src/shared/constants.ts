@@ -376,7 +376,6 @@ export const payScheduleEvents = {
   PAY_SCHEDULE_AUTO_PILOT_DISMISSED: 'paySchedule/management/autoPilotDismissed',
   PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED: 'paySchedule/management/assignment/typeSelected',
   PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED: 'paySchedule/management/assignment/scheduleSelected',
-  PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED: 'paySchedule/management/assignment/draftUpdated',
   PAY_SCHEDULE_ASSIGNMENT_BACK: 'paySchedule/management/assignment/back',
   PAY_SCHEDULE_ASSIGNMENT_CANCEL: 'paySchedule/management/assignment/cancel',
   PAY_SCHEDULE_ASSIGNED: 'paySchedule/management/assignment/assigned',

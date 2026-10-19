@@ -11,13 +11,14 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 const DepartmentStepSchema = z.object({
   defaultPayScheduleUuid: z.string().min(1),
-  departments: z
-    .array(z.object({ departmentUuid: z.string().min(1), payScheduleUuid: z.string().min(1) }))
-    .min(1),
+  payScheduleByDepartment: z.record(z.string(), z.string().min(1)),
 })
 
 /** @internal */
-export type DepartmentSelection = z.infer<typeof DepartmentStepSchema>
+export type DepartmentSelection = {
+  defaultPayScheduleUuid: string
+  departments: { departmentUuid: string; payScheduleUuid: string }[]
+}
 
 /** @internal */
 export interface AssignmentDepartmentStepPresentationProps {
@@ -40,11 +41,32 @@ export function AssignmentDepartmentStepPresentation({
 }: AssignmentDepartmentStepPresentationProps) {
   const { t } = useTranslation('Company.Management.PayScheduleAssignment')
   const Components = useComponentContext()
-  const formMethods = useForm<DepartmentSelection>({
+  const formMethods = useForm<z.infer<typeof DepartmentStepSchema>>({
     resolver: zodResolver(DepartmentStepSchema),
-    defaultValues: selection,
+    shouldUnregister: true,
+    defaultValues: {
+      defaultPayScheduleUuid: selection.defaultPayScheduleUuid,
+      payScheduleByDepartment: Object.fromEntries(
+        selection.departments.map(entry => [entry.departmentUuid, entry.payScheduleUuid]),
+      ),
+    },
   })
-  const handleSubmit = formMethods.handleSubmit(onContinue)
+  const toSelection = (values: z.infer<typeof DepartmentStepSchema>): DepartmentSelection => ({
+    defaultPayScheduleUuid: values.defaultPayScheduleUuid,
+    departments: departments.flatMap(department =>
+      department.uuid
+        ? [
+            {
+              departmentUuid: department.uuid,
+              payScheduleUuid: values.payScheduleByDepartment[department.uuid] ?? '',
+            },
+          ]
+        : [],
+    ),
+  })
+  const handleSubmit = formMethods.handleSubmit(values => {
+    onContinue(toSelection(values))
+  })
   const options = schedules.map(schedule => ({
     value: schedule.uuid,
     label: scheduleLabel(schedule),
@@ -56,10 +78,14 @@ export function AssignmentDepartmentStepPresentation({
         <Flex flexDirection="column" gap={32}>
           <Components.Heading as="h2">{t('departmentStep.heading')}</Components.Heading>
           <Flex flexDirection="column" gap={12}>
-            {departments.map((department, index) => (
+            {departments.map(department => (
               <SelectField
                 key={department.uuid}
-                name={`departments.${index}.payScheduleUuid`}
+                name={`payScheduleByDepartment.${department.uuid}`}
+                defaultValue={
+                  selection.departments.find(entry => entry.departmentUuid === department.uuid)
+                    ?.payScheduleUuid ?? ''
+                }
                 label={department.title ?? t('departmentStep.unnamedDepartment')}
                 isRequired
                 placeholder=""
@@ -78,7 +104,7 @@ export function AssignmentDepartmentStepPresentation({
               <Components.Button
                 variant="secondary"
                 onClick={() => {
-                  onAddPaySchedule(formMethods.getValues())
+                  onAddPaySchedule(toSelection(formMethods.getValues()))
                 }}
               >
                 {t('departmentStep.addPayScheduleCta')}
@@ -89,7 +115,7 @@ export function AssignmentDepartmentStepPresentation({
             <Components.Button
               variant="secondary"
               onClick={() => {
-                onBack(formMethods.getValues())
+                onBack(toSelection(formMethods.getValues()))
               }}
             >
               {t('backCta')}

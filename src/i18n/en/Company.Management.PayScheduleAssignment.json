@@ -51,5 +51,10 @@
     "defaultPayScheduleDescription": "Select a pay schedule for employees who aren't assigned to any department.",
     "unnamedDepartment": "Unnamed department",
     "addPayScheduleCta": "Add pay schedule"
-  }
+  },
+  "scheduleForm": {
+    "anchorEndOfPayPeriodDescription": "The last date of the first pay period; can be the same as the first pay date.",
+    "payrollDeadline": "Run payroll by"
+  },
+  "departmentAccessDenied": "Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."
 }

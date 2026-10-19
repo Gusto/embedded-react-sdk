@@ -13,8 +13,27 @@ export type SupportedAssignmentType = Extract<
   'single' | 'hourly_salaried' | 'by_department'
 >
 
+/**
+ * Draft selections retained when moving between assignment steps.
+ *
+ * @internal
+ */
+export type AssignmentDraft = Partial<DepartmentSelection> & {
+  assignmentType?: SupportedAssignmentType
+  hourlyPayScheduleUuid?: string
+  salariedPayScheduleUuid?: string
+}
+
+/**
+ * Internal state-machine event; never forwarded to component consumers.
+ *
+ * @internal
+ */
+export const assignmentDraftUpdated = 'assignmentDraftUpdated'
+
 /** @internal */
 export interface PayScheduleAssignmentContextInterface extends FlowContextInterface {
+  updateDraft: (selection: AssignmentDraft) => void
   companyId: string
   assignmentType?: SupportedAssignmentType
   defaultPayScheduleUuid?: string

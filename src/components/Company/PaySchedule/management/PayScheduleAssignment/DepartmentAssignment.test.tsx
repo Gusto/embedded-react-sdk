@@ -4,11 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { createMachine } from 'robot3'
 import { PaySchedule } from '../PaySchedule'
-import { PayScheduleAssignment } from './PayScheduleAssignment'
+import { PayScheduleAssignment, PayScheduleAssignmentFlow } from './PayScheduleAssignment'
 import { AssignmentScheduleStep } from './PayScheduleAssignmentComponents'
 import { payScheduleAssignmentStateMachine } from './payScheduleAssignmentStateMachine'
 import type { PayScheduleAssignmentContextInterface } from './usePayScheduleAssignment'
-import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent } from '@/components/Base'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -265,7 +264,7 @@ describe('department pay schedule assignment', () => {
     )
     renderWithProviders(
       <BaseComponent onEvent={vi.fn()}>
-        <Flow machine={machine} onEvent={vi.fn()} />
+        <PayScheduleAssignmentFlow companyId="123" machine={machine} onEvent={vi.fn()} />
       </BaseComponent>,
     )
     await screen.findByRole('heading', { name: /add pay schedule/i })
@@ -288,14 +287,69 @@ describe('department pay schedule assignment', () => {
     expect(await screen.findByRole('radio', { name: /by department/i })).toBeInTheDocument()
   })
 
-  it('surfaces a department request failure instead of treating it as an empty list', async () => {
-    server.use(
-      http.get(`${companyPath}/departments`, () => new HttpResponse(null, { status: 403 })),
-    )
-    renderAssignment()
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: /add pay schedule/i })).not.toBeInTheDocument()
-  })
+  it.each([403, 500])(
+    'surfaces an unexpected %s department response instead of treating it as empty',
+    async status => {
+      server.use(http.get(`${companyPath}/departments`, () => new HttpResponse(null, { status })))
+      renderAssignment()
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: /add pay schedule/i })).not.toBeInTheDocument()
+    },
+  )
+
+  it.each(['single', 'hourly_salaried', 'by_department'])(
+    'keeps other choices available when department scope is missing for %s',
+    async type => {
+      server.use(
+        http.get(`${companyPath}/pay_schedules/assignments`, () =>
+          HttpResponse.json({ ...savedAssignment, type }),
+        ),
+        http.get(`${companyPath}/departments`, () =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  category: 'missing_oauth_scopes',
+                  metadata: { missing_scope_name: 'departments:read' },
+                },
+              ],
+            },
+            { status: 403 },
+          ),
+        ),
+      )
+      const user = userEvent.setup()
+      renderAssignment()
+      await screen.findByRole('alert')
+      if (type === 'by_department') {
+        expect(screen.getByRole('radio', { name: /by department/i })).toBeChecked()
+        expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+      }
+      await user.click(screen.getByRole('radio', { name: /everyone on one schedule/i }))
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+      expect(await screen.findByRole('button', { name: /weekly/i })).toBeInTheDocument()
+    },
+  )
+
+  it.each(['back', 'add pay schedule'])(
+    'preserves hourly and salaried selections after %s',
+    async action => {
+      const user = userEvent.setup()
+      const onEvent = renderAssignment()
+      await user.click(await screen.findByRole('radio', { name: /compensation type/i }))
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+      await selectSchedule(user, /hourly/i, /monthly/i)
+      await user.click(screen.getByRole('button', { name: new RegExp(`^${action}$`, 'i') }))
+      if (action === 'back') {
+        await user.click(await screen.findByRole('button', { name: /continue/i }))
+      } else {
+        await user.click(await screen.findByRole('button', { name: /cancel/i }))
+      }
+      expect(await screen.findByRole('button', { name: /hourly/i })).toHaveTextContent('Monthly')
+      expect(screen.getByRole('button', { name: /salaried/i })).toHaveTextContent('Weekly')
+      expect(onEvent.mock.calls.some(([type]) => type === 'assignmentDraftUpdated')).toBe(false)
+    },
+  )
 
   it('renders the department overview and routes Manage back to saved assignments', async () => {
     renderWithProviders(

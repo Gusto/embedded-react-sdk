@@ -711,6 +711,9 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
 | <a id="property-companymanagementpayschedulerowmenutriggerlabel"></a> `rowMenuTriggerLabel` | `"Pay schedule actions"` |
+| <a id="property-companymanagementpayschedulescheduleform"></a> `scheduleForm` | |
+| `scheduleForm.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
+| `scheduleForm.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
 | <a id="property-companymanagementpayscheduleuncategorizedemployees"></a> `uncategorizedEmployees` | `"Uncategorized employees"` |
 | <a id="property-companymanagementpayscheduleunnameddepartment"></a> `unnamedDepartment` | `"Unnamed department"` |
@@ -736,6 +739,7 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `compensationStep.salariedPayScheduleDescription` | `"The pay schedule to use for salaried employees."` |
 | `compensationStep.salariedPayScheduleLabel` | `"Salaried employees"` |
 | <a id="property-companymanagementpayscheduleassignmentcontinuecta"></a> `continueCta` | `"Continue"` |
+| <a id="property-companymanagementpayscheduleassignmentdepartmentaccessdenied"></a> `departmentAccessDenied` | `"Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."` |
 | <a id="property-companymanagementpayscheduleassignmentdepartmentstep"></a> `departmentStep` | |
 | `departmentStep.addPayScheduleCta` | `"Add pay schedule"` |
 | `departmentStep.defaultPayScheduleDescription` | `"Select a pay schedule for employees who aren't assigned to any department."` |
@@ -752,6 +756,9 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `reviewStep.noTransitionNeeded` | `"No transition needed"` |
 | `reviewStep.payFrequencyLabel` | `"New pay frequency"` |
 | `reviewStep.transitionPayPeriodLabel` | `"Transition pay period"` |
+| <a id="property-companymanagementpayscheduleassignmentscheduleform"></a> `scheduleForm` | |
+| `scheduleForm.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
+| `scheduleForm.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companymanagementpayscheduleassignmentschedulestep"></a> `scheduleStep` | |
 | `scheduleStep.addPayScheduleCta` | `"Add pay schedule"` |
 | `scheduleStep.heading` | `"Assign employees"` |
@@ -869,9 +876,6 @@ Translation keys for the `Company.PaySchedule` i18n namespace.
 | <a id="property-companypayschedulelistdescription"></a> `listDescription` | `"Pick what frequency you'd like to run payroll. If you need help, you can read more about <ScheduleLink href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</ScheduleLink>"` |
 | <a id="property-companypayschedulelistdescription2"></a> `listDescription2` | `"Why do we need to ask for this? We need to know when to pay your employees. Some states have <PaymentLawLink href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</PaymentLawLink> Please choose pay schedules that are legal for your employees."` |
 | <a id="property-companypayscheduleloading"></a> `loading` | `"Loading..."` |
-| <a id="property-companypayschedulemanagement"></a> `management` | |
-| `management.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
-| `management.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companypayschedulepaypreview"></a> `payPreview` | |
 | `payPreview.payday` | `"Payday"` |
 | `payPreview.payPeriod` | `"Pay period"` |

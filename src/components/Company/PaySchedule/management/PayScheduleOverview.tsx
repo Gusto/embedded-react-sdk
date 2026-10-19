@@ -5,6 +5,7 @@ import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/p
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import { getCompanyDepartments } from './PayScheduleAssignment/departmentAccess'
 import {
   PayScheduleDepartmentOverviewPresentation,
   type PayScheduleDepartmentRow,
@@ -124,16 +125,17 @@ function PayScheduleDepartmentOverview({
 } & Omit<React.ComponentProps<typeof PayScheduleDepartmentOverviewPresentation>, 'rows'>) {
   const { data } = useDepartmentsGetAllSuspense({ companyUuid: companyId })
   const { t } = useTranslation('Company.Management.PaySchedule')
-  const rows = (data.departmentList ?? []).flatMap<PayScheduleDepartmentRow>(department => {
-    if (!department.uuid) return []
-    const uuid =
-      assignment.departments?.find(selection => selection.departmentUuid === department.uuid)
-        ?.payScheduleUuid ?? assignment.defaultPayScheduleUuid
-    const schedule = schedules.find(schedule => schedule.uuid === uuid)
-    return schedule
-      ? [{ departmentName: department.title ?? t('unnamedDepartment'), schedule }]
-      : []
-  })
+  const rows = getCompanyDepartments(data.departmentList).flatMap<PayScheduleDepartmentRow>(
+    department => {
+      const uuid =
+        assignment.departments?.find(selection => selection.departmentUuid === department.uuid)
+          ?.payScheduleUuid ?? assignment.defaultPayScheduleUuid
+      const schedule = schedules.find(schedule => schedule.uuid === uuid)
+      return schedule
+        ? [{ departmentName: department.title ?? t('unnamedDepartment'), schedule }]
+        : []
+    },
+  )
   const defaultSchedule = schedules.find(
     schedule => schedule.uuid === assignment.defaultPayScheduleUuid,
   )

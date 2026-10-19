@@ -1480,7 +1480,6 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_AUTO_PILOT_DISMISSED: "paySchedule/management/autoPilotDismissed";
     readonly PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED: "paySchedule/management/assignment/typeSelected";
     readonly PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED: "paySchedule/management/assignment/scheduleSelected";
-    readonly PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED: "paySchedule/management/assignment/draftUpdated";
     readonly PAY_SCHEDULE_ASSIGNMENT_BACK: "paySchedule/management/assignment/back";
     readonly PAY_SCHEDULE_ASSIGNMENT_CANCEL: "paySchedule/management/assignment/cancel";
     readonly PAY_SCHEDULE_ASSIGNED: "paySchedule/management/assignment/assigned";

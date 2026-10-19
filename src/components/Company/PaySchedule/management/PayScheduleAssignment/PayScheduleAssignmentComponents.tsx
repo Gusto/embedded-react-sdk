@@ -1,4 +1,8 @@
-import { useDepartmentsGetAllSuspense } from '@gusto/embedded-api/react-query/departmentsGetAll'
+import {
+  useDepartmentsGetAll,
+  useDepartmentsGetAllSuspense,
+} from '@gusto/embedded-api/react-query/departmentsGetAll'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesPreviewAssignmentMutation } from '@gusto/embedded-api/react-query/paySchedulesPreviewAssignment'
@@ -14,7 +18,10 @@ import { AssignmentTypeStepPresentation } from './AssignmentTypeStepPresentation
 import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPresentation'
 import { AssignmentCompensationStepPresentation } from './AssignmentCompensationStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
+import { getCompanyDepartments, isDepartmentAccessDenied } from './departmentAccess'
+import type { assignmentDraftUpdated } from './usePayScheduleAssignment'
 import type {
+  AssignmentDraft,
   PayScheduleAssignmentContextInterface,
   SupportedAssignmentType,
 } from './usePayScheduleAssignment'
@@ -49,9 +56,8 @@ export type EventPayloads = {
     | { defaultPayScheduleUuid: string }
     | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
     | DepartmentSelection
-  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED]:
-    (Partial<DepartmentSelection> & { assignmentType?: SupportedAssignmentType }) | undefined
-  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: DepartmentSelection | undefined
+  [assignmentDraftUpdated]: AssignmentDraft
+  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
   [componentEvents.PAY_SCHEDULE_ASSIGNED]: AssignmentSelection & {
     employeeChanges: PayScheduleAssignmentEmployeeChange[]
@@ -62,11 +68,18 @@ export type EventPayloads = {
 export function AssignmentTypeStep() {
   const { companyId, assignmentType, onEvent } = useFlow<PayScheduleAssignmentContextInterface>()
 
-  const { data } = useDepartmentsGetAllSuspense({ companyUuid: companyId })
+  const { data, error, isPending } = useDepartmentsGetAll(
+    { companyUuid: companyId },
+    {
+      throwOnError: error => !isDepartmentAccessDenied(error),
+    },
+  )
+  if (isPending) return <BaseLayout isLoading />
 
   return (
     <AssignmentTypeStepPresentation
-      hasDepartments={Boolean(data.departmentList?.some(department => department.uuid))}
+      hasDepartments={getCompanyDepartments(data?.departmentList).length > 0}
+      departmentAccessDenied={isDepartmentAccessDenied(error)}
       defaultType={assignmentType}
       onBack={() => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_CANCEL)
@@ -86,6 +99,7 @@ export function AssignmentScheduleStep() {
     defaultPayScheduleUuid,
     hourlyPayScheduleUuid,
     salariedPayScheduleUuid,
+    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
@@ -110,10 +124,11 @@ export function AssignmentScheduleStep() {
         schedules={schedules}
         hourlyPayScheduleUuid={preselect(hourlyPayScheduleUuid)}
         salariedPayScheduleUuid={preselect(salariedPayScheduleUuid)}
-        onBack={() => {
-          onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
+        onBack={selection => {
+          onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
         }}
-        onAddPaySchedule={() => {
+        onAddPaySchedule={selection => {
+          updateDraft(selection)
           onEvent(componentEvents.PAY_SCHEDULE_CREATE)
         }}
         onContinue={selection => {
@@ -147,22 +162,23 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
     companyId,
     departments: selectedDepartments,
     defaultPayScheduleUuid,
+    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { data } = useDepartmentsGetAllSuspense({ companyUuid: companyId })
-  const departments = (data.departmentList ?? []).filter(department => department.uuid)
+  const departments = getCompanyDepartments(data.departmentList)
   const hasDepartments = departments.length > 0
 
   useEffect(() => {
     if (!hasDepartments) {
-      onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED, {
+      updateDraft({
         assignmentType: PayScheduleAssignmentBodyType.Single,
         departments: undefined,
         defaultPayScheduleUuid: undefined,
       })
       onEvent(componentEvents.PAY_SCHEDULE_CREATE)
     }
-  }, [hasDepartments, onEvent])
+  }, [hasDepartments, onEvent, updateDraft])
 
   if (!hasDepartments) return null
 
@@ -188,7 +204,7 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
       }}
       onAddPaySchedule={selection => {
-        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED, selection)
+        updateDraft(selection)
         onEvent(componentEvents.PAY_SCHEDULE_CREATE)
       }}
       onContinue={selection => {
@@ -200,10 +216,19 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
 
 /** @internal */
 export function AssignmentCreateScheduleStep() {
+  const { t } = useTranslation('Company.Management.PayScheduleAssignment')
   const { companyId, onEvent } = useFlow<PayScheduleAssignmentContextInterface>()
 
   return (
-    <PayScheduleForm variant="management" companyId={ensureRequired(companyId)} onEvent={onEvent} />
+    <PayScheduleForm
+      variant="management"
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      copy={{
+        anchorEndOfPayPeriodDescription: t('scheduleForm.anchorEndOfPayPeriodDescription'),
+        payrollDeadline: t('scheduleForm.payrollDeadline'),
+      }}
+    />
   )
 }
 
@@ -231,7 +256,7 @@ export function AssignmentReviewStep() {
       const defaultUuid = ensureRequired(defaultPayScheduleUuid)
       const selections = ensureRequired(departments)
       if (
-        selections.length > 0 &&
+        selections.length === 0 ||
         selections.every(selection => selection.payScheduleUuid === defaultUuid)
       ) {
         return { type: PayScheduleAssignmentBodyType.Single, defaultPayScheduleUuid: defaultUuid }

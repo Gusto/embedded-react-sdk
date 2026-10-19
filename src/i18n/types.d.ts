@@ -1084,6 +1084,12 @@ export namespace Translations {
     uncategorizedEmployees: string
     /** @defaultValue `"Unnamed department"` */
     unnamedDepartment: string
+    scheduleForm: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
+    }
   }
   /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
   export interface CompanyManagementPayScheduleAssignment {
@@ -1175,6 +1181,14 @@ export namespace Translations {
       /** @defaultValue `"Add pay schedule"` */
       addPayScheduleCta: string
     }
+    scheduleForm: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
+    }
+    /** @defaultValue `"Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."` */
+    departmentAccessDenied: string
   }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {
@@ -1390,12 +1404,6 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Complete all the required fields to see a preview of your pay schedule."` */
       description: string
-    }
-    management: {
-      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
-      anchorEndOfPayPeriodDescription: string
-      /** @defaultValue `"Run payroll by"` */
-      payrollDeadline: string
     }
   }
   /** Translation keys for the `Company.SignatureForm` i18n namespace. */

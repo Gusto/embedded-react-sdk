@@ -20,6 +20,11 @@ import type { LoaderComponentType } from '@/components/Base'
 
 interface PayScheduleFormProps extends UsePayScheduleFormProps {
   variant?: 'onboarding' | 'management'
+  copy?: {
+    anchorPayDateDescription?: string
+    anchorEndOfPayPeriodDescription: string
+    payrollDeadline: string
+  }
   onEvent: OnEventType<EventType, unknown>
   /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
   LoaderComponent?: LoaderComponentType
@@ -43,6 +48,7 @@ function PayScheduleFormRoot({
   onEvent,
   LoaderComponent,
   variant = 'onboarding',
+  copy,
   ...hookProps
 }: PayScheduleFormProps) {
   const { t } = useTranslation('Company.PaySchedule')
@@ -138,8 +144,8 @@ function PayScheduleFormRoot({
                     <Fields.AnchorPayDate
                       label={t('labels.firstPayDate')}
                       description={
-                        variant === 'management'
-                          ? undefined
+                        copy
+                          ? copy.anchorPayDateDescription
                           : t('descriptions.anchorPayDateDescription', { count: paymentSpeedDays })
                       }
                       validationMessages={{ REQUIRED: t('validations.firstPayDate') }}
@@ -147,11 +153,10 @@ function PayScheduleFormRoot({
                     />
                     <Fields.AnchorEndOfPayPeriod
                       label={t('labels.firstPayPeriodEndDate')}
-                      description={t(
-                        variant === 'management'
-                          ? 'management.anchorEndOfPayPeriodDescription'
-                          : 'descriptions.anchorEndOfPayPeriodDescription',
-                      )}
+                      description={
+                        copy?.anchorEndOfPayPeriodDescription ??
+                        t('descriptions.anchorEndOfPayPeriodDescription')
+                      }
                       validationMessages={{ REQUIRED: t('validations.firstPayPeriodEndDate') }}
                     />
                     {Fields.Day1 && (
@@ -229,11 +234,7 @@ function PayScheduleFormRoot({
                               payPeriodPreview[selectedPayPeriodIndex].runPayrollBy,
                             ),
                             highlightColor: 'secondary',
-                            label: t(
-                              variant === 'management'
-                                ? 'management.payrollDeadline'
-                                : 'payPreview.payrollDeadline',
-                            ),
+                            label: copy?.payrollDeadline ?? t('payPreview.payrollDeadline'),
                           },
                         ]}
                       />
