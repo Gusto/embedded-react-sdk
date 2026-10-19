@@ -65,6 +65,7 @@ import { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/
 import { ContractorPaymentReceiptContractorPayments } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptPaymentMethod } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptTotals } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
+import { Contractors } from '@gusto/embedded-api/models/components/department';
 import { ContractorStatus } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorType as ContractorType_2 } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
@@ -76,6 +77,8 @@ import { CustomFieldType } from '@gusto/embedded-api/models/components/customfie
 import { CustomWithholdings } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
+import { Department } from '@gusto/embedded-api/models/components/department';
+import { DepartmentEmployees } from '@gusto/embedded-api/models/components/department';
 import { Document as Document_2 } from '@gusto/embedded-api/models/components/document';
 import { DocumentRecipientType } from '@gusto/embedded-api/models/components/document';
 import { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned';
@@ -510,6 +513,9 @@ declare namespace APIModels {
         ContractorUpdateRequestBodyType,
         ContractorUpdateRequestBodyWageType,
         CustomFieldType,
+        Contractors,
+        Department,
+        DepartmentEmployees,
         Document_2 as Document,
         Fields,
         Pages,

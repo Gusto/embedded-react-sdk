@@ -1,7 +1,15 @@
+import { useDepartmentsGetAllSuspense } from '@gusto/embedded-api/react-query/departmentsGetAll'
+import { useTranslation } from 'react-i18next'
+import type { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import { getCompanyDepartments } from './PayScheduleAssignment/departmentAccess'
+import {
+  PayScheduleDepartmentOverviewPresentation,
+  type PayScheduleDepartmentRow,
+} from './PayScheduleDepartmentOverviewPresentation'
 import { PayScheduleOverviewPresentation } from './PayScheduleOverviewPresentation'
 import type { PayScheduleCompensationRow } from './PayScheduleCompensationOverviewPresentation'
 import { PayScheduleCompensationOverviewPresentation } from './PayScheduleCompensationOverviewPresentation'
@@ -37,6 +45,21 @@ export function PayScheduleOverview({
   }
   const manageAssignment = () => {
     onEvent(componentEvents.PAY_SCHEDULE_MANAGE_ASSIGNMENT)
+  }
+
+  if (assignment?.type === PayScheduleAssignmentType.ByDepartment) {
+    return (
+      <PayScheduleDepartmentOverview
+        companyId={companyId}
+        assignment={assignment}
+        schedules={schedules}
+        enableAutoPilot={enableAutoPilot}
+        enableMultipleSchedules={enableMultipleSchedules}
+        onEditSchedule={editSchedule}
+        onManageAssignment={manageAssignment}
+        onEditAutoPilot={editAutoPilot}
+      />
+    )
   }
 
   if (assignment?.type === PayScheduleAssignmentType.HourlySalaried) {
@@ -88,4 +111,35 @@ export function PayScheduleOverview({
       }}
     />
   )
+}
+
+function PayScheduleDepartmentOverview({
+  companyId,
+  assignment,
+  schedules,
+  ...props
+}: {
+  companyId: string
+  assignment: PayScheduleAssignment
+  schedules: PayScheduleShow[]
+} & Omit<React.ComponentProps<typeof PayScheduleDepartmentOverviewPresentation>, 'rows'>) {
+  const { data } = useDepartmentsGetAllSuspense({ companyUuid: companyId })
+  const { t } = useTranslation('Company.Management.PaySchedule')
+  const rows = getCompanyDepartments(data.departmentList).flatMap<PayScheduleDepartmentRow>(
+    department => {
+      const uuid =
+        assignment.departments?.find(selection => selection.departmentUuid === department.uuid)
+          ?.payScheduleUuid ?? assignment.defaultPayScheduleUuid
+      const schedule = schedules.find(schedule => schedule.uuid === uuid)
+      return schedule
+        ? [{ departmentName: department.title ?? t('unnamedDepartment'), schedule }]
+        : []
+    },
+  )
+  const defaultSchedule = schedules.find(
+    schedule => schedule.uuid === assignment.defaultPayScheduleUuid,
+  )
+  if (defaultSchedule)
+    rows.push({ departmentName: t('uncategorizedEmployees'), schedule: defaultSchedule })
+  return <PayScheduleDepartmentOverviewPresentation rows={rows} {...props} />
 }

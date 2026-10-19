@@ -11,6 +11,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 /** @internal */
 export interface AssignmentTypeStepPresentationProps {
   defaultType?: SupportedAssignmentType
+  hasDepartments?: boolean
+  departmentAccessDenied?: boolean
   onBack: () => void
   onContinue: (type: SupportedAssignmentType) => void
 }
@@ -19,6 +21,7 @@ const TypeStepSchema = z.object({
   type: z.union([
     z.literal(PayScheduleAssignmentBodyType.Single),
     z.literal(PayScheduleAssignmentBodyType.HourlySalaried),
+    z.literal(PayScheduleAssignmentBodyType.ByDepartment),
   ]),
 })
 
@@ -27,6 +30,8 @@ type TypeStepInputs = z.infer<typeof TypeStepSchema>
 /** @internal */
 export function AssignmentTypeStepPresentation({
   defaultType = PayScheduleAssignmentBodyType.Single,
+  hasDepartments = false,
+  departmentAccessDenied = false,
   onBack,
   onContinue,
 }: AssignmentTypeStepPresentationProps) {
@@ -35,9 +40,17 @@ export function AssignmentTypeStepPresentation({
 
   const formMethods = useForm<TypeStepInputs>({
     resolver: zodResolver(TypeStepSchema),
-    defaultValues: { type: defaultType },
+    defaultValues: {
+      type:
+        defaultType === PayScheduleAssignmentBodyType.ByDepartment &&
+        !hasDepartments &&
+        !departmentAccessDenied
+          ? PayScheduleAssignmentBodyType.Single
+          : defaultType,
+    },
   })
 
+  const selectedType = formMethods.watch('type')
   const handleSubmit = formMethods.handleSubmit(({ type }) => {
     onContinue(type)
   })
@@ -50,6 +63,9 @@ export function AssignmentTypeStepPresentation({
             <Components.Heading as="h2">{t('typeStep.heading')}</Components.Heading>
             <Components.Text variant="supporting">{t('typeStep.description')}</Components.Text>
           </Flex>
+          {departmentAccessDenied && (
+            <Components.Alert status="warning" label={t('departmentAccessDenied')} />
+          )}
           <RadioGroupField
             name="type"
             label={t('typeStep.heading')}
@@ -65,13 +81,31 @@ export function AssignmentTypeStepPresentation({
                 label: t('typeStep.options.hourlySalaried.label'),
                 description: t('typeStep.options.hourlySalaried.description'),
               },
+              ...(hasDepartments ||
+              (departmentAccessDenied && defaultType === PayScheduleAssignmentBodyType.ByDepartment)
+                ? [
+                    {
+                      value: PayScheduleAssignmentBodyType.ByDepartment,
+                      isDisabled: departmentAccessDenied,
+                      label: t('typeStep.options.byDepartment.label'),
+                      description: t('typeStep.options.byDepartment.description'),
+                    },
+                  ]
+                : []),
             ]}
           />
           <ActionsLayout>
             <Components.Button variant="secondary" onClick={onBack}>
               {t('backCta')}
             </Components.Button>
-            <Components.Button variant="primary" type="submit">
+            <Components.Button
+              variant="primary"
+              type="submit"
+              isDisabled={
+                departmentAccessDenied &&
+                selectedType === PayScheduleAssignmentBodyType.ByDepartment
+              }
+            >
               {t('continueCta')}
             </Components.Button>
           </ActionsLayout>

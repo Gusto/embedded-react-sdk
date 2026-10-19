@@ -26,7 +26,11 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
 
 type AssignmentSeed = Pick<
   PayScheduleAssignmentContextInterface,
-  'assignmentType' | 'defaultPayScheduleUuid' | 'hourlyPayScheduleUuid' | 'salariedPayScheduleUuid'
+  | 'assignmentType'
+  | 'defaultPayScheduleUuid'
+  | 'hourlyPayScheduleUuid'
+  | 'salariedPayScheduleUuid'
+  | 'departments'
 >
 
 function toSupportedType(
@@ -35,6 +39,7 @@ function toSupportedType(
   switch (type) {
     case PayScheduleAssignmentType.Single:
     case PayScheduleAssignmentType.HourlySalaried:
+    case PayScheduleAssignmentType.ByDepartment:
       return type
     default:
       return undefined
@@ -59,6 +64,9 @@ function toAssignmentSeed(assignment: PayScheduleAssignmentEntity | undefined): 
     defaultPayScheduleUuid: assignment?.defaultPayScheduleUuid ?? undefined,
     hourlyPayScheduleUuid: assignment?.hourlyPayScheduleUuid ?? undefined,
     salariedPayScheduleUuid: assignment?.salariedPayScheduleUuid ?? undefined,
+    departments: assignment?.departments?.flatMap(({ departmentUuid, payScheduleUuid }) =>
+      departmentUuid && payScheduleUuid ? [{ departmentUuid, payScheduleUuid }] : [],
+    ),
   }
 }
 
@@ -79,10 +87,10 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * Walks through choosing an assignment type, picking (or creating) a pay schedule, and reviewing
  * the employees and transition payrolls affected before submitting. Opens on the company's
  * current assignment, so submitting without changing anything is a no-op rather than a
- * reassignment. Two assignment types are
- * supported: one schedule for everyone (`single`), or separate schedules for hourly and salaried
- * employees (`hourly_salaried`). Picking the same schedule for both compensation types is
- * submitted as `single`. Can be mounted directly or launched from
+ * reassignment. Supports one schedule for everyone (`single`), separate schedules for hourly
+ * and salaried employees (`hourly_salaried`), or schedules by department (`by_department`),
+ * including a default for employees without a department. Selecting one schedule for every
+ * group is submitted as `single`. Can be mounted directly or launched from
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
  * Step selection events also bubble through `onEvent`; the `assigned` event reports the
@@ -94,7 +102,7 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | — |
  * | `paySchedule/created` | A new pay schedule was created from the picker step | `{ paySchedule: PayScheduleShow }` |
  * | `paySchedule/management/assignment/cancel` | The user backed out of the flow entirely, from the first step | — |
- * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` |
+ * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` or `{ type: 'by_department'; defaultPayScheduleUuid: string; departments: { departmentUuid: string; payScheduleUuid: string }[] }` |
  *
  * @alpha
  */

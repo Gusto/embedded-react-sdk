@@ -697,12 +697,15 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | <a id="property-companymanagementpayschedulecompensationtypes"></a> `compensationTypes` | |
 | `compensationTypes.hourly` | `"Hourly"` |
 | `compensationTypes.salaried` | `"Salaried"` |
+| <a id="property-companymanagementpayscheduledepartmentdescription"></a> `departmentDescription` | `"You have assigned employees to pay schedules by department."` |
+| <a id="property-companymanagementpayscheduledepartmenttablelabel"></a> `departmentTableLabel` | `"Pay schedules by department"` |
 | <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
 | <a id="property-companymanagementpayscheduleeditautopilotarialabel"></a> `editAutoPilotAriaLabel` | `"Edit AutoPilot"` |
 | <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
 | <a id="property-companymanagementpayscheduleeditschedulecta"></a> `editScheduleCta` | `"Edit schedule"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
+| `labels.department` | `"Department"` |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
 | `labels.schedule` | `"Schedule"` |
@@ -712,6 +715,8 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `scheduleForm.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
 | `scheduleForm.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
+| <a id="property-companymanagementpayscheduleuncategorizedemployees"></a> `uncategorizedEmployees` | `"Uncategorized employees"` |
+| <a id="property-companymanagementpayscheduleunnameddepartment"></a> `unnamedDepartment` | `"Unnamed department"` |
 
 ***
 
@@ -734,6 +739,13 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `compensationStep.salariedPayScheduleDescription` | `"The pay schedule to use for salaried employees."` |
 | `compensationStep.salariedPayScheduleLabel` | `"Salaried employees"` |
 | <a id="property-companymanagementpayscheduleassignmentcontinuecta"></a> `continueCta` | `"Continue"` |
+| <a id="property-companymanagementpayscheduleassignmentdepartmentaccessdenied"></a> `departmentAccessDenied` | `"Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."` |
+| <a id="property-companymanagementpayscheduleassignmentdepartmentstep"></a> `departmentStep` | |
+| `departmentStep.addPayScheduleCta` | `"Add pay schedule"` |
+| `departmentStep.defaultPayScheduleDescription` | `"Select a pay schedule for employees who aren't assigned to any department."` |
+| `departmentStep.defaultPayScheduleLabel` | `"Uncategorized employees"` |
+| `departmentStep.heading` | `"Assign employees"` |
+| `departmentStep.unnamedDepartment` | `"Unnamed department"` |
 | <a id="property-companymanagementpayscheduleassignmentreviewstep"></a> `reviewStep` | |
 | `reviewStep.employeeChangesHeading` | `"Employees affected"` |
 | `reviewStep.firstPayPeriodLabel` | `"First pay period"` |
@@ -757,6 +769,9 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.description` | `"After you choose, you can create a pay schedule for each group."` |
 | `typeStep.heading` | `"Choose schedule type"` |
 | `typeStep.options` | |
+| `typeStep.options.byDepartment` | |
+| `typeStep.options.byDepartment.description` | `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` |
+| `typeStep.options.byDepartment.label` | `"By department"` |
 | `typeStep.options.hourlySalaried` | |
 | `typeStep.options.hourlySalaried.description` | `"Choose one pay schedule for hourly employees and another for salaried employees"` |
 | `typeStep.options.hourlySalaried.label` | `"Separate schedules by compensation type"` |
