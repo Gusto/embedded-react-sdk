@@ -210,8 +210,10 @@ describe('ManagementContractorList — Active tab', () => {
     await waitFor(() => {
       expect(cancelResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DISMISSAL_CANCELLED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DISMISSAL_CANCELLED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 
@@ -294,8 +296,10 @@ describe('ManagementContractorList — Onboarding tab', () => {
     await waitFor(() => {
       expect(deleteResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 })
@@ -377,8 +381,10 @@ describe('ManagementContractorList — Dismissed tab', () => {
     await waitFor(() => {
       expect(cancelResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_REHIRE_CANCELLED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_REHIRE_CANCELLED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 })

@@ -323,17 +323,19 @@ describe('Contractor profile component behavior', () => {
         expect(createResolver).toHaveBeenCalledTimes(1)
       })
       expect(updateResolver).not.toHaveBeenCalled()
-      expect(onEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_CREATED,
-        expect.objectContaining({ uuid: 'new-contractor-uuid' }),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_PROFILE_DONE,
-        expect.objectContaining({
-          contractorId: 'new-contractor-uuid',
-          selfOnboarding: false,
-        }),
-      )
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_CREATED,
+          expect.objectContaining({ uuid: 'new-contractor-uuid' }),
+        )
+        expect(onEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_PROFILE_DONE,
+          expect.objectContaining({
+            contractorId: 'new-contractor-uuid',
+            selfOnboarding: false,
+          }),
+        )
+      })
     })
 
     it('does not require re-entering SSN for an existing contractor with SSN on file', async () => {
@@ -381,10 +383,12 @@ describe('Contractor profile component behavior', () => {
       await waitFor(() => {
         expect(updateResolver).toHaveBeenCalledTimes(1)
       })
-      expect(onEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_UPDATED,
-        expect.objectContaining({ uuid: 'contractor_id' }),
-      )
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_UPDATED,
+          expect.objectContaining({ uuid: 'contractor_id' }),
+        )
+      })
     })
   })
 
@@ -559,14 +563,16 @@ describe('Contractor profile component behavior', () => {
         expect(updateResolver).toHaveBeenCalledTimes(1)
       })
       expect(body).toMatchObject({ ssn: '123456789', self_onboarding: true })
-      expect(onEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_UPDATED,
-        expect.objectContaining({ uuid: 'contractor_id' }),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_PROFILE_DONE,
-        expect.objectContaining({ contractorId: 'contractor_id', selfOnboarding: true }),
-      )
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_UPDATED,
+          expect.objectContaining({ uuid: 'contractor_id' }),
+        )
+        expect(onEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_PROFILE_DONE,
+          expect.objectContaining({ contractorId: 'contractor_id', selfOnboarding: true }),
+        )
+      })
     })
 
     it('renders the business self-onboarding profile and submits the EIN', async () => {

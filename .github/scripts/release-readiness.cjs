@@ -1,4 +1,10 @@
 const checkName = 'release-readiness'
+const releaseBranchPattern = /^chore\/release-/
+const noVersionChangeTitle = 'No package version change'
+
+function isReleaseBranch(pull) {
+  return releaseBranchPattern.test(pull.head.ref)
+}
 
 async function contentAt(github, repo, ref, path) {
   const { data } = await github.rest.repos.getContent({ ...repo, path, ref })
@@ -93,11 +99,7 @@ async function evaluatePullRequest(
     versionAt(github, repo, headSha),
   ])
   if (baseVersion === headVersion) {
-    return result(
-      'success',
-      'No package version change',
-      'Release-specific review is not required.',
-    )
+    return result('success', noVersionChangeTitle, 'Release-specific review is not required.')
   }
   if (!['ahead', 'identical'].includes(comparison.status)) {
     return result(
@@ -244,7 +246,13 @@ async function run({ github, context, core, recommendVersion = recommendedVersio
   const cachedRecommendation = () => (recommendation ??= recommendVersion(mainSha))
   for (const pull of pulls) {
     const outcome = await report(github, repo, pull.head.sha, async () => {
+      if (!isReleaseBranch(pull)) {
+        return result('success', 'Not a release branch', 'Release-specific review is not required.')
+      }
       const evaluated = await evaluatePullRequest(github, repo, pull, mainSha, cachedRecommendation)
+      if (evaluated.title === noVersionChangeTitle) {
+        return evaluated
+      }
       if (!(await stillCurrent(github, repo, [pull], mainSha))) {
         return result(
           'failure',
@@ -276,16 +284,18 @@ async function run({ github, context, core, recommendVersion = recommendedVersio
         if (evaluated.outcome.conclusion !== 'success') return evaluated.outcome
         memberPulls.push(evaluated.pull)
       }
-      const currentMembers = queueMembers(await queueEntries(github, repo), sha)
-      if (
-        JSON.stringify(currentMembers) !== JSON.stringify(members) ||
-        !(await stillCurrent(github, repo, memberPulls, mainSha))
-      ) {
-        return result(
-          'failure',
-          'Merge queue changed during evaluation',
-          'Run Release Readiness again.',
-        )
+      if (memberPulls.some(isReleaseBranch)) {
+        const currentMembers = queueMembers(await queueEntries(github, repo), sha)
+        if (
+          JSON.stringify(currentMembers) !== JSON.stringify(members) ||
+          !(await stillCurrent(github, repo, memberPulls, mainSha))
+        ) {
+          return result(
+            'failure',
+            'Merge queue changed during evaluation',
+            'Run Release Readiness again.',
+          )
+        }
       }
       return result(
         'success',
