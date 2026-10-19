@@ -1,5 +1,6 @@
-import { createMachine } from 'robot3'
-import { useEffect, useMemo, useState } from 'react'
+import { createMachine, type Machine, type SendFunction } from 'robot3'
+import { useMachine } from 'react-robot'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
@@ -11,7 +12,12 @@ import type {
   SupportedAssignmentType,
 } from './usePayScheduleAssignment'
 import { stripNullAssignmentPreviewFields } from './stripNullAssignmentPreviewFields'
-import { Flow } from '@/components/Flow/Flow'
+import { assignmentDraftUpdated } from './usePayScheduleAssignment'
+import type { AssignmentDraft } from './usePayScheduleAssignment'
+import { Flex } from '@/components/Common/Flex'
+import { FlowContext } from '@/components/Flow/useFlow'
+import type { EventType } from '@/shared/constants'
+import type { OnEventType } from '@/components/Base/useBase'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
@@ -31,8 +37,6 @@ function toSupportedType(
     case PayScheduleAssignmentType.HourlySalaried:
       return type
     default:
-      // by_employee and by_department have no step implementations; start from the type step
-      // with nothing preselected rather than seeding a type the flow can't render.
       return undefined
   }
 }
@@ -81,10 +85,8 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * submitted as `single`. Can be mounted directly or launched from
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
- * The internal step-to-step selection events (assignment type chosen, schedule picked) also
- * bubble through `onEvent` as a side effect of how the underlying `Flow` re-emits every event —
- * they carry no information a host needs mid-flow, since `assigned` reports the final outcome,
- * so they're intentionally left out of the table below.
+ * Step selection events also bubble through `onEvent`; the `assigned` event reports the
+ * final outcome. Draft updates stay internal to this flow.
  *
  * @events
  * | Event | Description | Data |
@@ -161,5 +163,48 @@ function Root({ companyId, dictionary }: Omit<PayScheduleAssignmentProps, BaseCo
     [companyId, seed],
   )
 
-  return <Flow machine={machine} onEvent={onEvent} />
+  return <PayScheduleAssignmentFlow machine={machine} companyId={companyId} onEvent={onEvent} />
+}
+
+/**
+ * Runs assignment transitions while keeping draft updates inside the flow.
+ *
+ * @param props - Assignment machine and public event callback.
+ * @returns The current assignment step.
+ * @internal
+ */
+export function PayScheduleAssignmentFlow({
+  machine,
+  companyId,
+  onEvent,
+}: {
+  companyId: string
+  machine: Machine<object, PayScheduleAssignmentContextInterface>
+  onEvent: OnEventType<EventType, unknown>
+}) {
+  const { LoadingIndicator } = useBase()
+  const [current, send] = useMachine(machine, {
+    onEvent: handleEvent,
+    updateDraft,
+    companyId,
+    component: null,
+  })
+  const sendEvent = send as SendFunction<string>
+  function handleEvent(type: EventType, payload: unknown) {
+    sendEvent({ type, payload })
+    onEvent(type, payload)
+  }
+  function updateDraft(payload: AssignmentDraft) {
+    sendEvent({ type: assignmentDraftUpdated, payload })
+  }
+  const Component = current.context.component
+  return (
+    <Flex>
+      <FlowContext.Provider value={current.context}>
+        <Flex flexDirection="column" gap={32}>
+          <Suspense fallback={<LoadingIndicator />}>{Component && <Component />}</Suspense>
+        </Flex>
+      </FlowContext.Provider>
+    </Flex>
+  )
 }

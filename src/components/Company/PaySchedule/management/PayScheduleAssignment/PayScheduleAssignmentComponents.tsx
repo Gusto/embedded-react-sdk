@@ -10,7 +10,9 @@ import { AssignmentTypeStepPresentation } from './AssignmentTypeStepPresentation
 import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPresentation'
 import { AssignmentCompensationStepPresentation } from './AssignmentCompensationStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
+import type { assignmentDraftUpdated } from './usePayScheduleAssignment'
 import type {
+  AssignmentDraft,
   PayScheduleAssignmentContextInterface,
   SupportedAssignmentType,
 } from './usePayScheduleAssignment'
@@ -43,6 +45,8 @@ export type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED]:
     | { defaultPayScheduleUuid: string }
     | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
+  [assignmentDraftUpdated]: AssignmentDraft
+  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
   [componentEvents.PAY_SCHEDULE_ASSIGNED]: AssignmentSelection & {
     employeeChanges: PayScheduleAssignmentEmployeeChange[]
@@ -74,6 +78,7 @@ export function AssignmentScheduleStep() {
     defaultPayScheduleUuid,
     hourlyPayScheduleUuid,
     salariedPayScheduleUuid,
+    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
@@ -94,10 +99,11 @@ export function AssignmentScheduleStep() {
         schedules={schedules}
         hourlyPayScheduleUuid={preselect(hourlyPayScheduleUuid)}
         salariedPayScheduleUuid={preselect(salariedPayScheduleUuid)}
-        onBack={() => {
-          onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
+        onBack={selection => {
+          onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
         }}
-        onAddPaySchedule={() => {
+        onAddPaySchedule={selection => {
+          updateDraft(selection)
           onEvent(componentEvents.PAY_SCHEDULE_CREATE)
         }}
         onContinue={selection => {
