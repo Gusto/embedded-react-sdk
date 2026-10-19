@@ -112,6 +112,38 @@ describe('TaxPaymentsFlow', () => {
     expect(await screen.findByRole('heading', { name: 'Tax payments' })).toBeInTheDocument()
   })
 
+  // The shared afterEach axe pass disables `heading-order` for every integration test, since an
+  // embedded component legitimately starts at h2. These assert the levels within this flow are
+  // still contiguous, which that blanket exemption would otherwise hide.
+  it('keeps a contiguous heading order on the list', async () => {
+    renderWithProviders(<TaxPaymentsFlow companyId="company-123" onEvent={onEvent} />, enabledFlag)
+
+    expect(await screen.findByRole('heading', { name: 'Tax payments' })).toBeInTheDocument()
+    await expectNoAxeViolations(document.body, {
+      isIntegrationTest: true,
+      rules: { 'heading-order': { enabled: true } },
+    })
+  })
+
+  it('keeps a contiguous heading order on the detail view', async () => {
+    renderWithProviders(<TaxPaymentsFlow companyId="company-123" onEvent={onEvent} />, enabledFlag)
+
+    await user.click(
+      await screen.findByRole('button', { name: 'View Internal Revenue Service tax payment' }),
+    )
+
+    expect(await screen.findByRole('heading', { name: 'Internal Revenue Service' })).toHaveProperty(
+      'tagName',
+      'H2',
+    )
+    expect(screen.getByRole('heading', { name: 'Payment details' })).toHaveProperty('tagName', 'H3')
+    expect(screen.getByRole('heading', { name: 'Tax liabilities' })).toHaveProperty('tagName', 'H3')
+    await expectNoAxeViolations(document.body, {
+      isIntegrationTest: true,
+      rules: { 'heading-order': { enabled: true } },
+    })
+  })
+
   it('resolves every liability pay period from one windowed payroll lookup', async () => {
     let payrollsUrl: URL | null = null
     const payrollsListResolver = vi.fn<HttpResponseResolver>(({ request }) => {

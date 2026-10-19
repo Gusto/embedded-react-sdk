@@ -95,7 +95,7 @@ export function TaxPaymentDetailPresentation({
       </Flex>
 
       {status === 'overdue' && (
-        <Alert status="warning" label={t('overdueAlert.label')}>
+        <Alert status="warning" label={t('overdueAlert.label')} disableScrollIntoView>
           <Text size="sm">
             {t('overdueAlert.description', {
               dueDate: formatLongWithYear(payment.dueDate?.toString()),
@@ -105,7 +105,7 @@ export function TaxPaymentDetailPresentation({
       )}
 
       <Flex flexDirection="column" gap={32}>
-        <Box header={<BoxHeader title={t('details.title')} headingLevel="h4" />}>
+        <Box header={<BoxHeader title={t('details.title')} />}>
           <DescriptionList
             layout="horizontal"
             items={[
@@ -141,10 +141,7 @@ export function TaxPaymentDetailPresentation({
           />
         </Box>
 
-        <Box
-          header={<BoxHeader title={t('liabilities.title')} headingLevel="h4" />}
-          withPadding={false}
-        >
+        <Box header={<BoxHeader title={t('liabilities.title')} />} withPadding={false}>
           <DataView label={t('liabilities.tableLabel')} isWithinBox {...liabilitiesDataView} />
         </Box>
       </Flex>

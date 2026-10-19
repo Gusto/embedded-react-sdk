@@ -161,10 +161,16 @@ export function TaxPaymentsListPresentation({
       <Heading as="h2">{t('title')}</Heading>
 
       {overdueCount > 0 && (
-        <Alert status="warning" label={t('overdueAlert.label', { count: overdueCount })} />
+        <Alert
+          status="warning"
+          label={t('overdueAlert.label', { count: overdueCount })}
+          disableScrollIntoView
+        />
       )}
 
-      {isTruncated && <Alert status="info" label={t('truncatedAlert.label')} />}
+      {isTruncated && (
+        <Alert status="info" label={t('truncatedAlert.label')} disableScrollIntoView />
+      )}
 
       {hasPayments && (
         <div className={styles.toolbar}>
