@@ -57,6 +57,9 @@ describe('PaySchedule (management)', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_uuid/departments`, () =>
+        HttpResponse.json([]),
+      ),
       paymentConfigsMock,
       getPaySchedules,
       // Out-ranks getPaySchedule, whose `:pay_schedule_id` pattern also matches /assignments.
@@ -866,7 +869,7 @@ describe('PaySchedule (management)', () => {
     })
 
     it('falls back to the single-schedule overview for other assignment types', async () => {
-      useHourlySalariedAssignment({ type: 'by_department', departments: [] })
+      useHourlySalariedAssignment({ type: 'by_employee', employees: [] })
       renderPaySchedule({ enableAutoPilot: true, enableMultipleSchedules: true })
 
       await waitFor(() => {

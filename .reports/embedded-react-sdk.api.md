@@ -65,6 +65,7 @@ import { ContractorPaymentReceipt } from '@gusto/embedded-api/models/components/
 import { ContractorPaymentReceiptContractorPayments } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptPaymentMethod } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptTotals } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
+import { Contractors } from '@gusto/embedded-api/models/components/department';
 import { ContractorStatus } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorType as ContractorType_2 } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
@@ -76,6 +77,8 @@ import { CustomFieldType } from '@gusto/embedded-api/models/components/customfie
 import { CustomWithholdings } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
+import { Department } from '@gusto/embedded-api/models/components/department';
+import { DepartmentEmployees } from '@gusto/embedded-api/models/components/department';
 import { Document as Document_2 } from '@gusto/embedded-api/models/components/document';
 import { DocumentRecipientType } from '@gusto/embedded-api/models/components/document';
 import { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned';
@@ -510,6 +513,9 @@ declare namespace APIModels {
         ContractorUpdateRequestBodyType,
         ContractorUpdateRequestBodyWageType,
         CustomFieldType,
+        Contractors,
+        Department,
+        DepartmentEmployees,
         Document_2 as Document,
         Fields,
         Pages,
@@ -1474,6 +1480,7 @@ export const componentEvents: {
     readonly PAY_SCHEDULE_AUTO_PILOT_DISMISSED: "paySchedule/management/autoPilotDismissed";
     readonly PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED: "paySchedule/management/assignment/typeSelected";
     readonly PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED: "paySchedule/management/assignment/scheduleSelected";
+    readonly PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED: "paySchedule/management/assignment/draftUpdated";
     readonly PAY_SCHEDULE_ASSIGNMENT_BACK: "paySchedule/management/assignment/back";
     readonly PAY_SCHEDULE_ASSIGNMENT_CANCEL: "paySchedule/management/assignment/cancel";
     readonly PAY_SCHEDULE_ASSIGNED: "paySchedule/management/assignment/assigned";

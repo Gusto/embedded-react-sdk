@@ -10,6 +10,10 @@
       "hourlySalaried": {
         "label": "Separate schedules by compensation type",
         "description": "Choose one pay schedule for hourly employees and another for salaried employees"
+      },
+      "byDepartment": {
+        "label": "Separate schedules by department",
+        "description": "Choose a pay schedule for each department"
       }
     }
   },
@@ -40,5 +44,12 @@
   },
   "backCta": "Back",
   "continueCta": "Continue",
-  "submitCta": "Submit"
+  "submitCta": "Submit",
+  "departmentStep": {
+    "heading": "Assign employees",
+    "defaultPayScheduleLabel": "Uncategorized employees",
+    "defaultPayScheduleDescription": "Select a pay schedule for employees who aren't assigned to any department.",
+    "unnamedDepartment": "Unnamed department",
+    "addPayScheduleCta": "Add pay schedule"
+  }
 }

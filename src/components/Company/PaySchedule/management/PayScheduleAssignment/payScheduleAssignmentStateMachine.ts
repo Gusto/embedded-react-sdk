@@ -43,6 +43,7 @@ export const payScheduleAssignmentStateMachine = {
             defaultPayScheduleUuid: isSameType ? ctx.defaultPayScheduleUuid : undefined,
             hourlyPayScheduleUuid: isSameType ? ctx.hourlyPayScheduleUuid : undefined,
             salariedPayScheduleUuid: isSameType ? ctx.salariedPayScheduleUuid : undefined,
+            departments: isSameType ? ctx.departments : undefined,
           }
         },
       ),
@@ -50,11 +51,31 @@ export const payScheduleAssignmentStateMachine = {
   ),
   assignmentSchedule: state<MachineTransition>(
     transition(
+      componentEvents.PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED,
+      'assignmentSchedule',
+      reduce(
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.PAY_SCHEDULE_ASSIGNMENT_DRAFT_UPDATED
+          >,
+        ): PayScheduleAssignmentContextInterface => ({
+          ...ctx,
+          ...ev.payload,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK,
       'assignmentType',
       reduce(
-        (ctx: PayScheduleAssignmentContextInterface): PayScheduleAssignmentContextInterface => ({
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK>,
+        ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
+          ...ev.payload,
           component: AssignmentTypeStep as ComponentType,
         }),
       ),
@@ -98,7 +119,10 @@ export const payScheduleAssignmentStateMachine = {
         ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
           component: AssignmentScheduleStep as ComponentType,
-          defaultPayScheduleUuid: ev.payload.paySchedule.uuid,
+          defaultPayScheduleUuid:
+            ctx.assignmentType === 'by_department'
+              ? ctx.defaultPayScheduleUuid
+              : ev.payload.paySchedule.uuid,
         }),
       ),
     ),

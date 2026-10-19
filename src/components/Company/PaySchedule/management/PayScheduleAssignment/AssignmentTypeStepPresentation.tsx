@@ -11,6 +11,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 /** @internal */
 export interface AssignmentTypeStepPresentationProps {
   defaultType?: SupportedAssignmentType
+  hasDepartments?: boolean
   onBack: () => void
   onContinue: (type: SupportedAssignmentType) => void
 }
@@ -19,6 +20,7 @@ const TypeStepSchema = z.object({
   type: z.union([
     z.literal(PayScheduleAssignmentBodyType.Single),
     z.literal(PayScheduleAssignmentBodyType.HourlySalaried),
+    z.literal(PayScheduleAssignmentBodyType.ByDepartment),
   ]),
 })
 
@@ -27,6 +29,7 @@ type TypeStepInputs = z.infer<typeof TypeStepSchema>
 /** @internal */
 export function AssignmentTypeStepPresentation({
   defaultType = PayScheduleAssignmentBodyType.Single,
+  hasDepartments = false,
   onBack,
   onContinue,
 }: AssignmentTypeStepPresentationProps) {
@@ -35,7 +38,12 @@ export function AssignmentTypeStepPresentation({
 
   const formMethods = useForm<TypeStepInputs>({
     resolver: zodResolver(TypeStepSchema),
-    defaultValues: { type: defaultType },
+    defaultValues: {
+      type:
+        defaultType === PayScheduleAssignmentBodyType.ByDepartment && !hasDepartments
+          ? PayScheduleAssignmentBodyType.Single
+          : defaultType,
+    },
   })
 
   const handleSubmit = formMethods.handleSubmit(({ type }) => {
@@ -65,6 +73,15 @@ export function AssignmentTypeStepPresentation({
                 label: t('typeStep.options.hourlySalaried.label'),
                 description: t('typeStep.options.hourlySalaried.description'),
               },
+              ...(hasDepartments
+                ? [
+                    {
+                      value: PayScheduleAssignmentBodyType.ByDepartment,
+                      label: t('typeStep.options.byDepartment.label'),
+                      description: t('typeStep.options.byDepartment.description'),
+                    },
+                  ]
+                : []),
             ]}
           />
           <ActionsLayout>
