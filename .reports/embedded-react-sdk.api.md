@@ -99,6 +99,8 @@ import { EmployeeCustomField } from '@gusto/embedded-api/models/components/emplo
 import { EmployeeFederalTax } from '@gusto/embedded-api/models/components/employeefederaltax';
 import { EmployeeFederalTaxPre2020 } from '@gusto/embedded-api/models/components/employeefederaltaxpre2020';
 import { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api/models/components/employeefederaltaxrev2020';
+import { EmployeeHomeAddress } from '@gusto/embedded-api/models/components/employeehomeaddress';
+import { EmployeeHomeAddressHistoryEntry } from '@gusto/embedded-api/models/components/employeehomeaddresshistoryentry';
 import { EmployeeMemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeOnboardingStatus1 } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api/models/components/employeeonboardingstatus';
@@ -286,6 +288,13 @@ import { RequiredQuestions } from '@gusto/embedded-api/models/components/informa
 import { ResponseType as ResponseType_2 } from '@gusto/embedded-api/models/components/informationrequest';
 import { SelectHTMLAttributes } from 'react';
 import { SetupStatus } from '@gusto/embedded-api/models/components/taxrequirementstateslist';
+import { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesCurrentEmploymentStatus } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesMemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesOnboardingDocumentsConfig } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesOnboardingStatus } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesPaymentMethod } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesStatus } from '@gusto/embedded-api/models/components/showemployees';
 import { Signatory } from '@gusto/embedded-api/models/components/signatory';
 import { SignatoryHomeAddress } from '@gusto/embedded-api/models/components/signatory';
 import { State } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -541,6 +550,8 @@ declare namespace APIModels {
         EmployeeFederalTax,
         EmployeeFederalTaxPre2020,
         EmployeeFederalTaxRev2020,
+        EmployeeHomeAddress,
+        EmployeeHomeAddressHistoryEntry,
         Blockers,
         EmployeeOnboardingStatusOnboardingStep,
         EmployeeOnboardingStatus_2 as EmployeeOnboardingStatus,
@@ -713,6 +724,13 @@ declare namespace APIModels {
         PrintingFormat,
         RecoveryCase,
         RecoveryCaseStatus,
+        ShowEmployeesCurrentEmploymentStatus,
+        ShowEmployeesOnboardingStatus,
+        ShowEmployees,
+        ShowEmployeesMemberPortalInvitationStatus,
+        ShowEmployeesOnboardingDocumentsConfig,
+        ShowEmployeesPaymentMethod,
+        ShowEmployeesStatus,
         IdentityVerificationStatus,
         SignatoryHomeAddress,
         Signatory,

@@ -13,7 +13,8 @@
     "name": "Name",
     "frequency": "Frequency",
     "schedule": "Schedule",
-    "department": "Department"
+    "department": "Department",
+    "employees": "Employees"
   },
   "compensationTypes": {
     "hourly": "Hourly",
@@ -34,5 +35,10 @@
   "scheduleForm": {
     "anchorEndOfPayPeriodDescription": "The last date of the first pay period; can be the same as the first pay date.",
     "payrollDeadline": "Run payroll by"
-  }
+  },
+  "employeeDescription": "You have assigned pay schedules per employee.",
+  "employeeTableLabel": "Pay schedules by employee",
+  "employeeCount_one": "{{count}} employee",
+  "employeeCount_other": "{{count}} employees",
+  "employeeAccessDenied": "Employee assignments are unavailable because access to employees is missing. Contact your administrator."
 }

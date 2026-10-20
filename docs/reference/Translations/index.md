@@ -704,8 +704,14 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
 | <a id="property-companymanagementpayscheduleeditschedulecta"></a> `editScheduleCta` | `"Edit schedule"` |
+| <a id="property-companymanagementpayscheduleemployeeaccessdenied"></a> `employeeAccessDenied` | `"Employee assignments are unavailable because access to employees is missing. Contact your administrator."` |
+| <a id="property-companymanagementpayscheduleemployeecount_one"></a> `employeeCount_one` | `"{{count}} employee"` |
+| <a id="property-companymanagementpayscheduleemployeecount_other"></a> `employeeCount_other` | `"{{count}} employees"` |
+| <a id="property-companymanagementpayscheduleemployeedescription"></a> `employeeDescription` | `"You have assigned pay schedules per employee."` |
+| <a id="property-companymanagementpayscheduleemployeetablelabel"></a> `employeeTableLabel` | `"Pay schedules by employee"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.department` | `"Department"` |
+| `labels.employees` | `"Employees"` |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
 | `labels.schedule` | `"Schedule"` |
@@ -746,6 +752,21 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `departmentStep.defaultPayScheduleLabel` | `"Uncategorized employees"` |
 | `departmentStep.heading` | `"Assign employees"` |
 | `departmentStep.unnamedDepartment` | `"Unnamed department"` |
+| <a id="property-companymanagementpayscheduleassignmentemployeeaccessdenied"></a> `employeeAccessDenied` | `"Employee schedules are unavailable because access to employees is missing. You can choose another schedule type or contact your administrator."` |
+| <a id="property-companymanagementpayscheduleassignmentemployeestep"></a> `employeeStep` | |
+| `employeeStep.addPayScheduleCta` | `"Add pay schedule"` |
+| `employeeStep.employeeLabel` | `"Employee"` |
+| `employeeStep.employeesLabel` | `"Employees"` |
+| `employeeStep.heading` | `"Assign employees"` |
+| `employeeStep.payScheduleLabel` | `"Pay schedule"` |
+| `employeeStep.scheduleForEmployee` | `"Pay schedule for {{name}}"` |
+| `employeeStep.tableLabel` | `"Employee pay schedule assignments"` |
+| `employeeStep.typeLabel` | `"Type"` |
+| `employeeStep.types` | |
+| `employeeStep.types.hourly` | `"Hourly / Nonexempt"` |
+| `employeeStep.types.owner` | `"Owner"` |
+| `employeeStep.types.salariedExempt` | `"Salaried / Exempt"` |
+| `employeeStep.types.salariedNonexempt` | `"Salaried / Nonexempt"` |
 | <a id="property-companymanagementpayscheduleassignmentreviewstep"></a> `reviewStep` | |
 | `reviewStep.employeeChangesHeading` | `"Employees affected"` |
 | `reviewStep.firstPayPeriodLabel` | `"First pay period"` |
@@ -772,6 +793,9 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.options.byDepartment` | |
 | `typeStep.options.byDepartment.description` | `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` |
 | `typeStep.options.byDepartment.label` | `"By department"` |
+| `typeStep.options.byEmployee` | |
+| `typeStep.options.byEmployee.description` | `"Assign a pay schedule to each individual employee."` |
+| `typeStep.options.byEmployee.label` | `"By employee"` |
 | `typeStep.options.hourlySalaried` | |
 | `typeStep.options.hourlySalaried.description` | `"Choose one pay schedule for hourly employees and another for salaried employees"` |
 | `typeStep.options.hourlySalaried.label` | `"Separate schedules by compensation type"` |

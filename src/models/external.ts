@@ -145,6 +145,9 @@ export type { EmployeeCustomField } from '@gusto/embedded-api/models/components/
 export type { EmployeeFederalTax } from '@gusto/embedded-api/models/components/employeefederaltax'
 export type { EmployeeFederalTaxPre2020 } from '@gusto/embedded-api/models/components/employeefederaltaxpre2020'
 export type { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api/models/components/employeefederaltaxrev2020'
+/** `EmployeeHomeAddress` entity from the Gusto Embedded API. */
+export type { EmployeeHomeAddress } from '@gusto/embedded-api/models/components/employeehomeaddress'
+export type { EmployeeHomeAddressHistoryEntry } from '@gusto/embedded-api/models/components/employeehomeaddresshistoryentry'
 /** `Blockers` entity from the Gusto Embedded API. */
 export type { Blockers } from '@gusto/embedded-api/models/components/employeeonboardingstatus'
 /** `EmployeeOnboardingStatusOnboardingStep` entity from the Gusto Embedded API. */
@@ -429,6 +432,19 @@ export type { PrintablePayrollChecksBody } from '@gusto/embedded-api/models/comp
 export { PrintingFormat } from '@gusto/embedded-api/models/components/printablepayrollchecksbody'
 export type { RecoveryCase } from '@gusto/embedded-api/models/components/recoverycase'
 export { RecoveryCaseStatus } from '@gusto/embedded-api/models/components/recoverycase'
+/** `ShowEmployeesCurrentEmploymentStatus` entity from the Gusto Embedded API. */
+export { ShowEmployeesCurrentEmploymentStatus } from '@gusto/embedded-api/models/components/showemployees'
+/** `ShowEmployeesOnboardingStatus` entity from the Gusto Embedded API. */
+export { ShowEmployeesOnboardingStatus } from '@gusto/embedded-api/models/components/showemployees'
+export type {
+  ShowEmployees,
+  ShowEmployeesMemberPortalInvitationStatus,
+  ShowEmployeesOnboardingDocumentsConfig,
+} from '@gusto/embedded-api/models/components/showemployees'
+export {
+  ShowEmployeesPaymentMethod,
+  ShowEmployeesStatus,
+} from '@gusto/embedded-api/models/components/showemployees'
 /** `IdentityVerificationStatus` entity from the Gusto Embedded API. */
 export { IdentityVerificationStatus } from '@gusto/embedded-api/models/components/signatory'
 /** `SignatoryHomeAddress` entity from the Gusto Embedded API. */

@@ -15,13 +15,13 @@ export function getCompanyDepartments(departments: Department[] | undefined) {
 }
 
 /**
- * Identifies a department request rejected for missing OAuth scopes.
+ * Identifies an assignment data request rejected for missing OAuth scopes.
  *
- * @param error - Department query error.
- * @returns Whether department access is unavailable because a required scope is missing.
+ * @param error - Assignment query error.
+ * @returns Whether access is unavailable because a required scope is missing.
  * @internal
  */
-export function isDepartmentAccessDenied(error: unknown): boolean {
+export function isAssignmentAccessDenied(error: unknown): boolean {
   if (!(error instanceof GustoEmbeddedError) || error.httpMeta.response.status !== 403) return false
   try {
     const body: unknown = JSON.parse(error.httpMeta.body)
