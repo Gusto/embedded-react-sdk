@@ -930,6 +930,7 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `form.effectiveFromLabel` |
 | `form.errors` |
 | `form.errors.incompleteRequirementSet` |
+| `form.errors.invalidRequirementSet` |
 | `form.noEditableRequirementsDescription` |
 | `form.noEditableRequirementsTitle` |
 | `form.saveCta` |
