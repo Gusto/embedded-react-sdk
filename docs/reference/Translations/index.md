@@ -5527,7 +5527,6 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollLoadFailed` | `"There was an issue loading this payroll. Please try again."` |
-| `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
 | `alerts.payrollProcessingFailedCtaLabel` | `"Recalculate payroll"` |
@@ -5569,6 +5568,9 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewgarnishmentslabel"></a> `garnishmentsLabel` | `"Garnishments"` |
 | <a id="property-payrollpayrolloverviewloadingdescription"></a> `loadingDescription` | `"This may take a minute or two. You can navigate away while this happens."` |
 | <a id="property-payrollpayrolloverviewloadingtitle"></a> `loadingTitle` | `"Submitting payroll..."` |
+| <a id="property-payrollpayrolloverviewnotcalculatederrorcta"></a> `notCalculatedErrorCta` | `"Back to payrolls"` |
+| <a id="property-payrollpayrolloverviewnotcalculatederrordescription"></a> `notCalculatedErrorDescription` | `"Refresh or return to your payrolls to continue."` |
+| <a id="property-payrollpayrolloverviewnotcalculatederrortitle"></a> `notCalculatedErrorTitle` | `"This payroll has changed"` |
 | <a id="property-payrollpayrolloverviewoverviewtitle"></a> `overviewTitle` | `"Review payroll"` |
 | <a id="property-payrollpayrolloverviewpagesubtitle"></a> `pageSubtitle` | `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` |
 | <a id="property-payrollpayrolloverviewpagesubtitledismissal"></a> `pageSubtitleDismissal` | `"{{payrollType}} payroll"` |

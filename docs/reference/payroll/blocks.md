@@ -534,6 +534,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/receipt/viewed` | User opened a payroll's receipt view | `{ payrollId: string }` |
 | `runPayroll/blockers/viewAll` | User opened the full list of payroll blockers | — |
 | `runPayroll/cancelled` | A payroll was cancelled | `{ payrollId: string, result: object }` |
+| `runPayroll/notCalculated/backToList` | User returns to the payroll list from a payroll that is no longer calculated | — |
 | `runPayroll/cancelled/alertDismissed` | User dismissed the payroll-cancelled success alert | — |
 
 When unprocessed transition pay periods exist, the landing surface renders a Transition
@@ -677,6 +678,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/processed` | Payroll finished processing successfully | `{ payPeriod, payrollUuid }` |
 | `runPayroll/processingFailed` | Payroll processing failed | — |
 | `runPayroll/cancelled` | Payroll was cancelled | Cancel payroll response |
+| `runPayroll/notCalculated/backToList` | User chose to return to the payroll list after the payroll was found to be no longer calculated (e.g. cancelled in another session) | — |
 | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |

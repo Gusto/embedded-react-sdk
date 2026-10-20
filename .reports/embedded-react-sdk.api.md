@@ -1393,6 +1393,7 @@ export const componentEvents: {
     readonly RUN_PAYROLL_ALREADY_PROCESSED: "runPayroll/alreadyProcessed";
     readonly RUN_PAYROLL_CANCELLED: "runPayroll/cancelled";
     readonly RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: "runPayroll/cancelled/alertDismissed";
+    readonly RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST: "runPayroll/notCalculated/backToList";
     readonly RUN_PAYROLL_EDIT: "runPayroll/edit";
     readonly RUN_PAYROLL_EMPLOYEE_EDIT: "runPayroll/employee/edit";
     readonly RUN_PAYROLL_EMPLOYEE_SKIP: "runPayroll/employee/skip";

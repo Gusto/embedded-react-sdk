@@ -59,6 +59,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `runPayroll/processed` | Payroll processing completes | — |
 | `runPayroll/processingFailed` | Payroll processing fails | Error details |
 | `runPayroll/cancelled` | A submitted payroll is cancelled | `{ payrollId: string, result: object }` |
+| `runPayroll/notCalculated/backToList` | User returns to the payroll list from a payroll that is no longer calculated | — |
 | `runPayroll/summary/viewed` | The summary screen is opened | `{ payrollId: string }` |
 | `runPayroll/receipt/viewed` | The receipt screen is opened | `{ payrollId: string }` |
 | `runPayroll/offCycle/start` | The user starts an off-cycle payroll | — |
@@ -101,7 +102,7 @@ flowchart LR
   linkStyle 1,2,3,4 stroke-width:2.5px
 ```
 
-When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown.
+When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown. If the overview finds the payroll is no longer calculated (for example, it was cancelled in another session), it shows an error state whose **Back to payrolls** action (`runPayroll/notCalculated/backToList`) returns to landing.
 <!-- /guide-source (slot: appendix) -->
 
 ## Endpoints

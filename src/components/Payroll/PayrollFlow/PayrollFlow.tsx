@@ -30,6 +30,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `runPayroll/processed` | Payroll processing completes | — |
  * | `runPayroll/processingFailed` | Payroll processing fails | Error details |
  * | `runPayroll/cancelled` | A submitted payroll is cancelled | `{ payrollId: string, result: object }` |
+ * | `runPayroll/notCalculated/backToList` | User returns to the payroll list from a payroll that is no longer calculated | — |
  * | `runPayroll/summary/viewed` | The summary screen is opened | `{ payrollId: string }` |
  * | `runPayroll/receipt/viewed` | The receipt screen is opened | `{ payrollId: string }` |
  * | `runPayroll/offCycle/start` | The user starts an off-cycle payroll | — |
