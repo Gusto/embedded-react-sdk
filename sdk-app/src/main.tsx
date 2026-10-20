@@ -45,6 +45,7 @@ import {
   ManagePaySchedulesStates,
 } from './design/prototypes/company-management/ManagePaySchedules'
 import { TaxFilings } from './design/prototypes/tax-filings'
+import { AgentPayments } from './design/prototypes/agent-payments'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -62,6 +63,7 @@ const router = createBrowserRouter([
           { index: true, element: <DesignHome /> },
           { path: 'component-showcase', element: <ComponentShowcase /> },
           { path: 'tax-filings', element: <TaxFilings /> },
+          { path: 'agent-payments', element: <AgentPayments /> },
           {
             path: 'contractor-management',
             element: <ContractorManagementFlow />,
