@@ -8,7 +8,7 @@ import { TaxPaymentsListPresentation } from './TaxPaymentsListPresentation'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export default {
-  title: 'Domain/Payroll/TaxPayments/TaxPaymentsList',
+  title: 'Domain/CompanyManagement/TaxPayments/TaxPaymentsList',
 }
 
 const createPayment = (overrides: Partial<TaxPayment>): TaxPayment => ({

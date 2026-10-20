@@ -14,7 +14,7 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
  *
  * @alpha
  */
-export interface TaxPaymentsListProps extends BaseComponentInterface<'Payroll.TaxPaymentsList'> {
+export interface TaxPaymentsListProps extends BaseComponentInterface<'Company.Management.TaxPaymentsList'> {
   /** Identifier of the company whose tax payments are listed. */
   companyId: string
 }
@@ -30,7 +30,7 @@ export interface TaxPaymentsListProps extends BaseComponentInterface<'Payroll.Ta
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `payroll/taxPayments/view` | Fired when the user selects a tax payment to view | `{ taxPaymentId: string }` |
+ * | `company/taxPayments/view` | Fired when the user selects a tax payment to view | `{ taxPaymentId: string }` |
  *
  * @param props - See {@link TaxPaymentsListProps}.
  * @returns The rendered tax payments list.
@@ -51,8 +51,8 @@ function matchesAgencySearch({ payment }: TaxPaymentRow, query: string): boolean
 }
 
 const Root = ({ companyId, className, dictionary, onEvent }: TaxPaymentsListProps) => {
-  useComponentDictionary('Payroll.TaxPaymentsList', dictionary)
-  useI18n('Payroll.TaxPaymentsList')
+  useComponentDictionary('Company.Management.TaxPaymentsList', dictionary)
+  useI18n('Company.Management.TaxPaymentsList')
 
   const { taxPayments: payments, isTruncated } = useAllTaxPayments(companyId)
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string>(ALL_FILTER_VALUE)

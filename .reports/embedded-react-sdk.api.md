@@ -1085,7 +1085,13 @@ declare namespace CompanyManagement {
         PayScheduleProps_2 as PayScheduleProps,
         PayScheduleDictionary,
         PayScheduleAssignment_2 as PayScheduleAssignment,
-        PayScheduleAssignmentProps
+        PayScheduleAssignmentProps,
+        TaxPaymentsFlow,
+        TaxPaymentsList,
+        TaxPaymentDetail,
+        TaxPaymentsFlowProps,
+        TaxPaymentsListProps,
+        TaxPaymentDetailProps
     }
 }
 
@@ -1359,8 +1365,8 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
-    readonly TAX_PAYMENT_VIEW: "payroll/taxPayments/view";
-    readonly TAX_PAYMENT_BACK: "payroll/taxPayments/back";
+    readonly TAX_PAYMENT_VIEW: "company/taxPayments/view";
+    readonly TAX_PAYMENT_BACK: "company/taxPayments/back";
     readonly PRINT_CHECKS_START: "payroll/printChecks/start";
     readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
     readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
@@ -4367,12 +4373,6 @@ declare namespace Payroll {
         PayrollBlockerListProps,
         RecoveryCases,
         RecoveryCasesProps,
-        TaxPaymentsFlow,
-        TaxPaymentsList,
-        TaxPaymentDetail,
-        TaxPaymentsFlowProps,
-        TaxPaymentsListProps,
-        TaxPaymentDetailProps,
         PrintChecks,
         PrintChecksProps,
         OffCyclePayPeriodDateFormData,
@@ -4999,6 +4999,10 @@ export interface Resources {
     // (undocumented)
     'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
     // (undocumented)
+    'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+    // (undocumented)
+    'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
+    // (undocumented)
     'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
     // (undocumented)
     'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -5216,10 +5220,6 @@ export interface Resources {
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)
     'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
-    // (undocumented)
-    'Payroll.TaxPaymentDetail': Translations.PayrollTaxPaymentDetail
-    // (undocumented)
-    'Payroll.TaxPaymentsList': Translations.PayrollTaxPaymentsList
     // (undocumented)
     'Payroll.Transition': Translations.PayrollTransition
     // (undocumented)
@@ -5783,7 +5783,7 @@ export interface TabsProps {
 function TaxPaymentDetail(props: TaxPaymentDetailProps): JSX;
 
 // @alpha
-interface TaxPaymentDetailProps extends BaseComponentInterface<'Payroll.TaxPaymentDetail'> {
+interface TaxPaymentDetailProps extends BaseComponentInterface<'Company.Management.TaxPaymentDetail'> {
     companyId: string;
     taxPaymentId: string;
 }
@@ -5800,7 +5800,7 @@ interface TaxPaymentsFlowProps extends BaseComponentInterface<never> {
 function TaxPaymentsList(props: TaxPaymentsListProps): JSX;
 
 // @alpha
-interface TaxPaymentsListProps extends BaseComponentInterface<'Payroll.TaxPaymentsList'> {
+interface TaxPaymentsListProps extends BaseComponentInterface<'Company.Management.TaxPaymentsList'> {
     companyId: string;
 }
 

@@ -760,6 +760,100 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 
 ***
 
+<a id="companymanagementtaxpaymentdetail"></a>
+
+### CompanyManagementTaxPaymentDetail
+
+Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementtaxpaymentdetailbackcta"></a> `backCta` | `"Back to tax payments"` |
+| <a id="property-companymanagementtaxpaymentdetaildetails"></a> `details` | |
+| `details.amount` | `"Amount"` |
+| `details.amountPaid` | `"Amount paid"` |
+| `details.dueDate` | `"Due date"` |
+| `details.jurisdiction` | `"Jurisdiction"` |
+| `details.paymentSentOn` | `"Payment sent on"` |
+| `details.period` | `"Period"` |
+| `details.title` | `"Payment details"` |
+| <a id="property-companymanagementtaxpaymentdetailerrors"></a> `errors` | |
+| `errors.taxPaymentNotFound` | `"Tax payment not found"` |
+| <a id="property-companymanagementtaxpaymentdetailfederal"></a> `federal` | `"Federal"` |
+| <a id="property-companymanagementtaxpaymentdetailliabilities"></a> `liabilities` | |
+| `liabilities.amountColumn` | `"Amount"` |
+| `liabilities.emptyState` | `"No tax liabilities."` |
+| `liabilities.payrollColumn` | `"Payroll"` |
+| `liabilities.tableLabel` | `"Tax liabilities"` |
+| `liabilities.taxIdColumn` | `"Tax ID"` |
+| `liabilities.title` | `"Tax liabilities"` |
+| <a id="property-companymanagementtaxpaymentdetailnotavailable"></a> `notAvailable` | `"—"` |
+| <a id="property-companymanagementtaxpaymentdetailoverduealert"></a> `overdueAlert` | |
+| `overdueAlert.description` | `"This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."` |
+| `overdueAlert.label` | `"Payment overdue"` |
+| <a id="property-companymanagementtaxpaymentdetailstate"></a> `state` | `"State · {{jurisdiction}}"` |
+| <a id="property-companymanagementtaxpaymentdetailstatus"></a> `status` | |
+| `status.overdue` | `"Overdue"` |
+| `status.paid` | `"Paid"` |
+| `status.refund` | `"Refund / Credit"` |
+| `status.scheduled` | `"Scheduled"` |
+| <a id="property-companymanagementtaxpaymentdetailunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
+
+***
+
+<a id="companymanagementtaxpaymentslist"></a>
+
+### CompanyManagementTaxPaymentsList
+
+Translation keys for the `Company.Management.TaxPaymentsList` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementtaxpaymentslistalljurisdictions"></a> `allJurisdictions` | `"All jurisdictions"` |
+| <a id="property-companymanagementtaxpaymentslistallstatuses"></a> `allStatuses` | `"All statuses"` |
+| <a id="property-companymanagementtaxpaymentslistcolumns"></a> `columns` | |
+| `columns.agency` | `"Agency"` |
+| `columns.amount` | `"Amount"` |
+| `columns.dueDate` | `"Due date"` |
+| `columns.jurisdiction` | `"Jurisdiction"` |
+| `columns.period` | `"Period"` |
+| `columns.status` | `"Status"` |
+| <a id="property-companymanagementtaxpaymentslistemptystate"></a> `emptyState` | |
+| `emptyState.description` | `"Tax payments appear here after payroll is processed."` |
+| `emptyState.title` | `"No tax payments yet"` |
+| <a id="property-companymanagementtaxpaymentslistfederal"></a> `federal` | `"Federal"` |
+| <a id="property-companymanagementtaxpaymentslistfederaljurisdictionoption"></a> `federalJurisdictionOption` | `"Federal (US)"` |
+| <a id="property-companymanagementtaxpaymentslistjurisdictionfilterlabel"></a> `jurisdictionFilterLabel` | `"Jurisdiction"` |
+| <a id="property-companymanagementtaxpaymentslistnoresults"></a> `noResults` | |
+| `noResults.description` | `"Try a different search or adjust the filters."` |
+| `noResults.title` | `"No matching tax payments"` |
+| <a id="property-companymanagementtaxpaymentslistnotavailable"></a> `notAvailable` | `"—"` |
+| <a id="property-companymanagementtaxpaymentslistoverduealert"></a> `overdueAlert` | |
+| `overdueAlert.label_one` | `"{{count}} tax payment is overdue and may require immediate attention."` |
+| `overdueAlert.label_other` | `"{{count}} tax payments are overdue and may require immediate attention."` |
+| <a id="property-companymanagementtaxpaymentslistsearchlabel"></a> `searchLabel` | `"Search tax payments"` |
+| <a id="property-companymanagementtaxpaymentslistsearchplaceholder"></a> `searchPlaceholder` | `"Search by agency..."` |
+| <a id="property-companymanagementtaxpaymentsliststate"></a> `state` | `"State · {{jurisdiction}}"` |
+| <a id="property-companymanagementtaxpaymentsliststatus"></a> `status` | |
+| `status.overdue` | `"Overdue"` |
+| `status.paid` | `"Paid"` |
+| `status.refund` | `"Refund / Credit"` |
+| `status.scheduled` | `"Scheduled"` |
+| <a id="property-companymanagementtaxpaymentsliststatusfilterlabel"></a> `statusFilterLabel` | `"Status"` |
+| <a id="property-companymanagementtaxpaymentslisttablelabel"></a> `tableLabel` | `"Tax payments"` |
+| <a id="property-companymanagementtaxpaymentslisttitle"></a> `title` | `"Tax payments"` |
+| <a id="property-companymanagementtaxpaymentslisttruncatedalert"></a> `truncatedAlert` | |
+| `truncatedAlert.label` | `"Showing the most recent tax payments. Older payments are not included."` |
+| <a id="property-companymanagementtaxpaymentslistunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
+| <a id="property-companymanagementtaxpaymentslistviewcta"></a> `viewCta` | `"View"` |
+| <a id="property-companymanagementtaxpaymentslistviewpaymentlabel"></a> `viewPaymentLabel` | `"View {{agency}} tax payment"` |
+
+***
+
 <a id="companyonboardingoverview"></a>
 
 ### CompanyOnboardingOverview
@@ -5757,100 +5851,6 @@ Translation keys for the `Payroll.RecoveryCasesResubmit` i18n namespace.
 
 ***
 
-<a id="payrolltaxpaymentdetail"></a>
-
-### PayrollTaxPaymentDetail
-
-Translation keys for the `Payroll.TaxPaymentDetail` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrolltaxpaymentdetailbackcta"></a> `backCta` | `"Back to tax payments"` |
-| <a id="property-payrolltaxpaymentdetaildetails"></a> `details` | |
-| `details.amount` | `"Amount"` |
-| `details.amountPaid` | `"Amount paid"` |
-| `details.dueDate` | `"Due date"` |
-| `details.jurisdiction` | `"Jurisdiction"` |
-| `details.paymentSentOn` | `"Payment sent on"` |
-| `details.period` | `"Period"` |
-| `details.title` | `"Payment details"` |
-| <a id="property-payrolltaxpaymentdetailerrors"></a> `errors` | |
-| `errors.taxPaymentNotFound` | `"Tax payment not found"` |
-| <a id="property-payrolltaxpaymentdetailfederal"></a> `federal` | `"Federal"` |
-| <a id="property-payrolltaxpaymentdetailliabilities"></a> `liabilities` | |
-| `liabilities.amountColumn` | `"Amount"` |
-| `liabilities.emptyState` | `"No tax liabilities."` |
-| `liabilities.payrollColumn` | `"Payroll"` |
-| `liabilities.tableLabel` | `"Tax liabilities"` |
-| `liabilities.taxIdColumn` | `"Tax ID"` |
-| `liabilities.title` | `"Tax liabilities"` |
-| <a id="property-payrolltaxpaymentdetailnotavailable"></a> `notAvailable` | `"—"` |
-| <a id="property-payrolltaxpaymentdetailoverduealert"></a> `overdueAlert` | |
-| `overdueAlert.description` | `"This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."` |
-| `overdueAlert.label` | `"Payment overdue"` |
-| <a id="property-payrolltaxpaymentdetailstate"></a> `state` | `"State · {{jurisdiction}}"` |
-| <a id="property-payrolltaxpaymentdetailstatus"></a> `status` | |
-| `status.overdue` | `"Overdue"` |
-| `status.paid` | `"Paid"` |
-| `status.refund` | `"Refund / Credit"` |
-| `status.scheduled` | `"Scheduled"` |
-| <a id="property-payrolltaxpaymentdetailunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
-
-***
-
-<a id="payrolltaxpaymentslist"></a>
-
-### PayrollTaxPaymentsList
-
-Translation keys for the `Payroll.TaxPaymentsList` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrolltaxpaymentslistalljurisdictions"></a> `allJurisdictions` | `"All jurisdictions"` |
-| <a id="property-payrolltaxpaymentslistallstatuses"></a> `allStatuses` | `"All statuses"` |
-| <a id="property-payrolltaxpaymentslistcolumns"></a> `columns` | |
-| `columns.agency` | `"Agency"` |
-| `columns.amount` | `"Amount"` |
-| `columns.dueDate` | `"Due date"` |
-| `columns.jurisdiction` | `"Jurisdiction"` |
-| `columns.period` | `"Period"` |
-| `columns.status` | `"Status"` |
-| <a id="property-payrolltaxpaymentslistemptystate"></a> `emptyState` | |
-| `emptyState.description` | `"Tax payments appear here after payroll is processed."` |
-| `emptyState.title` | `"No tax payments yet"` |
-| <a id="property-payrolltaxpaymentslistfederal"></a> `federal` | `"Federal"` |
-| <a id="property-payrolltaxpaymentslistfederaljurisdictionoption"></a> `federalJurisdictionOption` | `"Federal (US)"` |
-| <a id="property-payrolltaxpaymentslistjurisdictionfilterlabel"></a> `jurisdictionFilterLabel` | `"Jurisdiction"` |
-| <a id="property-payrolltaxpaymentslistnoresults"></a> `noResults` | |
-| `noResults.description` | `"Try a different search or adjust the filters."` |
-| `noResults.title` | `"No matching tax payments"` |
-| <a id="property-payrolltaxpaymentslistnotavailable"></a> `notAvailable` | `"—"` |
-| <a id="property-payrolltaxpaymentslistoverduealert"></a> `overdueAlert` | |
-| `overdueAlert.label_one` | `"{{count}} tax payment is overdue and may require immediate attention."` |
-| `overdueAlert.label_other` | `"{{count}} tax payments are overdue and may require immediate attention."` |
-| <a id="property-payrolltaxpaymentslistsearchlabel"></a> `searchLabel` | `"Search tax payments"` |
-| <a id="property-payrolltaxpaymentslistsearchplaceholder"></a> `searchPlaceholder` | `"Search by agency..."` |
-| <a id="property-payrolltaxpaymentsliststate"></a> `state` | `"State · {{jurisdiction}}"` |
-| <a id="property-payrolltaxpaymentsliststatus"></a> `status` | |
-| `status.overdue` | `"Overdue"` |
-| `status.paid` | `"Paid"` |
-| `status.refund` | `"Refund / Credit"` |
-| `status.scheduled` | `"Scheduled"` |
-| <a id="property-payrolltaxpaymentsliststatusfilterlabel"></a> `statusFilterLabel` | `"Status"` |
-| <a id="property-payrolltaxpaymentslisttablelabel"></a> `tableLabel` | `"Tax payments"` |
-| <a id="property-payrolltaxpaymentslisttitle"></a> `title` | `"Tax payments"` |
-| <a id="property-payrolltaxpaymentslisttruncatedalert"></a> `truncatedAlert` | |
-| `truncatedAlert.label` | `"Showing the most recent tax payments. Older payments are not included."` |
-| <a id="property-payrolltaxpaymentslistunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
-| <a id="property-payrolltaxpaymentslistviewcta"></a> `viewCta` | `"View"` |
-| <a id="property-payrolltaxpaymentslistviewpaymentlabel"></a> `viewPaymentLabel` | `"View {{agency}} tax payment"` |
-
-***
-
 <a id="payrolltransition"></a>
 
 ### PayrollTransition
@@ -6036,6 +6036,8 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
+| <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
+| <a id="property-resourcescompanymanagementtaxpaymentslist"></a> `Company.Management.TaxPaymentsList` | [`CompanyManagementTaxPaymentsList`](#companymanagementtaxpaymentslist) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
 | <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |
@@ -6146,8 +6148,6 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollprintcheckssummary"></a> `Payroll.PrintChecksSummary` | [`PayrollPrintChecksSummary`](#payrollprintcheckssummary) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
-| <a id="property-resourcespayrolltaxpaymentdetail"></a> `Payroll.TaxPaymentDetail` | [`PayrollTaxPaymentDetail`](#payrolltaxpaymentdetail) |
-| <a id="property-resourcespayrolltaxpaymentslist"></a> `Payroll.TaxPaymentsList` | [`PayrollTaxPaymentsList`](#payrolltaxpaymentslist) |
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
 | <a id="property-resourcespayrolltransitioncreation"></a> `Payroll.TransitionCreation` | [`PayrollTransitionCreation`](#payrolltransitioncreation) |
 | <a id="property-resourcespayrolltransitionpayrollalert"></a> `Payroll.TransitionPayrollAlert` | [`PayrollTransitionPayrollAlert`](#payrolltransitionpayrollalert) |

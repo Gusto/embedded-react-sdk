@@ -4,7 +4,7 @@ import type { TaxPayment } from '@gusto/embedded-api/models/components/taxpaymen
 import { TaxPaymentDetailPresentation } from './TaxPaymentDetailPresentation'
 
 export default {
-  title: 'Domain/Payroll/TaxPayments/TaxPaymentDetail',
+  title: 'Domain/CompanyManagement/TaxPayments/TaxPaymentDetail',
 }
 
 const payment: TaxPayment = {

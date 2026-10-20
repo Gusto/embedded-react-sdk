@@ -46,8 +46,8 @@ export function isFederalTaxPayment(payment: Pick<TaxPayment, 'jurisdiction'>): 
  * Resolves the translation key and interpolation values for a tax payment's jurisdiction label.
  *
  * @remarks
- * Returns a key rather than a string because `Payroll.TaxPaymentsList` and
- * `Payroll.TaxPaymentDetail` each own their own i18n namespace and must translate from it. This
+ * Returns a key rather than a string because `Company.Management.TaxPaymentsList` and
+ * `Company.Management.TaxPaymentDetail` each own their own i18n namespace and must translate from it. This
  * keeps the federal/state branching in one place while leaving the lookup to the caller.
  *
  * @param payment - The tax payment to label.

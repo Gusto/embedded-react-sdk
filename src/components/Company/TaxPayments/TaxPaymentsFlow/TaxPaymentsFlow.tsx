@@ -22,8 +22,8 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `payroll/taxPayments/view` | Fired when the user selects a tax payment to view | `{ taxPaymentId: string }` |
- * | `payroll/taxPayments/back` | Fired when the user returns from a tax payment to the list | — |
+ * | `company/taxPayments/view` | Fired when the user selects a tax payment to view | `{ taxPaymentId: string }` |
+ * | `company/taxPayments/back` | Fired when the user returns from a tax payment to the list | — |
  *
  * @components
  * - {@link TaxPaymentsList}
@@ -35,12 +35,12 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
  *
  * @example
  * ```tsx title="App.tsx"
- * import { GustoProvider, Payroll } from '@gusto/embedded-react-sdk'
+ * import { CompanyManagement, GustoProvider } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <GustoProvider config={{ baseUrl: '/api/gusto/' }} unstableFeatures={{ taxPayments: true }}>
- *       <Payroll.TaxPaymentsFlow
+ *       <CompanyManagement.TaxPaymentsFlow
  *         companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
  *         onEvent={() => {}}
  *       />

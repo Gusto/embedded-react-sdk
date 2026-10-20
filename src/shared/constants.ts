@@ -512,8 +512,8 @@ export const printChecksEvents = {
  * @alpha
  */
 export const taxPaymentEvents = {
-  TAX_PAYMENT_VIEW: 'payroll/taxPayments/view',
-  TAX_PAYMENT_BACK: 'payroll/taxPayments/back',
+  TAX_PAYMENT_VIEW: 'company/taxPayments/view',
+  TAX_PAYMENT_BACK: 'company/taxPayments/back',
 } as const
 
 /**

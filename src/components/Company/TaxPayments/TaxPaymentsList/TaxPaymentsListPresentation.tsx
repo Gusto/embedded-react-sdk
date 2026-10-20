@@ -65,8 +65,8 @@ export function TaxPaymentsListPresentation({
   onViewPayment,
 }: TaxPaymentsListPresentationProps) {
   const { Alert, Badge, Button, Heading, Select, Text, TextInput } = useComponentContext()
-  useI18n('Payroll.TaxPaymentsList')
-  const { t } = useTranslation('Payroll.TaxPaymentsList')
+  useI18n('Company.Management.TaxPaymentsList')
+  const { t } = useTranslation('Company.Management.TaxPaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
   const { formatShortWithYear, formatPayPeriodRange } = useDateFormatter()
 

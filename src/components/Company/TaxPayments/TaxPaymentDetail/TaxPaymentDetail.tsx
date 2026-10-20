@@ -22,7 +22,7 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
  *
  * @alpha
  */
-export interface TaxPaymentDetailProps extends BaseComponentInterface<'Payroll.TaxPaymentDetail'> {
+export interface TaxPaymentDetailProps extends BaseComponentInterface<'Company.Management.TaxPaymentDetail'> {
   /** Identifier of the company the tax payment belongs to. */
   companyId: string
   /** Identifier of the tax payment to display. */
@@ -41,7 +41,7 @@ export interface TaxPaymentDetailProps extends BaseComponentInterface<'Payroll.T
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `payroll/taxPayments/back` | Fired when the user clicks the back button | — |
+ * | `company/taxPayments/back` | Fired when the user clicks the back button | — |
  *
  * @param props - See {@link TaxPaymentDetailProps}.
  * @returns The rendered tax payment detail view.
@@ -67,9 +67,9 @@ const Root = ({
   dictionary,
   onEvent,
 }: TaxPaymentDetailProps) => {
-  useComponentDictionary('Payroll.TaxPaymentDetail', dictionary)
-  useI18n('Payroll.TaxPaymentDetail')
-  const { t } = useTranslation('Payroll.TaxPaymentDetail')
+  useComponentDictionary('Company.Management.TaxPaymentDetail', dictionary)
+  useI18n('Company.Management.TaxPaymentDetail')
+  const { t } = useTranslation('Company.Management.TaxPaymentDetail')
   const gustoClient = useGustoEmbeddedContext()
 
   const {

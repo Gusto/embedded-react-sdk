@@ -40,8 +40,8 @@ export function TaxPaymentDetailPresentation({
 }: TaxPaymentDetailPresentationProps) {
   const { Alert, Badge, Box, BoxHeader, Button, DescriptionList, Heading, Text } =
     useComponentContext()
-  useI18n('Payroll.TaxPaymentDetail')
-  const { t } = useTranslation('Payroll.TaxPaymentDetail')
+  useI18n('Company.Management.TaxPaymentDetail')
+  const { t } = useTranslation('Company.Management.TaxPaymentDetail')
   const currencyFormatter = useNumberFormatter('currency')
   const { formatLongWithYear, formatPayPeriodRange } = useDateFormatter()
 
