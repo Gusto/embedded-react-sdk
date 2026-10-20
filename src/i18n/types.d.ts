@@ -8168,11 +8168,15 @@ export namespace Translations {
     cancellingTitle: string
     /** @defaultValue `"This payroll has been cancelled."` */
     cancelledEmptyState: string
+    /** @defaultValue `"This payroll has changed"` */
+    notCalculatedErrorTitle: string
+    /** @defaultValue `"Refresh or return to your payrolls to continue."` */
+    notCalculatedErrorDescription: string
+    /** @defaultValue `"Back to payrolls"` */
+    notCalculatedErrorCta: string
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
     alerts: {
-      /** @defaultValue `"Payroll is not calculated"` */
-      payrollNotCalculated: string
       /** @defaultValue `"There was an issue loading this payroll. Please try again."` */
       payrollLoadFailed: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */

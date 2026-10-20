@@ -40,6 +40,8 @@ import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import { Box } from '@/components/Common/UI/Box/Box'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 import { BoxHeader } from '@/components/Common/UI/BoxHeader'
+import type { ErrorStateProps } from '@/components/Common/UI/ErrorState/ErrorStateTypes'
+import { ErrorState } from '@/components/Common/UI/ErrorState'
 import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
 import { FormBox } from '@/components/Common/UI/FormBox/FormBox'
 import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
@@ -89,6 +91,7 @@ export const defaultComponents: ComponentsContextType = {
   Card: (props: CardProps) => <Card {...props} />,
   Box: (props: BoxProps) => <Box {...props} />,
   BoxHeader: (props: BoxHeaderProps) => <BoxHeader {...props} />,
+  ErrorState: (props: ErrorStateProps) => <ErrorState {...props} />,
   FormBox: (props: FormBoxProps) => <FormBox {...props} />,
   FormBoxHeader: (props: FormBoxHeaderProps) => <FormBoxHeader {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,

@@ -562,23 +562,24 @@ describe('PayrollOverview calculatedAt guard', () => {
     mockRefetchError = null
   })
 
-  it('throws to the error boundary on a genuinely uncalculated payroll', async () => {
+  it('renders a recoverable error state on a genuinely uncalculated payroll', async () => {
     mockPayrollData = {
       ...basePayrollData,
       calculatedAt: null,
     }
-    mockIsFetching = false
-    mockIsError = false
-    mockError = null
-    mockStaleDataPresent = false
-    mockRefetchError = null
+    const onEvent = vi.fn()
 
     renderWithProviders(
-      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={onEvent} />,
     )
 
-    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'This payroll has changed' })).toBeInTheDocument()
     expect(screen.queryByText(/Review payroll/i)).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Back to payrolls' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST)
   })
 
   it('renders a processed tax reconciliation payroll despite a null calculatedAt', async () => {
@@ -636,7 +637,7 @@ describe('PayrollOverview calculatedAt guard', () => {
     ).toBeInTheDocument()
   })
 
-  it('throws to the error boundary on an unprocessed tax reconciliation payroll with a null calculatedAt', async () => {
+  it('renders the error state on an unprocessed tax reconciliation payroll with a null calculatedAt', async () => {
     mockPayrollData = {
       ...basePayrollData,
       processed: false,
@@ -648,7 +649,7 @@ describe('PayrollOverview calculatedAt guard', () => {
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
     )
 
-    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument()
   })
 
   it.each(processedWithoutCalculation)(

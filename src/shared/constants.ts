@@ -399,6 +399,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_ALREADY_PROCESSED: 'runPayroll/alreadyProcessed',
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: 'runPayroll/cancelled/alertDismissed',
+  RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST: 'runPayroll/notCalculated/backToList',
   RUN_PAYROLL_EDIT: 'runPayroll/edit',
   RUN_PAYROLL_EMPLOYEE_EDIT: 'runPayroll/employee/edit',
   RUN_PAYROLL_EMPLOYEE_SKIP: 'runPayroll/employee/skip',
