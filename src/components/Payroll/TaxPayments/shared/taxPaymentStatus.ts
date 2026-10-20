@@ -72,8 +72,12 @@ export function getJurisdictionLabel(payment: Pick<TaxPayment, 'jurisdiction'>):
  * returned/cancelled state cannot be distinguished here.
  *
  * Settlement is checked before the amount's sign, so a refund that has already been sent or
- * reimbursed reads as `paid` rather than staying `refund` forever. A zero-amount payment owes
- * nothing, so it is never `overdue` no matter how far past its due date it is.
+ * reimbursed reads as `paid` rather than staying `refund` forever.
+ *
+ * A zero-amount payment owes nothing and will never be sent, so it reads as `paid` rather than
+ * sitting in `scheduled` indefinitely. The list endpoint does return zero-amount payments — it
+ * applies `.for_taxes.non_penalty` but not `.with_amounts` — so this is a real case, not a
+ * theoretical one.
  *
  * @param payment - The tax payment to classify.
  * @param today - Today's date as a `YYYY-MM-DD` string in the user's local timezone.
@@ -88,13 +92,14 @@ export function deriveTaxPaymentStatus(
   const amountPaid = parseFloat(payment.amountPaid)
 
   if (payment.paymentSentOn) return 'paid'
+  if (amount === 0) return 'paid'
   if (amount > 0 && amountPaid >= amount) return 'paid'
   if (amount < 0 && amountPaid <= amount) return 'paid'
 
   if (amount < 0) return 'refund'
 
   const dueDate = payment.dueDate?.toString()
-  if (amount > 0 && dueDate && dueDate < today) return 'overdue'
+  if (dueDate && dueDate < today) return 'overdue'
 
   return 'scheduled'
 }

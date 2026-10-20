@@ -19,15 +19,13 @@
   display: flex;
   flex-shrink: 0;
   gap: toRem(12);
+}
 
-  > * {
-    width: toRem(180);
-  }
+.filter {
+  width: toRem(180);
 
   @container (max-width: 640px) {
-    > * {
-      flex: 1 1 0;
-      width: auto;
-    }
+    flex: 1 1 0;
+    width: auto;
   }
 }

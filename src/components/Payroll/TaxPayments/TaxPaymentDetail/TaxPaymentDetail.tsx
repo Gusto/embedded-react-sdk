@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -77,10 +76,7 @@ const Root = ({
     data: { taxPayment },
   } = useTaxPaymentsGetTaxPaymentSuspense({ companyUuid: companyId, uuid: taxPaymentId })
 
-  const payrollIds = useMemo(
-    () => [...new Set((taxPayment?.lineItems ?? []).map(lineItem => lineItem.payrollUuid))],
-    [taxPayment?.lineItems],
-  )
+  const payrollIds = [...new Set((taxPayment?.lineItems ?? []).map(item => item.payrollUuid))]
 
   // One windowed list request resolves the pay period for every liability, instead of a GET per
   // payroll. `payrollsList` filters on pay period when `dateFilterBy` is omitted, which is what the
@@ -104,20 +100,14 @@ const Root = ({
     per: PAYROLL_LOOKUP_PER_PAGE,
   })
 
-  const windowedPayPeriods = useMemo(() => {
-    const byPayrollId = new Map<string, PayPeriodRange | undefined>()
-    for (const payroll of payrollsData.payrollList ?? []) {
-      if (payroll.payrollUuid) byPayrollId.set(payroll.payrollUuid, payroll.payPeriod)
-    }
-    return byPayrollId
-  }, [payrollsData.payrollList])
+  const windowedPayPeriods = new Map<string, PayPeriodRange | undefined>()
+  for (const payroll of payrollsData.payrollList ?? []) {
+    if (payroll.payrollUuid) windowedPayPeriods.set(payroll.payrollUuid, payroll.payPeriod)
+  }
 
   // Safety net for liabilities whose payroll fell outside the padded window, so correctness does
   // not depend on the padding being wide enough. Normally resolves to zero extra requests.
-  const unresolvedPayrollIds = useMemo(
-    () => payrollIds.filter(payrollId => !windowedPayPeriods.has(payrollId)),
-    [payrollIds, windowedPayPeriods],
-  )
+  const unresolvedPayrollIds = payrollIds.filter(id => !windowedPayPeriods.has(id))
 
   const fallbackResults = useSuspenseQueries({
     queries: unresolvedPayrollIds.map(payrollId =>
@@ -125,16 +115,13 @@ const Root = ({
     ),
   })
 
-  const payPeriodsByPayrollId = useMemo(() => {
-    const resolved: Record<string, PayPeriodRange | undefined> = {}
-    for (const payrollId of payrollIds) {
-      resolved[payrollId] = windowedPayPeriods.get(payrollId)
-    }
-    unresolvedPayrollIds.forEach((payrollId, index) => {
-      resolved[payrollId] = fallbackResults[index]?.data.payrollShow?.payPeriod
-    })
-    return resolved
-  }, [payrollIds, windowedPayPeriods, unresolvedPayrollIds, fallbackResults])
+  const payPeriodsByPayrollId: Record<string, PayPeriodRange | undefined> = {}
+  for (const payrollId of payrollIds) {
+    payPeriodsByPayrollId[payrollId] = windowedPayPeriods.get(payrollId)
+  }
+  unresolvedPayrollIds.forEach((payrollId, index) => {
+    payPeriodsByPayrollId[payrollId] = fallbackResults[index]?.data.payrollShow?.payPeriod
+  })
 
   if (!taxPayment) {
     throw new Error(t('errors.taxPaymentNotFound'))

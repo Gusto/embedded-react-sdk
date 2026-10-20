@@ -33,8 +33,10 @@ describe('deriveTaxPaymentStatus', () => {
     expect(deriveTaxPaymentStatus(buildPayment({ amountPaid: '100.00' }), TODAY)).toBe('paid')
   })
 
-  it('does not treat a zero-amount payment as paid', () => {
-    expect(deriveTaxPaymentStatus(buildPayment({ amount: '0.00' }), TODAY)).toBe('scheduled')
+  // A $0 payment owes nothing and will never be sent, so leaving it in `scheduled` would park it
+  // there forever and surface it under the Scheduled filter.
+  it('returns paid for a zero-amount payment', () => {
+    expect(deriveTaxPaymentStatus(buildPayment({ amount: '0.00' }), TODAY)).toBe('paid')
   })
 
   it('returns paid for a refund that has already been sent', () => {
@@ -58,7 +60,7 @@ describe('deriveTaxPaymentStatus', () => {
         buildPayment({ amount: '0.00', dueDate: new RFCDate('2026-09-15') }),
         TODAY,
       ),
-    ).toBe('scheduled')
+    ).toBe('paid')
   })
 
   it('returns overdue when the due date has passed', () => {

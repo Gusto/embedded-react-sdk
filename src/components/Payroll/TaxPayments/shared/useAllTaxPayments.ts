@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import {
@@ -82,13 +81,12 @@ export function useAllTaxPayments(companyId: string): AllTaxPaymentsResult {
     ),
   })
 
-  const taxPayments = useMemo(
-    () => [
-      ...(firstPage.taxPaymentList ?? []),
-      ...restPageResults.flatMap(result => result.data.taxPaymentList ?? []),
-    ],
-    [firstPage.taxPaymentList, restPageResults],
-  )
+  // Not memoized: `useSuspenseQueries` hands back a fresh array every render, so a memo keyed on it
+  // could never hit -- it would just add a dependency list that lies about caching anything.
+  const taxPayments = [
+    ...(firstPage.taxPaymentList ?? []),
+    ...restPageResults.flatMap(result => result.data.taxPaymentList ?? []),
+  ]
 
   return { taxPayments, isTruncated: totalServerPages > MAX_PAGES }
 }

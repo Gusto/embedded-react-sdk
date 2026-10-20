@@ -189,6 +189,7 @@ export function TaxPaymentsListPresentation({
           </div>
           <div className={styles.filters}>
             <Select
+              className={styles.filter}
               label={t('jurisdictionFilterLabel')}
               shouldVisuallyHideLabel
               placeholder={t('allJurisdictions')}
@@ -197,6 +198,7 @@ export function TaxPaymentsListPresentation({
               onChange={onJurisdictionFilterChange}
             />
             <Select
+              className={styles.filter}
               label={t('statusFilterLabel')}
               shouldVisuallyHideLabel
               placeholder={t('allStatuses')}

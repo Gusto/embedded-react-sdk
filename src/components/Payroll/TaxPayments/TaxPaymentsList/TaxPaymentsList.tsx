@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useAllTaxPayments } from '../shared/useAllTaxPayments'
 import { ALL_FILTER_VALUE, deriveTaxPaymentStatus } from '../shared/taxPaymentStatus'
 import { TaxPaymentsListPresentation, type TaxPaymentRow } from './TaxPaymentsListPresentation'
@@ -58,31 +58,23 @@ const Root = ({ companyId, className, dictionary, onEvent }: TaxPaymentsListProp
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string>(ALL_FILTER_VALUE)
   const [statusFilter, setStatusFilter] = useState<string>(ALL_FILTER_VALUE)
 
-  // Already ordered newest due date first by the server, so no client-side sort is needed.
-  const allRows = useMemo<TaxPaymentRow[]>(() => {
-    const today = formatDateToStringDate(new Date()) ?? ''
-    return payments.map(payment => ({ payment, status: deriveTaxPaymentStatus(payment, today) }))
-  }, [payments])
+  // Already ordered newest due date first by the server, so no client-side sort is needed. None of
+  // these derivations are memoized: `payments` is a fresh array every render, so a memo keyed on it
+  // could never hit, and these are cheap passes over a short list.
+  const today = formatDateToStringDate(new Date()) ?? ''
+  const allRows: TaxPaymentRow[] = payments.map(payment => ({
+    payment,
+    status: deriveTaxPaymentStatus(payment, today),
+  }))
 
-  const jurisdictions = useMemo(
-    () => [...new Set(payments.flatMap(payment => payment.jurisdiction ?? []))],
-    [payments],
-  )
+  const jurisdictions = [...new Set(payments.flatMap(payment => payment.jurisdiction ?? []))]
 
-  const overdueCount = useMemo(
-    () => allRows.filter(({ status }) => status === 'overdue').length,
-    [allRows],
-  )
+  const overdueCount = allRows.filter(({ status }) => status === 'overdue').length
 
-  const filteredRows = useMemo(
-    () =>
-      allRows.filter(
-        ({ payment, status }) =>
-          (jurisdictionFilter === ALL_FILTER_VALUE ||
-            payment.jurisdiction === jurisdictionFilter) &&
-          (statusFilter === ALL_FILTER_VALUE || status === statusFilter),
-      ),
-    [allRows, jurisdictionFilter, statusFilter],
+  const filteredRows = allRows.filter(
+    ({ payment, status }) =>
+      (jurisdictionFilter === ALL_FILTER_VALUE || payment.jurisdiction === jurisdictionFilter) &&
+      (statusFilter === ALL_FILTER_VALUE || status === statusFilter),
   )
 
   const { data, pagination, searchValue, actions } = useClientPagination(filteredRows, {

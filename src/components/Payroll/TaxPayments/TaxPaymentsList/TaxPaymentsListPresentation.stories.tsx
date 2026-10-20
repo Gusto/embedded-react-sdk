@@ -68,7 +68,7 @@ const legacyRows: TaxPaymentRow[] = [
   },
   {
     payment: createPayment({ uuid: 'tax-payment-zero', amount: '0.00', amountPaid: '0.00' }),
-    status: 'scheduled',
+    status: 'paid',
   },
   ...rows,
 ]
