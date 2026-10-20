@@ -10,7 +10,7 @@ import { isRequirementApplicable, type StateTaxesFormValues } from '../shared/ap
 import { prepareRequirements } from '../shared/prepareRequirements'
 import { buildRequirementSchema } from '../shared/buildRequirementSchema'
 import { stringifyRequirementValue } from '../shared/requirementValue'
-import { parseRequirementSetError } from '../shared/requirementSetError'
+import { parseRequirementSetErrors, type RequirementSetError } from '../shared/requirementSetError'
 import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
@@ -127,6 +127,43 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
     defaultValues,
   })
 
+  const applyServerValueErrors = ({
+    key,
+    effectiveFrom,
+    valueErrors,
+  }: RequirementSetError): boolean => {
+    const allRequirementSets = stateTaxRequirements.requirementSets ?? []
+    const matchingSets = allRequirementSets
+      .map((requirementSet, setIndex) => ({ requirementSet, setIndex }))
+      .filter(({ requirementSet }) => requirementSet.key === key)
+    const target =
+      matchingSets.find(
+        ({ requirementSet }) => (requirementSet.effectiveFrom ?? undefined) === effectiveFrom,
+      ) ?? matchingSets[0]
+    if (!target) return false
+
+    const requirementSetPath = getUniqueRhfKey(
+      target.requirementSet,
+      target.setIndex,
+      allRequirementSets,
+    )
+    const preparedRequirements = prepareRequirements(target.requirementSet.requirements ?? [])
+
+    let applied = false
+    valueErrors.forEach(({ requirementKey, message }) => {
+      const requirementIndex = preparedRequirements.findIndex(req => req.key === requirementKey)
+      if (requirementIndex === -1) return
+      const fieldKey = getUniqueRhfKey(
+        preparedRequirements[requirementIndex]!,
+        requirementIndex,
+        preparedRequirements,
+      )
+      methods.setError(`${requirementSetPath}.${fieldKey}`, { type: 'server', message })
+      applied = true
+    })
+    return applied
+  }
+
   const onSubmit = async (formData: InferredFormInputs) => {
     await baseSubmitHandler(formData, async payload => {
       const formValues = payload as StateTaxesFormValues
@@ -169,18 +206,27 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           },
         })
       } catch (error) {
-        const requirementSetError = parseRequirementSetError(error)
-        if (!requirementSetError) throw error
+        const requirementSetErrors = parseRequirementSetErrors(error)
+        if (!requirementSetErrors) throw error
 
-        const section =
-          stateTaxRequirements.requirementSets?.find(
-            requirementSet => requirementSet.key === requirementSetError.key,
-          )?.label ?? requirementSetError.key
+        const invalidSetErrors = requirementSetErrors.filter(applyServerValueErrors)
+        const reportedSetErrors =
+          invalidSetErrors.length > 0 ? invalidSetErrors : requirementSetErrors
+        const sections = reportedSetErrors
+          .map(
+            ({ key }) =>
+              stateTaxRequirements.requirementSets?.find(
+                requirementSet => requirementSet.key === key,
+              )?.label ?? key,
+          )
+          .join(', ')
         throw new SDKInternalError(
-          t('errors.incompleteRequirementSet', {
-            section,
-            state: requirementSetError.state ?? state,
-          }),
+          t(
+            invalidSetErrors.length > 0
+              ? 'errors.invalidRequirementSet'
+              : 'errors.incompleteRequirementSet',
+            { section: sections, state: reportedSetErrors[0]!.state ?? state },
+          ),
           'api_error',
         )
       }
