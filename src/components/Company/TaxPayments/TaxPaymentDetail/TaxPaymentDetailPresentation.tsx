@@ -6,7 +6,6 @@ import {
   getJurisdictionLabel,
   type TaxPaymentStatus,
 } from '../shared/taxPaymentStatus'
-import styles from './TaxPaymentDetailPresentation.module.scss'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -87,10 +86,10 @@ export function TaxPaymentDetailPresentation({
       </div>
 
       <Flex flexDirection="column" gap={4}>
-        <div className={styles.header}>
+        <Flex alignItems="center" flexWrap="wrap" gap={12}>
           <Heading as="h2">{payment.agencyName ?? t('unknownAgency')}</Heading>
           <Badge status={TAX_PAYMENT_STATUS_BADGES[status]}>{t(`status.${status}`)}</Badge>
-        </div>
+        </Flex>
         <Text variant="supporting">{jurisdictionLabel}</Text>
       </Flex>
 

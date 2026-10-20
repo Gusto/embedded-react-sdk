@@ -76,10 +76,7 @@ export const Select = ({
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         onSelectionChange={key => {
-          // react-aria signals "nothing selected" with null, so only null is a non-selection here.
-          // Treating every falsy key that way would swallow a deliberate empty-string option, which
-          // is how a "show everything" filter entry is usually modeled.
-          if (key !== null) {
+          if (key) {
             onChange?.(key.toString())
           }
         }}

@@ -1,5 +1,5 @@
 import { createMachine } from 'robot3'
-import { useMemo } from 'react'
+import { useState } from 'react'
 import { taxPaymentsMachine } from './taxPaymentsStateMachine'
 import {
   TaxPaymentsListContextual,
@@ -52,18 +52,24 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
 export const TaxPaymentsFlow = ({ companyId, onEvent }: TaxPaymentsFlowProps) => {
   useUnstableFeature('taxPayments', { throwIfDisabled: true })
 
-  const taxPaymentsFlow = useMemo(
-    () =>
-      createMachine(
-        'list',
-        taxPaymentsMachine,
-        (initialContext: TaxPaymentsFlowContextInterface) => ({
-          ...initialContext,
-          component: TaxPaymentsListContextual,
-          companyId,
-        }),
-      ),
-    [companyId],
+  // Remount and reset all state if companyId ever changes.
+  return <TaxPaymentsFlowMachine key={companyId} companyId={companyId} onEvent={onEvent} />
+}
+
+function TaxPaymentsFlowMachine({ companyId, onEvent }: TaxPaymentsFlowProps) {
+  // Built once via a lazy useState initializer. `useMemo` is a performance hint React is free to
+  // discard, and a new machine reference makes `useMachine` tear down the interpreter and restart
+  // from the initial state, which would silently drop the user back to the list.
+  const [taxPaymentsFlow] = useState(() =>
+    createMachine(
+      'list',
+      taxPaymentsMachine,
+      (initialContext: TaxPaymentsFlowContextInterface) => ({
+        ...initialContext,
+        component: TaxPaymentsListContextual,
+        companyId,
+      }),
+    ),
   )
 
   return <Flow machine={taxPaymentsFlow} onEvent={onEvent} />
