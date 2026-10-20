@@ -635,8 +635,10 @@ and per-employee paystub downloads once complete.
 
 ### Remarks
 
-The payroll referenced by `payrollId` must already be calculated; rendering with an
-uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+An unprocessed payroll referenced by `payrollId` must already be calculated; rendering an
+unprocessed, uncalculated payroll throws. Processed payrolls render as a summary even without a
+calculation (for example tax reconciliation, reversal, wage correction, or external payrolls).
+Unresolved submission blockers (e.g. fast-ACH threshold,
 wire-in funding) are surfaced inline and the submit action stays disabled until each
 blocker has a selected unblock option. While the payroll is processing, the component
 polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
@@ -654,7 +656,7 @@ Props for [PayrollOverview](#payrolloverview).
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company that owns the payroll. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `payrollId` | `string` | Identifier of the payroll being reviewed. The payroll must already be calculated. |
+| `payrollId` | `string` | Identifier of the payroll being reviewed. An unprocessed payroll must already be calculated; a processed payroll renders as a summary whether or not it has a calculation. |
 | `alerts?` | [`PayrollFlowAlert`](#payrollflowalert)[] | Alert banners to display above the payroll summary. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollOverview`](../Translations/index.md#payrollpayrolloverview)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |

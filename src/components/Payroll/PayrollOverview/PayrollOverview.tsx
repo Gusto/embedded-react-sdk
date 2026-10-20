@@ -21,7 +21,7 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
-import { canCancelPayroll, isTaxReconciliationPayroll } from '../helpers'
+import { canCancelPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -55,7 +55,10 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 export interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   /** Identifier of the company that owns the payroll. */
   companyId: string
-  /** Identifier of the payroll being reviewed. The payroll must already be calculated. */
+  /**
+   * Identifier of the payroll being reviewed. An unprocessed payroll must already be calculated;
+   * a processed payroll renders as a summary whether or not it has a calculation.
+   */
   payrollId: string
   /** Alert banners to display above the payroll summary. */
   alerts?: PayrollFlowAlert[]
@@ -104,8 +107,10 @@ const findWireInRequestUuid = (
  * and per-employee paystub downloads once complete.
  *
  * @remarks
- * The payroll referenced by `payrollId` must already be calculated; rendering with an
- * uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+ * An unprocessed payroll referenced by `payrollId` must already be calculated; rendering an
+ * unprocessed, uncalculated payroll throws. Processed payrolls render as a summary even without a
+ * calculation (for example tax reconciliation, reversal, wage correction, or external payrolls).
+ * Unresolved submission blockers (e.g. fast-ACH threshold,
  * wire-in funding) are surfaced inline and the submit action stays disabled until each
  * blocker has a selected unblock option. While the payroll is processing, the component
  * polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
@@ -176,7 +181,14 @@ const Root = ({
     () => ({
       companyId,
       payrollId,
-      include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
+      include: [
+        'taxes',
+        'benefits',
+        'deductions',
+        'totals',
+        'payroll_taxes',
+        'payroll_status_meta',
+      ],
       page: currentPage,
       per: itemsPerPage,
       sortBy: 'last_name',
@@ -369,11 +381,11 @@ const Root = ({
     throw new Error(t('alerts.payrollLoadFailed'))
   }
 
-  if (
-    status === PayrollOverviewStatus.Viewing &&
-    !payrollData.calculatedAt &&
-    !isTaxReconciliationPayroll(payrollData.offCycleReason)
-  ) {
+  const isProcessed =
+    payrollData.processed === true ||
+    payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+
+  if (status === PayrollOverviewStatus.Viewing && !isProcessed && !payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
 
@@ -477,12 +489,7 @@ const Root = ({
   }
 
   const deadlineAlert: PayrollFlowAlert | undefined = (() => {
-    if (hasSubmittedInSession || isPolling) return undefined
-    if (
-      payrollData.processed ||
-      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
-    )
-      return undefined
+    if (hasSubmittedInSession || isPolling || isProcessed) return undefined
 
     if (payrollData.checkDate && payrollData.payrollDeadline) {
       return {
@@ -508,10 +515,7 @@ const Root = ({
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
       status={isPending || hasSubmittedInSession ? PayrollOverviewStatus.Submitting : status}
-      isProcessed={
-        payrollData.processed === true ||
-        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
-      }
+      isProcessed={isProcessed}
       canCancel={canCancelPayroll(payrollData) && !readOnly}
       canEdit={!readOnly}
       payrollData={payrollData}

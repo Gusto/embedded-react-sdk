@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import { canCancelPayroll } from '../helpers'
 import { PayrollOverview } from './PayrollOverview'
 import { componentEvents } from '@/shared/constants'
@@ -83,6 +84,10 @@ let mockStaleDataPresent = false
 // resolving, independent of the render-driving `mockIsError`/`mockError` above.
 let mockRefetchError: unknown = null
 let mockShowEmployees: { uuid: string; flsaStatus?: string }[] = []
+const { mockPayrollsGetRequest } = vi.hoisted(() => ({
+  mockPayrollsGetRequest:
+    vi.fn<(request: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest) => void>(),
+}))
 
 const buildMockPayrollQueryData = () => ({
   payrollShow: mockPayrollData,
@@ -94,19 +99,22 @@ const buildMockPayrollQueryData = () => ({
 })
 
 vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
-  usePayrollsGet: () => ({
-    data: mockIsError && !mockStaleDataPresent ? undefined : buildMockPayrollQueryData(),
-    isFetching: mockIsFetching,
-    isError: mockIsError,
-    error: mockError,
-    // The submission poll drives its reads through this `refetch`, reusing the same query
-    // instead of building a second one — so it reads whatever `mockPayrollData` holds at call
-    // time, same as the render-driving `data` above.
-    refetch: () =>
-      mockRefetchError
-        ? Promise.resolve({ status: 'error', error: mockRefetchError })
-        : Promise.resolve({ status: 'success', data: buildMockPayrollQueryData() }),
-  }),
+  usePayrollsGet: (request: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest) => {
+    mockPayrollsGetRequest(request)
+    return {
+      data: mockIsError && !mockStaleDataPresent ? undefined : buildMockPayrollQueryData(),
+      isFetching: mockIsFetching,
+      isError: mockIsError,
+      error: mockError,
+      // The submission poll drives its reads through this `refetch`, reusing the same query
+      // instead of building a second one — so it reads whatever `mockPayrollData` holds at call
+      // time, same as the render-driving `data` above.
+      refetch: () =>
+        mockRefetchError
+          ? Promise.resolve({ status: 'error', error: mockRefetchError })
+          : Promise.resolve({ status: 'success', data: buildMockPayrollQueryData() }),
+    }
+  },
 }))
 
 vi.mock('@gusto/embedded-api/react-query/payrollsSubmit', () => ({
@@ -599,6 +607,70 @@ describe('PayrollOverview calculatedAt guard', () => {
     expect(screen.getAllByText(/Sep 30, 2026/i).length).toBeGreaterThan(0)
   })
 
+  const processedWithoutCalculation: Array<[string, Partial<PayrollShow>]> = [
+    ['wage correction', { offCycleReason: OffCycleReasonType.WageCorrection }],
+    ['benefit reversal', { offCycleReason: OffCycleReasonType.BenefitReversal }],
+    ['reversal', { offCycleReason: OffCycleReasonType.Reversal }],
+    [
+      'disability insurance distribution',
+      { offCycleReason: OffCycleReasonType.DisabilityInsuranceDistribution },
+    ],
+    ['off-cycle with an unrecognized reason', { offCycleReason: null }],
+    ['external', { offCycle: false, offCycleReason: null, external: true }],
+  ]
+
+  it('renders a submitted payroll that is not yet marked processed despite a null calculatedAt', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      calculatedAt: null,
+      processingRequest: { status: 'submit_success', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /Payroll summary/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('throws to the error boundary on an unprocessed tax reconciliation payroll with a null calculatedAt', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      calculatedAt: null,
+      offCycleReason: OffCycleReasonType.TaxReconciliation,
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+  })
+
+  it.each(processedWithoutCalculation)(
+    'renders a processed %s payroll despite a null calculatedAt',
+    async (_label, overrides) => {
+      mockPayrollData = {
+        ...basePayrollData,
+        processed: true,
+        calculatedAt: null,
+        ...overrides,
+      }
+
+      renderWithProviders(
+        <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+      )
+
+      expect(
+        await screen.findByRole('heading', { level: 1, name: /Payroll summary/i }),
+      ).toBeInTheDocument()
+    },
+  )
+
   it('throws to the error boundary instead of loading forever when the payroll query itself errors', async () => {
     mockIsError = true
     mockError = new Error('network error')
@@ -762,6 +834,93 @@ describe('PayrollOverview readOnly mode', () => {
         onEvent={mockOnEvent}
         readOnly
       />,
+    )
+
+    expect(await screen.findByRole('button', { name: 'View payroll receipt' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Cancel payroll' })).toBeNull()
+  })
+})
+
+describe('PayrollOverview cancel action', () => {
+  const processedRegularPayroll: PayrollShow = {
+    ...basePayrollData,
+    processed: true,
+    processingRequest: { status: 'submit_success', errors: [] },
+    offCycle: false,
+    offCycleReason: null,
+    payrollDeadline: new Date('2025-08-11T23:00:00Z'),
+    payrollStatusMeta: {
+      cancellable: true,
+      expectedCheckDate: '2025-08-15',
+      initialCheckDate: '2025-08-15',
+      expectedDebitTime: '2025-08-11T23:00:00Z',
+      payrollLate: false,
+      initialDebitCutoffTime: '2025-08-11T23:00:00Z',
+    },
+  }
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    vi.setSystemTime(new Date('2025-08-10T18:00:00Z'))
+    mockPayrollData = { ...processedRegularPayroll }
+    mockIsFetching = false
+    mockIsError = false
+    mockError = null
+    mockStaleDataPresent = false
+    mockRefetchError = null
+    const actualHelpers = await vi.importActual<{ canCancelPayroll: typeof canCancelPayroll }>(
+      '../helpers',
+    )
+    vi.mocked(canCancelPayroll).mockImplementation(actualHelpers.canCancelPayroll)
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('requests payroll_status_meta so the cancel decision sees the server cancellable flag', async () => {
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    await screen.findByRole('button', { name: 'View payroll receipt' })
+
+    expect(mockPayrollsGetRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payrollId: 'payroll-uuid',
+        include: expect.arrayContaining(['payroll_taxes', 'payroll_status_meta']),
+      }),
+    )
+  })
+
+  it('shows Cancel payroll for a processed regular payroll the API flags cancellable', async () => {
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByRole('button', { name: 'Cancel payroll' })).toBeInTheDocument()
+  })
+
+  it('hides Cancel payroll when the response carries no cancellable flag', async () => {
+    mockPayrollData = { ...processedRegularPayroll, payrollStatusMeta: undefined }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    expect(await screen.findByRole('button', { name: 'View payroll receipt' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Cancel payroll' })).toBeNull()
+  })
+
+  it('hides Cancel payroll for a disability insurance distribution even when flagged cancellable', async () => {
+    mockPayrollData = {
+      ...processedRegularPayroll,
+      offCycle: true,
+      offCycleReason: OffCycleReasonType.DisabilityInsuranceDistribution,
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
     )
 
     expect(await screen.findByRole('button', { name: 'View payroll receipt' })).toBeInTheDocument()

@@ -8,6 +8,7 @@ import {
   createEmployee,
   createCompensation,
   page1Employees,
+  page2Employees,
   allEmployees,
   allCompensations,
   mockPayrollData,
@@ -254,6 +255,16 @@ describe('PayrollConfiguration', () => {
   })
 
   describe('pagination', () => {
+    beforeEach(() => {
+      server.use(
+        ...buildPayrollConfigurationHandlers({
+          getPayrollData: () => currentPayrollData,
+          employees: [...page1Employees.slice(0, 5), ...page2Employees],
+          pageSize: 5,
+        }),
+      )
+    })
+
     it('shows pagination controls when there are multiple pages', async () => {
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 
@@ -273,7 +284,7 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
       })
-      expect(screen.getByText('Yara Young')).toBeInTheDocument()
+      expect(screen.getByText('Bob Baker')).toBeInTheDocument()
       expect(screen.queryByText('Kate King')).not.toBeInTheDocument()
 
       const nextButton = screen.getByTestId('pagination-next')
@@ -319,7 +330,7 @@ describe('PayrollConfiguration', () => {
       await waitFor(() => {
         expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
       })
-      expect(screen.getByText('Yara Young')).toBeInTheDocument()
+      expect(screen.getByText('Bob Baker')).toBeInTheDocument()
 
       const nextButton = screen.getByTestId('pagination-next')
       await user.click(nextButton)
@@ -329,7 +340,7 @@ describe('PayrollConfiguration', () => {
       })
       expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
       expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
-      expect(screen.queryByText('Yara Young')).not.toBeInTheDocument()
+      expect(screen.queryByText('Bob Baker')).not.toBeInTheDocument()
     })
   })
 
