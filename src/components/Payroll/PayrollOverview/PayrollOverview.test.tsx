@@ -562,7 +562,7 @@ describe('PayrollOverview calculatedAt guard', () => {
     mockRefetchError = null
   })
 
-  it('renders a recoverable error state on a genuinely uncalculated payroll', async () => {
+  it('renders a recoverable not-calculated screen on a genuinely uncalculated payroll', async () => {
     mockPayrollData = {
       ...basePayrollData,
       calculatedAt: null,
@@ -573,8 +573,9 @@ describe('PayrollOverview calculatedAt guard', () => {
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={onEvent} />,
     )
 
-    expect(await screen.findByTestId('error-state')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'This payroll has changed' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'This payroll has changed' }),
+    ).toBeInTheDocument()
     expect(screen.queryByText(/Review payroll/i)).toBeNull()
 
     await userEvent.click(screen.getByRole('button', { name: 'Back to payrolls' }))
@@ -637,7 +638,7 @@ describe('PayrollOverview calculatedAt guard', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders the error state on an unprocessed tax reconciliation payroll with a null calculatedAt', async () => {
+  it('renders the not-calculated screen on an unprocessed tax reconciliation payroll with a null calculatedAt', async () => {
     mockPayrollData = {
       ...basePayrollData,
       processed: false,
@@ -649,7 +650,9 @@ describe('PayrollOverview calculatedAt guard', () => {
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
     )
 
-    expect(await screen.findByTestId('error-state')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'This payroll has changed' }),
+    ).toBeInTheDocument()
   })
 
   it.each(processedWithoutCalculation)(

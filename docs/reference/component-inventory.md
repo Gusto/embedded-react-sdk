@@ -93,7 +93,6 @@ function App() {
 | `DateRangePicker` | `FunctionComponent`\<[`DateRangePickerProps`](#daterangepickerprops)\> | Form field wrapping paired `<input type="date" />` elements for a date range. |
 | `DescriptionList` | `FunctionComponent`\<[`DescriptionListProps`](#descriptionlistprops)\> | HTML `<dl>` of term/description pairs in stacked or horizontal layout. |
 | `Dialog` | `FunctionComponent`\<[`DialogProps`](#dialogprops)\> | Modal confirmation dialog with a primary action and a cancel action. |
-| `ErrorState` | `FunctionComponent`\<[`ErrorStateProps`](#errorstateprops)\> | Centered, user-facing error shown as the sole content of a surface, with an optional recovery action. |
 | `FileInput` | `FunctionComponent`\<[`FileInputProps`](#fileinputprops)\> | Form field wrapping an `<input type="file" />`. |
 | `FormBox` | `FunctionComponent`\<[`FormBoxProps`](#formboxprops)\> | Bordered container for grouping related form fields, with an optional header slot. |
 | `FormBoxHeader` | `FunctionComponent`\<[`FormBoxHeaderProps`](#formboxheaderprops)\> | Header section of a FormBox with a title, optional description, and optional inline action. |
@@ -674,38 +673,6 @@ especially useful if you have strict Content Security Policy directives.
 | `title` | `string` | Title describing the document, for assistive technology. |
 | `url` | `string` | The URL of the PDF document to render. Always a PDF today — the SDK does not render any other document type through this slot. This is the raw URL as returned by the API. The SDK's default `<embed>`-based rendering separately appends query parameters to display the built-in PDF viewer without its toolbar or navigation panel; that decoration is not applied here, so your implementation receives the URL unmodified and is free to choose its own display treatment. |
 | `className?` | `string` | Additional class names appended to the root element. |
-
-***
-
-<a id="errorstateaction"></a>
-
-### ErrorStateAction
-
-Recovery action rendered by an `ErrorState`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Visible label for the action button. |
-| `onClick` | () => `void` | Called when the action is activated. |
-
-***
-
-<a id="errorstateprops"></a>
-
-### ErrorStateProps
-
-Props your `ErrorState` implementation must accept from the component adapter.
-Renders a user-facing, recoverable error as the sole content of a surface: a centered title, an optional description, and an optional single recovery action.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `title` | `ReactNode` | Title content describing what went wrong. |
-| `action?` | [`ErrorStateAction`](#errorstateaction) | Optional recovery action. The default implementation renders it as a secondary button. |
-| `description?` | `ReactNode` | Optional supporting description rendered below the title. |
 
 ***
 

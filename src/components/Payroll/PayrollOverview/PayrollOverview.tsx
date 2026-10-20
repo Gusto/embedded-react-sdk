@@ -4,6 +4,7 @@ import { usePayrollsGet } from '@gusto/embedded-api/react-query/payrollsGet'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
 import { useEffect, useMemo, useState } from 'react'
@@ -25,6 +26,7 @@ import { canCancelPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
+import styles from './PayrollOverview.module.scss'
 import { useSubmissionPoll, type PayrollShow } from './useSubmissionPoll'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
@@ -171,7 +173,7 @@ const Root = ({
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
-  const { Button, UnorderedList, Text, ErrorState } = useComponentContext()
+  const { Button, UnorderedList, Text, Heading } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
     defaultItemsPerPage: 25,
@@ -388,17 +390,25 @@ const Root = ({
 
   if (status === PayrollOverviewStatus.Viewing && !isProcessed && !payrollData.calculatedAt) {
     return (
-      <div className={className}>
-        <ErrorState
-          title={t('notCalculatedErrorTitle')}
-          description={t('notCalculatedErrorDescription')}
-          action={{
-            label: t('notCalculatedErrorCta'),
-            onClick: () => {
+      <div className={classNames(styles.notCalculated, className)}>
+        <Flex flexDirection="column" alignItems="center" gap={16}>
+          <Flex flexDirection="column" alignItems="center" gap={4}>
+            <Heading as="h2" styledAs="h4" textAlign="center">
+              {t('notCalculatedErrorTitle')}
+            </Heading>
+            <Text variant="supporting" textAlign="center">
+              {t('notCalculatedErrorDescription')}
+            </Text>
+          </Flex>
+          <Button
+            variant="secondary"
+            onClick={() => {
               onEvent(componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST)
-            },
-          }}
-        />
+            }}
+          >
+            {t('notCalculatedErrorCta')}
+          </Button>
+        </Flex>
       </div>
     )
   }

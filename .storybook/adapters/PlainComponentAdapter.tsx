@@ -5,7 +5,6 @@ import type { NumberInputProps } from '@/components/Common/UI/NumberInput/Number
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
-import type { ErrorStateProps } from '@/components/Common/UI/ErrorState/ErrorStateTypes'
 import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
 import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
@@ -179,31 +178,6 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </div>
     )
   },
-
-  ErrorState: ({ title, description, action }: ErrorStateProps) => (
-    <div
-      role="alert"
-      style={{
-        border: '1px solid #e5e7eb',
-        padding: '40px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '16px',
-        textAlign: 'center',
-      }}
-    >
-      <div>
-        <h2>{title}</h2>
-        {description && <p>{description}</p>}
-      </div>
-      {action && (
-        <button type="button" onClick={action.onClick}>
-          {action.label}
-        </button>
-      )}
-    </div>
-  ),
 
   FormBoxHeader: ({ title, description, action, headingLevel = 'h3' }: FormBoxHeaderProps) => {
     const HeadingTag = headingLevel

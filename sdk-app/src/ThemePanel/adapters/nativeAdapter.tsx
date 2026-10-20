@@ -9,7 +9,6 @@ import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
-import type { ErrorStateProps } from '@/components/Common/UI/ErrorState/ErrorStateTypes'
 import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
 import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
@@ -303,38 +302,6 @@ function NativeBoxHeader({ title, description, action, headingLevel = 'h3' }: Bo
         )}
       </div>
       {action && <div>{action}</div>}
-    </div>
-  )
-}
-
-function NativeErrorState({ title, description, action }: ErrorStateProps) {
-  return (
-    <div
-      role="alert"
-      style={{
-        border: '1px solid #e5e7eb',
-        borderRadius: '0.5rem',
-        padding: '2.5rem 1rem',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '1rem',
-        textAlign: 'center',
-      }}
-    >
-      <div>
-        <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>{title}</h2>
-        {description && (
-          <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
-            {description}
-          </div>
-        )}
-      </div>
-      {action && (
-        <NativeButton variant="secondary" onClick={action.onClick}>
-          {action.label}
-        </NativeButton>
-      )}
     </div>
   )
 }
@@ -1476,7 +1443,6 @@ export const nativeComponents: ComponentsContextType = {
   Card: (props: CardProps) => <NativeCard {...props} />,
   Box: (props: BoxProps) => <NativeBox {...props} />,
   BoxHeader: (props: BoxHeaderProps) => <NativeBoxHeader {...props} />,
-  ErrorState: (props: ErrorStateProps) => <NativeErrorState {...props} />,
   FormBox: (props: FormBoxProps) => <NativeFormBox {...props} />,
   FormBoxHeader: (props: FormBoxHeaderProps) => <NativeFormBoxHeader {...props} />,
   Checkbox: (props: CheckboxProps) => <NativeCheckbox {...props} />,

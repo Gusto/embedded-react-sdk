@@ -36,7 +36,6 @@ import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
-import type { ErrorStateProps } from '@/components/Common/UI/ErrorState/ErrorStateTypes'
 import type { FormBoxHeaderProps } from '@/components/Common/UI/FormBoxHeader/FormBoxHeaderTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
@@ -114,8 +113,6 @@ export interface ComponentsContextType {
   Box: FunctionComponent<BoxProps>
   /** Header section of a Box with a title, optional description, and optional inline action. */
   BoxHeader: FunctionComponent<BoxHeaderProps>
-  /** Centered, user-facing error shown as the sole content of a surface, with an optional recovery action. */
-  ErrorState: FunctionComponent<ErrorStateProps>
   /** Bordered container for grouping related form fields, with an optional header slot. */
   FormBox: FunctionComponent<FormBoxProps>
   /** Header section of a FormBox with a title, optional description, and optional inline action. */

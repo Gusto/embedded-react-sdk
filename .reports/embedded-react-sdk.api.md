@@ -1655,7 +1655,6 @@ export interface ComponentsContextType {
     DescriptionList: FunctionComponent<DescriptionListProps>;
     Dialog: FunctionComponent<DialogProps>;
     DocumentEmbed?: FunctionComponent<DocumentEmbedProps>;
-    ErrorState: FunctionComponent<ErrorStateProps>;
     FieldCaption?: FunctionComponent<FieldCaptionProps>;
     FileInput: FunctionComponent<FileInputProps>;
     FormBox: FunctionComponent<FormBoxProps>;
@@ -3055,19 +3054,6 @@ function EmploymentEligibility(props: EmploymentEligibilityProps): JSX;
 // @public
 interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.EmploymentEligibility'> {
     employeeId: string;
-}
-
-// @public
-export interface ErrorStateAction {
-    label: string;
-    onClick: () => void;
-}
-
-// @public
-export interface ErrorStateProps {
-    action?: ErrorStateAction;
-    description?: ReactNode;
-    title: ReactNode;
 }
 
 // @public
