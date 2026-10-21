@@ -178,7 +178,7 @@ describe('management/CompensationEditJobForm', () => {
     )
 
     const updateJobResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 500 }),
+      () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
     )
     const createCompensationResolver = vi.fn<HttpResponseResolver>(() =>
       HttpResponse.json(
@@ -304,10 +304,10 @@ describe('management/CompensationEditJobForm', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(updateJobResolver).toHaveBeenCalledTimes(1)
+      expect(updateJobBody).toMatchObject({ two_percent_shareholder: true })
+      expect(createCompensationBody).toMatchObject({ effective_date: '2099-01-01' })
     })
 
-    expect(updateJobBody).toMatchObject({ two_percent_shareholder: true })
     expect(createCompensationBody).not.toHaveProperty('two_percent_shareholder')
   })
 
@@ -378,10 +378,8 @@ describe('management/CompensationEditJobForm', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(createCompensationResolver).toHaveBeenCalledTimes(1)
+      expect(createCompensationBody).toMatchObject({ title: 'Senior Engineer' })
     })
-
-    expect(createCompensationBody).toMatchObject({ title: 'Senior Engineer' })
     // withTitleField: false strips `title` from the job submission entirely.
     expect(updateJobBody).not.toHaveProperty('title')
   })

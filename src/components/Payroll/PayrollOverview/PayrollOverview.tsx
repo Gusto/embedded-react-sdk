@@ -4,6 +4,7 @@ import { usePayrollsGet } from '@gusto/embedded-api/react-query/payrollsGet'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
 import { useEffect, useMemo, useState } from 'react'
@@ -21,10 +22,11 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
-import { canCancelPayroll, isTaxReconciliationPayroll } from '../helpers'
+import { canCancelPayroll } from '../helpers'
 import { PrintChecks } from '../PrintChecks/PrintChecks'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
+import styles from './PayrollOverview.module.scss'
 import { useSubmissionPoll, type PayrollShow } from './useSubmissionPoll'
 import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
@@ -55,7 +57,10 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 export interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   /** Identifier of the company that owns the payroll. */
   companyId: string
-  /** Identifier of the payroll being reviewed. The payroll must already be calculated. */
+  /**
+   * Identifier of the payroll being reviewed. An unprocessed payroll must already be calculated;
+   * a processed payroll renders as a summary whether or not it has a calculation.
+   */
   payrollId: string
   /** Alert banners to display above the payroll summary. */
   alerts?: PayrollFlowAlert[]
@@ -104,8 +109,10 @@ const findWireInRequestUuid = (
  * and per-employee paystub downloads once complete.
  *
  * @remarks
- * The payroll referenced by `payrollId` must already be calculated; rendering with an
- * uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+ * An unprocessed payroll referenced by `payrollId` must already be calculated; rendering an
+ * unprocessed, uncalculated payroll throws. Processed payrolls render as a summary even without a
+ * calculation (for example tax reconciliation, reversal, wage correction, or external payrolls).
+ * Unresolved submission blockers (e.g. fast-ACH threshold,
  * wire-in funding) are surfaced inline and the submit action stays disabled until each
  * blocker has a selected unblock option. While the payroll is processing, the component
  * polls until success or failure and emits the corresponding event. Pass `readOnly` to hide
@@ -120,6 +127,7 @@ const findWireInRequestUuid = (
  * | `runPayroll/processed` | Payroll finished processing successfully | `{ payPeriod, payrollUuid }` |
  * | `runPayroll/processingFailed` | Payroll processing failed | — |
  * | `runPayroll/cancelled` | Payroll was cancelled | Cancel payroll response |
+ * | `runPayroll/notCalculated/backToList` | User chose to return to the payroll list after the payroll was found to be no longer calculated (e.g. cancelled in another session) | — |
  * | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
  * | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
  * | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
@@ -165,7 +173,7 @@ const Root = ({
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
-  const { Button, UnorderedList, Text } = useComponentContext()
+  const { Button, UnorderedList, Text, Heading } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
     defaultItemsPerPage: 25,
@@ -176,7 +184,14 @@ const Root = ({
     () => ({
       companyId,
       payrollId,
-      include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
+      include: [
+        'taxes',
+        'benefits',
+        'deductions',
+        'totals',
+        'payroll_taxes',
+        'payroll_status_meta',
+      ],
       page: currentPage,
       per: itemsPerPage,
       sortBy: 'last_name',
@@ -369,12 +384,33 @@ const Root = ({
     throw new Error(t('alerts.payrollLoadFailed'))
   }
 
-  if (
-    status === PayrollOverviewStatus.Viewing &&
-    !payrollData.calculatedAt &&
-    !isTaxReconciliationPayroll(payrollData.offCycleReason)
-  ) {
-    throw new Error(t('alerts.payrollNotCalculated'))
+  const isProcessed =
+    payrollData.processed === true ||
+    payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+
+  if (status === PayrollOverviewStatus.Viewing && !isProcessed && !payrollData.calculatedAt) {
+    return (
+      <div className={classNames(styles.notCalculated, className)}>
+        <Flex flexDirection="column" alignItems="center" gap={16}>
+          <Flex flexDirection="column" alignItems="center" gap={4}>
+            <Heading as="h2" styledAs="h4" textAlign="center">
+              {t('notCalculatedErrorTitle')}
+            </Heading>
+            <Text variant="supporting" textAlign="center">
+              {t('notCalculatedErrorDescription')}
+            </Text>
+          </Flex>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              onEvent(componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST)
+            }}
+          >
+            {t('notCalculatedErrorCta')}
+          </Button>
+        </Flex>
+      </div>
+    )
   }
 
   const pagination = getPaginationProps(data.httpMeta.response.headers, isFetching)
@@ -477,12 +513,7 @@ const Root = ({
   }
 
   const deadlineAlert: PayrollFlowAlert | undefined = (() => {
-    if (hasSubmittedInSession || isPolling) return undefined
-    if (
-      payrollData.processed ||
-      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
-    )
-      return undefined
+    if (hasSubmittedInSession || isPolling || isProcessed) return undefined
 
     if (payrollData.checkDate && payrollData.payrollDeadline) {
       return {
@@ -508,10 +539,7 @@ const Root = ({
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
       status={isPending || hasSubmittedInSession ? PayrollOverviewStatus.Submitting : status}
-      isProcessed={
-        payrollData.processed === true ||
-        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
-      }
+      isProcessed={isProcessed}
       canCancel={canCancelPayroll(payrollData) && !readOnly}
       canEdit={!readOnly}
       payrollData={payrollData}

@@ -46,8 +46,8 @@
     "dob": "Date of birth is required",
     "email": "Email address is required and must be valid",
     "emailMismatch": "Email addresses must match",
-    "firstName": "First name is required",
-    "lastName": "Last name is required",
+    "firstName": "Enter a valid first name",
+    "lastName": "Enter a valid last name",
     "phone": "Phone number must be 10 digits",
     "title": "Title is required",
     "address": {

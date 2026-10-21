@@ -3,19 +3,23 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+import type { SupportedAssignmentType } from './usePayScheduleAssignment'
 import { Flex, RadioGroupField, ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 /** @internal */
 export interface AssignmentTypeStepPresentationProps {
-  defaultType?: typeof PayScheduleAssignmentBodyType.Single
+  defaultType?: SupportedAssignmentType
   onBack: () => void
-  onContinue: (type: PayScheduleAssignmentBodyType) => void
+  onContinue: (type: SupportedAssignmentType) => void
 }
 
 const TypeStepSchema = z.object({
-  type: z.literal(PayScheduleAssignmentBodyType.Single),
+  type: z.union([
+    z.literal(PayScheduleAssignmentBodyType.Single),
+    z.literal(PayScheduleAssignmentBodyType.HourlySalaried),
+  ]),
 })
 
 type TypeStepInputs = z.infer<typeof TypeStepSchema>
@@ -55,6 +59,11 @@ export function AssignmentTypeStepPresentation({
                 value: PayScheduleAssignmentBodyType.Single,
                 label: t('typeStep.options.single.label'),
                 description: t('typeStep.options.single.description'),
+              },
+              {
+                value: PayScheduleAssignmentBodyType.HourlySalaried,
+                label: t('typeStep.options.hourlySalaried.label'),
+                description: t('typeStep.options.hourlySalaried.description'),
               },
             ]}
           />

@@ -3,6 +3,15 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { PayrollList } from './PayrollList'
+import {
+  buildPayrollListHandlers,
+  createListPayroll,
+  createOffCyclePayroll,
+  createPaySchedule,
+  handleDeletePayroll,
+  handleSkipPayroll,
+} from './__fixtures__/payrollListMocks'
+import { componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
@@ -255,6 +264,418 @@ describe('PayrollList', () => {
 
     await waitFor(() => {
       expect(screen.queryByRole('button', { name: 'Run Payroll' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('rendering from API data', () => {
+    it('renders the empty state when there are no payrolls', async () => {
+      server.use(...buildPayrollListHandlers())
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      expect(await screen.findByText('All payrolls have been processed')).toBeInTheDocument()
+    })
+
+    it('renders pay period and pay schedule name for each payroll', async () => {
+      server.use(
+        ...buildPayrollListHandlers({
+          payrolls: [createListPayroll()],
+          paySchedules: [createPaySchedule()],
+        }),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      expect(await screen.findByText('Weekly Schedule')).toBeInTheDocument()
+      expect(screen.getByText(/Jan 1 - Jan 15, 2025/)).toBeInTheDocument()
+    })
+
+    it('renders mixed payroll types and statuses in one list', async () => {
+      server.use(
+        ...buildPayrollListHandlers({
+          payrolls: [
+            createListPayroll({ payroll_uuid: 'payroll-unprocessed' }),
+            createListPayroll({
+              payroll_uuid: 'payroll-calculated',
+              calculated_at: '2025-01-10T10:00:00Z',
+            }),
+            createOffCyclePayroll('Bonus'),
+          ],
+          paySchedules: [createPaySchedule()],
+        }),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      expect(await screen.findAllByRole('button', { name: 'Run Payroll' })).toHaveLength(2)
+      expect(screen.getByRole('button', { name: 'Review and submit' })).toBeInTheDocument()
+      expect(screen.getByText('Bonus')).toBeInTheDocument()
+      expect(screen.getAllByText('Regular')).toHaveLength(2)
+    })
+  })
+
+  describe('events', () => {
+    const payPeriod = {
+      startDate: '2025-01-01',
+      endDate: '2025-01-15',
+      payScheduleUuid: 'schedule-1',
+    }
+
+    it('emits runPayroll/selected with the payroll uuid and pay period', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      server.use(...buildPayrollListHandlers({ payrolls: [createListPayroll()] }))
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await user.click(await screen.findByRole('button', { name: 'Run Payroll' }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_SELECTED, {
+        payrollUuid: 'payroll-regular-1',
+        payPeriod,
+      })
+    })
+
+    it('emits payroll/review for a calculated payroll', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      server.use(
+        ...buildPayrollListHandlers({
+          payrolls: [createListPayroll({ calculated_at: '2025-01-10T10:00:00Z' })],
+        }),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await user.click(await screen.findByRole('button', { name: 'Review and submit' }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.REVIEW_PAYROLL, {
+        payrollUuid: 'payroll-regular-1',
+        payPeriod,
+      })
+    })
+
+    it('emits runPayroll/offCycle/start from the off-cycle call-to-action', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      server.use(...buildPayrollListHandlers({ payrolls: [createListPayroll()] }))
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await user.click(await screen.findByRole('button', { name: 'Run off-cycle payroll' }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_OFF_CYCLE_PAYROLL)
+    })
+
+    it('hides the off-cycle call-to-action when withOffcyclePayroll is false', async () => {
+      server.use(...buildPayrollListHandlers({ payrolls: [createListPayroll()] }))
+
+      renderWithProviders(<PayrollList {...defaultProps} withOffcyclePayroll={false} />)
+
+      await screen.findByRole('button', { name: 'Run Payroll' })
+      expect(screen.queryByRole('button', { name: 'Run off-cycle payroll' })).toBeNull()
+    })
+  })
+
+  describe('skip payroll', () => {
+    const openSkipDialog = async (user: ReturnType<typeof userEvent.setup>) => {
+      await user.click(await screen.findByRole('button', { name: /open menu/i }))
+      await user.click(screen.getByText('Skip payroll'))
+      await user.click(await screen.findByRole('button', { name: 'Yes, skip payroll' }))
+    }
+
+    it('posts a Regular skip request and emits payroll/skipped on success', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      let skipBody: Record<string, unknown> | null = null
+      const skipResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        skipBody = (await request.json()) as Record<string, unknown>
+        return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
+      })
+      server.use(
+        ...buildPayrollListHandlers({ payrolls: [createListPayroll()] }),
+        handleSkipPayroll(skipResolver),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await openSkipDialog(user)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.PAYROLL_SKIPPED, {
+          payrollId: 'payroll-regular-1',
+        })
+      })
+      expect(skipResolver).toHaveBeenCalledTimes(1)
+      expect(skipBody).toMatchObject({
+        payroll_type: 'Regular',
+        start_date: '2025-01-01',
+        end_date: '2025-01-15',
+        pay_schedule_uuid: 'schedule-1',
+      })
+      expect(await screen.findByText('Payroll skipped')).toBeInTheDocument()
+    })
+
+    it('posts a transition skip request for transition off-cycle payrolls', async () => {
+      const user = userEvent.setup()
+      let skipBody: Record<string, unknown> | null = null
+      const skipResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        skipBody = (await request.json()) as Record<string, unknown>
+        return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
+      })
+      server.use(
+        ...buildPayrollListHandlers({
+          payrolls: [createOffCyclePayroll('Transition from old pay schedule')],
+        }),
+        handleSkipPayroll(skipResolver),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      await openSkipDialog(user)
+
+      await waitFor(() => {
+        expect(skipResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(skipBody).toMatchObject({ payroll_type: 'Transition from old pay schedule' })
+    })
+
+    it('shows no success alert and emits no skipped event when the skip request fails', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      const skipResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json(
+          { errors: [{ error_key: 'base', message: 'Cannot skip' }] },
+          { status: 422 },
+        ),
+      )
+      server.use(
+        ...buildPayrollListHandlers({ payrolls: [createListPayroll()] }),
+        handleSkipPayroll(skipResolver),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await openSkipDialog(user)
+
+      await waitFor(() => {
+        expect(skipResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.PAYROLL_SKIPPED, expect.anything())
+      expect(screen.queryByText('Payroll skipped')).toBeNull()
+    })
+  })
+
+  describe('delete payroll', () => {
+    const openDeleteDialog = async (user: ReturnType<typeof userEvent.setup>) => {
+      await user.click(await screen.findByRole('button', { name: /open menu/i }))
+      await user.click(screen.getByText('Cancel payroll'))
+      await user.click(await screen.findByRole('button', { name: 'Yes, cancel payroll' }))
+    }
+
+    it('deletes the payroll, shows the success alert, and emits payroll/deleted', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      let deletePath: string | null = null
+      const deleteResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        deletePath = new URL(request.url).pathname
+        return new HttpResponse(null, { status: 204 })
+      })
+      const bonusPayroll = createOffCyclePayroll('Bonus')
+      server.use(
+        ...buildPayrollListHandlers({ payrolls: [bonusPayroll] }),
+        handleDeletePayroll(deleteResolver),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await openDeleteDialog(user)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.PAYROLL_DELETED, {
+          payrollId: bonusPayroll.payroll_uuid,
+        })
+      })
+      expect(deletePath).toBe(
+        `/v1/companies/${defaultProps.companyId}/payrolls/${bonusPayroll.payroll_uuid}`,
+      )
+      expect(await screen.findByText('Payroll cancelled')).toBeInTheDocument()
+    })
+
+    it('emits no deleted event when the delete request fails', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      const deleteResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json(
+          { errors: [{ error_key: 'base', message: 'Cannot cancel' }] },
+          { status: 422 },
+        ),
+      )
+      server.use(
+        ...buildPayrollListHandlers({ payrolls: [createOffCyclePayroll('Bonus')] }),
+        handleDeletePayroll(deleteResolver),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await openDeleteDialog(user)
+
+      await waitFor(() => {
+        expect(deleteResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.PAYROLL_DELETED, expect.anything())
+      expect(screen.queryByText('Payroll cancelled')).toBeNull()
+    })
+  })
+
+  describe('blockers', () => {
+    it('hides the skip menu when company blockers exist', async () => {
+      server.use(
+        ...buildPayrollListHandlers({
+          payrolls: [createListPayroll()],
+          blockers: [{ key: 'missing_bank_info', message: 'Company needs a bank account.' }],
+        }),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      await screen.findByRole('button', { name: 'Run Payroll' })
+      expect(screen.queryByRole('button', { name: /open menu/i })).toBeNull()
+    })
+  })
+
+  describe('date filtering and pagination', () => {
+    it('requests the next page with page=2', async () => {
+      const user = userEvent.setup()
+      const requestedPages: Array<string | null> = []
+      const payrollsResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        requestedPages.push(new URL(request.url).searchParams.get('page'))
+        return HttpResponse.json([createListPayroll()], {
+          headers: { 'x-total-pages': '2', 'x-total-count': '10' },
+        })
+      })
+      server.use(...buildPayrollListHandlers({ payrollsResolver }))
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      await screen.findByRole('button', { name: 'Run Payroll' })
+      await user.click(screen.getByTestId('pagination-next'))
+
+      await waitFor(() => {
+        expect(requestedPages).toContain('2')
+      })
+    })
+  })
+
+  describe('date filter', () => {
+    const paginatedHeaders = { 'x-total-pages': '2', 'x-total-count': '10' }
+
+    const enterDate = async (
+      user: ReturnType<typeof userEvent.setup>,
+      fieldLabel: 'Start Date' | 'End Date',
+      digits: string,
+    ) => {
+      await user.click(
+        await screen.findByRole('spinbutton', { name: new RegExp(`month, ${fieldLabel}`) }),
+      )
+      await user.keyboard(digits)
+    }
+
+    const recordRequests = () => {
+      const requests: URL[] = []
+      const payrollsResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        requests.push(new URL(request.url))
+        return HttpResponse.json([createListPayroll()], { headers: paginatedHeaders })
+      })
+      server.use(...buildPayrollListHandlers({ payrollsResolver }))
+      return { requests, payrollsResolver }
+    }
+
+    it('re-queries with the applied date range and resets to page 1', async () => {
+      const user = userEvent.setup()
+      const { requests } = recordRequests()
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      await screen.findByRole('button', { name: 'Run Payroll' })
+      await user.click(screen.getByTestId('pagination-next'))
+      await waitFor(() => {
+        expect(requests.at(-1)!.searchParams.get('page')).toBe('2')
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await enterDate(user, 'Start Date', '02012030')
+      await enterDate(user, 'End Date', '03012030')
+      await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+      await waitFor(() => {
+        const latest = requests.at(-1)!.searchParams
+        expect(latest.get('start_date')).toBe('2030-02-01')
+        expect(latest.get('end_date')).toBe('2030-03-01')
+      })
+      expect(requests.at(-1)!.searchParams.get('page')).toBe('1')
+    })
+
+    it('restores the default date window and page 1 on Reset', async () => {
+      const user = userEvent.setup()
+      const { requests } = recordRequests()
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      await screen.findByRole('button', { name: 'Run Payroll' })
+      const defaultStartDate = requests[0]!.searchParams.get('start_date')
+      const defaultEndDate = requests[0]!.searchParams.get('end_date')
+
+      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await enterDate(user, 'Start Date', '02012030')
+      await user.click(screen.getByRole('button', { name: 'Apply' }))
+      await waitFor(() => {
+        expect(requests.at(-1)!.searchParams.get('start_date')).toBe('2030-02-01')
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await user.click(await screen.findByRole('button', { name: 'Reset' }))
+      await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+      await waitFor(() => {
+        const latest = requests.at(-1)!.searchParams
+        expect(latest.get('start_date')).toBe(defaultStartDate)
+        expect(latest.get('end_date')).toBe(defaultEndDate)
+        expect(latest.get('page')).toBe('1')
+      })
+    })
+
+    it('shows the filtered empty state when a date range returns no payrolls', async () => {
+      const user = userEvent.setup()
+      const payrollsResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        const startDate = new URL(request.url).searchParams.get('start_date')
+        return HttpResponse.json(startDate === '2030-02-01' ? [] : [createListPayroll()])
+      })
+      server.use(...buildPayrollListHandlers({ payrollsResolver }))
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      await screen.findByRole('button', { name: 'Run Payroll' })
+      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await enterDate(user, 'Start Date', '02012030')
+      await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+      expect(await screen.findByText('No payrolls in this date range')).toBeInTheDocument()
+    })
+  })
+
+  describe('error handling', () => {
+    it('surfaces an error when the payrolls request fails', async () => {
+      server.use(
+        ...buildPayrollListHandlers({
+          payrollsResolver: () =>
+            HttpResponse.json({ errors: [{ message: 'Server error' }] }, { status: 500 }),
+        }),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
     })
   })
 })

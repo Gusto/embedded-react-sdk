@@ -451,10 +451,12 @@ describe('Dashboard', () => {
       })
       expect(updatePath).toBe('/v1/garnishments/d-1')
       expect(updateBody).toMatchObject({ active: false, version: 'version-d-1' })
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
-        expect.objectContaining({ uuid: 'd-1', active: false }),
-      )
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
+          expect.objectContaining({ uuid: 'd-1', active: false }),
+        )
+      })
     })
   })
 
@@ -1129,13 +1131,15 @@ describe('Dashboard', () => {
       await waitFor(() => {
         expect(deleteResolver).toHaveBeenCalledTimes(1)
       })
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED,
-        {
-          employeeId: 'employee-123',
-          compensationId: 'comp-secondary-future',
-        },
-      )
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED,
+          {
+            employeeId: 'employee-123',
+            compensationId: 'comp-secondary-future',
+          },
+        )
+      })
     })
 
     it('closes the review modal when all pending changes are cancelled', async () => {
@@ -1253,7 +1257,11 @@ describe('Dashboard', () => {
       await waitFor(() => {
         expect(deleteResolver).toHaveBeenCalledTimes(1)
       })
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(
+          within(screen.getByRole('dialog')).getAllByRole('button', { name: 'Cancel change' }),
+        ).toHaveLength(cancelButtons.length - 1)
+      })
 
       const remainingCancelButtons = within(screen.getByRole('dialog')).getAllByRole('button', {
         name: 'Cancel change',

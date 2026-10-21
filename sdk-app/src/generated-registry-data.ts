@@ -147,6 +147,9 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.PayrollReceipts': ['payrollId'],
   'Payroll.PrintChecks': ['companyId', 'payrollId'],
   'Payroll.RecoveryCases': ['companyId'],
+  'Payroll.TaxPaymentDetail': ['companyId'],
+  'Payroll.TaxPaymentsFlow': ['companyId'],
+  'Payroll.TaxPaymentsList': ['companyId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
   'Payroll.TransitionPayroll': ['companyId'],
@@ -181,6 +184,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'EmployeeOnboarding.I9SignatureForm': ['formId'],
   'EmployeeOnboarding.SignatureForm': ['formId'],
   'Payroll.OffCycleDeductionsSetting': ['skipRegularDeductions'],
+  'Payroll.TaxPaymentDetail': ['taxPaymentId'],
   'Payroll.TransitionCreation': ['startDate', 'endDate', 'payScheduleUuid'],
   'Payroll.TransitionFlow': ['startDate', 'endDate', 'payScheduleUuid'],
   'Payroll.TransitionPayroll': ['startDate', 'endDate', 'payScheduleUuid'],
@@ -205,4 +209,5 @@ export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
   managePaySchedules: false,
   payrollRegularRateOfPay: false,
+  taxPayments: false,
 }

@@ -1,6 +1,10 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { ApiProvider } from './ApiProvider'
+import { apiVersionMismatchHook } from './apiVersionMismatchHook'
+import { informationRequestEnumHook } from './informationRequestEnumHook'
+import { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
+import { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
 import type { SDKHooks } from '@/types/hooks'
 
 const mockSDKHooksInstance = {
@@ -173,30 +177,21 @@ describe('ApiProvider', () => {
     expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-06-15')
   })
 
-  test('always registers the API version mismatch hook for afterSuccess and afterError', () => {
+  test('always registers the built-in response hooks', () => {
     render(
       <ApiProvider url="https://api.example.com">
         <div>Test</div>
       </ApiProvider>,
     )
 
-    // Two afterSuccess hooks are registered: the API version mismatch warning and the
-    // information-request enum-hardening hook (SDK-1347).
-    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledTimes(2)
-    expect(mockSDKHooksInstance.registerAfterErrorHook).toHaveBeenCalledTimes(1)
-
-    const [afterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[0]! as [
-      { afterSuccess: unknown },
-    ]
-    const [enumAfterSuccessHook] = mockSDKHooksInstance.registerAfterSuccessHook.mock.calls[1]! as [
-      { afterSuccess: unknown },
-    ]
-    const [afterErrorHook] = mockSDKHooksInstance.registerAfterErrorHook.mock.calls[0]! as [
-      { afterError: unknown },
-    ]
-
-    expect(afterSuccessHook.afterSuccess).toBeDefined()
-    expect(enumAfterSuccessHook.afterSuccess).toBeDefined()
-    expect(afterErrorHook.afterError).toBeDefined()
+    expect(mockSDKHooksInstance.registerAfterSuccessHook.mock.calls).toEqual([
+      [apiVersionMismatchHook],
+      [informationRequestEnumHook],
+      [payrollDeductionAmountHook],
+      [payrollOffCycleReasonEnumHook],
+    ])
+    expect(mockSDKHooksInstance.registerAfterErrorHook.mock.calls).toEqual([
+      [apiVersionMismatchHook],
+    ])
   })
 })

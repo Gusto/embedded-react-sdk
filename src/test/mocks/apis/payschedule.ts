@@ -79,11 +79,22 @@ export const previewPayScheduleAssignment = http.post(
 
 export const assignPaySchedules = http.post(
   `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assign`,
-  () => new HttpResponse(null, { status: 200 }),
+  () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
+)
+
+export const getPayScheduleAssignments = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`,
+  () =>
+    HttpResponse.json({
+      type: 'single',
+      default_pay_schedule_uuid: 'schedule-1',
+    }),
 )
 
 export default [
   getPaySchedules,
+  // Must out-rank getPaySchedule, whose `:pay_schedule_id` pattern also matches /assignments.
+  getPayScheduleAssignments,
   getPaySchedule,
   createPaySchedule,
   updatePaySchedule,

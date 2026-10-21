@@ -24,6 +24,7 @@
     "\\w*&[a-z]+;\\w*"
   ],
   "words": [
+    "elkjs",
     "overmind",
     "sidekiq",
     "affordances",

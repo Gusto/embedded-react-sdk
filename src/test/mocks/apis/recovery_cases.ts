@@ -58,7 +58,7 @@ export const getEmptyRecoveryCases = handleGetRecoveryCases(() => {
 })
 
 const redebitRecoveryCase = handleRedebitRecoveryCase(() => {
-  return new HttpResponse(null, { status: 202 })
+  return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
 })
 
 export default [getRecoveryCases, redebitRecoveryCase]

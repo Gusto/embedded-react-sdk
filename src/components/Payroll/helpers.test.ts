@@ -13,7 +13,6 @@ import {
   getAdditionalEarningsCompensations,
   canCancelPayroll,
   isOvertimeEligibleFlsaStatus,
-  isTaxReconciliationPayroll,
   getPayPeriodOrCheckDateLabel,
 } from './helpers'
 import { formatPayPeriodRange, formatDateShortWithYear } from '@/helpers/dateFormatting'
@@ -23,7 +22,7 @@ import {
   type Employee,
   EmployeePaymentMethod1,
 } from '@gusto/embedded-api/models/components/employee'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
+import { type Payroll, OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
 import type {
   EmployeeCompensations,
   PayrollShowPaidTimeOff,
@@ -1070,21 +1069,6 @@ describe('Payroll helpers', () => {
     })
   })
 
-  describe('isTaxReconciliationPayroll', () => {
-    it('returns true for the tax reconciliation off-cycle reason', () => {
-      expect(isTaxReconciliationPayroll('Tax reconciliation')).toBe(true)
-    })
-
-    it('returns false for other off-cycle reasons', () => {
-      expect(isTaxReconciliationPayroll('Bonus')).toBe(false)
-    })
-
-    it('returns false for null or undefined', () => {
-      expect(isTaxReconciliationPayroll(null)).toBe(false)
-      expect(isTaxReconciliationPayroll(undefined)).toBe(false)
-    })
-  })
-
   describe('getPayPeriodOrCheckDateLabel', () => {
     const dateFormatter = {
       formatPayPeriodRange: (start?: string | Date | null, end?: string | Date | null) =>
@@ -1367,225 +1351,230 @@ describe('Payroll helpers', () => {
   })
 
   describe('canCancelPayroll', () => {
+    const cancellableStatusMeta = {
+      cancellable: true,
+      expectedCheckDate: '2024-01-20',
+      initialCheckDate: '2024-01-20',
+      expectedDebitTime: '2024-01-15T23:00:00Z',
+      payrollLate: false,
+      initialDebitCutoffTime: '2024-01-15T23:00:00Z',
+    }
+
     const createMockPayroll = (overrides: Partial<Payroll> = {}): Payroll => ({
       payrollUuid: 'test-payroll-id',
       processed: true,
+      external: false,
+      offCycle: false,
       payrollDeadline: new Date('2024-01-15T23:00:00Z'),
-      payrollStatusMeta: {
-        cancellable: true,
-        expectedCheckDate: '2024-01-20',
-        initialCheckDate: '2024-01-20',
-        expectedDebitTime: '2024-01-15T23:00:00Z',
-        payrollLate: false,
-        initialDebitCutoffTime: '2024-01-15T23:00:00Z',
-      },
+      payrollStatusMeta: cancellableStatusMeta,
       ...overrides,
     })
 
-    it('returns false when payrollStatusMeta.cancellable is explicitly false', () => {
-      const payroll = createMockPayroll({
-        payrollStatusMeta: {
-          cancellable: false,
-          expectedCheckDate: '2024-01-20',
-          initialCheckDate: '2024-01-20',
-          expectedDebitTime: '2024-01-15T23:00:00Z',
-          payrollLate: false,
-          initialDebitCutoffTime: '2024-01-15T23:00:00Z',
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2024-01-14T20:00:00Z'))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    describe('payroll type', () => {
+      it('returns true for a processed regular payroll flagged cancellable before the cutoff', () => {
+        expect(canCancelPayroll(createMockPayroll())).toBe(true)
+      })
+
+      it.each([
+        OffCycleReasonType.Bonus,
+        OffCycleReasonType.Correction,
+        OffCycleReasonType.Adhoc,
+        OffCycleReasonType.BenefitReversal,
+        OffCycleReasonType.HiredEmployee,
+        OffCycleReasonType.DismissedEmployee,
+        OffCycleReasonType.TransitionFromOldPaySchedule,
+      ])('returns true for a "%s" off-cycle payroll flagged cancellable', offCycleReason => {
+        const payroll = createMockPayroll({ offCycle: true, offCycleReason })
+
+        expect(canCancelPayroll(payroll)).toBe(true)
+      })
+
+      it.each([
+        OffCycleReasonType.Reversal,
+        OffCycleReasonType.DisabilityInsuranceDistribution,
+        OffCycleReasonType.WageCorrection,
+        OffCycleReasonType.TaxReconciliation,
+      ])(
+        'returns false for a "%s" off-cycle payroll even when flagged cancellable',
+        offCycleReason => {
+          const payroll = createMockPayroll({ offCycle: true, offCycleReason })
+
+          expect(canCancelPayroll(payroll)).toBe(false)
         },
+      )
+
+      it('returns false for an off-cycle payroll with no reason even when flagged cancellable', () => {
+        const payroll = createMockPayroll({ offCycle: true, offCycleReason: null })
+
+        expect(canCancelPayroll(payroll)).toBe(false)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
+      it('returns false for an external payroll even when flagged cancellable', () => {
+        const payroll = createMockPayroll({ external: true })
+
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
     })
 
-    it('returns false when payroll is not processed', () => {
-      const payroll = createMockPayroll({ processed: false })
+    describe('cancellable flag', () => {
+      it('returns false when payrollStatusMeta.cancellable is false', () => {
+        const payroll = createMockPayroll({
+          payrollStatusMeta: { ...cancellableStatusMeta, cancellable: false },
+        })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
-    })
-
-    it('returns false when payrollDeadline is missing', () => {
-      const payroll = createMockPayroll({ payrollDeadline: undefined })
-
-      expect(canCancelPayroll(payroll)).toBe(false)
-    })
-
-    it('returns true when processed and before 4 PM PT on deadline day', () => {
-      const deadlineDate = new Date('2024-01-15T23:00:00Z')
-      const beforeCutoff = new Date('2024-01-15T22:00:00Z')
-
-      vi.setSystemTime(beforeCutoff)
-
-      const payroll = createMockPayroll({
-        payrollDeadline: deadlineDate,
+        expect(canCancelPayroll(payroll)).toBe(false)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(true)
+      it('returns false when payrollStatusMeta was not included in the response', () => {
+        const payroll = createMockPayroll({ payrollStatusMeta: undefined })
 
-      vi.useRealTimers()
-    })
-
-    it('returns false when after 4 PM PT on deadline day', () => {
-      const deadlineDate = new Date('2024-01-15T23:00:00Z')
-      const afterCutoff = new Date('2024-01-16T00:30:00Z')
-
-      vi.setSystemTime(afterCutoff)
-
-      const payroll = createMockPayroll({
-        payrollDeadline: deadlineDate,
+        expect(canCancelPayroll(payroll)).toBe(false)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
+      it('returns false when payrollStatusMeta omits the cancellable flag', () => {
+        const payroll = createMockPayroll({
+          payrollStatusMeta: { ...cancellableStatusMeta, cancellable: undefined },
+        })
 
-      vi.useRealTimers()
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
     })
 
-    it('returns true when before deadline day', () => {
-      const deadlineDate = new Date('2024-01-15T23:00:00Z')
-      const beforeDeadlineDay = new Date('2024-01-14T20:00:00Z')
+    describe('processing state', () => {
+      it('returns false when payroll is not processed', () => {
+        const payroll = createMockPayroll({ processed: false })
 
-      vi.setSystemTime(beforeDeadlineDay)
-
-      const payroll = createMockPayroll({
-        payrollDeadline: deadlineDate,
+        expect(canCancelPayroll(payroll)).toBe(false)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(true)
+      it('returns false when payrollDeadline is missing', () => {
+        const payroll = createMockPayroll({ payrollDeadline: undefined })
 
-      vi.useRealTimers()
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
     })
 
-    it('handles DST transitions correctly - PDT (summer)', () => {
-      const summerDeadline = new Date('2024-07-15T23:00:00Z')
-      const beforeCutoffPDT = new Date('2024-07-15T22:00:00Z')
+    describe('4 PM PT deadline', () => {
+      it('returns true when processed and before 4 PM PT on deadline day', () => {
+        vi.setSystemTime(new Date('2024-01-15T22:00:00Z'))
 
-      vi.setSystemTime(beforeCutoffPDT)
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-01-15T23:00:00Z') })
 
-      const payroll = createMockPayroll({
-        payrollDeadline: summerDeadline,
+        expect(canCancelPayroll(payroll)).toBe(true)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(true)
+      it('returns false when after 4 PM PT on deadline day', () => {
+        vi.setSystemTime(new Date('2024-01-16T00:30:00Z'))
 
-      vi.useRealTimers()
-    })
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-01-15T23:00:00Z') })
 
-    it('handles DST transitions correctly - PST (winter)', () => {
-      const winterDeadline = new Date('2024-12-15T00:00:00Z')
-      const beforeCutoffPST = new Date('2024-12-14T23:00:00Z')
-
-      vi.setSystemTime(beforeCutoffPST)
-
-      const payroll = createMockPayroll({
-        payrollDeadline: winterDeadline,
+        expect(canCancelPayroll(payroll)).toBe(false)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(true)
+      it('returns false days past the cutoff even when the flag still says cancellable', () => {
+        vi.setSystemTime(new Date('2024-01-17T18:00:00Z'))
 
-      vi.useRealTimers()
-    })
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-01-15T23:00:00Z') })
 
-    it('returns true when cancellable is undefined but other conditions met', () => {
-      const payroll = createMockPayroll({
-        payrollStatusMeta: undefined,
+        expect(canCancelPayroll(payroll)).toBe(false)
       })
 
-      const beforeDeadline = new Date('2024-01-14T20:00:00Z')
-      vi.setSystemTime(beforeDeadline)
+      it('returns true when before deadline day', () => {
+        vi.setSystemTime(new Date('2024-01-14T20:00:00Z'))
 
-      expect(canCancelPayroll(payroll)).toBe(true)
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-01-15T23:00:00Z') })
 
-      vi.useRealTimers()
-    })
-
-    it('returns false exactly at 4:00 PM PT on deadline day', () => {
-      const deadlineDate = new Date('2024-01-15T23:00:00Z')
-      const exactlyCutoff = new Date('2024-01-16T00:00:00Z')
-
-      vi.setSystemTime(exactlyCutoff)
-
-      const payroll = createMockPayroll({
-        payrollDeadline: deadlineDate,
+        expect(canCancelPayroll(payroll)).toBe(true)
       })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
+      it('handles DST transitions correctly - PDT (summer)', () => {
+        vi.setSystemTime(new Date('2024-07-15T22:00:00Z'))
 
-      vi.useRealTimers()
-    })
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-07-15T23:00:00Z') })
 
-    it('PST: returns false after 4 PM when deadline UTC date is the day after the PT date', () => {
-      // deadline = Dec 15 00:00 UTC = Dec 14 16:00 PST; PT deadline date = Dec 14
-      // 4 PM PT on Dec 14 = Dec 15 00:00 UTC
-      const deadlineDate = new Date('2024-12-15T00:00:00Z')
-      const afterCutoff = new Date('2024-12-15T00:30:00Z') // Dec 14 16:30 PST
+        expect(canCancelPayroll(payroll)).toBe(true)
+      })
 
-      vi.setSystemTime(afterCutoff)
+      it('handles DST transitions correctly - PST (winter)', () => {
+        vi.setSystemTime(new Date('2024-12-14T23:00:00Z'))
 
-      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-12-15T00:00:00Z') })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
+        expect(canCancelPayroll(payroll)).toBe(true)
+      })
 
-      vi.useRealTimers()
-    })
+      it('returns false exactly at 4:00 PM PT on deadline day', () => {
+        vi.setSystemTime(new Date('2024-01-16T00:00:00Z'))
 
-    it('PDT: returns true before 4 PM when deadline UTC date is the day after the PT date', () => {
-      // deadline = Jul 16 00:00 UTC = Jul 15 17:00 PDT; PT deadline date = Jul 15
-      // 4 PM PT on Jul 15 = Jul 15 23:00 UTC
-      const deadlineDate = new Date('2024-07-16T00:00:00Z')
-      const beforeCutoff = new Date('2024-07-15T22:30:00Z') // Jul 15 15:30 PDT
+        const payroll = createMockPayroll({ payrollDeadline: new Date('2024-01-15T23:00:00Z') })
 
-      vi.setSystemTime(beforeCutoff)
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
 
-      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+      it('PST: returns false after 4 PM when deadline UTC date is the day after the PT date', () => {
+        // deadline = Dec 15 00:00 UTC = Dec 14 16:00 PST; PT deadline date = Dec 14
+        // 4 PM PT on Dec 14 = Dec 15 00:00 UTC
+        const deadlineDate = new Date('2024-12-15T00:00:00Z')
+        vi.setSystemTime(new Date('2024-12-15T00:30:00Z')) // Dec 14 16:30 PST
 
-      expect(canCancelPayroll(payroll)).toBe(true)
+        const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
 
-      vi.useRealTimers()
-    })
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
 
-    it('PDT: returns false after 4 PM when deadline UTC date is the day after the PT date', () => {
-      // deadline = Jul 16 00:00 UTC = Jul 15 17:00 PDT; PT deadline date = Jul 15
-      // 4 PM PT on Jul 15 = Jul 15 23:00 UTC
-      const deadlineDate = new Date('2024-07-16T00:00:00Z')
-      const afterCutoff = new Date('2024-07-15T23:30:00Z') // Jul 15 16:30 PDT
+      it('PDT: returns true before 4 PM when deadline UTC date is the day after the PT date', () => {
+        // deadline = Jul 16 00:00 UTC = Jul 15 17:00 PDT; PT deadline date = Jul 15
+        // 4 PM PT on Jul 15 = Jul 15 23:00 UTC
+        const deadlineDate = new Date('2024-07-16T00:00:00Z')
+        vi.setSystemTime(new Date('2024-07-15T22:30:00Z')) // Jul 15 15:30 PDT
 
-      vi.setSystemTime(afterCutoff)
+        const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
 
-      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+        expect(canCancelPayroll(payroll)).toBe(true)
+      })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
+      it('PDT: returns false after 4 PM when deadline UTC date is the day after the PT date', () => {
+        // deadline = Jul 16 00:00 UTC = Jul 15 17:00 PDT; PT deadline date = Jul 15
+        // 4 PM PT on Jul 15 = Jul 15 23:00 UTC
+        const deadlineDate = new Date('2024-07-16T00:00:00Z')
+        vi.setSystemTime(new Date('2024-07-15T23:30:00Z')) // Jul 15 16:30 PDT
 
-      vi.useRealTimers()
-    })
+        const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
 
-    it('cutoff is 4 PM PT on the deadline PT date, not the payrollDeadline timestamp itself', () => {
-      // deadline = Jan 16 02:00 UTC = Jan 15 18:00 PST (after 4 PM PT on Jan 15)
-      // The payrollDeadline timestamp is AFTER 4 PM PT, but the cutoff is still 4 PM PT on Jan 15.
-      // now = Jan 16 00:30 UTC = Jan 15 16:30 PST → after 4 PM PT cutoff → false
-      const deadlineDate = new Date('2024-01-16T02:00:00Z') // Jan 15 18:00 PST
-      const nowAfterCutoff = new Date('2024-01-16T00:30:00Z') // Jan 15 16:30 PST
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
 
-      vi.setSystemTime(nowAfterCutoff)
+      it('cutoff is 4 PM PT on the deadline PT date, not the payrollDeadline timestamp itself', () => {
+        // deadline = Jan 16 02:00 UTC = Jan 15 18:00 PST (after 4 PM PT on Jan 15)
+        // The payrollDeadline timestamp is AFTER 4 PM PT, but the cutoff is still 4 PM PT on Jan 15.
+        // now = Jan 16 00:30 UTC = Jan 15 16:30 PST → after 4 PM PT cutoff → false
+        const deadlineDate = new Date('2024-01-16T02:00:00Z') // Jan 15 18:00 PST
+        vi.setSystemTime(new Date('2024-01-16T00:30:00Z')) // Jan 15 16:30 PST
 
-      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+        const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
 
-      expect(canCancelPayroll(payroll)).toBe(false)
+        expect(canCancelPayroll(payroll)).toBe(false)
+      })
 
-      vi.useRealTimers()
-    })
+      it('cutoff is 4 PM PT on the deadline PT date: returns true when before 4 PM even if before payrollDeadline', () => {
+        // deadline = Jan 16 02:00 UTC = Jan 15 18:00 PST (after 4 PM on Jan 15)
+        // now = Jan 15 23:30 UTC = Jan 15 15:30 PST → before 4 PM PT cutoff → true
+        const deadlineDate = new Date('2024-01-16T02:00:00Z') // Jan 15 18:00 PST
+        vi.setSystemTime(new Date('2024-01-15T23:30:00Z')) // Jan 15 15:30 PST
 
-    it('cutoff is 4 PM PT on the deadline PT date: returns true when before 4 PM even if before payrollDeadline', () => {
-      // deadline = Jan 16 02:00 UTC = Jan 15 18:00 PST (after 4 PM on Jan 15)
-      // now = Jan 15 23:30 UTC = Jan 15 15:30 PST → before 4 PM PT cutoff → true
-      const deadlineDate = new Date('2024-01-16T02:00:00Z') // Jan 15 18:00 PST
-      const nowBeforeCutoff = new Date('2024-01-15T23:30:00Z') // Jan 15 15:30 PST
+        const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
 
-      vi.setSystemTime(nowBeforeCutoff)
-
-      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
-
-      expect(canCancelPayroll(payroll)).toBe(true)
-
-      vi.useRealTimers()
+        expect(canCancelPayroll(payroll)).toBe(true)
+      })
     })
 
     describe('timezone sensitivity', () => {
@@ -1595,7 +1584,6 @@ describe('Payroll helpers', () => {
 
       afterEach(() => {
         vi.unstubAllEnvs()
-        vi.useRealTimers()
       })
 
       it.fails(

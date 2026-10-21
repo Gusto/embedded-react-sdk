@@ -51,7 +51,7 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
 - [Appendix](docs/appendix/endpoint-reference.md)
   - [Endpoint Reference](docs/appendix/endpoint-reference.md)
   - [Jobs and Compensations](docs/appendix/jobs-and-compensations.md)
-  - [Proxy Examples](docs/appendix/proxy-examples.md)
+  - [Reviewing SDK API access](docs/getting-started/reviewing-sdk-api-access.md)
 - [Workflows Overview](docs/workflows-overview/workflows-overview.md)
   - [Company Onboarding](docs/workflows-overview/company-onboarding.md)
   - [Contractor Onboarding](docs/workflows-overview/contractor-onboarding.md)

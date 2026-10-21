@@ -394,6 +394,56 @@ gh pr create --title "chore: release <version>"
 
 Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow from the Actions UI (`Run workflow`). It accepts an optional version override; if left blank it auto-detects from commits. The workflow creates the branch, commits the changes, and opens a PR automatically.
 
+### Stable releases
+
+PRs that change the root `package.json` version are checked by `release-readiness`, regardless of branch name or PR title. Update the branch with the latest `main`, refresh the changelog, then get approval from another maintainer on the final commit. Any subsequent commit, including a merge from `main`, requires fresh approval. PRs without a version change pass this check without additional review requirements.
+
+The check updates independently of the build when a PR or review changes, or when `main` advances. Merge queue checks use approvals of the original PR commits. To refresh the result manually, run [Release Readiness](https://github.com/Gusto/embedded-react-sdk/actions/workflows/release-readiness.yaml) from `main`.
+
+After a release PR merges to `main` with a `chore: release` commit and CI passes, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) starts automatically. The workflow uses `npm-release` to publish to npm, create a Git tag and GitHub Release with changelog notes, and send the release notification.
+
+The intended configuration for `npm-release` allows workflows from `main` without a separate publishing approval once `release-readiness` is enforced. During rollout, keep the existing publishing approval until the new check is verified and required.
+
+### One-off builds
+
+Use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) for a one-off build from a branch or commit. Run the workflow from `main` and choose the source using its inputs. It publishes under `rc`, leaving `latest` unchanged, with no Git tag or GitHub Release.
+
+When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag.
+
+Both RC publishing and retirement use `npm-release-rc` and wait for another member of the Embedded SDK team to approve through the workflow run's **Review deployments** prompt. The release owner arranges this approval. Before approving, check the selected source commit and version in the run summary, or the expected version for retirement.
+
+### Retiring a stable version
+
+Stable versions should normally remain available. If one needs to be retired, ask an npm maintainer to deprecate the version and coordinate any GitHub Release cleanup.
+
+### Removing a harmful version
+
+If a version accidentally contains secrets or malicious content, ask an npm maintainer to fully unpublish that version, subject to [npm's unpublish policy](https://docs.npmjs.com/policies/unpublish). RC retirement leaves the package downloadable and is insufficient for this case. Rotate any exposed credentials and coordinate GitHub Release cleanup.
+
+### Testing release workflows
+
+Publishing helpers live in `.github/scripts/`; each helper documents its invocation. Run the publishing helper tests locally with:
+
+```bash
+bash .github/scripts/publish-helpers.test.sh
+```
+
+These tests exercise inline publishing commands and helpers using mocked npm and HTTP responses plus local Git repositories, without publishing or sending notifications. CI also runs input validation, workflow guards, GitHub Release creation tests, and RC retirement tests. Live workflow runs are still needed to verify npm trust, environment approvals, and runner configuration.
+
+Run release readiness tests without installing dependencies:
+
+```bash
+node --test .github/scripts/release-readiness.test.cjs
+```
+
+The event workflow is read-only; the evaluator runs trusted code from `main` and reads candidate files through the GitHub API without executing them.
+
+To roll out the approval changes:
+
+1. Configure `npm-release-rc` to require another Embedded SDK team member's approval and prevent self-approval. Both environments must permit workflows from `main` only; RC source branches are selected through workflow inputs. Update the npm trusted publisher configuration for RC publishing and retirement to match `npm-release-rc`, then verify both workflows' OIDC and approval behavior.
+2. After the readiness workflows land on `main`, verify PR push, review approval/dismissal, `main` advancement, and merge queue events. Add `release-readiness` as a required check on `main`, selecting GitHub Actions as its source.
+3. Only after the check is verified and required, remove the stable publishing approval from `npm-release`. Keep approval required in `npm-release-rc`.
+
 ### Documentation versioning
 
 The published docs site uses Docusaurus versioning so partners on older SDK versions can read the docs that match their installed version. **All versioned content lives in `Gusto/embedded-sdk-docs`, not this repo.** This repo only ever carries the live (current) docs in `docs/`; versioned snapshots (`versioned_docs/version-X.Y/`, `versions.json`, `versioned_sidebars/`) accumulate in the downstream repo as releases land.
@@ -435,9 +485,3 @@ See the [Getting Started guide](../getting-started/index.md).
 
 See the [Getting Started guide](/docs/getting-started/index.md).
 ```
-
-### After the PR is merged
-
-Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM.
-
-If you need to trigger a publish manually (e.g. CI was re-run after the auto-trigger fired, or something went wrong), you can still run the workflow manually from the Actions UI (`Run workflow`).

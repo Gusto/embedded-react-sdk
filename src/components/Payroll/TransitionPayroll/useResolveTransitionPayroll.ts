@@ -52,11 +52,7 @@ export function useResolveTransitionPayroll({
     companyId,
     processingStatuses: [ProcessingStatuses.Unprocessed],
     endDate: getFutureEndDate(),
-    payrollTypes: [
-      QueryParamPayrollTypes.Regular,
-      QueryParamPayrollTypes.OffCycle,
-      QueryParamPayrollTypes.External,
-    ],
+    payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
   })
 
   const match = payrollsData.payrollList?.find(payroll => {

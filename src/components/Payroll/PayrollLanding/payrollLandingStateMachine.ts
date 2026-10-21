@@ -27,6 +27,7 @@ type EventPayloads = {
   }
   [componentEvents.RUN_PAYROLL_CANCELLED]: undefined
   [componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED]: undefined
+  [componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST]: undefined
 }
 
 /** @internal */
@@ -169,6 +170,11 @@ export const payrollLandingMachine = {
   overview: state<MachineTransition>(
     breadcrumbNavigateTransition('tabs'),
     transition(componentEvents.RUN_PAYROLL_BACK, 'tabs', reduce(returnToTabs())),
+    transition(
+      componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST,
+      'tabs',
+      reduce(returnToTabs()),
+    ),
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'receipt',

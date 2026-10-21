@@ -80,6 +80,9 @@ describe('Contractor/Address', () => {
 
       await user.click(screen.getByRole('button', { name: /Continue/i }))
 
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_ADDRESS_DONE)
+      })
       expect(mockOnEvent).toHaveBeenNthCalledWith(
         1,
         contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
@@ -248,10 +251,12 @@ describe('Contractor/Address', () => {
       await waitFor(() => {
         expect(updateResolver).toHaveBeenCalledTimes(1)
       })
-      expect(mockOnEvent).toHaveBeenCalledWith(
-        contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
-        expect.anything(),
-      )
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
+          expect.anything(),
+        )
+      })
     })
   })
 

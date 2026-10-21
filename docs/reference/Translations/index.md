@@ -287,8 +287,8 @@ Translation keys for the `Company.AssignSignatory` i18n namespace.
 | `validations.dob` | `"Date of birth is required"` |
 | `validations.email` | `"Email address is required and must be valid"` |
 | `validations.emailMismatch` | `"Email addresses must match"` |
-| `validations.firstName` | `"First name is required"` |
-| `validations.lastName` | `"Last name is required"` |
+| `validations.firstName` | `"Enter a valid first name"` |
+| `validations.lastName` | `"Enter a valid last name"` |
 | `validations.phone` | `"Phone number must be 10 digits"` |
 | `validations.title` | `"Title is required"` |
 
@@ -692,14 +692,22 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `autoPilot.disabled` | `"Disabled"` |
 | `autoPilot.enabled` | `"Enabled"` |
 | `autoPilot.label` | `"AutoPilot"` |
+| <a id="property-companymanagementpayschedulecompensationdescription"></a> `compensationDescription` | `"You have assigned employees to pay schedules by compensation type."` |
+| <a id="property-companymanagementpayschedulecompensationtablelabel"></a> `compensationTableLabel` | `"Pay schedules by compensation type"` |
+| <a id="property-companymanagementpayschedulecompensationtypes"></a> `compensationTypes` | |
+| `compensationTypes.hourly` | `"Hourly"` |
+| `compensationTypes.salaried` | `"Salaried"` |
 | <a id="property-companymanagementpayscheduledescription"></a> `description` | `"You have assigned everyone to be on one pay schedule."` |
 | <a id="property-companymanagementpayscheduleeditautopilotarialabel"></a> `editAutoPilotAriaLabel` | `"Edit AutoPilot"` |
 | <a id="property-companymanagementpayscheduleeditcta"></a> `editCta` | `"Edit"` |
 | <a id="property-companymanagementpayscheduleeditschedulearialabel"></a> `editScheduleAriaLabel` | `"Edit pay schedule"` |
+| <a id="property-companymanagementpayscheduleeditschedulecta"></a> `editScheduleCta` | `"Edit schedule"` |
 | <a id="property-companymanagementpayschedulelabels"></a> `labels` | |
 | `labels.frequency` | `"Frequency"` |
 | `labels.name` | `"Name"` |
+| `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
+| <a id="property-companymanagementpayschedulerowmenutriggerlabel"></a> `rowMenuTriggerLabel` | `"Pay schedule actions"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
 
 ***
@@ -715,6 +723,13 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-companymanagementpayscheduleassignmentbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-companymanagementpayscheduleassignmentcompensationstep"></a> `compensationStep` | |
+| `compensationStep.addPayScheduleCta` | `"Add pay schedule"` |
+| `compensationStep.heading` | `"Assign employees"` |
+| `compensationStep.hourlyPayScheduleDescription` | `"The pay schedule to use for hourly employees."` |
+| `compensationStep.hourlyPayScheduleLabel` | `"Hourly employees"` |
+| `compensationStep.salariedPayScheduleDescription` | `"The pay schedule to use for salaried employees."` |
+| `compensationStep.salariedPayScheduleLabel` | `"Salaried employees"` |
 | <a id="property-companymanagementpayscheduleassignmentcontinuecta"></a> `continueCta` | `"Continue"` |
 | <a id="property-companymanagementpayscheduleassignmentreviewstep"></a> `reviewStep` | |
 | `reviewStep.employeeChangesHeading` | `"Employees affected"` |
@@ -736,9 +751,106 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.description` | `"After you choose, you can create a pay schedule for each group."` |
 | `typeStep.heading` | `"Choose schedule type"` |
 | `typeStep.options` | |
+| `typeStep.options.hourlySalaried` | |
+| `typeStep.options.hourlySalaried.description` | `"Choose one pay schedule for hourly employees and another for salaried employees"` |
+| `typeStep.options.hourlySalaried.label` | `"Separate schedules by compensation type"` |
 | `typeStep.options.single` | |
 | `typeStep.options.single.description` | `"Choose one pay schedule for all your employees"` |
 | `typeStep.options.single.label` | `"Everyone on one schedule"` |
+
+***
+
+<a id="companymanagementtaxpaymentdetail"></a>
+
+### CompanyManagementTaxPaymentDetail
+
+Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementtaxpaymentdetailbackcta"></a> `backCta` | `"Back to tax payments"` |
+| <a id="property-companymanagementtaxpaymentdetaildetails"></a> `details` | |
+| `details.amount` | `"Amount"` |
+| `details.amountPaid` | `"Amount paid"` |
+| `details.dueDate` | `"Due date"` |
+| `details.jurisdiction` | `"Jurisdiction"` |
+| `details.paymentSentOn` | `"Payment sent on"` |
+| `details.period` | `"Period"` |
+| `details.title` | `"Payment details"` |
+| <a id="property-companymanagementtaxpaymentdetailerrors"></a> `errors` | |
+| `errors.taxPaymentNotFound` | `"Tax payment not found"` |
+| <a id="property-companymanagementtaxpaymentdetailfederal"></a> `federal` | `"Federal"` |
+| <a id="property-companymanagementtaxpaymentdetailliabilities"></a> `liabilities` | |
+| `liabilities.amountColumn` | `"Amount"` |
+| `liabilities.emptyState` | `"No tax liabilities."` |
+| `liabilities.payrollColumn` | `"Payroll"` |
+| `liabilities.tableLabel` | `"Tax liabilities"` |
+| `liabilities.taxIdColumn` | `"Tax ID"` |
+| `liabilities.title` | `"Tax liabilities"` |
+| <a id="property-companymanagementtaxpaymentdetailnotavailable"></a> `notAvailable` | `"—"` |
+| <a id="property-companymanagementtaxpaymentdetailoverduealert"></a> `overdueAlert` | |
+| `overdueAlert.description` | `"This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."` |
+| `overdueAlert.label` | `"Payment overdue"` |
+| <a id="property-companymanagementtaxpaymentdetailstate"></a> `state` | `"State · {{jurisdiction}}"` |
+| <a id="property-companymanagementtaxpaymentdetailstatus"></a> `status` | |
+| `status.overdue` | `"Overdue"` |
+| `status.paid` | `"Paid"` |
+| `status.refund` | `"Refund / Credit"` |
+| `status.scheduled` | `"Scheduled"` |
+| <a id="property-companymanagementtaxpaymentdetailunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
+
+***
+
+<a id="companymanagementtaxpaymentslist"></a>
+
+### CompanyManagementTaxPaymentsList
+
+Translation keys for the `Company.Management.TaxPaymentsList` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-companymanagementtaxpaymentslistalljurisdictions"></a> `allJurisdictions` | `"All jurisdictions"` |
+| <a id="property-companymanagementtaxpaymentslistallstatuses"></a> `allStatuses` | `"All statuses"` |
+| <a id="property-companymanagementtaxpaymentslistcolumns"></a> `columns` | |
+| `columns.agency` | `"Agency"` |
+| `columns.amount` | `"Amount"` |
+| `columns.dueDate` | `"Due date"` |
+| `columns.jurisdiction` | `"Jurisdiction"` |
+| `columns.period` | `"Period"` |
+| `columns.status` | `"Status"` |
+| <a id="property-companymanagementtaxpaymentslistemptystate"></a> `emptyState` | |
+| `emptyState.description` | `"Tax payments appear here after payroll is processed."` |
+| `emptyState.title` | `"No tax payments yet"` |
+| <a id="property-companymanagementtaxpaymentslistfederal"></a> `federal` | `"Federal"` |
+| <a id="property-companymanagementtaxpaymentslistfederaljurisdictionoption"></a> `federalJurisdictionOption` | `"Federal (US)"` |
+| <a id="property-companymanagementtaxpaymentslistjurisdictionfilterlabel"></a> `jurisdictionFilterLabel` | `"Jurisdiction"` |
+| <a id="property-companymanagementtaxpaymentslistnoresults"></a> `noResults` | |
+| `noResults.description` | `"Try a different search or adjust the filters."` |
+| `noResults.title` | `"No matching tax payments"` |
+| <a id="property-companymanagementtaxpaymentslistnotavailable"></a> `notAvailable` | `"—"` |
+| <a id="property-companymanagementtaxpaymentslistoverduealert"></a> `overdueAlert` | |
+| `overdueAlert.label_one` | `"{{count}} tax payment is overdue and may require immediate attention."` |
+| `overdueAlert.label_other` | `"{{count}} tax payments are overdue and may require immediate attention."` |
+| <a id="property-companymanagementtaxpaymentslistsearchlabel"></a> `searchLabel` | `"Search tax payments"` |
+| <a id="property-companymanagementtaxpaymentslistsearchplaceholder"></a> `searchPlaceholder` | `"Search by agency..."` |
+| <a id="property-companymanagementtaxpaymentsliststate"></a> `state` | `"State · {{jurisdiction}}"` |
+| <a id="property-companymanagementtaxpaymentsliststatus"></a> `status` | |
+| `status.overdue` | `"Overdue"` |
+| `status.paid` | `"Paid"` |
+| `status.refund` | `"Refund / Credit"` |
+| `status.scheduled` | `"Scheduled"` |
+| <a id="property-companymanagementtaxpaymentsliststatusfilterlabel"></a> `statusFilterLabel` | `"Status"` |
+| <a id="property-companymanagementtaxpaymentslisttablelabel"></a> `tableLabel` | `"Tax payments"` |
+| <a id="property-companymanagementtaxpaymentslisttitle"></a> `title` | `"Tax payments"` |
+| <a id="property-companymanagementtaxpaymentslisttruncatedalert"></a> `truncatedAlert` | |
+| `truncatedAlert.label` | `"Showing the most recent tax payments. Older payments are not included."` |
+| <a id="property-companymanagementtaxpaymentslistunknownagency"></a> `unknownAgency` | `"Unknown agency"` |
+| <a id="property-companymanagementtaxpaymentslistviewcta"></a> `viewCta` | `"View"` |
+| <a id="property-companymanagementtaxpaymentslistviewpaymentlabel"></a> `viewPaymentLabel` | `"View {{agency}} tax payment"` |
 
 ***
 
@@ -912,6 +1024,7 @@ Translation keys for the `Company.StateTaxes` i18n namespace.
 | `form.effectiveFromLabel` |
 | `form.errors` |
 | `form.errors.incompleteRequirementSet` |
+| `form.errors.invalidRequirementSet` |
 | `form.noEditableRequirementsDescription` |
 | `form.noEditableRequirementsTitle` |
 | `form.saveCta` |
@@ -5414,7 +5527,6 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `alerts.directDepositDeadline` | `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` |
 | `alerts.directDepositDeadlineText` | `"Make sure to submit before the deadline to ensure timely payments."` |
 | `alerts.payrollLoadFailed` | `"There was an issue loading this payroll. Please try again."` |
-| `alerts.payrollNotCalculated` | `"Payroll is not calculated"` |
 | `alerts.payrollProcessedMessage` | `"{{amount}} will be debited on {{date}}. Make sure you have these funds available."` |
 | `alerts.payrollProcessedTitle` | `"Payroll submitted"` |
 | `alerts.payrollProcessingFailedCtaLabel` | `"Recalculate payroll"` |
@@ -5456,6 +5568,9 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewgarnishmentslabel"></a> `garnishmentsLabel` | `"Garnishments"` |
 | <a id="property-payrollpayrolloverviewloadingdescription"></a> `loadingDescription` | `"This may take a minute or two. You can navigate away while this happens."` |
 | <a id="property-payrollpayrolloverviewloadingtitle"></a> `loadingTitle` | `"Submitting payroll..."` |
+| <a id="property-payrollpayrolloverviewnotcalculatederrorcta"></a> `notCalculatedErrorCta` | `"Back to payrolls"` |
+| <a id="property-payrollpayrolloverviewnotcalculatederrordescription"></a> `notCalculatedErrorDescription` | `"Refresh or return to your payrolls to continue."` |
+| <a id="property-payrollpayrolloverviewnotcalculatederrortitle"></a> `notCalculatedErrorTitle` | `"This payroll has changed"` |
 | <a id="property-payrollpayrolloverviewoverviewtitle"></a> `overviewTitle` | `"Review payroll"` |
 | <a id="property-payrollpayrolloverviewpagesubtitle"></a> `pageSubtitle` | `"{{payrollType}} payroll for <dateWrapper>{{payPeriod}}</dateWrapper>"` |
 | <a id="property-payrollpayrolloverviewpagesubtitledismissal"></a> `pageSubtitleDismissal` | `"{{payrollType}} payroll"` |
@@ -5923,6 +6038,8 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
+| <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
+| <a id="property-resourcescompanymanagementtaxpaymentslist"></a> `Company.Management.TaxPaymentsList` | [`CompanyManagementTaxPaymentsList`](#companymanagementtaxpaymentslist) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
 | <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
 | <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |

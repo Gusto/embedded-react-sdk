@@ -35,7 +35,62 @@ const SENSITIVE_FIELD_NAMES = [
   'routing_number',
   'accountNumber',
   'account_number',
+  'dateOfBirth',
+  'date_of_birth',
+  'birthDate',
+  'birth_date',
+  'birthday',
+  'firstName',
+  'first_name',
+  'lastName',
+  'last_name',
+  'middleName',
+  'middle_name',
+  'fullName',
+  'full_name',
+  'employeeName',
+  'employee_name',
+  'signatureText',
+  'signature_text',
+  'retirementLoanIdentifier',
+  'retirement_loan_identifier',
+  'phone',
+  'zipCode',
+  'zip_code',
+  'postalCode',
+  'postal_code',
+  'preparerCity',
+  'preparer_city',
+  'preparerZip',
+  'preparer_zip',
+  'preparer2City',
+  'preparer2_city',
+  'preparer2Zip',
+  'preparer2_zip',
+  'preparer3City',
+  'preparer3_city',
+  'preparer3Zip',
+  'preparer3_zip',
+  'preparer4City',
+  'preparer4_city',
+  'preparer4Zip',
+  'preparer4_zip',
+  'address',
+  'street1',
+  'street_1',
+  'street2',
+  'street_2',
+  'caseNumber',
+  'case_number',
+  'orderNumber',
+  'order_number',
+  'remittanceNumber',
+  'remittance_number',
+  'documentNumber',
+  'document_number',
 ]
+
+const EXACT_SENSITIVE_FIELD_NAMES = new Set(['ein', 'dob', 'zip', 'city'])
 
 /**
  * Replaces PII patterns (SSN, email, phone, credit card, long tokens) in a string with redacted placeholders.
@@ -59,7 +114,8 @@ export function sanitizeString(value: string): string {
  *
  * @remarks
  * Keys whose names match (case-insensitively contain) any built-in sensitive field name or any
- * entry in `additionalSensitiveFields` have their values replaced with `[REDACTED]`. String
+ * entry in `additionalSensitiveFields` have their values replaced with `[REDACTED]`. Short names
+ * (`ein`, `dob`, `zip`, `city`) match the whole key, case-insensitively. String
  * values are passed through {@link sanitizeString} so PII patterns inside them are also redacted.
  * Numbers, booleans, `null`, and `undefined` pass through unchanged.
  *
@@ -91,7 +147,11 @@ export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[]
     const allSensitiveFields = [...SENSITIVE_FIELD_NAMES, ...additionalSensitiveFields]
 
     for (const [key, value] of Object.entries(obj)) {
-      if (allSensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
+      const lowerKey = key.toLowerCase()
+      if (
+        EXACT_SENSITIVE_FIELD_NAMES.has(lowerKey) ||
+        allSensitiveFields.some(field => lowerKey.includes(field.toLowerCase()))
+      ) {
         sanitized[key] = '[REDACTED]'
         continue
       }
@@ -105,79 +165,37 @@ export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[]
   return obj
 }
 
-/**
- * Returns a copy of an observability error with PII redacted from messages and field-error metadata.
- *
- * @remarks
- * If `config.customErrorSanitizer` is provided, it is invoked and its result returned directly.
- * When sanitization is disabled, the error passes through unchanged except that `raw` is stripped
- * unless `includeRawError` is true. When enabled, `message` and each `fieldErrors[].message` run
- * through {@link sanitizeString}, and each `fieldErrors[].metadata` runs through {@link sanitizeObject}
- * with `additionalSensitiveFields` applied.
- *
- * @param error - The error reported by SDK error boundaries or form submissions.
- * @param config - Optional sanitization configuration; defaults to enabled with `raw` stripped.
- * @returns The sanitized error suitable for forwarding to a partner observability hook.
- * @internal
- */
-export function sanitizeError(
+function redactError(
   error: ObservabilityError,
-  config: SanitizationConfig = {},
+  { enabled = true, includeRawError = false, additionalSensitiveFields = [] }: SanitizationConfig,
 ): ObservabilityError {
-  const {
-    enabled = true,
-    includeRawError = false,
-    customErrorSanitizer,
-    additionalSensitiveFields = [],
-  } = config
-
-  if (customErrorSanitizer) {
-    return customErrorSanitizer(error)
-  }
+  const raw = includeRawError ? error.raw : undefined
 
   if (!enabled) {
-    return includeRawError ? error : { ...error, raw: undefined }
+    return { ...error, raw }
   }
-
-  const sanitizedFieldErrors = error.fieldErrors.map(fe => ({
-    ...fe,
-    message: sanitizeString(fe.message),
-    metadata: fe.metadata
-      ? (sanitizeObject(fe.metadata, additionalSensitiveFields) as Record<string, unknown>)
-      : undefined,
-  }))
 
   return {
     ...error,
     message: sanitizeString(error.message),
-    fieldErrors: sanitizedFieldErrors,
-    raw: includeRawError ? error.raw : undefined,
+    fieldErrors: error.fieldErrors.map(fieldError => ({
+      ...fieldError,
+      message: sanitizeString(fieldError.message),
+      metadata: fieldError.metadata
+        ? (sanitizeObject(fieldError.metadata, additionalSensitiveFields) as Record<
+            string,
+            unknown
+          >)
+        : undefined,
+    })),
+    raw,
   }
 }
 
-/**
- * Returns a copy of an observability metric with sensitive values redacted from its tags.
- *
- * @remarks
- * If `config.customMetricSanitizer` is provided, it is invoked and its result returned directly.
- * When sanitization is disabled, the metric passes through unchanged. Otherwise the `tags` record
- * is run through {@link sanitizeObject} with `additionalSensitiveFields` applied.
- *
- * @param metric - The metric reported by SDK component instrumentation.
- * @param config - Optional sanitization configuration; defaults to enabled.
- * @returns The sanitized metric suitable for forwarding to a partner observability hook.
- * @internal
- */
-export function sanitizeMetric(
+function redactMetric(
   metric: ObservabilityMetric,
-  config: SanitizationConfig = {},
+  { enabled = true, additionalSensitiveFields = [] }: SanitizationConfig,
 ): ObservabilityMetric {
-  const { enabled = true, customMetricSanitizer, additionalSensitiveFields = [] } = config
-
-  if (customMetricSanitizer) {
-    return customMetricSanitizer(metric)
-  }
-
   if (!enabled) {
     return metric
   }
@@ -188,4 +206,42 @@ export function sanitizeMetric(
       ? (sanitizeObject(metric.tags, additionalSensitiveFields) as Record<string, string>)
       : undefined,
   }
+}
+
+/**
+ * Redacts error messages and field-error metadata before and after a custom sanitizer runs.
+ *
+ * @remarks
+ * `enabled: false` skips redaction. Independently, `raw` is excluded before and after the
+ * custom sanitizer unless `includeRawError: true`. Opted-in `raw` is passed through unchanged.
+ * Other error properties are preserved without redaction.
+ *
+ * @internal
+ */
+export function sanitizeError(
+  error: ObservabilityError,
+  config: SanitizationConfig = {},
+): ObservabilityError {
+  const sanitized = redactError(error, config)
+  return config.customErrorSanitizer
+    ? redactError(config.customErrorSanitizer(sanitized), config)
+    : sanitized
+}
+
+/**
+ * Redacts metric tags before and after a custom sanitizer runs, unless `enabled: false`.
+ *
+ * @remarks
+ * Other metric properties are preserved without redaction.
+ *
+ * @internal
+ */
+export function sanitizeMetric(
+  metric: ObservabilityMetric,
+  config: SanitizationConfig = {},
+): ObservabilityMetric {
+  const sanitized = redactMetric(metric, config)
+  return config.customMetricSanitizer
+    ? redactMetric(config.customMetricSanitizer(sanitized), config)
+    : sanitized
 }

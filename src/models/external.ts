@@ -396,14 +396,15 @@ export {
   PayrollUpdateOverrideType,
   PayrollUpdatePaymentMethod,
 } from '@gusto/embedded-api/models/components/payrollupdate'
-/** `Departments` entity from the Gusto Embedded API. */
-export type { Departments } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
-/** `PayScheduleAssignmentBody` entity from the Gusto Embedded API. */
-export type { PayScheduleAssignmentBody } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
-/** `PayScheduleAssignmentBodyEmployees` entity from the Gusto Embedded API. */
-export type { PayScheduleAssignmentBodyEmployees } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentType` entity from the Gusto Embedded API. */
+export { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
+export type { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment'
 /** `PayScheduleAssignmentBodyType` entity from the Gusto Embedded API. */
 export { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+/** `PayScheduleAssignmentDepartment` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentDepartment } from '@gusto/embedded-api/models/components/payscheduleassignmentdepartment'
+/** `PayScheduleAssignmentEmployee` entity from the Gusto Embedded API. */
+export type { PayScheduleAssignmentEmployee } from '@gusto/embedded-api/models/components/payscheduleassignmentemployee'
 /** `PayScheduleAssignmentEmployeeChange` entity from the Gusto Embedded API. */
 export type { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange'
 export type { PayScheduleAssignmentPayPeriod } from '@gusto/embedded-api/models/components/payscheduleassignmentpayperiod'
@@ -427,6 +428,8 @@ export { IdentityVerificationStatus } from '@gusto/embedded-api/models/component
 /** `SignatoryHomeAddress` entity from the Gusto Embedded API. */
 export type { SignatoryHomeAddress } from '@gusto/embedded-api/models/components/signatory'
 export type { Signatory } from '@gusto/embedded-api/models/components/signatory'
+export type { TaxPayment } from '@gusto/embedded-api/models/components/taxpayment'
+export type { TaxPaymentLineItem } from '@gusto/embedded-api/models/components/taxpaymentlineitem'
 /** `ApplicableIf` entity from the Gusto Embedded API. */
 export type { ApplicableIf } from '@gusto/embedded-api/models/components/taxrequirement'
 /** `TaxRequirement` entity from the Gusto Embedded API. */

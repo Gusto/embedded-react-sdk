@@ -215,7 +215,7 @@ describe('management/CompensationEditPendingJobForm', () => {
 
   it('does not PUT compensation if the job PUT fails', async () => {
     const updateJobResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 500 }),
+      () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
     )
     const updateCompensationResolver = vi.fn<HttpResponseResolver>(() =>
       makeUpdateCompensationResponse(),
