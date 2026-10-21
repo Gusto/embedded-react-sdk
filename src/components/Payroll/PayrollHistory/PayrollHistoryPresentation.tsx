@@ -65,22 +65,21 @@ export const PayrollHistoryPresentation = ({
     const deadlineDate = new Date(deadline)
     const timeZone = 'America/New_York'
 
-    const formatter = new Intl.DateTimeFormat('en-US', {
+    // Uses Date#toLocale* rather than Intl.DateTimeFormat: some host apps replace the global
+    // Intl with a polyfill (e.g. lean-intl) that throws for any timeZone other than UTC (SDK-1415).
+    const dateStr = deadlineDate.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       timeZone,
     })
 
-    const timeFormatter = new Intl.DateTimeFormat('en-US', {
+    const timeStr = deadlineDate.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       timeZoneName: 'short',
       timeZone,
     })
-
-    const dateStr = formatter.format(deadlineDate)
-    const timeStr = timeFormatter.format(deadlineDate)
 
     return `${timeStr} on ${dateStr}`
   }

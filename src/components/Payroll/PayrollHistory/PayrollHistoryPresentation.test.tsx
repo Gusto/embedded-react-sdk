@@ -181,4 +181,56 @@ describe('PayrollHistoryPresentation', () => {
       expect(screen.queryByRole('menuitem', { name: 'Cancel payroll' })).toBeNull()
     })
   })
+
+  describe('cancel dialog deadline', () => {
+    const payrollWithDeadline: Payroll = {
+      ...mockRegularPayroll,
+      payrollDeadline: new Date('2025-01-14T23:00:00Z'),
+    }
+    const expectedDeadlineText =
+      'Run this payroll by 6:00 PM EST on Tue, Jan 14 to pay your employees on time.'
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('shows the deadline in Eastern Time', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[payrollWithDeadline]}
+          cancelDialogItem={payrollWithDeadline}
+        />,
+      )
+
+      expect(await screen.findByText(expectedDeadlineText)).toBeInTheDocument()
+    })
+
+    it('shows the deadline when the host replaces Intl.DateTimeFormat with a UTC-only polyfill', async () => {
+      const NativeDateTimeFormat = Intl.DateTimeFormat
+      function UtcOnlyDateTimeFormat(
+        locales?: string | string[],
+        options?: Intl.DateTimeFormatOptions,
+      ) {
+        if (options?.timeZone && options.timeZone.toUpperCase() !== 'UTC') {
+          throw new RangeError('timeZone is not supported.')
+        }
+        return new NativeDateTimeFormat(locales, options)
+      }
+      vi.stubGlobal(
+        'Intl',
+        Object.assign(Object.create(Intl), { DateTimeFormat: UtcOnlyDateTimeFormat }),
+      )
+
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[payrollWithDeadline]}
+          cancelDialogItem={payrollWithDeadline}
+        />,
+      )
+
+      expect(await screen.findByText(expectedDeadlineText)).toBeInTheDocument()
+    })
+  })
 })
