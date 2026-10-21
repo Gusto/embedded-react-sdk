@@ -6,6 +6,7 @@ import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrol
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { formatDateWithTime } from '@/helpers/dateFormatting'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 const mockRegularPayroll: Payroll = {
@@ -187,14 +188,14 @@ describe('PayrollHistoryPresentation', () => {
       ...mockRegularPayroll,
       payrollDeadline: new Date('2025-01-14T23:00:00Z'),
     }
-    const expectedDeadlineText =
-      'Run this payroll by 6:00 PM EST on Tue, Jan 14 to pay your employees on time.'
+    const { time, date } = formatDateWithTime(payrollWithDeadline.payrollDeadline, 'en-US')
+    const expectedDeadlineText = `Run this payroll by ${time} on ${date} to pay your employees on time.`
 
     afterEach(() => {
       vi.unstubAllGlobals()
     })
 
-    it('shows the deadline in Eastern Time', async () => {
+    it('shows the deadline in the local time zone, matching the payroll overview cancel dialog', async () => {
       renderWithProviders(
         <PayrollHistoryPresentation
           {...defaultProps}

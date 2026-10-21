@@ -59,29 +59,8 @@ export const PayrollHistoryPresentation = ({
   const dateFormatter = useDateFormatter()
 
   const formatDeadlineForDialog = (item: Payroll): string => {
-    const deadline = item.payrollDeadline
-    if (!deadline) return ''
-
-    const deadlineDate = new Date(deadline)
-    const timeZone = 'America/New_York'
-
-    // Uses Date#toLocale* rather than Intl.DateTimeFormat: some host apps replace the global
-    // Intl with a polyfill (e.g. lean-intl) that throws for any timeZone other than UTC (SDK-1415).
-    const dateStr = deadlineDate.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      timeZone,
-    })
-
-    const timeStr = deadlineDate.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      timeZoneName: 'short',
-      timeZone,
-    })
-
-    return `${timeStr} on ${dateStr}`
+    const { time, date } = dateFormatter.formatWithTime(item.payrollDeadline)
+    return date ? `${time} on ${date}` : time
   }
 
   const handleCancelClick = (item: Payroll) => {
