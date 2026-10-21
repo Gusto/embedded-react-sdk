@@ -28,6 +28,10 @@ function partnerEnvIsUsable(env: Record<string, string>): boolean {
   return !!(env.CLIENT_ID && env.CLIENT_SECRET && env.REFRESH_TOKEN && env.VITE_COMPANY_ID)
 }
 
+function partnerTokenEnvIsUsable(env: Record<string, string>): boolean {
+  return !!(env.ACCESS_TOKEN && env.VITE_COMPANY_ID)
+}
+
 async function validateToken(env: Record<string, string>): Promise<boolean> {
   const companyId = env.VITE_COMPANY_ID
   if (!companyId || !env.FLOW_TOKEN || !env.GWS_FLOWS_HOST) return false
@@ -92,6 +96,22 @@ async function main() {
     const env = loadEnvFile(envPath)
     console.log(
       `  Target: ${env.GUSTO_API_BASE_URL || 'https://api.gusto-demo.com'} (partner-direct)\n`,
+    )
+  } else if (zpEnv === 'partner-token') {
+    // Same as partner mode, but with a pre-minted company-scoped access token
+    // instead of client credentials + refresh token. No refresh happens.
+    if (!existsSync(envPath) || !partnerTokenEnvIsUsable(loadEnvFile(envPath))) {
+      console.error(
+        `\n  Missing or incomplete ${envPath}.\n` +
+          `  Create it with ACCESS_TOKEN and VITE_COMPANY_ID for an existing\n` +
+          `  partner-managed company. See sdk-app/README.md ("Partner token").\n`,
+      )
+      process.exit(1)
+    }
+
+    const env = loadEnvFile(envPath)
+    console.log(
+      `  Target: ${env.GUSTO_API_BASE_URL || 'https://api.gusto-demo.com'} (partner-token)\n`,
     )
   } else {
     if (!existsSync(envPath) || !envIsUsable(loadEnvFile(envPath))) {

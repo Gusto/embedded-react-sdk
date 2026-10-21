@@ -9,6 +9,10 @@
  * Requires an existing partner-managed company's `REFRESH_TOKEN` — there's no
  * "create a new onboarded company" step here. Mint one first (via `POST /v1/partner_managed_companies`),
  * then put its `companyUuid`/`refreshToken` in `sdk-app/env/.env.partner`.
+ *
+ * `registerPartnerTokenProxy` is a lighter variant for `sdk-app/env/.env.partner-token`:
+ * it takes an already-minted company-scoped `ACCESS_TOKEN` and skips the refresh grant,
+ * so no client credentials are needed.
  */
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
@@ -20,6 +24,8 @@ interface TokenCache {
   refreshToken: string
   expiresAt: number
 }
+
+const DEFAULT_API_BASE_URL = 'https://api.gusto-demo.com'
 
 /** Refresh this far before actual expiry so an in-flight request never races expiry. */
 const TOKEN_EXPIRY_BUFFER_MS = 5 * 60 * 1000
@@ -74,7 +80,7 @@ async function readBody(req: Connect.IncomingMessage): Promise<string> {
 function requireEnv(env: Record<string, string>, key: string): string {
   const value = env[key]
   if (!value) {
-    throw new Error(`registerPartnerApiProxy requires ${key} in the partner env file`)
+    throw new Error(`Partner proxy requires ${key} in the env file`)
   }
   return value
 }
@@ -89,7 +95,7 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
   const seedRefreshToken = requireEnv(env, 'REFRESH_TOKEN')
   const cached = loadCache(seedRefreshToken)
 
-  const baseUrl = env.GUSTO_API_BASE_URL || 'https://api.gusto-demo.com'
+  const baseUrl = env.GUSTO_API_BASE_URL || DEFAULT_API_BASE_URL
   const trustedBase = new URL(baseUrl)
   const client = new GustoEmbedded({ serverURL: baseUrl })
 
@@ -134,6 +140,28 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
   // Prime the token cache so the first browser request doesn't pay the cost.
   void getAccessToken()
 
+  mountApiProxy(server, trustedBase, getAccessToken)
+}
+
+/**
+ * Mounts the direct-to-API proxy using a pre-minted company-scoped access token, with no
+ * refresh. Requires `ACCESS_TOKEN` in `env`. The token is used as-is until it expires;
+ * paste a fresh one into the env file to keep going.
+ */
+export function registerPartnerTokenProxy(
+  server: ViteDevServer,
+  env: Record<string, string>,
+): void {
+  const accessToken = requireEnv(env, 'ACCESS_TOKEN')
+  const trustedBase = new URL(env.GUSTO_API_BASE_URL || DEFAULT_API_BASE_URL)
+  mountApiProxy(server, trustedBase, () => Promise.resolve(accessToken))
+}
+
+function mountApiProxy(
+  server: ViteDevServer,
+  trustedBase: URL,
+  getAccessToken: () => Promise<string>,
+): void {
   server.middlewares.use('/api', (req, res) => {
     void (async () => {
       try {

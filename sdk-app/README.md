@@ -5,25 +5,27 @@ A standalone development application for building and testing SDK components wit
 ## Quick Start
 
 ```bash
-npm run sdk-app              # Demo environment (default)
-npm run sdk-app:local        # Local ZenPayroll
-npm run sdk-app:staging      # Staging environment
-npm run sdk-app:partner      # Direct to the demo API with your own OAuth client credentials
+npm run sdk-app                # Demo environment (default)
+npm run sdk-app:local          # Local ZenPayroll
+npm run sdk-app:staging        # Staging environment
+npm run sdk-app:partner        # Direct to the demo API with your own OAuth client credentials
+npm run sdk-app:partner-token  # Direct to the demo API with just a company ID and access token
 ```
 
 The app opens at `http://localhost:5200` (or the next available port).
 
 ## Commands
 
-| Command                   | Build | Environment              |
-| ------------------------- | ----- | ------------------------ |
-| `npm run sdk-app`         | dev   | demo (default)           |
-| `npm run sdk-app:demo`    | dev   | demo                     |
-| `npm run sdk-app:staging` | dev   | staging                  |
-| `npm run sdk-app:local`   | dev   | local ZenPayroll         |
-| `npm run sdk-app:partner` | dev   | direct to demo API       |
-| `npm run sdk-app-prod`    | prod  | demo                     |
-| `npm run sdk-app:setup`   | —     | Re-provision current env |
+| Command                         | Build | Environment                     |
+| ------------------------------- | ----- | ------------------------------- |
+| `npm run sdk-app`               | dev   | demo (default)                  |
+| `npm run sdk-app:demo`          | dev   | demo                            |
+| `npm run sdk-app:staging`       | dev   | staging                         |
+| `npm run sdk-app:local`         | dev   | local ZenPayroll                |
+| `npm run sdk-app:partner`       | dev   | direct to demo API              |
+| `npm run sdk-app:partner-token` | dev   | direct to demo API (token only) |
+| `npm run sdk-app-prod`          | prod  | demo                            |
+| `npm run sdk-app:setup`         | —     | Re-provision current env        |
 
 ### Dev vs Prod Build
 
@@ -32,7 +34,7 @@ The app opens at `http://localhost:5200` (or the next available port).
 
 ## Environments
 
-Demo, Staging, and Local auto-provision on first run: the setup script creates a demo company, extracts the flow token, fetches entity IDs, and writes everything to `sdk-app/env/.env.{env}`. Partner is the exception — see below.
+Demo, Staging, and Local auto-provision on first run: the setup script creates a demo company, extracts the flow token, fetches entity IDs, and writes everything to `sdk-app/env/.env.{env}`. Partner and Partner token are the exceptions — see below.
 
 ### Demo / Staging
 
@@ -82,6 +84,23 @@ Talks directly to the real Embedded API (`https://api.gusto-demo.com` by default
 
 Since there's no gws-flows demo to fall back on, entity auto-fetch and the Settings panel's demo-management controls (create/refresh demo, entity catalog) are inactive in this mode — set any additional entity IDs (`VITE_EMPLOYEE_ID`, etc.) directly in `.env.partner` if a component needs them.
 
+### Partner token
+
+A quicker version of Partner mode. Set just a company ID and a company-scoped access token. No client ID, client secret, or refresh token needed. Handy for pointing at a given partner's company fast.
+
+1. Copy `sdk-app/env/.env.partner-token.example` to `sdk-app/env/.env.partner-token` (gitignored) and fill in:
+
+   ```text
+   ACCESS_TOKEN=a_company_scoped_access_token
+   VITE_COMPANY_ID=the_company_uuid
+   ```
+
+   Optionally set `GUSTO_API_BASE_URL` (defaults to `https://api.gusto-demo.com`).
+
+2. `npm run sdk-app:partner-token`. The token is attached server-side and never reaches the browser.
+
+The token is never refreshed. When it expires, requests start failing with 401. Paste a fresh `ACCESS_TOKEN` into `.env.partner-token` and Vite reloads automatically. Entity auto-fetch and demo-management controls are inactive, same as Partner mode.
+
 ## Features
 
 - **Component Explorer**: All SDK components in a searchable sidebar, categorized by domain (Company, Employee, Contractor, Payroll, Info Requests)
@@ -105,7 +124,7 @@ Browser Request: /api/v1/companies/{id}/employees
        GWS-Flows handles OAuth token injection → proxies to ZenPayroll
 ```
 
-Partner mode skips GWS-Flows entirely:
+Partner and Partner token modes skip GWS-Flows entirely:
 
 ```text
 Browser Request: /api/v1/companies/{id}/employees
@@ -113,7 +132,8 @@ Browser Request: /api/v1/companies/{id}/employees
        ▼
   Vite Dev Server Middleware (scripts/partner-proxy.ts)
        │
-       Refreshes your access token as needed using your own client credentials
+       Partner: refreshes your access token as needed using your own client credentials
+       Partner token: uses the ACCESS_TOKEN from .env.partner-token as-is
        Forwards straight to GUSTO_API_BASE_URL, bearer token attached server-side
 ```
 
