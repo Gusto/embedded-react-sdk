@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.57.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.0...v0.57.1) (2026-10-21)
+
+### Features & Enhancements
+
+- Add `Payroll.TaxPaymentsFlow`, a tax payments hub with a payment list and detail view built on the tax payments endpoints. Released as `@alpha` behind the new `taxPayments` flag in `UnstableFeatures` ([#2872](https://github.com/Gusto/embedded-react-sdk/issues/2872))
+- Show a recoverable screen instead of a hard error when a payroll is no longer calculated, so the payroll can be recalculated in place ([#2955](https://github.com/Gusto/embedded-react-sdk/issues/2955))
+
+### Fixes
+
+- Fix Payroll History crashing for a company when the API returns an off-cycle reason outside the documented enum (e.g. `Max out 401k`, `Other`) — those payrolls now render as generic off-cycle payrolls instead of failing response validation for the whole list ([#2919](https://github.com/Gusto/embedded-react-sdk/issues/2919))
+- Fix "Payroll is not calculated" being thrown for processed payrolls that never run the calculate step — wage corrections, reversals, disability distributions, external payrolls, and tax reconciliations are now viewable ([#2922](https://github.com/Gusto/embedded-react-sdk/issues/2922))
+- Only offer the cancel action on payrolls the API will actually accept for cancellation, instead of surfacing a cancel that fails server-side ([#2936](https://github.com/Gusto/embedded-react-sdk/issues/2936))
+- Validate generated check URLs in `PrintChecksForm` before opening them ([#2937](https://github.com/Gusto/embedded-react-sdk/issues/2937))
+- Show server-side field errors on `StateTaxesForm`, including value errors from every requirement set ([#2917](https://github.com/Gusto/embedded-react-sdk/issues/2917))
+- Keep workweek inputs usable in Run Regular Payroll when a pay period has many workweek columns — inputs now have a fixed column width and the workweek tables scroll horizontally, instead of being crushed beside their adornments ([#2939](https://github.com/Gusto/embedded-react-sdk/issues/2939))
+- Label `DataCards` footer values with their column titles when footers are keyed by column key (e.g. `PayrollOverview` totals), which previously rendered as bare values ([#2933](https://github.com/Gusto/embedded-react-sdk/issues/2933))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `react-hook-form`, `robot3`, `dompurify`) ([#2929](https://github.com/Gusto/embedded-react-sdk/issues/2929), [#2945](https://github.com/Gusto/embedded-react-sdk/issues/2945), [#2931](https://github.com/Gusto/embedded-react-sdk/issues/2931), [#2961](https://github.com/Gusto/embedded-react-sdk/issues/2961), [#2927](https://github.com/Gusto/embedded-react-sdk/issues/2927))
+- Bump dev dependencies (`vitest`, `typescript-eslint`, `prettier`, `sass-embedded`, `cspell`, `lint-staged`, `@microsoft/api-extractor`, `@testing-library/user-event`, Storybook packages, Playwright accessibility tooling)
+
 ## [0.57.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.7...v0.57.0) (2026-10-15)
 
 ### ⚠ BREAKING CHANGES
