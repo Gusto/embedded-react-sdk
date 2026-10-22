@@ -14,6 +14,7 @@ import type { PaymentSpeed } from '@gusto/embedded-api/models/components/payment
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
+  getCancelDeadlineValues,
   getPayPeriodOrCheckDateLabel,
   getPayrollTypeLabel,
   getReimbursements,
@@ -109,14 +110,6 @@ export const PayrollOverviewPresentation = ({
     <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
   )
   const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
-
-  // formatWithTime returns { time, date }, and the cancel dialog used to interpolate only
-  // `time` -- so it read "Run this payroll by 4:00 PM PDT" with no date at all (SDK-1286).
-  // Rendered as "<time> on <date>" to match how PayrollHistory shows the same deadline.
-  const cancelDeadline = (() => {
-    const { time, date } = dateFormatter.formatWithTime(payrollData.payrollDeadline)
-    return date ? `${time} on ${date}` : time
-  })()
 
   const pageSubtitle = (
     <Text>
@@ -837,9 +830,10 @@ export const PayrollOverviewPresentation = ({
                   <Text>{t('cancelDialogDescription')}</Text>
                   {Number(payrollData.totals?.netPayDebit ?? 0) > 0 && (
                     <Text>
-                      {t('cancelDialogDescriptionDeadline', {
-                        deadline: cancelDeadline,
-                      })}
+                      {t(
+                        'cancelDialogDescriptionDeadline',
+                        getCancelDeadlineValues(payrollData, dateFormatter),
+                      )}
                     </Text>
                   )}
                 </Flex>
