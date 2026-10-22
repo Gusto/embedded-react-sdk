@@ -1,6 +1,5 @@
 import { state, transition, reduce } from 'robot3'
 import type { ComponentType } from 'react'
-import { assignmentDraftUpdated } from './usePayScheduleAssignment'
 import {
   AssignmentTypeStep,
   AssignmentScheduleStep,
@@ -51,19 +50,6 @@ export const payScheduleAssignmentStateMachine = {
   ),
   assignmentSchedule: state<MachineTransition>(
     transition(
-      assignmentDraftUpdated,
-      'assignmentSchedule',
-      reduce(
-        (
-          ctx: PayScheduleAssignmentContextInterface,
-          ev: MachineEventType<EventPayloads, typeof assignmentDraftUpdated>,
-        ): PayScheduleAssignmentContextInterface => ({
-          ...ctx,
-          ...ev.payload,
-        }),
-      ),
-    ),
-    transition(
       componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK,
       'assignmentType',
       reduce(
@@ -81,8 +67,12 @@ export const payScheduleAssignmentStateMachine = {
       componentEvents.PAY_SCHEDULE_CREATE,
       'assignmentCreateSchedule',
       reduce(
-        (ctx: PayScheduleAssignmentContextInterface): PayScheduleAssignmentContextInterface => ({
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_CREATE>,
+        ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
+          ...ev.payload,
           component: AssignmentCreateScheduleStep as ComponentType,
         }),
       ),

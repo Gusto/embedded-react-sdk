@@ -1,6 +1,5 @@
-import { createMachine, type Machine, type SendFunction } from 'robot3'
-import { useMachine } from 'react-robot'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { createMachine } from 'robot3'
+import { useEffect, useMemo, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
@@ -12,12 +11,7 @@ import type {
   SupportedAssignmentType,
 } from './usePayScheduleAssignment'
 import { stripNullAssignmentPreviewFields } from './stripNullAssignmentPreviewFields'
-import { assignmentDraftUpdated } from './usePayScheduleAssignment'
-import type { AssignmentDraft } from './usePayScheduleAssignment'
-import { Flex } from '@/components/Common/Flex'
-import { FlowContext } from '@/components/Flow/useFlow'
-import type { EventType } from '@/shared/constants'
-import type { OnEventType } from '@/components/Base/useBase'
+import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
@@ -86,12 +80,12 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
  * Step selection events also bubble through `onEvent`; the `assigned` event reports the
- * final outcome. Draft updates stay internal to this flow.
+ * final outcome. Adding a pay schedule can include the current selections in its event payload.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | — |
+ * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | Optional current selections: `{ defaultPayScheduleUuid?: string; hourlyPayScheduleUuid?: string; salariedPayScheduleUuid?: string }` |
  * | `paySchedule/created` | A new pay schedule was created from the picker step | `{ paySchedule: PayScheduleShow }` |
  * | `paySchedule/management/assignment/cancel` | The user backed out of the flow entirely, from the first step | — |
  * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` |
@@ -163,48 +157,5 @@ function Root({ companyId, dictionary }: Omit<PayScheduleAssignmentProps, BaseCo
     [companyId, seed],
   )
 
-  return <PayScheduleAssignmentFlow machine={machine} companyId={companyId} onEvent={onEvent} />
-}
-
-/**
- * Runs assignment transitions while keeping draft updates inside the flow.
- *
- * @param props - Assignment machine and public event callback.
- * @returns The current assignment step.
- * @internal
- */
-export function PayScheduleAssignmentFlow({
-  machine,
-  companyId,
-  onEvent,
-}: {
-  companyId: string
-  machine: Machine<object, PayScheduleAssignmentContextInterface>
-  onEvent: OnEventType<EventType, unknown>
-}) {
-  const { LoadingIndicator } = useBase()
-  const [current, send] = useMachine(machine, {
-    onEvent: handleEvent,
-    updateDraft,
-    companyId,
-    component: null,
-  })
-  const sendEvent = send as SendFunction<string>
-  function handleEvent(type: EventType, payload: unknown) {
-    sendEvent({ type, payload })
-    onEvent(type, payload)
-  }
-  function updateDraft(payload: AssignmentDraft) {
-    sendEvent({ type: assignmentDraftUpdated, payload })
-  }
-  const Component = current.context.component
-  return (
-    <Flex>
-      <FlowContext.Provider value={current.context}>
-        <Flex flexDirection="column" gap={32}>
-          <Suspense fallback={<LoadingIndicator />}>{Component && <Component />}</Suspense>
-        </Flex>
-      </FlowContext.Provider>
-    </Flex>
-  )
+  return <Flow machine={machine} onEvent={onEvent} />
 }

@@ -10,7 +10,6 @@ import { AssignmentTypeStepPresentation } from './AssignmentTypeStepPresentation
 import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPresentation'
 import { AssignmentCompensationStepPresentation } from './AssignmentCompensationStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
-import type { assignmentDraftUpdated } from './usePayScheduleAssignment'
 import type {
   AssignmentDraft,
   PayScheduleAssignmentContextInterface,
@@ -45,7 +44,7 @@ export type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED]:
     | { defaultPayScheduleUuid: string }
     | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
-  [assignmentDraftUpdated]: AssignmentDraft
+  [componentEvents.PAY_SCHEDULE_CREATE]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
   [componentEvents.PAY_SCHEDULE_ASSIGNED]: AssignmentSelection & {
@@ -78,7 +77,6 @@ export function AssignmentScheduleStep() {
     defaultPayScheduleUuid,
     hourlyPayScheduleUuid,
     salariedPayScheduleUuid,
-    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
@@ -103,8 +101,7 @@ export function AssignmentScheduleStep() {
           onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
         }}
         onAddPaySchedule={selection => {
-          updateDraft(selection)
-          onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+          onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
         }}
         onContinue={selection => {
           onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, selection)
