@@ -25,5 +25,9 @@
   },
   "alerts": {
     "assignmentUpdated": "Pay schedule assignment updated."
+  },
+  "scheduleForm": {
+    "anchorEndOfPayPeriodDescription": "The last date of the first pay period; can be the same as the first pay date.",
+    "payrollDeadline": "Run payroll by"
   }
 }

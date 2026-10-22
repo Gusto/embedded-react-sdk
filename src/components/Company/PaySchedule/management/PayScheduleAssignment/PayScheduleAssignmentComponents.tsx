@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesPreviewAssignmentMutation } from '@gusto/embedded-api/react-query/paySchedulesPreviewAssignment'
@@ -127,9 +128,20 @@ export function AssignmentScheduleStep() {
 
 /** @internal */
 export function AssignmentCreateScheduleStep() {
+  const { t } = useTranslation('Company.Management.PayScheduleAssignment')
   const { companyId, onEvent } = useFlow<PayScheduleAssignmentContextInterface>()
 
-  return <PayScheduleForm companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return (
+    <PayScheduleForm
+      variant="management"
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      copy={{
+        anchorEndOfPayPeriodDescription: t('scheduleForm.anchorEndOfPayPeriodDescription'),
+        payrollDeadline: t('scheduleForm.payrollDeadline'),
+      }}
+    />
+  )
 }
 
 /** @internal */

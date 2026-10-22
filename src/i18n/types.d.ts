@@ -1078,6 +1078,12 @@ export namespace Translations {
       /** @defaultValue `"Pay schedule assignment updated."` */
       assignmentUpdated: string
     }
+    scheduleForm: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
+    }
   }
   /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
   export interface CompanyManagementPayScheduleAssignment {
@@ -1151,6 +1157,12 @@ export namespace Translations {
     continueCta: string
     /** @defaultValue `"Submit"` */
     submitCta: string
+    scheduleForm: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
+    }
   }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
   export interface CompanyManagementTaxPaymentDetail {

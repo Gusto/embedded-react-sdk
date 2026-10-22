@@ -708,6 +708,9 @@ Translation keys for the `Company.Management.PaySchedule` i18n namespace.
 | `labels.schedule` | `"Schedule"` |
 | <a id="property-companymanagementpayschedulemanagecta"></a> `manageCta` | `"Manage"` |
 | <a id="property-companymanagementpayschedulerowmenutriggerlabel"></a> `rowMenuTriggerLabel` | `"Pay schedule actions"` |
+| <a id="property-companymanagementpayschedulescheduleform"></a> `scheduleForm` | |
+| `scheduleForm.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
+| `scheduleForm.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companymanagementpayscheduletitle"></a> `title` | `"Pay schedule"` |
 
 ***
@@ -741,6 +744,9 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `reviewStep.noTransitionNeeded` | `"No transition needed"` |
 | `reviewStep.payFrequencyLabel` | `"New pay frequency"` |
 | `reviewStep.transitionPayPeriodLabel` | `"Transition pay period"` |
+| <a id="property-companymanagementpayscheduleassignmentscheduleform"></a> `scheduleForm` | |
+| `scheduleForm.anchorEndOfPayPeriodDescription` | `"The last date of the first pay period; can be the same as the first pay date."` |
+| `scheduleForm.payrollDeadline` | `"Run payroll by"` |
 | <a id="property-companymanagementpayscheduleassignmentschedulestep"></a> `scheduleStep` | |
 | `scheduleStep.addPayScheduleCta` | `"Add pay schedule"` |
 | `scheduleStep.heading` | `"Assign employees"` |
