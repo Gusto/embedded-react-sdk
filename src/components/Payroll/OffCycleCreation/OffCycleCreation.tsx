@@ -9,7 +9,6 @@ import {
   OffCycleReason as ApiOffCycleReason,
   WithholdingPayPeriod,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
@@ -25,6 +24,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
+import { toRFCDate } from '@/helpers/dateFormatting'
 import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 
 const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
@@ -196,10 +196,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
   }, [watchedReason, methods])
 
   const onSubmit = async (data: OffCycleCreationFormData) => {
-    const reason = data.reason
-    const checkDate = data.checkDate!
-    const startDate = data.startDate!
-    const endDate = data.endDate!
+    const { reason, checkDate, startDate, endDate } = data
+    if (!checkDate || !startDate || !endDate) return
     const employeeUuids = data.includeAllEmployees
       ? employees.map(e => e.value)
       : data.selectedEmployeeUuids.length > 0
@@ -213,9 +211,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
           requestBody: {
             offCycle: true,
             offCycleReason: LOCAL_TO_API_REASON[reason],
-            startDate: new RFCDate(startDate),
-            endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(checkDate),
+            startDate: toRFCDate(startDate),
+            endDate: toRFCDate(endDate),
+            checkDate: toRFCDate(checkDate),
             skipRegularDeductions: data.skipRegularDeductions,
             isCheckOnlyPayroll: data.isCheckOnly,
             employeeUuids,

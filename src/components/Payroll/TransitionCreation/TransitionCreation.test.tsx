@@ -1,8 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { TransitionCreation } from './TransitionCreation'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
+import { handleCreateOffCyclePayroll } from '@/test/mocks/apis/terminations'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const COMPANY_ID = 'company-123'
@@ -239,6 +243,52 @@ describe('TransitionCreation', () => {
           'transition/created',
           expect.objectContaining({ payrollUuid: 'transition-payroll-uuid-1' }),
         )
+      })
+    })
+  })
+
+  describe('in a timezone ahead of UTC', () => {
+    const originalTz = process.env.TZ
+
+    beforeEach(() => {
+      process.env.TZ = 'Asia/Kolkata'
+    })
+
+    afterEach(() => {
+      process.env.TZ = originalTz
+    })
+
+    it('sends the picked check date without shifting it a day earlier', async () => {
+      let createBody: Record<string, unknown> | null = null
+      const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        createBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          await getFixture('post-v1-companies-company_id-payrolls-transition'),
+        )
+      })
+      server.use(handleCreateOffCyclePayroll(createResolver))
+
+      const user = userEvent.setup()
+      renderWithProviders(<TransitionCreation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      const checkDateGroup = screen.getByRole('group', { name: /check date/i })
+      await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+      await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
+      await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(createResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(createBody).toMatchObject({
+        start_date: START_DATE,
+        end_date: END_DATE,
+        check_date: '2026-12-15',
       })
     })
   })

@@ -349,6 +349,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `RUN_PAYROLL_EMPLOYEE_SKIP` | `"runPayroll/employee/skip"` |
 | `RUN_PAYROLL_GROSS_UP_CALCULATED` | `"runPayroll/grossUp/calculated"` |
 | `RUN_PAYROLL_GROSS_UP_SELECTED` | `"runPayroll/grossUp/selected"` |
+| `RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST` | `"runPayroll/notCalculated/backToList"` |
 | `RUN_PAYROLL_PDF_PAYSTUB_VIEWED` | `"runPayroll/pdfPaystub/viewed"` |
 | `RUN_PAYROLL_PROCESSED` | `"runPayroll/processed"` |
 | `RUN_PAYROLL_PROCESSING_FAILED` | `"runPayroll/processingFailed"` |
@@ -359,6 +360,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `RUN_PAYROLL_SUBMITTING` | `"runPayroll/submitting"` |
 | `RUN_PAYROLL_SUMMARY_VIEWED` | `"runPayroll/summary/viewed"` |
 | `RUN_TRANSITION_PAYROLL` | `"transition/runPayroll"` |
+| `TAX_PAYMENT_BACK` | `"company/taxPayments/back"` |
+| `TAX_PAYMENT_VIEW` | `"company/taxPayments/view"` |
 | `TIME_OFF_ADD_EMPLOYEES_BACK` | `"timeOff/addEmployees/back"` |
 | `TIME_OFF_ADD_EMPLOYEES_DONE` | `"timeOff/addEmployees/done"` |
 | `TIME_OFF_ADD_EMPLOYEES_ERROR` | `"timeOff/addEmployees/error"` |

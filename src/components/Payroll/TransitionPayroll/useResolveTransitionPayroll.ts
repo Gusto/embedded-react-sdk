@@ -3,6 +3,7 @@ import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import { toRFCDate } from '@/helpers/dateFormatting'
 
 const FUTURE_LOOKAHEAD_DAYS = 28
 
@@ -11,7 +12,7 @@ const TRANSITION_OFF_CYCLE_REASON = 'Transition from old pay schedule'
 function getFutureEndDate(): string {
   const date = new Date()
   date.setDate(date.getDate() + FUTURE_LOOKAHEAD_DAYS)
-  return date.toISOString().split('T')[0]!
+  return toRFCDate(date).toString()
 }
 
 /**

@@ -123,6 +123,12 @@ const exitFlowTransition = transition(
   reduce(toLandingReducer),
 )
 
+const notCalculatedToLandingTransition = transition(
+  componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST,
+  'landing',
+  reduce(toLandingReducer),
+)
+
 const cancelledToLandingTransition = transition(
   componentEvents.RUN_PAYROLL_CANCELLED,
   'landing',
@@ -244,6 +250,7 @@ export const payrollFlowMachine = {
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
+    notCalculatedToLandingTransition,
     processedToSubmittedOverviewTransition,
   ),
   blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
@@ -266,6 +273,7 @@ export const payrollFlowMachine = {
       })),
     ),
     cancelledToLandingTransition,
+    notCalculatedToLandingTransition,
     exitFlowTransition,
   ),
   submittedReceipts: state<MachineTransition>(
@@ -276,12 +284,14 @@ export const payrollFlowMachine = {
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
+    notCalculatedToLandingTransition,
     processedToSubmittedOverviewTransition,
   ),
   offCycle: state<MachineTransition>(
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
+    notCalculatedToLandingTransition,
     processedToSubmittedOverviewTransition,
   ),
 }

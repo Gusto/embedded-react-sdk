@@ -547,6 +547,60 @@ describe('OffCycleCreation', () => {
     })
   })
 
+  describe('in a timezone ahead of UTC', () => {
+    const originalTz = process.env.TZ
+
+    beforeEach(() => {
+      process.env.TZ = 'Asia/Kolkata'
+    })
+
+    afterEach(() => {
+      process.env.TZ = originalTz
+    })
+
+    it('sends the picked calendar dates without shifting them a day earlier', async () => {
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-uuid' },
+      })
+
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('switch', { name: /include all employees/i }))
+
+      const typeDate = async (groupName: string, month: string, day: string, year: string) => {
+        const group = screen.getByRole('group', { name: groupName })
+        await user.type(within(group).getByRole('spinbutton', { name: /month/i }), month)
+        await user.type(within(group).getByRole('spinbutton', { name: /day/i }), day)
+        await user.type(within(group).getByRole('spinbutton', { name: /year/i }), year)
+      }
+
+      await typeDate('Start date', '12', '01', '2026')
+      await typeDate('End date', '12', '14', '2026')
+      await typeDate('Payment date', '12', '15', '2026')
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const { requestBody } = mockCreateOffCyclePayroll.mock.calls[0]![0].request
+      expect({
+        startDate: String(requestBody.startDate),
+        endDate: String(requestBody.endDate),
+        checkDate: String(requestBody.checkDate),
+      }).toEqual({
+        startDate: '2026-12-01',
+        endDate: '2026-12-14',
+        checkDate: '2026-12-15',
+      })
+    })
+  })
+
   describe('tax withholding rates', () => {
     it('renders the tax withholding rates table', async () => {
       renderComponent()

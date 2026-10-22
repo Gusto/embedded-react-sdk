@@ -497,4 +497,411 @@ describe('useContractorDetailsForm', () => {
       expect(ready.form.Fields.SelfOnboarding).toBeUndefined()
     })
   })
+
+  describe('SDK-1157 wage type / hourly rate regression net', () => {
+    const captureBody = (status = 200, response: Record<string, unknown> = {}) => {
+      const captured: { body: Record<string, unknown> | null } = { body: null }
+      const resolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        captured.body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          { uuid: 'contractor_id', is_active: true, ...response },
+          { status },
+        )
+      })
+      return { captured, resolver }
+    }
+
+    const waitForReady = async (result: { current: UseContractorDetailsFormResult }) => {
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      return result.current
+    }
+
+    const fixedIndividualDefaults = {
+      type: ContractorType.Individual,
+      firstName: 'Jane',
+      lastName: 'Doe',
+    }
+
+    describe('create mode', () => {
+      it('exposes wageType options ordered Hourly, Fixed', async () => {
+        const { result } = renderForm({ companyId: 'company-1' })
+        const ready = await waitForReady(result)
+
+        expect(fieldsMetadataEntry(ready.form.fieldsMetadata, 'wageType')).toMatchObject({
+          options: [
+            { value: WageType.Hourly, label: WageType.Hourly },
+            { value: WageType.Fixed, label: WageType.Fixed },
+          ],
+        })
+      })
+
+      it('defaults wageType to Fixed and hourlyRate to NaN', async () => {
+        const { result } = renderForm({ companyId: 'company-1' })
+        const ready = await waitForReady(result)
+
+        const { getValues } = ready.form.hookFormInternals.formMethods
+        expect(getValues('wageType')).toBe(WageType.Fixed)
+        expect(Number.isNaN(getValues('hourlyRate'))).toBe(true)
+      })
+
+      it('marks hourlyRate required on create when Hourly', async () => {
+        const { result } = renderForm({
+          companyId: 'company-1',
+          defaultValues: { wageType: WageType.Hourly },
+        })
+        const ready = await waitForReady(result)
+
+        expect(fieldsMetadataEntry(ready.form.fieldsMetadata, 'hourlyRate').isRequired).toBe(true)
+      })
+
+      it('reveals Fields.HourlyRate when wageType switches to Hourly and hides it again on Fixed', async () => {
+        const { result } = renderForm({ companyId: 'company-1' })
+        const ready = await waitForReady(result)
+        expect(ready.form.Fields.HourlyRate).toBeUndefined()
+
+        act(() => {
+          ready.form.hookFormInternals.formMethods.setValue('wageType', WageType.Hourly)
+        })
+        await waitFor(() => {
+          assertReady(result.current)
+          expect(typeof result.current.form.Fields.HourlyRate).toBe('function')
+        })
+
+        assertReady(result.current)
+        const hourlyReady = result.current
+        act(() => {
+          hourlyReady.form.hookFormInternals.formMethods.setValue('wageType', WageType.Fixed)
+        })
+        await waitFor(() => {
+          assertReady(result.current)
+          expect(result.current.form.Fields.HourlyRate).toBeUndefined()
+        })
+      })
+
+      it.each([
+        [25, '25'],
+        [25.5, '25.5'],
+        [0, '0'],
+      ])('sends wage_type Hourly and hourly_rate %s as the string %j', async (rate, wireRate) => {
+        const { captured, resolver } = captureBody(201)
+        server.use(handleCreateContractor(resolver))
+
+        const { result } = renderForm({
+          companyId: 'company-1',
+          defaultValues: {
+            ...fixedIndividualDefaults,
+            wageType: WageType.Hourly,
+            hourlyRate: rate,
+          },
+        })
+        const ready = await waitForReady(result)
+
+        let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+        await act(async () => {
+          submitResult = await ready.actions.onSubmit()
+        })
+
+        expect(resolver).toHaveBeenCalledTimes(1)
+        expect(submitResult).toMatchObject({ mode: 'create' })
+        expect(captured.body).toMatchObject({
+          type: 'Individual',
+          wage_type: 'Hourly',
+          hourly_rate: wireRate,
+          is_active: true,
+        })
+      })
+
+      it('omits hourly_rate for a Fixed contractor even when a rate is in the form', async () => {
+        const { captured, resolver } = captureBody(201)
+        server.use(handleCreateContractor(resolver))
+
+        const { result } = renderForm({
+          companyId: 'company-1',
+          defaultValues: { ...fixedIndividualDefaults, wageType: WageType.Fixed, hourlyRate: 30 },
+        })
+        const ready = await waitForReady(result)
+
+        await act(async () => {
+          await ready.actions.onSubmit()
+        })
+
+        expect(resolver).toHaveBeenCalledTimes(1)
+        expect(captured.body).toMatchObject({ wage_type: 'Fixed' })
+        expect(captured.body).not.toHaveProperty('hourly_rate')
+      })
+
+      it('blocks create when Hourly is selected with no rate', async () => {
+        const { resolver } = captureBody(201)
+        server.use(handleCreateContractor(resolver))
+
+        const { result } = renderForm({
+          companyId: 'company-1',
+          defaultValues: { ...fixedIndividualDefaults, wageType: WageType.Hourly },
+        })
+        const ready = await waitForReady(result)
+
+        let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+        await act(async () => {
+          submitResult = await ready.actions.onSubmit()
+        })
+
+        expect(submitResult).toBeUndefined()
+        expect(resolver).not.toHaveBeenCalled()
+        expect(
+          ready.form.hookFormInternals.formMethods.getFieldState('hourlyRate').error,
+        ).toMatchObject({ message: 'REQUIRED' })
+      })
+
+      it('blocks create when the hourly rate exceeds the server cap', async () => {
+        const { resolver } = captureBody(201)
+        server.use(handleCreateContractor(resolver))
+
+        const { result } = renderForm({
+          companyId: 'company-1',
+          defaultValues: {
+            ...fixedIndividualDefaults,
+            wageType: WageType.Hourly,
+            hourlyRate: 1_000_000_000_001,
+          },
+        })
+        const ready = await waitForReady(result)
+
+        await act(async () => {
+          await ready.actions.onSubmit()
+        })
+
+        expect(resolver).not.toHaveBeenCalled()
+        expect(
+          ready.form.hookFormInternals.formMethods.getFieldState('hourlyRate').error,
+        ).toMatchObject({ message: 'MAX_HOURLY_RATE' })
+      })
+    })
+
+    describe('update mode', () => {
+      const hourlyContractor = {
+        uuid: 'contractor_id',
+        version: 'version-1',
+        type: 'Individual',
+        wage_type: 'Hourly',
+        hourly_rate: '25.50',
+        start_date: '2024-01-01',
+        first_name: 'John',
+        last_name: 'Doe',
+        has_ssn: true,
+        has_ein: false,
+        is_active: true,
+        file_new_hire_report: false,
+        onboarding_status: 'admin_onboarding_incomplete',
+      }
+
+      const { hourly_rate: _omittedRate, ...hourlyContractorWithoutRate } = hourlyContractor
+
+      it('starts loading until the contractor resolves', () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractor)))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+
+        expect(result.current).toMatchObject({ isLoading: true })
+      })
+
+      it('surfaces a failed contractor fetch on errorHandling while loading', async () => {
+        server.use(
+          handleGetContractor(() =>
+            HttpResponse.json(
+              { errors: [{ category: 'server_error', message: 'Boom' }] },
+              { status: 500 },
+            ),
+          ),
+        )
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+
+        await waitFor(() => {
+          expect(result.current.errorHandling.errors).toHaveLength(1)
+        })
+        expect(result.current.isLoading).toBe(true)
+        expect(result.current.errorHandling.errors[0]).toMatchObject({ httpStatus: 500 })
+        expect(typeof result.current.errorHandling.retryQueries).toBe('function')
+      })
+
+      it('seeds wageType and a parseFloat-ed hourlyRate from an existing hourly contractor', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractor)))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+        await waitFor(() => {
+          assertReady(result.current)
+          expect(typeof result.current.form.Fields.HourlyRate).toBe('function')
+        })
+        assertReady(result.current)
+
+        expect(result.current.form.hookFormInternals.formMethods.getValues()).toMatchObject({
+          wageType: WageType.Hourly,
+          hourlyRate: 25.5,
+        })
+      })
+
+      it('round-trips an existing 25.50 rate to hourly_rate "25.5" with version and no is_active', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractor)))
+        const { captured, resolver } = captureBody(200, { ...hourlyContractor, version: 'v2' })
+        server.use(handleUpdateContractor(resolver))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+        const ready = await waitForReady(result)
+
+        let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+        await act(async () => {
+          submitResult = await ready.actions.onSubmit()
+        })
+
+        expect(resolver).toHaveBeenCalledTimes(1)
+        expect(submitResult).toMatchObject({ mode: 'update' })
+        expect(captured.body).toMatchObject({
+          version: 'version-1',
+          type: 'Individual',
+          wage_type: 'Hourly',
+          hourly_rate: '25.5',
+        })
+        expect(captured.body).not.toHaveProperty('is_active')
+      })
+
+      it('omits hourly_rate when switching an hourly contractor to Fixed', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractor)))
+        const { captured, resolver } = captureBody(200, { ...hourlyContractor, version: 'v2' })
+        server.use(handleUpdateContractor(resolver))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+        const ready = await waitForReady(result)
+
+        act(() => {
+          ready.form.hookFormInternals.formMethods.setValue('wageType', WageType.Fixed)
+        })
+        await act(async () => {
+          await ready.actions.onSubmit()
+        })
+
+        expect(resolver).toHaveBeenCalledTimes(1)
+        expect(captured.body).toMatchObject({ version: 'version-1', wage_type: 'Fixed' })
+        expect(captured.body).not.toHaveProperty('hourly_rate')
+      })
+
+      it('leaves hourlyRate optional on update by default', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractorWithoutRate)))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+        const ready = await waitForReady(result)
+
+        expect(fieldsMetadataEntry(ready.form.fieldsMetadata, 'hourlyRate').isRequired).toBe(false)
+      })
+
+      it('submits an Hourly contractor with no rate on update by default, serializing the missing rate as the string "undefined" (current behavior)', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractorWithoutRate)))
+        const { captured, resolver } = captureBody(200, { ...hourlyContractor, version: 'v2' })
+        server.use(handleUpdateContractor(resolver))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+        const ready = await waitForReady(result)
+
+        let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+        await act(async () => {
+          submitResult = await ready.actions.onSubmit()
+        })
+
+        expect(resolver).toHaveBeenCalledTimes(1)
+        expect(submitResult).toMatchObject({ mode: 'update' })
+        expect(captured.body).toMatchObject({ wage_type: 'Hourly', hourly_rate: 'undefined' })
+      })
+
+      it('requires hourlyRate on update when promoted via optionalFieldsToRequire', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractorWithoutRate)))
+        const { resolver } = captureBody()
+        server.use(handleUpdateContractor(resolver))
+
+        const { result } = renderForm({
+          contractorId: 'contractor_id',
+          optionalFieldsToRequire: { update: ['hourlyRate'] },
+        })
+        const ready = await waitForReady(result)
+
+        expect(fieldsMetadataEntry(ready.form.fieldsMetadata, 'hourlyRate').isRequired).toBe(true)
+
+        let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+        await act(async () => {
+          submitResult = await ready.actions.onSubmit()
+        })
+
+        expect(submitResult).toBeUndefined()
+        expect(resolver).not.toHaveBeenCalled()
+        expect(
+          ready.form.hookFormInternals.formMethods.getFieldState('hourlyRate').error,
+        ).toMatchObject({ message: 'REQUIRED' })
+      })
+
+      it('does not require a promoted hourlyRate once the contractor is Fixed', async () => {
+        server.use(
+          handleGetContractor(() =>
+            HttpResponse.json({ ...hourlyContractorWithoutRate, wage_type: 'Fixed' }),
+          ),
+        )
+        const { resolver } = captureBody(200, { ...hourlyContractor, version: 'v2' })
+        server.use(handleUpdateContractor(resolver))
+
+        const { result } = renderForm({
+          contractorId: 'contractor_id',
+          optionalFieldsToRequire: { update: ['hourlyRate'] },
+        })
+        const ready = await waitForReady(result)
+
+        await act(async () => {
+          await ready.actions.onSubmit()
+        })
+
+        expect(resolver).toHaveBeenCalledTimes(1)
+      })
+
+      it('surfaces a 422 on errorHandling.errors with a hourlyRate field error', async () => {
+        server.use(handleGetContractor(() => HttpResponse.json(hourlyContractor)))
+        const resolver = vi.fn<HttpResponseResolver>(() =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'hourly_rate',
+                  category: 'invalid_attribute_value',
+                  message: 'Hourly rate is invalid',
+                },
+              ],
+            },
+            { status: 422 },
+          ),
+        )
+        server.use(handleUpdateContractor(resolver))
+
+        const { result } = renderForm({ contractorId: 'contractor_id' })
+        const ready = await waitForReady(result)
+
+        let submitResult: Awaited<ReturnType<typeof ready.actions.onSubmit>>
+        await act(async () => {
+          submitResult = await ready.actions.onSubmit()
+        })
+
+        expect(submitResult).toBeUndefined()
+        await waitFor(() => {
+          expect(result.current.errorHandling.errors).toHaveLength(1)
+        })
+        expect(result.current.errorHandling.errors[0]).toMatchObject({
+          httpStatus: 422,
+          fieldErrors: [
+            {
+              field: 'hourlyRate',
+              category: 'invalid_attribute_value',
+              message: 'Hourly rate is invalid',
+            },
+          ],
+        })
+      })
+    })
+  })
 })
