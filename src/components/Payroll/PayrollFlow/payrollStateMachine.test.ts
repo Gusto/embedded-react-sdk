@@ -134,6 +134,17 @@ describe('payrollFlowMachine', () => {
       expect(service.context.executionInitialState).toBeUndefined()
     })
 
+    it('transitions to landing on RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST', () => {
+      const service = createService()
+      toExecution(service)
+
+      send(service, componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST)
+
+      expect(service.machine.current).toBe('landing')
+      expect(service.context.payrollUuid).toBeUndefined()
+      expect(service.context.executionInitialState).toBeUndefined()
+    })
+
     it('transitions to submittedOverview on RUN_PAYROLL_PROCESSED with payPeriod from event', () => {
       const service = createService()
       toExecution(service)
@@ -213,6 +224,15 @@ describe('payrollFlowMachine', () => {
       toSubmittedOverview(service)
 
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
+
+      expect(service.machine.current).toBe('landing')
+    })
+
+    it('transitions to landing on RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST', () => {
+      const service = createService()
+      toSubmittedOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST)
 
       expect(service.machine.current).toBe('landing')
     })

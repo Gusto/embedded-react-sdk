@@ -40,7 +40,7 @@
   "cancelDialog": {
     "title": "Cancel {{payPeriod}} payroll?",
     "body": "You may cancel this payroll and run it again later. Your changes will be saved.",
-    "deadline": "Run this payroll by {{deadline}} to pay your employees on time.",
+    "deadline": "Run this payroll by {{time}} on {{date}} to pay your employees on time.",
     "primaryAction": "Yes, cancel payroll",
     "secondaryAction": "No, go back"
   }

@@ -399,6 +399,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_ALREADY_PROCESSED: 'runPayroll/alreadyProcessed',
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: 'runPayroll/cancelled/alertDismissed',
+  RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST: 'runPayroll/notCalculated/backToList',
   RUN_PAYROLL_EDIT: 'runPayroll/edit',
   RUN_PAYROLL_EMPLOYEE_EDIT: 'runPayroll/employee/edit',
   RUN_PAYROLL_EMPLOYEE_SKIP: 'runPayroll/employee/skip',
@@ -499,6 +500,21 @@ export const printChecksEvents = {
   PRINT_CHECKS_RETRY: 'payroll/printChecks/retry',
   PRINT_CHECKS_CANCEL: 'payroll/printChecks/cancel',
   PRINT_CHECKS_CLOSE: 'payroll/printChecks/close',
+} as const
+
+/**
+ * Event keys emitted by the tax payments components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a tax payments component and compare against the
+ * value of an entry on this object.
+ *
+ * @alpha
+ */
+export const taxPaymentEvents = {
+  TAX_PAYMENT_VIEW: 'company/taxPayments/view',
+  TAX_PAYMENT_BACK: 'company/taxPayments/back',
 } as const
 
 /**
@@ -604,6 +620,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...printChecksEvents,
+  ...taxPaymentEvents,
   ...contractorPaymentEvents,
   ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,

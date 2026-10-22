@@ -303,6 +303,8 @@ import { SyntheticEvent } from 'react';
 import { TableHTMLAttributes } from 'react';
 import { Taxes } from '@gusto/embedded-api/models/components/payrollreceipt';
 import { TaxPayerType } from '@gusto/embedded-api/models/components/federaltaxdetails';
+import { TaxPayment } from '@gusto/embedded-api/models/components/taxpayment';
+import { TaxPaymentLineItem } from '@gusto/embedded-api/models/components/taxpaymentlineitem';
 import { TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement';
 import { TaxRequirementMetadata } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
 import { TaxRequirementMetadataType } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
@@ -734,6 +736,8 @@ declare namespace APIModels {
         IdentityVerificationStatus,
         SignatoryHomeAddress,
         Signatory,
+        TaxPayment,
+        TaxPaymentLineItem,
         ApplicableIf,
         TaxRequirement,
         Options,
@@ -1105,7 +1109,13 @@ declare namespace CompanyManagement {
         PayScheduleProps_2 as PayScheduleProps,
         PayScheduleDictionary,
         PayScheduleAssignment_2 as PayScheduleAssignment,
-        PayScheduleAssignmentProps
+        PayScheduleAssignmentProps,
+        TaxPaymentsFlow,
+        TaxPaymentsList,
+        TaxPaymentDetail,
+        TaxPaymentsFlowProps,
+        TaxPaymentsListProps,
+        TaxPaymentDetailProps
     }
 }
 
@@ -1379,6 +1389,8 @@ export const componentEvents: {
     readonly CONTRACTOR_PAYMENT_CANCEL: "contractor/payments/cancel";
     readonly CONTRACTOR_PAYMENT_EXIT: "contractor/payments/exit";
     readonly CONTRACTOR_PAYMENT_RFI_RESPOND: "contractor/payments/rfi/respond";
+    readonly TAX_PAYMENT_VIEW: "company/taxPayments/view";
+    readonly TAX_PAYMENT_BACK: "company/taxPayments/back";
     readonly PRINT_CHECKS_START: "payroll/printChecks/start";
     readonly PRINT_CHECKS_GENERATE_START: "payroll/printChecks/generate/start";
     readonly PRINT_CHECKS_GENERATE_SUCCEEDED: "payroll/printChecks/generate/succeeded";
@@ -1405,6 +1417,7 @@ export const componentEvents: {
     readonly RUN_PAYROLL_ALREADY_PROCESSED: "runPayroll/alreadyProcessed";
     readonly RUN_PAYROLL_CANCELLED: "runPayroll/cancelled";
     readonly RUN_PAYROLL_CANCELLED_ALERT_DISMISSED: "runPayroll/cancelled/alertDismissed";
+    readonly RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST: "runPayroll/notCalculated/backToList";
     readonly RUN_PAYROLL_EDIT: "runPayroll/edit";
     readonly RUN_PAYROLL_EMPLOYEE_EDIT: "runPayroll/employee/edit";
     readonly RUN_PAYROLL_EMPLOYEE_SKIP: "runPayroll/employee/skip";
@@ -5011,6 +5024,10 @@ export interface Resources {
     // (undocumented)
     'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
     // (undocumented)
+    'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+    // (undocumented)
+    'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
+    // (undocumented)
     'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
     // (undocumented)
     'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -5787,6 +5804,31 @@ export interface TabsProps {
     tabs: TabProps[];
 }
 
+// @alpha
+function TaxPaymentDetail(props: TaxPaymentDetailProps): JSX;
+
+// @alpha
+interface TaxPaymentDetailProps extends BaseComponentInterface<'Company.Management.TaxPaymentDetail'> {
+    companyId: string;
+    taxPaymentId: string;
+}
+
+// @alpha
+const TaxPaymentsFlow: (input: TaxPaymentsFlowProps) => JSX;
+
+// @alpha
+interface TaxPaymentsFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+}
+
+// @alpha
+function TaxPaymentsList(props: TaxPaymentsListProps): JSX;
+
+// @alpha
+interface TaxPaymentsListProps extends BaseComponentInterface<'Company.Management.TaxPaymentsList'> {
+    companyId: string;
+}
+
 // @public
 function TaxRateManagement(props: TaxRateManagementProps): JSX;
 
@@ -6062,6 +6104,7 @@ export interface UnstableFeatures {
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
     payrollRegularRateOfPay?: boolean;
+    taxPayments?: boolean;
 }
 
 // @public

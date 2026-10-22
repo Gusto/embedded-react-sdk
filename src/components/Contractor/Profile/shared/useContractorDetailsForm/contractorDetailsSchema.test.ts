@@ -314,6 +314,106 @@ describe('createContractorDetailsSchema', () => {
     })
   })
 
+  describe('Wage type (SDK-1157 regression net)', () => {
+    const hourly = { ...validIndividualEmployerLed, wageType: WageType.Hourly }
+
+    it('treats a NaN hourlyRate as missing (REQUIRED) on create when Hourly', () => {
+      const result = parse({ ...hourly, hourlyRate: NaN }, { mode: 'create' })
+      expect(issueFor(result, 'hourlyRate')?.message).toBe(REQUIRED)
+    })
+
+    it('rejects a negative hourlyRate on create when Hourly with a too_small issue', () => {
+      const result = parse({ ...hourly, hourlyRate: -5 }, { mode: 'create' })
+      expect(issueFor(result, 'hourlyRate')).toMatchObject({ code: 'too_small', minimum: 0 })
+    })
+
+    it('ignores a negative hourlyRate when Fixed (field excluded)', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Fixed, hourlyRate: -5 },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(true)
+    })
+
+    it('parses hourlyRate to undefined when Fixed', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Fixed, hourlyRate: 25.5 },
+        { mode: 'create' },
+      )
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.data).toMatchObject({ wageType: WageType.Fixed })
+      expect(result.data.hourlyRate).toBeUndefined()
+    })
+
+    it('keeps a positive hourlyRate in the parsed output when Hourly', () => {
+      const result = parse({ ...hourly, hourlyRate: 25.5 }, { mode: 'create' })
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.data).toMatchObject({ wageType: WageType.Hourly, hourlyRate: 25.5 })
+    })
+
+    it('keeps a zero hourlyRate in the parsed output when Hourly', () => {
+      const result = parse({ ...hourly, hourlyRate: 0 }, { mode: 'create' })
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.data).toMatchObject({ hourlyRate: 0 })
+    })
+
+    it.each([
+      ['undefined', undefined],
+      ['NaN', NaN],
+    ])(
+      'does not require hourlyRate on update by default when Hourly (%s)',
+      (_label, hourlyRate) => {
+        const result = parse({ ...hourly, hourlyRate }, { mode: 'update' })
+        expect(result.success).toBe(true)
+        if (!result.success) return
+        expect(result.data).toMatchObject({ wageType: WageType.Hourly })
+        expect(result.data.hourlyRate).toBeUndefined()
+      },
+    )
+
+    it('accepts a zero hourlyRate on update when Hourly', () => {
+      expect(parse({ ...hourly, hourlyRate: 0 }, { mode: 'update' }).success).toBe(true)
+    })
+
+    it.each([
+      ['undefined', undefined],
+      ['NaN', NaN],
+    ])(
+      'requires hourlyRate on update when promoted via optionalFieldsToRequire (%s)',
+      (_label, hourlyRate) => {
+        const result = parse(
+          { ...hourly, hourlyRate },
+          { mode: 'update', optionalFieldsToRequire: { update: ['hourlyRate'] } },
+        )
+        expect(issueFor(result, 'hourlyRate')?.message).toBe(REQUIRED)
+      },
+    )
+
+    it('accepts a promoted zero hourlyRate on update (0 is a present value)', () => {
+      const result = parse(
+        { ...hourly, hourlyRate: 0 },
+        { mode: 'update', optionalFieldsToRequire: { update: ['hourlyRate'] } },
+      )
+      expect(result.success).toBe(true)
+    })
+
+    it('skips a promoted hourlyRate requirement on update when Fixed (field excluded)', () => {
+      const result = parse(
+        { ...validIndividualEmployerLed, wageType: WageType.Fixed, hourlyRate: undefined },
+        { mode: 'update', optionalFieldsToRequire: { update: ['hourlyRate'] } },
+      )
+      expect(result.success).toBe(true)
+    })
+
+    it('rejects an hourlyRate above the server cap on update too', () => {
+      const result = parse({ ...hourly, hourlyRate: 1_000_000_000_001 }, { mode: 'update' })
+      expect(issueFor(result, 'hourlyRate')?.message).toBe(MAX_HOURLY_RATE)
+    })
+  })
+
   describe('Cross-cutting required fields', () => {
     it('requires startDate on create', () => {
       const result = parse({ ...validIndividualEmployerLed, startDate: '' }, { mode: 'create' })

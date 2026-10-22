@@ -38,6 +38,10 @@ export interface Resources {
   /** */
   'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
   /** */
+  'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+  /** */
+  'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -1238,6 +1242,148 @@ export namespace Translations {
     /** @defaultValue `"Employee schedules are unavailable because access to employees is missing. You can choose another schedule type or contact your administrator."` */
     employeeAccessDenied: string
   }
+  /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
+  export interface CompanyManagementTaxPaymentDetail {
+    /** @defaultValue `"Back to tax payments"` */
+    backCta: string
+    /** @defaultValue `"Unknown agency"` */
+    unknownAgency: string
+    /** @defaultValue `"Federal"` */
+    federal: string
+    /** @defaultValue `"State · {{jurisdiction}}"` */
+    state: string
+    /** @defaultValue `"—"` */
+    notAvailable: string
+    status: {
+      /** @defaultValue `"Paid"` */
+      paid: string
+      /** @defaultValue `"Scheduled"` */
+      scheduled: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"Refund / Credit"` */
+      refund: string
+    }
+    overdueAlert: {
+      /** @defaultValue `"Payment overdue"` */
+      label: string
+      /** @defaultValue `"This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."` */
+      description: string
+    }
+    details: {
+      /** @defaultValue `"Payment details"` */
+      title: string
+      /** @defaultValue `"Jurisdiction"` */
+      jurisdiction: string
+      /** @defaultValue `"Period"` */
+      period: string
+      /** @defaultValue `"Due date"` */
+      dueDate: string
+      /** @defaultValue `"Payment sent on"` */
+      paymentSentOn: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Amount paid"` */
+      amountPaid: string
+    }
+    liabilities: {
+      /** @defaultValue `"Tax liabilities"` */
+      title: string
+      /** @defaultValue `"Tax liabilities"` */
+      tableLabel: string
+      /** @defaultValue `"Tax ID"` */
+      taxIdColumn: string
+      /** @defaultValue `"Payroll"` */
+      payrollColumn: string
+      /** @defaultValue `"Amount"` */
+      amountColumn: string
+      /** @defaultValue `"No tax liabilities."` */
+      emptyState: string
+    }
+    errors: {
+      /** @defaultValue `"Tax payment not found"` */
+      taxPaymentNotFound: string
+    }
+  }
+  /** Translation keys for the `Company.Management.TaxPaymentsList` i18n namespace. */
+  export interface CompanyManagementTaxPaymentsList {
+    /** @defaultValue `"Tax payments"` */
+    title: string
+    /** @defaultValue `"Tax payments"` */
+    tableLabel: string
+    /** @defaultValue `"Search tax payments"` */
+    searchLabel: string
+    /** @defaultValue `"Search by agency..."` */
+    searchPlaceholder: string
+    /** @defaultValue `"Jurisdiction"` */
+    jurisdictionFilterLabel: string
+    /** @defaultValue `"All jurisdictions"` */
+    allJurisdictions: string
+    /** @defaultValue `"Federal (US)"` */
+    federalJurisdictionOption: string
+    /** @defaultValue `"Status"` */
+    statusFilterLabel: string
+    /** @defaultValue `"All statuses"` */
+    allStatuses: string
+    columns: {
+      /** @defaultValue `"Agency"` */
+      agency: string
+      /** @defaultValue `"Jurisdiction"` */
+      jurisdiction: string
+      /** @defaultValue `"Period"` */
+      period: string
+      /** @defaultValue `"Due date"` */
+      dueDate: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Status"` */
+      status: string
+    }
+    /** @defaultValue `"Federal"` */
+    federal: string
+    /** @defaultValue `"State · {{jurisdiction}}"` */
+    state: string
+    /** @defaultValue `"Unknown agency"` */
+    unknownAgency: string
+    /** @defaultValue `"—"` */
+    notAvailable: string
+    /** @defaultValue `"View"` */
+    viewCta: string
+    /** @defaultValue `"View {{agency}} tax payment"` */
+    viewPaymentLabel: string
+    status: {
+      /** @defaultValue `"Paid"` */
+      paid: string
+      /** @defaultValue `"Scheduled"` */
+      scheduled: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"Refund / Credit"` */
+      refund: string
+    }
+    overdueAlert: {
+      /** @defaultValue `"{{count}} tax payment is overdue and may require immediate attention."` */
+      label_one: string
+      /** @defaultValue `"{{count}} tax payments are overdue and may require immediate attention."` */
+      label_other: string
+    }
+    emptyState: {
+      /** @defaultValue `"No tax payments yet"` */
+      title: string
+      /** @defaultValue `"Tax payments appear here after payroll is processed."` */
+      description: string
+    }
+    noResults: {
+      /** @defaultValue `"No matching tax payments"` */
+      title: string
+      /** @defaultValue `"Try a different search or adjust the filters."` */
+      description: string
+    }
+    truncatedAlert: {
+      /** @defaultValue `"Showing the most recent tax payments. Older payments are not included."` */
+      label: string
+    }
+  }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {
     /** @defaultValue `"Nice! We’ll take it from here."` */
@@ -1537,6 +1683,8 @@ export namespace Translations {
       errors: {
         /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
         incompleteRequirementSet: string
+        /** @defaultValue `"Some values in {{section}} for {{state}} are invalid. Correct the highlighted fields and try again."` */
+        invalidRequirementSet: string
       }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
@@ -8074,7 +8222,7 @@ export namespace Translations {
       title: string
       /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
       body: string
-      /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
+      /** @defaultValue `"Run this payroll by {{time}} on {{date}} to pay your employees on time."` */
       deadline: string
       /** @defaultValue `"Yes, cancel payroll"` */
       primaryAction: string
@@ -8236,7 +8384,7 @@ export namespace Translations {
     cancelDialogTitleDismissal: string
     /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
     cancelDialogDescription: string
-    /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
+    /** @defaultValue `"Run this payroll by {{time}} on {{date}} to pay your employees on time."` */
     cancelDialogDescriptionDeadline: string
     /** @defaultValue `"Yes, cancel payroll"` */
     confirmCancelCta: string
@@ -8258,11 +8406,15 @@ export namespace Translations {
     cancellingTitle: string
     /** @defaultValue `"This payroll has been cancelled."` */
     cancelledEmptyState: string
+    /** @defaultValue `"This payroll has changed"` */
+    notCalculatedErrorTitle: string
+    /** @defaultValue `"Refresh or return to your payrolls to continue."` */
+    notCalculatedErrorDescription: string
+    /** @defaultValue `"Back to payrolls"` */
+    notCalculatedErrorCta: string
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
     alerts: {
-      /** @defaultValue `"Payroll is not calculated"` */
-      payrollNotCalculated: string
       /** @defaultValue `"There was an issue loading this payroll. Please try again."` */
       payrollLoadFailed: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */

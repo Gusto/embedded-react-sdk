@@ -49,6 +49,7 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
  * | `runPayroll/receipt/viewed` | User opened a payroll's receipt view | `{ payrollId: string }` |
  * | `runPayroll/blockers/viewAll` | User opened the full list of payroll blockers | — |
  * | `runPayroll/cancelled` | A payroll was cancelled | `{ payrollId: string, result: object }` |
+ * | `runPayroll/notCalculated/backToList` | User returns to the payroll list from a payroll that is no longer calculated | — |
  * | `runPayroll/cancelled/alertDismissed` | User dismissed the payroll-cancelled success alert | — |
  *
  * When unprocessed transition pay periods exist, the landing surface renders a Transition

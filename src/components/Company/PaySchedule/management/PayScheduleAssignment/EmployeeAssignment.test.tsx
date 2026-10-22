@@ -4,11 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { createMachine } from 'robot3'
 import { PaySchedule } from '../PaySchedule'
-import { PayScheduleAssignment, PayScheduleAssignmentFlow } from './PayScheduleAssignment'
+import { PayScheduleAssignment } from './PayScheduleAssignment'
 import { AssignmentScheduleStep } from './PayScheduleAssignmentComponents'
 import { payScheduleAssignmentStateMachine } from './payScheduleAssignmentStateMachine'
 import type { PayScheduleAssignmentContextInterface } from './usePayScheduleAssignment'
 import { BaseComponent } from '@/components/Base'
+import { Flow } from '@/components/Flow/Flow'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -159,10 +160,16 @@ describe('employee pay schedule assignment', () => {
 
   it('retains choices through Add pay schedule cancellation and review Back', async () => {
     const user = userEvent.setup()
-    renderAssignment()
+    const { onEvent } = renderAssignment()
     await enterEmployees(user)
     await choose(user, 2, /monthly/i)
     await user.click(screen.getByRole('button', { name: /add pay schedule/i }))
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATE, {
+      employees: employees.map((employee, index) => ({
+        employeeUuid: employee.uuid,
+        payScheduleUuid: index < 2 ? 'monthly' : 'weekly',
+      })),
+    })
     await user.click(await screen.findByRole('button', { name: /cancel/i }))
     expect(
       await screen.findByRole('button', { name: /pay schedule for employee 2$/i }),
@@ -388,7 +395,7 @@ describe('employee pay schedule assignment', () => {
     )
     renderWithProviders(
       <BaseComponent onEvent={vi.fn()}>
-        <PayScheduleAssignmentFlow companyId="123" machine={machine} onEvent={vi.fn()} />
+        <Flow machine={machine} onEvent={vi.fn()} />
       </BaseComponent>,
     )
     await screen.findByRole('heading', { name: /add pay schedule/i })

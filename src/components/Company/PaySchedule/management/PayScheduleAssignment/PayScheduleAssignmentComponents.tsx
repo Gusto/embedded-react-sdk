@@ -25,7 +25,6 @@ import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPres
 import { AssignmentCompensationStepPresentation } from './AssignmentCompensationStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
 import { getCompanyDepartments, isAssignmentAccessDenied } from './departmentAccess'
-import type { assignmentDraftUpdated } from './usePayScheduleAssignment'
 import type {
   AssignmentDraft,
   PayScheduleAssignmentContextInterface,
@@ -65,7 +64,7 @@ export type EventPayloads = {
     | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
     | DepartmentSelection
     | EmployeeSelection
-  [assignmentDraftUpdated]: AssignmentDraft
+  [componentEvents.PAY_SCHEDULE_CREATE]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
   [componentEvents.PAY_SCHEDULE_ASSIGNED]: AssignmentSelection & {
@@ -111,7 +110,6 @@ export function AssignmentScheduleStep() {
     defaultPayScheduleUuid,
     hourlyPayScheduleUuid,
     salariedPayScheduleUuid,
-    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
@@ -144,8 +142,7 @@ export function AssignmentScheduleStep() {
           onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
         }}
         onAddPaySchedule={selection => {
-          updateDraft(selection)
-          onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+          onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
         }}
         onContinue={selection => {
           onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, selection)
@@ -158,11 +155,11 @@ export function AssignmentScheduleStep() {
     <AssignmentScheduleStepPresentation
       schedules={schedules}
       defaultPayScheduleUuid={preselect(defaultPayScheduleUuid)}
-      onBack={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
+      onBack={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
       }}
-      onAddPaySchedule={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+      onAddPaySchedule={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
       }}
       onContinue={uuid => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, {
@@ -177,7 +174,6 @@ function AssignmentEmployeeStep({ schedules }: { schedules: PayScheduleShow[] })
   const {
     companyId,
     employees: selectedEmployees,
-    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const roster = useAssignableEmployees(companyId)
@@ -187,14 +183,13 @@ function AssignmentEmployeeStep({ schedules }: { schedules: PayScheduleShow[] })
   const { t } = useTranslation('Company.Management.PayScheduleAssignment')
   useEffect(() => {
     if (isEmpty) {
-      updateDraft({
+      onEvent(componentEvents.PAY_SCHEDULE_CREATE, {
         assignmentType: PayScheduleAssignmentBodyType.Single,
         employees: undefined,
         defaultPayScheduleUuid: undefined,
       })
-      onEvent(componentEvents.PAY_SCHEDULE_CREATE)
     }
-  }, [isEmpty, updateDraft, onEvent])
+  }, [isEmpty, onEvent])
   if (roster.status === 'loading') return <BaseLayout isLoading />
   if (roster.accessDenied)
     return (
@@ -247,8 +242,7 @@ function AssignmentEmployeeStep({ schedules }: { schedules: PayScheduleShow[] })
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, draft)
       }}
       onAddPaySchedule={draft => {
-        updateDraft(draft)
-        onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+        onEvent(componentEvents.PAY_SCHEDULE_CREATE, draft)
       }}
       onContinue={draft => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, draft)
@@ -282,7 +276,6 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
     companyId,
     departments: selectedDepartments,
     defaultPayScheduleUuid,
-    updateDraft,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { data } = useDepartmentsGetAllSuspense({ companyUuid: companyId })
@@ -291,14 +284,13 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
 
   useEffect(() => {
     if (!hasDepartments) {
-      updateDraft({
+      onEvent(componentEvents.PAY_SCHEDULE_CREATE, {
         assignmentType: PayScheduleAssignmentBodyType.Single,
         departments: undefined,
         defaultPayScheduleUuid: undefined,
       })
-      onEvent(componentEvents.PAY_SCHEDULE_CREATE)
     }
-  }, [hasDepartments, onEvent, updateDraft])
+  }, [hasDepartments, onEvent])
 
   if (!hasDepartments) return null
 
@@ -324,8 +316,7 @@ function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] 
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
       }}
       onAddPaySchedule={selection => {
-        updateDraft(selection)
-        onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+        onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
       }}
       onContinue={selection => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, selection)
