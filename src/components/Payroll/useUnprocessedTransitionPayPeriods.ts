@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
 import { PayrollTypes } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayperiods'
 import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { toRFCDate } from '@/helpers/dateFormatting'
 
 const LOOK_AHEAD_DAYS = 90
 
@@ -25,7 +24,7 @@ export function useUnprocessedTransitionPayPeriods(
   const lookAheadEndDate = useMemo(() => {
     const date = new Date()
     date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
-    return new RFCDate(formatDateToStringDate(date)!)
+    return toRFCDate(date)
   }, [])
 
   const { data } = usePaySchedulesGetPayPeriodsSuspense({

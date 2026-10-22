@@ -21,7 +21,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
-import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { toRFCDate } from '@/helpers/dateFormatting'
 
 /**
  * Creation form for transition payrolls covering the gap between an old and new pay schedule.
@@ -129,7 +129,7 @@ function Root({
             offCycleReason: OffCycleReason.TransitionFromOldPaySchedule,
             startDate: new RFCDate(startDate),
             endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(formatDateToStringDate(checkDate)!),
+            checkDate: toRFCDate(checkDate),
             payScheduleUuid,
             skipRegularDeductions: data.skipRegularDeductions,
             withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,
