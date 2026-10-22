@@ -4,11 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { createMachine } from 'robot3'
 import { PaySchedule } from '../PaySchedule'
-import { PayScheduleAssignment, PayScheduleAssignmentFlow } from './PayScheduleAssignment'
+import { PayScheduleAssignment } from './PayScheduleAssignment'
 import { AssignmentScheduleStep } from './PayScheduleAssignmentComponents'
 import { payScheduleAssignmentStateMachine } from './payScheduleAssignmentStateMachine'
 import type { PayScheduleAssignmentContextInterface } from './usePayScheduleAssignment'
 import { BaseComponent } from '@/components/Base'
+import { Flow } from '@/components/Flow/Flow'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -154,10 +155,17 @@ describe('department pay schedule assignment', () => {
 
   it('preserves unsaved department selections when adding a schedule is cancelled', async () => {
     const user = userEvent.setup()
-    renderAssignment()
+    const onEvent = renderAssignment()
     await enterDepartments(user)
     await selectSchedule(user, /sales/i, /monthly/i)
     await user.click(screen.getByRole('button', { name: /add pay schedule/i }))
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATE, {
+      defaultPayScheduleUuid: 'weekly',
+      departments: [
+        { departmentUuid: 'engineering', payScheduleUuid: 'monthly' },
+        { departmentUuid: 'sales', payScheduleUuid: 'monthly' },
+      ],
+    })
     await screen.findByRole('heading', { name: /add pay schedule/i })
     await user.click(screen.getByRole('button', { name: /cancel/i }))
     expect(await screen.findByRole('button', { name: /sales/i })).toHaveTextContent('Monthly')
@@ -264,7 +272,7 @@ describe('department pay schedule assignment', () => {
     )
     renderWithProviders(
       <BaseComponent onEvent={vi.fn()}>
-        <PayScheduleAssignmentFlow companyId="123" machine={machine} onEvent={vi.fn()} />
+        <Flow machine={machine} onEvent={vi.fn()} />
       </BaseComponent>,
     )
     await screen.findByRole('heading', { name: /add pay schedule/i })

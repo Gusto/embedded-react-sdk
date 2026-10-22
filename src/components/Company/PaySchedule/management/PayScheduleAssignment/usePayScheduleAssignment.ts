@@ -24,16 +24,8 @@ export type AssignmentDraft = Partial<DepartmentSelection> & {
   salariedPayScheduleUuid?: string
 }
 
-/**
- * Internal state-machine event; never forwarded to component consumers.
- *
- * @internal
- */
-export const assignmentDraftUpdated = 'assignmentDraftUpdated'
-
 /** @internal */
 export interface PayScheduleAssignmentContextInterface extends FlowContextInterface {
-  updateDraft: (selection: AssignmentDraft) => void
   companyId: string
   assignmentType?: SupportedAssignmentType
   defaultPayScheduleUuid?: string
