@@ -15,6 +15,7 @@ describe('single-schedule assignment draft', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(
+      http.get(`${companyPath}/departments`, () => HttpResponse.json([])),
       http.get(`${companyPath}/pay_schedules/assignments`, () =>
         HttpResponse.json({ type: 'single', default_pay_schedule_uuid: 'weekly' }),
       ),

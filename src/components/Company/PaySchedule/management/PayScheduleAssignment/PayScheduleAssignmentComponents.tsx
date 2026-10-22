@@ -1,3 +1,7 @@
+import {
+  useDepartmentsGetAll,
+  useDepartmentsGetAllSuspense,
+} from '@gusto/embedded-api/react-query/departmentsGetAll'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
@@ -6,10 +10,15 @@ import { usePaySchedulesAssignMutation } from '@gusto/embedded-api/react-query/p
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
 import type { PayScheduleAssignmentEmployeeChange } from '@gusto/embedded-api/models/components/payscheduleassignmentemployeechange'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import {
+  AssignmentDepartmentStepPresentation,
+  type DepartmentSelection,
+} from './AssignmentDepartmentStepPresentation'
 import { AssignmentTypeStepPresentation } from './AssignmentTypeStepPresentation'
 import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPresentation'
 import { AssignmentCompensationStepPresentation } from './AssignmentCompensationStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
+import { getCompanyDepartments, isDepartmentAccessDenied } from './departmentAccess'
 import type {
   AssignmentDraft,
   PayScheduleAssignmentContextInterface,
@@ -37,6 +46,7 @@ export type AssignmentSelection =
       hourlyPayScheduleUuid: string
       salariedPayScheduleUuid: string
     }
+  | ({ type: typeof PayScheduleAssignmentBodyType.ByDepartment } & DepartmentSelection)
 
 /** @internal */
 export type EventPayloads = {
@@ -44,6 +54,7 @@ export type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED]:
     | { defaultPayScheduleUuid: string }
     | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
+    | DepartmentSelection
   [componentEvents.PAY_SCHEDULE_CREATE]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
@@ -54,10 +65,20 @@ export type EventPayloads = {
 
 /** @internal */
 export function AssignmentTypeStep() {
-  const { assignmentType, onEvent } = useFlow<PayScheduleAssignmentContextInterface>()
+  const { companyId, assignmentType, onEvent } = useFlow<PayScheduleAssignmentContextInterface>()
+
+  const { data, error, isPending } = useDepartmentsGetAll(
+    { companyUuid: companyId },
+    {
+      throwOnError: error => !isDepartmentAccessDenied(error),
+    },
+  )
+  if (isPending) return <BaseLayout isLoading />
 
   return (
     <AssignmentTypeStepPresentation
+      hasDepartments={getCompanyDepartments(data?.departmentList).length > 0}
+      departmentAccessDenied={isDepartmentAccessDenied(error)}
       defaultType={assignmentType}
       onBack={() => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_CANCEL)
@@ -90,6 +111,10 @@ export function AssignmentScheduleStep() {
    */
   const preselect = (uuid: string | undefined) =>
     schedules.some(s => s.uuid === uuid) ? uuid : activeSchedule?.uuid
+
+  if (assignmentType === PayScheduleAssignmentBodyType.ByDepartment) {
+    return <AssignmentDepartmentStep schedules={schedules} />
+  }
 
   if (assignmentType === PayScheduleAssignmentBodyType.HourlySalaried) {
     return (
@@ -129,6 +154,60 @@ export function AssignmentScheduleStep() {
   )
 }
 
+function AssignmentDepartmentStep({ schedules }: { schedules: PayScheduleShow[] }) {
+  const {
+    companyId,
+    departments: selectedDepartments,
+    defaultPayScheduleUuid,
+    onEvent,
+  } = useFlow<PayScheduleAssignmentContextInterface>()
+  const { data } = useDepartmentsGetAllSuspense({ companyUuid: companyId })
+  const departments = getCompanyDepartments(data.departmentList)
+  const hasDepartments = departments.length > 0
+
+  useEffect(() => {
+    if (!hasDepartments) {
+      onEvent(componentEvents.PAY_SCHEDULE_CREATE, {
+        assignmentType: PayScheduleAssignmentBodyType.Single,
+        departments: undefined,
+        defaultPayScheduleUuid: undefined,
+      })
+    }
+  }, [hasDepartments, onEvent])
+
+  if (!hasDepartments) return null
+
+  const fallbackUuid = schedules.find(schedule => schedule.active)?.uuid ?? schedules[0]?.uuid ?? ''
+  const preselect = (uuid: string | undefined) =>
+    schedules.find(schedule => schedule.uuid === uuid)?.uuid ?? fallbackUuid
+
+  return (
+    <AssignmentDepartmentStepPresentation
+      departments={departments}
+      schedules={schedules}
+      selection={{
+        defaultPayScheduleUuid: preselect(defaultPayScheduleUuid),
+        departments: departments.map(department => ({
+          departmentUuid: ensureRequired(department.uuid),
+          payScheduleUuid: preselect(
+            selectedDepartments?.find(selection => selection.departmentUuid === department.uuid)
+              ?.payScheduleUuid,
+          ),
+        })),
+      }}
+      onBack={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
+      }}
+      onAddPaySchedule={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
+      }}
+      onContinue={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, selection)
+      }}
+    />
+  )
+}
+
 /** @internal */
 export function AssignmentCreateScheduleStep() {
   const { t } = useTranslation('Company.Management.PayScheduleAssignment')
@@ -155,6 +234,7 @@ export function AssignmentReviewStep() {
     defaultPayScheduleUuid,
     hourlyPayScheduleUuid,
     salariedPayScheduleUuid,
+    departments,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
   const { baseSubmitHandler, error } = useBase()
@@ -166,6 +246,21 @@ export function AssignmentReviewStep() {
   const { mutateAsync: assignSchedules, isPending: isAssigning } = usePaySchedulesAssignMutation()
 
   const assignment: AssignmentSelection = useMemo(() => {
+    if (assignmentType === PayScheduleAssignmentBodyType.ByDepartment) {
+      const defaultUuid = ensureRequired(defaultPayScheduleUuid)
+      const selections = ensureRequired(departments)
+      if (
+        selections.length === 0 ||
+        selections.every(selection => selection.payScheduleUuid === defaultUuid)
+      ) {
+        return { type: PayScheduleAssignmentBodyType.Single, defaultPayScheduleUuid: defaultUuid }
+      }
+      return {
+        type: PayScheduleAssignmentBodyType.ByDepartment,
+        defaultPayScheduleUuid: defaultUuid,
+        departments: selections,
+      }
+    }
     if (assignmentType === PayScheduleAssignmentBodyType.HourlySalaried) {
       const hourly = ensureRequired(hourlyPayScheduleUuid)
       const salaried = ensureRequired(salariedPayScheduleUuid)
@@ -190,7 +285,13 @@ export function AssignmentReviewStep() {
       type: PayScheduleAssignmentBodyType.Single,
       defaultPayScheduleUuid: ensureRequired(defaultPayScheduleUuid),
     }
-  }, [assignmentType, defaultPayScheduleUuid, hourlyPayScheduleUuid, salariedPayScheduleUuid])
+  }, [
+    assignmentType,
+    defaultPayScheduleUuid,
+    hourlyPayScheduleUuid,
+    salariedPayScheduleUuid,
+    departments,
+  ])
 
   useEffect(() => {
     void baseSubmitHandler(undefined, async () => {

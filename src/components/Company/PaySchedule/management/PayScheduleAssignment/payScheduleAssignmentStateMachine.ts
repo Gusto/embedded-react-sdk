@@ -1,4 +1,5 @@
 import { state, transition, reduce } from 'robot3'
+import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
 import type { ComponentType } from 'react'
 import {
   AssignmentTypeStep,
@@ -43,6 +44,7 @@ export const payScheduleAssignmentStateMachine = {
             defaultPayScheduleUuid: isSameType ? ctx.defaultPayScheduleUuid : undefined,
             hourlyPayScheduleUuid: isSameType ? ctx.hourlyPayScheduleUuid : undefined,
             salariedPayScheduleUuid: isSameType ? ctx.salariedPayScheduleUuid : undefined,
+            departments: isSameType ? ctx.departments : undefined,
           }
         },
       ),
@@ -106,7 +108,10 @@ export const payScheduleAssignmentStateMachine = {
         ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
           component: AssignmentScheduleStep as ComponentType,
-          defaultPayScheduleUuid: ev.payload.paySchedule.uuid,
+          defaultPayScheduleUuid:
+            ctx.assignmentType === PayScheduleAssignmentBodyType.ByDepartment
+              ? ctx.defaultPayScheduleUuid
+              : ev.payload.paySchedule.uuid,
         }),
       ),
     ),

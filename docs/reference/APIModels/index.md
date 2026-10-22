@@ -1404,6 +1404,24 @@ The subtotals for the contractor payment.
 
 ***
 
+<a id="contractors"></a>
+
+## Contractors
+
+> **Contractors** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/department.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/department.ts#L15)
+
+`Contractors` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-contractorsuuid"></a> `uuid?` | `string` |
+
+***
+
 <a id="contractorstatus"></a>
 
 ## ContractorStatus
@@ -1711,6 +1729,47 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollemplo
 | <a id="property-deductionsname"></a> `name?` | `string` | The name of the deduction. |
 | <a id="property-deductionsupdatableviapayroll"></a> `updatableViaPayroll?` | `boolean` | Whether the deduction can be updated via the payroll update endpoint. Only present for unprocessed payrolls. |
 | <a id="property-deductionsuuid"></a> `uuid?` | `string` | The UUID of the deduction. Only present for unprocessed payrolls. |
+
+***
+
+<a id="department"></a>
+
+## Department
+
+> **Department** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/department.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/department.ts#L19)
+
+`Department` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-departmentcompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company |
+| <a id="property-departmentcontractors"></a> `contractors?` | [`Contractors`](#contractors)[] | Array of contractors assigned to the department. |
+| <a id="property-departmentemployees"></a> `employees?` | [`DepartmentEmployees`](#departmentemployees)[] | Array of employees assigned to the department. |
+| <a id="property-departmenttitle"></a> `title?` | `string` | Name of the department |
+| <a id="property-departmentuuid"></a> `uuid?` | `string` | The UUID of the department |
+| <a id="property-departmentversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="departmentemployees"></a>
+
+## DepartmentEmployees
+
+> **DepartmentEmployees** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/department.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/department.ts#L11)
+
+`DepartmentEmployees` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-departmentemployeesuuid"></a> `uuid?` | `string` |
 
 ***
 

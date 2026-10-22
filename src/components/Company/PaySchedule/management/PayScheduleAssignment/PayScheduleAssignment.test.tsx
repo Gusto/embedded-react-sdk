@@ -84,6 +84,9 @@ describe('PayScheduleAssignment', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_uuid/departments`, () =>
+        HttpResponse.json([]),
+      ),
       paymentConfigsMock,
       getPaySchedules,
       // Must out-rank getPaySchedule, whose `:pay_schedule_id` pattern also matches /assignments.
@@ -484,7 +487,7 @@ describe('PayScheduleAssignment', () => {
     })
 
     it('starts on the type step with nothing preselected for an unsupported assignment type', async () => {
-      useStoredAssignment({ type: 'by_department', departments: [] })
+      useStoredAssignment({ type: 'by_employee', employees: [] })
       renderAssignment()
 
       await waitFor(() => {

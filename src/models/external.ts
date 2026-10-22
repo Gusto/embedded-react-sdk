@@ -100,6 +100,12 @@ export {
   ContractorUpdateRequestBodyWageType,
 } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
 export { CustomFieldType } from '@gusto/embedded-api/models/components/customfieldtype'
+/** `Contractors` entity from the Gusto Embedded API. */
+export type { Contractors } from '@gusto/embedded-api/models/components/department'
+/** `Department` entity from the Gusto Embedded API. */
+export type { Department } from '@gusto/embedded-api/models/components/department'
+/** `DepartmentEmployees` entity from the Gusto Embedded API. */
+export type { DepartmentEmployees } from '@gusto/embedded-api/models/components/department'
 /** `Document` entity from the Gusto Embedded API. */
 export type { Document } from '@gusto/embedded-api/models/components/document'
 /** `Fields` entity from the Gusto Embedded API. */

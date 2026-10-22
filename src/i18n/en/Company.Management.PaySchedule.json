@@ -12,7 +12,8 @@
   "labels": {
     "name": "Name",
     "frequency": "Frequency",
-    "schedule": "Schedule"
+    "schedule": "Schedule",
+    "department": "Department"
   },
   "compensationTypes": {
     "hourly": "Hourly",
@@ -26,6 +27,10 @@
   "alerts": {
     "assignmentUpdated": "Pay schedule assignment updated."
   },
+  "departmentDescription": "You have assigned employees to pay schedules by department.",
+  "departmentTableLabel": "Pay schedules by department",
+  "uncategorizedEmployees": "Uncategorized employees",
+  "unnamedDepartment": "Unnamed department",
   "scheduleForm": {
     "anchorEndOfPayPeriodDescription": "The last date of the first pay period; can be the same as the first pay date.",
     "payrollDeadline": "Run payroll by"

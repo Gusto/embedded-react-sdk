@@ -17,6 +17,7 @@ describe('compensation assignment draft', () => {
     setupApiTestMocks()
     let created = false
     server.use(
+      http.get(`${companyPath}/departments`, () => HttpResponse.json([])),
       http.get(`${companyPath}/pay_schedules/assignments`, () =>
         HttpResponse.json({
           type: 'hourly_salaried',

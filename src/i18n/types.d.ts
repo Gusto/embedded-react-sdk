@@ -1059,6 +1059,8 @@ export namespace Translations {
       frequency: string
       /** @defaultValue `"Schedule"` */
       schedule: string
+      /** @defaultValue `"Department"` */
+      department: string
     }
     compensationTypes: {
       /** @defaultValue `"Hourly"` */
@@ -1078,6 +1080,14 @@ export namespace Translations {
       /** @defaultValue `"Pay schedule assignment updated."` */
       assignmentUpdated: string
     }
+    /** @defaultValue `"You have assigned employees to pay schedules by department."` */
+    departmentDescription: string
+    /** @defaultValue `"Pay schedules by department"` */
+    departmentTableLabel: string
+    /** @defaultValue `"Uncategorized employees"` */
+    uncategorizedEmployees: string
+    /** @defaultValue `"Unnamed department"` */
+    unnamedDepartment: string
     scheduleForm: {
       /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
       anchorEndOfPayPeriodDescription: string
@@ -1103,6 +1113,12 @@ export namespace Translations {
           /** @defaultValue `"Separate schedules by compensation type"` */
           label: string
           /** @defaultValue `"Choose one pay schedule for hourly employees and another for salaried employees"` */
+          description: string
+        }
+        byDepartment: {
+          /** @defaultValue `"By department"` */
+          label: string
+          /** @defaultValue `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` */
           description: string
         }
       }
@@ -1157,12 +1173,26 @@ export namespace Translations {
     continueCta: string
     /** @defaultValue `"Submit"` */
     submitCta: string
+    departmentStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Uncategorized employees"` */
+      defaultPayScheduleLabel: string
+      /** @defaultValue `"Select a pay schedule for employees who aren't assigned to any department."` */
+      defaultPayScheduleDescription: string
+      /** @defaultValue `"Unnamed department"` */
+      unnamedDepartment: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
     scheduleForm: {
       /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
       anchorEndOfPayPeriodDescription: string
       /** @defaultValue `"Run payroll by"` */
       payrollDeadline: string
     }
+    /** @defaultValue `"Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."` */
+    departmentAccessDenied: string
   }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
   export interface CompanyManagementTaxPaymentDetail {
