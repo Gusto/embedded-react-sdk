@@ -11,6 +11,7 @@ import { AssignmentScheduleStepPresentation } from './AssignmentScheduleStepPres
 import { AssignmentCompensationStepPresentation } from './AssignmentCompensationStepPresentation'
 import { AssignmentReviewStepPresentation } from './AssignmentReviewStepPresentation'
 import type {
+  AssignmentDraft,
   PayScheduleAssignmentContextInterface,
   SupportedAssignmentType,
 } from './usePayScheduleAssignment'
@@ -43,6 +44,8 @@ export type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED]:
     | { defaultPayScheduleUuid: string }
     | { hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }
+  [componentEvents.PAY_SCHEDULE_CREATE]: AssignmentDraft | undefined
+  [componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK]: AssignmentDraft | undefined
   [componentEvents.PAY_SCHEDULE_CREATED]: { paySchedule: PayScheduleShow }
   [componentEvents.PAY_SCHEDULE_ASSIGNED]: AssignmentSelection & {
     employeeChanges: PayScheduleAssignmentEmployeeChange[]
@@ -94,11 +97,11 @@ export function AssignmentScheduleStep() {
         schedules={schedules}
         hourlyPayScheduleUuid={preselect(hourlyPayScheduleUuid)}
         salariedPayScheduleUuid={preselect(salariedPayScheduleUuid)}
-        onBack={() => {
-          onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
+        onBack={selection => {
+          onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
         }}
-        onAddPaySchedule={() => {
-          onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+        onAddPaySchedule={selection => {
+          onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
         }}
         onContinue={selection => {
           onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, selection)
@@ -111,11 +114,11 @@ export function AssignmentScheduleStep() {
     <AssignmentScheduleStepPresentation
       schedules={schedules}
       defaultPayScheduleUuid={preselect(defaultPayScheduleUuid)}
-      onBack={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
+      onBack={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
       }}
-      onAddPaySchedule={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+      onAddPaySchedule={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
       }}
       onContinue={uuid => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, {

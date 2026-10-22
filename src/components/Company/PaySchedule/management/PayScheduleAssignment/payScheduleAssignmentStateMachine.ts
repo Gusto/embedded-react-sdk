@@ -53,8 +53,12 @@ export const payScheduleAssignmentStateMachine = {
       componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK,
       'assignmentType',
       reduce(
-        (ctx: PayScheduleAssignmentContextInterface): PayScheduleAssignmentContextInterface => ({
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK>,
+        ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
+          ...ev.payload,
           component: AssignmentTypeStep as ComponentType,
         }),
       ),
@@ -63,8 +67,12 @@ export const payScheduleAssignmentStateMachine = {
       componentEvents.PAY_SCHEDULE_CREATE,
       'assignmentCreateSchedule',
       reduce(
-        (ctx: PayScheduleAssignmentContextInterface): PayScheduleAssignmentContextInterface => ({
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_CREATE>,
+        ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
+          ...ev.payload,
           component: AssignmentCreateScheduleStep as ComponentType,
         }),
       ),

@@ -12,8 +12,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 export interface AssignmentScheduleStepPresentationProps {
   schedules: PayScheduleShow[]
   defaultPayScheduleUuid?: string
-  onBack: () => void
-  onAddPaySchedule: () => void
+  onBack: (selection: ScheduleStepInputs) => void
+  onAddPaySchedule: (selection: ScheduleStepInputs) => void
   onContinue: (defaultPayScheduleUuid: string) => void
 }
 
@@ -60,13 +60,23 @@ export function AssignmentScheduleStepPresentation({
               }))}
             />
             <div>
-              <Components.Button variant="secondary" onClick={onAddPaySchedule}>
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  onAddPaySchedule(formMethods.getValues())
+                }}
+              >
                 {t('scheduleStep.addPayScheduleCta')}
               </Components.Button>
             </div>
           </Flex>
           <ActionsLayout>
-            <Components.Button variant="secondary" onClick={onBack}>
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                onBack(formMethods.getValues())
+              }}
+            >
               {t('backCta')}
             </Components.Button>
             <Components.Button variant="primary" type="submit" isDisabled={schedules.length === 0}>

@@ -13,8 +13,8 @@ export interface AssignmentCompensationStepPresentationProps {
   schedules: PayScheduleShow[]
   hourlyPayScheduleUuid?: string
   salariedPayScheduleUuid?: string
-  onBack: () => void
-  onAddPaySchedule: () => void
+  onBack: (selection: CompensationStepInputs) => void
+  onAddPaySchedule: (selection: CompensationStepInputs) => void
   onContinue: (selection: {
     hourlyPayScheduleUuid: string
     salariedPayScheduleUuid: string
@@ -65,6 +65,7 @@ export function AssignmentCompensationStepPresentation({
               name="hourlyPayScheduleUuid"
               label={t('compensationStep.hourlyPayScheduleLabel')}
               description={t('compensationStep.hourlyPayScheduleDescription')}
+              isRequired
               placeholder=""
               options={options}
             />
@@ -72,17 +73,28 @@ export function AssignmentCompensationStepPresentation({
               name="salariedPayScheduleUuid"
               label={t('compensationStep.salariedPayScheduleLabel')}
               description={t('compensationStep.salariedPayScheduleDescription')}
+              isRequired
               placeholder=""
               options={options}
             />
             <div>
-              <Components.Button variant="secondary" onClick={onAddPaySchedule}>
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  onAddPaySchedule(formMethods.getValues())
+                }}
+              >
                 {t('compensationStep.addPayScheduleCta')}
               </Components.Button>
             </div>
           </Flex>
           <ActionsLayout>
-            <Components.Button variant="secondary" onClick={onBack}>
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                onBack(formMethods.getValues())
+              }}
+            >
               {t('backCta')}
             </Components.Button>
             <Components.Button variant="primary" type="submit" isDisabled={schedules.length === 0}>

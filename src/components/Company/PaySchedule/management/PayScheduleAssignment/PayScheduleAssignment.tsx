@@ -31,8 +31,6 @@ function toSupportedType(
     case PayScheduleAssignmentType.HourlySalaried:
       return type
     default:
-      // by_employee and by_department have no step implementations; start from the type step
-      // with nothing preselected rather than seeding a type the flow can't render.
       return undefined
   }
 }
@@ -81,15 +79,13 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * submitted as `single`. Can be mounted directly or launched from
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
- * The internal step-to-step selection events (assignment type chosen, schedule picked) also
- * bubble through `onEvent` as a side effect of how the underlying `Flow` re-emits every event —
- * they carry no information a host needs mid-flow, since `assigned` reports the final outcome,
- * so they're intentionally left out of the table below.
+ * Step selection events also bubble through `onEvent`; the `assigned` event reports the
+ * final outcome. Adding a pay schedule can include the current selections in its event payload.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | — |
+ * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | Optional current selections: `{ defaultPayScheduleUuid?: string; hourlyPayScheduleUuid?: string; salariedPayScheduleUuid?: string }` |
  * | `paySchedule/created` | A new pay schedule was created from the picker step | `{ paySchedule: PayScheduleShow }` |
  * | `paySchedule/management/assignment/cancel` | The user backed out of the flow entirely, from the first step | — |
  * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` |
