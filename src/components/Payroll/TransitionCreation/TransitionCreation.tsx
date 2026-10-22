@@ -21,6 +21,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
+import { toRFCDate } from '@/helpers/dateFormatting'
 
 /**
  * Creation form for transition payrolls covering the gap between an old and new pay schedule.
@@ -116,7 +117,8 @@ function Root({
   })
 
   const onSubmit = async (data: TransitionCreationFormData) => {
-    if (!data.checkDate) return
+    const { checkDate } = data
+    if (!checkDate) return
 
     await baseSubmitHandler(data, async () => {
       const response = await createTransitionPayroll({
@@ -127,7 +129,7 @@ function Root({
             offCycleReason: OffCycleReason.TransitionFromOldPaySchedule,
             startDate: new RFCDate(startDate),
             endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(data.checkDate!),
+            checkDate: toRFCDate(checkDate),
             payScheduleUuid,
             skipRegularDeductions: data.skipRegularDeductions,
             withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,
