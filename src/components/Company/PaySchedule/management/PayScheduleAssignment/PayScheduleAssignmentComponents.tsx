@@ -139,11 +139,11 @@ export function AssignmentScheduleStep() {
     <AssignmentScheduleStepPresentation
       schedules={schedules}
       defaultPayScheduleUuid={preselect(defaultPayScheduleUuid)}
-      onBack={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK)
+      onBack={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK, selection)
       }}
-      onAddPaySchedule={() => {
-        onEvent(componentEvents.PAY_SCHEDULE_CREATE)
+      onAddPaySchedule={selection => {
+        onEvent(componentEvents.PAY_SCHEDULE_CREATE, selection)
       }}
       onContinue={uuid => {
         onEvent(componentEvents.PAY_SCHEDULE_ASSIGNMENT_SCHEDULE_SELECTED, {
