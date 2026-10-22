@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.57.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.1...v0.57.2) (2026-10-22)
+
+### Fixes
+
+- Fix off-cycle and transition payroll dates being sent one day early for users in timezones ahead of UTC. Dates picked in `OffCycleCreation` and `TransitionCreation` are now sent exactly as picked ([#2976](https://github.com/Gusto/embedded-react-sdk/issues/2976))
+- Fix the cancel payroll dialog crashing with `RangeError: timeZone is not supported` when the host app polyfills `Intl.DateTimeFormat`. The deadline in `PayrollOverview` and `PayrollHistory` now uses the SDK locale, and translations can place `{{time}}` and `{{date}}` separately. Existing `{{deadline}}` overrides keep working ([#2968](https://github.com/Gusto/embedded-react-sdk/issues/2968))
+- Align the pay schedule management forms with design, including a "Run payroll by" deadline and a description for the first pay period end date ([#2947](https://github.com/Gusto/embedded-react-sdk/issues/2947))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `react-i18next`) ([#2971](https://github.com/Gusto/embedded-react-sdk/issues/2971), [#2972](https://github.com/Gusto/embedded-react-sdk/issues/2972))
+- Bump dev dependencies (`@playwright/test`, `@commitlint/cli`, `@storybook/addon-a11y`, `smol-toml`, docs site `launch-editor`)
+
 ## [0.57.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.0...v0.57.1) (2026-10-21)
 
 ### Features & Enhancements
