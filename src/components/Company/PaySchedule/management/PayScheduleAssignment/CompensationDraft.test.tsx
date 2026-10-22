@@ -62,7 +62,7 @@ describe('compensation assignment draft', () => {
     )
   })
 
-  it.each(['back', 'cancel', 'create'])('preserves selections after %s', async action => {
+  async function editCompensationSchedules() {
     const user = userEvent.setup()
     const onEvent = vi.fn()
     renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />, {
@@ -71,37 +71,48 @@ describe('compensation assignment draft', () => {
     await user.click(await screen.findByRole('button', { name: /continue/i }))
     await user.click(await screen.findByRole('button', { name: /hourly/i }))
     await user.click(screen.getByRole('option', { name: /monthly/i }))
-    await user.click(
-      screen.getByRole('button', { name: action === 'back' ? /^back$/i : /add pay schedule/i }),
-    )
-    if (action !== 'back') {
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATE, {
-        hourlyPayScheduleUuid: 'monthly',
-        salariedPayScheduleUuid: 'weekly',
-      })
-    }
-    if (action === 'back') {
-      await user.click(await screen.findByRole('button', { name: /continue/i }))
-    } else if (action === 'cancel') {
-      await user.click(await screen.findByRole('button', { name: /cancel/i }))
-    } else {
-      await user.type(await screen.findByRole('textbox', { name: /^name/i }), 'New schedule')
-      for (const [name, day] of [
-        ['First pay date', '04'],
-        ['First pay period end date', '03'],
-      ] as const) {
-        const field = screen.getByRole('group', { name })
-        await user.type(within(field).getByRole('spinbutton', { name: /month/i }), '01')
-        await user.type(within(field).getByRole('spinbutton', { name: /day/i }), day)
-        await user.type(within(field).getByRole('spinbutton', { name: /year/i }), '2030')
-      }
-      await user.click(screen.getByRole('button', { name: /save/i }))
-    }
+    return { user, onEvent }
+  }
+
+  async function expectCompensationSelections() {
     expect(await screen.findByRole('button', { name: /hourly/i })).toHaveTextContent('Monthly')
     expect(screen.getByRole('button', { name: /salaried/i })).toHaveTextContent('Weekly')
-    if (action === 'create') {
-      await user.click(screen.getByRole('button', { name: /hourly/i }))
-      expect(screen.getByRole('option', { name: /new schedule/i })).toBeInTheDocument()
+  }
+
+  it('preserves selections after Back and Continue', async () => {
+    const { user } = await editCompensationSchedules()
+    await user.click(screen.getByRole('button', { name: /^back$/i }))
+    await user.click(await screen.findByRole('button', { name: /continue/i }))
+    await expectCompensationSelections()
+  })
+
+  it('preserves selections when adding a schedule is cancelled', async () => {
+    const { user, onEvent } = await editCompensationSchedules()
+    await user.click(screen.getByRole('button', { name: /add pay schedule/i }))
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATE, {
+      hourlyPayScheduleUuid: 'monthly',
+      salariedPayScheduleUuid: 'weekly',
+    })
+    await user.click(await screen.findByRole('button', { name: /cancel/i }))
+    await expectCompensationSelections()
+  })
+
+  it('preserves selections after creating a new schedule and makes it available', async () => {
+    const { user } = await editCompensationSchedules()
+    await user.click(screen.getByRole('button', { name: /add pay schedule/i }))
+    await user.type(await screen.findByRole('textbox', { name: /^name/i }), 'New schedule')
+    for (const [name, day] of [
+      ['First pay date', '04'],
+      ['First pay period end date', '03'],
+    ] as const) {
+      const field = screen.getByRole('group', { name })
+      await user.type(within(field).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(field).getByRole('spinbutton', { name: /day/i }), day)
+      await user.type(within(field).getByRole('spinbutton', { name: /year/i }), '2030')
     }
+    await user.click(screen.getByRole('button', { name: /save/i }))
+    await expectCompensationSelections()
+    await user.click(screen.getByRole('button', { name: /hourly/i }))
+    expect(screen.getByRole('option', { name: /new schedule/i })).toBeInTheDocument()
   })
 })
