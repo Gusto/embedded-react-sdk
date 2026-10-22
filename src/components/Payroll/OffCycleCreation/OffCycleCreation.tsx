@@ -25,6 +25,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 
 const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
@@ -213,9 +214,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
           requestBody: {
             offCycle: true,
             offCycleReason: LOCAL_TO_API_REASON[reason],
-            startDate: new RFCDate(startDate),
-            endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(checkDate),
+            startDate: new RFCDate(formatDateToStringDate(startDate)!),
+            endDate: new RFCDate(formatDateToStringDate(endDate)!),
+            checkDate: new RFCDate(formatDateToStringDate(checkDate)!),
             skipRegularDeductions: data.skipRegularDeductions,
             isCheckOnlyPayroll: data.isCheckOnly,
             employeeUuids,
