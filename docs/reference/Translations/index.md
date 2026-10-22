@@ -5396,7 +5396,7 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | ------ | ------ |
 | <a id="property-payrollpayrollhistorycanceldialog"></a> `cancelDialog` | |
 | `cancelDialog.body` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
-| `cancelDialog.deadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
+| `cancelDialog.deadline` | `"Run this payroll by {{time}} on {{date}} to pay your employees on time."` |
 | `cancelDialog.primaryAction` | `"Yes, cancel payroll"` |
 | `cancelDialog.secondaryAction` | `"No, go back"` |
 | `cancelDialog.title` | `"Cancel {{payPeriod}} payroll?"` |
@@ -5544,7 +5544,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | <a id="property-payrollpayrolloverviewbreadcrumblabel"></a> `breadcrumbLabel` | `"Submit"` |
 | <a id="property-payrollpayrolloverviewcancelcta"></a> `cancelCta` | `"Cancel payroll"` |
 | <a id="property-payrollpayrolloverviewcanceldialogdescription"></a> `cancelDialogDescription` | `"You may cancel this payroll and run it again later. Your changes will be saved."` |
-| <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{deadline}} to pay your employees on time."` |
+| <a id="property-payrollpayrolloverviewcanceldialogdescriptiondeadline"></a> `cancelDialogDescriptionDeadline` | `"Run this payroll by {{time}} on {{date}} to pay your employees on time."` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitle"></a> `cancelDialogTitle` | `"Cancel {{payPeriod}} payroll?"` |
 | <a id="property-payrollpayrolloverviewcanceldialogtitledismissal"></a> `cancelDialogTitleDismissal` | `"Cancel payroll?"` |
 | <a id="property-payrollpayrolloverviewcancelledemptystate"></a> `cancelledEmptyState` | `"This payroll has been cancelled."` |
