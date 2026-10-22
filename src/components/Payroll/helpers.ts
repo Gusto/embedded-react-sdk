@@ -861,6 +861,27 @@ const isApiEditablePayrollType = (payroll: Payroll): boolean => {
 }
 
 /**
+ * Returns the interpolation values for the cancel dialog's deadline sentence.
+ *
+ * @remarks
+ * Translations place `time` and `date` themselves, so word order and the joining word stay
+ * localizable. `deadline` is the legacy pre-joined English string, kept so existing
+ * translations and partner overrides that use `{{deadline}}` keep rendering.
+ *
+ * @param payroll - The payroll whose `payrollDeadline` is shown.
+ * @param dateFormatter - The date formatter returned by {@link useDateFormatter}.
+ * @returns The `time`, `date`, and legacy `deadline` values in the user's local time zone.
+ * @internal
+ */
+export const getCancelDeadlineValues = (
+  payroll: { payrollDeadline?: string | Date | null },
+  dateFormatter: ReturnType<typeof useDateFormatter>,
+): { time: string; date: string; deadline: string } => {
+  const { time, date } = dateFormatter.formatWithTime(payroll.payrollDeadline)
+  return { time, date, deadline: date ? `${time} on ${date}` : time }
+}
+
+/**
  * Returns whether to show the cancel action for a payroll.
  *
  * @remarks

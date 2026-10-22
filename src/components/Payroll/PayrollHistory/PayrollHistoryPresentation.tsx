@@ -6,6 +6,7 @@ import {
   getPayrollTypeLabel,
   calculateTotalPayroll,
   canCancelPayroll,
+  getCancelDeadlineValues,
   getPayPeriodOrCheckDateLabel,
 } from '../helpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
@@ -57,11 +58,6 @@ export const PayrollHistoryPresentation = ({
   useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
   const dateFormatter = useDateFormatter()
-
-  const formatDeadlineForDialog = (item: Payroll): string => {
-    const { time, date } = dateFormatter.formatWithTime(item.payrollDeadline)
-    return date ? `${time} on ${date}` : time
-  }
 
   const handleCancelClick = (item: Payroll) => {
     onCancelDialogOpen(item)
@@ -206,9 +202,10 @@ export const PayrollHistoryPresentation = ({
             <Text>{t('cancelDialog.body')}</Text>
             {cancelDialogItem.payrollDeadline && (
               <Text>
-                {t('cancelDialog.deadline', {
-                  deadline: formatDeadlineForDialog(cancelDialogItem),
-                })}
+                {t(
+                  'cancelDialog.deadline',
+                  getCancelDeadlineValues(cancelDialogItem, dateFormatter),
+                )}
               </Text>
             )}
           </Flex>

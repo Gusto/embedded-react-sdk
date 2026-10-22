@@ -12,7 +12,7 @@
   "cancelDialogTitle": "Cancel {{payPeriod}} payroll?",
   "cancelDialogTitleDismissal": "Cancel payroll?",
   "cancelDialogDescription": "You may cancel this payroll and run it again later. Your changes will be saved.",
-  "cancelDialogDescriptionDeadline": "Run this payroll by {{deadline}} to pay your employees on time.",
+  "cancelDialogDescriptionDeadline": "Run this payroll by {{time}} on {{date}} to pay your employees on time.",
   "confirmCancelCta": "Yes, cancel payroll",
   "declineCancelCta": "No, go back",
   "payrollReceiptCta": "View payroll receipt",
