@@ -37,7 +37,7 @@ export function useContractorAddressSummary({
   const errorHandling = composeErrorHandler([contractorQuery, addressQuery])
 
   const contractorAddress = addressQuery.data?.contractorAddress
-  const contractorType = contractorQuery.data?.contractor?.type
+  const contractorType = contractorQuery.data?.contractorShow?.type
 
   if (contractorQuery.isLoading || addressQuery.isLoading || !contractorAddress) {
     return { isLoading: true, errorHandling }

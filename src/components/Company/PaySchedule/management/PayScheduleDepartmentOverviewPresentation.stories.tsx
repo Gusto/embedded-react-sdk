@@ -1,5 +1,5 @@
 import { fn } from 'storybook/test'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PayScheduleDepartmentRow } from './PayScheduleDepartmentOverviewPresentation'
 import { PayScheduleDepartmentOverviewPresentation } from './PayScheduleDepartmentOverviewPresentation'
 import { useI18n } from '@/i18n'

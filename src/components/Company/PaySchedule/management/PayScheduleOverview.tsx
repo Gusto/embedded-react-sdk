@@ -4,7 +4,7 @@ import type { PayScheduleAssignment } from '@gusto/embedded-api/models/component
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { getCompanyDepartments } from './PayScheduleAssignment/departmentAccess'
 import {
   PayScheduleDepartmentOverviewPresentation,
