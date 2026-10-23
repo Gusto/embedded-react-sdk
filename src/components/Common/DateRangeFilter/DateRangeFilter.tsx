@@ -87,10 +87,12 @@ export const DateRangeFilter = ({
     return `${formatFilterDate(startDate)} – ${formatFilterDate(endDate)}`
   }, [startDate, endDate])
 
+  const triggerText = filterDateLabel ?? selectDatesLabel
+
   const triggerButton = (
     <Button
       buttonRef={triggerRef}
-      aria-label={triggerLabel}
+      aria-label={`${triggerLabel}, ${triggerText}`}
       aria-haspopup="dialog"
       aria-expanded={isOpen}
       onClick={handleOpen}
@@ -98,7 +100,7 @@ export const DateRangeFilter = ({
       icon={<FilterFunnelIcon />}
       className={styles.triggerButton}
     >
-      {filterDateLabel ?? selectDatesLabel}
+      {triggerText}
     </Button>
   )
 

@@ -76,7 +76,7 @@ describe('PayrollList', () => {
     renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Filter by date,/ })).toBeInTheDocument()
     })
   })
 
@@ -86,7 +86,7 @@ describe('PayrollList', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Filter by date,/ })).toBeInTheDocument()
     })
 
     expect(container.querySelector('.custom-class')).toBeInTheDocument()
@@ -603,7 +603,7 @@ describe('PayrollList', () => {
         expect(requests.at(-1)!.searchParams.get('page')).toBe('2')
       })
 
-      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
       await enterDate(user, 'Start Date', '02012030')
       await enterDate(user, 'End Date', '03012030')
       await user.click(screen.getByRole('button', { name: 'Apply' }))
@@ -626,14 +626,14 @@ describe('PayrollList', () => {
       const defaultStartDate = requests[0]!.searchParams.get('start_date')
       const defaultEndDate = requests[0]!.searchParams.get('end_date')
 
-      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
       await enterDate(user, 'Start Date', '02012030')
       await user.click(screen.getByRole('button', { name: 'Apply' }))
       await waitFor(() => {
         expect(requests.at(-1)!.searchParams.get('start_date')).toBe('2030-02-01')
       })
 
-      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
       await user.click(await screen.findByRole('button', { name: 'Reset' }))
       await user.click(screen.getByRole('button', { name: 'Apply' }))
 
@@ -656,7 +656,7 @@ describe('PayrollList', () => {
       renderWithProviders(<PayrollList {...defaultProps} />)
 
       await screen.findByRole('button', { name: 'Run Payroll' })
-      await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+      await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
       await enterDate(user, 'Start Date', '02012030')
       await user.click(screen.getByRole('button', { name: 'Apply' }))
 
