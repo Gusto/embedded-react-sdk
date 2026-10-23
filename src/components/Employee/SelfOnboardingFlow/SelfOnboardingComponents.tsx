@@ -35,14 +35,8 @@ export interface SelfOnboardingContextInterface extends FlowContextInterface {
 
 /** @internal */
 export function Landing() {
-  const { companyId, employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
-  return (
-    <LandingComponent
-      companyId={ensureRequired(companyId)}
-      employeeId={ensureRequired(employeeId)}
-      onEvent={onEvent}
-    />
-  )
+  const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
+  return <LandingComponent employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 /** @internal */

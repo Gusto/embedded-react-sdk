@@ -877,17 +877,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         }
       ],
       "variables": [
-        "companyId",
         "employeeId"
       ]
     },
@@ -2100,17 +2094,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
-        },
-        {
-          "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
         }
       ],
       "variables": [
-        "companyId",
         "contractorUuid"
       ]
     },

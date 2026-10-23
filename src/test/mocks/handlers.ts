@@ -17,7 +17,6 @@ import CompanyForms from './apis/company_forms'
 import PayScheduleHandlers from './apis/payschedule'
 import CompanyStateTaxesHandlers from './apis/company_state_taxes'
 import ContractorPaymentMethodHandlers from './apis/contractor_payment_method'
-import ContractorNewHireReportHandlers from './apis/contractor_new_hire_report'
 import contractorAddressHandlers from './apis/contractor_address'
 import ContractorHandlers from './apis/contractors'
 import ContractorDocumentsHandlers from './apis/contractor_documents'
@@ -72,7 +71,6 @@ export const handlers = [
   ...PayScheduleHandlers,
   ...CompanyStateTaxesHandlers,
   ...ContractorPaymentMethodHandlers,
-  ...ContractorNewHireReportHandlers,
   ...contractorAddressHandlers,
   ...ContractorHandlers,
   ...ContractorDocumentsHandlers,
