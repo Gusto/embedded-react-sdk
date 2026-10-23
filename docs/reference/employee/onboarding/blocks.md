@@ -656,7 +656,6 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies) |
 | GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees) |
 
 ***
