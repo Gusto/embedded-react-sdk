@@ -2,7 +2,7 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import {
   type PayrollShowFixedCompensations,
   OffCycleReasonType,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type {
   FixedCompensations,
   Reimbursements as Reimbursement,
@@ -12,10 +12,10 @@ import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/mode
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/components/compensation'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
+import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { PayrollType } from './PayrollList/types'
 import { PayrollCategory, isOffCyclePayroll } from './payrollTypes'
 import { formatPayRate } from '@/helpers/formattedStrings'

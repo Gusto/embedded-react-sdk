@@ -9,7 +9,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'

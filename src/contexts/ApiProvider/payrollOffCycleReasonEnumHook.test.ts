@@ -3,7 +3,7 @@ import {
   OffCycleReasonType,
   Payroll$inboundSchema,
   PayrollShow$inboundSchema,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
 
 const context = (operationID: string) =>

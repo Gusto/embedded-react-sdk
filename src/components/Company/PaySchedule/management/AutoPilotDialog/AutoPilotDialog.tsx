@@ -1,4 +1,4 @@
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { AutoPilotDialogPresentation } from './AutoPilotDialogPresentation'
 import { useAutoPilotDialog } from './useAutoPilotDialog'
 import type { EventType } from '@/shared/constants'

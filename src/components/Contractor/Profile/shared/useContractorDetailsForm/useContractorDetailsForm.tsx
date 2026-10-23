@@ -331,7 +331,7 @@ export function useContractorDetailsForm({
     { enabled: !!contractorId },
   )
 
-  const contractor = contractorQuery.data?.contractor
+  const contractor = contractorQuery.data?.contractorShow
 
   const isCreateMode = !contractorId
   const isSelfOnboardingToggleable = canToggleSelfOnboarding(contractor)

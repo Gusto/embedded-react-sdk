@@ -15,6 +15,26 @@ const RELATIVE_OUTPUT = 'src/models/external.ts'
 const isVerifyMode = process.argv.includes('--verify')
 
 const PACKAGE_NAME = '@gusto/embedded-api'
+const PUBLIC_MODEL_ALIASES: Record<string, Record<string, string>> = {
+  contractor: {
+    ContractorAddress1: 'Address',
+    ContractorMemberPortalInvitationStatus: 'MemberPortalInvitationStatus',
+    ContractorUpcomingEmployment: 'UpcomingEmployment',
+    ContractorOnboardingStatus1: 'OnboardingStatus',
+  },
+  employee: {
+    EmployeeCurrentEmploymentStatus: 'CurrentEmploymentStatus',
+    EmployeeOnboardingDocumentsConfig: 'OnboardingDocumentsConfig',
+  },
+  payrollreceipt: {
+    EmployeeCompensations: 'PayrollReceiptEmployeeCompensations',
+  },
+  unprocessedpayroll: {
+    PayrollShowEmployeeCompensations: 'EmployeeCompensations',
+    PayrollShowBreakdowns: 'PayrollShowEmployeeCompensationsBreakdowns',
+    PayrollShowEmployeeCompensationsBreakdowns: 'PayrollShowBreakdowns',
+  },
+}
 const COMPONENT_IMPORT = new RegExp(
   `^${PACKAGE_NAME.replace(/[/\\^$*+?.()|[\]{}]/g, '\\$&')}/models/components/([a-z0-9]+)$`,
 )
@@ -163,8 +183,10 @@ function render(byModule: Map<string, Set<string>>): string {
       const documentedValues: string[] = []
       const undocumented: string[] = []
       for (const symbol of [...byModule.get(moduleName)!].sort()) {
+        const publicName = PUBLIC_MODEL_ALIASES[moduleName]?.[symbol] ?? symbol
+        const exportName = publicName === symbol ? symbol : `${symbol} as ${publicName}`
         if (hasTopLevelDoc(moduleName, symbol)) {
-          ;(isValueSymbol(moduleName, symbol) ? documentedValues : documentedTypes).push(symbol)
+          ;(isValueSymbol(moduleName, symbol) ? documentedValues : documentedTypes).push(exportName)
         } else {
           undocumented.push(symbol)
         }
@@ -173,8 +195,10 @@ function render(byModule: Map<string, Set<string>>): string {
       const lines: string[] = []
       for (const symbol of undocumented) {
         const keyword = isValueSymbol(moduleName, symbol) ? 'export' : 'export type'
-        lines.push(`/** \`${symbol}\` entity from the Gusto Embedded API. */`)
-        lines.push(`${keyword} { ${symbol} } ${from}`)
+        const publicName = PUBLIC_MODEL_ALIASES[moduleName]?.[symbol] ?? symbol
+        const exportName = publicName === symbol ? symbol : `${symbol} as ${publicName}`
+        lines.push(`/** \`${publicName}\` entity from the Gusto Embedded API. */`)
+        lines.push(`${keyword} { ${exportName} } ${from}`)
       }
       if (documentedTypes.length > 0) {
         lines.push(`export type { ${documentedTypes.join(', ')} } ${from}`)

@@ -49,6 +49,103 @@ To see the SDK running in GWS Flows, visit it [locally](http://localhost:7777/de
 Components and Flows will be shown at the top of the page in a `nav`. Company Components will automatically appear as they are added.
 Select a Flow or Component to view it
 
+## API client 0.3.2 migration (SDK-1443)
+
+This migration updates `@gusto/embedded-api` from
+`npm:@gusto/embedded-api-v-2026-06-15@0.3.1` to `0.3.2` to expose
+`paid_time_off[].approved_request_hours`. The 0.3.1 client strips this field during
+response validation, so a local TypeScript cast would not recover it. The backend
+change is [zenpayroll PR #384412](https://github.com/Gusto/zenpayroll/pull/384412).
+
+This is a client package patch within the same dated API. `API_VERSION` and
+`API_QUERY_NAMESPACE` stay on `2026-06-15`; changing either would alter the request
+contract or break matching between generated and hand-written query keys.
+
+### Why the related files change
+
+| Related change                                                                          | Why it is required                                                                                                                                                                                                                                                                        | Regression coverage                                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Employee GET consumers read `employeeShow`                                              | The generated GET response wrapper changed from `employee` to `employeeShow`. Leaving a consumer on the old key yields undefined employee data. Create/update responses still use `employee`; their consumers must keep that key. The HTTP response body itself is unchanged.             | `apiClient032Compatibility.test.tsx` exercises a real GET, update, and automatic refetch through `ApiProvider`; existing employee form/flow tests verify the rendered consumers.                                                           |
+| Contractor GET/list consumers read `contractorShow` / `showContractors`                 | The generated wrappers changed from `contractor` / `contractors`. Detail, list, payment selection, and pagination consumers need the new keys. Create/update responses still use `contractor`.                                                                                            | The compatibility test verifies individual/business rows, pagination headers, an update response, and refetch of both detail and list. `useSelectContractors` pagination and multi-page tests retain their existing behavioral assertions. |
+| Payroll imports move from `payrollshow` to `unprocessedpayroll`                         | The old generated module was removed. Most symbol names are unchanged, but payroll `EmployeeCompensations` is now `PayrollShowEmployeeCompensations`. These imports support payroll lists, editing, summaries, receipts, and response-normalization hooks.                                | Full typecheck, existing payroll suites, and compatibility tests for prepare/update/GET preserve the runtime response shapes.                                                                                                              |
+| Pay-schedule imports move from `payscheduleshow` to `payschedulelistitem`               | The old module was removed. `PayScheduleShow` remains available in the new module; list responses now use `PayScheduleListItem`. Consumers retain their existing behavior and date/automatic-payroll fields.                                                                              | Typecheck, pay-schedule suites, and a real-client list-response test cover these fields.                                                                                                                                                   |
+| Shared employee/contractor nested types and onboarding constants use new upstream names | The generated client prefixes names such as `Address`, `OnboardingStatus`, `CurrentEmploymentStatus`, and `OnboardingDocumentsConfig`. `shared/constants.ts` consumes the contractor onboarding enum at runtime, so it requires the renamed value export as well as updated type imports. | Typecheck, onboarding/status suites, and public-model compatibility assertions.                                                                                                                                                            |
+| Receipt employee-row imports change                                                     | The receipt model renamed `PayrollReceiptEmployeeCompensations` to `EmployeeCompensations`. That name previously identified payroll compensation rows in a different module. Treating the two as interchangeable would expose the wrong public shape.                                     | A real-client receipt test verifies employee names and net pay; public-model tests distinguish payroll rows from receipt rows.                                                                                                             |
+| `build/deriveExternalModels.ts` supplies compatibility aliases                          | Regeneration would otherwise remove seven existing `APIModels` names and repurpose `APIModels.EmployeeCompensations`. The payroll breakdown names also swap their hours/amount meanings upstream. The generator preserves the existing public names and meanings across regeneration.     | `src/models/external.test.ts` imports the public `APIModels` namespace, checks the aliases, and rejects the swapped shapes; `npm run models:verify` checks the generated barrel.                                                           |
+| SDK-app imports and response selectors change                                           | Prototypes consume the same installed client as the SDK. They must follow its new module locations and GET wrappers, including contractor self-onboarding and payroll prototypes.                                                                                                         | SDK-app typecheck compared against main with 0.3.1: the same 21 pre-existing errors remain, with no new file/error-code pairs.                                                                                                             |
+| Mocked hook responses change                                                            | Mocks that replace generated React Query hooks must return the new client-side wrappers. Raw MSW HTTP fixtures remain flat server responses and must not be wrapped in `employeeShow` or `contractorShow`.                                                                                | Full SDK unit suite, plus real-client tests that mock only the HTTP boundary.                                                                                                                                                              |
+| API reports and reference docs regenerate                                               | Public aliases and the upstream model changes need to be reflected in the checked-in generated output. Upstream source links also change from client 0.3.1 to 0.3.2.                                                                                                                      | `npm run derive`, documentation frontmatter lint, and the production docs build.                                                                                                                                                           |
+
+The GET wrapper changes are internal to the generated client. They do not rename
+the SDK headless hooks' existing `data.employee`, `data.contractor`, or
+`data.contractors` properties, and do not change the raw HTTP JSON bodies.
+
+Federal/state withholding types also change which generated enum names they
+reference. Their `fixed` / `percent` values are unchanged; there is no new
+withholding calculation or submission rule in this migration.
+
+The generator's `PUBLIC_MODEL_ALIASES` map preserves the SDK compatibility contract.
+Do not remove the public aliases when updating this client again simply because the
+upstream names have changed. Preserve the published `APIModels` surface, or handle
+any intentional removal as an SDK breaking change. Change the generator rather than
+editing `src/models/external.ts` by hand.
+
+### Verification commands
+
+```bash
+npm run test -- --run --maxWorkers=4
+npx tsc --noEmit
+npm run derive
+npm run models:verify
+npm run docs:lint
+npm run docs:build
+npx tsc --noEmit -p sdk-app/tsconfig.json
+```
+
+`src/contexts/ApiProvider/apiClient032Compatibility.test.tsx` exercises the real
+client, serializers, response validation, providers, and query invalidation against
+MSW HTTP handlers. It intentionally does not mock the generated React Query hooks.
+PTO presentation and form behavior are implemented separately in the dependent
+SDK-1443 feature PR.
+
+Browser verification uses the existing Demo canaries:
+
+- `e2e/tests/employee/03-update-reentry.spec.ts`: employee GET data reaches the edit form.
+- `e2e/tests/contractor/01-mixed-roster.spec.ts`: contractor list data renders both entity types.
+- `e2e/tests/contractor/03-onboarding-edit.spec.ts`: contractor GET data reaches the edit form.
+- `e2e/tests/payroll/01-regular-landing.spec.ts`: payroll and schedule data render the entry surface.
+- `e2e/tests/payroll/06-review-existing.spec.ts`: payroll detail data renders the execution surface.
+
+Run those files with `npm run test:e2e:demo -- <spec paths> --retries=0`. The Demo
+backend and valid scenario provisioning are required; a skipped or blocked run is
+not evidence of API compatibility. Test results and any remaining blockers should
+be recorded with the change when it is reviewed.
+
+### Verification results before the PR split (2026-10-23)
+
+These results cover the original combined migration and PTO change. Each split PR
+also records its own validation results in its description.
+
+- Full SDK unit suite: **404 test files passed, 4,656 tests passed, one expected failure**.
+- Focused follow-up after strengthening compatibility assertions: **132 tests passed**
+  across the client contract, public models, both payroll editors, and headless payroll
+  form. These overlap the full suite and are not an additional suite-wide total.
+- Real-client migration contract tests: **six passed**, including nullable approved
+  hours, GET/update response differences, automatic refetch, and read-only serialization.
+- SDK typecheck, production build, derived-model verification, API report generation,
+  documentation frontmatter lint, and production documentation build: **passed**.
+- Repository ESLint: **zero errors, 24 warnings**. Formatting of changed project files
+  passes. The unmodified full format command additionally finds 11 pre-existing,
+  untracked `.agents` skill files; those files were left untouched.
+- SDK-app typecheck: **21 existing errors**. A clean main checkout with API client
+  0.3.1 produces the same file/error-code pairs; the migration introduces none.
+- Demo browser run: **three passed, four failed, none skipped**. Employee edit,
+  contractor list, and contractor edit passed. The four payroll tests fail during
+  accessibility checks with `label-content-name-mismatch`. A separate run of the
+  payroll landing canary against clean main with client 0.3.1 reproduces that same
+  violation. This is an outstanding baseline accessibility defect, not a passing
+  payroll E2E result; the accessibility checks have not been disabled or weakened.
+
 ## How to leverage Translations
 
 Translations are stored in [/src/i18n](/src/i18n).

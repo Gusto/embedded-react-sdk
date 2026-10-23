@@ -54,6 +54,9 @@
     "NAICS",
     "numericality",
     "pasteable",
+    "payrollshow",
+    "payschedulelistitem",
+    "payscheduleshow",
     "paystub",
     "paystubs",
     "pressable",
@@ -67,6 +70,7 @@
     "summarising",
     "themable",
     "themself",
+    "unprocessedpayroll",
     "worktree",
     "worktrees",
     "zenpayroll"
