@@ -2645,6 +2645,10 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | `fields.startDate.description` | `"Your contractor's first day of work at your company"` |
 | `fields.startDate.label` | `"Start Date"` |
 | `fields.wageType` | |
+| `fields.wageType.fixedDescription` | `"Pay a fixed amount each pay period."` |
+| `fields.wageType.fixedLabel` | `"Fixed"` |
+| `fields.wageType.hourlyDescription` | `"Pay based on hours worked."` |
+| `fields.wageType.hourlyLabel` | `"Hourly"` |
 | `fields.wageType.label` | `"Wage Type"` |
 | <a id="property-contractorprofileselfonboarding"></a> `selfOnboarding` | |
 | `selfOnboarding.businessDescription` | `"Please verify your business name and provide your EIN."` |
