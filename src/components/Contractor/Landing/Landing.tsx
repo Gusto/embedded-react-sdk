@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
+import { GetV1ContractorsContractorUuidQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuid'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -37,7 +37,7 @@ export function Landing(props: LandingProps) {
   )
 }
 
-const Root = ({ contractorId, companyId, className, dictionary }: LandingProps) => {
+const Root = ({ contractorId, className, dictionary }: LandingProps) => {
   useI18n('Contractor.Landing')
   useComponentDictionary('Contractor.Landing', dictionary)
   const { onEvent } = useBase()
@@ -47,17 +47,19 @@ const Root = ({ contractorId, companyId, className, dictionary }: LandingProps) 
 
   const {
     data: { contractorShow: contractor },
-  } = useContractorsGetSuspense({ contractorUuid: contractorId })
+  } = useContractorsGetSuspense({
+    contractorUuid: contractorId,
+    include: [GetV1ContractorsContractorUuidQueryParamInclude.CompanyName],
+  })
   const sanitizedContractorName = useMemo(
     () =>
       DOMPurify.sanitize(contractor?.firstName ?? contractor?.businessName ?? t('fallbackName')),
     [contractor, t],
   )
-
-  const {
-    data: { company },
-  } = useCompaniesGetSuspense({ companyId })
-  const sanitizedCompanyName = useMemo(() => DOMPurify.sanitize(company?.name ?? ''), [company])
+  const sanitizedCompanyName = useMemo(
+    () => DOMPurify.sanitize(contractor?.companyName ?? ''),
+    [contractor],
+  )
 
   return (
     <section className={className}>

@@ -94,6 +94,15 @@ export const getContractorsList = handleGetContractorsList(() =>
   }),
 )
 
+export const getContractorWithCompanyName = handleGetContractor(async ({ request }) => {
+  const includesCompanyName = new URL(request.url).searchParams
+    .getAll('include')
+    .includes('company_name')
+  if (!includesCompanyName) return
+  const responseFixture = await getFixture('get-v1-contractors-contractor_id')
+  return HttpResponse.json({ ...responseFixture, company_name: 'Test Company' })
+})
+
 export const getContractor = handleGetContractor(async () => {
   const responseFixture = await getFixture('get-v1-contractors-contractor_id')
   return HttpResponse.json(responseFixture)
@@ -151,4 +160,10 @@ handleGetContractorDocuments.with = (data: Partial<{ documents: unknown[] }> = {
     }),
   )
 
-export default [getContractorsList, getContractor, createContractor, updateContractor]
+export default [
+  getContractorsList,
+  getContractorWithCompanyName,
+  getContractor,
+  createContractor,
+  updateContractor,
+]
