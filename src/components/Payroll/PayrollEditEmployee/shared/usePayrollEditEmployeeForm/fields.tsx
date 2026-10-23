@@ -132,6 +132,8 @@ export interface TimeOffEntry {
    * `description` to render it as the input's help text.
    */
   remaining: number | null
+  /** Read-only approved request hours for this pay period; absent on final-payout rows. */
+  approvedRequestHours?: number
 }
 
 /**
@@ -565,6 +567,7 @@ export function createPayrollEditEmployeeFields({
     Field: createNumberField(`timeOff.${entry.name!}`, errorMessages),
     // Seeded from the initial entered hours; the hook recomputes it live.
     remaining: computeTimeOffRemaining(timeOffAccrualByName.get(entry.name!), entry.hours),
+    approvedRequestHours: Number(entry.approvedRequestHours || 0),
   }))
 
   // Final-payout rows never show a remaining balance.

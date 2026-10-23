@@ -388,10 +388,10 @@ const Root = ({
 
   const renderTimeOffSection = (
     entries: TimeOffEntry[],
-    options: { title: string; description?: string },
+    options: { title: string; description?: string; isFinalPayout?: boolean },
   ) => {
     if (entries.length === 0) return null
-    const { title, description } = options
+    const { title, description, isFinalPayout = false } = options
 
     const columns: useDataViewPropReturn<TimeOffEntry>['columns'] = [
       {
@@ -399,7 +399,7 @@ const Root = ({
         render: entry => entry.name,
       },
       {
-        title: t('hoursColumn'),
+        title: isFinalPayout ? t('hoursColumn') : t('additionalHoursColumn'),
         justify: 'end',
         render: entry => (
           <div className={styles.inputContainer}>
@@ -417,6 +417,17 @@ const Root = ({
         ),
       },
     ]
+
+    if (!isFinalPayout) {
+      columns.splice(1, 0, {
+        title: t('preapprovedHoursColumn'),
+        justify: 'end',
+        render: entry =>
+          entry.approvedRequestHours && entry.approvedRequestHours > 0
+            ? entry.approvedRequestHours
+            : null,
+      })
+    }
 
     return (
       <Box header={<BoxHeader title={title} description={description} />} withPadding={false}>
@@ -633,6 +644,7 @@ const Root = ({
             {Fields.finalPayout
               ? renderTimeOffSection(Fields.finalPayout, {
                   title: t('finalPayoutTitle'),
+                  isFinalPayout: true,
                   description: t('finalPayoutDescription'),
                 })
               : null}
