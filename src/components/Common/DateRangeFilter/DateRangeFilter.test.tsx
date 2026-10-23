@@ -16,7 +16,7 @@ const defaultProps = {
   cancelLabel: 'Cancel',
   resetLabel: 'Reset',
   selectDatesLabel: 'Select dates',
-  triggerLabel: 'Filter by date',
+  getTriggerLabel: (selection: string) => `Filter by date, ${selection}`,
 }
 
 describe('DateRangeFilter', () => {

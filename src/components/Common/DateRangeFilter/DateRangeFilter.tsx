@@ -22,7 +22,7 @@ interface DateRangeFilterProps {
   cancelLabel: string
   resetLabel: string
   selectDatesLabel: string
-  triggerLabel: string
+  getTriggerLabel: (selection: string) => string
   maxEndDate?: Date
   minStartDate?: Date
 }
@@ -40,7 +40,7 @@ export const DateRangeFilter = ({
   cancelLabel,
   resetLabel,
   selectDatesLabel,
-  triggerLabel,
+  getTriggerLabel,
   maxEndDate,
   minStartDate,
 }: DateRangeFilterProps) => {
@@ -92,7 +92,7 @@ export const DateRangeFilter = ({
   const triggerButton = (
     <Button
       buttonRef={triggerRef}
-      aria-label={`${triggerLabel}, ${triggerText}`}
+      aria-label={getTriggerLabel(triggerText)}
       aria-haspopup="dialog"
       aria-expanded={isOpen}
       onClick={handleOpen}
