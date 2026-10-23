@@ -61,7 +61,7 @@ const Root = ({ employeeId, dictionary, className }: EmployeeDocumentsProps) => 
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { data } = useEmployeesGetSuspense({ employeeId })
-  const employee = data.employee
+  const employee = data.employeeShow
   const currentI9Status = employee?.onboardingDocumentsConfig?.i9Document ?? false
 
   const isEmployeeSelfOnboarding = employee?.onboardingStatus

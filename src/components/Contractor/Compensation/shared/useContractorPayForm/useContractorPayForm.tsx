@@ -138,7 +138,7 @@ export function useContractorPayForm({
   shouldFocusError = true,
 }: UseContractorPayFormProps): HookLoadingResult | UseContractorPayFormReady {
   const contractorQuery = useContractorsGet({ contractorUuid: contractorId })
-  const contractor = contractorQuery.data?.contractor
+  const contractor = contractorQuery.data?.contractorShow
 
   const [schema, metadataConfig] = useMemo(() => createContractorPaySchema(), [])
 

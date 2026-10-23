@@ -28,7 +28,7 @@ export function useContractorCompensationSummary({
 
   const errorHandling = composeErrorHandler([contractorQuery])
 
-  const contractor = contractorQuery.data?.contractor
+  const contractor = contractorQuery.data?.contractorShow
 
   if (contractorQuery.isLoading || !contractor) {
     return { isLoading: true, errorHandling }

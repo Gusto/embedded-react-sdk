@@ -59,7 +59,7 @@ export function ContractorList() {
   )
   const pendingRehires = useMemo(
     () =>
-      (dismissedData?.contractors ?? [])
+      (dismissedData?.showContractors ?? [])
         .filter(c => c.upcomingEmployment?.startDate)
         .sort((a, b) =>
           (a.upcomingEmployment?.startDate ?? '').localeCompare(
@@ -70,8 +70,8 @@ export function ContractorList() {
   )
 
   const contractors = useMemo(() => {
-    if (selectedTab !== 'active') return data?.contractors ?? []
-    return [...(data?.contractors ?? []), ...pendingRehires]
+    if (selectedTab !== 'active') return data?.showContractors ?? []
+    return [...(data?.showContractors ?? []), ...pendingRehires]
   }, [data, pendingRehires, selectedTab])
 
   const cancelTermination = async (contractor: Contractor, type: 'dismissal' | 'rehire') => {

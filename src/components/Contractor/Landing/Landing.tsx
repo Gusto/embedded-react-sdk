@@ -46,7 +46,7 @@ const Root = ({ contractorId, companyId, className, dictionary }: LandingProps) 
   const { t } = useTranslation('Contractor.Landing')
 
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
   const sanitizedContractorName = useMemo(
     () =>

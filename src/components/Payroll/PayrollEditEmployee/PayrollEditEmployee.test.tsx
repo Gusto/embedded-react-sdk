@@ -106,7 +106,7 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
 
 vi.mock('@gusto/embedded-api/react-query/employeesGet', () => ({
   useEmployeesGetSuspense: () => ({
-    data: { employee: mockEmployee },
+    data: { employeeShow: mockEmployee },
   }),
 }))
 

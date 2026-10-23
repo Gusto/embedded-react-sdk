@@ -1,5 +1,5 @@
 import { fn } from 'storybook/test'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { PayScheduleOverviewPresentation } from './PayScheduleOverviewPresentation'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 

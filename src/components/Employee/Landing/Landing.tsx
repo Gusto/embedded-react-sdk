@@ -44,7 +44,7 @@ const Root = ({ employeeId, companyId, className, dictionary }: LandingProps) =>
   const Components = useComponentContext()
 
   const {
-    data: { employee },
+    data: { employeeShow: employee },
   } = useEmployeesGetSuspense({ employeeId })
   const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(employee!.firstName), [employee])
 

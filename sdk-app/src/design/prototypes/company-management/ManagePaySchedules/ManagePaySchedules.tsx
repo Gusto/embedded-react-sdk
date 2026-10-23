@@ -6,7 +6,7 @@ import { usePaySchedulesPreviewAssignmentMutation } from '@gusto/embedded-api/re
 import { usePaySchedulesAssignMutation } from '@gusto/embedded-api/react-query/paySchedulesAssign'
 import { useDepartmentsGetAll } from '@gusto/embedded-api/react-query/departmentsGetAll'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import type { PayScheduleAssignmentPreview } from '@gusto/embedded-api/models/components/payscheduleassignmentpreview'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'

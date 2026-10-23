@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PayrollPrepared$inboundSchema } from '@gusto/embedded-api/models/components/payrollshow'
+import { PayrollPrepared$inboundSchema } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
 
 const context = (operationID: string) =>

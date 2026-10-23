@@ -1,9 +1,9 @@
 import { Trans, useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import type {
-  EmployeeCompensations,
+  PayrollShowEmployeeCompensations as EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type {
