@@ -2356,6 +2356,62 @@ Federal tax information for employees using the revised 2020 W4 form.
 
 ***
 
+<a id="employeehomeaddress"></a>
+
+## EmployeeHomeAddress
+
+> **EmployeeHomeAddress** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/employeehomeaddress.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/employeehomeaddress.ts#L11)
+
+`EmployeeHomeAddress` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeehomeaddresscountry"></a> `country` | `string` \| `null` | - |
+| <a id="property-employeehomeaddressactive"></a> `active?` | `boolean` | The status of the location. Inactive locations have been deleted, but may still have historical data associated with them. |
+| <a id="property-employeehomeaddresscity"></a> `city?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddressstate"></a> `state?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddressstreet1"></a> `street1?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddressstreet2"></a> `street2?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddressuuid"></a> `uuid?` | `string` | Unique identifier for this address. |
+| <a id="property-employeehomeaddresszip"></a> `zip?` | `string` \| `null` | - |
+
+***
+
+<a id="employeehomeaddresshistoryentry"></a>
+
+## EmployeeHomeAddressHistoryEntry
+
+> **EmployeeHomeAddressHistoryEntry** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/employeehomeaddresshistoryentry.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/employeehomeaddresshistoryentry.ts#L19)
+
+A single entry in an employee's home-address history. Returned in the
+
+### Remarks
+
+`all_home_addresses` array; includes the `effective_date` the address
+became active in addition to the shared `Employee-Home-Address` fields.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeehomeaddresshistoryentrycountry"></a> `country` | `string` \| `null` | - |
+| <a id="property-employeehomeaddresshistoryentryactive"></a> `active?` | `boolean` | The status of the location. Inactive locations have been deleted, but may still have historical data associated with them. |
+| <a id="property-employeehomeaddresshistoryentrycity"></a> `city?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddresshistoryentryeffectivedate"></a> `effectiveDate?` | `RFCDate` | The date the address became effective. |
+| <a id="property-employeehomeaddresshistoryentrystate"></a> `state?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddresshistoryentrystreet1"></a> `street1?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddresshistoryentrystreet2"></a> `street2?` | `string` \| `null` | - |
+| <a id="property-employeehomeaddresshistoryentryuuid"></a> `uuid?` | `string` | Unique identifier for this address. |
+| <a id="property-employeehomeaddresshistoryentryzip"></a> `zip?` | `string` \| `null` | - |
+
+***
+
 <a id="employeememberportalinvitationstatus"></a>
 
 ## EmployeeMemberPortalInvitationStatus
@@ -6900,6 +6956,239 @@ The current status of the state tax setup.
 - `not_started`: No requirements have been filled
 - `in_progress`: Some requirements have been filled, or default rates are applied
 - `complete`: All requirements have been filled without default rates
+
+***
+
+<a id="showemployees"></a>
+
+## ShowEmployees
+
+> **ShowEmployees** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:129](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L129)
+
+The representation of an employee in Gusto.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-showemployeesfirstname"></a> `firstName` | `string` | - |
+| <a id="property-showemployeeslastname"></a> `lastName` | `string` | - |
+| <a id="property-showemployeespaymentmethod"></a> `paymentMethod` | [`ShowEmployeesPaymentMethod`](#showemployeespaymentmethod-1) | The employee's payment method |
+| <a id="property-showemployeesuuid"></a> `uuid` | `string` | The UUID of the employee in Gusto. |
+| <a id="property-showemployeesadditionalproperties"></a> `additionalProperties?` | `object` | - |
+| <a id="property-showemployeesallhomeaddresses"></a> `allHomeAddresses?` | [`EmployeeHomeAddressHistoryEntry`](#employeehomeaddresshistoryentry)[] | - |
+| <a id="property-showemployeesapplicabletaxids"></a> `applicableTaxIds?` | `number`[] | - |
+| <a id="property-showemployeescompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company the employee is employed by. |
+| <a id="property-showemployeescurrentemploymentstatus"></a> `currentEmploymentStatus?` | [`ShowEmployeesCurrentEmploymentStatus`](#showemployeescurrentemploymentstatus-1) \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
+| <a id="property-showemployeescurrenthomeaddress"></a> `currentHomeAddress?` | [`EmployeeHomeAddress`](#employeehomeaddress) | - |
+| <a id="property-showemployeescustomfields"></a> `customFields?` | [`EmployeeCustomField`](#employeecustomfield)[] | Custom fields are only included for the employee if the include param has the custom_fields value set |
+| <a id="property-showemployeesdateofbirth"></a> `dateOfBirth?` | `string` \| `null` | - |
+| <a id="property-showemployeesdepartment"></a> `department?` | `string` \| `null` | The employee's department in the company. |
+| <a id="property-showemployeesdepartmentuuid"></a> `departmentUuid?` | `string` \| `null` | The UUID of the department the employee is under |
+| <a id="property-showemployeeseligiblepaidtimeoff"></a> `eligiblePaidTimeOff?` | [`PaidTimeOff`](#paidtimeoff)[] | - |
+| <a id="property-showemployeesemail"></a> `email?` | `string` \| `null` | The personal email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
+| <a id="property-showemployeesemployeecode"></a> `employeeCode?` | `string` | The short format code of the employee |
+| <a id="property-showemployeesflsastatus"></a> `flsaStatus?` | [`FlsaStatusType`](#flsastatustype-1) | The FLSA status for this compensation. Salaried ('Exempt') employees are paid a fixed salary every pay period. Salaried with overtime ('Salaried Nonexempt') employees are paid a fixed salary every pay period, and receive overtime pay when applicable. Hourly ('Nonexempt') employees are paid for the hours they work, and receive overtime pay when applicable. Commissioned employees ('Commission Only Exempt') earn wages based only on commission. Commissioned with overtime ('Commission Only Nonexempt') earn wages based on commission, and receive overtime pay when applicable. Owners ('Owner') are employees that own at least twenty percent of the company. |
+| <a id="property-showemployeesgarnishments"></a> `garnishments?` | [`Garnishment`](#garnishment)[] | - |
+| <a id="property-showemployeeshasssn"></a> `hasSsn?` | `boolean` | Indicates whether the employee has an SSN in Gusto. |
+| <a id="property-showemployeeshiddenssn"></a> `hiddenSsn?` | `string` | - |
+| <a id="property-showemployeeshiredat"></a> `hiredAt?` | `RFCDate` | The date when the employee was hired to the company |
+| <a id="property-showemployeeshistorical"></a> `historical?` | `boolean` | - |
+| <a id="property-showemployeesjobs"></a> `jobs?` | [`Job`](#job)[] | - |
+| <a id="property-showemployeesmanageruuid"></a> `managerUuid?` | `string` \| `null` | The UUID of the employee's manager. |
+| <a id="property-showemployeesmemberportalinvitationstatus"></a> `memberPortalInvitationStatus?` | [`ShowEmployeesMemberPortalInvitationStatus`](#showemployeesmemberportalinvitationstatus) \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
+| <a id="property-showemployeesmiddleinitial"></a> `middleInitial?` | `string` \| `null` | - |
+| <a id="property-showemployeesonboarded"></a> `onboarded?` | `boolean` | Whether the employee has completed onboarding. |
+| <a id="property-showemployeesonboardingdocumentsconfig"></a> `onboardingDocumentsConfig?` | [`ShowEmployeesOnboardingDocumentsConfig`](#showemployeesonboardingdocumentsconfig) | Configuration for an employee onboarding documents during onboarding |
+| <a id="property-showemployeesonboardingstatus"></a> `onboardingStatus?` | [`ShowEmployeesOnboardingStatus`](#showemployeesonboardingstatus-1) \| `null` | The current onboarding status of the employee |
+| <a id="property-showemployeespartnerportalinvitationsent"></a> `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
+| <a id="property-showemployeesphone"></a> `phone?` | `string` \| `null` | - |
+| <a id="property-showemployeespreferredfirstname"></a> `preferredFirstName?` | `string` \| `null` | - |
+| <a id="property-showemployeesssn"></a> `ssn?` | `string` | Deprecated. This field always returns an empty string. |
+| <a id="property-showemployeesterminated"></a> `terminated?` | `boolean` | Whether the employee is terminated. |
+| <a id="property-showemployeesterminations"></a> `terminations?` | [`Termination`](#termination)[] | - |
+| <a id="property-showemployeestitle"></a> `title?` | `string` | - |
+| <a id="property-showemployeestwopercentshareholder"></a> `twoPercentShareholder?` | `boolean` \| `null` | Whether the employee is a two percent shareholder of the company. This field only applies to companies with an S-Corp entity type. |
+| <a id="property-showemployeesversion"></a> `version?` | `string` | The current version of the employee. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+| <a id="property-showemployeesworkemail"></a> `workEmail?` | `string` \| `null` | The work email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
+
+***
+
+<a id="showemployeescurrentemploymentstatus"></a>
+
+## ShowEmployeesCurrentEmploymentStatus
+
+> `const` **ShowEmployeesCurrentEmploymentStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:78](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L78)
+
+`ShowEmployeesCurrentEmploymentStatus` entity from the Gusto Embedded API.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-showemployeescurrentemploymentstatusfulltime"></a> `FullTime` | `"full_time"` |
+| <a id="property-showemployeescurrentemploymentstatusparttimetwentyplushours"></a> `PartTimeTwentyPlusHours` | `"part_time_twenty_plus_hours"` |
+| <a id="property-showemployeescurrentemploymentstatusparttimeundertwentyhours"></a> `PartTimeUnderTwentyHours` | `"part_time_under_twenty_hours"` |
+| <a id="property-showemployeescurrentemploymentstatusseasonal"></a> `Seasonal` | `"seasonal"` |
+| <a id="property-showemployeescurrentemploymentstatusvariable"></a> `Variable` | `"variable"` |
+
+***
+
+<a id="showemployeescurrentemploymentstatus-1"></a>
+
+## ShowEmployeesCurrentEmploymentStatus
+
+> **ShowEmployeesCurrentEmploymentStatus** = `ClosedEnum`\<*typeof* [`ShowEmployeesCurrentEmploymentStatus`](#showemployeescurrentemploymentstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:78](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L78)
+
+`ShowEmployeesCurrentEmploymentStatus` entity from the Gusto Embedded API.
+
+***
+
+<a id="showemployeesmemberportalinvitationstatus"></a>
+
+## ShowEmployeesMemberPortalInvitationStatus
+
+> **ShowEmployeesMemberPortalInvitationStatus** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:107](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L107)
+
+Member portal invitation status information. Only included when the include param has the portal_invitations value set.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-showemployeesmemberportalinvitationstatuslastpasswordresentat"></a> `lastPasswordResentAt?` | `Date` \| `null` | The date and time when the password reset was last resent. |
+| <a id="property-showemployeesmemberportalinvitationstatusstatus"></a> `status?` | [`ShowEmployeesStatus`](#showemployeesstatus-1) | The current status of the member portal invitation. |
+| <a id="property-showemployeesmemberportalinvitationstatustokenexpired"></a> `tokenExpired?` | `boolean` \| `null` | Whether the invitation token has expired. |
+| <a id="property-showemployeesmemberportalinvitationstatuswelcomeemailsentat"></a> `welcomeEmailSentAt?` | `Date` \| `null` | The date and time when the welcome email was sent. |
+
+***
+
+<a id="showemployeesonboardingdocumentsconfig"></a>
+
+## ShowEmployeesOnboardingDocumentsConfig
+
+> **ShowEmployeesOnboardingDocumentsConfig** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:53](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L53)
+
+Configuration for an employee onboarding documents during onboarding
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-showemployeesonboardingdocumentsconfigi9document"></a> `i9Document?` | `boolean` | Whether to include Form I-9 for an employee during onboarding |
+| <a id="property-showemployeesonboardingdocumentsconfiguuid"></a> `uuid?` | `string` \| `null` | The UUID of the onboarding documents config |
+
+***
+
+<a id="showemployeesonboardingstatus"></a>
+
+## ShowEmployeesOnboardingStatus
+
+> `const` **ShowEmployeesOnboardingStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:36](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L36)
+
+`ShowEmployeesOnboardingStatus` entity from the Gusto Embedded API.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-showemployeesonboardingstatusadminonboardingincomplete"></a> `AdminOnboardingIncomplete` | `"admin_onboarding_incomplete"` |
+| <a id="property-showemployeesonboardingstatusonboardingcompleted"></a> `OnboardingCompleted` | `"onboarding_completed"` |
+| <a id="property-showemployeesonboardingstatusselfonboardingawaitingadminreview"></a> `SelfOnboardingAwaitingAdminReview` | `"self_onboarding_awaiting_admin_review"` |
+| <a id="property-showemployeesonboardingstatusselfonboardingcompletedbyemployee"></a> `SelfOnboardingCompletedByEmployee` | `"self_onboarding_completed_by_employee"` |
+| <a id="property-showemployeesonboardingstatusselfonboardinginvited"></a> `SelfOnboardingInvited` | `"self_onboarding_invited"` |
+| <a id="property-showemployeesonboardingstatusselfonboardinginvitedoverdue"></a> `SelfOnboardingInvitedOverdue` | `"self_onboarding_invited_overdue"` |
+| <a id="property-showemployeesonboardingstatusselfonboardinginvitedstarted"></a> `SelfOnboardingInvitedStarted` | `"self_onboarding_invited_started"` |
+| <a id="property-showemployeesonboardingstatusselfonboardingpendinginvite"></a> `SelfOnboardingPendingInvite` | `"self_onboarding_pending_invite"` |
+
+***
+
+<a id="showemployeesonboardingstatus-1"></a>
+
+## ShowEmployeesOnboardingStatus
+
+> **ShowEmployeesOnboardingStatus** = `ClosedEnum`\<*typeof* [`ShowEmployeesOnboardingStatus`](#showemployeesonboardingstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:36](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L36)
+
+`ShowEmployeesOnboardingStatus` entity from the Gusto Embedded API.
+
+***
+
+<a id="showemployeespaymentmethod"></a>
+
+## ShowEmployeesPaymentMethod
+
+> `const` **ShowEmployeesPaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:67](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L67)
+
+The employee's payment method
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-showemployeespaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-showemployeespaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
+<a id="showemployeespaymentmethod-1"></a>
+
+## ShowEmployeesPaymentMethod
+
+> **ShowEmployeesPaymentMethod** = `ClosedEnum`\<*typeof* [`ShowEmployeesPaymentMethod`](#showemployeespaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:67](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L67)
+
+The employee's payment method
+
+***
+
+<a id="showemployeesstatus"></a>
+
+## ShowEmployeesStatus
+
+> `const` **ShowEmployeesStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:92](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L92)
+
+The current status of the member portal invitation.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-showemployeesstatuscancelled"></a> `Cancelled` | `"cancelled"` |
+| <a id="property-showemployeesstatuscomplete"></a> `Complete` | `"complete"` |
+| <a id="property-showemployeesstatuspending"></a> `Pending` | `"pending"` |
+| <a id="property-showemployeesstatussent"></a> `Sent` | `"sent"` |
+| <a id="property-showemployeesstatusverified"></a> `Verified` | `"verified"` |
+
+***
+
+<a id="showemployeesstatus-1"></a>
+
+## ShowEmployeesStatus
+
+> **ShowEmployeesStatus** = `ClosedEnum`\<*typeof* [`ShowEmployeesStatus`](#showemployeesstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/showemployees.ts:92](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.1/gusto_embedded_v_2026_06_15/src/models/components/showemployees.ts#L92)
+
+The current status of the member portal invitation.
 
 ***
 

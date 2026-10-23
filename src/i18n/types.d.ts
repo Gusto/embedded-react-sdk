@@ -1061,6 +1061,8 @@ export namespace Translations {
       schedule: string
       /** @defaultValue `"Department"` */
       department: string
+      /** @defaultValue `"Employees"` */
+      employees: string
     }
     compensationTypes: {
       /** @defaultValue `"Hourly"` */
@@ -1094,6 +1096,16 @@ export namespace Translations {
       /** @defaultValue `"Run payroll by"` */
       payrollDeadline: string
     }
+    /** @defaultValue `"You have assigned pay schedules per employee."` */
+    employeeDescription: string
+    /** @defaultValue `"Pay schedules by employee"` */
+    employeeTableLabel: string
+    /** @defaultValue `"{{count}} employee"` */
+    employeeCount_one: string
+    /** @defaultValue `"{{count}} employees"` */
+    employeeCount_other: string
+    /** @defaultValue `"Employee assignments are unavailable because access to employees is missing. Contact your administrator."` */
+    employeeAccessDenied: string
   }
   /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
   export interface CompanyManagementPayScheduleAssignment {
@@ -1119,6 +1131,12 @@ export namespace Translations {
           /** @defaultValue `"By department"` */
           label: string
           /** @defaultValue `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` */
+          description: string
+        }
+        byEmployee: {
+          /** @defaultValue `"By employee"` */
+          label: string
+          /** @defaultValue `"Assign a pay schedule to each individual employee."` */
           description: string
         }
       }
@@ -1193,6 +1211,36 @@ export namespace Translations {
     }
     /** @defaultValue `"Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."` */
     departmentAccessDenied: string
+    employeeStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Employees"` */
+      employeesLabel: string
+      /** @defaultValue `"Employee"` */
+      employeeLabel: string
+      /** @defaultValue `"Pay schedule"` */
+      payScheduleLabel: string
+      /** @defaultValue `"Pay schedule for {{name}}"` */
+      scheduleForEmployee: string
+      /** @defaultValue `"Employee pay schedule assignments"` */
+      tableLabel: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+      /** @defaultValue `"Type"` */
+      typeLabel: string
+      types: {
+        /** @defaultValue `"Salaried / Exempt"` */
+        salariedExempt: string
+        /** @defaultValue `"Hourly / Nonexempt"` */
+        hourly: string
+        /** @defaultValue `"Salaried / Nonexempt"` */
+        salariedNonexempt: string
+        /** @defaultValue `"Owner"` */
+        owner: string
+      }
+    }
+    /** @defaultValue `"Employee schedules are unavailable because access to employees is missing. You can choose another schedule type or contact your administrator."` */
+    employeeAccessDenied: string
   }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
   export interface CompanyManagementTaxPaymentDetail {

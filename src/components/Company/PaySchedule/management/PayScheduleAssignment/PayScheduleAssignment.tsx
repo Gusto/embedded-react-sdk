@@ -25,6 +25,7 @@ type AssignmentSeed = Pick<
   | 'hourlyPayScheduleUuid'
   | 'salariedPayScheduleUuid'
   | 'departments'
+  | 'employees'
 >
 
 function toSupportedType(
@@ -34,6 +35,7 @@ function toSupportedType(
     case PayScheduleAssignmentType.Single:
     case PayScheduleAssignmentType.HourlySalaried:
     case PayScheduleAssignmentType.ByDepartment:
+    case PayScheduleAssignmentType.ByEmployee:
       return type
     default:
       return undefined
@@ -58,6 +60,9 @@ function toAssignmentSeed(assignment: PayScheduleAssignmentEntity | undefined): 
     defaultPayScheduleUuid: assignment?.defaultPayScheduleUuid ?? undefined,
     hourlyPayScheduleUuid: assignment?.hourlyPayScheduleUuid ?? undefined,
     salariedPayScheduleUuid: assignment?.salariedPayScheduleUuid ?? undefined,
+    employees: assignment?.employees?.flatMap(({ employeeUuid, payScheduleUuid }) =>
+      employeeUuid && payScheduleUuid ? [{ employeeUuid, payScheduleUuid }] : [],
+    ),
     departments: assignment?.departments?.flatMap(({ departmentUuid, payScheduleUuid }) =>
       departmentUuid && payScheduleUuid ? [{ departmentUuid, payScheduleUuid }] : [],
     ),
@@ -83,7 +88,9 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * current assignment, so submitting without changing anything is a no-op rather than a
  * reassignment. Supports one schedule for everyone (`single`), separate schedules for hourly
  * and salaried employees (`hourly_salaried`), or schedules by department (`by_department`),
- * including a default for employees without a department. Selecting one schedule for every
+ * including a default for employees without a department, or individually (`by_employee`).
+ * Employee assignment requires employee and compensation read access and excludes terminated,
+ * historical, incomplete-onboarding, and missing-compensation employees. Selecting one schedule for every
  * group is submitted as `single`. Can be mounted directly or launched from
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
@@ -93,10 +100,10 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | Optional current selections: `{ defaultPayScheduleUuid?: string; hourlyPayScheduleUuid?: string; salariedPayScheduleUuid?: string; departments?: { departmentUuid: string; payScheduleUuid: string }[] }` |
+ * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | Optional current selections: `{ defaultPayScheduleUuid?: string; hourlyPayScheduleUuid?: string; salariedPayScheduleUuid?: string; departments?: { departmentUuid: string; payScheduleUuid: string }[]; employees?: { employeeUuid: string; payScheduleUuid: string }[] }` |
  * | `paySchedule/created` | A new pay schedule was created from the picker step | `{ paySchedule: PayScheduleShow }` |
  * | `paySchedule/management/assignment/cancel` | The user backed out of the flow entirely, from the first step | — |
- * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` or `{ type: 'by_department'; defaultPayScheduleUuid: string; departments: { departmentUuid: string; payScheduleUuid: string }[] }` |
+ * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` or `{ type: 'by_department'; defaultPayScheduleUuid: string; departments: { departmentUuid: string; payScheduleUuid: string }[] }` or `{ type: 'by_employee'; employees: { employeeUuid: string; payScheduleUuid: string }[] }` |
  *
  * @alpha
  */

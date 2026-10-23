@@ -45,6 +45,7 @@ export const payScheduleAssignmentStateMachine = {
             hourlyPayScheduleUuid: isSameType ? ctx.hourlyPayScheduleUuid : undefined,
             salariedPayScheduleUuid: isSameType ? ctx.salariedPayScheduleUuid : undefined,
             departments: isSameType ? ctx.departments : undefined,
+            employees: isSameType ? ctx.employees : undefined,
           }
         },
       ),
@@ -109,7 +110,8 @@ export const payScheduleAssignmentStateMachine = {
           ...ctx,
           component: AssignmentScheduleStep as ComponentType,
           defaultPayScheduleUuid:
-            ctx.assignmentType === PayScheduleAssignmentBodyType.ByDepartment
+            ctx.assignmentType === PayScheduleAssignmentBodyType.ByDepartment ||
+            ctx.assignmentType === PayScheduleAssignmentBodyType.ByEmployee
               ? ctx.defaultPayScheduleUuid
               : ev.payload.paySchedule.uuid,
         }),
