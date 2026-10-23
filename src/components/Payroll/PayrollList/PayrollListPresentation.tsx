@@ -278,7 +278,7 @@ export const PayrollListPresentation = ({
             cancelLabel={t('dateFilter.cancel')}
             resetLabel={t('dateFilter.reset')}
             selectDatesLabel={t('dateFilter.selectDates')}
-            triggerLabel={t('dateFilter.trigger')}
+            getTriggerLabel={selection => t('dateFilter.triggerLabel', { selection })}
             maxEndDate={dateRangeFilter.getMaxEndDate()}
             minStartDate={dateRangeFilter.getMinStartDate()}
           />

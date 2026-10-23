@@ -5430,7 +5430,7 @@ Translation keys for the `Payroll.PayrollHistory` i18n namespace.
 | `dateFilter.reset` | `"Reset"` |
 | `dateFilter.selectDates` | `"Select dates"` |
 | `dateFilter.startDate` | `"From"` |
-| `dateFilter.trigger` | `"Filter by date"` |
+| `dateFilter.triggerLabel` | `"Filter by date, {{selection}}"` |
 | <a id="property-payrollpayrollhistoryemptystate"></a> `emptyState` | |
 | `emptyState.default` | |
 | `emptyState.default.description` | `"When you run payrolls, they'll appear here for easy reference."` |
@@ -5491,7 +5491,7 @@ Translation keys for the `Payroll.PayrollList` i18n namespace.
 | `dateFilter.reset` | `"Reset"` |
 | `dateFilter.selectDates` | `"Select dates"` |
 | `dateFilter.startDate` | `"From"` |
-| `dateFilter.trigger` | `"Filter by date"` |
+| `dateFilter.triggerLabel` | `"Filter by date, {{selection}}"` |
 | <a id="property-payrollpayrolllistdeletepayrollcta"></a> `deletePayrollCta` | `"Cancel payroll"` |
 | <a id="property-payrollpayrolllistdeletepayrolldialog"></a> `deletePayrollDialog` | |
 | `deletePayrollDialog.body` | `"This will permanently remove this off-cycle payroll. Any changes you've made will be lost."` |

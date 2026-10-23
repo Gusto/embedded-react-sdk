@@ -8124,8 +8124,8 @@ export namespace Translations {
       reset: string
       /** @defaultValue `"Select dates"` */
       selectDates: string
-      /** @defaultValue `"Filter by date"` */
-      trigger: string
+      /** @defaultValue `"Filter by date, {{selection}}"` */
+      triggerLabel: string
     }
     dataView: {
       /** @defaultValue `"Payroll history"` */
@@ -8240,8 +8240,8 @@ export namespace Translations {
       reset: string
       /** @defaultValue `"Select dates"` */
       selectDates: string
-      /** @defaultValue `"Filter by date"` */
-      trigger: string
+      /** @defaultValue `"Filter by date, {{selection}}"` */
+      triggerLabel: string
     }
     /** @defaultValue `"Payrolls"` */
     payrollsListLabel: string

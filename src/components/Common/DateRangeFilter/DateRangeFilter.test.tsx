@@ -16,7 +16,7 @@ const defaultProps = {
   cancelLabel: 'Cancel',
   resetLabel: 'Reset',
   selectDatesLabel: 'Select dates',
-  triggerLabel: 'Filter by date',
+  getTriggerLabel: (selection: string) => `Filter by date, ${selection}`,
 }
 
 describe('DateRangeFilter', () => {
@@ -25,13 +25,13 @@ describe('DateRangeFilter', () => {
   it('renders the filter trigger button', () => {
     renderWithProviders(<DateRangeFilter {...defaultProps} />)
 
-    expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Filter by date,/ })).toBeInTheDocument()
   })
 
   it('opens popover with date range picker on trigger click', async () => {
     renderWithProviders(<DateRangeFilter {...defaultProps} />)
 
-    await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+    await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
 
     await waitFor(() => {
       expect(screen.getByText('From')).toBeInTheDocument()
@@ -43,7 +43,7 @@ describe('DateRangeFilter', () => {
   it('shows Apply and Reset buttons in popover', async () => {
     renderWithProviders(<DateRangeFilter {...defaultProps} />)
 
-    await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+    await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
@@ -66,7 +66,7 @@ describe('DateRangeFilter', () => {
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+    await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument()
@@ -98,7 +98,7 @@ describe('DateRangeFilter', () => {
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+    await user.click(screen.getByRole('button', { name: /^Filter by date,/ }))
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
@@ -120,7 +120,7 @@ describe('DateRangeFilter', () => {
       />,
     )
 
-    const trigger = screen.getByRole('button', { name: 'Filter by date' })
+    const trigger = screen.getByRole('button', { name: 'Filter by date, Mar 10 – Apr 16' })
     expect(trigger).toHaveAttribute('data-variant', 'secondary')
     expect(trigger).toHaveTextContent('Mar 10 – Apr 16')
   })
@@ -128,7 +128,7 @@ describe('DateRangeFilter', () => {
   it('shows the selectDatesLabel on the trigger when no dates are set', () => {
     renderWithProviders(<DateRangeFilter {...defaultProps} />)
 
-    const trigger = screen.getByRole('button', { name: 'Filter by date' })
+    const trigger = screen.getByRole('button', { name: 'Filter by date, Select dates' })
     expect(trigger).toHaveAttribute('data-variant', 'secondary')
     expect(trigger).toHaveTextContent('Select dates')
   })
