@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { TableSortDescriptor } from '../UI/Table/TableTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 /** @internal */
@@ -10,12 +11,14 @@ type DataViewColumn<T> =
       title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      isSortable?: boolean
     }
   | {
       key?: string
       title: string | React.ReactNode
       render: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
+      isSortable?: boolean
     }
 
 type FooterKeys<T> = keyof T | string
@@ -34,6 +37,15 @@ type BaseDataViewProps<T> = {
    * Per-row checkboxes are unaffected.
    */
   hideSelectAll?: boolean
+  /**
+   * Column the data is currently sorted by. Omit while it is in its default order.
+   */
+  sortDescriptor?: TableSortDescriptor
+  /**
+   * Called when the user picks a new sort, from a column header (DataTable) or the
+   * sort control above the cards (DataCards). Omit to leave columns unsortable.
+   */
+  onSortChange?: (sortDescriptor: TableSortDescriptor) => void
 }
 
 type NoSelectionProps = {
@@ -85,6 +97,8 @@ export type useDataViewPropReturn<T> = {
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
   selectionMode?: SelectionMode
+  sortDescriptor?: TableSortDescriptor
+  onSortChange?: (sortDescriptor: TableSortDescriptor) => void
 }
 
 /** @internal */
@@ -101,6 +115,8 @@ export const useDataView = <T>({
   footer,
   isFetching,
   selectionMode,
+  sortDescriptor,
+  onSortChange,
 }: useDataViewProp<T>): useDataViewPropReturn<T> => {
   const dataViewProps = useMemo(() => {
     return {
@@ -116,6 +132,8 @@ export const useDataView = <T>({
       footer,
       isFetching,
       selectionMode,
+      sortDescriptor,
+      onSortChange,
     }
   }, [
     pagination,
@@ -130,6 +148,8 @@ export const useDataView = <T>({
     footer,
     isFetching,
     selectionMode,
+    sortDescriptor,
+    onSortChange,
   ])
 
   return dataViewProps

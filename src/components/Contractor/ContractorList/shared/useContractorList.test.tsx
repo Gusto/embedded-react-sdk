@@ -2,6 +2,7 @@ import { renderHook, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HttpResponse } from 'msw'
 import { useContractorList } from './useContractorList'
+import type { UseContractorListResult, UseContractorListReady } from './useContractorList'
 import { server } from '@/test/mocks/server'
 import {
   handleGetContractorsList,
@@ -455,6 +456,104 @@ describe('useContractorList', () => {
         })
         expect(cancelResolver).toHaveBeenCalledTimes(1)
       }
+    })
+  })
+
+  describe('Sorting', () => {
+    // The wire contract is the thing under test here: sorting is server-side, so the proof
+    // is which `sort_by` leaves the SDK, not how the rows happen to be ordered in a fixture.
+    const captureListRequests = () => {
+      const requestUrls: URL[] = []
+      server.use(
+        handleGetContractorsList(({ request }) => {
+          requestUrls.push(new URL(request.url))
+          return HttpResponse.json([contractorFixture()], {
+            headers: { 'x-total-pages': '3', 'x-total-count': '12' },
+          })
+        }),
+      )
+      return requestUrls
+    }
+
+    const latest = (requestUrls: URL[]) => {
+      const url = requestUrls.at(-1)
+      if (!url) throw new Error('No contractor list request was made')
+      return url.searchParams
+    }
+
+    // `result.current` is re-read after every `act`, so narrowing has to happen per access.
+    const ready = (current: UseContractorListResult): UseContractorListReady => {
+      if (current.isLoading) throw new Error('Expected the contractor list to have loaded')
+      return current
+    }
+
+    it('requests no sort until a sort is applied', async () => {
+      const requestUrls = captureListRequests()
+
+      const { result } = renderHook(() => useContractorList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      // Absence is the contract: an unsorted list must leave the API's default order alone.
+      expect(latest(requestUrls).has('sort_by')).toBe(false)
+      expect(ready(result.current).sort.current).toBeUndefined()
+    })
+
+    it.each([
+      ['ascending', 'name:asc'],
+      ['descending', 'name:desc'],
+    ] as const)('requests sort_by=%s as %s', async (direction, expectedSortBy) => {
+      const requestUrls = captureListRequests()
+
+      const { result } = renderHook(() => useContractorList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      act(() => {
+        ready(result.current).sort.onSortChange({ field: 'name', direction })
+      })
+
+      await waitFor(() => {
+        expect(latest(requestUrls).get('sort_by')).toBe(expectedSortBy)
+      })
+      expect(ready(result.current).sort.current).toMatchObject({ field: 'name', direction })
+    })
+
+    it('returns to the first page when the sort changes', async () => {
+      const requestUrls = captureListRequests()
+
+      const { result } = renderHook(() => useContractorList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      act(() => {
+        ready(result.current).pagination.handleNextPage()
+      })
+      await waitFor(() => {
+        expect(latest(requestUrls).get('page')).toBe('2')
+      })
+
+      act(() => {
+        ready(result.current).sort.onSortChange({ field: 'name', direction: 'ascending' })
+      })
+
+      // The API sorts before it paginates, so page 2 of the old order is meaningless.
+      await waitFor(() => {
+        expect(latest(requestUrls).get('sort_by')).toBe('name:asc')
+      })
+      expect(latest(requestUrls).get('page')).toBe('1')
     })
   })
 

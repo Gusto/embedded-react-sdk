@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorOnboardingStatus as ContractorOnboardingStatusEntity } from '@gusto/embedded-api/models/components/contractoronboardingstatus'
@@ -9,6 +9,7 @@ import { useContractorsDeleteV1ContractorsContractorUuidRehireMutation } from '@
 import { keepPreviousData } from '@tanstack/react-query'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { TableSortDirection } from '@/components/Common/UI/Table/TableTypes'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { ContractorOnboardingStatus } from '@/shared/constants'
@@ -48,6 +49,29 @@ export interface ContractorWithActions extends Contractor {
 export type ContractorType = 'active' | 'onboarding' | 'terminated'
 
 /**
+ * Field the contractor list can be sorted by.
+ *
+ * @remarks
+ * `'name'` sorts by last name for individual contractors and by business name for business
+ * contractors, matching how each row is labelled.
+ *
+ * @public
+ */
+export type ContractorSortField = 'name'
+
+/**
+ * Sort applied to {@link useContractorList}.
+ *
+ * @public
+ */
+export interface ContractorListSort {
+  /** Field the list is ordered by. */
+  field: ContractorSortField
+  /** Direction the field is ordered in. */
+  direction: TableSortDirection
+}
+
+/**
  * Props for {@link useContractorList}.
  *
  * @public
@@ -70,6 +94,13 @@ export interface UseContractorListReady extends BaseHookReady<
 > {
   /** Pagination controls for the current contractor list page. */
   pagination: PaginationControlProps
+  /** Server-side sort state for the list, and the setter that re-queries with a new sort. */
+  sort: {
+    /** The active sort, or `undefined` while the list is in the API's default order. */
+    current?: ContractorListSort
+    /** Applies a new sort and returns to page 1. */
+    onSortChange: (sort: ContractorListSort) => void
+  }
   /** Actions that mutate a contractor's state, gated by the entry's `allowedActions`. */
   actions: {
     /** Deletes the contractor. */
@@ -91,6 +122,11 @@ export interface UseContractorListReady extends BaseHookReady<
  * @public
  */
 export type UseContractorListResult = HookLoadingResult | UseContractorListReady
+
+const SORT_DIRECTION_PARAM = {
+  ascending: 'asc',
+  descending: 'desc',
+} as const satisfies Record<TableSortDirection, string>
 
 const SELF_ONBOARDING_CANCELLABLE_STATUSES = new Set<string>([
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
@@ -170,6 +206,14 @@ function deriveAllowedActions(
  * Page changes use placeholder data: the previous page stays rendered while the next one loads,
  * and `status.isFetching` flips to `true` during the request.
  *
+ * Sorting is applied by the API, so the order holds across pages. No sort is requested until
+ * `sort.onSortChange` is called, leaving the list in the API's default order until then, and
+ * applying a new sort returns to page 1 because the API sorts before it paginates. The sort
+ * persists across `contractorType` changes, since every filter sorts by the same field.
+ *
+ * The endpoint rejects a sort combined with a search term (HTTP 422), so a search filter added
+ * here would have to clear the sort.
+ *
  * @param input - Company and optional filter for the list.
  * @returns A {@link HookLoadingResult} while the first page is in flight, or a {@link UseContractorListReady} once data has arrived.
  * @public
@@ -178,13 +222,17 @@ export function useContractorList({
   companyId,
   contractorType,
 }: UseContractorListProps): UseContractorListResult {
-  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
+  const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
+  const [sort, setSort] = useState<ContractorListSort | undefined>()
 
   const queryParams = useMemo(() => {
     const baseParams = {
       companyUuid: companyId,
       page: currentPage,
       per: itemsPerPage,
+      // Spread conditionally rather than passing `sortBy: undefined`, so an unsorted list
+      // sends no `sort_by` at all and keeps the query key it had before sorting existed.
+      ...(sort ? { sortBy: `${sort.field}:${SORT_DIRECTION_PARAM[sort.direction]}` } : {}),
     }
 
     switch (contractorType) {
@@ -197,7 +245,7 @@ export function useContractorList({
       default:
         return baseParams
     }
-  }, [companyId, currentPage, itemsPerPage, contractorType])
+  }, [companyId, currentPage, itemsPerPage, contractorType, sort])
 
   const contractorsQuery = useContractorsList(queryParams, { placeholderData: keepPreviousData })
 
@@ -289,6 +337,12 @@ export function useContractorList({
     })
   }
 
+  const onSortChange = (nextSort: ContractorListSort) => {
+    setSort(nextSort)
+    // The API sorts before paginating, so the current page index means nothing under a new order.
+    resetPage()
+  }
+
   const isLoading = !data && isFetching
 
   if (isLoading) {
@@ -304,6 +358,7 @@ export function useContractorList({
       contractors,
     },
     pagination: paginationProps,
+    sort: { current: sort, onSortChange },
     status: { isFetching, isPending },
     actions: { onDelete, onCancelSelfOnboarding, onCancelDismissal, onCancelRehire },
     errorHandling,

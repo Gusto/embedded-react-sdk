@@ -5753,13 +5753,20 @@ export interface TableData {
 }
 
 // @public
+export interface TableHeaderData extends TableData {
+    isSortable?: boolean;
+}
+
+// @public
 export interface TableProps extends Pick<TableHTMLAttributes<HTMLTableElement>, 'className' | 'aria-label' | 'id' | 'role' | 'aria-labelledby' | 'aria-describedby'> {
     emptyState?: ReactNode;
     footer?: TableData[];
     hasCheckboxColumn?: boolean;
-    headers: TableData[];
+    headers: TableHeaderData[];
     isWithinBox?: boolean;
+    onSortChange?: (sortDescriptor: TableSortDescriptor) => void;
     rows: TableRow[];
+    sortDescriptor?: TableSortDescriptor;
 }
 
 // @public
@@ -5767,6 +5774,15 @@ export interface TableRow {
     data: TableData[];
     key: string;
 }
+
+// @public
+export interface TableSortDescriptor {
+    columnKey: string;
+    direction: TableSortDirection;
+}
+
+// @public
+export type TableSortDirection = 'ascending' | 'descending';
 
 // @public
 export interface TabProps {

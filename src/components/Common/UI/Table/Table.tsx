@@ -12,6 +12,7 @@ import type { TableProps } from './TableTypes'
 import { TableDefaults } from './TableTypes'
 import styles from './Table.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
+import CaretDown from '@/assets/icons/caret-down.svg?react'
 
 /**
  * Data table with headers, rows, optional footer, and empty state.
@@ -22,20 +23,67 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
  */
 export function Table(rawProps: TableProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TableDefaults)
-  const { className, headers, rows, footer, emptyState, isWithinBox, hasCheckboxColumn, ...props } =
-    resolvedProps
+  const {
+    className,
+    headers,
+    rows,
+    footer,
+    emptyState,
+    isWithinBox,
+    hasCheckboxColumn,
+    sortDescriptor,
+    onSortChange,
+    ...props
+  } = resolvedProps
+  // Sorting a column the consumer isn't listening to would make the header look interactive
+  // while doing nothing, so sortability is gated on there being a handler to receive it.
+  const isSortable = Boolean(onSortChange)
   return (
     <div className={styles.root} data-within-box={isWithinBox || undefined}>
-      <AriaTable {...props} className={classnames('react-aria-Table', className)}>
+      <AriaTable
+        {...props}
+        className={classnames('react-aria-Table', className)}
+        sortDescriptor={
+          sortDescriptor && {
+            column: sortDescriptor.columnKey,
+            direction: sortDescriptor.direction,
+          }
+        }
+        onSortChange={descriptor => {
+          onSortChange?.({
+            columnKey: String(descriptor.column),
+            direction: descriptor.direction,
+          })
+        }}
+      >
         <AriaTableHeader>
           <Row>
-            {headers.map((header, index) => (
-              <Column key={header.key} isRowHeader={index === 0}>
-                <Text as="span" weight="semibold" size="xs">
-                  {header.content}
-                </Text>
-              </Column>
-            ))}
+            {headers.map((header, index) => {
+              const columnSortDirection =
+                sortDescriptor?.columnKey === header.key ? sortDescriptor.direction : undefined
+              return (
+                <Column
+                  key={header.key}
+                  id={header.key}
+                  isRowHeader={index === 0}
+                  allowsSorting={isSortable && header.isSortable}
+                >
+                  <Text as="span" weight="semibold" size="xs">
+                    {header.content}
+                    {isSortable && header.isSortable && (
+                      <CaretDown
+                        aria-hidden="true"
+                        className={classnames(
+                          styles.sortIcon,
+                          columnSortDirection === 'ascending' && styles.sortIconAscending,
+                        )}
+                        data-sorted={columnSortDirection ? 'true' : undefined}
+                      />
+                    )}
+                  </Text>
+                </Column>
+              )
+            })}
           </Row>
         </AriaTableHeader>
         <AriaTableBody>

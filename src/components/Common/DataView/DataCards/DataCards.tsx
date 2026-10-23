@@ -3,7 +3,12 @@ import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
-import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
+import type {
+  TableProps,
+  TableSortDescriptor,
+  TableSortDirection,
+} from '@/components/Common/UI/Table/TableTypes'
+import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 import { useSelectionState } from '@/components/Common/DataView/useSelectionState'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -23,6 +28,8 @@ export type DataCardsProps<T> = {
   selectionMode?: SelectionMode
   isWithinBox?: TableProps['isWithinBox']
   isFetching?: useDataViewPropReturn<T>['isFetching']
+  sortDescriptor?: useDataViewPropReturn<T>['sortDescriptor']
+  onSortChange?: useDataViewPropReturn<T>['onSortChange']
 }
 
 /** @internal */
@@ -40,11 +47,37 @@ export const DataCards = <T,>({
   selectionMode = 'multiple',
   isWithinBox,
   isFetching,
+  sortDescriptor,
+  onSortChange,
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
   const { allSelected } = useSelectionState(data, getIsItemSelected)
+
+  const sortDirections: TableSortDirection[] = ['ascending', 'descending']
+  const sortOptions: SelectOption[] = []
+  const sortOptionsByValue = new Map<string, TableSortDescriptor>()
+  columns.forEach((column, index) => {
+    // Options are labelled from the column title, so a column titled with a ReactNode
+    // has nothing usable to show in the dropdown.
+    if (!column.isSortable || typeof column.title !== 'string') return
+    // Mirrors DataTable's header key, including its index-based fallback, so both
+    // layouts report the same `columnKey` back to the consumer.
+    const columnKey = typeof column.key === 'string' ? column.key : `header-${index}`
+    const columnTitle = column.title
+    sortDirections.forEach(direction => {
+      const value = `${columnKey}:${direction}`
+      sortOptions.push({
+        value,
+        label:
+          direction === 'ascending'
+            ? t('card.sortAscendingOption', { column: columnTitle })
+            : t('card.sortDescendingOption', { column: columnTitle }),
+      })
+      sortOptionsByValue.set(value, { columnKey, direction })
+    })
+  })
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
@@ -83,6 +116,24 @@ export const DataCards = <T,>({
       data-testid="data-cards"
       aria-busy={Boolean(isFetching)}
     >
+      {onSortChange && sortOptions.length > 0 && (
+        <div className={styles.sortRow}>
+          <Components.Select
+            label={t('card.sortByLabel')}
+            placeholder={t('card.sortByPlaceholder')}
+            options={sortOptions}
+            value={
+              sortDescriptor ? `${sortDescriptor.columnKey}:${sortDescriptor.direction}` : null
+            }
+            onChange={value => {
+              const nextSort = sortOptionsByValue.get(value)
+              if (nextSort) {
+                onSortChange(nextSort)
+              }
+            }}
+          />
+        </div>
+      )}
       {onSelect &&
         getIsItemSelected &&
         selectionMode === 'multiple' &&

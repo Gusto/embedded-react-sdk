@@ -26,6 +26,8 @@ export type DataViewProps<T> = {
   isWithinBox?: TableProps['isWithinBox']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   selectionMode?: SelectionMode
+  sortDescriptor?: useDataViewPropReturn<T>['sortDescriptor']
+  onSortChange?: useDataViewPropReturn<T>['onSortChange']
 }
 
 /** @internal */

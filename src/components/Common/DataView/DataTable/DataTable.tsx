@@ -3,7 +3,7 @@ import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
 import { useSelectionState } from '../useSelectionState'
-import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
+import type { TableData, TableHeaderData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
 import styles from './DataTable.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -28,6 +28,8 @@ export type DataTableProps<T> = {
   isWithinBox?: TableProps['isWithinBox']
   selectionMode?: SelectionMode
   isFetching?: useDataViewPropReturn<T>['isFetching']
+  sortDescriptor?: useDataViewPropReturn<T>['sortDescriptor']
+  onSortChange?: useDataViewPropReturn<T>['onSortChange']
 }
 
 function getCellContent<T>(
@@ -61,6 +63,8 @@ export const DataTable = <T,>({
   isWithinBox,
   selectionMode = 'multiple',
   isFetching,
+  sortDescriptor,
+  onSortChange,
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -68,7 +72,7 @@ export const DataTable = <T,>({
   const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
   const { allSelected } = useSelectionState(data, getIsItemSelected)
 
-  const headers: TableData[] = [
+  const headers: TableHeaderData[] = [
     ...(onSelect
       ? [
           {
@@ -111,6 +115,7 @@ export const DataTable = <T,>({
     ...columns.map((column, index) => ({
       key: typeof column.key === 'string' ? column.key : `header-${index}`,
       content: withJustify(column.title, column.justify),
+      isSortable: column.isSortable,
     })),
     ...(itemMenu
       ? [
@@ -241,6 +246,8 @@ export const DataTable = <T,>({
         emptyState={emptyState ? emptyState() : undefined}
         isWithinBox={isWithinBox}
         hasCheckboxColumn={!!onSelect}
+        sortDescriptor={sortDescriptor}
+        onSortChange={onSortChange}
       />
     </div>
   )

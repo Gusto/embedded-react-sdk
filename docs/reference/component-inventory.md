@@ -1345,7 +1345,7 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `headers` | [`TableData`](#tabledata)[] | | Array of header cells for the table |
+| `headers` | [`TableHeaderData`](#tableheaderdata)[] | | Array of header cells for the table |
 | `rows` | [`TableRow`](#tablerow)[] | | Array of rows to be displayed in the table |
 | `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
 | `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
@@ -1356,7 +1356,9 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 | `hasCheckboxColumn?` | `boolean` | `false` | Whether the first column contains checkboxes (affects which column gets leading variant) |
 | `id?` | `string` | | - |
 | `isWithinBox?` | `boolean` | `false` | Removes borders and background for use inside a Box component |
+| `onSortChange?` | (`sortDescriptor`: [`TableSortDescriptor`](#tablesortdescriptor)) => `void` | | Called when a sortable column header is activated, with the sort the table should move to. Omit to render sortable headers as plain, non-interactive headers. |
 | `role?` | `AriaRole` | | - |
+| `sortDescriptor?` | [`TableSortDescriptor`](#tablesortdescriptor) | | Column the table is currently sorted by. Omit while the data is in its default order. |
 
 <a id="tabledata"></a>
 
@@ -1364,12 +1366,35 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 
 Shape of a single cell your [Table](#tableprops) implementation receives for headers, rows, and footers.
 
+##### Extended by
+
+- [`TableHeaderData`](#tableheaderdata)
+
 ##### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `content` | `ReactNode` | Content to be displayed in the table cell |
 | `key` | `string` | Unique identifier for the table cell |
+
+<a id="tableheaderdata"></a>
+
+#### TableHeaderData
+
+Shape of a single header cell your [Table](#tableprops) implementation receives.
+Extends [TableData](#tabledata) with the column's sortability.
+
+##### Extends
+
+- [`TableData`](#tabledata)
+
+##### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `content` | `ReactNode` | | Content to be displayed in the table cell |
+| `key` | `string` | | Unique identifier for the table cell |
+| `isSortable?` | `boolean` | `false` | Whether this column can be sorted. Sortable columns should be activatable and should report their sort state to assistive technology via `aria-sort`. |
 
 <a id="tablerow"></a>
 
@@ -1383,6 +1408,27 @@ Shape of a single row your [Table](#tableprops) implementation receives, contain
 | ------ | ------ | ------ |
 | `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
 | `key` | `string` | Unique identifier for the table row |
+
+<a id="tablesortdescriptor"></a>
+
+#### TableSortDescriptor
+
+Which column a [Table](#tableprops) is sorted by, and in which direction.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `columnKey` | `string` | `key` of the header cell the table is currently sorted by |
+| `direction` | [`TableSortDirection`](#tablesortdirection) | Direction the sorted column is ordered in |
+
+<a id="tablesortdirection"></a>
+
+#### TableSortDirection
+
+> **TableSortDirection** = `"ascending"` \| `"descending"`
+
+Direction a sorted column is ordered in.
 
 ***
 

@@ -953,7 +953,19 @@ function NativeMenu({ items, isOpen, onClose, 'aria-label': ariaLabel }: MenuPro
   )
 }
 
-function NativeTable({ headers, rows, footer, ...rest }: TableProps) {
+// `rest` is spread onto a DOM <table>, so every non-DOM prop has to be pulled out here or
+// React warns about an unknown attribute.
+function NativeTable({
+  headers,
+  rows,
+  footer,
+  emptyState,
+  isWithinBox,
+  hasCheckboxColumn,
+  sortDescriptor,
+  onSortChange,
+  ...rest
+}: TableProps) {
   return (
     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }} {...rest}>
       <thead>

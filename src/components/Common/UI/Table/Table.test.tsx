@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Table } from './Table'
-import type { TableData, TableRow } from './TableTypes'
+import type { TableData, TableHeaderData, TableRow } from './TableTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Table', () => {
@@ -80,6 +81,59 @@ describe('Table', () => {
     expect(screen.getByText('Total:')).toBeInTheDocument()
     expect(screen.getByText('5 users')).toBeInTheDocument()
     expect(screen.getByText('All Active')).toBeInTheDocument()
+  })
+
+  describe('sorting', () => {
+    const sortableHeaders: TableHeaderData[] = [
+      { key: 'name', content: 'Name', isSortable: true },
+      { key: 'email', content: 'Email' },
+      { key: 'status', content: 'Status' },
+    ]
+
+    it('reports the sorted column and toggles its direction on activation', async () => {
+      const user = userEvent.setup()
+      const onSortChange = vi.fn()
+      renderWithProviders(
+        <Table
+          aria-label="User table"
+          headers={sortableHeaders}
+          rows={testRows}
+          sortDescriptor={{ columnKey: 'name', direction: 'ascending' }}
+          onSortChange={onSortChange}
+        />,
+      )
+
+      // The accessible name stays the bare column title, which also proves the sort
+      // indicator contributes no text content for `tableQueries` to trip over.
+      const nameHeader = screen.getByRole('columnheader', { name: 'Name' })
+      expect(nameHeader).toHaveAttribute('aria-sort', 'ascending')
+
+      await user.click(nameHeader)
+
+      expect(onSortChange).toHaveBeenCalledWith({ columnKey: 'name', direction: 'descending' })
+    })
+
+    it('leaves headers unsortable when no sort handler is supplied', async () => {
+      const user = userEvent.setup()
+      // `sortDescriptor` is supplied but `onSortChange` is not, so an `aria-sort` here
+      // could only come from the column still being sortable.
+      renderWithProviders(
+        <Table
+          aria-label="User table"
+          headers={sortableHeaders}
+          rows={testRows}
+          sortDescriptor={{ columnKey: 'name', direction: 'ascending' }}
+        />,
+      )
+
+      // Absence is the documented contract: `onSortChange` is what makes a column sortable,
+      // so without it the header must stay a plain, non-interactive header.
+      const nameHeader = screen.getByRole('columnheader', { name: 'Name' })
+      expect(nameHeader).not.toHaveAttribute('aria-sort')
+
+      await user.click(nameHeader)
+      expect(nameHeader).not.toHaveAttribute('aria-sort')
+    })
   })
 
   describe('Accessibility', () => {

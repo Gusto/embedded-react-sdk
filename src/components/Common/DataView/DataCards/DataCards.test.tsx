@@ -200,4 +200,27 @@ describe('DataCards', () => {
     expect(footerCard.getByText('Summary')).toBeInTheDocument()
     expect(footerCard.getByText('All records')).toBeInTheDocument()
   })
+
+  test('should offer a sort control for sortable columns and report the chosen sort', async () => {
+    const user = userEvent.setup()
+    const onSortChange = vi.fn()
+    renderCards({
+      columns: [
+        { key: 'name', title: 'Name', isSortable: true },
+        { key: 'age', title: 'Age' },
+      ],
+      onSortChange,
+    })
+
+    await user.click(screen.getByRole('button', { name: /Sort by/ }))
+    const options = await screen.findAllByRole('option')
+    expect(options.map(option => option.textContent)).toEqual([
+      'Name (A\u2013Z)',
+      'Name (Z\u2013A)',
+    ])
+
+    await user.click(screen.getByRole('option', { name: 'Name (Z\u2013A)' }))
+
+    expect(onSortChange).toHaveBeenCalledWith({ columnKey: 'name', direction: 'descending' })
+  })
 })

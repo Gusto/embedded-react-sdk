@@ -18,6 +18,48 @@ export interface TableData {
 }
 
 /**
+ * Direction a sorted column is ordered in.
+ *
+ * @public
+ * @childOf {@link TableProps}
+ */
+export type TableSortDirection = 'ascending' | 'descending'
+
+/**
+ * Which column a {@link TableProps | Table} is sorted by, and in which direction.
+ *
+ * @public
+ * @childOf {@link TableProps}
+ */
+export interface TableSortDescriptor {
+  /**
+   * `key` of the header cell the table is currently sorted by
+   */
+  columnKey: string
+  /**
+   * Direction the sorted column is ordered in
+   */
+  direction: TableSortDirection
+}
+
+/**
+ * Shape of a single header cell your {@link TableProps | Table} implementation receives.
+ * Extends {@link TableData} with the column's sortability.
+ *
+ * @public
+ * @childOf {@link TableProps}
+ */
+export interface TableHeaderData extends TableData {
+  /**
+   * Whether this column can be sorted. Sortable columns should be activatable and should
+   * report their sort state to assistive technology via `aria-sort`.
+   *
+   * @defaultValue `false`
+   */
+  isSortable?: boolean
+}
+
+/**
  * Shape of a single row your {@link TableProps | Table} implementation receives, containing an ordered list of cells.
  *
  * @public
@@ -48,7 +90,7 @@ export interface TableProps extends Pick<
   /**
    * Array of header cells for the table
    */
-  headers: TableData[]
+  headers: TableHeaderData[]
   /**
    * Array of rows to be displayed in the table
    */
@@ -73,6 +115,15 @@ export interface TableProps extends Pick<
    * @defaultValue `false`
    */
   hasCheckboxColumn?: boolean
+  /**
+   * Column the table is currently sorted by. Omit while the data is in its default order.
+   */
+  sortDescriptor?: TableSortDescriptor
+  /**
+   * Called when a sortable column header is activated, with the sort the table should move to.
+   * Omit to render sortable headers as plain, non-interactive headers.
+   */
+  onSortChange?: (sortDescriptor: TableSortDescriptor) => void
 }
 
 /**

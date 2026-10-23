@@ -18,7 +18,7 @@ import { ContractorOnboardingStatus } from '@/shared/constants'
 /** @internal */
 export interface ManagementContractorListViewProps extends Pick<
   Extract<UseContractorListResult, { isLoading: false }>,
-  'pagination' | 'status'
+  'pagination' | 'status' | 'sort'
 > {
   /** CSS class name applied to the root element. */
   className?: string
@@ -77,6 +77,7 @@ export function ManagementContractorListView({
   successMessage,
   status,
   pagination,
+  sort,
   onEdit,
   onView,
   onDismiss,
@@ -113,9 +114,11 @@ export function ManagementContractorListView({
   ]
 
   const getColumns = () => {
+    // `key` doubles as the API sort field, so it must stay in step with ContractorSortField.
     const nameColumn = {
       key: 'name',
       title: t('nameLabel'),
+      isSortable: true,
       render: (contractor: ContractorWithActions) => <ContractorNameCell contractor={contractor} />,
     }
 
@@ -196,6 +199,14 @@ export function ManagementContractorListView({
   const { ...dataViewProps } = useDataView({
     data: contractors,
     columns: getColumns(),
+    sortDescriptor: sort.current && {
+      columnKey: sort.current.field,
+      direction: sort.current.direction,
+    },
+    onSortChange: sortDescriptor => {
+      // Name is the only sortable column; ContractorSortField makes a stale key a type error.
+      sort.onSortChange({ field: 'name', direction: sortDescriptor.direction })
+    },
     itemMenu: contractor => {
       if (committedTab === 'onboarding') {
         const menuItems = []
