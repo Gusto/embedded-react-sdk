@@ -3698,13 +3698,15 @@ function Landing_2(props: LandingProps_2): JSX;
 
 // @public
 interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
-    companyId: string;
+    // @deprecated (undocumented)
+    companyId?: string;
     employeeId: string;
 }
 
 // @public
 interface LandingProps_2 extends BaseComponentInterface<'Contractor.Landing'> {
-    companyId: string;
+    // @deprecated (undocumented)
+    companyId?: string;
     contractorId: string;
 }
 

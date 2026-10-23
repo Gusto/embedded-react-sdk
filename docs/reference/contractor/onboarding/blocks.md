@@ -332,9 +332,9 @@ Props for the [Landing](#landing) component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company the contractor belongs to. |
 | `contractorId` | `string` | UUID of the contractor entering the self-onboarding flow. |
 | `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| ~~`companyId?`~~ | `string` | **Deprecated** UUID of the company the contractor belongs to. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorLanding`](../../Translations/index.md#contractorlanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
