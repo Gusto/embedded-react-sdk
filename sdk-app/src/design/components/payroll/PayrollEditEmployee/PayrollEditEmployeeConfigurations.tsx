@@ -8,7 +8,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PrototypeConfiguration } from '../../../prototypes/prototypeTypes'
 import type { WorkweekRange } from './PayrollEditEmployeePresentation'
 import { PayrollEditEmployeeDemo } from './PayrollEditEmployeeStates'

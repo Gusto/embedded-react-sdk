@@ -25,7 +25,7 @@ function Root({ contractorId }: { contractorId: string }) {
   const { onEvent, baseSubmitHandler } = useBase()
 
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
 
   const {

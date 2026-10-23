@@ -1,7 +1,7 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import {
   PayrollEditEmployeePresentation,
   type WorkweekRange,

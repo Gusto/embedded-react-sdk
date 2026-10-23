@@ -161,7 +161,7 @@ function RootWithContractor({
   contractorId: string
 }) {
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
   return <Root companyId={companyId} contractorId={contractorId} existingContractor={contractor} />
 }

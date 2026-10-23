@@ -28,7 +28,7 @@ function Root({ contractorId }: { contractorId: string }) {
   const { data: contractorData } = useContractorsGetSuspense({ contractorUuid: contractorId })
   const { data: addressData } = useContractorsGetAddressSuspense({ contractorUuid: contractorId })
 
-  const contractor = contractorData.contractor
+  const contractor = contractorData.contractorShow
   const address = addressData.contractorAddress
 
   const { mutateAsync: updateAddress, isPending } = useContractorsUpdateAddressMutation()
