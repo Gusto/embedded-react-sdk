@@ -13,7 +13,7 @@ on:
         default: true
 jobs:
   retire:
-    environment: npm-release-rc
+    environment: npm-release-manual
     concurrency:
       group: npm-rc
       cancel-in-progress: false
