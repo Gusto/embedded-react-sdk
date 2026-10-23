@@ -172,6 +172,7 @@ Props accepted by [useContractorPayForm](#usecontractorpayform)'s `Fields.WageTy
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionDescription?` | (`entry`: [`ContractorPayFormData`](#contractorpayformdata)\[`"wageType"`\]) => `ReactNode` | Maps a raw option entry to supporting text rendered beneath that radio option; when omitted, no per-option description is rendered. |
 | `getOptionLabel?` | (`entry`: [`ContractorPayFormData`](#contractorpayformdata)\[`"wageType"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 
 _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../hooks.md#radiogrouphookfieldprops)._
