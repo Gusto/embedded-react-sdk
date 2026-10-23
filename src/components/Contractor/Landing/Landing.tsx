@@ -19,8 +19,11 @@ import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 export interface LandingProps extends BaseComponentInterface<'Contractor.Landing'> {
   /** UUID of the contractor entering the self-onboarding flow. */
   contractorId: string
-  /** UUID of the company the contractor belongs to. */
-  companyId: string
+  /**
+   * @deprecated
+   * UUID of the company the contractor belongs to.
+   */
+  companyId?: string
 }
 
 /**
