@@ -5327,6 +5327,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-payrollpayrolleditemployeeadditionalearningstitle"></a> `additionalEarningsTitle` | `"Additional earnings"` |
+| <a id="property-payrollpayrolleditemployeeadditionalhourscolumn"></a> `additionalHoursColumn` | `"Additional hours"` |
 | <a id="property-payrollpayrolleditemployeeaddreimbursementcta"></a> `addReimbursementCta` | `"Add one-time reimbursement"` |
 | <a id="property-payrollpayrolleditemployeeaddreimbursementlink"></a> `addReimbursementLink` | `"Add one-time reimbursement"` |
 | <a id="property-payrollpayrolleditemployeebreadcrumblabel"></a> `breadcrumbLabel` | `"{{firstName}} {{lastName}}"` |
@@ -5355,6 +5356,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | `paymentMethodOptions.check` | `"Check"` |
 | `paymentMethodOptions.directDeposit` | `"Direct deposit"` |
 | <a id="property-payrollpayrolleditemployeepaymentmethodtitle"></a> `paymentMethodTitle` | `"Payment"` |
+| <a id="property-payrollpayrolleditemployeepreapprovedhourscolumn"></a> `preapprovedHoursColumn` | `"Preapproved hours"` |
 | <a id="property-payrollpayrolleditemployeerecurringreimbursementlabel"></a> `recurringReimbursementLabel` | `"{{description}} (recurring reimbursement)"` |
 | <a id="property-payrollpayrolleditemployeerecurringreimbursementtooltip"></a> `recurringReimbursementTooltip` | `"Recurring reimbursements are managed outside of payroll."` |
 | <a id="property-payrollpayrolleditemployeeregularhourstitle"></a> `regularHoursTitle` | `"Regular hours"` |
@@ -5377,6 +5379,7 @@ Translation keys for the `Payroll.PayrollEditEmployee` i18n namespace.
 | `timeOffBalance.remaining` | `"{{balance}} remaining"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitle"></a> `timeOffTitle` | `"Time off"` |
 | <a id="property-payrollpayrolleditemployeetimeofftitledismissal"></a> `timeOffTitleDismissal` | `"Time off hours used this pay period"` |
+| <a id="property-payrollpayrolleditemployeetimeofftypecolumn"></a> `timeOffTypeColumn` | `"Type"` |
 | <a id="property-payrollpayrolleditemployeevalidations"></a> `validations` | |
 | `validations.maxHours` | `"Hours must be less than or equal to 99,999"` |
 | `validations.maxReimbursementAmount` | `"Amount must be less than or equal to 1,000,000"` |

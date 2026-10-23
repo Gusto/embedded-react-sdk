@@ -49,6 +49,20 @@ To see the SDK running in GWS Flows, visit it [locally](http://localhost:7777/de
 Components and Flows will be shown at the top of the page in a `nav`. Company Components will automatically appear as they are added.
 Select a Flow or Component to view it
 
+## Payroll approved hours (SDK-1443)
+
+Approved request hours are read-only metadata. Both employee payroll editors show
+positive approved hours as text, leave zero/missing approved hours blank, and keep
+`hours` as the editable additional-hours value. Existing additional hours remain
+prepopulated; an unset value starts at zero. Final-payout inputs keep their existing
+meaning and presentation.
+
+Only additional hours are submitted in `paid_time_off[].hours`. The response's
+`approvedRequestHours` must never be copied into that input or added to the update
+payload. The API combines approved and additional hours during calculation. Summary
+and payout tables continue using the API's existing totals; this feature does not
+add approved hours again in frontend totals or remaining-balance arithmetic.
+
 ## How to leverage Translations
 
 Translations are stored in [/src/i18n](/src/i18n).

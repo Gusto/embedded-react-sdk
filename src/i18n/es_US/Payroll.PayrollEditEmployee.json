@@ -44,5 +44,8 @@
   "validations": {
     "negativeAmount": "El monto no puede ser negativo",
     "reimbursementAmount": "El monto debe ser mayor que cero"
-  }
+  },
+  "preapprovedHoursColumn": "Horas preaprobadas",
+  "additionalHoursColumn": "Horas adicionales",
+  "timeOffTypeColumn": "Tipo"
 }

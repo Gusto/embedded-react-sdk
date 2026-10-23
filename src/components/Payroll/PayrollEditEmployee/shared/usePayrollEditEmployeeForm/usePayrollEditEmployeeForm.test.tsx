@@ -1107,7 +1107,7 @@ describe('usePayrollEditEmployeeForm', () => {
       employee_compensations: [
         {
           ...SINGLE_WORKWEEK_PREPARE.employee_compensations[0],
-          paid_time_off: [{ name: 'Vacation Hours', hours: '0' }],
+          paid_time_off: [{ name: 'Vacation Hours', hours: '0', approved_request_hours: '8' }],
         },
       ],
     }
@@ -1122,11 +1122,13 @@ describe('usePayrollEditEmployeeForm', () => {
     expect(result.current.form.Fields.timeOff[0]).toMatchObject({
       name: 'Vacation Hours',
       remaining: 40,
+      approvedRequestHours: 8,
     })
     expect(result.current.form.Fields.finalPayout?.[0]).toMatchObject({
       name: 'Vacation Hours',
       remaining: null,
     })
+    expect(result.current.form.Fields.finalPayout?.[0]).not.toHaveProperty('approvedRequestHours')
 
     act(() => {
       assertReady(result.current)
