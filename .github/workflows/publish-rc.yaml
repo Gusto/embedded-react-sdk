@@ -128,7 +128,7 @@ jobs:
     concurrency:
       group: npm-rc
       cancel-in-progress: false
-    environment: npm-release-rc
+    environment: npm-release-manual
     # npm trusted publishing requires a GitHub-hosted runner.
     # GitHub writes run separately on Gusto's allowlisted runners.
     runs-on: ubuntu-latest

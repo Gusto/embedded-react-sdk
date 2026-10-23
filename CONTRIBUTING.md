@@ -410,7 +410,13 @@ Use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/work
 
 When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag.
 
-Both RC publishing and retirement use `npm-release-rc` and wait for another member of the Embedded SDK team to approve through the workflow run's **Review deployments** prompt. The release owner arranges this approval. Before approving, check the selected source commit and version in the run summary, or the expected version for retirement.
+Both RC publishing and retirement use `npm-release-manual` and wait for another member of the Embedded SDK team to approve through the workflow run's **Review deployments** prompt. The release owner arranges this approval. Before approving, check the selected source commit and version in the run summary, or the expected version for retirement.
+
+### Manual stable release
+
+[Publish to NPM (Manual)](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-manual.yaml) is the escape hatch for when the automatic [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) path doesn't fire even though the release itself is fine — e.g. a release commit's CI run got cancelled by merge-queue churn, or failed on a flaky/unrelated job. It is not a way to bypass a real CI failure.
+
+Run it from `main`, supplying the exact commit SHA of the `chore: release` commit to publish. It refuses anything that isn't an already-merged `chore: release` commit on `main`, and like automatic publishing, no-ops if that version is already on npm. It shares the `npm-release-manual` environment with RC publishing/retirement, so it needs the same Embedded SDK team approval through **Review deployments** — check the commit, message, and version in the run summary before approving.
 
 ### Retiring a stable version
 
@@ -440,9 +446,9 @@ The event workflow is read-only; the evaluator runs trusted code from `main` and
 
 To roll out the approval changes:
 
-1. Configure `npm-release-rc` to require another Embedded SDK team member's approval and prevent self-approval. Both environments must permit workflows from `main` only; RC source branches are selected through workflow inputs. Update the npm trusted publisher configuration for RC publishing and retirement to match `npm-release-rc`, then verify both workflows' OIDC and approval behavior.
+1. Configure `npm-release-manual` to require another Embedded SDK team member's approval and prevent self-approval. All three environments must permit workflows from `main` only; RC and manual-publish sources are selected through workflow inputs. Update the npm trusted publisher configuration for RC publishing, retirement, and manual stable publishing to match `npm-release-manual`, then verify all three workflows' OIDC and approval behavior.
 2. After the readiness workflows land on `main`, verify PR push, review approval/dismissal, `main` advancement, and merge queue events. Add `release-readiness` as a required check on `main`, selecting GitHub Actions as its source.
-3. Only after the check is verified and required, remove the stable publishing approval from `npm-release`. Keep approval required in `npm-release-rc`.
+3. Only after the check is verified and required, remove the stable publishing approval from `npm-release`. Keep approval required in `npm-release-manual`.
 
 ### Documentation versioning
 
