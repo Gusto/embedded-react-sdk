@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, screen, waitFor } from '@testing-library/react'
+import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { UNSTABLE_PayrollEditEmployee } from './UNSTABLE_PayrollEditEmployee'
@@ -341,5 +341,71 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
     expect(await screen.findByLabelText('Direct deposit')).toBeChecked()
     expect(screen.getByLabelText('Check')).not.toBeChecked()
+  })
+})
+
+describe('preapproved time off', () => {
+  it('displays approved hours and sends only the additional hours to the API', async () => {
+    setupApiTestMocks()
+    const user = userEvent.setup()
+    const prepare = multiWorkweekPrepare('0')
+    const preparedCompensation = {
+      ...prepare.employee_compensations[0],
+      paid_time_off: [
+        { name: 'Vacation Hours', hours: '0', approved_request_hours: '8.5' },
+        { name: 'Sick Hours', hours: '0', approved_request_hours: '0.0' },
+        { name: 'Holiday Hours', hours: '8' },
+      ],
+    }
+    let updateBody: Record<string, unknown> | null = null
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json({ ...prepare, employee_compensations: [preparedCompensation] })
+    })
+    server.use(
+      handleGetEmployee(() => HttpResponse.json(EMPLOYEE_RESPONSE)),
+      handlePayrollsPrepare(() =>
+        HttpResponse.json({ ...prepare, employee_compensations: [preparedCompensation] }),
+      ),
+      handlePayrollsUpdate(updateResolver),
+    )
+    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={vi.fn()} />)
+
+    const table = await screen.findByRole('grid', { name: 'Time off' })
+    expect(
+      within(table).getByRole('columnheader', { name: 'Preapproved hours' }),
+    ).toBeInTheDocument()
+    expect(
+      within(table).getByRole('columnheader', { name: 'Additional hours' }),
+    ).toBeInTheDocument()
+    expect(within(table).getByText('8.5')).toBeInTheDocument()
+    expect(within(table).getAllByRole('spinbutton')).toHaveLength(3)
+    expect(within(table).queryByText('N/A')).not.toBeInTheDocument()
+    expect(within(table).getByRole('row', { name: /Sick Hours/ }).children[1]?.textContent).toBe('')
+    expect(within(table).getByRole('row', { name: /Holiday Hours/ }).children[1]?.textContent).toBe(
+      '',
+    )
+    const input = within(table).getByRole('spinbutton', { name: /^Vacation Hours/ })
+    expect(input).toHaveValue(0)
+    expect(within(table).getByText('40 remaining')).toBeInTheDocument()
+    await user.clear(input)
+    await user.type(input, '3')
+    expect(within(table).getByText('37 remaining')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => {
+      expect(updateResolver).toHaveBeenCalledOnce()
+    })
+    expect(updateBody).toMatchObject({
+      employee_compensations: [
+        {
+          paid_time_off: [
+            { name: 'Vacation Hours', hours: '3' },
+            { name: 'Sick Hours', hours: '0' },
+            { name: 'Holiday Hours', hours: '8' },
+          ],
+        },
+      ],
+    })
+    expect(JSON.stringify(updateBody)).not.toContain('approved_request_hours')
   })
 })

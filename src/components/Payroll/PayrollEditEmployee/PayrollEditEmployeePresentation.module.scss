@@ -33,3 +33,8 @@
 .grossPayLabel {
   color: var(--g-colorBodySubContent);
 }
+
+.timeOffInputContainer {
+  width: toRem(160);
+  max-width: 100%;
+}
