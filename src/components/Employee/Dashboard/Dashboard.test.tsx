@@ -204,9 +204,9 @@ describe('Dashboard', () => {
       <Dashboard employeeId="employee-123" onEvent={onEvent} className="custom-class" />,
     )
 
-    await waitFor(() => {
-      expect(container.querySelector('.custom-class')).toBeInTheDocument()
-    })
+    await screen.findByText('Legal name')
+
+    expect(container.querySelector('.custom-class')).toBeInTheDocument()
   })
 
   it('displays employee basic details', async () => {

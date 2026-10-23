@@ -50,7 +50,5 @@
     "negativeAmount": "El monto no puede ser negativo",
     "reimbursementAmount": "El monto debe ser mayor que cero",
     "requiredWorkweek": "Ingrese un monto para cada semana laboral"
-  },
-  "preapprovedHoursColumn": "Horas preaprobadas",
-  "additionalHoursColumn": "Horas adicionales"
+  }
 }
