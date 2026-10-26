@@ -6,7 +6,7 @@ import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { PayScheduleEmployeeOverviewPresentation } from './PayScheduleEmployeeOverviewPresentation'
-import { useAssignableEmployees } from './PayScheduleAssignment/useAssignableEmployees'
+import { useAssignableEmployeesSuspense } from './PayScheduleAssignment/useAssignableEmployees'
 import { getCompanyDepartments } from './PayScheduleAssignment/departmentAccess'
 import {
   PayScheduleDepartmentOverviewPresentation,
@@ -15,7 +15,6 @@ import {
 import { PayScheduleOverviewPresentation } from './PayScheduleOverviewPresentation'
 import type { PayScheduleCompensationRow } from './PayScheduleCompensationOverviewPresentation'
 import { PayScheduleCompensationOverviewPresentation } from './PayScheduleCompensationOverviewPresentation'
-import { BaseLayout } from '@/components/Base'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -172,8 +171,7 @@ function PayScheduleEmployeeOverview({
   assignment: PayScheduleAssignment
   schedules: PayScheduleShow[]
 } & Omit<React.ComponentProps<typeof PayScheduleEmployeeOverviewPresentation>, 'rows'>) {
-  const roster = useAssignableEmployees(companyId)
-  if (roster.status === 'loading') return <BaseLayout isLoading />
+  const roster = useAssignableEmployeesSuspense(companyId)
   if (roster.accessDenied)
     return <PayScheduleEmployeeOverviewPresentation rows={[]} accessDenied {...props} />
   const counts = new Map<string, number>()

@@ -4,6 +4,7 @@ import type { ShowEmployees } from '@gusto/embedded-api/models/components/showem
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { scheduleLabel } from './scheduleLabel'
 import { getPrimaryCompensation } from './employeeJob'
+import { firstLastName } from '@/helpers/formattedStrings'
 import { FlsaStatus } from '@/shared/constants'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import { useClientPagination } from '@/hooks/useClientPagination/useClientPagination'
@@ -71,7 +72,7 @@ export function AssignmentEmployeeStepPresentation({
         title: t('employeeStep.employeeLabel'),
         render: employee => (
           <>
-            {[employee.firstName, employee.lastName].filter(Boolean).join(' ')}
+            {firstLastName({ first_name: employee.firstName, last_name: employee.lastName })}
             {employee.department && (
               <Components.Text variant="supporting" size="sm">
                 {employee.department}
@@ -105,7 +106,7 @@ export function AssignmentEmployeeStepPresentation({
         render: employee => (
           <Components.Select
             label={t('employeeStep.scheduleForEmployee', {
-              name: [employee.firstName, employee.lastName].filter(Boolean).join(' '),
+              name: firstLastName({ first_name: employee.firstName, last_name: employee.lastName }),
             })}
             shouldVisuallyHideLabel
             isRequired

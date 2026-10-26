@@ -15,7 +15,7 @@ import {
   AssignmentEmployeeStepPresentation,
   type EmployeeSelection,
 } from './AssignmentEmployeeStepPresentation'
-import { useAssignableEmployees } from './useAssignableEmployees'
+import { useAssignableEmployees, useAssignableEmployeesSuspense } from './useAssignableEmployees'
 import {
   AssignmentDepartmentStepPresentation,
   type DepartmentSelection,
@@ -177,10 +177,10 @@ function AssignmentEmployeeStep({ schedules }: { schedules: PayScheduleShow[] })
     employees: selectedEmployees,
     onEvent,
   } = useFlow<PayScheduleAssignmentContextInterface>()
-  const roster = useAssignableEmployees(companyId)
+  const roster = useAssignableEmployeesSuspense(companyId)
   const { data } = usePaySchedulesGetAssignmentsSuspense({ companyId })
   const assignment = data.payScheduleAssignment
-  const isEmpty = roster.status === 'ready' && !roster.accessDenied && roster.employees.length === 0
+  const isEmpty = !roster.accessDenied && roster.employees.length === 0
   const { t } = useTranslation('Company.Management.PayScheduleAssignment')
   useEffect(() => {
     if (isEmpty) {
@@ -191,7 +191,6 @@ function AssignmentEmployeeStep({ schedules }: { schedules: PayScheduleShow[] })
       })
     }
   }, [isEmpty, onEvent])
-  if (roster.status === 'loading') return <BaseLayout isLoading />
   if (roster.accessDenied)
     return (
       <BaseLayout>

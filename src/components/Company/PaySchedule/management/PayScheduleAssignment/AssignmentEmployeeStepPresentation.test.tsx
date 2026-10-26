@@ -47,6 +47,13 @@ const props: AssignmentEmployeeStepPresentationProps = {
   onContinue: vi.fn(),
 }
 describe('employee assignment roster changes', () => {
+  it('formats employee names consistently in the table and schedule labels', async () => {
+    renderWithProviders(
+      <EmployeeForm {...props} employees={[{ ...first, firstName: 'alex', lastName: 'smith' }]} />,
+    )
+    expect(await screen.findByText('Alex Smith')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /pay schedule for Alex Smith/i })).toBeInTheDocument()
+  })
   it('keeps edits keyed by UUID when employees are added, reordered, and removed', async () => {
     const user = userEvent.setup()
     const onContinue = vi.fn()

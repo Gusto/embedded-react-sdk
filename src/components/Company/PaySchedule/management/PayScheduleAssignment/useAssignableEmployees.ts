@@ -1,7 +1,8 @@
-import { useQueries } from '@tanstack/react-query'
+import { useQueries, useSuspenseQueries } from '@tanstack/react-query'
 import {
   buildEmployeesListQuery,
   useEmployeesList,
+  useEmployeesListSuspense,
 } from '@gusto/embedded-api/react-query/employeesList'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
@@ -51,6 +52,39 @@ export function useAssignableEmployees(companyId: string) {
     ...(first.data?.showEmployees ?? []),
     ...remaining.flatMap(result => result.data?.showEmployees ?? []),
   ]
+  return {
+    status: 'ready' as const,
+    ...getAssignableRoster(
+      roster,
+      [first, ...remaining].some(result => isAssignmentAccessDenied(result.error)),
+    ),
+  }
+}
+
+/**
+ * Loads the complete assignable roster, suspending until every employee page is ready.
+ *
+ * @param companyId - Company whose employees are being assigned.
+ * @returns The complete roster and any missing compensation data.
+ * @internal
+ */
+export function useAssignableEmployeesSuspense(companyId: string) {
+  const client = useGustoEmbeddedContext()
+  const request = { companyId, terminated: false, page: 1, per: 100 }
+  const { data: first } = useEmployeesListSuspense(request)
+  const totalPages = Number(first.httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const remaining = useSuspenseQueries({
+    queries: Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) =>
+      buildEmployeesListQuery(client, { ...request, page: index + 2 }),
+    ),
+  })
+  return getAssignableRoster([
+    ...(first.showEmployees ?? []),
+    ...remaining.flatMap(result => result.data.showEmployees ?? []),
+  ])
+}
+
+function getAssignableRoster(roster: ShowEmployees[], permissionDenied = false) {
   const missingCompensationData = roster.some(employee => {
     if (employee.terminated || employee.historical || employee.onboarded !== true) return false
     const job = getPrimaryJob(employee)
@@ -60,10 +94,8 @@ export function useAssignableEmployees(companyId: string) {
         (job.currentCompensationUuid && !getPrimaryCompensation(employee))),
     )
   })
-  const accessDenied =
-    missingCompensationData ||
-    [first, ...remaining].some(result => isAssignmentAccessDenied(result.error))
+  const accessDenied = missingCompensationData || permissionDenied
   const employees = accessDenied ? [] : roster.filter(isAssignableEmployee)
 
-  return { status: 'ready' as const, employees, accessDenied }
+  return { employees, accessDenied }
 }

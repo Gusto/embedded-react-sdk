@@ -573,7 +573,7 @@ describe('employee pay schedule assignment', () => {
     expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_UPDATE, { uuid: 'monthly' })
   })
 
-  it('keeps Manage available when employee access is missing from an existing employee assignment', async () => {
+  it('surfaces missing employee scope through the overview boundary', async () => {
     server.use(
       http.get(`${companyPath}/employees`, () =>
         HttpResponse.json({ errors: [{ category: 'missing_oauth_scopes' }] }, { status: 403 }),
@@ -582,13 +582,78 @@ describe('employee pay schedule assignment', () => {
     renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
       unstableFeatures: { managePaySchedules: true },
     })
-    await screen.findByRole('alert')
-    const user = userEvent.setup()
-    await user.click(screen.getByRole('button', { name: /manage/i }))
-    expect(await screen.findByRole('radio', { name: /^by employee/i })).toBeChecked()
-    await user.click(screen.getByRole('radio', { name: /everyone on one schedule/i }))
-    await user.click(screen.getByRole('button', { name: /continue/i }))
-    expect(await screen.findByRole('button', { name: /weekly/i })).toBeInTheDocument()
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('grid', { name: /pay schedules by employee/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it.each([
+    ['step', '1'],
+    ['step', '2'],
+    ['overview', '1'],
+    ['overview', '2'],
+  ])('suspends the employee %s until page %s is ready', async (surface, delayedPage) => {
+    let resolvePage: (value: Response) => void = () => {}
+    const pendingPage = new Promise<Response>(resolve => {
+      resolvePage = resolve
+    })
+    const list = vi.fn<HttpResponseResolver>(({ request }) => {
+      const page = new URL(request.url).searchParams.get('page')
+      return page === delayedPage
+        ? pendingPage
+        : HttpResponse.json([employee(Number(page))], { headers: { 'x-total-pages': '2' } })
+    })
+    server.use(http.get(`${companyPath}/employees`, list))
+    if (surface === 'step') {
+      const machine = createMachine(
+        'assignmentSchedule',
+        payScheduleAssignmentStateMachine,
+        (context: PayScheduleAssignmentContextInterface) => ({
+          ...context,
+          companyId: '123',
+          assignmentType: 'by_employee' as const,
+          component: AssignmentScheduleStep,
+        }),
+      )
+      renderWithProviders(
+        <BaseComponent onEvent={vi.fn()}>
+          <Flow machine={machine} onEvent={vi.fn()} />
+        </BaseComponent>,
+      )
+    } else {
+      renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
+        unstableFeatures: { managePaySchedules: true },
+      })
+    }
+    await waitFor(() => {
+      expect(list).toHaveBeenCalledTimes(Number(delayedPage))
+    })
+    expect(screen.getByRole('status', { name: /loading/i })).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /pay schedule for employee/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('grid', { name: /pay schedules by employee/i }),
+    ).not.toBeInTheDocument()
+    resolvePage(
+      HttpResponse.json([employee(Number(delayedPage))], {
+        headers: { 'x-total-pages': '2' },
+      }),
+    )
+    if (surface === 'step') {
+      expect(
+        await screen.findByRole('button', { name: /pay schedule for employee 1/i }),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /pay schedule for employee 2/i }),
+      ).toBeInTheDocument()
+    } else {
+      expect(
+        await screen.findByRole('grid', { name: /pay schedules by employee/i }),
+      ).toBeInTheDocument()
+      expect(screen.getAllByText('1 employee')).toHaveLength(2)
+    }
   })
 
   it('honors overview feature options and opens Manage on employee assignment', async () => {
