@@ -868,13 +868,13 @@ describe('PaySchedule (management)', () => {
       expect(screen.queryByRole('row', { name: /^Hourly/ })).toBeNull()
     })
 
-    it('falls back to the single-schedule overview for other assignment types', async () => {
+    it('renders the employee overview for employee assignments', async () => {
       useHourlySalariedAssignment({ type: 'by_employee', employees: [] })
       renderPaySchedule({ enableAutoPilot: true, enableMultipleSchedules: true })
 
       await waitFor(() => {
         expect(
-          screen.getByText(/you have assigned everyone to be on one pay schedule/i),
+          screen.getByText(/you have assigned pay schedules per employee/i),
         ).toBeInTheDocument()
       })
     })

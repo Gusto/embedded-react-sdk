@@ -1756,6 +1756,11 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
@@ -1987,6 +1992,11 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
@@ -2029,6 +2039,11 @@
     },
     "CompanyManagement.PayScheduleAssignment": {
       "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
