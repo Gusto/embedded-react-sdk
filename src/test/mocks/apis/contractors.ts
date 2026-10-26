@@ -94,9 +94,14 @@ export const getContractorsList = handleGetContractorsList(() =>
   }),
 )
 
-export const getContractor = handleGetContractor(async () => {
+export const getContractor = handleGetContractor(async ({ request }) => {
   const responseFixture = await getFixture('get-v1-contractors-contractor_id')
-  return HttpResponse.json(responseFixture)
+  const includesCompanyName = new URL(request.url).searchParams
+    .getAll('include')
+    .includes('company_name')
+  return HttpResponse.json(
+    includesCompanyName ? { ...responseFixture, company_name: 'Test Company' } : responseFixture,
+  )
 })
 
 export const createContractor = handleCreateContractor(async ({ request }) => {
