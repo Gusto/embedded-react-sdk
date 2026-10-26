@@ -154,7 +154,7 @@
     "react-router-dom": "^7.18.4",
     "release-it": "^21.1.1",
     "sass-embedded": "^1.106.1",
-    "storybook": "^10.5.5",
+    "storybook": "^10.6.3",
     "stylelint-config-standard": "^40.0.0",
     "ts-morph": "^28.0.0",
     "tsx": "^4.23.15",
