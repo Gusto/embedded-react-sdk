@@ -353,6 +353,7 @@ export {
   PayrollUpdateEmployeeCompensationsOverrideType,
   PayrollUpdateOverrideType,
   PayrollUpdatePaymentMethod,
+  WithholdingPayPeriod,
 } from '@gusto/embedded-api/models/components/payrollupdate'
 /** `PayScheduleAssignmentType` entity from the Gusto Embedded API. */
 export { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'

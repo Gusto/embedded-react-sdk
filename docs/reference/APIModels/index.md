@@ -7808,6 +7808,42 @@ Status of the wire in
 
 ***
 
+<a id="withholdingpayperiod"></a>
+
+## WithholdingPayPeriod
+
+> `const` **WithholdingPayPeriod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollupdate.ts:336](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.2/gusto_embedded_v_2026_06_15/src/models/components/payrollupdate.ts#L336)
+
+The payment schedule tax rate the payroll is based on. Only relevant for off-cycle payrolls.
+
+### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-withholdingpayperiodannually"></a> `Annually` | `"Annually"` |
+| <a id="property-withholdingpayperiodeveryotherweek"></a> `EveryOtherWeek` | `"Every other week"` |
+| <a id="property-withholdingpayperiodeveryweek"></a> `EveryWeek` | `"Every week"` |
+| <a id="property-withholdingpayperiodmonthly"></a> `Monthly` | `"Monthly"` |
+| <a id="property-withholdingpayperiodquarterly"></a> `Quarterly` | `"Quarterly"` |
+| <a id="property-withholdingpayperiodsemiannually"></a> `Semiannually` | `"Semiannually"` |
+| <a id="property-withholdingpayperiodtwicepermonth"></a> `TwicePerMonth` | `"Twice per month"` |
+
+***
+
+<a id="withholdingpayperiod-1"></a>
+
+## WithholdingPayPeriod
+
+> **WithholdingPayPeriod** = `ClosedEnum`\<*typeof* [`WithholdingPayPeriod`](#withholdingpayperiod)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/payrollupdate.ts:336](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.2/gusto_embedded_v_2026_06_15/src/models/components/payrollupdate.ts#L336)
+
+The payment schedule tax rate the payroll is based on. Only relevant for off-cycle payrolls.
+
+***
+
 <a id="workweeks"></a>
 
 ## Workweeks
