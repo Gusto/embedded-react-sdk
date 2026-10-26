@@ -10,8 +10,6 @@
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
-    "typedoc": "typedoc --options typedoc.config.ts",
-    "test": "vitest run",
     "docs:version": "docusaurus docs:version"
   },
   "dependencies": {
@@ -29,12 +27,7 @@
     "@docusaurus/module-type-aliases": "^3.7.0",
     "@docusaurus/tsconfig": "^3.7.0",
     "@docusaurus/types": "^3.7.0",
-    "docusaurus-plugin-typedoc": "^1.4.2",
-    "typedoc": "^0.28.19",
-    "typedoc-plugin-markdown": "^4.12.0",
-    "typescript": "~5.8.0",
-    "vite": "^8.3.4",
-    "vitest": "^5.0.5"
+    "typescript": "~5.8.0"
   },
   "overrides": {
     "joi": "^17.13.8",

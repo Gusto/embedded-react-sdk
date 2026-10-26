@@ -91,6 +91,7 @@ export default [
       '.storybook/**/*',
       'storybook-static/**/*',
       'docs-site/**/*',
+      'typedoc/**/*',
       'sdk-app/public/**/*',
     ],
   },
