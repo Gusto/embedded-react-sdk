@@ -1350,6 +1350,7 @@ export const componentEvents: {
     readonly OFF_CYCLE_BLOCKERS_VIEW_ALL: "offCycle/blockers/viewAll";
     readonly DISMISSAL_PAY_PERIOD_SELECTED: "dismissal/payPeriod/selected";
     readonly TRANSITION_CREATED: "transition/created";
+    readonly TRANSITION_CONFIGURED: "transition/configured";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATE: "contractor/historicalPayments/create";
@@ -4398,6 +4399,8 @@ declare namespace Payroll {
         TransitionCreation,
         TransitionCreationProps,
         TransitionCreationFormData,
+        TransitionConfiguration,
+        TransitionConfigurationProps,
         TransitionPayroll,
         TransitionPayrollProps
     }
@@ -5230,6 +5233,8 @@ export interface Resources {
     // (undocumented)
     'Payroll.Transition': Translations.PayrollTransition
     // (undocumented)
+    'Payroll.TransitionConfiguration': Translations.PayrollTransitionConfiguration
+    // (undocumented)
     'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
     // (undocumented)
     'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
@@ -6014,6 +6019,15 @@ interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeO
 
 // @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
+
+// @alpha
+function TransitionConfiguration(input: TransitionConfigurationProps): JSX;
+
+// @alpha
+interface TransitionConfigurationProps extends BaseComponentInterface<'Payroll.TransitionConfiguration'> {
+    companyId: string;
+    payrollId: string;
+}
 
 // @public
 function TransitionCreation(props: TransitionCreationProps): JSX;

@@ -264,6 +264,8 @@ export interface Resources {
   /** */
   'Payroll.Transition': Translations.PayrollTransition
   /** */
+  'Payroll.TransitionConfiguration': Translations.PayrollTransitionConfiguration
+  /** */
   'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
   /** */
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
@@ -8808,6 +8810,55 @@ export namespace Translations {
   export interface PayrollTransition {
     /** @defaultValue `"Transition Payroll"` */
     breadcrumbLabel: string
+  }
+  /** Translation keys for the `Payroll.TransitionConfiguration` i18n namespace. */
+  export interface PayrollTransitionConfiguration {
+    /** @defaultValue `"Edit transition payroll"` */
+    pageTitle: string
+    /** @defaultValue `"A transition payroll covers the gap between your old and new pay schedules."` */
+    pageDescription: string
+    /** @defaultValue `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` */
+    transitionExplanation: string
+    /** @defaultValue `"Transition Details"` */
+    detailsHeading: string
+    /** @defaultValue `"Pay period"` */
+    payPeriodLabel: string
+    /** @defaultValue `"Pay schedule"` */
+    payScheduleLabel: string
+    /** @defaultValue `"Payment date"` */
+    checkDateLabel: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    deductions: {
+      /** @defaultValue `"Deductions and contributions"` */
+      title: string
+      /** @defaultValue `"Employers often block deductions and contributions from certain checks (i.e. bonus checks), since they are calculated on a per-pay-period basis. Deductions and contributions include loan repayments, garnishments, benefits, etc. Taxes will be included regardless of what is chosen."` */
+      description: string
+      options: {
+        /** @defaultValue `"Make all the regular deductions and contributions."` */
+        include: string
+        /** @defaultValue `"Block all deductions and contributions, except 401(k). Taxes will be included."` */
+        skip: string
+      }
+    }
+    wageTypeGroups: {
+      regular: {
+        /** @defaultValue `"Regular hours, regular wages, and tips"` */
+        label: string
+        /** @defaultValue `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` */
+        description: string
+      }
+      supplemental: {
+        /** @defaultValue `"Supplemental wages, bonus wages, commission"` */
+        label: string
+        /** @defaultValue `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` */
+        description: string
+      }
+      reimbursement: {
+        /** @defaultValue `"Reimbursements"` */
+        label: string
+      }
+    }
   }
   /** Translation keys for the `Payroll.TransitionCreation` i18n namespace. */
   export interface PayrollTransitionCreation {
