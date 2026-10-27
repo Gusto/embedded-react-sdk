@@ -40,6 +40,7 @@ See [sdk-app/README.md](sdk-app/README.md) for all available commands and enviro
 - Do not include `@use` imports in `.module.scss` for modules globally available via Vite (e.g., `@/styles/Helpers` is auto-injected)
 - Avoid `useMemo`, `useCallback`, or `React.memo` unless there's a demonstrated or obvious performance problem. Memoizing a deep object that's recreated every render fails its own equality check on re-render — it buys nothing and adds a maintenance trap.
 - Avoid `as SomeType` casts unless there's clearly no alternative — every cast bypasses TypeScript's safety checks. Prefer a type guard, discriminated union narrowing, or a generic instead.
+- Don't use `!` non-null assertions, in source or tests. They hide a missing check. Narrow with a type guard or an explicit check instead.
 
 ## Documentation
 
@@ -253,12 +254,10 @@ expect(createJobResolver).toHaveBeenCalledTimes(1)
 expect(createJobBody).toMatchObject({ title: 'Engineer', hire_date: '2025-01-15' })
 ```
 
-Cross-endpoint ordering — use `mock.invocationCallOrder` (vitest assigns a global counter to every spy invocation):
+Cross-endpoint ordering — use `toHaveBeenCalledBefore`:
 
 ```ts
-expect(createJobResolver.mock.invocationCallOrder[0]!).toBeLessThan(
-  updateCompensationResolver.mock.invocationCallOrder[0]!,
-)
+expect(createJobResolver).toHaveBeenCalledBefore(updateCompensationResolver)
 ```
 
 Path assertions when the path itself encodes IDs (e.g., `PUT /v1/jobs/:id`) — capture the URL inside the resolver:
