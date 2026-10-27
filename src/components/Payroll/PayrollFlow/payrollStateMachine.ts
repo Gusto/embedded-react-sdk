@@ -29,6 +29,7 @@ type PayrollFlowEventPayloads = {
     payrollUuid?: string
   }
   [componentEvents.RUN_TRANSITION_PAYROLL]: {
+    payrollUuid?: string
     startDate: string
     endDate: string
     payScheduleUuid: string

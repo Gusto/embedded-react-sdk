@@ -89,6 +89,7 @@ function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boo
   const handleRunPayroll = useCallback(
     (payPeriod: PayPeriod) => {
       onEvent(componentEvents.RUN_TRANSITION_PAYROLL, {
+        payrollUuid: payPeriod.payroll?.payrollUuid,
         startDate: payPeriod.startDate,
         endDate: payPeriod.endDate,
         payScheduleUuid: payPeriod.payScheduleUuid,
@@ -114,6 +115,7 @@ function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boo
         })
         setShowSkipSuccessAlert(true)
         onEvent(componentEvents.TRANSITION_PAYROLL_SKIPPED, {
+          payrollUuid: payPeriod.payroll?.payrollUuid,
           startDate: payPeriod.startDate,
           endDate: payPeriod.endDate,
           payScheduleUuid: payPeriod.payScheduleUuid,

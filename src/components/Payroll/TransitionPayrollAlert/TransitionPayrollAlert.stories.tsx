@@ -14,13 +14,13 @@ const weeklyPayPeriods: PayPeriod[] = [
     startDate: '2024-12-01',
     endDate: '2024-12-15',
     payScheduleUuid: 'schedule-weekly',
-    payroll: { processed: false, payrollType: 'transition' },
+    payroll: { payrollUuid: 'transition-weekly-1', processed: false, payrollType: 'transition' },
   },
   {
     startDate: '2024-12-16',
     endDate: '2024-12-31',
     payScheduleUuid: 'schedule-weekly',
-    payroll: { processed: false, payrollType: 'transition' },
+    payroll: { payrollUuid: 'transition-weekly-2', processed: false, payrollType: 'transition' },
   },
 ]
 
@@ -29,7 +29,15 @@ const monthlyPayPeriods: PayPeriod[] = [
     startDate: '2024-12-01',
     endDate: '2024-12-31',
     payScheduleUuid: 'schedule-monthly',
-    payroll: { processed: false, payrollType: 'transition' },
+    payroll: { payrollUuid: 'transition-monthly-1', processed: false, payrollType: 'transition' },
+  },
+]
+
+const singlePayroll = [
+  {
+    payScheduleUuid: 'schedule-monthly',
+    payScheduleName: 'Monthly Schedule',
+    payPeriods: monthlyPayPeriods,
   },
 ]
 
@@ -63,6 +71,22 @@ export default {
       </I18nLoader>
     ),
   ],
+}
+
+export const SinglePayroll = () => {
+  const onRunPayroll = fn().mockName('onRunPayroll')
+  const onSkipPayroll = fn().mockName('onSkipPayroll')
+
+  return (
+    <TransitionPayrollAlertPresentation
+      groupedPayPeriods={singlePayroll}
+      onRunPayroll={onRunPayroll}
+      onSkipPayroll={onSkipPayroll}
+      showSkipSuccessAlert={false}
+      onDismissSkipSuccessAlert={() => {}}
+      skippingPayPeriod={null}
+    />
+  )
 }
 
 export const SingleSchedule = () => {
