@@ -35,6 +35,7 @@
     "browsable",
     "Chakra",
     "codemod",
+    "cutover",
     "networkidle",
     "putv",
     "getv",
