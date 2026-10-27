@@ -1,5 +1,5 @@
 import { expect, describe, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   type Employee,
@@ -11,6 +11,7 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollCategory } from '../payrollTypes'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { getCellByColumnHeader } from '@/test-utils/tableQueries'
 
 const mockEmployeeCompensations: PayrollEmployeeCompensationsType[] = [
   {
@@ -335,5 +336,46 @@ describe('PayrollConfigurationPresentation', () => {
     expect(
       screen.queryByText(/To pay your employees with direct deposit by/),
     ).not.toBeInTheDocument()
+  })
+
+  it('includes reimbursements in the Total pay column', async () => {
+    const compensationWithReimbursement: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensations[0],
+      reimbursements: [{ description: null, amount: '2000.00' }],
+    }
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        employeeCompensations={[compensationWithReimbursement]}
+      />,
+    )
+
+    const table = await screen.findByRole('grid', { name: 'Employee compensations' })
+    const row = within(table).getByRole('row', { name: /John Doe/i })
+    expect(getCellByColumnHeader(table, row, 'Reimbursements')).toHaveTextContent('$2,000.00')
+    // calculateGrossPay for this fixture (40hrs regular + 8hrs PTO, both @ $22/hr) is $1,056;
+    // total pay should add the $2,000 reimbursement on top.
+    expect(getCellByColumnHeader(table, row, 'Total pay')).toHaveTextContent('$3,056.00')
+  })
+
+  it('includes reimbursements in the Total pay column when payrollRegularRateOfPay is enabled', async () => {
+    const compensationWithReimbursement: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensations[0],
+      grossPay: '880.00',
+      reimbursements: [{ description: null, amount: '2000.00' }],
+    }
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        employeeCompensations={[compensationWithReimbursement]}
+      />,
+      { unstableFeatures: { payrollRegularRateOfPay: true } },
+    )
+
+    const table = await screen.findByRole('grid', { name: 'Employee compensations' })
+    const row = within(table).getByRole('row', { name: /John Doe/i })
+    expect(getCellByColumnHeader(table, row, 'Total pay')).toHaveTextContent('$2,880.00')
   })
 })
