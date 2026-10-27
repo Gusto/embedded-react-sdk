@@ -6,21 +6,18 @@ import { createContext, useContext } from 'react'
  * @remarks
  * Pass to {@link GustoProvider} via the `unstableFeatures` prop to enable a feature ahead of its
  * public release. Every flag defaults to disabled when omitted. When a feature graduates to
- * public release, its flag is deleted from this interface along with the conditional checks that
- * read it — there is no deprecation step. This interface may have no flags at all at any given
- * time — e.g. immediately after the last active flag graduates and before the next one is added —
- * the opt-in mechanism itself is permanent even when nothing is currently gated behind it.
+ * public release, its flag is deleted from this interface — there is no deprecation step. The
+ * conditional checks that read it are deleted too, or moved to a {@link Features} flag when the
+ * feature ships on by default but still needs an opt-out. This interface may have no flags at all
+ * at any given time — e.g. immediately after the last active flag graduates and before the next
+ * one is added — the opt-in mechanism itself is permanent even when nothing is currently gated
+ * behind it.
  *
  * @alpha
  */
 export interface UnstableFeatures {
   /** Enables recording past payments to contractors within the `ContractorManagement` flows. */
   historicalPayments?: boolean
-  /**
-   * Enables the in-development regular-rate-of-pay experience: the payroll editing flow, and the
-   * workweek start day field on `PaySchedule` that RRoP's overtime calculations depend on.
-   */
-  payrollRegularRateOfPay?: boolean
   /** Enables the in-development `CompanyManagement.PaySchedule` flow for managing pay schedules and their assignments after onboarding. */
   managePaySchedules?: boolean
   /** Enables the in-development `CompanyManagement.TaxPaymentsFlow` for reviewing a company's tax payments and their liabilities. */

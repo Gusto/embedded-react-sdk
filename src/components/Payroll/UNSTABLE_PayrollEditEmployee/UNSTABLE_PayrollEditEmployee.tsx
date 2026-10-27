@@ -39,12 +39,11 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 /**
- * In-development regular-rate-of-pay rebuild of {@link PayrollEditEmployee}.
+ * Regular-rate-of-pay rebuild of {@link PayrollEditEmployee}.
  *
  * @remarks
- * Gated behind the `payrollRegularRateOfPay` unstable feature flag and not part of the public
- * SDK surface. `PayrollEditEmployee` renders this in place of the stable editor when the flag is
- * enabled. Consumes {@link usePayrollEditEmployeeForm} and renders the header, the hours /
+ * Not part of the public SDK surface. `PayrollEditEmployee` renders this in place of the legacy
+ * editor unless the `regularRateOfPay` flag in {@link Features} is set to `false`. Consumes {@link usePayrollEditEmployeeForm} and renders the header, the hours /
  * additional-earnings / time-off / payment-method sections, and the
  * `Cancel`/`Save` controls, performing a real payroll update on save. For an overtime-eligible
  * employee on a multi-workweek payroll, Overtime/Double-overtime rows start hidden behind a single,

@@ -47,7 +47,7 @@ you do not supply fall back to the SDK's built-in React Aria implementations.
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 | `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
 
-_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `theme` from Omit._
+_Inherits `currency`, `features`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `theme` from Omit._
 
 ***
 
@@ -77,7 +77,7 @@ Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
 | `children?` | `ReactNode` | The application tree that should have access to the SDK. |
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 
-_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
+_Inherits `currency`, `features`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
 
 ## Utility types
 
@@ -95,6 +95,27 @@ API client configuration passed to [GustoProvider](#gustoprovider) (and [GustoPr
 | `headers?` | `HeadersInit` | Extra headers applied to every API request. Combined with any headers your proxy adds. |
 | `hooks?` | [`SDKHooks`](http-interceptors.md#sdkhooks) | Request interceptor hooks. Use these to inspect, modify, or react to requests and responses. See [SDKHooks](http-interceptors.md#sdkhooks). |
 | `observability?` | [`ObservabilityHook`](observability.md#observabilityhook) | Observability hook for surfacing errors and metrics from the SDK to your monitoring stack. See [ObservabilityHook](observability.md#observabilityhook). |
+
+***
+
+<a id="features"></a>
+
+### Features
+
+Opt-out flags for released SDK functionality.
+
+#### Remarks
+
+Pass to [GustoProvider](#gustoprovider) via the `features` prop. Every flag defaults to enabled when
+omitted; set a flag to `false` to opt out and keep the behavior that preceded it. The
+functionality behind each flag is ready for production use. Flags are temporary: each one is
+removed in a future release, after which its functionality can no longer be turned off.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `regularRateOfPay?` | `boolean` | Enables the regular-rate-of-pay experience: per-workweek hours and earnings editing in `PayrollEditEmployee`, gross pay from the payroll calculation in `PayrollConfiguration`, and the workweek start day field on `PaySchedule` that overtime calculations depend on. Defaults to `true`. |
 
 ***
 
@@ -116,6 +137,7 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
 | `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| `features?` | [`Features`](#features) | Opt-out flags for released SDK functionality. Every flag defaults to `true`; set one to `false` to opt out. See [Features](#features). |
 | `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |

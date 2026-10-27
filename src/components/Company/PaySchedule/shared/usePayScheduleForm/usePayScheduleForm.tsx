@@ -56,7 +56,7 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 
 export type { PayScheduleOptionalFieldsToRequire } from './payScheduleSchema'
 
@@ -87,10 +87,8 @@ export interface UsePayScheduleFormProps {
   /**
    * Renders `Fields.WorkweekStartDay` disabled while still submitting its current value,
    * for partners that compute the workweek start day themselves and don't want end users
-   * editing it directly. Defaults to `false`. Has no effect unless the `payrollRegularRateOfPay`
-   * unstable feature is enabled.
-   *
-   * @alpha
+   * editing it directly. Defaults to `false`. Has no effect when the `regularRateOfPay` flag in
+   * {@link Features} is set to `false`.
    */
   disableWorkweekStartDayEditing?: boolean
 }
@@ -122,10 +120,8 @@ export interface PayScheduleFormFields {
   Day2: ComponentType<Day2FieldProps> | undefined
   /**
    * Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay
-   * overtime calculations. `undefined` unless the `payrollRegularRateOfPay` unstable feature
-   * is enabled.
-   *
-   * @alpha
+   * overtime calculations. `undefined` when the `regularRateOfPay` flag in {@link Features} is
+   * set to `false`.
    */
   WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined
 }
@@ -315,7 +311,7 @@ export function usePayScheduleForm({
   shouldFocusError = true,
   disableWorkweekStartDayEditing = false,
 }: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady {
-  const isWorkweekStartDayEnabled = useUnstableFeature('payrollRegularRateOfPay')
+  const isWorkweekStartDayEnabled = useFeature('regularRateOfPay')
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: payScheduleId ?? '' },
     { enabled: !!payScheduleId },

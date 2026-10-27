@@ -43,7 +43,7 @@ export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number]
 /**
  * Pay schedule workweek start day values accepted by {@link usePayScheduleForm}.
  *
- * @alpha
+ * @public
  */
 export type PayScheduleWorkweekStartDay = WorkweekStartDay
 

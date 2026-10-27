@@ -159,14 +159,15 @@ export default [
     },
   },
   /**
-   * `UnstableFeatures` is empty whenever no alpha flag is currently active — inline eslint-disable
-   * comments for these rules would get auto-stripped by `--fix` the moment a flag is added, then
-   * need to be re-added by hand the next time the interface empties out again.
+   * `UnstableFeatures` and `Features` are empty whenever no flag is currently active — inline
+   * eslint-disable comments for these rules would get auto-stripped by `--fix` the moment a flag is
+   * added, then need to be re-added by hand the next time the interface empties out again.
    */
   {
     files: [
       'src/contexts/UnstableFeaturesProvider/useUnstableFeature.ts',
       'src/contexts/UnstableFeaturesProvider/WithUnstableFeature.tsx',
+      'src/contexts/FeaturesProvider/useFeature.ts',
     ],
     rules: {
       '@typescript-eslint/no-empty-object-type': 'off',

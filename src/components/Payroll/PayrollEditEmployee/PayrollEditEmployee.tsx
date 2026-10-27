@@ -12,7 +12,7 @@ import { derivePayrollCategory, isOffCyclePayroll, PayrollCategory } from '../pa
 import { cleanupReimbursements } from '../helpers'
 import { UNSTABLE_PayrollEditEmployee } from '../UNSTABLE_PayrollEditEmployee/UNSTABLE_PayrollEditEmployee'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 import { componentEvents } from '@/shared/constants'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -68,7 +68,7 @@ export interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payrol
  * ```
  */
 export function PayrollEditEmployee(props: PayrollEditEmployeeProps) {
-  const isRegularRateOfPayEnabled = useUnstableFeature('payrollRegularRateOfPay')
+  const isRegularRateOfPayEnabled = useFeature('regularRateOfPay')
 
   if (isRegularRateOfPayEnabled) {
     return <UNSTABLE_PayrollEditEmployee {...props} />

@@ -18,12 +18,8 @@ function assertReady(hookResult: UsePayScheduleFormResult): asserts hookResult i
   }
 }
 
-function withRegularRateOfPay({ children }: { children: React.ReactNode }) {
-  return (
-    <GustoTestProvider unstableFeatures={{ payrollRegularRateOfPay: true }}>
-      {children}
-    </GustoTestProvider>
-  )
+function withoutRegularRateOfPay({ children }: { children: React.ReactNode }) {
+  return <GustoTestProvider features={{ regularRateOfPay: false }}>{children}</GustoTestProvider>
 }
 
 function setupPaymentConfigsMock() {
@@ -257,7 +253,7 @@ describe('usePayScheduleForm', () => {
               workweekStartDay: 'Monday',
             },
           }),
-        { wrapper: withRegularRateOfPay },
+        { wrapper: GustoTestProvider },
       )
 
       await waitFor(() => {
@@ -275,7 +271,7 @@ describe('usePayScheduleForm', () => {
       expect(createRequestBody?.workweek_start_day).toBe('Monday')
     })
 
-    it('hides Fields.WorkweekStartDay and omits it from the payload without the payrollRegularRateOfPay flag', async () => {
+    it('hides Fields.WorkweekStartDay and omits it from the payload when regularRateOfPay is opted out', async () => {
       const { result } = renderHook(
         () =>
           usePayScheduleForm({
@@ -288,7 +284,7 @@ describe('usePayScheduleForm', () => {
               workweekStartDay: 'Monday',
             },
           }),
-        { wrapper: GustoTestProvider },
+        { wrapper: withoutRegularRateOfPay },
       )
 
       await waitFor(() => {
@@ -507,7 +503,7 @@ describe('usePayScheduleForm', () => {
             defaultValues: { workweekStartDay: 'Sunday' },
             disableWorkweekStartDayEditing: true,
           }),
-        { wrapper: withRegularRateOfPay },
+        { wrapper: GustoTestProvider },
       )
 
       await waitFor(() => {

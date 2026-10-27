@@ -6,6 +6,7 @@ import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 // Initialize i18next for testing
 const i18n = i18next.createInstance()
@@ -33,11 +34,16 @@ void i18n.use(initReactI18next).init({
  */
 export const renderWithProviders = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'> & { unstableFeatures?: UnstableFeatures },
+  options?: Omit<RenderOptions, 'wrapper'> & {
+    features?: Features
+    unstableFeatures?: UnstableFeatures
+  },
 ) => {
-  const { unstableFeatures, ...renderOptions } = options ?? {}
+  const { features, unstableFeatures, ...renderOptions } = options ?? {}
   const TestProvider = ({ children }: { children: React.ReactNode }) => (
-    <GustoTestProvider unstableFeatures={unstableFeatures}>{children}</GustoTestProvider>
+    <GustoTestProvider features={features} unstableFeatures={unstableFeatures}>
+      {children}
+    </GustoTestProvider>
   )
 
   return render(ui, { wrapper: TestProvider, ...renderOptions })

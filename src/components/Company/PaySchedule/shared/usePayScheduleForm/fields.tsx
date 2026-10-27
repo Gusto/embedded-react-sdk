@@ -132,7 +132,7 @@ export function Day2Field(props: Day2FieldProps) {
 /**
  * Props accepted by {@link usePayScheduleForm}'s `Fields.WorkweekStartDay` component.
  *
- * @alpha
+ * @public
  */
 export type WorkweekStartDayFieldProps = HookFieldProps<
   SelectHookFieldProps<never, PayScheduleWorkweekStartDay>

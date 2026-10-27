@@ -2,6 +2,7 @@
 // Run: npx tsx sdk-app/scripts/analyze-component-props.ts
 
 import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.PaySchedule': ['companyId'],
@@ -208,6 +209,9 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
   managePaySchedules: false,
-  payrollRegularRateOfPay: false,
   taxPayments: false,
+}
+
+export const FEATURES_VALUES: Required<Features> = {
+  regularRateOfPay: true,
 }

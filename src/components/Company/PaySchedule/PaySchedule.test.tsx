@@ -380,10 +380,7 @@ describe('PaySchedule', () => {
       )
 
       render(
-        <GustoProvider
-          config={{ baseUrl: API_BASE_URL }}
-          unstableFeatures={{ payrollRegularRateOfPay: true }}
-        >
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule
             companyId="123"
             onEvent={() => {}}
@@ -420,11 +417,11 @@ describe('PaySchedule', () => {
       expect(requestBodies[0]).toMatchObject({ workweek_start_day: 'Sunday' })
     })
 
-    it('does not render the workweek start day field without the payrollRegularRateOfPay flag', async () => {
+    it('does not render the workweek start day field when regularRateOfPay is opted out', async () => {
       const user = userEvent.setup()
 
       render(
-        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }} features={{ regularRateOfPay: false }}>
           <PaySchedule
             companyId="123"
             onEvent={() => {}}
