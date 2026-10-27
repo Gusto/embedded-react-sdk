@@ -16,11 +16,42 @@ import { createContext, useContext } from 'react'
  * @alpha
  */
 export interface UnstableFeatures {
-  /** Enables recording past payments to contractors within the `ContractorManagement` flows. */
+  /**
+   * Recording contractor payments that were made outside of Gusto.
+   *
+   * When `true`, `ContractorManagement.PaymentsList` (and `ContractorManagement.PaymentFlow`, which
+   * renders it) shows a "Record a historical payment" call to action that opens the historical
+   * payment flow. `ContractorManagement.HistoricalPaymentFlow`,
+   * `ContractorManagement.CreateHistoricalPayment`, and
+   * `ContractorManagement.HistoricalPaymentSummary` can be mounted.
+   *
+   * When `false`, the call to action is hidden and those three components throw when mounted.
+   *
+   * @defaultValue `false`
+   */
   historicalPayments?: boolean
-  /** Enables the in-development `CompanyManagement.PaySchedule` flow for managing pay schedules and their assignments after onboarding. */
+  /**
+   * Managing pay schedules and their employee assignments after onboarding.
+   *
+   * When `true`, `CompanyManagement.PaySchedule` and `CompanyManagement.PayScheduleAssignment` can
+   * be mounted.
+   *
+   * When `false`, both components throw when mounted. `CompanyOnboarding.PaySchedule` is not
+   * affected.
+   *
+   * @defaultValue `false`
+   */
   managePaySchedules?: boolean
-  /** Enables the in-development `CompanyManagement.TaxPaymentsFlow` for reviewing a company's tax payments and their liabilities. */
+  /**
+   * Reviewing a company's tax payments and their liabilities.
+   *
+   * When `true`, `CompanyManagement.TaxPaymentsFlow`, `CompanyManagement.TaxPaymentsList`, and
+   * `CompanyManagement.TaxPaymentDetail` can be mounted.
+   *
+   * When `false`, all three components throw when mounted.
+   *
+   * @defaultValue `false`
+   */
   taxPayments?: boolean
 }
 
