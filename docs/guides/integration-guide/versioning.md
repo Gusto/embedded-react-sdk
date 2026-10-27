@@ -1,6 +1,6 @@
 ---
 title: Versioning
-description: SDK versioning strategy, pre-1.0 SemVer behavior, what counts as a breaking change, advance-notice expectations, upgrade guides, opting out of new functionality, and where to find releases.
+description: SDK versioning strategy, pre-1.0 SemVer behavior, what counts as a breaking change, advance-notice expectations, upgrade guides, and where to find releases.
 order: 0
 ---
 
@@ -19,24 +19,6 @@ To ensure a smooth experience during this transitional phase, we are dedicated t
 
 - **Advance Notice:** We will communicate any upcoming breaking changes well in advance, allowing you time to prepare for adjustments.
 - **Upgrade Guides:** Each breaking change will come with a comprehensive upgrade guide to help you transition your code with minimal friction.
-
-## Opting Out of New Functionality
-
-Some released functionality replaces existing SDK behavior and ships behind a flag on the `features` prop of `GustoProvider`. Every flag defaults to `true`. To keep the previous behavior while you prepare for the change, set the flag to `false`:
-
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-
-function App() {
-  return (
-    <GustoProvider config={{ baseUrl: '/proxy-url/' }} features={{ regularRateOfPay: false }}>
-      ...
-    </GustoProvider>
-  )
-}
-```
-
-Flags are temporary. Each one is removed in a future release, after which its functionality can no longer be turned off. See [`Features`](../../reference/providers.md#features) for the current flags and what each one covers.
 
 ## Staying Informed
 
