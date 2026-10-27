@@ -125,9 +125,7 @@ describe('TransitionConfiguration', () => {
       withholding_pay_period: 'Every week',
       fixed_withholding_rate: true,
     })
-    expect(prepareResolver.mock.invocationCallOrder[0]!).toBeLessThan(
-      updateResolver.mock.invocationCallOrder[0]!,
-    )
+    expect(prepareResolver).toHaveBeenCalledBefore(updateResolver)
     expect(createResolver).not.toHaveBeenCalled()
     expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: [PREPARE_QUERY_KEY, PAYROLL_ID] })
     await waitFor(() => {
