@@ -1,16 +1,16 @@
 import type { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+import type { EmployeeSelection } from './AssignmentEmployeeStepPresentation'
 import type { DepartmentSelection } from './AssignmentDepartmentStepPresentation'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 
 /**
- * The assignment types this flow supports. `by_employee` exists in the API
- * but has no step implementation, so it is unrepresentable here.
+ * The assignment types supported by the management flow.
  *
  * @internal
  */
 export type SupportedAssignmentType = Extract<
   PayScheduleAssignmentBodyType,
-  'single' | 'hourly_salaried' | 'by_department'
+  'single' | 'hourly_salaried' | 'by_department' | 'by_employee'
 >
 
 /**
@@ -18,7 +18,7 @@ export type SupportedAssignmentType = Extract<
  *
  * @internal
  */
-export type AssignmentDraft = Partial<DepartmentSelection> & {
+export type AssignmentDraft = Partial<DepartmentSelection & EmployeeSelection> & {
   assignmentType?: SupportedAssignmentType
   hourlyPayScheduleUuid?: string
   salariedPayScheduleUuid?: string
@@ -32,5 +32,6 @@ export interface PayScheduleAssignmentContextInterface extends FlowContextInterf
   hourlyPayScheduleUuid?: string
   salariedPayScheduleUuid?: string
   departments?: DepartmentSelection['departments']
+  employees?: EmployeeSelection['employees']
   component: React.ComponentType | null
 }

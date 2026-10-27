@@ -14,6 +14,10 @@
       "byDepartment": {
         "label": "By department",
         "description": "Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."
+      },
+      "byEmployee": {
+        "label": "By employee",
+        "description": "Assign a pay schedule to each individual employee."
       }
     }
   },
@@ -56,5 +60,22 @@
     "anchorEndOfPayPeriodDescription": "The last date of the first pay period; can be the same as the first pay date.",
     "payrollDeadline": "Run payroll by"
   },
-  "departmentAccessDenied": "Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."
+  "departmentAccessDenied": "Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator.",
+  "employeeStep": {
+    "heading": "Assign employees",
+    "employeesLabel": "Employees",
+    "employeeLabel": "Employee",
+    "payScheduleLabel": "Pay schedule",
+    "scheduleForEmployee": "Pay schedule for {{name}}",
+    "tableLabel": "Employee pay schedule assignments",
+    "addPayScheduleCta": "Add pay schedule",
+    "typeLabel": "Type",
+    "types": {
+      "salariedExempt": "Salaried / Exempt",
+      "hourly": "Hourly / Nonexempt",
+      "salariedNonexempt": "Salaried / Nonexempt",
+      "owner": "Owner"
+    }
+  },
+  "employeeAccessDenied": "Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."
 }
