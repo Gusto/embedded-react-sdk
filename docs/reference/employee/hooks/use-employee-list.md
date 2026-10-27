@@ -153,7 +153,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `uuid` | `string` | The UUID of the employee in Gusto. |
 | `applicableTaxIds?` | `number`[] | - |
 | `companyUuid?` | `string` | The UUID of the company the employee is employed by. |
-| `currentEmploymentStatus?` | [`CurrentEmploymentStatus`](../../APIModels/index.md#currentemploymentstatus-1) \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
+| `currentEmploymentStatus?` | [`EmployeeCurrentEmploymentStatus`](../../APIModels/index.md#employeecurrentemploymentstatus-1) \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
 | `customFields?` | [`EmployeeCustomField`](../../APIModels/index.md#employeecustomfield)[] | Custom fields are only included for the employee if the include param has the custom_fields value set |
 | `dateOfBirth?` | `string` \| `null` | - |
 | `department?` | `string` \| `null` | The employee's department in the company. |
@@ -172,7 +172,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `memberPortalInvitationStatus?` | [`EmployeeMemberPortalInvitationStatus`](../../APIModels/index.md#employeememberportalinvitationstatus) \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
 | `middleInitial?` | `string` \| `null` | - |
 | `onboarded?` | `boolean` | Whether the employee has completed onboarding. |
-| `onboardingDocumentsConfig?` | [`OnboardingDocumentsConfig`](../../APIModels/index.md#onboardingdocumentsconfig) | Configuration for an employee onboarding documents during onboarding |
+| `onboardingDocumentsConfig?` | [`EmployeeOnboardingDocumentsConfig`](../../APIModels/index.md#employeeonboardingdocumentsconfig) | Configuration for an employee onboarding documents during onboarding |
 | `onboardingStatus?` | [`EmployeeOnboardingStatus1`](../../APIModels/index.md#employeeonboardingstatus1-1) \| `null` | The current onboarding status of the employee |
 | `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
 | `pendingDismissalDate?` | `string` | Effective date of a termination that hasn't gone into effect yet, if one is scheduled. |

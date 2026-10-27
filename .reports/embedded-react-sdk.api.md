@@ -6,7 +6,6 @@
 
 import { AccountType as AccountType_2 } from '@gusto/embedded-api/models/components/companybankaccount';
 import { AccrualMethod } from '@gusto/embedded-api/models/components/timeoffpolicyrequest';
-import { Address } from '@gusto/embedded-api/models/components/contractor';
 import { AfterErrorContext } from '@gusto/embedded-api/hooks/types';
 import { AfterErrorHook } from '@gusto/embedded-api/hooks/types';
 import { AfterSuccessContext } from '@gusto/embedded-api/hooks/types';
@@ -34,11 +33,14 @@ import { Compensation } from '@gusto/embedded-api/models/components/compensation
 import { ComponentType } from 'react';
 import { Contractor } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api/models/components/contractoraddress';
+import { ContractorAddress1 } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount';
 import { ContractorBankAccountAccountType } from '@gusto/embedded-api/models/components/contractorbankaccount';
 import { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody';
 import { ContractorCreateRequestBodyType } from '@gusto/embedded-api/models/components/contractorcreaterequestbody';
 import { ContractorCreateRequestBodyWageType } from '@gusto/embedded-api/models/components/contractorcreaterequestbody';
+import { ContractorMemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/contractor';
+import { ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorOnboardingStatus as ContractorOnboardingStatus_2 } from '@gusto/embedded-api/models/components/contractoronboardingstatus';
 import { ContractorOnboardingStatusOnboardingStatus } from '@gusto/embedded-api/models/components/contractoronboardingstatus';
 import { ContractorOnboardingStatusOnboardingStep } from '@gusto/embedded-api/models/components/contractoronboardingstatus';
@@ -68,11 +70,11 @@ import { ContractorPaymentReceiptTotals } from '@gusto/embedded-api/models/compo
 import { Contractors } from '@gusto/embedded-api/models/components/department';
 import { ContractorStatus } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorType as ContractorType_2 } from '@gusto/embedded-api/models/components/contractor';
+import { ContractorUpcomingEmployment } from '@gusto/embedded-api/models/components/contractor';
 import { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
 import { ContractorUpdateRequestBodyType } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
 import { ContractorUpdateRequestBodyWageType } from '@gusto/embedded-api/models/components/contractorupdaterequestbody';
 import { ContractorWageType } from '@gusto/embedded-api/models/components/contractor';
-import { CurrentEmploymentStatus } from '@gusto/embedded-api/models/components/employee';
 import { CustomFieldType } from '@gusto/embedded-api/models/components/customfieldtype';
 import { CustomWithholdings } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Deductions } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -94,12 +96,16 @@ import { Employee } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount';
 import { EmployeeBankAccountAccountType } from '@gusto/embedded-api/models/components/employeebankaccount';
-import { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow';
+import { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollreceipt';
+import { EmployeeCurrentEmploymentStatus } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeCustomField } from '@gusto/embedded-api/models/components/employeecustomfield';
 import { EmployeeFederalTax } from '@gusto/embedded-api/models/components/employeefederaltax';
 import { EmployeeFederalTaxPre2020 } from '@gusto/embedded-api/models/components/employeefederaltaxpre2020';
 import { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api/models/components/employeefederaltaxrev2020';
+import { EmployeeHomeAddress } from '@gusto/embedded-api/models/components/employeehomeaddress';
+import { EmployeeHomeAddressHistoryEntry } from '@gusto/embedded-api/models/components/employeehomeaddresshistoryentry';
 import { EmployeeMemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/employee';
+import { EmployeeOnboardingDocumentsConfig } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeOnboardingStatus1 } from '@gusto/embedded-api/models/components/employee';
 import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api/models/components/employeeonboardingstatus';
 import { EmployeeOnboardingStatusCategory } from '@gusto/embedded-api/models/components/employeeonboardingstatus';
@@ -154,7 +160,6 @@ import { Juneteenth } from '@gusto/embedded-api/models/components/holidaypaypoli
 import { LaborDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { Licensee } from '@gusto/embedded-api/models/components/contractorpaymentreceipt';
 import { Location as Location_2 } from '@gusto/embedded-api/models/components/location';
-import { MemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/contractor';
 import { MemorialDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { MetadataWithMultipleEntities } from '@gusto/embedded-api/models/components/metadatawithmultipleentities';
 import { MetadataWithOneEntity } from '@gusto/embedded-api/models/components/metadatawithoneentity';
@@ -163,15 +168,13 @@ import { MinimumWages } from '@gusto/embedded-api/models/components/compensation
 import { MlkDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { Name } from '@gusto/embedded-api/models/components/paidtimeoff';
 import { NewYearsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow';
-import { OnboardingDocumentsConfig } from '@gusto/embedded-api/models/components/employee';
-import { OnboardingStatus } from '@gusto/embedded-api/models/components/contractor';
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { OnboardingStep } from '@gusto/embedded-api/models/components/companyonboardingstatus';
 import { Options } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
 import { OverrideType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
 import { Pages } from '@gusto/embedded-api/models/components/document';
 import { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff';
-import { PayAdjustments } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayAdjustments } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount';
 import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs';
@@ -179,7 +182,7 @@ import { PaymentType } from '@gusto/embedded-api/models/components/wireinrequest
 import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation';
 import { PayPeriod } from '@gusto/embedded-api/models/components/payperiod';
 import { PayPeriodPayroll } from '@gusto/embedded-api/models/components/payperiod';
-import { Payroll as Payroll_2 } from '@gusto/embedded-api/models/components/payrollshow';
+import { Payroll as Payroll_2 } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { PayrollCompanyTaxesType } from '@gusto/embedded-api/models/components/payrollcompanytaxestype';
 import { PayrollCreditBlockerType } from '@gusto/embedded-api/models/components/payrollcreditblockertype';
 import { PayrollCreditBlockerTypeStatus } from '@gusto/embedded-api/models/components/payrollcreditblockertype';
@@ -203,33 +206,33 @@ import { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/co
 import { PayrollPaymentSpeedChangedType } from '@gusto/embedded-api/models/components/payrollpaymentspeedchangedtype';
 import { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype';
 import { PayrollPayrollStatusMetaType } from '@gusto/embedded-api/models/components/payrollpayrollstatusmetatype';
-import { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollPrepared } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest';
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest';
 import { PayrollReceipt } from '@gusto/embedded-api/models/components/payrollreceipt';
-import { PayrollReceiptEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollreceipt';
 import { PayrollReceiptLicensee } from '@gusto/embedded-api/models/components/payrollreceipt';
 import { PayrollReceiptPaymentMethod } from '@gusto/embedded-api/models/components/payrollreceipt';
 import { PayrollReceiptTotals } from '@gusto/embedded-api/models/components/payrollreceipt';
-import { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowAmountType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowBenefits } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowBreakdowns } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowCustomWithholdings } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowDeductions } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowEmployeeCompensationsAmountType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowEmployeeCompensationsCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowEmployeeCompensationsOverrideType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowFederal } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowHourlyCompensations } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowOverrideType } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowPaidTimeOff } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowPaymentMethod } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowReimbursements } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowState } from '@gusto/embedded-api/models/components/payrollshow';
-import { PayrollShowTaxes } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollShow } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowAmountType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowBenefits } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowBreakdowns } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowCustomWithholdings } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowDeductions } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowEmployeeCompensations } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowEmployeeCompensationsAmountType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowEmployeeCompensationsBreakdowns } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowEmployeeCompensationsCustomWithholdingsAmountType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowEmployeeCompensationsOverrideType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowFederal } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowHourlyCompensations } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowOverrideType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowPaidTimeOff } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowPaymentMethod } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowReimbursements } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowState } from '@gusto/embedded-api/models/components/unprocessedpayroll';
+import { PayrollShowTaxes } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype';
 import { PayrollSubmissionBlockerTypeStatus } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype';
 import { PayrollTaxesType } from '@gusto/embedded-api/models/components/payrolltaxestype';
@@ -252,7 +255,7 @@ import { PayrollUpdatePaidTimeOff } from '@gusto/embedded-api/models/components/
 import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateReimbursements } from '@gusto/embedded-api/models/components/payrollupdate';
 import { PayrollUpdateState } from '@gusto/embedded-api/models/components/payrollupdate';
-import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/payrollshow';
+import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment';
 import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody';
 import { PayScheduleAssignmentDepartment } from '@gusto/embedded-api/models/components/payscheduleassignmentdepartment';
@@ -265,8 +268,8 @@ import { PayScheduleAutoPayrollEnablementBlocker } from '@gusto/embedded-api/mod
 import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded-api/models/components/payscheduleautopayrollenablementblocker';
 import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api/models/components/payschedulefrequency';
 import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod';
-import { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow';
-import { PayScheduleWorkweekStartDay as PayScheduleWorkweekStartDay_2 } from '@gusto/embedded-api/models/components/payscheduleshow';
+import { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem';
+import { PayScheduleWorkweekStartDay as PayScheduleWorkweekStartDay_2 } from '@gusto/embedded-api/models/components/payschedulelistitem';
 import { PlaidStatus } from '@gusto/embedded-api/models/components/companybankaccount';
 import { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy';
 import { PresidentsDay } from '@gusto/embedded-api/models/components/holidaypaypolicy';
@@ -286,6 +289,13 @@ import { RequiredQuestions } from '@gusto/embedded-api/models/components/informa
 import { ResponseType as ResponseType_2 } from '@gusto/embedded-api/models/components/informationrequest';
 import { SelectHTMLAttributes } from 'react';
 import { SetupStatus } from '@gusto/embedded-api/models/components/taxrequirementstateslist';
+import { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesCurrentEmploymentStatus } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesMemberPortalInvitationStatus } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesOnboardingDocumentsConfig } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesOnboardingStatus } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesPaymentMethod } from '@gusto/embedded-api/models/components/showemployees';
+import { ShowEmployeesStatus } from '@gusto/embedded-api/models/components/showemployees';
 import { Signatory } from '@gusto/embedded-api/models/components/signatory';
 import { SignatoryHomeAddress } from '@gusto/embedded-api/models/components/signatory';
 import { State } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -314,7 +324,6 @@ import { Totals } from '@gusto/embedded-api/models/components/contractorpaymentg
 import { Type } from '@gusto/embedded-api/models/components/taxrequirementmetadata';
 import { UnblockOptions } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype';
 import { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod';
-import { UpcomingEmployment } from '@gusto/embedded-api/models/components/contractor';
 import { UseFormProps } from 'react-hook-form';
 import { UseFormReturn } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
@@ -326,7 +335,7 @@ import { WageType as WageType_2 } from '@gusto/embedded-api/models/components/co
 import { WarningObject } from '@gusto/embedded-api/models/components/warningobject';
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
-import { Workweeks } from '@gusto/embedded-api/models/components/payrollshow';
+import { Workweeks } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest';
 
 // @public
@@ -369,10 +378,10 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function Address_2(input: AddressProps): JSX.Element;
+function Address(input: AddressProps): JSX.Element;
 
 // @public
-function Address_3(input: AddressProps_2): JSX;
+function Address_2(input: AddressProps_2): JSX;
 
 // @public
 function AddressCard(input: AddressCardProps): JSX;
@@ -469,14 +478,14 @@ declare namespace APIModels {
         Compensation,
         PaymentUnit,
         ContractorPaymentMethod1,
-        Address,
         Contractor,
-        MemberPortalInvitationStatus,
-        UpcomingEmployment,
+        ContractorAddress1,
+        ContractorMemberPortalInvitationStatus,
+        ContractorUpcomingEmployment,
+        ContractorOnboardingStatus1,
         ContractorStatus,
         ContractorType_2 as ContractorType,
         ContractorWageType,
-        OnboardingStatus,
         ContractorAddress,
         ContractorBankAccount,
         ContractorBankAccountAccountType,
@@ -529,11 +538,11 @@ declare namespace APIModels {
         EarningType,
         EarningTypeCategory,
         EarningTypeList,
-        CurrentEmploymentStatus,
+        EmployeeCurrentEmploymentStatus,
         EmployeeOnboardingStatus1,
         Employee,
         EmployeeMemberPortalInvitationStatus,
-        OnboardingDocumentsConfig,
+        EmployeeOnboardingDocumentsConfig,
         EmployeePaymentMethod1,
         EmployeeStatus,
         EmployeeAddress,
@@ -543,6 +552,8 @@ declare namespace APIModels {
         EmployeeFederalTax,
         EmployeeFederalTaxPre2020,
         EmployeeFederalTaxRev2020,
+        EmployeeHomeAddress,
+        EmployeeHomeAddressHistoryEntry,
         Blockers,
         EmployeeOnboardingStatusOnboardingStep,
         EmployeeOnboardingStatus_2 as EmployeeOnboardingStatus,
@@ -642,38 +653,12 @@ declare namespace APIModels {
         PayrollPayrollStatusMetaType,
         PayrollProcessingRequest,
         PayrollProcessingRequestStatus,
+        EmployeeCompensations,
         PayrollReceipt,
-        PayrollReceiptEmployeeCompensations,
         Taxes,
         PayrollReceiptLicensee,
         PayrollReceiptTotals,
         PayrollReceiptPaymentMethod,
-        EmployeeCompensations,
-        OffCycleReasonType,
-        PayAdjustments,
-        Payroll_2 as Payroll,
-        PayrollShow,
-        PayrollShowBenefits,
-        PayrollShowBreakdowns,
-        PayrollShowDeductions,
-        PayrollShowEmployeeCompensationsBreakdowns,
-        PayrollShowFixedCompensations,
-        PayrollShowHourlyCompensations,
-        PayrollShowPaidTimeOff,
-        PayrollShowPaymentMethod,
-        PayrollShowReimbursements,
-        PayrollShowState,
-        PayrollShowTaxes,
-        PayrollWithholdingPayPeriodType,
-        Workweeks,
-        PayrollPrepared,
-        PayrollShowCustomWithholdings,
-        PayrollShowFederal,
-        PayrollShowAmountType,
-        PayrollShowEmployeeCompensationsAmountType,
-        PayrollShowEmployeeCompensationsCustomWithholdingsAmountType,
-        PayrollShowEmployeeCompensationsOverrideType,
-        PayrollShowOverrideType,
         UnblockOptions,
         PayrollSubmissionBlockerType,
         PayrollSubmissionBlockerTypeStatus,
@@ -708,13 +693,20 @@ declare namespace APIModels {
         PayScheduleAutoPayrollEnablementBlockerMetadata,
         WorkweekStartDay,
         PayScheduleFrequency_2 as PayScheduleFrequency,
-        PaySchedulePreviewPayPeriod,
         PayScheduleWorkweekStartDay_2 as PayScheduleWorkweekStartDay,
         PayScheduleShow,
+        PaySchedulePreviewPayPeriod,
         PrintablePayrollChecksBody,
         PrintingFormat,
         RecoveryCase,
         RecoveryCaseStatus,
+        ShowEmployeesCurrentEmploymentStatus,
+        ShowEmployeesOnboardingStatus,
+        ShowEmployees,
+        ShowEmployeesMemberPortalInvitationStatus,
+        ShowEmployeesOnboardingDocumentsConfig,
+        ShowEmployeesPaymentMethod,
+        ShowEmployeesStatus,
         IdentityVerificationStatus,
         SignatoryHomeAddress,
         Signatory,
@@ -740,6 +732,32 @@ declare namespace APIModels {
         TimeOffPolicyRequest,
         AccrualMethod,
         TimeOffPolicyRequestPolicyType,
+        OffCycleReasonType,
+        PayAdjustments,
+        Payroll_2 as Payroll,
+        PayrollShow,
+        PayrollShowBenefits,
+        PayrollShowBreakdowns,
+        PayrollShowDeductions,
+        PayrollShowEmployeeCompensations,
+        PayrollShowEmployeeCompensationsBreakdowns,
+        PayrollShowFixedCompensations,
+        PayrollShowHourlyCompensations,
+        PayrollShowPaidTimeOff,
+        PayrollShowPaymentMethod,
+        PayrollShowReimbursements,
+        PayrollShowState,
+        PayrollShowTaxes,
+        PayrollWithholdingPayPeriodType,
+        Workweeks,
+        PayrollPrepared,
+        PayrollShowCustomWithholdings,
+        PayrollShowFederal,
+        PayrollShowAmountType,
+        PayrollShowEmployeeCompensationsAmountType,
+        PayrollShowEmployeeCompensationsCustomWithholdingsAmountType,
+        PayrollShowEmployeeCompensationsOverrideType,
+        PayrollShowOverrideType,
         UnprocessedTerminationPayPeriod,
         WarningObject,
         WireInRequest,
@@ -1988,7 +2006,7 @@ declare namespace ContractorManagement {
         ProfileProps_3 as ProfileProps,
         ProfileCardProps_2 as ProfileCardProps,
         ProfileEditFormProps_2 as ProfileEditFormProps,
-        Address_3 as Address,
+        Address_2 as Address,
         AddressCard,
         AddressEditForm,
         AddressProps_2 as AddressProps,
@@ -2054,7 +2072,7 @@ declare namespace ContractorOnboarding {
         ContractorProfileAdminProps,
         ContractorProfileSelfOnboardingProps,
         ContractorDetailsFormData as ContractorProfileFormData,
-        Address_2 as Address,
+        Address,
         AddressProps,
         AddressDefaultValues,
         PaymentMethod_3 as PaymentMethod,
@@ -2179,7 +2197,7 @@ interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'C
 export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // @public
-export const ContractorSelfOnboardingStatuses: Set<OnboardingStatus>;
+export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
 
 // @public
 export type ContractorSignatureAccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
@@ -3698,13 +3716,15 @@ function Landing_2(props: LandingProps_2): JSX;
 
 // @public
 interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
-    companyId: string;
+    // @deprecated (undocumented)
+    companyId?: string;
     employeeId: string;
 }
 
 // @public
 interface LandingProps_2 extends BaseComponentInterface<'Contractor.Landing'> {
-    companyId: string;
+    // @deprecated (undocumented)
+    companyId?: string;
     contractorId: string;
 }
 

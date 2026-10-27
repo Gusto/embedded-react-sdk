@@ -22,16 +22,19 @@ import {
   type Employee,
   EmployeePaymentMethod1,
 } from '@gusto/embedded-api/models/components/employee'
-import { type Payroll, OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
+import {
+  type Payroll,
+  OffCycleReasonType,
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type {
-  EmployeeCompensations,
+  PayrollShowEmployeeCompensations as EmployeeCompensations,
   PayrollShowPaidTimeOff,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { TFunction } from 'i18next'
 import { Job } from '@gusto/embedded-api/models/components/job.js'

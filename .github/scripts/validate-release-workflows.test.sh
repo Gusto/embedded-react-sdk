@@ -4,10 +4,10 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 fail=0
-registry_workflows=(workflows/publish.yaml workflows/publish-rc.yaml workflows/retire-rc.yaml)
+registry_workflows=(workflows/publish.yaml workflows/publish-rc.yaml workflows/retire-rc.yaml workflows/publish-manual.yaml)
 registry_scripts=(scripts/prepare-rc.sh scripts/retire-rc.sh scripts/validate-release-input.sh)
 input_consuming_workflows=("${registry_workflows[@]}" workflows/build-sdk.yaml)
-dispatch_workflows=(workflows/publish-rc.yaml workflows/retire-rc.yaml)
+dispatch_workflows=(workflows/publish-rc.yaml workflows/retire-rc.yaml workflows/publish-manual.yaml)
 
 # Extracts the shell content of every `run:` step — both block-scalar
 # (`run: |`/`run: >`, body = lines indented further than the `run:` key)
@@ -97,7 +97,7 @@ for f in workflows/unpublish.yaml workflows/unpublish-rc.yaml; do
   fi
 done
 
-for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'retire-rc.yaml retire'; do
+for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'retire-rc.yaml retire' 'publish-manual.yaml npm-publish'; do
   read -r workflow job <<< "$workflow_job"
   f="workflows/$workflow"
   require_job_pattern "$f" "$job" '^    runs-on: ubuntu-latest$'
@@ -114,10 +114,11 @@ for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'retire
 done
 
 require_job_pattern workflows/publish.yaml npm-publish '^    environment: npm-release$'
-require_job_pattern workflows/publish-rc.yaml publish '^    environment: npm-release-rc$'
-require_job_pattern workflows/retire-rc.yaml retire '^    environment: npm-release-rc$'
+require_job_pattern workflows/publish-rc.yaml publish '^    environment: npm-release-manual$'
+require_job_pattern workflows/retire-rc.yaml retire '^    environment: npm-release-manual$'
+require_job_pattern workflows/publish-manual.yaml npm-publish '^    environment: npm-release-manual$'
 
-for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish'; do
+for workflow_job in 'publish.yaml npm-publish' 'publish-rc.yaml publish' 'publish-manual.yaml npm-publish'; do
   read -r workflow job <<< "$workflow_job"
   require_job_pattern "workflows/$workflow" "$job" 'uses: actions/download-artifact@'
 done
@@ -128,6 +129,9 @@ for workflow_job in 'publish-rc.yaml publish' 'retire-rc.yaml retire'; do
   require_job_pattern "workflows/$workflow" "$job" '^      cancel-in-progress: false$'
 done
 
+require_job_pattern workflows/publish-manual.yaml npm-publish '^      group: npm-publish-manual$'
+require_job_pattern workflows/publish-manual.yaml npm-publish '^      cancel-in-progress: false$'
+
 # Scripts invoked by the credentialed jobs are part of the same permission boundary.
 for f in "${registry_scripts[@]}"; do
   if grep -v '^[[:space:]]*#' "$f" | grep -qE '(^|[;&|])[[:space:]]*(npm (ci|install|exec)|npx |git push)|\$\{\{'; then
@@ -136,6 +140,7 @@ for f in "${registry_scripts[@]}"; do
   fi
 done
 require_job_pattern workflows/publish.yaml npm-publish 'npm publish .*--ignore-scripts'
+require_job_pattern workflows/publish-manual.yaml npm-publish 'npm publish .*--ignore-scripts'
 require_job_pattern workflows/publish-rc.yaml publish 'bash [.]release-workflow/[.]github/scripts/prepare-rc[.]sh'
 require_job_pattern workflows/publish-rc.yaml publish 'npm publish .*--tag rc --ignore-scripts'
 require_job_pattern workflows/publish-rc.yaml publish '^          path: [.]release-workflow$'
@@ -156,6 +161,23 @@ require_job_pattern workflows/publish.yaml release '^      contents: write$'
 reject_job_pattern workflows/publish.yaml release 'environment:|NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
 
 reject_job_pattern workflows/build-sdk.yaml build 'environment:|secrets\.|id-token:|contents: write'
+
+# publish-manual.yaml: same shape as publish.yaml's build/npm-publish/release
+# chain, but gated by an explicit main-ref guard and a validated, already-
+# merged commit input instead of a workflow_run trigger.
+require_job_pattern workflows/publish-manual.yaml validate "if: github.ref == 'refs/heads/main'"
+require_job_pattern workflows/publish-manual.yaml validate 'validate-release-input\.sh commit-sha'
+require_job_pattern workflows/publish-manual.yaml validate 'merge-base --is-ancestor'
+require_job_pattern workflows/publish-manual.yaml validate 'chore: release'
+reject_job_pattern workflows/publish-manual.yaml validate 'contents: write|secrets\.|id-token:|git push'
+
+require_job_pattern workflows/publish-manual.yaml npm-publish '^    needs: \[validate, build\]$'
+require_job_pattern workflows/publish-manual.yaml release '^    needs: \[validate, npm-publish\]$'
+require_job_pattern workflows/publish-manual.yaml release 'tag-release[.]sh'
+require_job_pattern workflows/publish-manual.yaml release 'github-release[.]sh'
+require_job_pattern workflows/publish-manual.yaml release '^      group: gusto-ubuntu-default$'
+require_job_pattern workflows/publish-manual.yaml release '^      contents: write$'
+reject_job_pattern workflows/publish-manual.yaml release 'environment:|NPM_TOKEN|NODE_AUTH_TOKEN|id-token:|npm publish'
 
 if [ "$fail" -eq 0 ]; then
   echo "All release-workflow guard checks passed."

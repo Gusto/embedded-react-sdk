@@ -197,7 +197,7 @@ function AmountsAndReview({
   const reviewDictionary = useCreateHistoricalPaymentReviewDictionary()
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = (contractorList.contractors ?? []).filter(contractor =>
+  const contractors = (contractorList.showContractors ?? []).filter(contractor =>
     contractorIds.includes(contractor.uuid),
   )
 

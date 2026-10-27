@@ -16,7 +16,7 @@
     "cancel": "Cancel",
     "reset": "Reset",
     "selectDates": "Select dates",
-    "trigger": "Filter by date"
+    "triggerLabel": "Filter by date, {{selection}}"
   },
   "payrollsListLabel": "Payrolls",
   "runPayrollTitle": "Run Payroll",

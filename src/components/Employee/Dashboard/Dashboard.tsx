@@ -109,7 +109,7 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
   const {
-    data: { employee },
+    data: { employeeShow: employee },
   } = useEmployeesGetSuspense({ employeeId })
 
   return (

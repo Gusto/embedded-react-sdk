@@ -1,4 +1,4 @@
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { AfterSuccessHook } from '@/types/hooks'
 
 const PAYROLL_LIST_OPERATION_ID = 'get-v1-companies-company_id-payrolls'

@@ -112,7 +112,7 @@ const Root = ({
 
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
-  const employee = employeeData.employee!
+  const employee = employeeData.employeeShow!
   const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
     comp => comp.employeeUuid === employeeId,
   )

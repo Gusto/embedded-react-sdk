@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
+import { GetV1EmployeesQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employees'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -19,8 +19,11 @@ import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 export interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
   /** UUID of the employee entering the self-onboarding flow. */
   employeeId: string
-  /** UUID of the company the employee belongs to. */
-  companyId: string
+  /**
+   * @deprecated
+   * UUID of the company the employee belongs to.
+   */
+  companyId?: string
 }
 
 /**
@@ -37,21 +40,23 @@ export function Landing(props: LandingProps) {
   )
 }
 
-const Root = ({ employeeId, companyId, className, dictionary }: LandingProps) => {
+const Root = ({ employeeId, className, dictionary }: LandingProps) => {
   useI18n('Employee.Landing')
   useComponentDictionary('Employee.Landing', dictionary)
   const { onEvent } = useBase()
   const Components = useComponentContext()
 
   const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
+    data: { employeeShow: employee },
+  } = useEmployeesGetSuspense({
+    employeeId,
+    include: [GetV1EmployeesQueryParamInclude.CompanyName],
+  })
   const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(employee!.firstName), [employee])
-
-  const {
-    data: { company },
-  } = useCompaniesGetSuspense({ companyId })
-  const sanitizedCompanyName = useMemo(() => DOMPurify.sanitize(company?.name ?? ''), [company])
+  const sanitizedCompanyName = useMemo(
+    () => DOMPurify.sanitize(employee?.companyName ?? ''),
+    [employee],
+  )
 
   const { t } = useTranslation('Employee.Landing')
 

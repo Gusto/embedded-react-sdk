@@ -26,7 +26,7 @@ function ContractorRehireContent() {
   const [isPending, setIsPending] = useState(false)
 
   const { data } = useContractorsGetSuspense({ contractorUuid: contractorId! })
-  const contractor = data.contractor
+  const contractor = data.contractorShow
 
   if (!contractor) return null
 

@@ -272,11 +272,11 @@ export function useContractorList({
   const { data, isFetching } = contractorsQuery
 
   const contractors = useMemo<ContractorWithActions[]>(() => {
-    return (data?.contractors ?? []).map(contractor => ({
+    return (data?.showContractors ?? []).map(contractor => ({
       ...contractor,
       allowedActions: deriveAllowedActions(contractor, contractorType),
     }))
-  }, [data?.contractors, contractorType])
+  }, [data?.showContractors, contractorType])
 
   const paginationProps = data?.httpMeta.response.headers
     ? getPaginationProps(data.httpMeta.response.headers, isFetching)

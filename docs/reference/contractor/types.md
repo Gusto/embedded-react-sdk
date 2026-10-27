@@ -41,7 +41,7 @@ record. The values mirror the strings returned by the API.
 
 ## ContractorSelfOnboardingStatuses
 
-> `const` **ContractorSelfOnboardingStatuses**: `Set`\<[`OnboardingStatus`](../APIModels/index.md#onboardingstatus-1)\>
+> `const` **ContractorSelfOnboardingStatuses**: `Set`\<[`ContractorOnboardingStatus1`](../APIModels/index.md#contractoronboardingstatus1-1)\>
 
 Set of [ContractorOnboardingStatus](#contractoronboardingstatus) values that indicate the contractor
 is completing self-onboarding.

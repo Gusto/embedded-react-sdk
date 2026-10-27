@@ -4,7 +4,9 @@ import type { PayScheduleAssignment } from '@gusto/embedded-api/models/component
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
 import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
+import { PayScheduleEmployeeOverviewPresentation } from './PayScheduleEmployeeOverviewPresentation'
+import { useAssignableEmployeesSuspense } from './PayScheduleAssignment/useAssignableEmployees'
 import { getCompanyDepartments } from './PayScheduleAssignment/departmentAccess'
 import {
   PayScheduleDepartmentOverviewPresentation,
@@ -45,6 +47,21 @@ export function PayScheduleOverview({
   }
   const manageAssignment = () => {
     onEvent(componentEvents.PAY_SCHEDULE_MANAGE_ASSIGNMENT)
+  }
+
+  if (assignment?.type === PayScheduleAssignmentType.ByEmployee) {
+    return (
+      <PayScheduleEmployeeOverview
+        companyId={companyId}
+        assignment={assignment}
+        schedules={schedules}
+        enableAutoPilot={enableAutoPilot}
+        enableMultipleSchedules={enableMultipleSchedules}
+        onEditSchedule={editSchedule}
+        onManageAssignment={manageAssignment}
+        onEditAutoPilot={editAutoPilot}
+      />
+    )
   }
 
   if (assignment?.type === PayScheduleAssignmentType.ByDepartment) {
@@ -142,4 +159,31 @@ function PayScheduleDepartmentOverview({
   if (defaultSchedule)
     rows.push({ departmentName: t('uncategorizedEmployees'), schedule: defaultSchedule })
   return <PayScheduleDepartmentOverviewPresentation rows={rows} {...props} />
+}
+
+function PayScheduleEmployeeOverview({
+  companyId,
+  assignment,
+  schedules,
+  ...props
+}: {
+  companyId: string
+  assignment: PayScheduleAssignment
+  schedules: PayScheduleShow[]
+} & Omit<React.ComponentProps<typeof PayScheduleEmployeeOverviewPresentation>, 'rows'>) {
+  const roster = useAssignableEmployeesSuspense(companyId)
+  if (roster.accessDenied)
+    return <PayScheduleEmployeeOverviewPresentation rows={[]} accessDenied {...props} />
+  const counts = new Map<string, number>()
+  for (const employee of roster.employees) {
+    const uuid =
+      assignment.employees?.find(entry => entry.employeeUuid === employee.uuid)?.payScheduleUuid ??
+      assignment.defaultPayScheduleUuid
+    if (uuid) counts.set(uuid, (counts.get(uuid) ?? 0) + 1)
+  }
+  const rows = schedules.flatMap(schedule => {
+    const employeeCount = counts.get(schedule.uuid) ?? 0
+    return employeeCount > 0 ? [{ schedule, employeeCount }] : []
+  })
+  return <PayScheduleEmployeeOverviewPresentation rows={rows} {...props} />
 }

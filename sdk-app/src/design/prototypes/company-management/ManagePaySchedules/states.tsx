@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PayScheduleAssignment } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { Department } from '@gusto/embedded-api/models/components/department'

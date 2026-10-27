@@ -7,7 +7,7 @@
     "cancel": "Cancel",
     "reset": "Reset",
     "selectDates": "Select dates",
-    "trigger": "Filter by date"
+    "triggerLabel": "Filter by date, {{selection}}"
   },
   "dataView": {
     "label": "Payroll history"

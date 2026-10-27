@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import type {
   PayrollReceipt,
   Taxes as TaxBreakdownItem,
-  PayrollReceiptEmployeeCompensations as EmployeeBreakdownItem,
+  EmployeeCompensations as EmployeeBreakdownItem,
 } from '@gusto/embedded-api/models/components/payrollreceipt'
 import styles from './PayrollReceiptsPresentation.module.scss'
 import { DataView, DataTable, Flex } from '@/components/Common'

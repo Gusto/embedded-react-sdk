@@ -1,4 +1,4 @@
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 
 /** @internal */
 export function scheduleLabel(schedule: PayScheduleShow): string {

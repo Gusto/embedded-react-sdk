@@ -80,7 +80,7 @@ export function useDismissal({ contractorId }: UseDismissalProps): UseDismissalR
 
   const { data, isLoading } = contractorQuery
 
-  if (isLoading || !data?.contractor) {
+  if (isLoading || !data?.contractorShow) {
     // A settled query (not `isLoading`) with no query `error` but also no `contractor` in the
     // response body would otherwise report `isLoading: true` forever with an empty error list —
     // `contractor` is optional on the response type, so this isn't a thrown error we'd catch via
@@ -103,7 +103,7 @@ export function useDismissal({ contractorId }: UseDismissalProps): UseDismissalR
 
   return {
     isLoading: false,
-    data: { contractor: data.contractor },
+    data: { contractor: data.contractorShow },
     status: { isPending },
     actions: { dismiss },
     errorHandling,

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
+import { GetV1ContractorsContractorUuidQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuid'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -19,8 +19,11 @@ import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 export interface LandingProps extends BaseComponentInterface<'Contractor.Landing'> {
   /** UUID of the contractor entering the self-onboarding flow. */
   contractorId: string
-  /** UUID of the company the contractor belongs to. */
-  companyId: string
+  /**
+   * @deprecated
+   * UUID of the company the contractor belongs to.
+   */
+  companyId?: string
 }
 
 /**
@@ -37,7 +40,7 @@ export function Landing(props: LandingProps) {
   )
 }
 
-const Root = ({ contractorId, companyId, className, dictionary }: LandingProps) => {
+const Root = ({ contractorId, className, dictionary }: LandingProps) => {
   useI18n('Contractor.Landing')
   useComponentDictionary('Contractor.Landing', dictionary)
   const { onEvent } = useBase()
@@ -46,18 +49,20 @@ const Root = ({ contractorId, companyId, className, dictionary }: LandingProps) 
   const { t } = useTranslation('Contractor.Landing')
 
   const {
-    data: { contractor },
-  } = useContractorsGetSuspense({ contractorUuid: contractorId })
+    data: { contractorShow: contractor },
+  } = useContractorsGetSuspense({
+    contractorUuid: contractorId,
+    include: [GetV1ContractorsContractorUuidQueryParamInclude.CompanyName],
+  })
   const sanitizedContractorName = useMemo(
     () =>
       DOMPurify.sanitize(contractor?.firstName ?? contractor?.businessName ?? t('fallbackName')),
     [contractor, t],
   )
-
-  const {
-    data: { company },
-  } = useCompaniesGetSuspense({ companyId })
-  const sanitizedCompanyName = useMemo(() => DOMPurify.sanitize(company?.name ?? ''), [company])
+  const sanitizedCompanyName = useMemo(
+    () => DOMPurify.sanitize(contractor?.companyName ?? ''),
+    [contractor],
+  )
 
   return (
     <section className={className}>

@@ -1,6 +1,6 @@
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -278,7 +278,7 @@ export const PayrollListPresentation = ({
             cancelLabel={t('dateFilter.cancel')}
             resetLabel={t('dateFilter.reset')}
             selectDatesLabel={t('dateFilter.selectDates')}
-            triggerLabel={t('dateFilter.trigger')}
+            getTriggerLabel={selection => t('dateFilter.triggerLabel', { selection })}
             maxEndDate={dateRangeFilter.getMaxEndDate()}
             minStartDate={dateRangeFilter.getMinStartDate()}
           />

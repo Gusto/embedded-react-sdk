@@ -146,7 +146,7 @@ function InviteContractor({
   const { Button, Heading, Text } = useComponentContext()
 
   const { data: contractorData } = useContractorsGetSuspense({ contractorUuid: contractorId })
-  const contractor = contractorData.contractor
+  const contractor = contractorData.contractorShow
 
   return (
     <Flex flexDirection="column">

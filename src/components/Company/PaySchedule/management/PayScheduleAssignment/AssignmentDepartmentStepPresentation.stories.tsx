@@ -1,4 +1,4 @@
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { fn } from 'storybook/test'
 import { AssignmentDepartmentStepPresentation } from './AssignmentDepartmentStepPresentation'
 import { useI18n } from '@/i18n'

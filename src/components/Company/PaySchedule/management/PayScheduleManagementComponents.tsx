@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { PayScheduleForm } from '../PayScheduleForm'
 import type { PayScheduleDefaultValues } from '../PaySchedule'
 import { PayScheduleOverview } from './PayScheduleOverview'
