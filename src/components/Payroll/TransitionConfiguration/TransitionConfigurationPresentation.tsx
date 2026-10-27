@@ -1,17 +1,13 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
 import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal'
-import type {
-  OffCycleTaxWithholdingConfig,
-  WageTypeGroup,
-} from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import type { WageTypeGroup } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionConfigurationPresentationProps } from './TransitionConfigurationTypes'
 import styles from './TransitionConfigurationPresentation.module.scss'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common'
+import { Flex, RadioGroupField } from '@/components/Common'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 /**
@@ -27,16 +23,22 @@ export function TransitionConfigurationPresentation({
   payPeriodEndDate,
   payScheduleName,
   checkDate,
-  deductionsField,
-  taxWithholdingConfig,
-  onTaxWithholdingChange,
   isPending,
+  taxWithholdingConfig,
+  isTaxWithholdingModalOpen,
+  onTaxWithholdingEditClick,
+  onTaxWithholdingModalDone,
+  onTaxWithholdingModalCancel,
 }: TransitionConfigurationPresentationProps) {
   useI18n('Payroll.TransitionConfiguration')
   const { t } = useTranslation('Payroll.TransitionConfiguration')
   const { Heading, Text, Alert, Button, DescriptionList } = useComponentContext()
   const dateFormatter = useDateFormatter()
-  const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)
+
+  const deductionsOptions = [
+    { value: false, label: t('deductions.options.include') },
+    { value: true, label: t('deductions.options.skip') },
+  ]
 
   const wageTypeGroups: WageTypeGroup[] = [
     {
@@ -79,11 +81,6 @@ export function TransitionConfigurationPresentation({
     })
   }
 
-  const handleTaxWithholdingModalDone = (config: OffCycleTaxWithholdingConfig) => {
-    onTaxWithholdingChange(config)
-    setIsTaxWithholdingModalOpen(false)
-  }
-
   return (
     <Flex className={className} flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={4}>
@@ -104,7 +101,13 @@ export function TransitionConfigurationPresentation({
       <hr className={styles.divider} />
 
       <Flex flexDirection="column" gap={20}>
-        {deductionsField}
+        <RadioGroupField<boolean>
+          name="skipRegularDeductions"
+          label={t('deductions.title')}
+          description={t('deductions.description')}
+          options={deductionsOptions}
+          convertValueToString={value => String(value)}
+        />
       </Flex>
 
       <hr className={styles.divider} />
@@ -112,18 +115,14 @@ export function TransitionConfigurationPresentation({
       <OffCycleTaxWithholdingTable
         wageTypeGroups={wageTypeGroups}
         config={taxWithholdingConfig}
-        onEditClick={() => {
-          setIsTaxWithholdingModalOpen(true)
-        }}
+        onEditClick={onTaxWithholdingEditClick}
       />
       {isTaxWithholdingModalOpen && (
         <OffCycleTaxWithholdingModal
           isOpen
           defaultConfig={taxWithholdingConfig}
-          onDone={handleTaxWithholdingModalDone}
-          onCancel={() => {
-            setIsTaxWithholdingModalOpen(false)
-          }}
+          onDone={onTaxWithholdingModalDone}
+          onCancel={onTaxWithholdingModalCancel}
         />
       )}
 

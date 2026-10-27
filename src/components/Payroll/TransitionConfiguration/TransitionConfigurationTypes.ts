@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { z } from 'zod'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
@@ -14,6 +14,23 @@ export interface TransitionConfigurationProps extends BaseComponentInterface<'Pa
   payrollId: string
 }
 
+/**
+ * Form values collected by the {@link TransitionConfiguration} component.
+ *
+ * @internal
+ */
+export interface TransitionConfigurationFormData {
+  /** When `true`, regular deductions are skipped for this payroll. */
+  skipRegularDeductions: boolean
+}
+
+/** @internal */
+export function createTransitionConfigurationSchema() {
+  return z.object({
+    skipRegularDeductions: z.boolean(),
+  })
+}
+
 /** @internal */
 export interface TransitionConfigurationPresentationProps {
   /** CSS class name applied to the component's root element. */
@@ -26,12 +43,16 @@ export interface TransitionConfigurationPresentationProps {
   payScheduleName: string | null
   /** The payroll's payment date (YYYY-MM-DD), shown read only, or `null` when unknown. */
   checkDate: string | null
-  /** The deductions and contributions control, rendered in the deductions section. */
-  deductionsField: ReactNode
+  /** Whether the prepare or update request is in flight. */
+  isPending?: boolean
   /** Current tax withholding configuration shown in the table. */
   taxWithholdingConfig: OffCycleTaxWithholdingConfig
+  /** Whether the tax withholding edit modal is open. */
+  isTaxWithholdingModalOpen: boolean
+  /** Fires when the user clicks the edit affordance on the tax withholding table. */
+  onTaxWithholdingEditClick: () => void
   /** Fires when the user confirms a new tax withholding configuration in the modal. */
-  onTaxWithholdingChange: (config: OffCycleTaxWithholdingConfig) => void
-  /** Whether the save is in flight. */
-  isPending?: boolean
+  onTaxWithholdingModalDone: (config: OffCycleTaxWithholdingConfig) => void
+  /** Fires when the user dismisses the tax withholding modal without saving. */
+  onTaxWithholdingModalCancel: () => void
 }

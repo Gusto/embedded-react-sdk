@@ -5931,6 +5931,8 @@ Translation keys for the `Payroll.TransitionConfiguration` i18n namespace.
 | `deductions.options.skip` | `"Block all deductions and contributions, except 401(k). Taxes will be included."` |
 | `deductions.title` | `"Deductions and contributions"` |
 | <a id="property-payrolltransitionconfigurationdetailsheading"></a> `detailsHeading` | `"Transition Details"` |
+| <a id="property-payrolltransitionconfigurationerrors"></a> `errors` | |
+| `errors.noEmployeeCompensations` | `"This transition payroll has no employees to update, so its settings could not be saved."` |
 | <a id="property-payrolltransitionconfigurationpagedescription"></a> `pageDescription` | `"A transition payroll covers the gap between your old and new pay schedules."` |
 | <a id="property-payrolltransitionconfigurationpagetitle"></a> `pageTitle` | `"Edit transition payroll"` |
 | <a id="property-payrolltransitionconfigurationpayperiodlabel"></a> `payPeriodLabel` | `"Pay period"` |

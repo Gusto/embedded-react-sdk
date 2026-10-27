@@ -1,13 +1,41 @@
+import { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
-import { useTransitionConfigurationForm } from './shared/useTransitionConfigurationForm'
+import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
+import type {
+  TransitionConfigurationFormData,
+  TransitionConfigurationProps,
+} from './TransitionConfigurationTypes'
+import { createTransitionConfigurationSchema } from './TransitionConfigurationTypes'
 import { TransitionConfigurationPresentation } from './TransitionConfigurationPresentation'
-import type { TransitionConfigurationProps } from './TransitionConfigurationTypes'
-import { BaseBoundaries, BaseLayout } from '@/components/Base'
+import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
-import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { SDKInternalError } from '@/types/sdkError'
+
+const transitionConfigurationSchema = createTransitionConfigurationSchema()
+
+type VersionedEmployeeCompensation = PayrollEmployeeCompensationsType & {
+  employeeUuid: string
+  version: string
+}
+
+function isVersionedEmployeeCompensation(
+  compensation: PayrollEmployeeCompensationsType,
+): compensation is VersionedEmployeeCompensation {
+  return typeof compensation.employeeUuid === 'string' && typeof compensation.version === 'string'
+}
 
 /**
  * Configures the deduction and tax withholding settings of an existing transition payroll.
@@ -47,98 +75,114 @@ import { componentEvents } from '@/shared/constants'
  * }
  * ```
  */
-export function TransitionConfiguration({
-  FallbackComponent,
-  LoaderComponent,
-  ...props
-}: TransitionConfigurationProps) {
+export function TransitionConfiguration(props: TransitionConfigurationProps) {
   return (
-    <BaseBoundaries
-      componentName="Payroll.TransitionConfiguration"
-      FallbackComponent={FallbackComponent}
-      LoaderComponent={LoaderComponent}
-    >
-      <Root LoaderComponent={LoaderComponent} {...props} />
-    </BaseBoundaries>
+    <BaseComponent {...props}>
+      <Root {...props} />
+    </BaseComponent>
   )
 }
 
-function Root({
-  companyId,
-  payrollId,
-  onEvent,
-  dictionary,
-  className,
-  LoaderComponent,
-}: Omit<TransitionConfigurationProps, 'FallbackComponent'>) {
+function Root({ dictionary, companyId, payrollId, className }: TransitionConfigurationProps) {
   useComponentDictionary('Payroll.TransitionConfiguration', dictionary)
   useI18n('Payroll.TransitionConfiguration')
+
   const { t } = useTranslation('Payroll.TransitionConfiguration')
+  const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
 
-  const transitionConfiguration = useTransitionConfigurationForm({ companyId, payrollId })
+  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+  const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
+  const { mutateAsync: preparePayroll, isPending: isPreparePending } = usePayrollsPrepareMutation()
+  const { mutateAsync: updatePayroll, isPending: isUpdatePending } = usePayrollsUpdateMutation()
 
-  if (transitionConfiguration.isLoading) {
-    return (
-      <BaseLayout
-        isLoading
-        error={transitionConfiguration.errorHandling.errors}
-        LoaderComponent={LoaderComponent}
-      />
-    )
+  const payroll = payrollData.payrollShow
+  const paySchedule = paySchedulesData.payScheduleShowResponse?.find(
+    schedule => schedule.uuid === payroll?.payPeriod?.payScheduleUuid,
+  )
+
+  const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
+    withholdingPayPeriod:
+      payroll?.withholdingPayPeriod ??
+      paySchedule?.frequency ??
+      WithholdingPayPeriod.EveryOtherWeek,
+    withholdingRate: payroll?.fixedWithholdingRate ? 'supplemental' : 'regular',
+  })
+  const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)
+  const [savedCheckDate, setSavedCheckDate] = useState<string | null>(null)
+
+  const methods = useForm<TransitionConfigurationFormData>({
+    resolver: zodResolver(transitionConfigurationSchema),
+    defaultValues: {
+      skipRegularDeductions: payroll?.skipRegularDeductions ?? false,
+    },
+  })
+
+  const handleTaxWithholdingModalDone = (config: OffCycleTaxWithholdingConfig) => {
+    setTaxWithholdingConfig(config)
+    setIsTaxWithholdingModalOpen(false)
   }
 
-  const { data, status, actions, errorHandling } = transitionConfiguration
-  const { Fields } = transitionConfiguration.form
+  const onSubmit = async (data: TransitionConfigurationFormData) => {
+    await baseSubmitHandler(data, async ({ skipRegularDeductions }) => {
+      const prepareResponse = await preparePayroll({
+        request: { companyId, payrollId, requestBody: {} },
+      })
 
-  const handleSubmit = async () => {
-    const result = await actions.onSubmit()
-    if (result) {
+      const compensation = prepareResponse.payrollPrepared?.employeeCompensations?.find(
+        isVersionedEmployeeCompensation,
+      )
+      if (!compensation) {
+        throw new SDKInternalError(t('errors.noEmployeeCompensations'))
+      }
+
+      const updateResponse = await updatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: {
+            employeeCompensations: [
+              { employeeUuid: compensation.employeeUuid, version: compensation.version },
+            ],
+            skipRegularDeductions,
+            withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,
+            fixedWithholdingRate: taxWithholdingConfig.withholdingRate === 'supplemental',
+          },
+        },
+      })
+
+      setSavedCheckDate(updateResponse.payrollPrepared?.checkDate ?? null)
+
+      await queryClient.invalidateQueries({ queryKey: [PREPARE_QUERY_KEY, payrollId] })
+
       onEvent(componentEvents.TRANSITION_CONFIGURED, {
         payrollUuid: payrollId,
-        payrollPrepared: result.data,
+        payrollPrepared: updateResponse.payrollPrepared,
       })
-    }
-  }
-
-  const taxWithholdingConfig: OffCycleTaxWithholdingConfig = {
-    withholdingPayPeriod: data.taxWithholding.withholdingPayPeriod,
-    withholdingRate: data.taxWithholding.fixedWithholdingRate ? 'supplemental' : 'regular',
-  }
-
-  const handleTaxWithholdingChange = (config: OffCycleTaxWithholdingConfig) => {
-    actions.setTaxWithholding({
-      withholdingPayPeriod: config.withholdingPayPeriod,
-      fixedWithholdingRate: config.withholdingRate === 'supplemental',
     })
   }
 
   return (
-    <BaseLayout error={errorHandling.errors} LoaderComponent={LoaderComponent}>
-      <SDKFormProvider formHookResult={transitionConfiguration}>
-        <Form onSubmit={() => void handleSubmit()}>
-          <TransitionConfigurationPresentation
-            className={className}
-            payPeriodStartDate={data.payroll.payPeriod?.startDate}
-            payPeriodEndDate={data.payroll.payPeriod?.endDate}
-            payScheduleName={data.paySchedule?.customName ?? data.paySchedule?.name ?? null}
-            checkDate={data.checkDate}
-            deductionsField={
-              <Fields.SkipRegularDeductions
-                label={t('deductions.title')}
-                description={t('deductions.description')}
-                getOptionLabel={(skipRegularDeductions: boolean) =>
-                  skipRegularDeductions
-                    ? t('deductions.options.skip')
-                    : t('deductions.options.include')
-                }
-              />
-            }
-            taxWithholdingConfig={taxWithholdingConfig}
-            onTaxWithholdingChange={handleTaxWithholdingChange}
-            isPending={status.isPending}
-          />
-        </Form>
-      </SDKFormProvider>
-    </BaseLayout>
+    <FormProvider {...methods}>
+      <Form onSubmit={methods.handleSubmit(onSubmit)}>
+        <TransitionConfigurationPresentation
+          className={className}
+          payPeriodStartDate={payroll?.payPeriod?.startDate}
+          payPeriodEndDate={payroll?.payPeriod?.endDate}
+          payScheduleName={paySchedule?.customName ?? paySchedule?.name ?? null}
+          checkDate={savedCheckDate ?? payroll?.checkDate ?? null}
+          isPending={isPreparePending || isUpdatePending}
+          taxWithholdingConfig={taxWithholdingConfig}
+          isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
+          onTaxWithholdingEditClick={() => {
+            setIsTaxWithholdingModalOpen(true)
+          }}
+          onTaxWithholdingModalDone={handleTaxWithholdingModalDone}
+          onTaxWithholdingModalCancel={() => {
+            setIsTaxWithholdingModalOpen(false)
+          }}
+        />
+      </Form>
+    </FormProvider>
   )
 }

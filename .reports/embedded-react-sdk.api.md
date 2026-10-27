@@ -335,7 +335,6 @@ import { WageType as WageType_2 } from '@gusto/embedded-api/models/components/co
 import { WarningObject } from '@gusto/embedded-api/models/components/warningobject';
 import { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest';
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest';
-import { WithholdingPayPeriod } from '@gusto/embedded-api/models/components/payrollupdate';
 import { Workweeks } from '@gusto/embedded-api/models/components/unprocessedpayroll';
 import { WorkweekStartDay } from '@gusto/embedded-api/models/components/payschedulecreaterequest';
 
@@ -682,7 +681,6 @@ declare namespace APIModels {
         PayrollUpdateEmployeeCompensationsOverrideType,
         PayrollUpdateOverrideType,
         PayrollUpdatePaymentMethod,
-        WithholdingPayPeriod,
         PayScheduleAssignmentType,
         PayScheduleAssignment,
         PayScheduleAssignmentBodyType,
@@ -6043,7 +6041,7 @@ interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeO
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // @alpha
-function TransitionConfiguration(input: TransitionConfigurationProps): JSX;
+function TransitionConfiguration(props: TransitionConfigurationProps): JSX;
 
 // @alpha
 interface TransitionConfigurationProps extends BaseComponentInterface<'Payroll.TransitionConfiguration'> {

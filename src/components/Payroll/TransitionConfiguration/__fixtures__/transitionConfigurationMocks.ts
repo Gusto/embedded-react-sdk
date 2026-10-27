@@ -1,6 +1,6 @@
 export const COMPANY_ID = 'company-1'
 export const PAYROLL_ID = 'transition-payroll-1'
-export const PAY_SCHEDULE_ID = 'schedule-1'
+const PAY_SCHEDULE_ID = 'schedule-1'
 
 export const buildTransitionPayroll = (overrides: Record<string, unknown> = {}) => ({
   payroll_uuid: PAYROLL_ID,

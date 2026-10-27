@@ -8877,6 +8877,10 @@ export namespace Translations {
     checkDateLabel: string
     /** @defaultValue `"Continue"` */
     continueCta: string
+    errors: {
+      /** @defaultValue `"This transition payroll has no employees to update, so its settings could not be saved."` */
+      noEmployeeCompensations: string
+    }
     deductions: {
       /** @defaultValue `"Deductions and contributions"` */
       title: string
