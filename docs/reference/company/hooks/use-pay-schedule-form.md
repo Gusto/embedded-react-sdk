@@ -94,7 +94,6 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company that owns the pay schedule. |
 | `defaultValues?` | `Partial`\<[`PayScheduleFormData`](#payscheduleformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `disableWorkweekStartDayEditing?` | `boolean` | Renders `Fields.WorkweekStartDay` disabled while still submitting its current value, for partners that compute the workweek start day themselves and don't want end users editing it directly. Defaults to `false`. Has no effect when the `regularRateOfPay` flag in [Features](../../providers.md#features) is set to `false`. |
 | `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
 | `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |

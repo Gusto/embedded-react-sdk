@@ -4627,7 +4627,6 @@ export type PayScheduleOptionalFieldsToRequire = { create?: ("customTwicePerMont
 interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
     companyId: string;
     defaultValues?: PayScheduleDefaultValues;
-    disableWorkweekStartDayEditing?: boolean;
 }
 
 // @alpha
@@ -6695,7 +6694,6 @@ export function usePayScheduleForm(input: UsePayScheduleFormProps): HookLoadingR
 export interface UsePayScheduleFormProps {
     companyId: string;
     defaultValues?: Partial<PayScheduleFormData>;
-    disableWorkweekStartDayEditing?: boolean;
     optionalFieldsToRequire?: PayScheduleOptionalFieldsToRequire;
     payScheduleId?: string;
     shouldFocusError?: boolean;
