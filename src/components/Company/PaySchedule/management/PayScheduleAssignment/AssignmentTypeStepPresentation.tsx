@@ -11,6 +11,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 /** @internal */
 export interface AssignmentTypeStepPresentationProps {
   defaultType?: SupportedAssignmentType
+  hasEmployees?: boolean
+  employeeAccessDenied?: boolean
   hasDepartments?: boolean
   departmentAccessDenied?: boolean
   onBack: () => void
@@ -22,6 +24,7 @@ const TypeStepSchema = z.object({
     z.literal(PayScheduleAssignmentBodyType.Single),
     z.literal(PayScheduleAssignmentBodyType.HourlySalaried),
     z.literal(PayScheduleAssignmentBodyType.ByDepartment),
+    z.literal(PayScheduleAssignmentBodyType.ByEmployee),
   ]),
 })
 
@@ -31,6 +34,8 @@ type TypeStepInputs = z.infer<typeof TypeStepSchema>
 export function AssignmentTypeStepPresentation({
   defaultType = PayScheduleAssignmentBodyType.Single,
   hasDepartments = false,
+  hasEmployees = false,
+  employeeAccessDenied = false,
   departmentAccessDenied = false,
   onBack,
   onContinue,
@@ -42,9 +47,12 @@ export function AssignmentTypeStepPresentation({
     resolver: zodResolver(TypeStepSchema),
     defaultValues: {
       type:
-        defaultType === PayScheduleAssignmentBodyType.ByDepartment &&
-        !hasDepartments &&
-        !departmentAccessDenied
+        (defaultType === PayScheduleAssignmentBodyType.ByDepartment &&
+          !hasDepartments &&
+          !departmentAccessDenied) ||
+        (defaultType === PayScheduleAssignmentBodyType.ByEmployee &&
+          !hasEmployees &&
+          !employeeAccessDenied)
           ? PayScheduleAssignmentBodyType.Single
           : defaultType,
     },
@@ -66,6 +74,9 @@ export function AssignmentTypeStepPresentation({
           {departmentAccessDenied && (
             <Components.Alert status="warning" label={t('departmentAccessDenied')} />
           )}
+          {employeeAccessDenied && (
+            <Components.Alert status="warning" label={t('employeeAccessDenied')} />
+          )}
           <RadioGroupField
             name="type"
             label={t('typeStep.heading')}
@@ -81,6 +92,17 @@ export function AssignmentTypeStepPresentation({
                 label: t('typeStep.options.hourlySalaried.label'),
                 description: t('typeStep.options.hourlySalaried.description'),
               },
+              ...(hasEmployees ||
+              (employeeAccessDenied && defaultType === PayScheduleAssignmentBodyType.ByEmployee)
+                ? [
+                    {
+                      value: PayScheduleAssignmentBodyType.ByEmployee,
+                      isDisabled: employeeAccessDenied,
+                      label: t('typeStep.options.byEmployee.label'),
+                      description: t('typeStep.options.byEmployee.description'),
+                    },
+                  ]
+                : []),
               ...(hasDepartments ||
               (departmentAccessDenied && defaultType === PayScheduleAssignmentBodyType.ByDepartment)
                 ? [
@@ -102,8 +124,9 @@ export function AssignmentTypeStepPresentation({
               variant="primary"
               type="submit"
               isDisabled={
-                departmentAccessDenied &&
-                selectedType === PayScheduleAssignmentBodyType.ByDepartment
+                (departmentAccessDenied &&
+                  selectedType === PayScheduleAssignmentBodyType.ByDepartment) ||
+                (employeeAccessDenied && selectedType === PayScheduleAssignmentBodyType.ByEmployee)
               }
             >
               {t('continueCta')}

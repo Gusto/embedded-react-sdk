@@ -486,7 +486,10 @@ describe('PayScheduleAssignment', () => {
       expect(scheduleSelectTrigger()).toHaveTextContent('Weekly Schedule — Every week')
     })
 
-    it('starts on the type step with nothing preselected for an unsupported assignment type', async () => {
+    it('falls back to single when a stored employee assignment has no assignable employees', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, () => HttpResponse.json([])),
+      )
       useStoredAssignment({ type: 'by_employee', employees: [] })
       renderAssignment()
 
