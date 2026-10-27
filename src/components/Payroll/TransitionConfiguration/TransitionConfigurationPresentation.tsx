@@ -11,10 +11,10 @@ import { Flex, RadioGroupField } from '@/components/Common'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 /**
- * Presentational layout for the transition payroll configuration form.
+ * Layout for the transition payroll settings form.
  *
  * @param props - {@link TransitionConfigurationPresentationProps}.
- * @returns The transition payroll configuration form layout.
+ * @returns The form layout.
  * @internal
  */
 export function TransitionConfigurationPresentation({

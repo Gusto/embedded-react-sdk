@@ -3,24 +3,24 @@ import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTabl
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
 /**
- * Props for the {@link TransitionConfiguration} component.
+ * Props for {@link TransitionConfiguration}.
  *
  * @alpha
  */
 export interface TransitionConfigurationProps extends BaseComponentInterface<'Payroll.TransitionConfiguration'> {
-  /** The associated company identifier. */
+  /** The company ID. */
   companyId: string
-  /** The identifier of the existing transition payroll to configure. */
+  /** The ID of the transition payroll to update. */
   payrollId: string
 }
 
 /**
- * Form values collected by the {@link TransitionConfiguration} component.
+ * Values in the transition payroll settings form.
  *
  * @internal
  */
 export interface TransitionConfigurationFormData {
-  /** When `true`, regular deductions are skipped for this payroll. */
+  /** `true` to skip regular deductions. */
   skipRegularDeductions: boolean
 }
 
@@ -33,26 +33,26 @@ export function createTransitionConfigurationSchema() {
 
 /** @internal */
 export interface TransitionConfigurationPresentationProps {
-  /** CSS class name applied to the component's root element. */
+  /** Class name for the root element. */
   className?: string
-  /** The start date of the transition pay period (YYYY-MM-DD). */
+  /** First day of the pay period (YYYY-MM-DD). */
   payPeriodStartDate?: string | null
-  /** The end date of the transition pay period (YYYY-MM-DD). */
+  /** Last day of the pay period (YYYY-MM-DD). */
   payPeriodEndDate?: string | null
-  /** Display name of the associated pay schedule, or `null` when none is available. */
+  /** Pay schedule name, or `null` if unknown. */
   payScheduleName: string | null
-  /** The payroll's payment date (YYYY-MM-DD), shown read only, or `null` when unknown. */
+  /** Payment date (YYYY-MM-DD), or `null` if unknown. */
   checkDate: string | null
-  /** Whether the prepare or update request is in flight. */
+  /** `true` while saving. */
   isPending?: boolean
-  /** Current tax withholding configuration shown in the table. */
+  /** Tax withholding settings shown in the table. */
   taxWithholdingConfig: OffCycleTaxWithholdingConfig
-  /** Whether the tax withholding edit modal is open. */
+  /** `true` when the tax withholding modal is open. */
   isTaxWithholdingModalOpen: boolean
-  /** Fires when the user clicks the edit affordance on the tax withholding table. */
+  /** Called when the user clicks Edit on the tax table. */
   onTaxWithholdingEditClick: () => void
-  /** Fires when the user confirms a new tax withholding configuration in the modal. */
+  /** Called when the user saves new tax settings in the modal. */
   onTaxWithholdingModalDone: (config: OffCycleTaxWithholdingConfig) => void
-  /** Fires when the user dismisses the tax withholding modal without saving. */
+  /** Called when the user closes the modal without saving. */
   onTaxWithholdingModalCancel: () => void
 }

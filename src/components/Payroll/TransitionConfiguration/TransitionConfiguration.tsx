@@ -38,26 +38,24 @@ function isVersionedEmployeeCompensation(
 }
 
 /**
- * Configures the deduction and tax withholding settings of an existing transition payroll.
+ * Lets the user change the settings of a transition payroll before running it.
  *
  * @remarks
- * A transition payroll covers the gap that opens when a company changes its pay schedule, and the
- * API creates it automatically. This component configures that payroll rather than creating one:
- * it shows the pay period, pay schedule, and payment date as read-only details, and lets the user
- * choose whether regular deductions and contributions run and how wages are withheld. The payment
- * date can't be changed here, and saving can move it.
+ * The API creates transition payrolls on its own. This component updates one. It never creates one.
  *
- * Deductions default to included and supplemental wages default to the regular withholding rate
- * when the payroll has no saved setting. The withholding pay period defaults to the payroll's saved
- * value, falling back to its pay schedule's frequency.
+ * - The pay period, pay schedule, and payment date are shown but can't be changed.
+ * - The user can choose to take or skip regular deductions, and how to withhold taxes.
+ *
+ * If a setting is empty, deductions are taken, the regular tax rate is used, and the pay frequency
+ * matches the pay schedule. Saving can change the payment date.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `transition/configured` | The transition payroll's settings have been saved | `{ payrollUuid: string, payrollPrepared: PayrollPrepared }` |
+ * | `transition/configured` | The settings were saved | `{ payrollUuid: string, payrollPrepared: PayrollPrepared }` |
  *
  * @param props - See {@link TransitionConfigurationProps}.
- * @returns The transition payroll configuration form.
+ * @returns The transition payroll settings form.
  * @alpha
  *
  * @example
