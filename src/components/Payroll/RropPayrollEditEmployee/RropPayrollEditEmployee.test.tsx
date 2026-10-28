@@ -369,7 +369,7 @@ describe('preapproved time off', () => {
       ),
       handlePayrollsUpdate(updateResolver),
     )
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={vi.fn()} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={vi.fn()} />)
 
     const table = await screen.findByRole('grid', { name: 'Time off' })
     expect(
