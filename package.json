@@ -135,7 +135,7 @@
     "eslint-plugin-storybook": "^10.6.3",
     "eslint-plugin-tsdoc": "^0.5.4",
     "fuse.js": "^7.5.0",
-    "globals": "^17.12.0",
+    "globals": "^17.13.0",
     "husky": "^9.1.7",
     "jest-axe": "^11.0.0",
     "jsdom": "^26.1.0",
