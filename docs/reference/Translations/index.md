@@ -5912,6 +5912,44 @@ Translation keys for the `Payroll.Transition` i18n namespace.
 
 ***
 
+<a id="payrolltransitionconfiguration"></a>
+
+### PayrollTransitionConfiguration
+
+Translation keys for the `Payroll.TransitionConfiguration` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-payrolltransitionconfigurationcheckdatelabel"></a> `checkDateLabel` | `"Payment date"` |
+| <a id="property-payrolltransitionconfigurationcontinuecta"></a> `continueCta` | `"Continue"` |
+| <a id="property-payrolltransitionconfigurationdeductions"></a> `deductions` | |
+| `deductions.description` | `"Employers often block deductions and contributions from certain checks (i.e. bonus checks), since they are calculated on a per-pay-period basis. Deductions and contributions include loan repayments, garnishments, benefits, etc. Taxes will be included regardless of what is chosen."` |
+| `deductions.options` | |
+| `deductions.options.include` | `"Make all the regular deductions and contributions."` |
+| `deductions.options.skip` | `"Block all deductions and contributions, except 401(k). Taxes will be included."` |
+| `deductions.title` | `"Deductions and contributions"` |
+| <a id="property-payrolltransitionconfigurationdetailsheading"></a> `detailsHeading` | `"Transition Details"` |
+| <a id="property-payrolltransitionconfigurationerrors"></a> `errors` | |
+| `errors.noEmployeeCompensations` | `"This transition payroll has no employees to update, so its settings could not be saved."` |
+| <a id="property-payrolltransitionconfigurationpagedescription"></a> `pageDescription` | `"A transition payroll covers the gap between your old and new pay schedules."` |
+| <a id="property-payrolltransitionconfigurationpagetitle"></a> `pageTitle` | `"Edit transition payroll"` |
+| <a id="property-payrolltransitionconfigurationpayperiodlabel"></a> `payPeriodLabel` | `"Pay period"` |
+| <a id="property-payrolltransitionconfigurationpayschedulelabel"></a> `payScheduleLabel` | `"Pay schedule"` |
+| <a id="property-payrolltransitionconfigurationtransitionexplanation"></a> `transitionExplanation` | `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` |
+| <a id="property-payrolltransitionconfigurationwagetypegroups"></a> `wageTypeGroups` | |
+| `wageTypeGroups.regular` | |
+| `wageTypeGroups.regular.description` | `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` |
+| `wageTypeGroups.regular.label` | `"Regular hours, regular wages, and tips"` |
+| `wageTypeGroups.reimbursement` | |
+| `wageTypeGroups.reimbursement.label` | `"Reimbursements"` |
+| `wageTypeGroups.supplemental` | |
+| `wageTypeGroups.supplemental.description` | `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` |
+| `wageTypeGroups.supplemental.label` | `"Supplemental wages, bonus wages, commission"` |
+
+***
+
 <a id="payrolltransitioncreation"></a>
 
 ### PayrollTransitionCreation
@@ -6197,6 +6235,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
 | <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
+| <a id="property-resourcespayrolltransitionconfiguration"></a> `Payroll.TransitionConfiguration` | [`PayrollTransitionConfiguration`](#payrolltransitionconfiguration) |
 | <a id="property-resourcespayrolltransitioncreation"></a> `Payroll.TransitionCreation` | [`PayrollTransitionCreation`](#payrolltransitioncreation) |
 | <a id="property-resourcespayrolltransitionpayrollalert"></a> `Payroll.TransitionPayrollAlert` | [`PayrollTransitionPayrollAlert`](#payrolltransitionpayrollalert) |
 | <a id="property-resourcespayrollwireinstructions"></a> `Payroll.WireInstructions` | [`PayrollWireInstructions`](#payrollwireinstructions) |

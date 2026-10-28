@@ -151,6 +151,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.TaxPaymentDetail': ['companyId'],
   'Payroll.TaxPaymentsFlow': ['companyId'],
   'Payroll.TaxPaymentsList': ['companyId'],
+  'Payroll.TransitionConfiguration': ['companyId', 'payrollId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
   'Payroll.TransitionPayroll': ['companyId'],
