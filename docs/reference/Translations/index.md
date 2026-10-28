@@ -575,6 +575,9 @@ Translation keys for the `Company.Industry` i18n namespace.
 | <a id="property-companyindustryplaceholder"></a> `placeholder` | `"Type a few letters to search for your industry"` |
 | <a id="property-companyindustrysubmitcta"></a> `submitCta` | `"Continue"` |
 | <a id="property-companyindustrytitle"></a> `title` | `"Industry"` |
+| <a id="property-companyindustryunmatchedindustry"></a> `unmatchedIndustry` | `"NAICS {{code}}"` |
+| <a id="property-companyindustryvalidations"></a> `validations` | |
+| `validations.required` | `"Select an industry to continue"` |
 
 ***
 

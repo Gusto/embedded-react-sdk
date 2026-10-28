@@ -1,11 +1,9 @@
-import { useCallback } from 'react'
-import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api/react-query/industrySelectionGet'
-import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
-import type { IndustryFormFields } from './Edit'
-import { IndustryApiStateProvider } from './Context'
+import { IndustryFormProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
+import { useIndustryForm } from './shared/useIndustryForm'
 import { componentEvents } from '@/shared/constants'
-import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
+import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useI18n, useComponentDictionary } from '@/i18n'
 
 /**
@@ -18,58 +16,78 @@ export interface IndustryProps extends BaseComponentInterface<'Company.Industry'
   companyId: string
 }
 
-function Root({ children, className, companyId, dictionary }: IndustryProps) {
+function Root({ children, className, companyId, onEvent, LoaderComponent }: IndustryProps) {
   useI18n('Company.Industry')
-  useComponentDictionary('Company.Industry', dictionary)
-  const { baseSubmitHandler, onEvent } = useBase()
+  const industry = useIndustryForm({ companyId })
 
-  const {
-    data: { industry },
-  } = useIndustrySelectionGetSuspense({ companyId })
+  if (industry.isLoading) {
+    return (
+      <BaseLayout
+        isLoading
+        error={industry.errorHandling.errors}
+        LoaderComponent={LoaderComponent}
+      />
+    )
+  }
 
-  const { isPending, mutateAsync: mutateIndustry } = useIndustrySelectionUpdateMutation()
-
-  const onValid = useCallback(
-    async (data: IndustryFormFields) => {
-      await baseSubmitHandler(data, async ({ naics_code }) => {
-        const response = await mutateIndustry({
-          request: { companyId, companyIndustrySelectionRequiredBody: { naicsCode: naics_code } },
-        })
-        onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, response.industry)
-      })
-    },
-    [baseSubmitHandler, companyId, mutateIndustry, onEvent],
-  )
+  const handleSubmit = async () => {
+    const result = await industry.actions.onSubmit()
+    if (result) {
+      onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, result.data)
+    }
+  }
 
   return (
-    <section className={className}>
-      <IndustryApiStateProvider value={{ isPending }}>
-        <IndustrySelect naics_code={industry?.naicsCode} onValid={onValid}>
-          {children}
-        </IndustrySelect>
-      </IndustryApiStateProvider>
-    </section>
+    <BaseLayout error={industry.errorHandling.errors} LoaderComponent={LoaderComponent}>
+      <section className={className}>
+        <IndustryFormProvider value={industry}>
+          <SDKFormProvider formHookResult={industry}>
+            <IndustrySelect
+              onSubmit={() => {
+                void handleSubmit()
+              }}
+            >
+              {children}
+            </IndustrySelect>
+          </SDKFormProvider>
+        </IndustryFormProvider>
+      </section>
+    </BaseLayout>
   )
 }
 
 /**
  * Selects and saves the company's industry classification (NAICS code).
  *
- * Presents a searchable list of industry options and persists the selection for the given company.
+ * @remarks
+ * Presents a searchable list of industry options and persists the selection for the given
+ * company. Valid NAICS codes are four to six digits; when the company's saved classification
+ * is shorter than the six-digit options in the list, it is still displayed and preserved by
+ * a submit that does not change it.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+ * | `company/industry/selected` | Fired when an industry is selected and saved | The updated {@link APIModels.Industry} returned by the industry selection endpoint |
  *
  * @param props - {@link IndustryProps} including `companyId` and event handlers.
  * @returns The rendered industry selector.
  * @public
  */
-export function Industry(props: IndustryProps) {
+export function Industry({
+  dictionary,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: IndustryProps) {
+  useComponentDictionary('Company.Industry', dictionary)
   return (
-    <BaseComponent {...props}>
-      <Root {...props} />
-    </BaseComponent>
+    <BaseBoundaries
+      componentName="Company.Industry"
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+    >
+      <Root LoaderComponent={LoaderComponent} {...props} />
+    </BaseBoundaries>
   )
 }

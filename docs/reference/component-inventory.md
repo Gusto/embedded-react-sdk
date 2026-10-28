@@ -1664,11 +1664,11 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 - [`TextInputProps`](#textinputprops)
 - [`SelectProps`](#selectprops)
+- [`ComboBoxProps`](#comboboxprops)
 - [`NumberInputProps`](#numberinputprops)
 - [`DatePickerProps`](#datepickerprops)
 - [`RadioGroupProps`](#radiogroupprops)
 - [`CheckboxGroupProps`](#checkboxgroupprops)
-- [`ComboBoxProps`](#comboboxprops)
 - [`MultiSelectComboBoxProps`](#multiselectcomboboxprops)
 - [`TextAreaProps`](#textareaprops)
 
