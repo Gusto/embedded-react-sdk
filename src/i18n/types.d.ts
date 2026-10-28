@@ -8892,6 +8892,8 @@ export namespace Translations {
   export interface PayrollTransitionPayrollAlert {
     /** @defaultValue `"Transition payroll - {{dateRange}}"` */
     alertTitle: string
+    /** @defaultValue `"You have {{count}} transition payrolls to run or skip"` */
+    multipleAlertTitle: string
     /** @defaultValue `"Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly. Regular payroll functionality is blocked until you either run or skip transition payrolls."` */
     alertDescription: string
     /** @defaultValue `"Run Transition Payroll"` */
