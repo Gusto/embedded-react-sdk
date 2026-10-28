@@ -39,7 +39,7 @@ export type {
   TableData,
   TableRow,
   TableHeaderData,
-  TableSortDescriptor,
+  TableSortControls,
   TableSortDirection,
 } from '@/components/Common/UI/Table/TableTypes'
 export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'

@@ -5773,9 +5773,9 @@ export interface TableData {
 }
 
 // @public
-export interface TableHeaderData extends TableData {
-    isSortable?: boolean;
-}
+export type TableHeaderData = TableData & ({
+    isSortable?: false;
+} | TableSortControls);
 
 // @public
 export interface TableProps extends Pick<TableHTMLAttributes<HTMLTableElement>, 'className' | 'aria-label' | 'id' | 'role' | 'aria-labelledby' | 'aria-describedby'> {
@@ -5784,9 +5784,7 @@ export interface TableProps extends Pick<TableHTMLAttributes<HTMLTableElement>, 
     hasCheckboxColumn?: boolean;
     headers: TableHeaderData[];
     isWithinBox?: boolean;
-    onSortChange?: (sortDescriptor: TableSortDescriptor) => void;
     rows: TableRow[];
-    sortDescriptor?: TableSortDescriptor;
 }
 
 // @public
@@ -5796,9 +5794,13 @@ export interface TableRow {
 }
 
 // @public
-export interface TableSortDescriptor {
-    columnKey: string;
-    direction: TableSortDirection;
+export interface TableSortControls {
+    isSortable: true;
+    onClearSort: () => void;
+    onSort: () => void;
+    onSortAscending: () => void;
+    onSortDescending: () => void;
+    sortDirection: TableSortDirection | 'none';
 }
 
 // @public

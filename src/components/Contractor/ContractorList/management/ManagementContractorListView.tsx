@@ -205,7 +205,7 @@ export function ManagementContractorListView({
     },
     onSortChange: sortDescriptor => {
       // Name is the only sortable column; ContractorSortField makes a stale key a type error.
-      sort.onSortChange({ field: 'name', direction: sortDescriptor.direction })
+      sort.onSortChange(sortDescriptor && { field: 'name', direction: sortDescriptor.direction })
     },
     itemMenu: contractor => {
       if (committedTab === 'onboarding') {

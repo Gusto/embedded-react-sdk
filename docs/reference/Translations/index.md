@@ -39,7 +39,7 @@ Translation keys for the `common` i18n namespace.
 | `card.selectRowLabel` | `"Select row"` |
 | `card.sortAscendingOption` | `"{{column}} (A–Z)"` |
 | `card.sortByLabel` | `"Sort by"` |
-| `card.sortByPlaceholder` | `"Default order"` |
+| `card.sortDefaultOption` | `"Default order"` |
 | `card.sortDescendingOption` | `"{{column}} (Z–A)"` |
 | <a id="property-commoncompensationrateformats"></a> `compensationRateFormats` | |
 | `compensationRateFormats.hourly` | `"{{amount}} per hour"` |

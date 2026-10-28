@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Table } from './Table'
@@ -84,55 +84,70 @@ describe('Table', () => {
   })
 
   describe('sorting', () => {
-    const sortableHeaders: TableHeaderData[] = [
-      { key: 'name', content: 'Name', isSortable: true },
+    const sortControls = {
+      onSort: vi.fn(),
+      onSortAscending: vi.fn(),
+      onSortDescending: vi.fn(),
+      onClearSort: vi.fn(),
+    }
+
+    const headersSortedBy = (
+      sortDirection: 'ascending' | 'descending' | 'none',
+    ): TableHeaderData[] => [
+      { key: 'name', content: 'Name', isSortable: true, sortDirection, ...sortControls },
       { key: 'email', content: 'Email' },
       { key: 'status', content: 'Status' },
     ]
 
-    it('reports the sorted column and toggles its direction on activation', async () => {
-      const user = userEvent.setup()
-      const onSortChange = vi.fn()
-      renderWithProviders(
-        <Table
-          aria-label="User table"
-          headers={sortableHeaders}
-          rows={testRows}
-          sortDescriptor={{ columnKey: 'name', direction: 'ascending' }}
-          onSortChange={onSortChange}
-        />,
-      )
-
-      // The accessible name stays the bare column title, which also proves the sort
-      // indicator contributes no text content for `tableQueries` to trip over.
-      const nameHeader = screen.getByRole('columnheader', { name: 'Name' })
-      expect(nameHeader).toHaveAttribute('aria-sort', 'ascending')
-
-      await user.click(nameHeader)
-
-      expect(onSortChange).toHaveBeenCalledWith({ columnKey: 'name', direction: 'descending' })
+    beforeEach(() => {
+      vi.clearAllMocks()
     })
 
-    it('leaves headers unsortable when no sort handler is supplied', async () => {
+    it.each([['ascending'], ['descending']] as const)(
+      'reports a column sorted %s to assistive technology',
+      sortDirection => {
+        renderWithProviders(
+          <Table
+            aria-label="User table"
+            headers={headersSortedBy(sortDirection)}
+            rows={testRows}
+          />,
+        )
+
+        // The accessible name stays the bare column title, which also proves the sort
+        // indicator contributes no text content for `tableQueries` to trip over.
+        expect(screen.getByRole('columnheader', { name: 'Name' })).toHaveAttribute(
+          'aria-sort',
+          sortDirection,
+        )
+      },
+    )
+
+    it("advances the activated column's own sort cycle", async () => {
       const user = userEvent.setup()
-      // `sortDescriptor` is supplied but `onSortChange` is not, so an `aria-sort` here
-      // could only come from the column still being sortable.
       renderWithProviders(
-        <Table
-          aria-label="User table"
-          headers={sortableHeaders}
-          rows={testRows}
-          sortDescriptor={{ columnKey: 'name', direction: 'ascending' }}
-        />,
+        <Table aria-label="User table" headers={headersSortedBy('ascending')} rows={testRows} />,
       )
 
-      // Absence is the documented contract: `onSortChange` is what makes a column sortable,
-      // so without it the header must stay a plain, non-interactive header.
-      const nameHeader = screen.getByRole('columnheader', { name: 'Name' })
-      expect(nameHeader).not.toHaveAttribute('aria-sort')
+      await user.click(screen.getByRole('columnheader', { name: 'Name' }))
 
-      await user.click(nameHeader)
-      expect(nameHeader).not.toHaveAttribute('aria-sort')
+      // The header owns the cycle, so the direction react-aria would have suggested is irrelevant.
+      expect(sortControls.onSort).toHaveBeenCalledTimes(1)
+    })
+
+    it('leaves a column without sort controls non-interactive', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <Table aria-label="User table" headers={headersSortedBy('ascending')} rows={testRows} />,
+      )
+
+      // Absence is the contract: only a header carrying sort controls is sortable, so a plain
+      // header must stay a plain header even while a sibling column is sorted.
+      const emailHeader = screen.getByRole('columnheader', { name: 'Email' })
+      expect(emailHeader).not.toHaveAttribute('aria-sort')
+
+      await user.click(emailHeader)
+      expect(sortControls.onSort).not.toHaveBeenCalled()
     })
   })
 

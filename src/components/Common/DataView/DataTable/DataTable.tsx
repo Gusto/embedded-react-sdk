@@ -3,6 +3,7 @@ import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
 import { useSelectionState } from '../useSelectionState'
+import { getSortControls } from '../getSortControls'
 import type { TableData, TableHeaderData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
 import styles from './DataTable.module.scss'
@@ -112,11 +113,20 @@ export const DataTable = <T,>({
           },
         ]
       : []),
-    ...columns.map((column, index) => ({
-      key: typeof column.key === 'string' ? column.key : `header-${index}`,
-      content: withJustify(column.title, column.justify),
-      isSortable: column.isSortable,
-    })),
+    // A sortable column with nothing listening would render a header that looks interactive and
+    // does nothing, so the sort affordance is gated on there being a handler to receive it.
+    ...columns.map((column, index) =>
+      column.isSortable && onSortChange
+        ? {
+            key: column.key,
+            content: withJustify(column.title, column.justify),
+            ...getSortControls(column.key, sortDescriptor, onSortChange),
+          }
+        : {
+            key: typeof column.key === 'string' ? column.key : `header-${index}`,
+            content: withJustify(column.title, column.justify),
+          },
+    ),
     ...(itemMenu
       ? [
           {
@@ -246,8 +256,6 @@ export const DataTable = <T,>({
         emptyState={emptyState ? emptyState() : undefined}
         isWithinBox={isWithinBox}
         hasCheckboxColumn={!!onSelect}
-        sortDescriptor={sortDescriptor}
-        onSortChange={onSortChange}
       />
     </div>
   )

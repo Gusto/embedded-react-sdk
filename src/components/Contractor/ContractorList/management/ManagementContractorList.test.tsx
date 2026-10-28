@@ -522,5 +522,20 @@ describe('ManagementContractorList \u2014 sorting', () => {
       'aria-sort',
       'ascending',
     )
+
+    await user.click(nameHeader)
+    await waitFor(() => {
+      expect(lastUrl).toContain('sort_by=name%3Adesc')
+    })
+
+    // A third activation completes the cycle, returning the list to the API's default order.
+    await user.click(nameHeader)
+    await waitFor(() => {
+      expect(lastUrl).not.toContain('sort_by')
+    })
+    expect(screen.getByRole('columnheader', { name: 'Contractor name' })).toHaveAttribute(
+      'aria-sort',
+      'none',
+    )
   })
 })

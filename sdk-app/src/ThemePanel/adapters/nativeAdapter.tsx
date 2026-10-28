@@ -962,8 +962,6 @@ function NativeTable({
   emptyState,
   isWithinBox,
   hasCheckboxColumn,
-  sortDescriptor,
-  onSortChange,
   ...rest
 }: TableProps) {
   return (
@@ -973,6 +971,7 @@ function NativeTable({
           {headers.map(h => (
             <th
               key={h.key}
+              aria-sort={h.isSortable ? h.sortDirection : undefined}
               style={{
                 textAlign: 'left',
                 padding: '0.5rem 0.75rem',
@@ -981,7 +980,34 @@ function NativeTable({
                 color: '#374151',
               }}
             >
-              {h.content}
+              {h.isSortable ? (
+                <button
+                  type="button"
+                  onClick={h.onSort}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    padding: 0,
+                    background: 'none',
+                    border: 'none',
+                    font: 'inherit',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {h.content}
+                  <span aria-hidden="true">
+                    {h.sortDirection === 'ascending'
+                      ? '\u2191'
+                      : h.sortDirection === 'descending'
+                        ? '\u2193'
+                        : '\u2195'}
+                  </span>
+                </button>
+              ) : (
+                h.content
+              )}
             </th>
           ))}
         </tr>

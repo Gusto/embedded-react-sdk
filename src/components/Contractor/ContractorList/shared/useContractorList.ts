@@ -98,8 +98,8 @@ export interface UseContractorListReady extends BaseHookReady<
   sort: {
     /** The active sort, or `undefined` while the list is in the API's default order. */
     current?: ContractorListSort
-    /** Applies a new sort and returns to page 1. */
-    onSortChange: (sort: ContractorListSort) => void
+    /** Applies a new sort, or clears it with `undefined`, and returns to page 1. */
+    onSortChange: (sort: ContractorListSort | undefined) => void
   }
   /** Actions that mutate a contractor's state, gated by the entry's `allowedActions`. */
   actions: {
@@ -208,8 +208,9 @@ function deriveAllowedActions(
  *
  * Sorting is applied by the API, so the order holds across pages. No sort is requested until
  * `sort.onSortChange` is called, leaving the list in the API's default order until then, and
- * applying a new sort returns to page 1 because the API sorts before it paginates. The sort
- * persists across `contractorType` changes, since every filter sorts by the same field.
+ * calling it with `undefined` returns the list to that default order. Applying or clearing a sort
+ * returns to page 1 because the API sorts before it paginates. The sort persists across
+ * `contractorType` changes, since every filter sorts by the same field.
  *
  * The endpoint rejects a sort combined with a search term (HTTP 422), so a search filter added
  * here would have to clear the sort.
@@ -337,7 +338,7 @@ export function useContractorList({
     })
   }
 
-  const onSortChange = (nextSort: ContractorListSort) => {
+  const onSortChange = (nextSort: ContractorListSort | undefined) => {
     setSort(nextSort)
     // The API sorts before paginating, so the current page index means nothing under a new order.
     resetPage()

@@ -9405,7 +9405,7 @@ export namespace Translations {
       /** @defaultValue `"Sort by"` */
       sortByLabel: string
       /** @defaultValue `"Default order"` */
-      sortByPlaceholder: string
+      sortDefaultOption: string
       /** @defaultValue `"{{column}} (A–Z)"` */
       sortAscendingOption: string
       /** @defaultValue `"{{column}} (Z–A)"` */

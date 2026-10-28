@@ -215,6 +215,7 @@ describe('DataCards', () => {
     await user.click(screen.getByRole('button', { name: /Sort by/ }))
     const options = await screen.findAllByRole('option')
     expect(options.map(option => option.textContent)).toEqual([
+      'Default order',
       'Name (A\u2013Z)',
       'Name (Z\u2013A)',
     ])
@@ -222,5 +223,23 @@ describe('DataCards', () => {
     await user.click(screen.getByRole('option', { name: 'Name (Z\u2013A)' }))
 
     expect(onSortChange).toHaveBeenCalledWith({ columnKey: 'name', direction: 'descending' })
+  })
+
+  test('should return the data to its default order', async () => {
+    const user = userEvent.setup()
+    const onSortChange = vi.fn()
+    renderCards({
+      columns: [
+        { key: 'name', title: 'Name', isSortable: true },
+        { key: 'age', title: 'Age' },
+      ],
+      sortDescriptor: { columnKey: 'name', direction: 'descending' },
+      onSortChange,
+    })
+
+    await user.click(screen.getByRole('button', { name: /Sort by/ }))
+    await user.click(screen.getByRole('option', { name: 'Default order' }))
+
+    expect(onSortChange).toHaveBeenCalledWith(undefined)
   })
 })

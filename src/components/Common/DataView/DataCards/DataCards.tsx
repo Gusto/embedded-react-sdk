@@ -3,15 +3,15 @@ import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
-import type {
-  TableProps,
-  TableSortDescriptor,
-  TableSortDirection,
-} from '@/components/Common/UI/Table/TableTypes'
+import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 import { useSelectionState } from '@/components/Common/DataView/useSelectionState'
+import { getSortControls } from '@/components/Common/DataView/getSortControls'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+// Sentinel for the "default order" option, kept clear of the `<columnKey>:<direction>` values.
+const DEFAULT_ORDER_VALUE = 'none'
 
 /** @internal */
 export type DataCardsProps<T> = {
@@ -55,28 +55,32 @@ export const DataCards = <T,>({
   const radioGroupName = useId()
   const { allSelected } = useSelectionState(data, getIsItemSelected)
 
-  const sortDirections: TableSortDirection[] = ['ascending', 'descending']
   const sortOptions: SelectOption[] = []
-  const sortOptionsByValue = new Map<string, TableSortDescriptor>()
-  columns.forEach((column, index) => {
+  const applySortByValue = new Map<string, () => void>()
+  if (onSortChange) {
+    sortOptions.push({ value: DEFAULT_ORDER_VALUE, label: t('card.sortDefaultOption') })
+    applySortByValue.set(DEFAULT_ORDER_VALUE, () => {
+      onSortChange(undefined)
+    })
+  }
+  columns.forEach(column => {
     // Options are labelled from the column title, so a column titled with a ReactNode
     // has nothing usable to show in the dropdown.
-    if (!column.isSortable || typeof column.title !== 'string') return
-    // Mirrors DataTable's header key, including its index-based fallback, so both
-    // layouts report the same `columnKey` back to the consumer.
-    const columnKey = typeof column.key === 'string' ? column.key : `header-${index}`
+    if (!column.isSortable || !onSortChange || typeof column.title !== 'string') return
+    const controls = getSortControls(column.key, sortDescriptor, onSortChange)
     const columnTitle = column.title
-    sortDirections.forEach(direction => {
-      const value = `${columnKey}:${direction}`
-      sortOptions.push({
-        value,
-        label:
-          direction === 'ascending'
-            ? t('card.sortAscendingOption', { column: columnTitle })
-            : t('card.sortDescendingOption', { column: columnTitle }),
-      })
-      sortOptionsByValue.set(value, { columnKey, direction })
-    })
+    sortOptions.push(
+      {
+        value: `${column.key}:ascending`,
+        label: t('card.sortAscendingOption', { column: columnTitle }),
+      },
+      {
+        value: `${column.key}:descending`,
+        label: t('card.sortDescendingOption', { column: columnTitle }),
+      },
+    )
+    applySortByValue.set(`${column.key}:ascending`, controls.onSortAscending)
+    applySortByValue.set(`${column.key}:descending`, controls.onSortDescending)
   })
 
   const renderAction = (item: T, index: number) => {
@@ -116,20 +120,20 @@ export const DataCards = <T,>({
       data-testid="data-cards"
       aria-busy={Boolean(isFetching)}
     >
-      {onSortChange && sortOptions.length > 0 && (
+      {sortOptions.length > 1 && (
         <div className={styles.sortRow}>
           <Components.Select
             label={t('card.sortByLabel')}
-            placeholder={t('card.sortByPlaceholder')}
+            // A value is always selected -- unsorted data resolves to the default-order option.
+            placeholder=""
             options={sortOptions}
             value={
-              sortDescriptor ? `${sortDescriptor.columnKey}:${sortDescriptor.direction}` : null
+              sortDescriptor
+                ? `${sortDescriptor.columnKey}:${sortDescriptor.direction}`
+                : DEFAULT_ORDER_VALUE
             }
             onChange={value => {
-              const nextSort = sortOptionsByValue.get(value)
-              if (nextSort) {
-                onSortChange(nextSort)
-              }
+              applySortByValue.get(value)?.()
             }}
           />
         </div>

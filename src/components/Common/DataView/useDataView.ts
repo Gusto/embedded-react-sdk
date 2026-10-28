@@ -1,24 +1,33 @@
 import { useMemo } from 'react'
-import type { TableSortDescriptor } from '../UI/Table/TableTypes'
+import type { TableSortDescriptor } from './getSortControls'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 /** @internal */
 export type SelectionMode = 'multiple' | 'single'
 
+// A sortable column's `key` is reported back as the sort's `columnKey`, so it has to be a real
+// string the consumer chose -- never DataTable's `header-<index>` fallback.
 type DataViewColumn<T> =
   | {
       key: keyof T
       title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
-      isSortable?: boolean
+      isSortable?: false
+    }
+  | {
+      key: string
+      title: string | React.ReactNode
+      render?: (item: T) => React.ReactNode
+      justify?: 'start' | 'end'
+      isSortable: true
     }
   | {
       key?: string
       title: string | React.ReactNode
       render: (item: T) => React.ReactNode
       justify?: 'start' | 'end'
-      isSortable?: boolean
+      isSortable?: false
     }
 
 type FooterKeys<T> = keyof T | string
@@ -43,9 +52,10 @@ type BaseDataViewProps<T> = {
   sortDescriptor?: TableSortDescriptor
   /**
    * Called when the user picks a new sort, from a column header (DataTable) or the
-   * sort control above the cards (DataCards). Omit to leave columns unsortable.
+   * sort control above the cards (DataCards), with `undefined` when they return the data to its
+   * default order. Omit to leave columns unsortable.
    */
-  onSortChange?: (sortDescriptor: TableSortDescriptor) => void
+  onSortChange?: (sortDescriptor: TableSortDescriptor | undefined) => void
 }
 
 type NoSelectionProps = {
@@ -98,7 +108,7 @@ export type useDataViewPropReturn<T> = {
   isFetching?: boolean
   selectionMode?: SelectionMode
   sortDescriptor?: TableSortDescriptor
-  onSortChange?: (sortDescriptor: TableSortDescriptor) => void
+  onSortChange?: (sortDescriptor: TableSortDescriptor | undefined) => void
 }
 
 /** @internal */

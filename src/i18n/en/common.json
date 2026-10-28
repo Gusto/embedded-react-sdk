@@ -162,7 +162,7 @@
     "selectRowLabel": "Select row",
     "selectAllRowsLabel": "Select all rows",
     "sortByLabel": "Sort by",
-    "sortByPlaceholder": "Default order",
+    "sortDefaultOption": "Default order",
     "sortAscendingOption": "{{column}} (A\u2013Z)",
     "sortDescendingOption": "{{column}} (Z\u2013A)"
   },

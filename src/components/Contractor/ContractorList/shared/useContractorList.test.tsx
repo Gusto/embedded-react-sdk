@@ -555,6 +555,34 @@ describe('useContractorList', () => {
       })
       expect(latest(requestUrls).get('page')).toBe('1')
     })
+
+    it('returns the list to the default order when the sort is cleared', async () => {
+      const requestUrls = captureListRequests()
+
+      const { result } = renderHook(() => useContractorList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      act(() => {
+        ready(result.current).sort.onSortChange({ field: 'name', direction: 'ascending' })
+      })
+      await waitFor(() => {
+        expect(latest(requestUrls).get('sort_by')).toBe('name:asc')
+      })
+
+      act(() => {
+        ready(result.current).sort.onSortChange(undefined)
+      })
+
+      await waitFor(() => {
+        expect(latest(requestUrls).has('sort_by')).toBe(false)
+      })
+      expect(ready(result.current).sort.current).toBeUndefined()
+    })
   })
 
   describe('Error handling', () => {
