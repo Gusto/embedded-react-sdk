@@ -6105,6 +6105,7 @@ export interface UnorderedListProps extends BaseListProps {
 export interface UnstableFeatures {
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
+    payrollListHooks?: boolean;
     payrollRegularRateOfPay?: boolean;
     taxPayments?: boolean;
 }
