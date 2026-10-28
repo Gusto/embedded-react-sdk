@@ -8,7 +8,7 @@ import { createContext, useContext } from 'react'
  * public release. Every flag defaults to disabled when omitted. When a feature graduates to
  * public release, its flag is deleted from this interface — there is no deprecation step. The
  * conditional checks that read it are deleted too, or moved to a {@link Features} flag when the
- * feature ships on by default but still needs an opt-out. This interface may have no flags at all
+ * released feature still needs a way to turn it off. This interface may have no flags at all
  * at any given time — e.g. immediately after the last active flag graduates and before the next
  * one is added — the opt-in mechanism itself is permanent even when nothing is currently gated
  * behind it.

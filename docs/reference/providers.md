@@ -102,14 +102,12 @@ API client configuration passed to [GustoProvider](#gustoprovider) (and [GustoPr
 
 ### Features
 
-Opt-out flags for released SDK functionality.
+Flags for turning released SDK functionality on or off.
 
 #### Remarks
 
-Pass to [GustoProvider](#gustoprovider) via the `features` prop. Every flag defaults to enabled when
-omitted; set a flag to `false` to opt out and keep the behavior that preceded it. The
-functionality behind each flag is ready for production use. Flags are temporary: each one is
-removed in a future release, after which its functionality can no longer be turned off.
+Pass to [GustoProvider](#gustoprovider) via the `features` prop. Each flag documents its default and what
+changes when you set it. Omitted flags use their default.
 
 #### Properties
 
@@ -137,7 +135,7 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
 | `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
-| `features?` | [`Features`](#features) | Opt-out flags for released SDK functionality. Every flag defaults to `true`; set one to `false` to opt out. See [Features](#features). |
+| `features?` | [`Features`](#features) | Flags for turning released SDK functionality on or off. Omitted flags use their default. See [Features](#features). |
 | `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |

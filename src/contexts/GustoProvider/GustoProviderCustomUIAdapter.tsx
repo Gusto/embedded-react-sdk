@@ -81,7 +81,7 @@ export interface GustoBaseProviderProps {
   components: ComponentsContextType
   /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
   LoaderComponent?: ({ children }: { children?: ReactNode }) => JSX.Element
-  /** Opt-out flags for released SDK functionality. Every flag defaults to `true`; set one to `false` to opt out. See {@link Features}. */
+  /** Flags for turning released SDK functionality on or off. Omitted flags use their default. See {@link Features}. */
   features?: Features
   /**
    * Opt-in flags for alpha SDK functionality. See {@link UnstableFeatures}.

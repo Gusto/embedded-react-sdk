@@ -1,13 +1,11 @@
 import { createContext, useContext } from 'react'
 
 /**
- * Opt-out flags for released SDK functionality.
+ * Flags for turning released SDK functionality on or off.
  *
  * @remarks
- * Pass to {@link GustoProvider} via the `features` prop. Every flag defaults to enabled when
- * omitted; set a flag to `false` to opt out and keep the behavior that preceded it. The
- * functionality behind each flag is ready for production use. Flags are temporary: each one is
- * removed in a future release, after which its functionality can no longer be turned off.
+ * Pass to {@link GustoProvider} via the `features` prop. Each flag documents its default and what
+ * changes when you set it. Omitted flags use their default.
  *
  * @public
  * @page providers
