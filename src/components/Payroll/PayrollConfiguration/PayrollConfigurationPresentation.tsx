@@ -262,7 +262,9 @@ export const PayrollConfigurationPresentation = ({
                     justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
                       if (isRegularRateOfPayEnabled) {
-                        return formatNumberAsCurrency(Number(item.grossPay ?? 0))
+                        return formatNumberAsCurrency(
+                          Number(item.grossPay ?? 0) + getReimbursements(item),
+                        )
                       }
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const calculatedGrossPay = employee
@@ -274,7 +276,7 @@ export const PayrollConfigurationPresentation = ({
                             payrollCategory,
                           )
                         : 0
-                      return formatNumberAsCurrency(calculatedGrossPay)
+                      return formatNumberAsCurrency(calculatedGrossPay + getReimbursements(item))
                     },
                   },
                 ]}
