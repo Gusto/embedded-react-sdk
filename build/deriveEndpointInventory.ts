@@ -11,7 +11,7 @@ import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { spawnSync } from 'child_process'
 import { Project, SourceFile, SyntaxKind } from 'ts-morph'
-import { DOMAINS } from '../docs-site/plugins/typedoc-custom/router.config'
+import { DOMAINS } from '../typedoc/typedoc-custom/router.config'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)

@@ -25,7 +25,7 @@
  * To add a domain: append an entry. `path` doubles as the source-dir lookup
  * (`time-off` → `src/components/TimeOff`), so a GUIDE.md there is slotted into the hub.
  */
-import { CUSTOM_GROUPS, type CustomGroupTag } from '../../typedoc-utils.ts'
+import { CUSTOM_GROUPS, type CustomGroupTag } from '../typedoc-utils.ts'
 
 export const SIDEBAR_GROUPS = [
   { id: 'domains', header: 'Browse by domain' },
