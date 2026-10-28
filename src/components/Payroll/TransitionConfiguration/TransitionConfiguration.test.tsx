@@ -3,12 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import {
-  COMPANY_ID,
-  PAYROLL_ID,
-  buildPreparedTransitionPayroll,
-  buildTransitionPayroll,
-} from './__fixtures__/transitionConfigurationMocks'
 import { TransitionConfiguration } from './TransitionConfiguration'
 import { PREPARE_QUERY_KEY } from '@/components/Payroll/PayrollConfiguration/usePayrollConfigurationData'
 import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
@@ -20,7 +14,33 @@ import {
   handlePayrollsUpdate,
 } from '@/test/mocks/apis/payrolls'
 import { handleCreateOffCyclePayroll } from '@/test/mocks/apis/terminations'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { server } from '@/test/mocks/server'
+
+const COMPANY_ID = 'company-123'
+const PAYROLL_ID = 'transition-payroll-uuid-1'
+const PAY_SCHEDULE_UUID = 'schedule-1'
+
+const buildTransitionPayroll = async (overrides: Record<string, unknown> = {}) => {
+  const transitionPayroll = await getFixture('post-v1-companies-company_id-payrolls-transition')
+  return {
+    ...transitionPayroll,
+    pay_period: { ...transitionPayroll.pay_period, pay_schedule_uuid: PAY_SCHEDULE_UUID },
+    withholding_pay_period: null,
+    skip_regular_deductions: null,
+    fixed_withholding_rate: null,
+    ...overrides,
+  }
+}
+
+const buildPreparedTransitionPayroll = (overrides: Record<string, unknown> = {}) =>
+  buildTransitionPayroll({
+    employee_compensations: [
+      { employee_uuid: 'employee-1', version: 'compensation-version-1', excluded: false },
+      { employee_uuid: 'employee-2', version: 'compensation-version-2', excluded: false },
+    ],
+    ...overrides,
+  })
 
 describe('TransitionConfiguration', () => {
   const onEvent = vi.fn()
@@ -48,8 +68,8 @@ describe('TransitionConfiguration', () => {
     onEvent.mockClear()
     setupApiTestMocks()
     server.use(
-      handleGetPayroll(() => HttpResponse.json(buildTransitionPayroll())),
-      handlePayrollsPrepare(() => HttpResponse.json(buildPreparedTransitionPayroll())),
+      handleGetPayroll(async () => HttpResponse.json(await buildTransitionPayroll())),
+      handlePayrollsPrepare(async () => HttpResponse.json(await buildPreparedTransitionPayroll())),
     )
   })
 
@@ -78,12 +98,12 @@ describe('TransitionConfiguration', () => {
     let prepareBody: unknown = null
     const prepareResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
       prepareBody = await request.json()
-      return HttpResponse.json(buildPreparedTransitionPayroll())
+      return HttpResponse.json(await buildPreparedTransitionPayroll())
     })
     let updateBody: Record<string, unknown> | null = null
     const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
       updateBody = (await request.json()) as Record<string, unknown>
-      return HttpResponse.json(buildPreparedTransitionPayroll({ check_date: '2025-09-02' }))
+      return HttpResponse.json(await buildPreparedTransitionPayroll({ check_date: '2025-09-02' }))
     })
     const createResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}))
     server.use(
@@ -164,12 +184,12 @@ describe('TransitionConfiguration', () => {
   })
 
   it('shows an error instead of sending an empty compensation list when prepare returns no employees', async () => {
-    const updateResolver = vi.fn<HttpResponseResolver>(() =>
-      HttpResponse.json(buildPreparedTransitionPayroll()),
+    const updateResolver = vi.fn<HttpResponseResolver>(async () =>
+      HttpResponse.json(await buildPreparedTransitionPayroll()),
     )
     server.use(
-      handlePayrollsPrepare(() =>
-        HttpResponse.json(buildPreparedTransitionPayroll({ employee_compensations: [] })),
+      handlePayrollsPrepare(async () =>
+        HttpResponse.json(await buildPreparedTransitionPayroll({ employee_compensations: [] })),
       ),
       handlePayrollsUpdate(updateResolver),
     )
