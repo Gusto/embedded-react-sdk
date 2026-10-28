@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.57.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.2...v0.57.3) (2026-10-27)
+
+### Features & Enhancements
+
+- Add department- and employee-level pay schedule assignment to the in-development `CompanyManagement.PaySchedule` flow. Released as `@alpha` behind the existing `managePaySchedules` flag in `UnstableFeatures` ([#2949](https://github.com/Gusto/embedded-react-sdk/issues/2949), [#2956](https://github.com/Gusto/embedded-react-sdk/issues/2956))
+
+### Fixes
+
+- Include reimbursements in the Total pay column shown before payroll calculation ([#3010](https://github.com/Gusto/embedded-react-sdk/issues/3010))
+- Preserve pay schedule assignment selections when navigating back and forth between steps ([#2948](https://github.com/Gusto/embedded-react-sdk/issues/2948))
+- Include the visible filter text, not just the icon label, in the date filter trigger's accessible name ([#2985](https://github.com/Gusto/embedded-react-sdk/issues/2985))
+- Reduce redundant API calls on the contractor/employee self-onboarding `Landing` screen ([#2989](https://github.com/Gusto/embedded-react-sdk/issues/2989))
+
+### Chores & Maintenance
+
+- Bump `@gusto/embedded-api` from `0.3.1` to `0.3.2` ([#2988](https://github.com/Gusto/embedded-react-sdk/issues/2988))
+- Bump `@hookform/resolvers` from `5.9.1` to `6.0.0` ([#2979](https://github.com/Gusto/embedded-react-sdk/issues/2979))
+- Bump runtime dependencies (`i18next`, `react-i18next`, `react-hook-form`) ([#2983](https://github.com/Gusto/embedded-react-sdk/issues/2983), [#3003](https://github.com/Gusto/embedded-react-sdk/issues/3003), [#2993](https://github.com/Gusto/embedded-react-sdk/issues/2993), [#3004](https://github.com/Gusto/embedded-react-sdk/issues/3004), [#3015](https://github.com/Gusto/embedded-react-sdk/issues/3015), [#3014](https://github.com/Gusto/embedded-react-sdk/issues/3014))
+- Bump dev dependencies (`storybook`, `typescript-eslint`, `dotenv`, `sass-embedded`, `vite`, `globals`, `@storybook/addon-onboarding`, docs site `vitest`, `postcss-selector-parser`, docs site `qs`)
+
 ## [0.57.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.1...v0.57.2) (2026-10-22)
 
 ### Fixes
