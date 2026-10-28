@@ -135,8 +135,8 @@ vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGetSuspense: mockUsePayrollsGetSuspense,
 }))
 
-vi.mock('../UNSTABLE_PayrollEditEmployee/UNSTABLE_PayrollEditEmployee', () => ({
-  UNSTABLE_PayrollEditEmployee: () => <div data-testid="regular-rate-of-pay-editor" />,
+vi.mock('../RropPayrollEditEmployee/RropPayrollEditEmployee', () => ({
+  RropPayrollEditEmployee: () => <div data-testid="regular-rate-of-pay-editor" />,
 }))
 
 vi.mock('../usePreparedPayrollData', () => ({

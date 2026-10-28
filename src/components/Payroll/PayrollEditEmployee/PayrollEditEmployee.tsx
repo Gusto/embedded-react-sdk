@@ -10,7 +10,7 @@ import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
 import { derivePayrollCategory, isOffCyclePayroll, PayrollCategory } from '../payrollTypes'
 import { cleanupReimbursements } from '../helpers'
-import { UNSTABLE_PayrollEditEmployee } from '../UNSTABLE_PayrollEditEmployee/UNSTABLE_PayrollEditEmployee'
+import { RropPayrollEditEmployee } from '../RropPayrollEditEmployee/RropPayrollEditEmployee'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 import { componentEvents } from '@/shared/constants'
@@ -71,7 +71,7 @@ export function PayrollEditEmployee(props: PayrollEditEmployeeProps) {
   const isRegularRateOfPayEnabled = useFeature('regularRateOfPay')
 
   if (isRegularRateOfPayEnabled) {
-    return <UNSTABLE_PayrollEditEmployee {...props} />
+    return <RropPayrollEditEmployee {...props} />
   }
 
   return (

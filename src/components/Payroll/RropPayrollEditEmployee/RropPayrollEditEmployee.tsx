@@ -12,7 +12,7 @@ import {
   type ReimbursementDraftFields,
 } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/fields'
 import { PayrollEditEmployeeErrorCodes } from '../PayrollEditEmployee/shared/usePayrollEditEmployeeForm/payrollEditEmployeeSchema'
-import styles from './UNSTABLE_PayrollEditEmployee.module.scss'
+import styles from './RropPayrollEditEmployee.module.scss'
 import {
   componentEvents,
   COMPENSATION_NAME_REGULAR_HOURS,
@@ -39,11 +39,16 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 /**
- * Regular-rate-of-pay rebuild of {@link PayrollEditEmployee}.
+ * Regular rate of pay (RRoP) rebuild of {@link PayrollEditEmployee}.
  *
  * @remarks
- * Not part of the public SDK surface. `PayrollEditEmployee` renders this in place of the legacy
- * editor unless the `regularRateOfPay` flag in {@link Features} is set to `false`. Consumes {@link usePayrollEditEmployeeForm} and renders the header, the hours /
+ * Not exported and not part of the public SDK surface. Partners reach it only through
+ * `PayrollEditEmployee`, which renders it in place of the legacy editor unless the
+ * `regularRateOfPay` flag in {@link Features} is set to `false`. Once that flag is removed, this
+ * component replaces `PayrollEditEmployee` as the public export, and the
+ * `Payroll.RropPayrollEditEmployee` translation namespace is renamed with it.
+ *
+ * Consumes {@link usePayrollEditEmployeeForm} and renders the header, the hours /
  * additional-earnings / time-off / payment-method sections, and the
  * `Cancel`/`Save` controls, performing a real payroll update on save. For an overtime-eligible
  * employee on a multi-workweek payroll, Overtime/Double-overtime rows start hidden behind a single,
@@ -55,14 +60,14 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
  *
  * @internal
  */
-export function UNSTABLE_PayrollEditEmployee({
+export function RropPayrollEditEmployee({
   FallbackComponent,
   LoaderComponent,
   ...props
 }: PayrollEditEmployeeProps) {
   return (
     <BaseBoundaries
-      componentName="Payroll.UNSTABLE_PayrollEditEmployee"
+      componentName="Payroll.RropPayrollEditEmployee"
       FallbackComponent={FallbackComponent}
       LoaderComponent={LoaderComponent}
     >
@@ -93,7 +98,7 @@ const ReimbursementsSection = ({
   onCancel,
   onRemove,
 }: ReimbursementsSectionProps) => {
-  const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
+  const { t } = useTranslation('Payroll.RropPayrollEditEmployee')
   const { Button, ButtonIcon, Heading } = useComponentContext()
   const { Description, Amount } = draftFields
 
@@ -195,9 +200,9 @@ const Root = ({
   dictionary,
   LoaderComponent,
 }: PayrollEditEmployeeProps) => {
-  useComponentDictionary('Payroll.UNSTABLE_PayrollEditEmployee', dictionary)
-  useI18n('Payroll.UNSTABLE_PayrollEditEmployee')
-  const { t } = useTranslation('Payroll.UNSTABLE_PayrollEditEmployee')
+  useComponentDictionary('Payroll.RropPayrollEditEmployee', dictionary)
+  useI18n('Payroll.RropPayrollEditEmployee')
+  const { t } = useTranslation('Payroll.RropPayrollEditEmployee')
   const dateFormatter = useDateFormatter()
 
   const { Alert, Box, BoxHeader, Button, Heading, Text } = useComponentContext()

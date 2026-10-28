@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { UNSTABLE_PayrollEditEmployee } from './UNSTABLE_PayrollEditEmployee'
+import { RropPayrollEditEmployee } from './RropPayrollEditEmployee'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
@@ -91,7 +91,7 @@ function exemptSingleWorkweekPrepare() {
 
 const PROPS = { employeeId: 'emp-1', companyId: 'company-1', payrollId: 'payroll-1' }
 
-describe('UNSTABLE_PayrollEditEmployee', () => {
+describe('RropPayrollEditEmployee', () => {
   const onEvent = vi.fn()
 
   beforeEach(() => {
@@ -102,7 +102,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
   it('starts collapsed with a single Hours input and an Add overtime button when overtime is zero', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     expect(await screen.findByRole('spinbutton', { name: /^Regular Hours/ })).toHaveValue(80)
     expect(screen.queryByRole('spinbutton', { name: /^Overtime/ })).not.toBeInTheDocument()
@@ -112,7 +112,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
   it('reveals per-workweek columns and the Overtime row when Add overtime is clicked', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await screen.findByRole('button', { name: 'Add overtime' })
     await user.click(screen.getByRole('button', { name: 'Add overtime' }))
@@ -131,7 +131,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
   it('starts already split, with no Add overtime button, when the employee already has overtime hours', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('5'))))
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await screen.findByRole('spinbutton', { name: /^Overtime Jan 1–Jan 7, 2024/ })
     expect(screen.getByRole('spinbutton', { name: /^Overtime Jan 1–Jan 7, 2024/ })).toHaveValue(5)
@@ -141,7 +141,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
   it('shows the workweek info alert only once overtime is on', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await screen.findByRole('button', { name: 'Add overtime' })
     expect(screen.queryByText(/record hours and earnings by work week/)).not.toBeInTheDocument()
@@ -157,7 +157,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
   it('does not show the workweek info alert for an overtime-ineligible employee', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(exemptSingleWorkweekPrepare())))
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await screen.findByRole('spinbutton', { name: /^Salary/ })
     expect(screen.queryByText(/record hours and earnings by work week/)).not.toBeInTheDocument()
@@ -165,7 +165,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
   it('never shows Add overtime and stays flat for an overtime-ineligible employee', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(exemptSingleWorkweekPrepare())))
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     expect(await screen.findByRole('spinbutton', { name: /^Salary/ })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Add overtime' })).not.toBeInTheDocument()
@@ -174,7 +174,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
   it('shows the remaining time-off balance as hours are entered', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     const timeOffField = await screen.findByRole('spinbutton', { name: /^Vacation Hours/ })
     expect(screen.getByText('40 remaining')).toBeInTheDocument()
@@ -197,7 +197,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsUpdate(updateResolver))
 
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     // Vacation Hours is seeded with "0". A native number input keeps the leading
     // zero when the user types onto it, so the browser fires onChange with "05" --
@@ -221,7 +221,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
   it('adds, then removes, a one-time reimbursement', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await user.click(await screen.findByRole('button', { name: 'Add one-time reimbursement' }))
     await user.type(screen.getByLabelText(/^Description/), 'Client lunch')
@@ -249,7 +249,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsUpdate(updateResolver))
 
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await screen.findByRole('spinbutton', { name: /^Regular Hours/ })
     await user.click(screen.getByRole('button', { name: 'Save' }))
@@ -276,7 +276,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsUpdate(updateResolver))
 
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await user.click(await screen.findByRole('button', { name: 'Add overtime' }))
     // addOvertime seeds each line's first workweek cell and leaves the second
@@ -297,7 +297,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsUpdate(updateResolver))
 
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await user.click(await screen.findByRole('button', { name: 'Add overtime' }))
 
@@ -326,7 +326,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
     server.use(handlePayrollsUpdate(updateResolver))
 
     const user = userEvent.setup()
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     await screen.findByRole('spinbutton', { name: /^Regular Hours/ })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
@@ -337,7 +337,7 @@ describe('UNSTABLE_PayrollEditEmployee', () => {
 
   it('renders the payment method options', async () => {
     server.use(handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))))
-    renderWithProviders(<UNSTABLE_PayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
 
     expect(await screen.findByLabelText('Direct deposit')).toBeChecked()
     expect(screen.getByLabelText('Check')).not.toBeChecked()

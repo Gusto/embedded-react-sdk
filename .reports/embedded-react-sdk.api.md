@@ -5250,14 +5250,14 @@ export interface Resources {
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)
     'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+    // @internal (undocumented)
+    'Payroll.RropPayrollEditEmployee': Translations.PayrollRropPayrollEditEmployee
     // (undocumented)
     'Payroll.Transition': Translations.PayrollTransition
     // (undocumented)
     'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
     // (undocumented)
     'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
-    // @internal (undocumented)
-    'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
     // (undocumented)
     'Payroll.WireInstructions': Translations.PayrollWireInstructions
     // (undocumented)
