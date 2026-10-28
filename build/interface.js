@@ -53,16 +53,19 @@ async function main() {
   // `Translations.CompanyAddresses`); `Resources` is the map that references them
   // (`keyof Resources`, `Resources['Company.Addresses']`) and backs i18next
   // `t()` typing + `ResourceDictionary`.
+  // Namespaces for components that are not a public export yet are marked `@internal` so typedoc
+  // (`excludeInternal: true`) keeps them out of the public reference: any namespace prefixed
+  // `UNSTABLE_`, plus the ones listed here. Remove an entry once its component is publicly exported.
+  const internalNamespaces = new Set(['Payroll.RropPayrollEditEmployee'])
+
   let namespaceMembers = ''
   let mapEntries = ''
   for (const file of jsonFiles) {
     const namespace = basename(file, '.json')
     const sanitizedName = namespace.replace(/\./g, '')
     const json = await readFile(resolve(dirPath, file), 'utf-8')
-    // Namespaces for components still gated behind an unstable feature flag (prefixed `UNSTABLE_`)
-    // are marked `@internal` so typedoc (`excludeInternal: true`) keeps them out of the public
-    // reference until the component graduates and the prefix is dropped.
-    const internalTag = namespace.includes('UNSTABLE_') ? ' @internal' : ''
+    const isInternal = namespace.includes('UNSTABLE_') || internalNamespaces.has(namespace)
+    const internalTag = isInternal ? ' @internal' : ''
     mapEntries += `/**${internalTag} */\n'${namespace}': Translations.${sanitizedName};\n`
     namespaceMembers += `/** Translation keys for the \`${namespace}\` i18n namespace.${internalTag} */\nexport interface ${sanitizedName}{\n${generateKeys(JSON.parse(json))}\n}\n`
   }

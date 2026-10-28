@@ -3100,6 +3100,11 @@ export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
+export interface Features {
+    regularRateOfPay?: boolean;
+}
+
+// @public
 function FederalTaxes(input: FederalTaxesProps): JSX;
 
 // @public
@@ -3299,6 +3304,7 @@ export interface GustoBaseProviderProps {
     config: APIConfig;
     currency?: string;
     dictionary?: GlobalResourceDictionary;
+    features?: Features;
     lng?: string;
     LoaderComponent?: (input: {
         children?: ReactNode;
@@ -4611,7 +4617,6 @@ export interface PayScheduleFormFields {
     Day1: ComponentType<Day1FieldProps> | undefined;
     Day2: ComponentType<Day2FieldProps> | undefined;
     Frequency: ComponentType<FrequencyFieldProps>;
-    // @alpha
     WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined;
 }
 
@@ -4625,8 +4630,6 @@ export type PayScheduleOptionalFieldsToRequire = { create?: ("customTwicePerMont
 interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
     companyId: string;
     defaultValues?: PayScheduleDefaultValues;
-    // @alpha
-    disableWorkweekStartDayEditing?: boolean;
 }
 
 // @alpha
@@ -4640,7 +4643,7 @@ interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Manage
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
-// @alpha
+// @public
 export type PayScheduleWorkweekStartDay = WorkweekStartDay;
 
 // @public
@@ -5250,6 +5253,8 @@ export interface Resources {
     'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
     // (undocumented)
     'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+    // @internal (undocumented)
+    'Payroll.RropPayrollEditEmployee': Translations.PayrollRropPayrollEditEmployee
     // (undocumented)
     'Payroll.Transition': Translations.PayrollTransition
     // (undocumented)
@@ -5258,8 +5263,6 @@ export interface Resources {
     'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
     // (undocumented)
     'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
-    // @internal (undocumented)
-    'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
     // (undocumented)
     'Payroll.WireInstructions': Translations.PayrollWireInstructions
     // (undocumented)
@@ -6119,7 +6122,6 @@ export interface UnorderedListProps extends BaseListProps {
 export interface UnstableFeatures {
     historicalPayments?: boolean;
     managePaySchedules?: boolean;
-    payrollRegularRateOfPay?: boolean;
     taxPayments?: boolean;
 }
 
@@ -6706,8 +6708,6 @@ export function usePayScheduleForm(input: UsePayScheduleFormProps): HookLoadingR
 export interface UsePayScheduleFormProps {
     companyId: string;
     defaultValues?: Partial<PayScheduleFormData>;
-    // @alpha
-    disableWorkweekStartDayEditing?: boolean;
     optionalFieldsToRequire?: PayScheduleOptionalFieldsToRequire;
     payScheduleId?: string;
     shouldFocusError?: boolean;
@@ -6999,7 +6999,7 @@ export interface WorkingSplit {
     uuid: string;
 }
 
-// @alpha
+// @public
 export type WorkweekStartDayFieldProps = HookFieldProps<SelectHookFieldProps<never, PayScheduleWorkweekStartDay>>;
 
 // @public

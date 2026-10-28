@@ -47,7 +47,7 @@ you do not supply fall back to the SDK's built-in React Aria implementations.
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 | `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
 
-_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `theme` from Omit._
+_Inherits `currency`, `features`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `theme` from Omit._
 
 ***
 
@@ -77,7 +77,7 @@ Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
 | `children?` | `ReactNode` | The application tree that should have access to the SDK. |
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 
-_Inherits `currency`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
+_Inherits `currency`, `features`, `lng`, `LoaderComponent`, `locale`, `nonce`, `portalContainer`, `queryClient`, `theme` from [GustoBaseProviderProps](#gustobaseproviderprops)._
 
 ## Utility types
 
@@ -95,6 +95,25 @@ API client configuration passed to [GustoProvider](#gustoprovider) (and [GustoPr
 | `headers?` | `HeadersInit` | Extra headers applied to every API request. Combined with any headers your proxy adds. |
 | `hooks?` | [`SDKHooks`](http-interceptors.md#sdkhooks) | Request interceptor hooks. Use these to inspect, modify, or react to requests and responses. See [SDKHooks](http-interceptors.md#sdkhooks). |
 | `observability?` | [`ObservabilityHook`](observability.md#observabilityhook) | Observability hook for surfacing errors and metrics from the SDK to your monitoring stack. See [ObservabilityHook](observability.md#observabilityhook). |
+
+***
+
+<a id="features"></a>
+
+### Features
+
+Flags for turning released SDK functionality on or off.
+
+#### Remarks
+
+Pass to [GustoProvider](#gustoprovider) via the `features` prop. Each flag documents its default and what
+changes when you set it. Omitted flags use their default.
+
+#### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `regularRateOfPay?` | `boolean` | `true` | Regular rate of pay (RRoP) support: per-workweek overtime in payroll editing, and the pay schedule workweek start day it depends on. When `true`, `Payroll.PayrollEditEmployee` renders the RRoP editor, where adding overtime for an overtime-eligible employee on a multi-workweek payroll splits hours and overtime-affecting earnings into one column per workweek. `Payroll.PayrollConfiguration` shows each employee's total pay as the gross pay returned by the API. `usePayScheduleForm` exposes `Fields.WorkweekStartDay` and submits `workweekStartDay`, so the pay schedule forms in `CompanyOnboarding.PaySchedule` and `CompanyManagement.PaySchedule` show the field. When `false`, `Payroll.PayrollEditEmployee` renders the previous editor, which edits total hours for the whole pay period and sends no per-workweek breakdowns. `Payroll.PayrollConfiguration` estimates total pay from hours and pay rates. `Fields.WorkweekStartDay` is `undefined` and `workweekStartDay` is not submitted. Every flow that renders these screens follows the flag, including `Payroll.PayrollFlow`, `Payroll.PayrollExecutionFlow`, `Payroll.OffCycleFlow`, `Payroll.DismissalFlow`, `Payroll.TransitionFlow`, `Payroll.TransitionPayroll`, and `CompanyOnboarding.OnboardingFlow`. |
 
 ***
 
@@ -116,6 +135,7 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
 | `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
 | `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| `features?` | [`Features`](#features) | Flags for turning released SDK functionality on or off. Omitted flags use their default. See [Features](#features). |
 | `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
