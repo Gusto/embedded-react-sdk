@@ -166,6 +166,7 @@ Durable conventions that apply SDK-wide to any component or feature:
 - **Partial, in-place loading.** Prefer consistent partial loading — component chrome plus an inline loader — over full-surface loaders.
 - **Thin orchestrators.** Orchestrators stay thin and compose standalone, independently-consumable pieces.
 - **Gate epic-level in-progress work behind `@alpha` + a flag.** If a change is a slice of a larger feature that will eventually ship as its own announced capability (i.e. it maps to a Jira epic, not just a task/subtask), land it incrementally behind an `@alpha` TSDoc release tag and a new flag in `UnstableFeatures` (see `useUnstableFeature`) rather than merging partially-finished behavior that's reachable by default. Small in-progress changes to an already-stable surface (bug fixes, minor additions within an existing epic) don't need this — reserve it for work a partner could stumble into before it's ready to announce.
+- **Graduate to `Features` when a released feature still needs a toggle.** When an `UnstableFeatures` flag graduates but partners still need a way to turn it off, move it to `Features` (see `useFeature`) instead of deleting it outright. `Features` flags are `@public` and each one documents its own default with `@defaultValue`; keep the interface-level docs general rather than promising every flag is on by default or temporary. `useFeature` currently treats a flag as on unless it is explicitly `false`. Drop the `@alpha` tags on the graduated surface in the same change.
 
 ## PR and Commit Conventions
 

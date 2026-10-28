@@ -16,8 +16,10 @@ import type { EntityOption } from './entityFormatters'
 import type { AppMode, ManualConfig, ManualConfigSaves } from './useManualConfig'
 import { demoChromes } from './demoChromes/registry'
 import { UNSTABLE_FEATURE_KEYS } from './UnstableFeaturesPanelContext'
+import { FEATURE_KEYS } from './FeaturesPanelContext'
 import styles from './DemoSettingsPanel.module.scss'
 import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 interface DemoSettingsPanelProps {
   onClose: () => void
@@ -40,6 +42,8 @@ interface DemoSettingsPanelProps {
   onDeleteManualSave: (name: string) => void
   chromeId: string
   onChromeIdChange: (next: string) => void
+  features: Features
+  onFeatureChange: (key: keyof Features, enabled: boolean) => void
   unstableFeatures: UnstableFeatures
   onUnstableFeatureChange: (key: keyof UnstableFeatures, enabled: boolean) => void
 }
@@ -358,6 +362,8 @@ export function DemoSettingsPanel({
   onDeleteManualSave,
   chromeId,
   onChromeIdChange,
+  features,
+  onFeatureChange,
   unstableFeatures,
   onUnstableFeatureChange,
 }: DemoSettingsPanelProps) {
@@ -874,6 +880,24 @@ export function DemoSettingsPanel({
                 Restore Default IDs
               </button>
             </div>
+          </div>
+        )}
+
+        {FEATURE_KEYS.length > 0 && (
+          <div className={styles.section}>
+            <h3>Features</h3>
+            {FEATURE_KEYS.map(key => (
+              <label key={key} className={styles.checkboxField}>
+                <input
+                  type="checkbox"
+                  checked={features[key] ?? true}
+                  onChange={e => {
+                    onFeatureChange(key, e.target.checked)
+                  }}
+                />
+                {key}
+              </label>
+            ))}
           </div>
         )}
 

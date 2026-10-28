@@ -135,6 +135,10 @@ vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
   usePayrollsGetSuspense: mockUsePayrollsGetSuspense,
 }))
 
+vi.mock('../RropPayrollEditEmployee/RropPayrollEditEmployee', () => ({
+  RropPayrollEditEmployee: () => <div data-testid="regular-rate-of-pay-editor" />,
+}))
+
 vi.mock('../usePreparedPayrollData', () => ({
   usePreparedPayrollData: mockUsePreparedPayrollData,
 }))
@@ -145,6 +149,8 @@ const defaultProps = {
   payrollId: 'payroll-uuid-1',
   onEvent: vi.fn(),
 }
+
+const legacyEditorOptions = { features: { regularRateOfPay: false } }
 
 describe('PayrollEditEmployee', () => {
   beforeEach(() => {
@@ -163,9 +169,16 @@ describe('PayrollEditEmployee', () => {
     })
   })
 
+  test('renders the regular-rate-of-pay editor by default', () => {
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+
+    expect(screen.getByTestId('regular-rate-of-pay-editor')).toBeInTheDocument()
+  })
+
   test('applies custom className', async () => {
     const { container } = renderWithProviders(
       <PayrollEditEmployee {...defaultProps} className="custom-class" />,
+      legacyEditorOptions,
     )
 
     await waitFor(() => {
@@ -177,7 +190,7 @@ describe('PayrollEditEmployee', () => {
 
   test('omits breakdowns from the update payload when the prepared compensation includes them', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />, legacyEditorOptions)
 
     await user.click(await screen.findByRole('button', { name: 'Save' }))
 
@@ -200,7 +213,7 @@ describe('PayrollEditEmployee', () => {
       data: { payrollShow: { offCycle: true, offCycleReason: PayrollCategory.Transition } },
     })
 
-    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />, legacyEditorOptions)
 
     await waitFor(() => {
       expect(mockUsePreparedPayrollData).toHaveBeenCalledWith(
@@ -210,7 +223,7 @@ describe('PayrollEditEmployee', () => {
   })
 
   test('does not mark a regular payroll as a transition payroll', async () => {
-    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />, legacyEditorOptions)
 
     await waitFor(() => {
       expect(mockUsePreparedPayrollData).toHaveBeenCalledWith(
@@ -236,7 +249,7 @@ describe('PayrollEditEmployee', () => {
       isLoading: false,
     })
     const user = userEvent.setup()
-    renderWithProviders(<PayrollEditEmployee {...defaultProps} />)
+    renderWithProviders(<PayrollEditEmployee {...defaultProps} />, legacyEditorOptions)
 
     await user.click(await screen.findByRole('button', { name: 'Save' }))
 

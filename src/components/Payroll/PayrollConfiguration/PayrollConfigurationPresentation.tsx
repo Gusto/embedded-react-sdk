@@ -32,7 +32,7 @@ import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 
 interface PayrollConfigurationPresentationProps {
   /** CSS class name applied to the root element. */
@@ -100,7 +100,7 @@ export const PayrollConfigurationPresentation = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const dateFormatter = useDateFormatter()
   const formatEmployeePayRate = useFormatEmployeePayRate()
-  const isRegularRateOfPayEnabled = useUnstableFeature('payrollRegularRateOfPay')
+  const isRegularRateOfPayEnabled = useFeature('regularRateOfPay')
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')

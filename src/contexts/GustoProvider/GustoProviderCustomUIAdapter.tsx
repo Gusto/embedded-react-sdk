@@ -12,6 +12,8 @@ import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
 import { UnstableFeaturesProvider } from '../UnstableFeaturesProvider/UnstableFeaturesProvider'
 import type { UnstableFeatures } from '../UnstableFeaturesProvider/useUnstableFeature'
+import { FeaturesProvider } from '../FeaturesProvider/FeaturesProvider'
+import type { Features } from '../FeaturesProvider/useFeature'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -79,6 +81,8 @@ export interface GustoBaseProviderProps {
   components: ComponentsContextType
   /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
   LoaderComponent?: ({ children }: { children?: ReactNode }) => JSX.Element
+  /** Flags for turning released SDK functionality on or off. Omitted flags use their default. See {@link Features}. */
+  features?: Features
   /**
    * Opt-in flags for alpha SDK functionality. See {@link UnstableFeatures}.
    * @alpha
@@ -124,6 +128,7 @@ export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapter
     components,
     LoaderComponent,
     queryClient,
+    features,
     unstableFeatures,
   } = props
 
@@ -182,9 +187,11 @@ export function GustoProviderCustomUIAdapter(props: GustoProviderCustomUIAdapter
                       hooks={config.hooks}
                       queryClient={queryClient}
                     >
-                      <UnstableFeaturesProvider value={unstableFeatures}>
-                        {children}
-                      </UnstableFeaturesProvider>
+                      <FeaturesProvider value={features}>
+                        <UnstableFeaturesProvider value={unstableFeatures}>
+                          {children}
+                        </UnstableFeaturesProvider>
+                      </FeaturesProvider>
                     </ApiProvider>
                   </I18nextProvider>
                 </LocaleProvider>

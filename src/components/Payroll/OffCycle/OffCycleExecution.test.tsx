@@ -10,6 +10,7 @@ import { offCycleMachine, offCycleBreadcrumbsNodes } from './offCycleStateMachin
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import { server } from '@/test/mocks/server'
+import earningTypesHandlers from '@/test/mocks/apis/earningTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -153,6 +154,8 @@ function OffCycleFlowInExecutionState({
 
 function setupMswHandlers(options?: { onPrepare?: () => void }) {
   server.use(
+    ...earningTypesHandlers,
+
     http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
       return HttpResponse.json([])
     }),
@@ -352,7 +355,7 @@ describe('OffCycleExecution - edit employee hours round-trip', () => {
       ).toBeInTheDocument()
     })
 
-    const regularHoursInput = await screen.findByLabelText(/^Regular Hours\b/)
+    const regularHoursInput = await screen.findByRole('spinbutton', { name: /^Regular Hours/ })
     await user.clear(regularHoursInput)
     await user.type(regularHoursInput, '20')
 

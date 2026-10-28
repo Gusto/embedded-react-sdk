@@ -261,14 +261,14 @@ export interface Resources {
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   /** */
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+  /** @internal */
+  'Payroll.RropPayrollEditEmployee': Translations.PayrollRropPayrollEditEmployee
   /** */
   'Payroll.Transition': Translations.PayrollTransition
   /** */
   'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
   /** */
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
-  /** @internal */
-  'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
   /** */
   'Payroll.WireInstructions': Translations.PayrollWireInstructions
   /** */
@@ -8852,69 +8852,8 @@ export namespace Translations {
       }
     }
   }
-  /** Translation keys for the `Payroll.Transition` i18n namespace. */
-  export interface PayrollTransition {
-    /** @defaultValue `"Transition Payroll"` */
-    breadcrumbLabel: string
-  }
-  /** Translation keys for the `Payroll.TransitionCreation` i18n namespace. */
-  export interface PayrollTransitionCreation {
-    /** @defaultValue `"Transition Payroll"` */
-    breadcrumbLabel: string
-    /** @defaultValue `"Transition Payroll"` */
-    pageTitle: string
-    /** @defaultValue `"A transition payroll covers the gap between your old and new pay schedules."` */
-    pageDescription: string
-    /** @defaultValue `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` */
-    transitionExplanation: string
-    /** @defaultValue `"Transition Details"` */
-    detailsHeading: string
-    /** @defaultValue `"Pay period"` */
-    payPeriodLabel: string
-    /** @defaultValue `"Pay schedule"` */
-    payScheduleLabel: string
-    /** @defaultValue `"Check date"` */
-    checkDateLabel: string
-    /** @defaultValue `"Continue"` */
-    continueCta: string
-    errors: {
-      /** @defaultValue `"Transition payroll was created but no payroll ID was returned"` */
-      missingPayrollId: string
-      /** @defaultValue `"Check date is required"` */
-      checkDateRequired: string
-      /** @defaultValue `"Check date must be at least {{count}} business day from today"` */
-      checkDateAchLeadTime_one: string
-      /** @defaultValue `"Check date must be at least {{count}} business days from today"` */
-      checkDateAchLeadTime_other: string
-    }
-  }
-  /** Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace. */
-  export interface PayrollTransitionPayrollAlert {
-    /** @defaultValue `"Transition payroll - {{dateRange}}"` */
-    alertTitle: string
-    /** @defaultValue `"You have {{count}} transition payrolls to run or skip"` */
-    multipleAlertTitle: string
-    /** @defaultValue `"Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly. Regular payroll functionality is blocked until you either run or skip transition payrolls."` */
-    alertDescription: string
-    /** @defaultValue `"Run Transition Payroll"` */
-    runPayroll: string
-    /** @defaultValue `"Skip this payroll"` */
-    skipPayroll: string
-    /** @defaultValue `"Transition payroll skipped"` */
-    skipSuccessAlert: string
-    skipDialog: {
-      /** @defaultValue `"Skip {{dateRange}} transition payroll?"` */
-      title: string
-      /** @defaultValue `"Skipping this payroll means employees will not be paid for the transition period. It is your responsibility to ensure employees are paid properly."` */
-      body: string
-      /** @defaultValue `"Skip payroll"` */
-      confirmCta: string
-      /** @defaultValue `"Cancel"` */
-      cancelCta: string
-    }
-  }
-  /** Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace. @internal */
-  export interface PayrollUNSTABLE_PayrollEditEmployee {
+  /** Translation keys for the `Payroll.RropPayrollEditEmployee` i18n namespace. @internal */
+  export interface PayrollRropPayrollEditEmployee {
     /** @defaultValue `"Edit payroll for {{employeeName}}"` */
     pageTitle: string
     /** @defaultValue `"{{firstName}} {{lastName}}"` */
@@ -9046,6 +8985,67 @@ export namespace Translations {
       requiredWorkweek: string
       /** @defaultValue `"Hours must be less than or equal to 99,999"` */
       maxHours: string
+    }
+  }
+  /** Translation keys for the `Payroll.Transition` i18n namespace. */
+  export interface PayrollTransition {
+    /** @defaultValue `"Transition Payroll"` */
+    breadcrumbLabel: string
+  }
+  /** Translation keys for the `Payroll.TransitionCreation` i18n namespace. */
+  export interface PayrollTransitionCreation {
+    /** @defaultValue `"Transition Payroll"` */
+    breadcrumbLabel: string
+    /** @defaultValue `"Transition Payroll"` */
+    pageTitle: string
+    /** @defaultValue `"A transition payroll covers the gap between your old and new pay schedules."` */
+    pageDescription: string
+    /** @defaultValue `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` */
+    transitionExplanation: string
+    /** @defaultValue `"Transition Details"` */
+    detailsHeading: string
+    /** @defaultValue `"Pay period"` */
+    payPeriodLabel: string
+    /** @defaultValue `"Pay schedule"` */
+    payScheduleLabel: string
+    /** @defaultValue `"Check date"` */
+    checkDateLabel: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    errors: {
+      /** @defaultValue `"Transition payroll was created but no payroll ID was returned"` */
+      missingPayrollId: string
+      /** @defaultValue `"Check date is required"` */
+      checkDateRequired: string
+      /** @defaultValue `"Check date must be at least {{count}} business day from today"` */
+      checkDateAchLeadTime_one: string
+      /** @defaultValue `"Check date must be at least {{count}} business days from today"` */
+      checkDateAchLeadTime_other: string
+    }
+  }
+  /** Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace. */
+  export interface PayrollTransitionPayrollAlert {
+    /** @defaultValue `"Transition payroll - {{dateRange}}"` */
+    alertTitle: string
+    /** @defaultValue `"You have {{count}} transition payrolls to run or skip"` */
+    multipleAlertTitle: string
+    /** @defaultValue `"Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly. Regular payroll functionality is blocked until you either run or skip transition payrolls."` */
+    alertDescription: string
+    /** @defaultValue `"Run Transition Payroll"` */
+    runPayroll: string
+    /** @defaultValue `"Skip this payroll"` */
+    skipPayroll: string
+    /** @defaultValue `"Transition payroll skipped"` */
+    skipSuccessAlert: string
+    skipDialog: {
+      /** @defaultValue `"Skip {{dateRange}} transition payroll?"` */
+      title: string
+      /** @defaultValue `"Skipping this payroll means employees will not be paid for the transition period. It is your responsibility to ensure employees are paid properly."` */
+      body: string
+      /** @defaultValue `"Skip payroll"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */

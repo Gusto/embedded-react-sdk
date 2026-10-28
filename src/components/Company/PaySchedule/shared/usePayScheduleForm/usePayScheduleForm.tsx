@@ -44,7 +44,6 @@ import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFiel
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
@@ -56,7 +55,7 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 
 export type { PayScheduleOptionalFieldsToRequire } from './payScheduleSchema'
 
@@ -84,15 +83,6 @@ export interface UsePayScheduleFormProps {
   validationMode?: UseFormProps['mode']
   /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. */
   shouldFocusError?: boolean
-  /**
-   * Renders `Fields.WorkweekStartDay` disabled while still submitting its current value,
-   * for partners that compute the workweek start day themselves and don't want end users
-   * editing it directly. Defaults to `false`. Has no effect unless the `payrollRegularRateOfPay`
-   * unstable feature is enabled.
-   *
-   * @alpha
-   */
-  disableWorkweekStartDayEditing?: boolean
 }
 
 /**
@@ -122,10 +112,8 @@ export interface PayScheduleFormFields {
   Day2: ComponentType<Day2FieldProps> | undefined
   /**
    * Bound to `workweekStartDay`. Workweek start day selector, used for regular rate of pay
-   * overtime calculations. `undefined` unless the `payrollRegularRateOfPay` unstable feature
-   * is enabled.
-   *
-   * @alpha
+   * overtime calculations. `undefined` when the `regularRateOfPay` flag in {@link Features} is
+   * set to `false`.
    */
   WorkweekStartDay: ComponentType<WorkweekStartDayFieldProps> | undefined
 }
@@ -212,10 +200,7 @@ function deriveCustomTwicePerMonth(
 }
 
 /** @internal */
-function buildPayScheduleFieldsMetadata(
-  base: Record<keyof PayScheduleFormData, FieldMetadata>,
-  disableWorkweekStartDayEditing: boolean,
-) {
+function buildPayScheduleFieldsMetadata(base: Record<keyof PayScheduleFormData, FieldMetadata>) {
   return {
     customName: base.customName,
     frequency: withOptions<PayScheduleFrequency>(
@@ -233,7 +218,7 @@ function buildPayScheduleFieldsMetadata(
     day1: base.day1,
     day2: base.day2,
     workweekStartDay: withOptions<PayScheduleWorkweekStartDay>(
-      withFlags(base.workweekStartDay, { isDisabled: disableWorkweekStartDayEditing }),
+      base.workweekStartDay,
       WORKWEEK_START_DAY_OPTIONS,
       WORKWEEK_START_DAY_ENTRIES,
     ),
@@ -313,9 +298,8 @@ export function usePayScheduleForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-  disableWorkweekStartDayEditing = false,
 }: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady {
-  const isWorkweekStartDayEnabled = useUnstableFeature('payrollRegularRateOfPay')
+  const isWorkweekStartDayEnabled = useFeature('regularRateOfPay')
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: payScheduleId ?? '' },
     { enabled: !!payScheduleId },
@@ -430,10 +414,7 @@ export function usePayScheduleForm({
   const showDay2 = watchedFrequency === 'Twice per month' && watchedCustomTwicePerMonth === 'custom'
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = buildPayScheduleFieldsMetadata(
-    baseMetadata,
-    disableWorkweekStartDayEditing,
-  )
+  const fieldsMetadata = buildPayScheduleFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<PayScheduleShow> | undefined> => {
     let submitResult: HookSubmitResult<PayScheduleShow> | undefined

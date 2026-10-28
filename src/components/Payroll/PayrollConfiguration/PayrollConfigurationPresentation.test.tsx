@@ -338,7 +338,7 @@ describe('PayrollConfigurationPresentation', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('includes reimbursements in the Total pay column', async () => {
+  it('includes reimbursements in the estimated Total pay column when regularRateOfPay is opted out', async () => {
     const compensationWithReimbursement: PayrollEmployeeCompensationsType = {
       ...mockEmployeeCompensations[0],
       reimbursements: [{ description: null, amount: '2000.00' }],
@@ -349,6 +349,7 @@ describe('PayrollConfigurationPresentation', () => {
         {...defaultProps}
         employeeCompensations={[compensationWithReimbursement]}
       />,
+      { features: { regularRateOfPay: false } },
     )
 
     const table = await screen.findByRole('grid', { name: 'Employee compensations' })
@@ -359,7 +360,7 @@ describe('PayrollConfigurationPresentation', () => {
     expect(getCellByColumnHeader(table, row, 'Total pay')).toHaveTextContent('$3,056.00')
   })
 
-  it('includes reimbursements in the Total pay column when payrollRegularRateOfPay is enabled', async () => {
+  it('includes reimbursements in the Total pay column by default', async () => {
     const compensationWithReimbursement: PayrollEmployeeCompensationsType = {
       ...mockEmployeeCompensations[0],
       grossPay: '880.00',
@@ -371,7 +372,6 @@ describe('PayrollConfigurationPresentation', () => {
         {...defaultProps}
         employeeCompensations={[compensationWithReimbursement]}
       />,
-      { unstableFeatures: { payrollRegularRateOfPay: true } },
     )
 
     const table = await screen.findByRole('grid', { name: 'Employee compensations' })
