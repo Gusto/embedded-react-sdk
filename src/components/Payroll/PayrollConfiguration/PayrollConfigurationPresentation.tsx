@@ -233,8 +233,12 @@ export const PayrollConfigurationPresentation = ({
                     title: t('tableColumns.timeOff'),
                     justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
-                      const ptoHours = getTotalPtoHours(item)
-                      return formatHoursDisplay(ptoHours)
+                      const additionalHours = getTotalPtoHours(item)
+                      const approvedHours = (item.paidTimeOff ?? []).reduce(
+                        (total, timeOff) => total + parseFloat(timeOff.approvedRequestHours || '0'),
+                        0,
+                      )
+                      return formatHoursDisplay(additionalHours + approvedHours)
                     },
                   },
                   {

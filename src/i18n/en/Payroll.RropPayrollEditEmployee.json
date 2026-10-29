@@ -69,5 +69,7 @@
     "negativeAmount": "Amount cannot be negative",
     "requiredWorkweek": "Enter an amount for every workweek",
     "maxHours": "Hours must be less than or equal to 99,999"
-  }
+  },
+  "preapprovedHoursColumn": "Preapproved hours",
+  "additionalHoursColumn": "Additional hours"
 }

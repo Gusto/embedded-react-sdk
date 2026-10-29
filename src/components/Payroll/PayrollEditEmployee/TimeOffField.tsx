@@ -15,6 +15,8 @@ export interface TimeOffFieldProps {
   timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
   /** The employee whose accrual balance is displayed alongside the field. */
   employee: Employee
+  /** Whether to visually hide the input label in a table row. */
+  shouldVisuallyHideLabel?: boolean
 }
 
 const TimeOffBalance = ({
@@ -98,7 +100,7 @@ export const PayoutTimeOffField = ({ timeOff, employee }: PayoutTimeOffFieldProp
 }
 
 /** @internal */
-export const TimeOffField = ({ timeOff, employee }: TimeOffFieldProps) => {
+export const TimeOffField = ({ timeOff, employee, shouldVisuallyHideLabel }: TimeOffFieldProps) => {
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
 
@@ -127,6 +129,7 @@ export const TimeOffField = ({ timeOff, employee }: TimeOffFieldProps) => {
         transform={stripLeadingZeros}
         adornmentEnd={t('hoursUnit')}
         label={timeOff.name}
+        shouldVisuallyHideLabel={shouldVisuallyHideLabel}
         aria-describedby={id}
       />
       {eligiblePolicy?.accrualBalance && (
