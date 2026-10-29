@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse, delay, type HttpResponseResolver } from 'msw'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { CompensationAddAnotherJobForm } from './CompensationAddAnotherJobForm'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -138,59 +138,6 @@ describe('management/CompensationAddAnotherJobForm', () => {
         expect.anything(),
       )
     })
-  })
-
-  it('creates only one job when Save job is double-clicked', async () => {
-    const createJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
-      const body = (await request.json()) as Record<string, unknown>
-      await delay(100)
-      return HttpResponse.json(buildCreatedSecondaryJob(body), { status: 201 })
-    })
-    const updateCompensationResolver = vi.fn<HttpResponseResolver>(() =>
-      HttpResponse.json({
-        uuid: 'secondary-comp-uuid',
-        version: 'secondary-comp-version-next',
-        job_uuid: 'secondary-job-uuid',
-        payment_unit: 'Hour',
-        flsa_status: 'Nonexempt',
-        adjust_for_minimum_wage: false,
-        effective_date: '2024-12-24',
-        rate: '50.00',
-      }),
-    )
-
-    server.use(
-      handleCreateEmployeeJob(createJobResolver),
-      handleUpdateEmployeeCompensation(updateCompensationResolver),
-    )
-
-    const user = userEvent.setup()
-    const onEvent = vi.fn()
-
-    renderWithProviders(
-      <CompensationAddAnotherJobForm employeeId="employee-uuid" onEvent={onEvent} />,
-    )
-
-    await screen.findByRole('heading', { name: 'Add another job' })
-
-    await user.type(screen.getByLabelText('Job Title'), 'Cashier')
-    const wage = screen.getByLabelText('Wage')
-    await user.clear(wage)
-    await user.type(wage, '50')
-    await user.tab()
-    await fillEffectiveDate(user, '2099-01-01')
-
-    await user.dblClick(screen.getByRole('button', { name: 'Save job' }))
-
-    await waitFor(() => {
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
-        expect.anything(),
-      )
-    })
-
-    expect(createJobResolver).toHaveBeenCalledTimes(1)
-    expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
   })
 
   it('does not touch compensation endpoints or emit events when the job POST fails', async () => {

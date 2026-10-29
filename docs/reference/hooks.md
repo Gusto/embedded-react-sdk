@@ -223,11 +223,6 @@ Validates all forms simultaneously via `handleSubmit()`, then focuses the visual
 invalid field across all forms (sorted by `getBoundingClientRect()`). Only calls
 `onAllValid` when every form passes.
 
-A submit that arrives while an earlier one for any of the same forms is still validating or
-awaiting `onAllValid` is ignored, so a fast double-click can't run `onAllValid` twice. The
-guard clears once `onAllValid` settles, whether it resolves or throws, so a retry after a
-failed save goes through.
-
 Uses `handleSubmit` rather than `trigger` so that react-hook-form sets
 `formState.isSubmitted = true`, which enables `reValidateMode` (default: `onChange`).
 Without this, errors set by manual `trigger()` calls would never clear as the user types.
@@ -309,7 +304,7 @@ coordinates validation across the composed forms, and aggregated error state.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Aggregated error state across all composed SDK form hooks. Pass to [composeErrorHandler](#composeerrorhandler) for screen-level error surfaces. |
-| `handleSubmit` | (`e`: `SyntheticEvent`) => `Promise`\<`void`\> | Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. Ignores a submit while an earlier one for any of the same forms is still running. |
+| `handleSubmit` | (`e`: `SyntheticEvent`) => `Promise`\<`void`\> | Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. |
 
 <a id="composesubmitinput"></a>
 
