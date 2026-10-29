@@ -57,7 +57,8 @@ export function DismissalPayPeriodSelection(props: DismissalPayPeriodSelectionPr
 type RequiredPayPeriod = UnprocessedTerminationPayPeriod &
   Required<Pick<UnprocessedTerminationPayPeriod, 'startDate' | 'endDate' | 'employeeUuid'>>
 
-const payPeriodKey = (period: RequiredPayPeriod) => `${period.startDate}__${period.endDate}`
+const payPeriodKey = (period: RequiredPayPeriod) =>
+  `${period.employeeUuid}__${period.startDate}__${period.endDate}`
 
 function Root({
   companyId,

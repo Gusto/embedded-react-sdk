@@ -8,7 +8,8 @@ import {
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
 } from '@/partner-hook-utils/form/buildFormSchema'
-import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
+import { coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
+import { createHourlyRateValidator } from '@/components/Contractor/shared/hourlyRate'
 import { SSN_REGEX, EIN_REGEX, NAME_REGEX } from '@/helpers/validations'
 import { normalizeEin } from '@/helpers/federalEin'
 
@@ -43,10 +44,6 @@ export const ContractorDetailsErrorCodes = {
   MAX_HOURLY_RATE: 'MAX_HOURLY_RATE',
 } as const
 
-// Mirrors the server's fixed hourly-rate cap so an over-limit value is caught
-// inline instead of round-tripping to an API error.
-const HOURLY_RATE_CAP = 1_000_000_000_000
-
 /**
  * Union of validation error code strings emitted by the contractor details
  * form schema.
@@ -65,13 +62,7 @@ const fieldValidators = {
     coerceToISODate,
     z.iso.date({ error: () => ContractorDetailsErrorCodes.REQUIRED }),
   ),
-  hourlyRate: z.preprocess(
-    coerceNaN(0),
-    z
-      .number()
-      .min(0)
-      .max(HOURLY_RATE_CAP, { message: ContractorDetailsErrorCodes.MAX_HOURLY_RATE }),
-  ),
+  hourlyRate: createHourlyRateValidator(ContractorDetailsErrorCodes.MAX_HOURLY_RATE),
   selfOnboarding: z.boolean(),
   fileNewHireReport: z.boolean(),
   email: z.email({ error: () => ContractorDetailsErrorCodes.INVALID_EMAIL }),

@@ -285,6 +285,7 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwic
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionDescription?` | (`entry`: `string`) => `ReactNode` | Maps a raw option entry to supporting text rendered beneath that radio option; when omitted, no per-option description is rendered. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\> | Custom error text keyed by validation error code. |
 

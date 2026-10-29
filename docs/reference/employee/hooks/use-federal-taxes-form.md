@@ -314,6 +314,7 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs`
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionDescription?` | (`entry`: `boolean`) => `ReactNode` | Maps a raw option entry to supporting text rendered beneath that radio option; when omitted, no per-option description is rendered. |
 | `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
 

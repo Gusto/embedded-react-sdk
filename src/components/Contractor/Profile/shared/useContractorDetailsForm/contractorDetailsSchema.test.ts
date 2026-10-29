@@ -6,6 +6,7 @@ import {
   ContractorDetailsErrorCodes,
   createContractorDetailsSchema,
 } from './contractorDetailsSchema'
+import { HOURLY_RATE_CAP } from '@/components/Contractor/shared/hourlyRate'
 
 /**
  * Schema-level cross-check of the contractor details requiredness contract.
@@ -307,7 +308,7 @@ describe('createContractorDetailsSchema', () => {
 
     it('accepts an hourlyRate at the server cap', () => {
       const result = parse(
-        { ...validIndividualEmployerLed, wageType: WageType.Hourly, hourlyRate: 1_000_000_000_000 },
+        { ...validIndividualEmployerLed, wageType: WageType.Hourly, hourlyRate: HOURLY_RATE_CAP },
         { mode: 'create' },
       )
       expect(result.success).toBe(true)

@@ -4910,6 +4910,7 @@ export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>;
 export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps {
     FieldComponent?: ComponentType<RadioGroupProps>;
     formHookResult?: FormHookResult;
+    getOptionDescription?: (entry: TEntry) => ReactNode;
     getOptionLabel?: (entry: TEntry) => string;
     name: string;
     validationMessages?: ValidationMessages<TErrorCode>;

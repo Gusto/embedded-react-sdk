@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
@@ -8,12 +8,12 @@ import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGro
 
 /**
  * Props accepted by a radio group field surfaced through a form hook.
- * Exposes `getOptionLabel` to customize how option entries are rendered as labels,
- * and `validationMessages` for custom error text alongside the shared base field
+ * Exposes `getOptionLabel` and `getOptionDescription` to customize how option entries are
+ * rendered, and `validationMessages` for custom error text alongside the shared base field
  * attributes (`label`, `description`).
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
- * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
+ * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel` and `getOptionDescription`.
  * @public
  * @group Hook field props
  */
@@ -29,6 +29,8 @@ export interface RadioGroupHookFieldProps<
   validationMessages?: ValidationMessages<TErrorCode>
   /** Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. */
   getOptionLabel?: (entry: TEntry) => string
+  /** Maps a raw option entry to supporting text rendered beneath that radio option; when omitted, no per-option description is rendered. */
+  getOptionDescription?: (entry: TEntry) => ReactNode
   /** Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. */
   FieldComponent?: ComponentType<RadioGroupProps>
 }
@@ -37,8 +39,8 @@ export interface RadioGroupHookFieldProps<
  * Radio group field connected to a partner form hook result via `useHookFieldResolution`.
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
- * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
- * @param props - Field configuration including `name`, `formHookResult`, and an optional `getOptionLabel`.
+ * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel` and `getOptionDescription`.
+ * @param props - Field configuration including `name`, `formHookResult`, and optional `getOptionLabel` / `getOptionDescription`.
  * @returns The rendered radio group field wrapped in the field element registry.
  * @internal
  */
@@ -49,6 +51,7 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
   description,
   validationMessages,
   getOptionLabel,
+  getOptionDescription,
   FieldComponent,
 }: RadioGroupHookFieldProps<TErrorCode, TEntry>) {
   const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
@@ -59,11 +62,14 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
   const fieldMetadata = getFieldWithOptions<TEntry>(metadata, name)
 
   const defaultOptions = fieldMetadata?.options ?? []
+  // Either callback needs `entries` to map over; whichever one is omitted falls back to the
+  // label the hook already supplied / no description.
   const options =
-    getOptionLabel && fieldMetadata?.entries
+    (getOptionLabel ?? getOptionDescription) && fieldMetadata?.entries
       ? fieldMetadata.entries.map((entry, index) => ({
           value: defaultOptions[index]?.value ?? '',
-          label: getOptionLabel(entry),
+          label: getOptionLabel ? getOptionLabel(entry) : (defaultOptions[index]?.label ?? ''),
+          ...(getOptionDescription ? { description: getOptionDescription(entry) } : {}),
         }))
       : defaultOptions
 
