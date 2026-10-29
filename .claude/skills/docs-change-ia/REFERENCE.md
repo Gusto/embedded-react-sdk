@@ -6,14 +6,14 @@ half.
 
 ## How reference docs are produced
 
-TypeDoc reads TSDoc from `src/`, and a custom plugin (`docs-site/plugins/typedoc-custom/`)
+TypeDoc reads TSDoc from `src/`, and a custom plugin (`typedoc/typedoc-custom/`)
 routes each symbol into the `docs/reference/` tree. Output is committed but never
 hand-written — including the `_category_.json` sidebar files the plugin emits.
 
 Regenerate after any change to TSDoc, `router.config.ts`, or `typedoc.config.ts`:
 
 ```bash
-test -d docs-site/node_modules || npm run docs:install   # one-time prerequisite
+test -d typedoc/node_modules || npm run docs:install      # one-time prerequisite
 npm run docs:api:generate   # reference only (TypeDoc) — fast iterate path
 npm run derive              # full pipeline; use for a clean final pass
 git diff docs/reference/    # confirm you changed only what you intended
@@ -21,7 +21,7 @@ git diff docs/reference/    # confirm you changed only what you intended
 
 ## The reference IA config: `router.config.ts`
 
-`docs-site/plugins/typedoc-custom/router.config.ts` is the single source of truth for
+`typedoc/typedoc-custom/router.config.ts` is the single source of truth for
 reference structure; its own TSDoc comments are the authoritative spec. Two exported
 arrays matter, and **array order sets sidebar position** in both.
 
@@ -48,10 +48,9 @@ Reorder/relabel by editing the arrays, then regenerate.
 
 You do **not** edit the generated `.md`. Order comes from two places:
 
-- **`docs-site/typedoc.config.ts`** — `groupOrder` lists section names top-to-bottom (the
-  constants live in `docs-site/typedoc-utils.mjs`: `COMPONENT_GROUPS`, `HOOK_GROUPS`,
-  `COMPONENT_PROP_GROUPS`, `VARIABLE_GROUPS`); `sort: ['required-first', 'alphabetical']`
-  orders members within a group.
+- **`typedoc/typedoc.config.ts`** — `groupOrder` lists section names top-to-bottom (the
+  constants live in `typedoc/typedoc-utils.ts`: `CUSTOM_GROUPS` and `GROUP_ORDER`);
+  `sort: ['required-first', 'alphabetical']` orders members within a group.
 - **`@group` tags** in the TSDoc decide which section a symbol falls into.
 
 So: reorder _sections_ via `groupOrder` / the group-name arrays; reorder _items within a
@@ -67,7 +66,7 @@ To make authored narrative read as part of a generated hub/flow page, the plugin
 - **Flow page** → `GUIDE.md` beside the `*Flow` component's source.
 - **Hook page** → `GUIDE.md` at the root of the hook's directory.
 
-Format (parsed by `docs-site/plugins/typedoc-custom/utils.ts`): the leading `# H1` is
+Format (parsed by `typedoc/typedoc-custom/utils.ts`): the leading `# H1` is
 dropped as an author title; each `## section` is tagged with a slot comment.
 
 ```markdown
@@ -123,6 +122,6 @@ git diff docs/reference/    # only the intended files changed
 npm run docs:build          # passes — broken links/anchors throw
 ```
 
-If you change routing _logic_ (not just config), run the docs-site tests
-(`npm --prefix docs-site test`); the router suite is
-`docs-site/plugins/typedoc-custom/sdk-router.test.ts`.
+If you change routing _logic_ (not just config), run the typedoc tests
+(`npm --prefix typedoc test`); the router suite is
+`typedoc/typedoc-custom/sdk-router.test.ts`.

@@ -14,7 +14,7 @@
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
     "docs-site/versioned_docs/**",
-    "docs-site/plugins/typedoc-custom/**",
+    "typedoc/typedoc-custom/**",
     "CHANGELOG.md"
   ],
   "ignoreRegExpList": [

@@ -115,6 +115,7 @@ export default defineConfig(({ mode }) => {
         '**/node_modules/**',
         '**/e2e/**',
         '**/docs-site/**',
+        '**/typedoc/**',
         '**/.claude/worktrees/**',
         '**/.github/scripts/**',
       ],

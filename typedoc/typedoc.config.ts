@@ -3,7 +3,7 @@ import { type PluginOptions } from 'typedoc-plugin-markdown'
 import { GROUP_ORDER } from './typedoc-utils.ts'
 
 export const baseOptions = {
-  plugin: ['./plugins/typedoc-custom/index.ts'],
+  plugin: ['./typedoc-custom/index.ts'],
   name: '@gusto/embedded-react-sdk',
   tsconfig: 'tsconfig.typedoc.json',
   entryPoints: ['../src/index.ts'],
@@ -71,7 +71,8 @@ export const baseOptions = {
 
 export default {
   ...baseOptions,
-  // When running typedoc directly, we need to specify the plugins that docusaurus adds automatically
+  // When running typedoc directly (no Docusaurus host), we need to specify the plugins
+  // that Docusaurus's typedoc integration otherwise adds automatically.
   plugin: ['typedoc-plugin-markdown', 'typedoc-docusaurus-theme', ...baseOptions.plugin],
   sidebar: {
     autoConfiguration: false,

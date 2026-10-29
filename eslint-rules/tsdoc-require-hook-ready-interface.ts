@@ -4,7 +4,7 @@
  *
  * The TypeDoc plugin resolves a hook's ready state by finding the union member
  * whose reflection is an `interface` (see `getHookReadyInterface` in
- * `docs-site/plugins/typedoc-custom/hook-model.ts`). A `type` alias is a
+ * `typedoc/typedoc-custom/hook-model.ts`). A `type` alias is a
  * `TypeAlias` reflection, not an `Interface`, so a ready state written as a bare
  * alias is invisible to the model and the hook page fails to generate.
  *
