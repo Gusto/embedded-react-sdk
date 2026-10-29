@@ -111,7 +111,13 @@ const MyCustomTable = ({ headers, rows }: TableProps) => (
             {header.isSortable ? (
               <button type="button" onClick={header.onSort}>
                 {header.content}
-                <SortIndicator direction={header.sortDirection} />
+                <span aria-hidden="true">
+                  {header.sortDirection === 'ascending'
+                    ? '↑'
+                    : header.sortDirection === 'descending'
+                      ? '↓'
+                      : '↕'}
+                </span>
               </button>
             ) : (
               header.content
