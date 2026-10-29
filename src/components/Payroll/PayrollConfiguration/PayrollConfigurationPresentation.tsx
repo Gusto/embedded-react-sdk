@@ -261,7 +261,11 @@ export const PayrollConfigurationPresentation = ({
                     title: t('tableColumns.totalPay'),
                     justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
-                      if (isRegularRateOfPayEnabled) {
+                      // TODO: The API leaves the grossPay key out of unprocessed payrolls until
+                      // regular rate of pay is enabled for the partner, so fall back to the client
+                      // estimate only when the key is absent. Remove the fallback once it's enabled
+                      // for every partner and the regularRateOfPay flag is removed.
+                      if (isRegularRateOfPayEnabled && 'grossPay' in item) {
                         return formatNumberAsCurrency(
                           Number(item.grossPay ?? 0) + getReimbursements(item),
                         )
