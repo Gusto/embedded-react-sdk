@@ -16,6 +16,7 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
+    "customConditions": ["browser"],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
