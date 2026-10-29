@@ -8251,6 +8251,8 @@ export namespace Translations {
     breadcrumbs: {
       /** @defaultValue `"Run payroll"` */
       landing: string
+      /** @defaultValue `"Transition payroll"` */
+      transitionConfiguration: string
       /** @defaultValue `"Summary for {{startDate}}-{{endDate}}"` */
       overview: string
       /** @defaultValue `"Payroll receipt for {{startDate}}-{{endDate}}"` */
@@ -9088,6 +9090,8 @@ export namespace Translations {
     alertDescription: string
     /** @defaultValue `"Run Transition Payroll"` */
     runPayroll: string
+    /** @defaultValue `"Review and submit"` */
+    reviewPayroll: string
     /** @defaultValue `"Skip this payroll"` */
     skipPayroll: string
     /** @defaultValue `"Transition payroll skipped"` */

@@ -5490,6 +5490,7 @@ Translation keys for the `Payroll.PayrollLanding` i18n namespace.
 | `breadcrumbs.landing` |
 | `breadcrumbs.overview` |
 | `breadcrumbs.receipt` |
+| `breadcrumbs.transitionConfiguration` |
 | <a id="property-payrollpayrolllandinglabels"></a> `labels` |
 | `labels.loading` |
 | <a id="property-payrollpayrolllandingtabs"></a> `tabs` |
@@ -5990,6 +5991,7 @@ Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace.
 | <a id="property-payrolltransitionpayrollalertalertdescription"></a> `alertDescription` | `"Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly. Regular payroll functionality is blocked until you either run or skip transition payrolls."` |
 | <a id="property-payrolltransitionpayrollalertalerttitle"></a> `alertTitle` | `"Transition payroll - {{dateRange}}"` |
 | <a id="property-payrolltransitionpayrollalertmultiplealerttitle"></a> `multipleAlertTitle` | `"You have {{count}} transition payrolls to run or skip"` |
+| <a id="property-payrolltransitionpayrollalertreviewpayroll"></a> `reviewPayroll` | `"Review and submit"` |
 | <a id="property-payrolltransitionpayrollalertrunpayroll"></a> `runPayroll` | `"Run Transition Payroll"` |
 | <a id="property-payrolltransitionpayrollalertskipdialog"></a> `skipDialog` | |
 | `skipDialog.body` | `"Skipping this payroll means employees will not be paid for the transition period. It is your responsibility to ensure employees are paid properly."` |

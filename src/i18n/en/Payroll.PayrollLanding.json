@@ -11,6 +11,7 @@
   },
   "breadcrumbs": {
     "landing": "Run payroll",
+    "transitionConfiguration": "Transition payroll",
     "overview": "Summary for {{startDate}}-{{endDate}}",
     "receipt": "Payroll receipt for {{startDate}}-{{endDate}}"
   },
