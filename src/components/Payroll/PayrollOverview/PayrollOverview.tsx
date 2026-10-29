@@ -220,21 +220,25 @@ const Root = ({
   )
   const wireInRequest = wireInRequestData?.wireInRequest
 
-  // Scoped to the current page's employees so this stays bounded regardless of company size,
-  // since `flsaStatus` (compensation type) isn't available on employeeCompensations for
-  // employees without an hourlyCompensations line item (e.g. salaried employees).
-  const employeeUuids = (payrollData?.employeeCompensations ?? [])
-    .map(employeeCompensation => employeeCompensation.employeeUuid)
-    .filter((uuid): uuid is string => !!uuid)
-
+  // Compensation type isn't on employeeCompensations for salaried employees, so read it from each
+  // employee's primary job. Filtered by `payrollUuid` and paged like the payroll so it stays one
+  // page in size; the `uuids` filter returns wrong results for more than one employee.
   const { data: employeesData } = useEmployeesList(
-    { companyId, uuids: employeeUuids },
-    { enabled: employeeUuids.length > 0 },
+    {
+      companyId,
+      payrollUuid: payrollId,
+      page: currentPage,
+      per: itemsPerPage,
+      sortBy: 'name',
+    },
+    { placeholderData: keepPreviousData, enabled: !!payrollData },
   )
   const employeeFlsaStatusByUuid = (employeesData?.showEmployees ?? []).reduce<
     Record<string, string | undefined>
   >((acc, employee) => {
-    acc[employee.uuid] = employee.flsaStatus
+    const jobs = employee.jobs ?? []
+    const primaryJob = jobs.find(job => job.primary) ?? jobs[0]
+    acc[employee.uuid] = primaryJob?.compensations?.[0]?.flsaStatus
     return acc
   }, {})
 
