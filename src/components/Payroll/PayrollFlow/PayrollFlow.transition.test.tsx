@@ -71,32 +71,49 @@ describe('PayrollFlow transition path', () => {
     )
   })
 
-  it.each([
-    ['the alert', 'Run Transition Payroll', componentEvents.RUN_TRANSITION_PAYROLL],
-    ['the payroll list', 'Run Payroll', componentEvents.TRANSITION_PAYROLL_SELECTED],
-  ])(
-    'opens the transition settings, then the payroll, when Run is clicked in %s',
-    async (_source, buttonName, expectedEvent) => {
-      const user = userEvent.setup()
-      const onEvent = vi.fn()
-      renderWithProviders(<PayrollFlow companyId={COMPANY_ID} onEvent={onEvent} />)
+  it('opens the transition settings, then the payroll, when Run is clicked in the alert', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    renderWithProviders(<PayrollFlow companyId={COMPANY_ID} onEvent={onEvent} />)
 
-      await user.click(await screen.findByRole('button', { name: buttonName }))
+    await user.click(await screen.findByRole('button', { name: 'Run Transition Payroll' }))
 
-      expect(onEvent).toHaveBeenCalledWith(
-        expectedEvent,
-        expect.objectContaining({ payrollUuid: TRANSITION_PAYROLL_ID }),
-      )
-      expect(
-        await screen.findByRole('heading', { name: 'Edit transition payroll' }),
-      ).toBeInTheDocument()
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.RUN_TRANSITION_PAYROLL,
+      expect.objectContaining({ payrollUuid: TRANSITION_PAYROLL_ID }),
+    )
+    expect(
+      await screen.findByRole('heading', { name: 'Edit transition payroll' }),
+    ).toBeInTheDocument()
 
-      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      expect(
-        await screen.findByRole('heading', { name: 'Edit Payroll', level: 1 }),
-      ).toBeInTheDocument()
-      expect(new Set(preparedPayrollIds)).toEqual(new Set([TRANSITION_PAYROLL_ID]))
-    },
-  )
+    expect(
+      await screen.findByRole('heading', { name: 'Edit Payroll', level: 1 }),
+    ).toBeInTheDocument()
+    expect(new Set(preparedPayrollIds)).toEqual(new Set([TRANSITION_PAYROLL_ID]))
+  })
+
+  it('opens the transition settings, then the payroll, when Run is clicked in the payroll list', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    renderWithProviders(<PayrollFlow companyId={COMPANY_ID} onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Run Payroll' }))
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.TRANSITION_PAYROLL_SELECTED,
+      expect.objectContaining({ payrollUuid: TRANSITION_PAYROLL_ID }),
+    )
+    expect(
+      await screen.findByRole('heading', { name: 'Edit transition payroll' }),
+    ).toBeInTheDocument()
+
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+    expect(
+      await screen.findByRole('heading', { name: 'Edit Payroll', level: 1 }),
+    ).toBeInTheDocument()
+    expect(new Set(preparedPayrollIds)).toEqual(new Set([TRANSITION_PAYROLL_ID]))
+  })
 })
