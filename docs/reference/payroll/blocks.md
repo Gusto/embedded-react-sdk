@@ -524,6 +524,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid: string, payPeriod: object }` |
+| `transition/payrollSelected` | User selected a transition payroll to run from the payroll list | `{ payrollUuid: string, payPeriod: object }` |
 | `payroll/review` | User selected a calculated payroll to review | `{ payrollUuid: string, payPeriod: object }` |
 | `payroll/skipped` | A payroll was skipped | `{ payrollId: string }` |
 | `payroll/deleted` | A cancellable off-cycle payroll was deleted | `{ payrollId: string }` |
@@ -539,8 +540,11 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 When unprocessed transition pay periods exist, the landing surface renders a Transition
 Payroll Alert. It looks ahead 90 days for upcoming transition periods and lists every one
-that hasn't been run, grouped by pay schedule, with run and skip actions on each row. Choosing to run emits `transition/runPayroll`
-(handle it by rendering `Payroll.TransitionFlow` with the supplied dates and pay schedule).
+that hasn't been run, grouped by pay schedule, with run and skip actions on each row.
+Clicking Run emits `transition/runPayroll`. If the payroll is already calculated, the button
+reads Review and submit and emits `payroll/review` instead, like the payroll list.
+To handle `transition/runPayroll`, or `transition/payrollSelected` from the payroll list,
+render `Payroll.TransitionConfiguration` with the `payrollUuid` from the event.
 Skipping opens a confirmation dialog — warning that employees will not be paid for the
 period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
 periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
@@ -554,6 +558,7 @@ may reject regular payrolls while unresolved transition periods exist.
 | --- | --- |
 | GET | [`/v1/companies/:companyId/pay_periods`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_periods) |
 | GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls) |
 | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
 | POST | [`/v1/companies/:companyUuid/payrolls/skip`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-companies-payroll-skip-company_uuid) |
 | GET | [`/v1/companies/:companyUuid/wire_in_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-company_uuid-wire_in_request_uuid) |
@@ -605,6 +610,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
+| `transition/payrollSelected` | User selected a transition payroll to run | `{ payrollUuid, payPeriod }` |
 | `payroll/review` | User selected a calculated payroll to review and submit | `{ payrollUuid, payPeriod }` |
 | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
 | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |

@@ -14,7 +14,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * Hub for running and managing all payrolls across a company's pay schedules.
  *
  * @remarks
- * Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
+ * Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow. Running a transition payroll opens {@link TransitionConfiguration} first. After it saves, the regular payroll steps open for the same payroll.
  *
  * @events
  * | Event | Description | Data |
@@ -34,14 +34,16 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `runPayroll/summary/viewed` | The summary screen is opened | `{ payrollId: string }` |
  * | `runPayroll/receipt/viewed` | The receipt screen is opened | `{ payrollId: string }` |
  * | `runPayroll/offCycle/start` | The user starts an off-cycle payroll | — |
- * | `transition/runPayroll` | The user starts a pending transition payroll | — |
+ * | `transition/runPayroll` | The user clicks Run on a transition payroll in the alert | `{ payrollUuid: string, startDate: string, endDate: string, payScheduleUuid: string }` |
+ * | `transition/payrollSelected` | The user clicks Run on a transition payroll in the payroll list | `{ payrollUuid: string, payPeriod: object }` |
+ * | `transition/configured` | The transition payroll settings are saved | `{ payrollUuid: string, payrollPrepared: object }` |
  * | `payroll/saveAndExit` | The user clicks Save and Exit | — |
  *
  * @components
  * - {@link PayrollLanding}
  * - {@link PayrollExecutionFlow}
  * - {@link OffCycleFlow}
- * - {@link TransitionFlow}
+ * - {@link TransitionConfiguration}
  * - {@link PayrollBlockerList}
  * - {@link PayrollOverview}
  * - {@link PayrollReceipts}

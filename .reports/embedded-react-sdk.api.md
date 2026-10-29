@@ -1370,6 +1370,7 @@ export const componentEvents: {
     readonly TRANSITION_CREATED: "transition/created";
     readonly TRANSITION_CONFIGURED: "transition/configured";
     readonly RUN_TRANSITION_PAYROLL: "transition/runPayroll";
+    readonly TRANSITION_PAYROLL_SELECTED: "transition/payrollSelected";
     readonly TRANSITION_PAYROLL_SKIPPED: "transition/payrollSkipped";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_CREATE: "contractor/historicalPayments/create";
     readonly CONTRACTOR_HISTORICAL_PAYMENT_EDIT: "contractor/historicalPayments/edit";

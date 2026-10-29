@@ -1,6 +1,11 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { usePaySchedulesGetAll } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
+import { usePayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
+import {
+  ProcessingStatuses,
+  QueryParamPayrollTypes,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
 import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
@@ -51,16 +56,39 @@ function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boo
 
   const { data: paySchedulesData, error: paySchedulesError } = usePaySchedulesGetAll({ companyId })
 
+  const sortedPayPeriodDates = unprocessedPayPeriods
+    .flatMap(payPeriod => [payPeriod.startDate, payPeriod.endDate])
+    .filter((date): date is string => typeof date === 'string')
+    .sort()
+
+  const { data: transitionPayrollsData, error: transitionPayrollsError } = usePayrollsList(
+    {
+      companyId,
+      processingStatuses: [ProcessingStatuses.Unprocessed],
+      payrollTypes: [QueryParamPayrollTypes.OffCycle],
+      includeOffCycle: true,
+      startDate: sortedPayPeriodDates.at(0),
+      endDate: sortedPayPeriodDates.at(-1),
+    },
+    { enabled: sortedPayPeriodDates.length > 0 },
+  )
+
+  const calculatedPayrollUuids = (transitionPayrollsData?.payrollList ?? []).flatMap(payroll =>
+    payroll.calculatedAt && payroll.payrollUuid ? [payroll.payrollUuid] : [],
+  )
+
+  const queryError = paySchedulesError ?? transitionPayrollsError
+
   useEffect(() => {
-    if (!paySchedulesError) return
-    onEvent(componentEvents.ERROR, paySchedulesError)
-    const sdkError = normalizeToSDKError(paySchedulesError)
+    if (!queryError) return
+    onEvent(componentEvents.ERROR, queryError)
+    const sdkError = normalizeToSDKError(queryError)
     observability?.onError?.({
       ...sdkError,
       timestamp: Date.now(),
       componentName: COMPONENT_NAME,
     })
-  }, [paySchedulesError, onEvent, observability])
+  }, [queryError, onEvent, observability])
 
   const groupedPayPeriods = useMemo<TransitionPayPeriodGroup[]>(() => {
     if (!paySchedulesData) return []
@@ -86,17 +114,25 @@ function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boo
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 
-  const handleRunPayroll = useCallback(
-    (payPeriod: PayPeriod) => {
-      onEvent(componentEvents.RUN_TRANSITION_PAYROLL, {
-        payrollUuid: payPeriod.payroll?.payrollUuid,
-        startDate: payPeriod.startDate,
-        endDate: payPeriod.endDate,
-        payScheduleUuid: payPeriod.payScheduleUuid,
+  const handleRunPayroll = (payPeriod: PayPeriod) => {
+    const payrollUuid = payPeriod.payroll?.payrollUuid
+    const { startDate, endDate, payScheduleUuid } = payPeriod
+
+    if (payrollUuid && calculatedPayrollUuids.includes(payrollUuid)) {
+      onEvent(componentEvents.REVIEW_PAYROLL, {
+        payrollUuid,
+        payPeriod: { startDate, endDate, payScheduleUuid },
       })
-    },
-    [onEvent],
-  )
+      return
+    }
+
+    onEvent(componentEvents.RUN_TRANSITION_PAYROLL, {
+      payrollUuid,
+      startDate,
+      endDate,
+      payScheduleUuid,
+    })
+  }
 
   const handleSkipPayroll = useCallback(
     async (payPeriod: PayPeriod) => {
@@ -130,13 +166,14 @@ function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boo
     setShowSkipSuccessAlert(false)
   }, [])
 
-  if (!paySchedulesData || groupedPayPeriods.length === 0) {
+  if (!paySchedulesData || !transitionPayrollsData || groupedPayPeriods.length === 0) {
     return null
   }
 
   return (
     <TransitionPayrollAlertPresentation
       groupedPayPeriods={groupedPayPeriods}
+      calculatedPayrollUuids={calculatedPayrollUuids}
       onRunPayroll={handleRunPayroll}
       onSkipPayroll={handleSkipPayroll}
       showSkipSuccessAlert={showSkipSuccessAlert}

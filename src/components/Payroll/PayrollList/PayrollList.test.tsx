@@ -336,6 +336,25 @@ describe('PayrollList', () => {
       })
     })
 
+    it('emits transition/payrollSelected for a transition payroll', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      server.use(
+        ...buildPayrollListHandlers({
+          payrolls: [createOffCyclePayroll('Transition from old pay schedule')],
+        }),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} onEvent={onEvent} />)
+
+      await user.click(await screen.findByRole('button', { name: 'Run Payroll' }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.TRANSITION_PAYROLL_SELECTED, {
+        payrollUuid: 'payroll-off-cycle-transition-from-old-pay-schedule',
+        payPeriod,
+      })
+    })
+
     it('emits payroll/review for a calculated payroll', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()

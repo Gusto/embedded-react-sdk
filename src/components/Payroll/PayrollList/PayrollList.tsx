@@ -14,7 +14,10 @@ import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import {
+  OffCycleReasonType,
+  type Payroll,
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'
@@ -58,6 +61,7 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
+ * | `transition/payrollSelected` | User selected a transition payroll to run | `{ payrollUuid, payPeriod }` |
  * | `payroll/review` | User selected a calculated payroll to review and submit | `{ payrollUuid, payPeriod }` |
  * | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
  * | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
@@ -153,7 +157,16 @@ const Root = ({
   const { mutateAsync: deletePayrollMutation } = usePayrollsDeleteMutation()
 
   const onRunPayroll = ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
-    onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollUuid, payPeriod })
+    const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
+    const isTransitionPayroll =
+      payroll?.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
+
+    onEvent(
+      isTransitionPayroll
+        ? componentEvents.TRANSITION_PAYROLL_SELECTED
+        : componentEvents.RUN_PAYROLL_SELECTED,
+      { payrollUuid, payPeriod },
+    )
   }
   const onRunOffCyclePayroll = () => {
     onEvent(componentEvents.RUN_OFF_CYCLE_PAYROLL)
