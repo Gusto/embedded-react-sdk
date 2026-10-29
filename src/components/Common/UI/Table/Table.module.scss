@@ -48,6 +48,17 @@
         border-bottom: 1px solid var(--g-colorBorderSecondary);
         cursor: default;
       }
+
+      // Sortable headers are real press targets, so they need to look like it. The
+      // attribute selector out-specifies the `cursor: default` rule above.
+      :global(.react-aria-Column)[data-allows-sorting] {
+        cursor: pointer;
+
+        &[data-hovered],
+        &[data-focus-visible] {
+          background-color: var(--g-colorBodyBg);
+        }
+      }
     }
 
     :global(.react-aria-Row) {
@@ -198,4 +209,30 @@
       }
     }
   }
+}
+
+// Sort indicator. Kept text-free and aria-hidden: `src/test-utils/tableQueries.ts`
+// matches columns on exact `header.textContent`, and react-aria already announces
+// sort state via `aria-sort` on the header cell.
+.sortIcon {
+  display: inline-block;
+  width: toRem(12);
+  height: toRem(12);
+  margin-inline-start: toRem(4);
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+
+  &[data-sorted='true'] {
+    opacity: 1;
+  }
+
+  :global(.react-aria-Column)[data-hovered] &,
+  :global(.react-aria-Column)[data-focus-visible] & {
+    opacity: 1;
+  }
+}
+
+.sortIconAscending {
+  transform: rotate(180deg);
 }

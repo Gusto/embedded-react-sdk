@@ -76,6 +76,93 @@ const MyCustomSelect = ({ portalContainer, ...props }: SelectProps) => {
 }
 ```
 
+### Sortable table columns
+
+Each entry in `Table`'s `headers` array is a header cell. A cell with `isSortable: true` also carries
+that column's sort state and handlers:
+
+```ts
+interface TableSortControls {
+  isSortable: true
+  sortDirection: 'ascending' | 'descending' | 'none'
+  onSort: () => void
+  onSortAscending: () => void
+  onSortDescending: () => void
+  onClearSort: () => void
+}
+```
+
+Every handler takes no arguments, so each one can be passed straight to an `onClick`. A header cell
+without `isSortable` carries nothing beyond `key` and `content`, so a table that renders no sort
+affordance keeps working unchanged.
+
+For a single control that cycles through ascending, descending, and back to the default order, use
+`onSort`:
+
+```tsx
+import type { TableProps } from '@gusto/embedded-react-sdk'
+
+const MyCustomTable = ({ headers, rows }: TableProps) => (
+  <table>
+    <thead>
+      <tr>
+        {headers.map(header => (
+          <th key={header.key} aria-sort={header.isSortable ? header.sortDirection : undefined}>
+            {header.isSortable ? (
+              <button type="button" onClick={header.onSort}>
+                {header.content}
+                <span aria-hidden="true">
+                  {header.sortDirection === 'ascending'
+                    ? '↑'
+                    : header.sortDirection === 'descending'
+                      ? '↓'
+                      : '↕'}
+                </span>
+              </button>
+            ) : (
+              header.content
+            )}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    {/* ...rows */}
+  </table>
+)
+```
+
+For separate controls, use `onSortAscending`, `onSortDescending`, and `onClearSort`:
+
+```tsx
+<th key={header.key} aria-sort={header.isSortable ? header.sortDirection : undefined}>
+  {header.content}
+  {header.isSortable && (
+    <>
+      <button
+        type="button"
+        onClick={header.onSortAscending}
+        aria-pressed={header.sortDirection === 'ascending'}
+      >
+        Sort ascending
+      </button>
+      <button
+        type="button"
+        onClick={header.onSortDescending}
+        aria-pressed={header.sortDirection === 'descending'}
+      >
+        Sort descending
+      </button>
+      <button type="button" onClick={header.onClearSort} disabled={header.sortDirection === 'none'}>
+        Clear sort
+      </button>
+    </>
+  )}
+</th>
+```
+
+Set `aria-sort` on the header cell from `sortDirection` so assistive technology reports the current
+sort, and make the affordance reachable by keyboard as well as pointer.
+
 For a complete reference of all component types and their props, see the [Component Inventory](../../reference/component-inventory.md).
 
 To learn more about how each component should be implemented, you can reference the default implementations in the SDK ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)).

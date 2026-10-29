@@ -9459,6 +9459,14 @@ export namespace Translations {
       selectRowLabel: string
       /** @defaultValue `"Select all rows"` */
       selectAllRowsLabel: string
+      /** @defaultValue `"Sort by"` */
+      sortByLabel: string
+      /** @defaultValue `"Default order"` */
+      sortDefaultOption: string
+      /** @defaultValue `"{{column}} (A–Z)"` */
+      sortAscendingOption: string
+      /** @defaultValue `"{{column}} (Z–A)"` */
+      sortDescendingOption: string
     }
     signatoryTitles: {
       /** @defaultValue `"Owner"` */
