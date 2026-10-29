@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { DismissalPayPeriodSelection } from './DismissalPayPeriodSelection'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -66,6 +67,7 @@ function renderComponent(props = {}) {
 describe('DismissalPayPeriodSelection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockCreateOffCyclePayroll.mockReset()
     mockPayPeriods = defaultPayPeriods
   })
 
@@ -130,6 +132,51 @@ describe('DismissalPayPeriodSelection', () => {
   })
 
   describe('payroll creation', () => {
+    it.each([
+      { employeeName: 'Jane Doe', employeeUuid: 'emp-1' },
+      { employeeName: 'John Smith', employeeUuid: 'emp-2' },
+    ])(
+      'creates payroll for $employeeName when employees share a pay period',
+      async ({ employeeName, employeeUuid }) => {
+        mockPayPeriods = [
+          defaultPayPeriods[0]!,
+          { ...defaultPayPeriods[2]!, payScheduleUuid: 'ps-1' },
+        ]
+        const user = userEvent.setup()
+        mockCreateOffCyclePayroll.mockResolvedValueOnce({
+          payrollUnprocessed: { payrollUuid: 'selected-employee-payroll' },
+        })
+
+        renderComponent({ employeeId: undefined })
+
+        await user.click(await screen.findByLabelText(/pay period/i))
+        expect(await screen.findAllByRole('option')).toHaveLength(2)
+        await user.click(screen.getByRole('option', { name: new RegExp(employeeName) }))
+        await user.click(screen.getByRole('button', { name: /continue/i }))
+
+        await waitFor(() => {
+          expect(mockCreateOffCyclePayroll).toHaveBeenCalledExactlyOnceWith({
+            request: {
+              companyId: 'company-123',
+              requestBody: {
+                offCycle: true,
+                offCycleReason: 'Dismissed employee',
+                startDate: new RFCDate('2024-12-01'),
+                endDate: new RFCDate('2024-12-14'),
+                employeeUuids: [employeeUuid],
+              },
+            },
+          })
+        })
+        await waitFor(() => {
+          expect(defaultProps.onEvent).toHaveBeenCalledWith(
+            componentEvents.DISMISSAL_PAY_PERIOD_SELECTED,
+            { payrollUuid: 'selected-employee-payroll' },
+          )
+        })
+      },
+    )
+
     it('creates off-cycle payroll on submit and fires event', async () => {
       const user = userEvent.setup()
       mockCreateOffCyclePayroll.mockResolvedValueOnce({
