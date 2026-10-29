@@ -727,7 +727,11 @@ export const PayrollEditEmployeePresentation = ({
                   : t('timeOffTitle')}
               </Heading>
               <DataView
-                label={t('timeOffTitle')}
+                label={
+                  payrollCategory === PayrollCategory.Dismissal
+                    ? t('timeOffTitleDismissal')
+                    : t('timeOffTitle')
+                }
                 data={timeOff}
                 columns={[
                   { title: t('timeOffTypeColumn'), render: entry => entry.name },

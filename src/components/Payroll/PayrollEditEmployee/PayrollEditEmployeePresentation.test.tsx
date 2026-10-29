@@ -615,6 +615,7 @@ describe('PayrollEditEmployeePresentation', () => {
     })
 
     it('renders unused time off payout section for dismissal payrolls', async () => {
+      mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
       renderWithProviders(
         <PayrollEditEmployeePresentation
           {...defaultProps}
@@ -625,6 +626,9 @@ describe('PayrollEditEmployeePresentation', () => {
       await waitFor(() => {
         expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
       })
+      expect(
+        screen.getByRole('grid', { name: 'Time off hours used this pay period' }),
+      ).toBeInTheDocument()
     })
 
     it('shows remaining balance in unused time off payout section for dismissal payrolls', async () => {
@@ -1960,7 +1964,7 @@ describe('preapproved time off', () => {
     async additionalHours => {
       mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
       const user = userEvent.setup()
-      const onSave = vi.fn()
+      const onSave = vi.fn<(compensation: PayrollEmployeeCompensationsType) => void>()
       renderWithProviders(
         <PayrollEditEmployeePresentation
           employee={mockEmployee}
@@ -2008,14 +2012,16 @@ describe('preapproved time off', () => {
       await waitFor(() => {
         expect(onSave).toHaveBeenCalledOnce()
       })
-      expect(onSave.mock.calls[0]![0].paidTimeOff).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            name: 'Vacation Hours',
-            hours: '3',
-            approvedRequestHours: '8.5',
-          }),
-        ]),
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              hours: '3',
+              approvedRequestHours: '8.5',
+            }),
+          ]),
+        }),
       )
     },
   )
