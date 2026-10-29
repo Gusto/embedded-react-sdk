@@ -39,6 +39,7 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid: string, payPeriod: object }` |
+ * | `transition/payrollSelected` | User selected a transition payroll to run from the payroll list | `{ payrollUuid: string, payPeriod: object }` |
  * | `payroll/review` | User selected a calculated payroll to review | `{ payrollUuid: string, payPeriod: object }` |
  * | `payroll/skipped` | A payroll was skipped | `{ payrollId: string }` |
  * | `payroll/deleted` | A cancellable off-cycle payroll was deleted | `{ payrollId: string }` |
@@ -54,8 +55,11 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
  *
  * When unprocessed transition pay periods exist, the landing surface renders a Transition
  * Payroll Alert. It looks ahead 90 days for upcoming transition periods and lists every one
- * that hasn't been run, grouped by pay schedule, with run and skip actions on each row. Choosing to run emits `transition/runPayroll`
- * (handle it by rendering `Payroll.TransitionFlow` with the supplied dates and pay schedule).
+ * that hasn't been run, grouped by pay schedule, with run and skip actions on each row.
+ * Clicking Run emits `transition/runPayroll`. If the payroll is already calculated, the button
+ * reads Review and submit and emits `payroll/review` instead, like the payroll list.
+ * To handle `transition/runPayroll`, or `transition/payrollSelected` from the payroll list,
+ * render `Payroll.TransitionConfiguration` with the `payrollUuid` from the event.
  * Skipping opens a confirmation dialog — warning that employees will not be paid for the
  * period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
  * periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API

@@ -19,6 +19,9 @@ export interface TransitionPayPeriodGroup {
 
 interface TransitionPayrollAlertPresentationProps {
   groupedPayPeriods: TransitionPayPeriodGroup[]
+  /** IDs of payrolls that are already calculated. These rows show Review and submit instead of Run. */
+  calculatedPayrollUuids?: string[]
+  /** Called when the user clicks Run or Review and submit on a row. */
   onRunPayroll: (payPeriod: PayPeriod) => void
   onSkipPayroll: (payPeriod: PayPeriod) => void
   showSkipSuccessAlert: boolean
@@ -34,6 +37,7 @@ interface TransitionPayrollAlertPresentationProps {
 
 interface TransitionPayrollActionsProps {
   onRun: () => void
+  isCalculated: boolean
   onSkip: () => void
   isSkipping: boolean
   isDisabled: boolean
@@ -42,6 +46,7 @@ interface TransitionPayrollActionsProps {
 
 function TransitionPayrollActions({
   onRun,
+  isCalculated,
   onSkip,
   isSkipping,
   isDisabled,
@@ -59,7 +64,7 @@ function TransitionPayrollActions({
           isDisabled={isDisabled}
           aria-describedby={describedBy}
         >
-          {t('runPayroll')}
+          {isCalculated ? t('reviewPayroll') : t('runPayroll')}
         </Button>
       </div>
       <Button
@@ -112,6 +117,7 @@ function TransitionPayrollRow({
 /** @internal */
 export function TransitionPayrollAlertPresentation({
   groupedPayPeriods,
+  calculatedPayrollUuids = [],
   onRunPayroll,
   onSkipPayroll,
   showSkipSuccessAlert,
@@ -148,16 +154,21 @@ export function TransitionPayrollAlertPresentation({
     }
   }
 
-  const getActionProps = (payPeriod: PayPeriod) => ({
-    onRun: () => {
-      onRunPayroll(payPeriod)
-    },
-    onSkip: () => {
-      setSkipDialogPayPeriod(payPeriod)
-    },
-    isSkipping: skippingPayPeriod === payPeriod,
-    isDisabled: hasBlockers,
-  })
+  const getActionProps = (payPeriod: PayPeriod) => {
+    const payrollUuid = payPeriod.payroll?.payrollUuid
+
+    return {
+      onRun: () => {
+        onRunPayroll(payPeriod)
+      },
+      isCalculated: !!payrollUuid && calculatedPayrollUuids.includes(payrollUuid),
+      onSkip: () => {
+        setSkipDialogPayPeriod(payPeriod)
+      },
+      isSkipping: skippingPayPeriod === payPeriod,
+      isDisabled: hasBlockers,
+    }
+  }
 
   const getPayPeriodKey = (payPeriod: PayPeriod) =>
     payPeriod.payroll?.payrollUuid ?? `${payPeriod.payScheduleUuid}-${payPeriod.startDate}`

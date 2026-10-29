@@ -349,95 +349,55 @@ describe('payrollFlowMachine', () => {
     })
   })
 
-  describe('transition state', () => {
-    function toTransition(service: ReturnType<typeof createService>) {
-      send(service, componentEvents.RUN_TRANSITION_PAYROLL, {
-        startDate: '2026-03-01',
-        endDate: '2026-03-15',
-        payScheduleUuid: 'ps-123',
-      })
-      expect(service.machine.current).toBe('transition')
+  describe('transitionConfiguration state', () => {
+    function currentBreadcrumbId(service: ReturnType<typeof createService>) {
+      return service.context.header?.type === 'breadcrumbs'
+        ? service.context.header.currentBreadcrumbId
+        : undefined
     }
 
-    it('transitions from landing on RUN_TRANSITION_PAYROLL with context fields', () => {
+    function toTransitionConfiguration(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.RUN_TRANSITION_PAYROLL, { payrollUuid: 'transition-123' })
+      expect(service.machine.current).toBe('transitionConfiguration')
+    }
+
+    it.each([componentEvents.RUN_TRANSITION_PAYROLL, componentEvents.TRANSITION_PAYROLL_SELECTED])(
+      'opens transition configuration for the payroll on %s',
+      event => {
+        const service = createService()
+
+        send(service, event, { payrollUuid: 'transition-123' })
+
+        expect(service.machine.current).toBe('transitionConfiguration')
+        expect(service.context.payrollUuid).toBe('transition-123')
+        expect(service.context.showPayrollCancelledAlert).toBe(false)
+        expect(currentBreadcrumbId(service)).toBe('transitionConfiguration')
+      },
+    )
+
+    it('opens payroll configuration for the same payroll on TRANSITION_CONFIGURED', () => {
       const service = createService()
+      toTransitionConfiguration(service)
 
-      send(service, componentEvents.RUN_TRANSITION_PAYROLL, {
-        startDate: '2026-03-01',
-        endDate: '2026-03-15',
-        payScheduleUuid: 'ps-123',
-      })
+      send(service, componentEvents.TRANSITION_CONFIGURED, { payrollUuid: 'transition-123' })
 
-      expect(service.machine.current).toBe('transition')
-      expect(service.context.transitionStartDate).toBe('2026-03-01')
-      expect(service.context.transitionEndDate).toBe('2026-03-15')
-      expect(service.context.transitionPayScheduleUuid).toBe('ps-123')
-      expect(service.context.showPayrollCancelledAlert).toBe(false)
-      expect(
-        service.context.header?.type === 'breadcrumbs'
-          ? service.context.header.currentBreadcrumbId
-          : undefined,
-      ).toBeUndefined()
+      expect(service.machine.current).toBe('execution')
+      expect(service.context.payrollUuid).toBe('transition-123')
+      expect(service.context.executionInitialState).toBe('configuration')
+      expect(currentBreadcrumbId(service)).toBeUndefined()
     })
 
     it('transitions to landing on BREADCRUMB_NAVIGATE with landing key', () => {
       const service = createService()
-      toTransition(service)
+      toTransitionConfiguration(service)
 
-      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'landing' })
-
-      expect(service.machine.current).toBe('landing')
-    })
-
-    it('transitions to landing on PAYROLL_EXIT_FLOW', () => {
-      const service = createService()
-      toTransition(service)
-
-      send(service, componentEvents.PAYROLL_EXIT_FLOW)
-
-      expect(service.machine.current).toBe('landing')
-    })
-
-    it('ignores BREADCRUMB_NAVIGATE with non-landing key', () => {
-      const service = createService()
-      toTransition(service)
-
-      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'configuration' })
-
-      expect(service.machine.current).toBe('transition')
-    })
-
-    it('transitions to landing with alert on RUN_PAYROLL_CANCELLED', () => {
-      const service = createService()
-      toTransition(service)
-
-      send(service, componentEvents.RUN_PAYROLL_CANCELLED)
-
-      expect(service.machine.current).toBe('landing')
-      expect(service.context.showPayrollCancelledAlert).toBe(true)
-      expect(service.context.payrollUuid).toBeUndefined()
-      expect(service.context.executionInitialState).toBeUndefined()
-    })
-
-    it('transitions to submittedOverview on RUN_PAYROLL_PROCESSED', () => {
-      const service = createService()
-      toTransition(service)
-      const payPeriod = { startDate: '2026-01-01', endDate: '2026-01-15' }
-
-      send(service, componentEvents.RUN_PAYROLL_PROCESSED, {
-        payPeriod,
-        payrollUuid: 'payroll-789',
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'landing',
+        onNavigate: payrollFlowBreadcrumbsNodes.landing?.item.onNavigate,
       })
 
-      expect(service.machine.current).toBe('submittedOverview')
-      expect(service.context.payPeriod).toEqual(payPeriod)
-      expect(service.context.payrollUuid).toBe('payroll-789')
-      expect(service.context.executionInitialState).toBeUndefined()
-      expect(
-        service.context.header?.type === 'breadcrumbs'
-          ? service.context.header.currentBreadcrumbId
-          : undefined,
-      ).toBe('submittedOverview')
+      expect(service.machine.current).toBe('landing')
+      expect(service.context.payrollUuid).toBeUndefined()
     })
   })
 
@@ -450,7 +410,7 @@ describe('payrollFlowMachine', () => {
       ['landing', componentEvents.RUN_PAYROLL_SELECTED, 'execution'],
       ['landing', componentEvents.REVIEW_PAYROLL, 'execution'],
       ['landing', componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL, 'blockers'],
-      ['landing', componentEvents.RUN_TRANSITION_PAYROLL, 'transition'],
+      ['landing', componentEvents.RUN_TRANSITION_PAYROLL, 'transitionConfiguration'],
       ['landing', componentEvents.RUN_OFF_CYCLE_PAYROLL, 'offCycle'],
       ['execution', componentEvents.RUN_PAYROLL_PROCESSED, 'submittedOverview'],
       ['execution', componentEvents.PAYROLL_EXIT_FLOW, 'landing'],
