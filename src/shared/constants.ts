@@ -531,7 +531,6 @@ export const offCycleEvents = {
   OFF_CYCLE_CREATED: 'offCycle/created',
   OFF_CYCLE_BLOCKERS_VIEW_ALL: 'offCycle/blockers/viewAll',
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
-  TRANSITION_CREATED: 'transition/created',
   TRANSITION_CONFIGURED: 'transition/configured',
   RUN_TRANSITION_PAYROLL: 'transition/runPayroll',
   TRANSITION_PAYROLL_SELECTED: 'transition/payrollSelected',

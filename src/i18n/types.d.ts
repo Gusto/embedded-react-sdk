@@ -264,11 +264,7 @@ export interface Resources {
   /** @internal */
   'Payroll.RropPayrollEditEmployee': Translations.PayrollRropPayrollEditEmployee
   /** */
-  'Payroll.Transition': Translations.PayrollTransition
-  /** */
   'Payroll.TransitionConfiguration': Translations.PayrollTransitionConfiguration
-  /** */
-  'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
   /** */
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
   /** */
@@ -9009,11 +9005,6 @@ export namespace Translations {
     /** @defaultValue `"Additional hours"` */
     additionalHoursColumn: string
   }
-  /** Translation keys for the `Payroll.Transition` i18n namespace. */
-  export interface PayrollTransition {
-    /** @defaultValue `"Transition Payroll"` */
-    breadcrumbLabel: string
-  }
   /** Translation keys for the `Payroll.TransitionConfiguration` i18n namespace. */
   export interface PayrollTransitionConfiguration {
     /** @defaultValue `"Edit transition payroll"` */
@@ -9065,37 +9056,6 @@ export namespace Translations {
         /** @defaultValue `"Reimbursements"` */
         label: string
       }
-    }
-  }
-  /** Translation keys for the `Payroll.TransitionCreation` i18n namespace. */
-  export interface PayrollTransitionCreation {
-    /** @defaultValue `"Transition Payroll"` */
-    breadcrumbLabel: string
-    /** @defaultValue `"Transition Payroll"` */
-    pageTitle: string
-    /** @defaultValue `"A transition payroll covers the gap between your old and new pay schedules."` */
-    pageDescription: string
-    /** @defaultValue `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` */
-    transitionExplanation: string
-    /** @defaultValue `"Transition Details"` */
-    detailsHeading: string
-    /** @defaultValue `"Pay period"` */
-    payPeriodLabel: string
-    /** @defaultValue `"Pay schedule"` */
-    payScheduleLabel: string
-    /** @defaultValue `"Check date"` */
-    checkDateLabel: string
-    /** @defaultValue `"Continue"` */
-    continueCta: string
-    errors: {
-      /** @defaultValue `"Transition payroll was created but no payroll ID was returned"` */
-      missingPayrollId: string
-      /** @defaultValue `"Check date is required"` */
-      checkDateRequired: string
-      /** @defaultValue `"Check date must be at least {{count}} business day from today"` */
-      checkDateAchLeadTime_one: string
-      /** @defaultValue `"Check date must be at least {{count}} business days from today"` */
-      checkDateAchLeadTime_other: string
     }
   }
   /** Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace. */
