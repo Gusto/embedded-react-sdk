@@ -796,7 +796,7 @@ describe('useContractorDetailsForm', () => {
         expect(fieldsMetadataEntry(ready.form.fieldsMetadata, 'hourlyRate').isRequired).toBe(false)
       })
 
-      it('submits an Hourly contractor with no rate on update by default, serializing the missing rate as the string "undefined" (current behavior)', async () => {
+      it('submits an Hourly contractor with no rate on update by default, omitting hourly_rate from the payload', async () => {
         server.use(handleGetContractor(() => HttpResponse.json(hourlyContractorWithoutRate)))
         const { captured, resolver } = captureBody(200, { ...hourlyContractor, version: 'v2' })
         server.use(handleUpdateContractor(resolver))
@@ -811,7 +811,9 @@ describe('useContractorDetailsForm', () => {
 
         expect(resolver).toHaveBeenCalledTimes(1)
         expect(submitResult).toMatchObject({ mode: 'update' })
-        expect(captured.body).toMatchObject({ wage_type: 'Hourly', hourly_rate: 'undefined' })
+        expect(captured.body).toMatchObject({ wage_type: 'Hourly' })
+        // Absence is the contract: a missing rate must not serialize as the string "undefined".
+        expect(captured.body).not.toHaveProperty('hourly_rate')
       })
 
       it('requires hourlyRate on update when promoted via optionalFieldsToRequire', async () => {

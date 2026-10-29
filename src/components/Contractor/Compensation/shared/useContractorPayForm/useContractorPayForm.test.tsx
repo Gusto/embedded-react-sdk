@@ -4,6 +4,7 @@ import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { useContractorPayForm } from './useContractorPayForm'
 import type { UseContractorPayFormResult } from './useContractorPayForm'
 import { createContractorPaySchema, ContractorPayErrorCodes, WageType } from './contractorPaySchema'
+import { HOURLY_RATE_CAP } from '@/components/Contractor/shared/hourlyRate'
 import { server } from '@/test/mocks/server'
 import { handleGetContractor, handleUpdateContractor } from '@/test/mocks/apis/contractors'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -50,7 +51,7 @@ describe('createContractorPaySchema', () => {
   it('accepts an hourlyRate exactly at the server cap', () => {
     const [schema] = createContractorPaySchema()
     expect(
-      schema.safeParse({ wageType: WageType.Hourly, hourlyRate: 1_000_000_000_000 }).success,
+      schema.safeParse({ wageType: WageType.Hourly, hourlyRate: HOURLY_RATE_CAP }).success,
     ).toBe(true)
   })
 

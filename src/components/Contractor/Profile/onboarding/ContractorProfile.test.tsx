@@ -747,7 +747,7 @@ describe('Contractor profile component behavior', () => {
       await user.type(screen.getByLabelText('EIN'), '12-3456789')
     }
 
-    it('renders the Wage Type radios Hourly then Fixed, with no option descriptions, defaulting to Fixed', async () => {
+    it('renders the Wage Type radios Hourly then Fixed, with option descriptions, defaulting to Fixed', async () => {
       renderWithProviders(<ContractorProfile companyId={companyId} onEvent={vi.fn()} />)
 
       await screen.findByText('Contractor profile')
@@ -759,8 +759,8 @@ describe('Contractor profile component behavior', () => {
         screen.getAllByRole('radio').filter(radio => radio === hourlyRadio || radio === fixedRadio),
       ).toEqual([hourlyRadio, fixedRadio])
       expect(fixedRadio).toBeChecked()
-      expect(hourlyRadio).toHaveAccessibleDescription('')
-      expect(fixedRadio).toHaveAccessibleDescription('')
+      expect(hourlyRadio).toHaveAccessibleDescription('Pay based on hours worked.')
+      expect(fixedRadio).toHaveAccessibleDescription('Pay a fixed amount each pay period.')
     })
 
     it('shows the required message when Hourly is submitted with no rate', async () => {
