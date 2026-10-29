@@ -59,9 +59,12 @@ meaning and presentation.
 
 Only additional hours are submitted in `paid_time_off[].hours`. The response's
 `approvedRequestHours` must never be copied into that input or added to the update
-payload. The API combines approved and additional hours during calculation. Summary
-and payout tables continue using the API's existing totals; this feature does not
-add approved hours again in frontend totals or remaining-balance arithmetic.
+payload. The API combines approved and additional hours during calculation.
+PayrollConfiguration receives prepared payroll data, where `hours` contains only
+additional hours, so its Time off column displays the sum of additional and approved
+hours. This display-only sum never changes the underlying compensation or gross-pay
+arithmetic. Calculated summary and payout tables continue using the API's existing
+totals; approved hours are not added again to those totals or remaining balances.
 
 ## How to leverage Translations
 
