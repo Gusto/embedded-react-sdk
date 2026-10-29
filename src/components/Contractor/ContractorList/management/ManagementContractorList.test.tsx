@@ -494,3 +494,48 @@ describe('ManagementContractorList — tab switching', () => {
     ).toBeInTheDocument()
   })
 })
+
+describe('ManagementContractorList \u2014 sorting', () => {
+  it('sorts by contractor name server-side when the name column header is activated', async () => {
+    let lastUrl = ''
+    server.use(
+      handleGetContractorsList(({ request }) => {
+        lastUrl = request.url
+        return HttpResponse.json([{ ...baseContractor }], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        })
+      }),
+    )
+
+    const user = userEvent.setup()
+    renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={() => {}} />)
+
+    const nameHeader = await screen.findByRole('columnheader', { name: 'Contractor name' })
+    expect(lastUrl).not.toContain('sort_by')
+
+    await user.click(nameHeader)
+
+    await waitFor(() => {
+      expect(lastUrl).toContain('sort_by=name%3Aasc')
+    })
+    expect(await screen.findByRole('columnheader', { name: 'Contractor name' })).toHaveAttribute(
+      'aria-sort',
+      'ascending',
+    )
+
+    await user.click(nameHeader)
+    await waitFor(() => {
+      expect(lastUrl).toContain('sort_by=name%3Adesc')
+    })
+
+    // A third activation completes the cycle, returning the list to the API's default order.
+    await user.click(nameHeader)
+    await waitFor(() => {
+      expect(lastUrl).not.toContain('sort_by')
+    })
+    expect(screen.getByRole('columnheader', { name: 'Contractor name' })).toHaveAttribute(
+      'aria-sort',
+      'none',
+    )
+  })
+})
