@@ -540,11 +540,11 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 When unprocessed transition pay periods exist, the landing surface renders a Transition
 Payroll Alert. It looks ahead 90 days for upcoming transition periods and lists every one
-that hasn't been run, grouped by pay schedule, with run and skip actions on each row. Choosing to run emits `transition/runPayroll`.
-A transition payroll that is already calculated offers Review and submit instead, which emits
-`payroll/review`, the same as a calculated row in the payroll list.
-Handle it, and `transition/payrollSelected` from the payroll list, by rendering
-`Payroll.TransitionConfiguration` with the supplied `payrollUuid`.
+that hasn't been run, grouped by pay schedule, with run and skip actions on each row.
+Clicking Run emits `transition/runPayroll`. If the payroll is already calculated, the button
+reads Review and submit and emits `payroll/review` instead, like the payroll list.
+To handle `transition/runPayroll`, or `transition/payrollSelected` from the payroll list,
+render `Payroll.TransitionConfiguration` with the `payrollUuid` from the event.
 Skipping opens a confirmation dialog — warning that employees will not be paid for the
 period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
 periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API

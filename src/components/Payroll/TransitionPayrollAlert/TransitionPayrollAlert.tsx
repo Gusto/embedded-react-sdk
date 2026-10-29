@@ -73,23 +73,22 @@ function Root({ companyId, hasBlockers }: { companyId: string; hasBlockers?: boo
     { enabled: sortedPayPeriodDates.length > 0 },
   )
 
-  const calculatedPayrollUuids = (transitionPayrollsData?.payrollList ?? [])
-    .filter(payroll => payroll.calculatedAt)
-    .map(payroll => payroll.payrollUuid)
-    .filter((payrollUuid): payrollUuid is string => typeof payrollUuid === 'string')
+  const calculatedPayrollUuids = (transitionPayrollsData?.payrollList ?? []).flatMap(payroll =>
+    payroll.calculatedAt && payroll.payrollUuid ? [payroll.payrollUuid] : [],
+  )
 
-  const gateQueryError = paySchedulesError ?? transitionPayrollsError
+  const queryError = paySchedulesError ?? transitionPayrollsError
 
   useEffect(() => {
-    if (!gateQueryError) return
-    onEvent(componentEvents.ERROR, gateQueryError)
-    const sdkError = normalizeToSDKError(gateQueryError)
+    if (!queryError) return
+    onEvent(componentEvents.ERROR, queryError)
+    const sdkError = normalizeToSDKError(queryError)
     observability?.onError?.({
       ...sdkError,
       timestamp: Date.now(),
       componentName: COMPONENT_NAME,
     })
-  }, [gateQueryError, onEvent, observability])
+  }, [queryError, onEvent, observability])
 
   const groupedPayPeriods = useMemo<TransitionPayPeriodGroup[]>(() => {
     if (!paySchedulesData) return []

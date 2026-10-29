@@ -28,12 +28,6 @@ type PayrollFlowEventPayloads = {
     payPeriod?: PayrollPayPeriodType
     payrollUuid?: string
   }
-  [componentEvents.RUN_TRANSITION_PAYROLL]: {
-    payrollUuid?: string
-  }
-  [componentEvents.TRANSITION_PAYROLL_SELECTED]: {
-    payrollUuid?: string
-  }
   [componentEvents.TRANSITION_CONFIGURED]: {
     payrollUuid: string
   }
@@ -243,28 +237,12 @@ export const payrollFlowMachine = {
     transition(
       componentEvents.RUN_TRANSITION_PAYROLL,
       'transitionConfiguration',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<
-            PayrollFlowEventPayloads,
-            typeof componentEvents.RUN_TRANSITION_PAYROLL
-          >,
-        ) => toTransitionConfigurationReducer(ctx, ev),
-      ),
+      reduce(toTransitionConfigurationReducer),
     ),
     transition(
       componentEvents.TRANSITION_PAYROLL_SELECTED,
       'transitionConfiguration',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<
-            PayrollFlowEventPayloads,
-            typeof componentEvents.TRANSITION_PAYROLL_SELECTED
-          >,
-        ) => toTransitionConfigurationReducer(ctx, ev),
-      ),
+      reduce(toTransitionConfigurationReducer),
     ),
     transition(
       componentEvents.RUN_OFF_CYCLE_PAYROLL,

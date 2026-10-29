@@ -16,7 +16,7 @@ Hub for running and managing all payrolls across a company's pay schedules.
 
 ## Remarks
 
-Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow. Running a transition payroll opens TransitionConfiguration first, then the regular payroll steps for the same payroll.
+Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow. Running a transition payroll opens TransitionConfiguration first. After it saves, the regular payroll steps open for the same payroll.
 
 ## Example
 
@@ -63,9 +63,9 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `runPayroll/summary/viewed` | The summary screen is opened | `{ payrollId: string }` |
 | `runPayroll/receipt/viewed` | The receipt screen is opened | `{ payrollId: string }` |
 | `runPayroll/offCycle/start` | The user starts an off-cycle payroll | — |
-| `transition/runPayroll` | The user runs a pending transition payroll from the alert | `{ payrollUuid: string, startDate: string, endDate: string, payScheduleUuid: string }` |
-| `transition/payrollSelected` | The user runs a transition payroll from the payroll list | `{ payrollUuid: string, payPeriod: object }` |
-| `transition/configured` | The transition payroll settings were saved | `{ payrollUuid: string, payrollPrepared: object }` |
+| `transition/runPayroll` | The user clicks Run on a transition payroll in the alert | `{ payrollUuid: string, startDate: string, endDate: string, payScheduleUuid: string }` |
+| `transition/payrollSelected` | The user clicks Run on a transition payroll in the payroll list | `{ payrollUuid: string, payPeriod: object }` |
+| `transition/configured` | The transition payroll settings are saved | `{ payrollUuid: string, payrollPrepared: object }` |
 | `payroll/saveAndExit` | The user clicks Save and Exit | — |
 
 ## Sub-components
@@ -83,7 +83,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 <!-- guide-source: src/components/Payroll/PayrollFlow/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving its settings (`transition/configured`) hands off to `PayrollExecutionFlow` for the same payroll; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
+`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving it (`transition/configured`) opens `PayrollExecutionFlow` for the same payroll; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
 
 ```mermaid
 flowchart LR

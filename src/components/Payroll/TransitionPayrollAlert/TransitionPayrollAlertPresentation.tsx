@@ -19,9 +19,9 @@ export interface TransitionPayPeriodGroup {
 
 interface TransitionPayrollAlertPresentationProps {
   groupedPayPeriods: TransitionPayPeriodGroup[]
-  /** UUIDs of transition payrolls that are already calculated. Their rows offer Review and submit instead of Run. */
+  /** IDs of payrolls that are already calculated. These rows show Review and submit instead of Run. */
   calculatedPayrollUuids?: string[]
-  /** Called when the user clicks Run, or Review and submit, on a row. */
+  /** Called when the user clicks Run or Review and submit on a row. */
   onRunPayroll: (payPeriod: PayPeriod) => void
   onSkipPayroll: (payPeriod: PayPeriod) => void
   showSkipSuccessAlert: boolean

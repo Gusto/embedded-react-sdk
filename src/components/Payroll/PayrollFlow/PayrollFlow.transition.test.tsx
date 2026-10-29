@@ -7,10 +7,10 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
-// Covers the PayrollFlow transition path: running a transition payroll from the alert or the
-// payroll list opens TransitionConfiguration, and saving it opens PayrollConfiguration for the
-// same payroll. The landing screen and the two leaf screens are stubbed so the test asserts
-// routing, props, and events rather than leaf internals.
+// Tests the transition path in PayrollFlow. Clicking Run on a transition payroll, in the alert
+// or the list, opens TransitionConfiguration. Saving it opens PayrollConfiguration for the same
+// payroll. The landing page and both screens are stubbed, so this only checks routing, props,
+// and events.
 
 const COMPANY_ID = 'company-123'
 const TRANSITION_PAYROLL_ID = 'transition-payroll-uuid'
