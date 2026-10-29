@@ -16,6 +16,10 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
+    // Use the browser version of each package's types. The test mock server in
+    // src/test/mocks/server.ts needs this: @mswjs/interceptors has a Node copy and a
+    // browser copy of the same types, and TypeScript won't mix the two. This only
+    // changes types. It does not change how code runs.
     "customConditions": ["browser"],
     "resolveJsonModule": true,
     "isolatedModules": true,
