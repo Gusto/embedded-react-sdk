@@ -175,6 +175,17 @@ describe('Payroll helpers', () => {
   })
 
   describe('getTotalPtoHours', () => {
+    it('uses the API hours without adding approved requests a second time', () => {
+      expect(
+        getTotalPtoHours({
+          paidTimeOff: [
+            { name: 'Vacation', hours: '2.5', approvedRequestHours: '8.5' },
+            { name: 'Sick', hours: '0', approvedRequestHours: '4' },
+          ],
+        }),
+      ).toBe(2.5)
+    })
+
     it('should return 0 when no paid time off', () => {
       const compensation = {}
       expect(getTotalPtoHours(compensation)).toBe(0)

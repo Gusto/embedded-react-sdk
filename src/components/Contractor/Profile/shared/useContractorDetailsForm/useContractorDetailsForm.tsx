@@ -430,8 +430,12 @@ export function useContractorDetailsForm({
               selfOnboarding: selfOnboardingEnabled,
               email:
                 showEmailField || selfOnboardingEnabled ? payload.email || undefined : undefined,
+              // On update, an Hourly contractor with no stored rate has no `hourlyRate` value at
+              // all; the finite check keeps that from serializing as the string "undefined".
               hourlyRate:
-                payload.wageType === WageType.Hourly ? String(payload.hourlyRate) : undefined,
+                payload.wageType === WageType.Hourly && Number.isFinite(payload.hourlyRate)
+                  ? String(payload.hourlyRate)
+                  : undefined,
               ...(payload.type === ContractorType.Individual
                 ? {
                     firstName: payload.firstName,

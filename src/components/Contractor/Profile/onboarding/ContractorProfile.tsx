@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import {
   useContractorDetailsForm,
   ContractorType,
+  WageType,
   type ContractorDetailsFormData,
   type ContractorDetailsOptionalFieldsToRequire,
   type UseContractorDetailsFormReady,
@@ -377,7 +378,19 @@ function ContractorProfileReady({
                 </>
               )}
 
-              <Fields.WageType label={t('fields.wageType.label')} />
+              <Fields.WageType
+                label={t('fields.wageType.label')}
+                getOptionLabel={value =>
+                  value === WageType.Hourly
+                    ? t('fields.wageType.hourlyLabel')
+                    : t('fields.wageType.fixedLabel')
+                }
+                getOptionDescription={value =>
+                  value === WageType.Hourly
+                    ? t('fields.wageType.hourlyDescription')
+                    : t('fields.wageType.fixedDescription')
+                }
+              />
 
               {Fields.HourlyRate && (
                 <Fields.HourlyRate

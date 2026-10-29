@@ -4082,6 +4082,14 @@ export namespace Translations {
       wageType: {
         /** @defaultValue `"Wage Type"` */
         label: string
+        /** @defaultValue `"Fixed"` */
+        fixedLabel: string
+        /** @defaultValue `"Hourly"` */
+        hourlyLabel: string
+        /** @defaultValue `"Pay a fixed amount each pay period."` */
+        fixedDescription: string
+        /** @defaultValue `"Pay based on hours worked."` */
+        hourlyDescription: string
       }
       hourlyRate: {
         /** @defaultValue `"Hourly Rate"` */
@@ -8151,6 +8159,12 @@ export namespace Translations {
       /** @defaultValue `"Hours must be less than or equal to 99,999"` */
       maxHours: string
     }
+    /** @defaultValue `"Preapproved hours"` */
+    preapprovedHoursColumn: string
+    /** @defaultValue `"Additional hours"` */
+    additionalHoursColumn: string
+    /** @defaultValue `"Type"` */
+    timeOffTypeColumn: string
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
   export interface PayrollPayrollFlow {
@@ -8988,6 +9002,10 @@ export namespace Translations {
       /** @defaultValue `"Hours must be less than or equal to 99,999"` */
       maxHours: string
     }
+    /** @defaultValue `"Preapproved hours"` */
+    preapprovedHoursColumn: string
+    /** @defaultValue `"Additional hours"` */
+    additionalHoursColumn: string
   }
   /** Translation keys for the `Payroll.Transition` i18n namespace. */
   export interface PayrollTransition {

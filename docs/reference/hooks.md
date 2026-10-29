@@ -718,8 +718,8 @@ attributes (`label`, `description`).
 ### RadioGroupHookFieldProps
 
 Props accepted by a radio group field surfaced through a form hook.
-Exposes `getOptionLabel` to customize how option entries are rendered as labels,
-and `validationMessages` for custom error text alongside the shared base field
+Exposes `getOptionLabel` and `getOptionDescription` to customize how option entries are
+rendered, and `validationMessages` for custom error text alongside the shared base field
 attributes (`label`, `description`).
 
 #### Extends
@@ -731,7 +731,7 @@ attributes (`label`, `description`).
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
 | `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
-| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel` and `getOptionDescription`. |
 
 #### Properties
 
@@ -742,6 +742,7 @@ attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionDescription?` | (`entry`: `TEntry`) => `ReactNode` | Maps a raw option entry to supporting text rendered beneath that radio option; when omitted, no per-option description is rendered. |
 | `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
