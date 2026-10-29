@@ -47,6 +47,29 @@ export type UseDismissalResult = HookLoadingResult | UseDismissalReady
  * @param input - The contractor to dismiss.
  * @returns A {@link HookLoadingResult} while the contractor is being fetched, or a {@link UseDismissalReady} once it has arrived.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import { useDismissal } from '@gusto/embedded-react-sdk'
+ *
+ * function DismissButton({ contractorId, endDate }: { contractorId: string; endDate: Date }) {
+ *   const dismissal = useDismissal({ contractorId })
+ *
+ *   if (dismissal.isLoading) return null
+ *
+ *   return (
+ *     <button
+ *       type="button"
+ *       disabled={dismissal.status.isPending}
+ *       onClick={() => {
+ *         void dismissal.actions.dismiss(endDate)
+ *       }}
+ *     >
+ *       Dismiss {dismissal.data.contractor.firstName}
+ *     </button>
+ *   )
+ * }
+ * ```
  */
 export function useDismissal({ contractorId }: UseDismissalProps): UseDismissalResult {
   const contractorQuery = useContractorsGet({ contractorUuid: contractorId })

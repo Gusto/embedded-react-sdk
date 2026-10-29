@@ -2384,6 +2384,23 @@
         "contractorUuid"
       ]
     },
+    "ContractorManagement.Rehire": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.DashboardFlow": {
       "endpoints": [
         {
@@ -2691,6 +2708,7 @@
         "ContractorManagement.ContractorList",
         "ContractorManagement.DashboardFlow",
         "ContractorManagement.Dismissal",
+        "ContractorManagement.Rehire",
         "ContractorOnboarding.OnboardingFlow"
       ]
     },
@@ -3059,6 +3077,23 @@
         "contractorUuid"
       ]
     },
+    "useContractorRehireForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/rehire",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "useContractorSignatureForm": {
       "endpoints": [
         {
@@ -3164,6 +3199,23 @@
       "variables": [
         "employeeId",
         "garnishmentId"
+      ]
+    },
+    "useDismissal": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/termination",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
       ]
     },
     "useEmployeeDetailsForm": {

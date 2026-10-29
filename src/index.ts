@@ -636,6 +636,28 @@ export type {
 
 // Domain data hooks - Contractor
 export { useContractorDocumentsList } from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
+export { useDismissal } from '@/components/Contractor/Dismissal/useDismissal'
+export type {
+  UseDismissalProps,
+  UseDismissalReady,
+  UseDismissalResult,
+} from '@/components/Contractor/Dismissal/useDismissal'
+export {
+  useContractorRehireForm,
+  ContractorRehireErrorCodes,
+} from '@/components/Contractor/Rehire/shared/useContractorRehireForm'
+export type {
+  UseContractorRehireFormProps,
+  UseContractorRehireFormResult,
+  UseContractorRehireFormReady,
+  ContractorRehireFormFields,
+  ContractorRehireFieldsMetadata,
+  ContractorRehireErrorCode,
+  ContractorRehireFormData,
+  ContractorRehireFormField,
+  ContractorRehireRequiredValidation,
+  StartDateFieldProps as ContractorRehireStartDateFieldProps,
+} from '@/components/Contractor/Rehire/shared/useContractorRehireForm'
 export type {
   UseContractorDocumentsListParams,
   UseContractorDocumentsListResult,

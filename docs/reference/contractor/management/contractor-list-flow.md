@@ -29,10 +29,10 @@ matching `OnboardingFlow`'s own screens exactly. Submitting, or cancelling
 from any step, returns to this list.
 
 "Dismiss" routes into [Dismissal](blocks.md#dismissal), a standalone form for scheduling
-the contractor's dismissal date. "Rehire" has no corresponding sub-flow yet
-and is not handled internally — it continues to fire its documented event
-(`contractor/rehire`) straight through `onEvent` for the host app to
-handle, exactly as it does outside this flow.
+the contractor's dismissal date, and "Rehire" routes into [Rehire](blocks.md#rehire),
+the equivalent form for scheduling a dismissed contractor's start date.
+Submitting either returns to the list with a success banner; cancelling
+returns with none.
 
 The flow forwards every event emitted by its blocks to `onEvent`;
 see the events table on each block for the full set of events and
@@ -73,6 +73,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [ContractorList](blocks.md#contractorlist) | Renders a tabbed list of a company's contractors split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, view details, dismiss, rehire, cancel a scheduled dismissal or rehire). |
 | [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single contractor's details, pay, and documents. |
 | [Dismissal](blocks.md#dismissal) | Standalone form for scheduling a contractor's dismissal. |
+| [Rehire](blocks.md#rehire) | Standalone form for scheduling a dismissed contractor's rehire. |
 | [ContractorOnboarding.ContractorProfile](../onboarding/blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [ContractorOnboarding.Address](../onboarding/blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
 | [ContractorOnboarding.PaymentMethod](../onboarding/blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
@@ -93,7 +94,7 @@ The dashboard is given a "Back to contractors" header that emits `contractor/ret
 
 "Dismiss" (`contractor/dismiss`) routes into `Dismissal`, a standalone form for scheduling the contractor's dismissal date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
 
-"Rehire" (`contractor/rehire`) has no corresponding sub-flow yet. It fires its documented event straight through to the host app, exactly as `ContractorList` does on its own outside this flow.
+"Rehire" (`contractor/rehire`) routes into `Rehire`, the equivalent form for scheduling a dismissed contractor's start date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
 
 ```mermaid
 flowchart LR
@@ -102,10 +103,12 @@ flowchart LR
   ContractorList ---->|"contractor/view"| DashboardFlow
   ContractorList ---->|"contractor/create<br/>contractor/update"| ContractorProfile["ContractorOnboarding.<br/>ContractorProfile"]
   ContractorList ---->|"contractor/dismiss"| Dismissal
+  ContractorList ---->|"contractor/rehire"| Rehire
 
   DashboardFlow -->|"contractor/returnToList"| ContractorList
   ContractorProfile -->|"CANCEL<br/>contractor/submit/done<br/>(from any onboarding step)"| ContractorList
   Dismissal -->|"CANCEL<br/>contractor/returnToList<br/>contractor/dismissal/scheduled"| ContractorList
+  Rehire -->|"CANCEL<br/>contractor/returnToList<br/>contractor/rehire/scheduled"| ContractorList
 
   class DashboardFlow flow
 ```
@@ -129,6 +132,7 @@ flowchart LR
 | PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
 | GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
 | PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method) |
+| POST | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire) |
 | DELETE | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-rehire) |
 | POST | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination) |
 | DELETE | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination) |

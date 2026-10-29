@@ -1475,6 +1475,7 @@ export const componentEvents: {
     readonly CONTRACTOR_REHIRE: "contractor/rehire";
     readonly CONTRACTOR_DISMISSAL_CANCELLED: "contractor/dismissal/cancelled";
     readonly CONTRACTOR_DISMISSAL_SCHEDULED: "contractor/dismissal/scheduled";
+    readonly CONTRACTOR_REHIRE_SCHEDULED: "contractor/rehire/scheduled";
     readonly CONTRACTOR_REHIRE_CANCELLED: "contractor/rehire/cancelled";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED: "contractor/management/profile/editRequested";
     readonly CONTRACTOR_MANAGEMENT_PROFILE_UPDATED: "contractor/management/profile/updated";
@@ -1996,6 +1997,8 @@ declare namespace ContractorManagement {
         ContractorListFlowProps,
         Dismissal,
         DismissalProps,
+        Rehire,
+        RehireProps,
         DashboardFlow_2 as DashboardFlow,
         Dashboard_2 as Dashboard,
         DashboardFlowProps_2 as DashboardFlowProps,
@@ -2193,6 +2196,34 @@ interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'C
     defaultValues?: Partial<ContractorDetailsFormData>;
     isAdmin: false;
 }
+
+// @public
+export type ContractorRehireErrorCode = (typeof ContractorRehireErrorCodes)[keyof typeof ContractorRehireErrorCodes];
+
+// @public
+export const ContractorRehireErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type ContractorRehireFieldsMetadata = { startDate: FieldMetadata; };
+
+// @public
+export type ContractorRehireFormData = { startDate: string; };
+
+// @public
+export type ContractorRehireFormField = "startDate";
+
+// @public
+export interface ContractorRehireFormFields {
+    StartDate: ComponentType<ContractorRehireStartDateFieldProps>;
+}
+
+// @public
+export type ContractorRehireRequiredValidation = typeof ContractorRehireErrorCodes.REQUIRED;
+
+// @public
+export type ContractorRehireStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorRehireRequiredValidation>>;
 
 // @public
 export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
@@ -4985,6 +5016,14 @@ interface RecoveryCasesProps extends Omit<BaseComponentInterface<never>, 'onEven
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
 // @public
+function Rehire(input: RehireProps): JSX;
+
+// @public
+interface RehireProps extends BaseComponentInterface<'Contractor.Rehire'> {
+    contractorId: string;
+}
+
+// @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -5110,6 +5149,8 @@ export interface Resources {
     'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
+    // (undocumented)
+    'Contractor.Rehire': Translations.ContractorRehire
     // (undocumented)
     'Contractor.SelectContractors': Translations.ContractorSelectContractors
     // (undocumented)
@@ -6421,6 +6462,34 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
+export function useContractorRehireForm(input: UseContractorRehireFormProps): HookLoadingResult | UseContractorRehireFormReady;
+
+// @public
+export interface UseContractorRehireFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorRehireFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorRehireFormReady extends BaseFormHookReady<ContractorRehireFieldsMetadata, ContractorRehireFormData, ContractorRehireFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<undefined> | undefined>;
+    };
+    data: {
+        contractor: Contractor;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorRehireFormResult = HookLoadingResult | UseContractorRehireFormReady;
+
+// @public
 export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
 
 // @public
@@ -6493,6 +6562,28 @@ export interface UseDeductionFormReady extends BaseFormHookReady<DeductionFormFi
 
 // @public
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
+
+// @public
+export function useDismissal(input: UseDismissalProps): UseDismissalResult;
+
+// @public
+export interface UseDismissalProps {
+    contractorId: string;
+}
+
+// @public
+export interface UseDismissalReady extends BaseHookReady<{
+    contractor: Contractor;
+}, {
+    isPending: boolean;
+}> {
+    actions: {
+        dismiss: (endDate: Date) => Promise<HookSubmitResult<unknown> | undefined>;
+    };
+}
+
+// @public
+export type UseDismissalResult = HookLoadingResult | UseDismissalReady;
 
 // @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;

@@ -145,6 +145,25 @@ describe('ManagementContractorList — Active tab', () => {
     expect(screen.getByText(/Starts /)).toBeInTheDocument()
   })
 
+  it('shows a "Rehire" badge on the Dismissed tab while a scheduled rehire has not taken effect', async () => {
+    const user = userEvent.setup()
+    mockList([
+      {
+        ...baseContractor,
+        is_active: false,
+        dismissal_date: '2026-10-15',
+        upcoming_employment: { start_date: '2026-10-30' },
+        rehire_cancellation_eligible: true,
+      },
+    ])
+
+    renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={() => {}} />)
+
+    await user.click(await screen.findByRole('tab', { name: 'Dismissed' }))
+
+    expect(await screen.findByText(/Rehire /)).toBeInTheDocument()
+  })
+
   it('shows a "Last day" badge when a dismissal is scheduled', async () => {
     mockList([
       {
@@ -319,7 +338,9 @@ describe('ManagementContractorList — Dismissed tab', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'Dismissed' }))
     await screen.findByText('Ada Lovelace')
-    expect(screen.getByText('June 1')).toBeInTheDocument()
+    // Always year-qualified, even for the current year — a column mixing "June 1" and
+    // "June 1, 2025" across rows reads as a formatting bug.
+    expect(screen.getByText('June 1, 2026')).toBeInTheDocument()
   })
 
   it('offers "Rehire contractor" and fires contractor/rehire without calling the mutation', async () => {
@@ -415,7 +436,7 @@ describe('ManagementContractorList — tab switching', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'Dismissed' }))
     await waitFor(() => {
-      expect(lastUrl).toContain('terminated=true')
+      expect(lastUrl).toContain('terminated_today=true')
     })
   })
 

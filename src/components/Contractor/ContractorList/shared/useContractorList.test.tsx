@@ -171,7 +171,7 @@ describe('useContractorList', () => {
       expect(requestUrl).toContain('onboarded=false')
     })
 
-    it('requests terminated=true for the terminated filter', async () => {
+    it('requests terminated_today=true for the terminated filter', async () => {
       let requestUrl = ''
       server.use(
         handleGetContractorsList(({ request }) => {
@@ -191,7 +191,10 @@ describe('useContractorList', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(requestUrl).toContain('terminated=true')
+      // terminated_today, not terminated: the latter drops a contractor whose scheduled rehire
+      // hasn't started yet, leaving them absent from both the active and terminated filters.
+      expect(new URL(requestUrl).searchParams.get('terminated_today')).toBe('true')
+      expect(new URL(requestUrl).searchParams.has('terminated')).toBe(false)
     })
   })
 
@@ -326,6 +329,36 @@ describe('useContractorList', () => {
 
       if (!result.current.isLoading) {
         expect(result.current.data.contractors[0]?.allowedActions).toEqual(['view', 'rehire'])
+      }
+    })
+
+    it('terminated filter: offers cancel_rehire once a rehire is scheduled but not yet effective', async () => {
+      // The state right after ContractorManagement.Rehire succeeds: still inactive, with an
+      // employment that starts in the future. This row has to stay on the Dismissed tab —
+      // it is the only place "Cancel rehire" is reachable from.
+      mockList([
+        contractorFixture({
+          is_active: false,
+          dismissal_date: '2026-10-15',
+          upcoming_employment: { start_date: '2026-10-30' },
+          rehire_cancellation_eligible: true,
+        }),
+      ])
+
+      const { result } = renderHook(
+        () => useContractorList({ companyId: 'company-123', contractorType: 'terminated' }),
+        { wrapper: TestWrapper },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        expect(result.current.data.contractors[0]?.allowedActions).toEqual([
+          'view',
+          'cancel_rehire',
+        ])
       }
     })
 

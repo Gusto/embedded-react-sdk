@@ -15,7 +15,7 @@ The dashboard is given a "Back to contractors" header that emits `contractor/ret
 
 "Dismiss" (`contractor/dismiss`) routes into `Dismissal`, a standalone form for scheduling the contractor's dismissal date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
 
-"Rehire" (`contractor/rehire`) has no corresponding sub-flow yet. It fires its documented event straight through to the host app, exactly as `ContractorList` does on its own outside this flow.
+"Rehire" (`contractor/rehire`) routes into `Rehire`, the equivalent form for scheduling a dismissed contractor's start date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
 
 ```mermaid
 flowchart LR
@@ -24,10 +24,12 @@ flowchart LR
   ContractorList ---->|"contractor/view"| DashboardFlow
   ContractorList ---->|"contractor/create<br/>contractor/update"| ContractorProfile["ContractorOnboarding.<br/>ContractorProfile"]
   ContractorList ---->|"contractor/dismiss"| Dismissal
+  ContractorList ---->|"contractor/rehire"| Rehire
 
   DashboardFlow -->|"contractor/returnToList"| ContractorList
   ContractorProfile -->|"CANCEL<br/>contractor/submit/done<br/>(from any onboarding step)"| ContractorList
   Dismissal -->|"CANCEL<br/>contractor/returnToList<br/>contractor/dismissal/scheduled"| ContractorList
+  Rehire -->|"CANCEL<br/>contractor/returnToList<br/>contractor/rehire/scheduled"| ContractorList
 
   class DashboardFlow flow
 ```

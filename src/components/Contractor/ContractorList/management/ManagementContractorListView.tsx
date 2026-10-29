@@ -12,7 +12,7 @@ import XCircleSvg from '@/assets/icons/x-circle.svg?react'
 import EyeSvg from '@/assets/icons/eye.svg?react'
 import SlashCircleSvg from '@/assets/icons/slash-circle.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
-import { normalizeToDate, formatDateLong, formatDateLongWithYear } from '@/helpers/dateFormatting'
+import { normalizeToDate, formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { ContractorOnboardingStatus } from '@/shared/constants'
 
 /** @internal */
@@ -56,8 +56,7 @@ function ContractorNameCell({ contractor }: { contractor: ContractorWithActions 
 function formatBadgeDate(dateStr: string): string {
   const date = normalizeToDate(dateStr)
   if (!date) return ''
-  const isSameYear = date.getFullYear() === new Date().getFullYear()
-  return isSameYear ? formatDateLong(date) : formatDateLongWithYear(date)
+  return formatDateLongWithYear(date)
 }
 
 function isOnboardingEditReview(onboardingStatus?: string | null) {
@@ -192,6 +191,18 @@ export function ManagementContractorListView({
         title: t('dismissalDateLabel'),
         render: (contractor: ContractorWithActions) =>
           contractor.dismissalDate ? formatBadgeDate(contractor.dismissalDate) : '–',
+      },
+      {
+        key: 'status',
+        title: t('statusColumnLabel'),
+        render: (contractor: ContractorWithActions) =>
+          contractor.upcomingEmployment?.startDate ? (
+            <Components.Badge status="info">
+              {t('rehireBadge', {
+                date: formatBadgeDate(contractor.upcomingEmployment.startDate),
+              })}
+            </Components.Badge>
+          ) : null,
       },
     ]
   }
