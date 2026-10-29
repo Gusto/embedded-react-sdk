@@ -316,6 +316,69 @@ describe('composeSubmitHandler', () => {
     expect(onAllValid).not.toHaveBeenCalled()
   })
 
+  describe('in-flight submit guard', () => {
+    it('ignores submits for the same forms until the running one settles, across re-rendered handlers', async () => {
+      const form1 = createMockForm()
+      const form2 = createMockForm()
+      let finishFirstSave = () => {}
+      const onAllValid = vi
+        .fn<() => Promise<void>>()
+        .mockImplementationOnce(
+          () =>
+            new Promise<void>(resolve => {
+              finishFirstSave = resolve
+            }),
+        )
+        .mockResolvedValue(undefined)
+
+      const firstRender = composeSubmitHandler([form1, form2], onAllValid)
+      const firstSubmit = firstRender.handleSubmit(createMockEvent())
+      await vi.waitFor(() => {
+        expect(onAllValid).toHaveBeenCalledOnce()
+      })
+
+      const reRender = composeSubmitHandler([form1, form2], onAllValid)
+      const ignoredEvent = createMockEvent()
+      await reRender.handleSubmit(ignoredEvent)
+
+      expect(ignoredEvent.preventDefault).toHaveBeenCalledOnce()
+      expect(form1.formMethods.handleSubmit).toHaveBeenCalledOnce()
+      expect(onAllValid).toHaveBeenCalledOnce()
+
+      finishFirstSave()
+      await firstSubmit
+      await reRender.handleSubmit(createMockEvent())
+
+      expect(onAllValid).toHaveBeenCalledTimes(2)
+    })
+
+    it('accepts a new submit after the running one throws', async () => {
+      const form = createMockForm()
+      const onAllValid = vi
+        .fn<() => Promise<void>>()
+        .mockRejectedValueOnce(new Error('save failed'))
+        .mockResolvedValue(undefined)
+
+      const { handleSubmit } = composeSubmitHandler([form], onAllValid)
+      await expect(handleSubmit(createMockEvent())).rejects.toThrow('save failed')
+      await handleSubmit(createMockEvent())
+
+      expect(onAllValid).toHaveBeenCalledTimes(2)
+    })
+
+    it('does not block a submit for unrelated forms', async () => {
+      const busyForm = createMockForm()
+      const otherForm = createMockForm()
+      const busyOnAllValid = vi.fn<() => Promise<void>>(() => new Promise<void>(() => {}))
+      const otherOnAllValid = vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
+
+      void composeSubmitHandler([busyForm], busyOnAllValid).handleSubmit(createMockEvent())
+      await composeSubmitHandler([otherForm], otherOnAllValid).handleSubmit(createMockEvent())
+
+      expect(otherOnAllValid).toHaveBeenCalledOnce()
+    })
+  })
+
   describe('aggregated errorHandling', () => {
     it('aggregates errors across all forms', () => {
       const error1 = createMockError('Details fetch failed')

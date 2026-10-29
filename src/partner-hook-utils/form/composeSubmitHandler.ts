@@ -66,13 +66,15 @@ interface FormValidationResult {
  * @childOf {@link composeSubmitHandler}
  */
 export interface ComposeSubmitHandlerResult {
-  /** Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. */
+  /** Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. Ignores a submit while an earlier one for any of the same forms is still running. */
   handleSubmit: (e: SyntheticEvent) => Promise<void>
   /** Aggregated error state across all composed SDK form hooks. Pass to {@link composeErrorHandler} for screen-level error surfaces. */
   errorHandling: HookErrorHandling
 }
 
 type FormMethods = ComposableFormHookResult['form']['hookFormInternals']['formMethods']
+
+const formsWithSubmitInFlight = new WeakSet<FormMethods>()
 
 function isRawUseForm<T extends FieldValues>(
   input: ComposeSubmitInput<T>,
@@ -148,6 +150,11 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  * invalid field across all forms (sorted by `getBoundingClientRect()`). Only calls
  * `onAllValid` when every form passes.
  *
+ * A submit that arrives while an earlier one for any of the same forms is still validating or
+ * awaiting `onAllValid` is ignored, so a fast double-click can't run `onAllValid` twice. The
+ * guard clears once `onAllValid` settles, whether it resolves or throws, so a retry after a
+ * failed save goes through.
+ *
  * Uses `handleSubmit` rather than `trigger` so that react-hook-form sets
  * `formState.isSubmitted = true`, which enables `reValidateMode` (default: `onChange`).
  * Without this, errors set by manual `trigger()` calls would never clear as the user types.
@@ -192,31 +199,38 @@ export function composeSubmitHandler<TForms extends readonly FieldValues[]>(
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
 
-    const validationResults = await Promise.all(
-      forms.map(
-        input =>
-          new Promise<FormValidationResult>(resolve => {
-            const formMethods = extractFormMethods(input)
-            void formMethods.handleSubmit(
-              () => {
-                resolve({ input, formMethods, valid: true, errors: {} })
-              },
-              errors => {
-                resolve({ input, formMethods, valid: false, errors })
-              },
-            )()
-          }),
-      ),
-    )
+    const composedForms = forms.map(input => ({ input, formMethods: extractFormMethods(input) }))
+    if (composedForms.some(({ formMethods }) => formsWithSubmitInFlight.has(formMethods))) return
+    composedForms.forEach(({ formMethods }) => formsWithSubmitInFlight.add(formMethods))
 
-    const allValid = validationResults.every(r => r.valid)
+    try {
+      const validationResults = await Promise.all(
+        composedForms.map(
+          ({ input, formMethods }) =>
+            new Promise<FormValidationResult>(resolve => {
+              void formMethods.handleSubmit(
+                () => {
+                  resolve({ input, formMethods, valid: true, errors: {} })
+                },
+                errors => {
+                  resolve({ input, formMethods, valid: false, errors })
+                },
+              )()
+            }),
+        ),
+      )
 
-    if (!allValid) {
-      focusFirstInvalidAcrossForms(validationResults)
-      return
+      const allValid = validationResults.every(r => r.valid)
+
+      if (!allValid) {
+        focusFirstInvalidAcrossForms(validationResults)
+        return
+      }
+
+      await onAllValid()
+    } finally {
+      composedForms.forEach(({ formMethods }) => formsWithSubmitInFlight.delete(formMethods))
     }
-
-    await onAllValid()
   }
 
   const errorHandling = composeErrorHandler(errorSources)
