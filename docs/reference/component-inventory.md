@@ -1345,7 +1345,7 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `headers` | [`TableData`](#tabledata)[] | | Array of header cells for the table |
+| `headers` | [`TableHeaderData`](#tableheaderdata)[] | | Array of header cells for the table. A cell with `isSortable: true` also carries the [TableSortControls](#tablesortcontrols) for that column. |
 | `rows` | [`TableRow`](#tablerow)[] | | Array of rows to be displayed in the table |
 | `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
 | `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
@@ -1371,6 +1371,21 @@ Shape of a single cell your [Table](#tableprops) implementation receives for hea
 | `content` | `ReactNode` | Content to be displayed in the table cell |
 | `key` | `string` | Unique identifier for the table cell |
 
+<a id="tableheaderdata"></a>
+
+#### TableHeaderData
+
+> **TableHeaderData** = [`TableData`](#tabledata) & \{ `isSortable?`: `false`; \} \| [`TableSortControls`](#tablesortcontrols)
+
+Shape of a single header cell your [Table](#tableprops) implementation receives.
+Extends [TableData](#tabledata) with the column's sort state when the column is sortable.
+
+##### Remarks
+
+A header cell either omits `isSortable` (or sets it to `false`), in which case it carries nothing
+beyond [TableData](#tabledata), or sets `isSortable: true` and carries the full
+[TableSortControls](#tablesortcontrols) alongside it.
+
 <a id="tablerow"></a>
 
 #### TableRow
@@ -1383,6 +1398,44 @@ Shape of a single row your [Table](#tableprops) implementation receives, contain
 | ------ | ------ | ------ |
 | `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
 | `key` | `string` | Unique identifier for the table row |
+
+<a id="tablesortcontrols"></a>
+
+#### TableSortControls
+
+Sort state and handlers a sortable header cell carries, which your
+[Table](#tableprops) implementation uses to render that column's sort affordance.
+
+##### Remarks
+
+Every handler takes no arguments and returns nothing, so each one can be passed straight to an
+`onClick`. Render whichever affordance suits your design system: a single control wired to
+[onSort](#tablesortcontrols), or separate controls wired to
+[onSortAscending](#tablesortcontrols),
+[onSortDescending](#tablesortcontrols), and
+[onClearSort](#tablesortcontrols).
+
+A sortable column should be activatable by both pointer and keyboard, and should report
+[sortDirection](#tablesortcontrols) to assistive technology via `aria-sort`.
+
+##### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `isSortable` | `true` | Marks this header cell as sortable |
+| `onClearSort` | () => `void` | Clears the sort, returning the data to its default order |
+| `onSort` | () => `void` | Advances this column to the next sort in the cycle: `'none'` to `'ascending'` to `'descending'` and back to `'none'` |
+| `onSortAscending` | () => `void` | Sorts this column in ascending order |
+| `onSortDescending` | () => `void` | Sorts this column in descending order |
+| `sortDirection` | `"none"` \| [`TableSortDirection`](#tablesortdirection) | Direction this column is currently sorted in, or `'none'` while the data is in its default order or is sorted by a different column |
+
+<a id="tablesortdirection"></a>
+
+#### TableSortDirection
+
+> **TableSortDirection** = `"ascending"` \| `"descending"`
+
+Direction a sorted column is ordered in.
 
 ***
 
