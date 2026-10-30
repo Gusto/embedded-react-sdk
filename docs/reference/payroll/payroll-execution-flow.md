@@ -17,10 +17,10 @@ Guided flow to configure, review, and submit a single payroll.
 ## Remarks
 
 This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
-by the off-cycle, dismissal, and transition flows after they have created their respective
-payrolls. Render it directly when you have built your own payroll-creation step and want to hand
-the user off to the standard execution experience without re-implementing it. The flow ships
-with breadcrumb navigation and the standard wire-confirmation UX.
+by the off-cycle and dismissal flows after they have created their respective payrolls. Render it
+directly when you have built your own payroll-creation step and want to hand the user off to the
+standard execution experience without re-implementing it. The flow ships with breadcrumb
+navigation and the standard wire-confirmation UX.
 
 ## Example
 

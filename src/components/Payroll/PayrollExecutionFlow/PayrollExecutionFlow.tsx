@@ -89,10 +89,10 @@ const INITIAL_NAMESPACE_MAP = {
  *
  * @remarks
  * This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
- * by the off-cycle, dismissal, and transition flows after they have created their respective
- * payrolls. Render it directly when you have built your own payroll-creation step and want to hand
- * the user off to the standard execution experience without re-implementing it. The flow ships
- * with breadcrumb navigation and the standard wire-confirmation UX.
+ * by the off-cycle and dismissal flows after they have created their respective payrolls. Render it
+ * directly when you have built your own payroll-creation step and want to hand the user off to the
+ * standard execution experience without re-implementing it. The flow ships with breadcrumb
+ * navigation and the standard wire-confirmation UX.
  *
  * @events
  * | Event | Description | Data |
@@ -151,7 +151,7 @@ export function PayrollExecutionFlow(props: PayrollExecutionFlowProps) {
 /**
  * Flow-internal entry point for {@link PayrollExecutionFlow} that additionally accepts
  * flow-injected `prefixBreadcrumbs`. Partners use {@link PayrollExecutionFlow}; our own parent
- * flows (off-cycle, dismissal, transition, and `PayrollFlow`) render this directly to prepend
+ * flows (off-cycle, dismissal, and `PayrollFlow`) render this directly to prepend
  * their own breadcrumb trail.
  *
  * @internal

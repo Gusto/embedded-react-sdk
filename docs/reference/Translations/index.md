@@ -5910,20 +5910,6 @@ Translation keys for the `Payroll.RecoveryCasesResubmit` i18n namespace.
 
 ***
 
-<a id="payrolltransition"></a>
-
-### PayrollTransition
-
-Translation keys for the `Payroll.Transition` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrolltransitionbreadcrumblabel"></a> `breadcrumbLabel` | `"Transition Payroll"` |
-
-***
-
 <a id="payrolltransitionconfiguration"></a>
 
 ### PayrollTransitionConfiguration
@@ -5959,33 +5945,6 @@ Translation keys for the `Payroll.TransitionConfiguration` i18n namespace.
 | `wageTypeGroups.supplemental` | |
 | `wageTypeGroups.supplemental.description` | `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` |
 | `wageTypeGroups.supplemental.label` | `"Supplemental wages, bonus wages, commission"` |
-
-***
-
-<a id="payrolltransitioncreation"></a>
-
-### PayrollTransitionCreation
-
-Translation keys for the `Payroll.TransitionCreation` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-payrolltransitioncreationbreadcrumblabel"></a> `breadcrumbLabel` | `"Transition Payroll"` |
-| <a id="property-payrolltransitioncreationcheckdatelabel"></a> `checkDateLabel` | `"Check date"` |
-| <a id="property-payrolltransitioncreationcontinuecta"></a> `continueCta` | `"Continue"` |
-| <a id="property-payrolltransitioncreationdetailsheading"></a> `detailsHeading` | `"Transition Details"` |
-| <a id="property-payrolltransitioncreationerrors"></a> `errors` | |
-| `errors.checkDateAchLeadTime_one` | `"Check date must be at least {{count}} business day from today"` |
-| `errors.checkDateAchLeadTime_other` | `"Check date must be at least {{count}} business days from today"` |
-| `errors.checkDateRequired` | `"Check date is required"` |
-| `errors.missingPayrollId` | `"Transition payroll was created but no payroll ID was returned"` |
-| <a id="property-payrolltransitioncreationpagedescription"></a> `pageDescription` | `"A transition payroll covers the gap between your old and new pay schedules."` |
-| <a id="property-payrolltransitioncreationpagetitle"></a> `pageTitle` | `"Transition Payroll"` |
-| <a id="property-payrolltransitioncreationpayperiodlabel"></a> `payPeriodLabel` | `"Pay period"` |
-| <a id="property-payrolltransitioncreationpayschedulelabel"></a> `payScheduleLabel` | `"Pay schedule"` |
-| <a id="property-payrolltransitioncreationtransitionexplanation"></a> `transitionExplanation` | `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` |
 
 ***
 
@@ -6247,9 +6206,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcespayrollprintcheckssummary"></a> `Payroll.PrintChecksSummary` | [`PayrollPrintChecksSummary`](#payrollprintcheckssummary) |
 | <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
 | <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
-| <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
 | <a id="property-resourcespayrolltransitionconfiguration"></a> `Payroll.TransitionConfiguration` | [`PayrollTransitionConfiguration`](#payrolltransitionconfiguration) |
-| <a id="property-resourcespayrolltransitioncreation"></a> `Payroll.TransitionCreation` | [`PayrollTransitionCreation`](#payrolltransitioncreation) |
 | <a id="property-resourcespayrolltransitionpayrollalert"></a> `Payroll.TransitionPayrollAlert` | [`PayrollTransitionPayrollAlert`](#payrolltransitionpayrollalert) |
 | <a id="property-resourcespayrollwireinstructions"></a> `Payroll.WireInstructions` | [`PayrollWireInstructions`](#payrollwireinstructions) |
 
