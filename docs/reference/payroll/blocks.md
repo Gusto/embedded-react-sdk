@@ -177,6 +177,7 @@ regular deductions and uses the regular rate.
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
 | POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
 | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
@@ -898,7 +899,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 The check date must be at least the company's ACH lead time (typically two business
 days) from today. Deductions default to included and tax withholding defaults to the
-regular rate with an every-other-week pay period.
+regular rate at the matching pay schedule frequency, falling back to every other week.
 
 <br />
 

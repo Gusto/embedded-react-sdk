@@ -7,8 +7,8 @@ import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrolls
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { getDefaultWithholdingPayPeriod } from '../OffCycleTaxWithholdingTable/getDefaultWithholdingPayPeriod'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
 import type {
@@ -100,10 +100,9 @@ function Root({ dictionary, companyId, payrollId, className }: TransitionConfigu
   )
 
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
-    withholdingPayPeriod:
-      payroll?.withholdingPayPeriod ??
-      paySchedule?.frequency ??
-      WithholdingPayPeriod.EveryOtherWeek,
+    withholdingPayPeriod: getDefaultWithholdingPayPeriod(
+      payroll?.withholdingPayPeriod ?? paySchedule?.frequency,
+    ),
     withholdingRate: payroll?.fixedWithholdingRate ? 'supplemental' : 'regular',
   })
   const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)

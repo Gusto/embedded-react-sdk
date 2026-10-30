@@ -3,12 +3,10 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
-import {
-  OffCycleReason,
-  WithholdingPayPeriod,
-} from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { getDefaultWithholdingPayPeriod } from '../OffCycleTaxWithholdingTable/getDefaultWithholdingPayPeriod'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
@@ -37,7 +35,7 @@ import { toRFCDate } from '@/helpers/dateFormatting'
  *
  * The check date must be at least the company's ACH lead time (typically two business
  * days) from today. Deductions default to included and tax withholding defaults to the
- * regular rate with an every-other-week pay period.
+ * regular rate at the matching pay schedule frequency, falling back to every other week.
  *
  * @param props - {@link TransitionCreationProps} plus base component props.
  * @returns The transition payroll creation form.
@@ -74,8 +72,12 @@ function Root({
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
 
+  const paySchedule = paySchedulesData.payScheduleShowResponse?.find(
+    schedule => schedule.uuid === payScheduleUuid,
+  )
+
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
-    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
+    withholdingPayPeriod: getDefaultWithholdingPayPeriod(paySchedule?.frequency),
     withholdingRate: 'regular',
   })
   const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)
@@ -93,11 +95,7 @@ function Root({
     setIsTaxWithholdingModalOpen(false)
   }, [])
 
-  const payScheduleName = useMemo(() => {
-    const schedules = paySchedulesData.payScheduleShowResponse ?? []
-    const match = schedules.find(s => s.uuid === payScheduleUuid)
-    return match?.customName ?? match?.name ?? null
-  }, [paySchedulesData, payScheduleUuid])
+  const payScheduleName = paySchedule?.customName ?? paySchedule?.name ?? null
 
   const translateValidation = (key: string, options?: Record<string, unknown>): string =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

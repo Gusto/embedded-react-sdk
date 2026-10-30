@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse, type HttpResponseResolver } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { TransitionCreation } from './TransitionCreation'
+import { API_BASE_URL } from '@/test/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { handleCreateOffCyclePayroll } from '@/test/mocks/apis/terminations'
@@ -12,7 +13,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 const COMPANY_ID = 'company-123'
 const START_DATE = '2025-08-14'
 const END_DATE = '2025-08-27'
-const PAY_SCHEDULE_UUID = '1478a82e-b45c-4980-843a-6ddc3b78268e'
+const PAY_SCHEDULE_UUID = 'schedule-1'
 
 describe('TransitionCreation', () => {
   const defaultProps = {
@@ -129,6 +130,24 @@ describe('TransitionCreation', () => {
   })
 
   describe('tax withholding rates', () => {
+    it('uses the matching schedule rather than the first active schedule', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+          HttpResponse.json([
+            { uuid: 'other', version: 'v1', active: true, frequency: 'Monthly' },
+            { uuid: PAY_SCHEDULE_UUID, version: 'v2', active: false, frequency: 'Every week' },
+          ]),
+        ),
+      )
+      renderWithProviders(<TransitionCreation {...defaultProps} />)
+      expect(await screen.findAllByText(/regular wages, paid every week/i)).toHaveLength(2)
+    })
+
+    it('falls back when the transition schedule cannot be found', async () => {
+      renderWithProviders(<TransitionCreation {...defaultProps} payScheduleUuid="missing" />)
+      expect(await screen.findAllByText(/regular wages, paid every other week/i)).toHaveLength(2)
+    })
+
     it('renders the tax withholding rates table', async () => {
       renderWithProviders(<TransitionCreation {...defaultProps} />)
 
@@ -164,9 +183,9 @@ describe('TransitionCreation', () => {
         expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
       })
 
-      expect(
-        screen.getAllByText(/regular wages, paid every other week/i).length,
-      ).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText(/regular wages, paid every week/i).length).toBeGreaterThanOrEqual(
+        1,
+      )
 
       await user.click(screen.getByRole('button', { name: /edit/i }))
 
@@ -181,9 +200,9 @@ describe('TransitionCreation', () => {
         expect(screen.queryByText('Rate for regular wages and earnings')).not.toBeInTheDocument()
       })
 
-      expect(
-        screen.getAllByText(/regular wages, paid every other week/i).length,
-      ).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText(/regular wages, paid every week/i).length).toBeGreaterThanOrEqual(
+        1,
+      )
     })
 
     it('defaults to regular withholding rate for transition payrolls', async () => {
@@ -193,7 +212,7 @@ describe('TransitionCreation', () => {
         expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
       })
 
-      const regularWagesTexts = screen.getAllByText(/regular wages, paid every other week/i)
+      const regularWagesTexts = screen.getAllByText(/regular wages, paid every week/i)
       expect(regularWagesTexts.length).toBeGreaterThanOrEqual(1)
     })
   })
@@ -289,6 +308,7 @@ describe('TransitionCreation', () => {
         start_date: START_DATE,
         end_date: END_DATE,
         check_date: '2026-12-15',
+        withholding_pay_period: 'Every week',
       })
     })
   })
