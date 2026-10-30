@@ -1,5 +1,5 @@
-import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import type { Department } from '@gusto/embedded-api/models/components/department'
+import { isMissingOAuthScopesError } from '@/helpers/missingOAuthScopes'
 
 /**
  * Narrows department responses to entries that can be assigned a schedule.
@@ -22,23 +22,5 @@ export function getCompanyDepartments(departments: Department[] | undefined) {
  * @internal
  */
 export function isAssignmentAccessDenied(error: unknown): boolean {
-  if (!(error instanceof GustoEmbeddedError) || error.httpMeta.response.status !== 403) return false
-  try {
-    const body: unknown = JSON.parse(error.httpMeta.body)
-    return (
-      typeof body === 'object' &&
-      body !== null &&
-      'errors' in body &&
-      Array.isArray(body.errors) &&
-      body.errors.some(
-        (entry: unknown) =>
-          typeof entry === 'object' &&
-          entry !== null &&
-          'category' in entry &&
-          entry.category === 'missing_oauth_scopes',
-      )
-    )
-  } catch {
-    return false
-  }
+  return isMissingOAuthScopesError(error)
 }
