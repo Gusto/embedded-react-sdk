@@ -316,6 +316,41 @@ describe('composeSubmitHandler', () => {
     expect(onAllValid).not.toHaveBeenCalled()
   })
 
+  it('ignores submits for the same forms until the running one settles, across re-rendered handlers', async () => {
+    const form1 = createMockForm()
+    const form2 = createMockForm()
+    let finishFirstSave = () => {}
+    const onAllValid = vi
+      .fn<() => Promise<void>>()
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>(resolve => {
+            finishFirstSave = resolve
+          }),
+      )
+      .mockResolvedValue(undefined)
+
+    const firstRender = composeSubmitHandler([form1, form2], onAllValid)
+    const firstSubmit = firstRender.handleSubmit(createMockEvent())
+    await vi.waitFor(() => {
+      expect(onAllValid).toHaveBeenCalledOnce()
+    })
+
+    const reRender = composeSubmitHandler([form1, form2], onAllValid)
+    const ignoredEvent = createMockEvent()
+    await reRender.handleSubmit(ignoredEvent)
+
+    expect(ignoredEvent.preventDefault).toHaveBeenCalledOnce()
+    expect(form1.formMethods.handleSubmit).toHaveBeenCalledOnce()
+    expect(onAllValid).toHaveBeenCalledOnce()
+
+    finishFirstSave()
+    await firstSubmit
+    await reRender.handleSubmit(createMockEvent())
+
+    expect(onAllValid).toHaveBeenCalledTimes(2)
+  })
+
   describe('aggregated errorHandling', () => {
     it('aggregates errors across all forms', () => {
       const error1 = createMockError('Details fetch failed')
