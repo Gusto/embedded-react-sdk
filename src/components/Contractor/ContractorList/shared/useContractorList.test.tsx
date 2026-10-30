@@ -309,6 +309,37 @@ describe('useContractorList', () => {
       }
     })
 
+    it('active filter: keeps cancel_rehire once the rehire has taken effect', async () => {
+      // The day a scheduled rehire starts: the contractor is active again and the employment is
+      // no longer "upcoming", but the API still reports the rehire as cancellable for the rest
+      // of its grace period. Offering "Dismiss" here instead would strand a rehire the admin
+      // can still undo.
+      mockList([
+        contractorFixture({
+          is_active: true,
+          dismissal_date: null,
+          upcoming_employment: null,
+          rehire_cancellation_eligible: true,
+        }),
+      ])
+
+      const { result } = renderHook(
+        () => useContractorList({ companyId: 'company-123', contractorType: 'active' }),
+        { wrapper: TestWrapper },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      if (!result.current.isLoading) {
+        expect(result.current.data.contractors[0]?.allowedActions).toEqual([
+          'view',
+          'cancel_rehire',
+        ])
+      }
+    })
+
     it('terminated filter: offers rehire when inactive with no pending dismissal/rehire', async () => {
       mockList([
         contractorFixture({

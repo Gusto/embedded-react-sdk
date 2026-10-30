@@ -143,7 +143,13 @@ function deriveAllowedActions(
   if (contractorType === 'active') {
     actions.push('view')
 
-    if (contractor.upcomingEmployment && contractor.rehireCancellationEligible) {
+    // Keyed on eligibility alone, not on `upcomingEmployment`. The moment a rehire takes
+    // effect the employment stops being "upcoming", but the API keeps reporting
+    // `rehireCancellationEligible` for the rest of its grace period — so gating on both
+    // dropped the action exactly when a just-effective rehire still needed undoing, and
+    // offered "Dismiss" in its place. The two eligibility flags derive from a single
+    // server-side employment state and are never true together, so order is immaterial.
+    if (contractor.rehireCancellationEligible) {
       actions.push('cancel_rehire')
     } else if (contractor.dismissalDate && contractor.dismissalCancellationEligible) {
       actions.push('cancel_dismissal')
