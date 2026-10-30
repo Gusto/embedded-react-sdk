@@ -11,6 +11,7 @@ import { componentEvents } from '@/shared/constants'
 const COMPANY_ID = 'company-123'
 const payPeriodsPath = `${API_BASE_URL}/v1/companies/:company_id/pay_periods`
 const paySchedulesPath = `${API_BASE_URL}/v1/companies/:company_id/pay_schedules`
+const payrollsPath = `${API_BASE_URL}/v1/companies/:company_id/payrolls`
 const skipPayrollPath = `${API_BASE_URL}/v1/companies/:company_uuid/payrolls/skip`
 
 const paySchedulesResponse = [
@@ -69,6 +70,7 @@ describe('TransitionPayrollAlert', () => {
     server.use(
       http.get(payPeriodsPath, () => HttpResponse.json([transitionPayPeriod])),
       http.get(paySchedulesPath, () => HttpResponse.json(paySchedulesResponse)),
+      http.get(payrollsPath, () => HttpResponse.json([])),
     )
     const onEvent = vi.fn()
 
@@ -97,12 +99,16 @@ describe('TransitionPayrollAlert', () => {
   })
 
   describe('with multiple transition payrolls', () => {
-    const renderMultiple = (onEvent = vi.fn()) => {
+    const renderMultiple = (
+      onEvent = vi.fn(),
+      payrollsResolver: HttpResponseResolver = () => HttpResponse.json([]),
+    ) => {
       server.use(
         http.get(payPeriodsPath, () =>
           HttpResponse.json([firstTransitionPayPeriod, secondTransitionPayPeriod]),
         ),
         http.get(paySchedulesPath, () => HttpResponse.json(paySchedulesResponse)),
+        http.get(payrollsPath, payrollsResolver),
       )
       renderWithProviders(<TransitionPayrollAlert companyId={COMPANY_ID} onEvent={onEvent} />)
       return onEvent
@@ -123,6 +129,46 @@ describe('TransitionPayrollAlert', () => {
         startDate: '2025-01-16',
         endDate: '2025-01-31',
         payScheduleUuid: 'schedule-1',
+      })
+    })
+
+    it('offers review for a calculated transition payroll and emits payroll/review', async () => {
+      const user = userEvent.setup()
+      let payrollsSearch = ''
+      const payrollsResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        payrollsSearch = new URL(request.url).search
+        return HttpResponse.json([
+          {
+            payroll_uuid: 'transition-payroll-2',
+            off_cycle: true,
+            off_cycle_reason: 'Transition from old pay schedule',
+            processed: false,
+            calculated_at: '2025-01-20T10:00:00Z',
+            pay_period: {
+              start_date: '2025-01-16',
+              end_date: '2025-01-31',
+              pay_schedule_uuid: 'schedule-1',
+            },
+          },
+        ])
+      })
+      const onEvent = renderMultiple(vi.fn(), payrollsResolver)
+
+      await user.click(await screen.findByRole('button', { name: /review and submit/i }))
+
+      expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeInTheDocument()
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.REVIEW_PAYROLL, {
+        payrollUuid: 'transition-payroll-2',
+        payPeriod: {
+          startDate: '2025-01-16',
+          endDate: '2025-01-31',
+          payScheduleUuid: 'schedule-1',
+        },
+      })
+      expect(Object.fromEntries(new URLSearchParams(payrollsSearch))).toMatchObject({
+        processing_statuses: 'unprocessed',
+        start_date: '2025-01-01',
+        end_date: '2025-01-31',
       })
     })
 

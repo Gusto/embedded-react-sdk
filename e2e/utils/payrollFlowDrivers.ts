@@ -333,23 +333,15 @@ export async function changeScheduleAndRunTransitionPayroll(
   await page.getByRole('button', { name: /run transition payroll/i }).click()
   await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
-  // The SDK auto-skips the Transition Creation screen and lands directly on
-  // Edit Payroll when the backend has already created an unprocessed transition
-  // payroll for this period (it usually has, post-schedule-change). Race the
-  // two possible landings and drive whichever we got.
-  const creationHeading = page.getByRole('heading', { name: /^transition payroll$/i, level: 2 })
-  const editPayrollHeading = page.getByRole('heading', { name: /edit payroll/i, level: 1 })
-  await expect(creationHeading.or(editPayrollHeading).first()).toBeVisible({
-    timeout: SDK_NAVIGATION_DEADLINE,
-  })
-
-  if (await creationHeading.isVisible()) {
-    await page
-      .getByRole('radio', { name: /make all the regular deductions and contributions/i })
-      .check()
-    await page.getByRole('button', { name: /^continue$/i }).click()
-    await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
-  }
+  // Running a transition payroll always opens its settings screen first.
+  await expect(
+    page.getByRole('heading', { name: /edit transition payroll/i, level: 2 }),
+  ).toBeVisible({ timeout: SDK_NAVIGATION_DEADLINE })
+  await page
+    .getByRole('radio', { name: /make all the regular deductions and contributions/i })
+    .check()
+  await page.getByRole('button', { name: /^continue$/i }).click()
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await calculateAndSubmit(page)
   await openReceipt(page)

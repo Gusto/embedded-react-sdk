@@ -432,4 +432,41 @@ describe('PayrollConfigurationPresentation', () => {
     const row = within(table).getByRole('row', { name: /John Doe/i })
     expect(getCellByColumnHeader(table, row, 'Total pay')).toHaveTextContent('$2,880.00')
   })
+
+  it('falls back to the estimated Total pay when the API leaves out the grossPay key', async () => {
+    const compensationWithoutGrossPay: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensations[0],
+    }
+    delete compensationWithoutGrossPay.grossPay
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        employeeCompensations={[compensationWithoutGrossPay]}
+      />,
+    )
+
+    const table = await screen.findByRole('grid', { name: 'Employee compensations' })
+    const row = within(table).getByRole('row', { name: /John Doe/i })
+    // calculateGrossPay for this fixture (40hrs regular + 8hrs PTO, both @ $22/hr) is $1,056.
+    expect(getCellByColumnHeader(table, row, 'Total pay')).toHaveTextContent('$1,056.00')
+  })
+
+  it('shows $0.00 Total pay when the API sends a null grossPay', async () => {
+    const compensationWithNullGrossPay: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensations[0],
+      grossPay: null,
+    }
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        employeeCompensations={[compensationWithNullGrossPay]}
+      />,
+    )
+
+    const table = await screen.findByRole('grid', { name: 'Employee compensations' })
+    const row = within(table).getByRole('row', { name: /John Doe/i })
+    expect(getCellByColumnHeader(table, row, 'Total pay')).toHaveTextContent('$0.00')
+  })
 })

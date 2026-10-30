@@ -392,6 +392,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `TIME_OFF_VIEW_POLICY_EMPLOYEES` | `"timeOff/viewPolicyEmployees"` |
 | `TRANSITION_CONFIGURED` | `"transition/configured"` |
 | `TRANSITION_CREATED` | `"transition/created"` |
+| `TRANSITION_PAYROLL_SELECTED` | `"transition/payrollSelected"` |
 | `TRANSITION_PAYROLL_SKIPPED` | `"transition/payrollSkipped"` |
 
 ## Utility types

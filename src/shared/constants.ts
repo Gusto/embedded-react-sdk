@@ -535,6 +535,7 @@ export const offCycleEvents = {
   TRANSITION_CREATED: 'transition/created',
   TRANSITION_CONFIGURED: 'transition/configured',
   RUN_TRANSITION_PAYROLL: 'transition/runPayroll',
+  TRANSITION_PAYROLL_SELECTED: 'transition/payrollSelected',
   TRANSITION_PAYROLL_SKIPPED: 'transition/payrollSkipped',
 } as const
 

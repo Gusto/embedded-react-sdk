@@ -4,24 +4,23 @@
 
 ## Step flow <!-- slot: appendix -->
 
-`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) or a pending transition payroll (`transition/runPayroll`) hands off to `OffCycleFlow` or `TransitionFlow`; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
+`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving it (`transition/configured`) opens `PayrollExecutionFlow` for the same payroll; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
 
 ```mermaid
 flowchart LR
   start@{ shape: sm-circ } --> Landing["PayrollLanding"]
   Landing <--> Execution["PayrollExecutionFlow"]
   Landing <--> OffCycle["OffCycleFlow"]
-  Landing <--> Transition["TransitionFlow"]
+  Landing <--> Transition["TransitionConfiguration"]
   Landing <--> Blockers["PayrollBlockerList"]
+  Transition --> Execution
   Execution --> SubmittedOverview["PayrollOverview"]
   OffCycle --> SubmittedOverview
-  Transition --> SubmittedOverview
   SubmittedOverview --> SubmittedReceipts["PayrollReceipts"]
   SubmittedOverview --> Landing
   SubmittedReceipts --> Landing
   class Execution flow
   class OffCycle flow
-  class Transition flow
   linkStyle 1,2,3,4 stroke-width:2.5px
 ```
 
