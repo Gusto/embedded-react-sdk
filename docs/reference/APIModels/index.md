@@ -3265,6 +3265,33 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/form.ts:11](
 
 ***
 
+<a id="form1099"></a>
+
+## Form1099
+
+> **Form1099** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/form1099.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.2/gusto_embedded_v_2026_06_15/src/models/components/form1099.ts#L11)
+
+`Form1099` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-form1099uuid"></a> `uuid` | `string` | The UUID of the form |
+| <a id="property-form1099contractoruuid"></a> `contractorUuid?` | `string` | The contractor UUID |
+| <a id="property-form1099description"></a> `description?` | `string` | The description of the form |
+| <a id="property-form1099documentcontenttype"></a> `documentContentType?` | `string` \| `null` | The content type of the associated document. Most forms are PDFs with a content type of `application/pdf`. Some tax file packages will be zip files (containing PDFs) with a content type of `application/zip`. This attribute will be `null` when the document has not been prepared. |
+| <a id="property-form1099draft"></a> `draft?` | `boolean` | If the form is in a draft state. E.g. End of year tax forms may be provided in a draft state prior to being finalized. |
+| <a id="property-form1099name"></a> `name?` | `string` | The type identifier of the form |
+| <a id="property-form1099quarter"></a> `quarter?` | `number` \| `null` | The quarter of this form. This value is currently always null since it is not present on any contractor forms. |
+| <a id="property-form1099requiressigning"></a> `requiresSigning?` | `boolean` | A boolean flag that indicates whether the form needs signing or not. Note that this value will change after the form is signed. |
+| <a id="property-form1099title"></a> `title?` | `string` | The title of the form |
+| <a id="property-form1099year"></a> `year?` | `number` \| `null` | The year of this form. For some forms, e.g. tax forms, this is the year which the form represents. A 1099 for January - December 2022 would be delivered in January 2023 and have a year value of 2022. This value is nullable and will not be present on all forms. |
+
+***
+
 <a id="garnishment"></a>
 
 ## Garnishment
