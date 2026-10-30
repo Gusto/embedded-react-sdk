@@ -4,11 +4,39 @@
 
 ```bash
 npm run test:e2e                          # MSW mode (no backend)
-npm run test:e2e:local                    # Against real gws-flows
-npm run test:e2e:local -- --grep @payroll # Single domain
+npm run test:e2e:local                    # Against real gws-flows (requires zenpayroll + gws-flows running locally)
+npm run test:e2e:demo                     # Against the hosted demo backend (same target CI uses)
+npm run test:e2e:local -- "tests/payroll/"  # Single domain (path substring, not --grep — see note below)
 ```
 
 Tests live in `e2e/tests/` organized by domain (e.g., `e2e/tests/payroll/`).
+
+`--grep @<domain>` does **not** work for filtering by domain, even though the `@<domain>`
+tag exists (see "Writing a Test" below) — that tag is pushed via `testInfo.annotations` at
+_test-execution_ time, inside a fixture, but `--grep` filters during the earlier
+collection/listing phase and only matches literal test-title text. No title contains
+`@payroll`, so `--grep @payroll` reports "No tests found." CI filters by domain the same
+way shown above — a path substring against the matrix domain (`.github/workflows/ci.yaml`,
+the `Run e2e tests` step) — so match that locally instead of reaching for `--grep`.
+
+## Reproducing a CI failure locally
+
+CI's `e2e` job runs `npm run test:e2e:demo` against the hosted demo backend at
+`https://flows.gusto-demo.com` (set in `playwright.demo.config.ts`) — **not** a local
+zenpayroll/gws-flows stack. `test:e2e:local` is a different mode entirely, for driving a
+backend you're running yourself; using it won't reproduce a demo-backend failure, and you
+don't need zenpayroll or gws-flows up at all to match what CI did.
+
+To rerun a specific failing spec headed (visible browser) against that same backend:
+
+```bash
+npx playwright install chromium   # one-time, if you hit "Executable doesn't exist"
+npm run test:e2e:demo -- e2e/tests/payroll/91-regular-submit.spec.ts --headed --project=chromium
+```
+
+`npm run` needs the `--` separator before any flags you want passed through to Playwright
+(`--headed`, `--grep`, a spec path, etc.). `globalSetup` provisions/refreshes a demo company
+against the live backend before the test runs, so the first launch can take a minute or two.
 
 ## File naming convention: numeric prefix encodes mutation class
 
@@ -65,7 +93,7 @@ test.describe('My feature', () => {
 })
 ```
 
-The `scenario` fixture looks up the pre-provisioned context, injects flowToken/companyId into `page.goto`, and auto-tags the test with `@<domain>` for grep filtering.
+The `scenario` fixture looks up the pre-provisioned context, injects flowToken/companyId into `page.goto`, and auto-tags the test with `@<domain>` — this lands in `testInfo.annotations` and shows up in the HTML/JSON report for filtering _results_, but it's applied too late (at test-execution time) to affect `--grep`, which filters at collection time. To run only one domain's tests, filter by path instead (see "Running Tests" above).
 
 ### Adding a new scenario
 
