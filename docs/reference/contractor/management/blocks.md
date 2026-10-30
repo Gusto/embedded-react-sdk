@@ -509,10 +509,15 @@ Standalone read-only "Documents" card.
 
 ### Remarks
 
-Fetches its own data via [useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and renders a
-table of the contractor's forms with a per-row "View" action that opens
-the document's PDF in a new tab. Read-only — signing happens during
-contractor onboarding, not from this surface.
+Lists the contractor's tax forms (1099s) and documents (W-9) in a single
+table, forms first, with a per-row "View" action that opens the row's PDF in
+a new tab. These are two distinct API resources — the documents endpoint
+serves only the W-9 — so the card composes
+[useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and `useContractorTaxForms`.
+
+Read-only. Document signing happens during contractor onboarding, not from
+this surface, and contractor forms cannot be signed through the API at all —
+so form rows show no signing status.
 
 <br />
 
@@ -534,8 +539,8 @@ Props for [DocumentsCard](#documentscard).
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `contractor/management/documents/card/viewRequested` | Fired when a document row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` |
-| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` |
+| `contractor/management/documents/card/viewRequested` | Fired when a row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` for a document row, `{ contractorId: string, formId: string }` for a tax form row |
+| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` for a document row, `{ contractorId: string, formId: string }` for a tax form row |
 
 <br />
 
@@ -544,6 +549,8 @@ Props for [DocumentsCard](#documentscard).
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
+| GET | [`/v1/contractors/:contractorUuid/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms) |
+| GET | [`/v1/contractors/:contractorUuid/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-form-pdf) |
 | GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
 
 ***

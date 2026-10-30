@@ -11,8 +11,11 @@ import type { Document } from '@gusto/embedded-api/models/components/document'
  * "actually signed" everywhere this is used — the contractor onboarding
  * document list and the management documents card.
  *
+ * Accepts any value carrying `signedAt` so normalized table rows can reuse it
+ * without reconstructing a full `Document`.
+ *
  * @internal
  */
-export function requiresSignature(document: Document): boolean {
+export function requiresSignature(document: Pick<Document, 'signedAt'>): boolean {
   return !document.signedAt
 }

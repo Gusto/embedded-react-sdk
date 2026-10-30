@@ -138,6 +138,7 @@ import { FixedCompensations } from '@gusto/embedded-api/models/components/payrol
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
 import { Form } from '@gusto/embedded-api/models/components/form';
+import { Form1099 } from '@gusto/embedded-api/models/components/form1099';
 import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
@@ -580,6 +581,7 @@ declare namespace APIModels {
         FilingForm,
         FlsaStatusType,
         Form,
+        Form1099,
         GarnishmentType,
         Garnishment,
         GarnishmentChildSupport,

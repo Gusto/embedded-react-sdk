@@ -341,6 +341,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **ContractorManagement.Compensation** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
 |  | PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
 | **ContractorManagement.DocumentsCard** | GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
+|  | GET | [`/v1/contractors/:contractorUuid/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms) |
+|  | GET | [`/v1/contractors/:contractorUuid/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-form-pdf) |
 |  | GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
 | **ContractorManagement.PaymentsList** | GET | [`/v1/companies/:companyId/contractor_payment_groups`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-contractor_payment_groups) |
 |  | GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-information-requests) |

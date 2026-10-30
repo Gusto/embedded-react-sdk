@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useContractorDocumentsGetPdf } from '@gusto/embedded-api/react-query/contractorDocumentsGetPdf'
-import type { Document } from '@gusto/embedded-api/models/components/document'
+import { useContractorFormsGetPdf } from '@gusto/embedded-api/react-query/contractorFormsGetPdf'
 import { requiresSignature } from '../../shared/documentSigningStatus'
 import { useContractorDocumentsList } from '../../shared/useContractorDocumentsList'
+import { useContractorTaxForms } from '../../shared/useContractorTaxForms'
+import { toDocumentRows, type DocumentRow } from './documentRows'
 import { DataView, EmptyData, useDataView, Loading } from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -30,16 +32,21 @@ export interface DocumentsCardProps {
  * Standalone read-only "Documents" card.
  *
  * @remarks
- * Fetches its own data via {@link useContractorDocumentsList} and renders a
- * table of the contractor's forms with a per-row "View" action that opens
- * the document's PDF in a new tab. Read-only — signing happens during
- * contractor onboarding, not from this surface.
+ * Lists the contractor's tax forms (1099s) and documents (W-9) in a single
+ * table, forms first, with a per-row "View" action that opens the row's PDF in
+ * a new tab. These are two distinct API resources — the documents endpoint
+ * serves only the W-9 — so the card composes
+ * {@link useContractorDocumentsList} and `useContractorTaxForms`.
+ *
+ * Read-only. Document signing happens during contractor onboarding, not from
+ * this surface, and contractor forms cannot be signed through the API at all —
+ * so form rows show no signing status.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/management/documents/card/viewRequested` | Fired when a document row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` |
- * | `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` |
+ * | `contractor/management/documents/card/viewRequested` | Fired when a row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` for a document row, `{ contractorId: string, formId: string }` for a tax form row |
+ * | `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` for a document row, `{ contractorId: string, formId: string }` for a tax form row |
  *
  * @param props - See {@link DocumentsCardProps}.
  * @returns The contractor documents card.
@@ -61,54 +68,65 @@ function DocumentsCardContent({ contractorId, onEvent, LoaderComponent }: Docume
   const { t } = useTranslation('Contractor.Management.Documents')
   const Components = useComponentContext()
   const documentsList = useContractorDocumentsList({ contractorId })
+  const taxForms = useContractorTaxForms({ contractorId })
 
-  const isLoading = documentsList.isLoading
-  const documents = documentsList.isLoading ? [] : documentsList.data.documents
-  const isShowingTable = documents.length > 0
+  const isLoading = documentsList.isLoading || taxForms.isLoading
+  const rows = isLoading
+    ? []
+    : toDocumentRows({ forms: taxForms.data.forms, documents: documentsList.data.documents })
+  const isShowingTable = rows.length > 0
 
   const columns = [
     {
       key: 'title',
       title: t('nameColumn'),
-      render: (document: Document) => (
+      render: (row: DocumentRow) => (
         <Components.Text weight="medium" size="sm">
-          {document.title ?? document.name ?? t('emptyPlaceholder')}
+          {row.title ?? row.name ?? t('emptyPlaceholder')}
         </Components.Text>
       ),
     },
     {
       key: 'description',
       title: t('descriptionColumn'),
-      render: (document: Document) => (
+      render: (row: DocumentRow) => (
         <Components.Text variant="supporting" size="sm">
-          {document.description ?? t('emptyPlaceholder')}
+          {row.description ?? t('emptyPlaceholder')}
         </Components.Text>
       ),
     },
     {
       key: 'signingStatus',
       title: t('signingStatusColumn'),
-      render: (document: Document) =>
-        requiresSignature(document) ? (
+      render: (row: DocumentRow) => {
+        if (row.kind === 'form') {
+          return (
+            <Components.Text variant="supporting" size="sm">
+              {t('emptyPlaceholder')}
+            </Components.Text>
+          )
+        }
+        return requiresSignature(row) ? (
           <Components.Badge status="warning">{t('signingStatus.notSigned')}</Components.Badge>
         ) : (
           <Components.Badge status="success">{t('signingStatus.signed')}</Components.Badge>
-        ),
+        )
+      },
     },
   ]
 
   const dataViewProps = useDataView({
-    data: documents,
+    data: rows,
     columns,
-    itemMenu: document =>
-      document.uuid ? (
-        <ViewButton contractorId={contractorId} documentUuid={document.uuid} onEvent={onEvent} />
-      ) : null,
+    itemMenu: row => <ViewButton contractorId={contractorId} row={row} onEvent={onEvent} />,
     emptyState: () => <EmptyData title={t('emptyState.title')} />,
   })
 
   return (
-    <BaseLayout error={documentsList.errorHandling.errors} LoaderComponent={LoaderComponent}>
+    <BaseLayout
+      error={[...documentsList.errorHandling.errors, ...taxForms.errorHandling.errors]}
+      LoaderComponent={LoaderComponent}
+    >
       <Components.Box
         withPadding={!isShowingTable}
         header={<Components.BoxHeader title={t('title')} />}
@@ -127,33 +145,44 @@ function DocumentsCardContent({ contractorId, onEvent, LoaderComponent }: Docume
 
 function ViewButton({
   contractorId,
-  documentUuid,
+  row,
   onEvent,
 }: {
   contractorId: string
-  documentUuid: string
+  row: DocumentRow
   onEvent: OnEventType<EventType, unknown>
 }) {
   const { t } = useTranslation('Contractor.Management.Documents')
   const Components = useComponentContext()
   const [isOpening, setIsOpening] = useState(false)
-  const { refetch } = useContractorDocumentsGetPdf({ documentUuid }, { enabled: false })
+
+  // The PDF endpoints return a signed URL that expires within seconds, so both
+  // stay disabled until the row is clicked rather than being fetched with the list.
+  const documentPdfQuery = useContractorDocumentsGetPdf(
+    { documentUuid: row.uuid },
+    { enabled: false },
+  )
+  const formPdfQuery = useContractorFormsGetPdf(
+    { contractorUuid: contractorId, formId: row.uuid },
+    { enabled: false },
+  )
+
+  const eventPayload =
+    row.kind === 'form'
+      ? { contractorId, formId: row.uuid }
+      : { contractorId, documentUuid: row.uuid }
 
   const handleView = async () => {
-    onEvent(componentEvents.CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED, {
-      contractorId,
-      documentUuid,
-    })
+    onEvent(componentEvents.CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED, eventPayload)
     setIsOpening(true)
     try {
-      const { data } = await refetch()
-      const url = data?.documentPdf?.documentUrl
+      const url =
+        row.kind === 'form'
+          ? (await formPdfQuery.refetch()).data?.formPdf?.documentUrl
+          : (await documentPdfQuery.refetch()).data?.documentPdf?.documentUrl
       if (url) {
         window.open(url, '_blank', 'noopener,noreferrer')
-        onEvent(componentEvents.CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED, {
-          contractorId,
-          documentUuid,
-        })
+        onEvent(componentEvents.CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED, eventPayload)
       }
     } finally {
       setIsOpening(false)

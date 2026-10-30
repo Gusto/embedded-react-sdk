@@ -2499,13 +2499,24 @@
         },
         {
           "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/forms",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/forms/:formId/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-form-pdf"
+        },
+        {
+          "method": "GET",
           "path": "/v1/documents/:documentUuid/pdf",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf"
         }
       ],
       "variables": [
         "contractorUuid",
-        "documentUuid"
+        "documentUuid",
+        "formId"
       ]
     },
     "ContractorManagement.PaymentsList": {
