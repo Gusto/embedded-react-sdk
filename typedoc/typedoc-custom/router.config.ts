@@ -275,6 +275,14 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     sidebarPosition: 101,
     layout: { default: 'promote' },
   },
+  {
+    id: 'company/types',
+    // No path matching; types must use `@page company/types` to show up
+    sources: [],
+    displayName: 'Types',
+    sidebarPosition: 101,
+    layout: { default: 'promote' },
+  },
 ]
 
 /**

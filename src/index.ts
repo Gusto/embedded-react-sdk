@@ -13,6 +13,7 @@ export * from '@/contexts'
  */
 export type * as APIModels from '@/models/external'
 export type { WARiskClassCode } from '@/models/WA_RISK_CODES'
+export type { NaicsCode } from '@/models/NAICSCodes'
 export {
   componentEvents,
   EmployeeOnboardingStatus,
@@ -88,6 +89,7 @@ export type {
   InputProps,
   TextInputHookFieldProps,
   SelectHookFieldProps,
+  ComboBoxHookFieldProps,
   CheckboxHookFieldProps,
   NumberInputHookFieldProps,
   DatePickerHookFieldProps,
@@ -98,6 +100,8 @@ export type {
   TextInputProps,
   SelectProps,
   SelectOption,
+  ComboBoxProps,
+  ComboBoxOption,
   CheckboxProps,
   NumberInputProps,
   DatePickerProps,
@@ -614,6 +618,25 @@ export type {
   Day2FieldProps,
   WorkweekStartDayFieldProps,
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
+
+export {
+  useIndustryForm,
+  IndustryErrorCodes,
+} from '@/components/Company/Industry/shared/useIndustryForm'
+export type {
+  IndustrySubmitOptions,
+  IndustryOptionalFieldsToRequire,
+  UseIndustryFormProps,
+  UseIndustryFormResult,
+  UseIndustryFormReady,
+  IndustryFieldsMetadata,
+  IndustryFormFields,
+  IndustryErrorCode,
+  IndustryFormData,
+  IndustryField,
+  IndustryRequiredValidation,
+  IndustryFieldProps,
+} from '@/components/Company/Industry/shared/useIndustryForm'
 
 export {
   useSignCompanyForm,

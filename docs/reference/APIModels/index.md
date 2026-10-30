@@ -3543,6 +3543,27 @@ Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/holidaypaypo
 
 ***
 
+<a id="industry"></a>
+
+## Industry
+
+> **Industry** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_06\_15/src/models/components/industry.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_06_15/v0.3.2/gusto_embedded_v_2026_06_15/src/models/components/industry.ts#L11)
+
+`Industry` entity from the Gusto Embedded API.
+
+### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-industrycompanyuuid"></a> `companyUuid?` | `string` | Company UUID |
+| <a id="property-industrynaicscode"></a> `naicsCode?` | `string` \| `null` | North American Industry Classification System (NAICS) is used to classify businesses with a six digit number based on the primary type of work the business performs. |
+| <a id="property-industrysiccodes"></a> `sicCodes?` | `string`[] | A list of Standard Industrial Classification (SIC) codes, which are four digit numbers that categorize the industries that companies belong to based on their business activities. If sic_codes is not passed in, we will perform an internal lookup with `naics_code`. |
+| <a id="property-industrytitle"></a> `title?` | `string` \| `null` | Industry title |
+
+***
+
 <a id="informationrequest"></a>
 
 ## InformationRequest
