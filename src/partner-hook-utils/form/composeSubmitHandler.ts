@@ -74,6 +74,8 @@ export interface ComposeSubmitHandlerResult {
 
 type FormMethods = ComposableFormHookResult['form']['hookFormInternals']['formMethods']
 
+const formsWithSubmitInFlight = new WeakSet<FormMethods>()
+
 function isRawUseForm<T extends FieldValues>(
   input: ComposeSubmitInput<T>,
 ): input is UseFormReturn<T> {
@@ -192,31 +194,37 @@ export function composeSubmitHandler<TForms extends readonly FieldValues[]>(
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
 
-    const validationResults = await Promise.all(
-      forms.map(
-        input =>
-          new Promise<FormValidationResult>(resolve => {
-            const formMethods = extractFormMethods(input)
-            void formMethods.handleSubmit(
-              () => {
-                resolve({ input, formMethods, valid: true, errors: {} })
-              },
-              errors => {
-                resolve({ input, formMethods, valid: false, errors })
-              },
-            )()
-          }),
-      ),
-    )
+    const composedForms = forms.map(input => ({ input, formMethods: extractFormMethods(input) }))
+    if (composedForms.some(({ formMethods }) => formsWithSubmitInFlight.has(formMethods))) return
+    composedForms.forEach(({ formMethods }) => formsWithSubmitInFlight.add(formMethods))
 
-    const allValid = validationResults.every(r => r.valid)
+    try {
+      const validationResults = await Promise.all(
+        composedForms.map(async ({ input, formMethods }) => {
+          let result: FormValidationResult = { input, formMethods, valid: false, errors: {} }
+          await formMethods.handleSubmit(
+            () => {
+              result = { input, formMethods, valid: true, errors: {} }
+            },
+            errors => {
+              result = { input, formMethods, valid: false, errors }
+            },
+          )()
+          return result
+        }),
+      )
 
-    if (!allValid) {
-      focusFirstInvalidAcrossForms(validationResults)
-      return
+      const allValid = validationResults.every(r => r.valid)
+
+      if (!allValid) {
+        focusFirstInvalidAcrossForms(validationResults)
+        return
+      }
+
+      await onAllValid()
+    } finally {
+      composedForms.forEach(({ formMethods }) => formsWithSubmitInFlight.delete(formMethods))
     }
-
-    await onAllValid()
   }
 
   const errorHandling = composeErrorHandler(errorSources)
