@@ -6,13 +6,18 @@ import {
   AddressContextual,
   PaymentMethodEditFormContextual,
   CompensationEditFormContextual,
+  PaymentStatementContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
+import type { ContractorPaymentHistoryEntry } from '@/components/Contractor/Payments/shared/useContractorPaymentsList'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
+  [componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED]: {
+    payment: ContractorPaymentHistoryEntry
+  }
 }
 
 const returnToIndex = reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -85,6 +90,24 @@ export const dashboardStateMachine = {
       })),
     ),
     transition(
+      componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED,
+      'paymentStatement',
+      reduce(
+        (
+          ctx: DashboardContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED
+          >,
+        ): DashboardContextInterface => ({
+          ...ctx,
+          component: PaymentStatementContextual,
+          successAlert: null,
+          selectedPayment: ev.payload.payment,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.CONTRACTOR_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -155,6 +178,18 @@ export const dashboardStateMachine = {
       componentEvents.CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED,
       'index',
       returnToIndex,
+    ),
+  ),
+  paymentStatement: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED,
+      'index',
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: DashboardViewContextual,
+        successAlert: null,
+        selectedPayment: undefined,
+      })),
     ),
   ),
 }

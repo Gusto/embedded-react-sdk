@@ -6,6 +6,13 @@ export function handleGetContractorPayments(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/contractors/:contractor_uuid/payments`, resolver)
 }
 
+export function handleGetContractorPaymentReceipt(resolver: HttpResponseResolver) {
+  return http.get(
+    `${API_BASE_URL}/v1/contractor_payments/:contractor_payment_uuid/receipt`,
+    resolver,
+  )
+}
+
 const mockContractorPayments = [
   {
     uuid: 'contractor-payment-1',
@@ -53,4 +60,10 @@ export const getEmptyContractorPayments = handleGetContractorPayments(() =>
   }),
 )
 
-export default [getContractorPayments]
+// Most payments have no receipt (not direct deposit, or not yet funded); the statement
+// tolerates the 404 and renders without the receipt panel.
+export const getContractorPaymentReceiptNotFound = handleGetContractorPaymentReceipt(
+  () => new HttpResponse(null, { status: 404 }),
+)
+
+export default [getContractorPayments, getContractorPaymentReceiptNotFound]

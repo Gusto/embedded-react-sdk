@@ -4,6 +4,8 @@ import { ProfileEditForm } from '@/components/Contractor/Profile/management/Prof
 import { AddressEditForm } from '@/components/Contractor/Address/management/AddressEditForm'
 import { PaymentMethodEditForm } from '@/components/Contractor/PaymentMethod/management/PaymentMethodEditForm'
 import { CompensationEditForm } from '@/components/Contractor/Compensation/management/CompensationEditForm'
+import { PaymentStatementView } from '@/components/Contractor/Payments/management/PaymentStatementView'
+import type { ContractorPaymentHistoryEntry } from '@/components/Contractor/Payments/shared/useContractorPaymentsList'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -27,6 +29,8 @@ export interface DashboardContextInterface extends FlowContextInterface {
   /** Persists the active Dashboard tab across sub-flows so Cancel/Back
    *  returns to the originating tab instead of resetting to details. */
   selectedTab?: DashboardTab
+  /** The payment whose statement is being viewed, set when a recent-payments row is selected. */
+  selectedPayment?: ContractorPaymentHistoryEntry
 }
 
 /** @internal */
@@ -87,4 +91,16 @@ export function PaymentMethodEditFormContextual() {
 export function CompensationEditFormContextual() {
   const { contractorId, onEvent } = useFlow<DashboardContextInterface>()
   return <CompensationEditForm contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function PaymentStatementContextual() {
+  const { contractorId, onEvent, selectedPayment } = useFlow<DashboardContextInterface>()
+  return (
+    <PaymentStatementView
+      contractorId={ensureRequired(contractorId)}
+      payment={ensureRequired(selectedPayment)}
+      onEvent={onEvent}
+    />
+  )
 }

@@ -64,20 +64,6 @@ describe('PaymentsCard', () => {
     expect(
       screen.getByText('Once you pay this contractor, payments will appear here.'),
     ).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'View all' })).toBeNull()
-  })
-
-  it('emits a view-all event from the header action', async () => {
-    const user = userEvent.setup()
-    renderWithProviders(<PaymentsCard contractorId="contractor-123" onEvent={onEvent} />)
-
-    await screen.findByText('December 15, 2025')
-    await user.click(screen.getByRole('button', { name: 'View all' }))
-
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_VIEW_ALL_REQUESTED,
-      { contractorId: 'contractor-123' },
-    )
   })
 
   it('emits the selected payment when a row action is used', async () => {

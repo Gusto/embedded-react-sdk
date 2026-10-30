@@ -264,6 +264,25 @@ describe('DashboardFlow', () => {
     )
   })
 
+  it('opens a payment statement from the Pay tab and returns to the dashboard', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow contractorId="contractor-123" onEvent={onEvent} />)
+
+    await screen.findByRole('heading', { name: 'Ada Lovelace' })
+    await user.click(screen.getByRole('tab', { name: 'Pay' }))
+
+    const [viewDetails] = await screen.findAllByRole('button', { name: 'View details' })
+    await user.click(viewDetails!)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Payment statement for Ada Lovelace' }),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(await screen.findByRole('heading', { name: 'Ada Lovelace' })).toBeInTheDocument()
+  })
+
   it('dismisses the success alert', async () => {
     server.use(
       handleUpdateContractor(

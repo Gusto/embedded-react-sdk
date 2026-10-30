@@ -3090,10 +3090,10 @@ export namespace Translations {
     title: string
     /** @defaultValue `"List of recent payments"` */
     listLabel: string
-    /** @defaultValue `"View all"` */
-    viewAllCta: string
     /** @defaultValue `"View details"` */
     viewDetailsCta: string
+    /** @defaultValue `"Back"` */
+    backCta: string
     /** @defaultValue `"Payment date"` */
     paymentDateColumn: string
     /** @defaultValue `"Total"` */
@@ -3115,6 +3115,10 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Once you pay this contractor, payments will appear here."` */
       description: string
+    }
+    errors: {
+      /** @defaultValue `"We could not load this contractor."` */
+      contractorNotFound: string
     }
   }
   /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */

@@ -1498,8 +1498,8 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
-    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_VIEW_ALL_REQUESTED: "contractor/management/payments/card/viewAllRequested";
     readonly CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED: "contractor/management/payments/card/paymentSelected";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED: "contractor/management/payments/statement/closed";
     readonly CONTRACTOR_DASHBOARD_TAB_CHANGE: "contractor/dashboard/tabChange";
     readonly CONTRACTOR_DASHBOARD_ALERT_DISMISSED: "contractor/dashboard/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";

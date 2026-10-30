@@ -35,8 +35,8 @@ export interface PaymentsCardProps {
  * Fetches its own data via {@link useContractorPaymentsList} and renders the
  * contractor's payment history — most recent first — with the payment date,
  * total, payment method, and funding status. Read-only: creating and cancelling
- * payments happen elsewhere, so this surface only emits events for the host to
- * route on.
+ * payments happen elsewhere, so each row's "View details" action only emits an
+ * event for the host to route on.
  *
  * The underlying endpoint returns **cancelled payments alongside active ones**
  * and exposes no field distinguishing them (`status` is only `Funded` or
@@ -47,7 +47,6 @@ export interface PaymentsCardProps {
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/management/payments/card/viewAllRequested` | Fired when the header's "View all" button is clicked | `{ contractorId: string }` |
  * | `contractor/management/payments/card/paymentSelected` | Fired when a row's "View details" action is clicked | `{ contractorId: string, payment: ContractorPaymentHistoryEntry }` |
  *
  * @param props - See {@link PaymentsCardProps}.
@@ -146,28 +145,7 @@ function PaymentsCardContent({ contractorId, onEvent, LoaderComponent }: Payment
     <BaseLayout error={paymentsList.errorHandling.errors} LoaderComponent={LoaderComponent}>
       <Components.Box
         withPadding={!isShowingTable}
-        header={
-          <Components.BoxHeader
-            title={t('title')}
-            action={
-              isShowingTable ? (
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    onEvent(
-                      componentEvents.CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_VIEW_ALL_REQUESTED,
-                      {
-                        contractorId,
-                      },
-                    )
-                  }}
-                >
-                  {t('viewAllCta')}
-                </Components.Button>
-              ) : null
-            }
-          />
-        }
+        header={<Components.BoxHeader title={t('title')} />}
       >
         {isLoading ? (
           <Loading />

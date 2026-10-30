@@ -2512,11 +2512,22 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/contractor_payments/:contractorPaymentUuid/receipt",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payments-contractor_payment_uuid-receipt"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid"
+        },
+        {
+          "method": "GET",
           "path": "/v1/contractors/:contractorUuid/payments",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments"
         }
       ],
       "variables": [
+        "contractorPaymentUuid",
         "contractorUuid"
       ]
     },
