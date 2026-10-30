@@ -32,15 +32,22 @@ interface PrintChecksFormFlowContext extends FlowContextInterface {
   isGenerating?: boolean
 }
 
-const PrintChecksFormSchema = z.object({
-  printingFormat: z.nativeEnum(PrintingFormat),
-  startingCheckNumber: z
-    .number({ message: 'invalidStartingCheckNumber' })
-    .int({ message: 'invalidStartingCheckNumber' })
-    .nonnegative({ message: 'invalidStartingCheckNumber' })
-    .lt(10_000_000_000, { message: 'invalidStartingCheckNumber' })
-    .optional(),
-})
+const PrintChecksFormSchema = z.discriminatedUnion('printingFormat', [
+  z.object({
+    printingFormat: z.literal(PrintingFormat.Top),
+    startingCheckNumber: z.number().or(z.nan()).optional(),
+  }),
+  z.object({
+    printingFormat: z.literal(PrintingFormat.Bottom),
+    startingCheckNumber: z
+      .number({ message: 'invalidStartingCheckNumber' })
+      .int({ message: 'invalidStartingCheckNumber' })
+      .nonnegative({ message: 'invalidStartingCheckNumber' })
+      .lt(10_000_000_000, { message: 'invalidStartingCheckNumber' })
+      .or(z.nan().transform(() => undefined))
+      .optional(),
+  }),
+])
 
 type PrintChecksFormValues = z.infer<typeof PrintChecksFormSchema>
 
