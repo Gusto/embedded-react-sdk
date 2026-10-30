@@ -2001,6 +2001,7 @@ Translation keys for the `Contractor.ManagementContractorList` i18n namespace.
 | <a id="property-contractormanagementcontractorlistonboardingstatuslabel"></a> `onboardingStatusLabel` | `"Onboarding status"` |
 | <a id="property-contractormanagementcontractorlistratehourly"></a> `rateHourly` | `"Hourly — {{rate}}/hr"` |
 | <a id="property-contractormanagementcontractorlistratelabel"></a> `rateLabel` | `"Rate"` |
+| <a id="property-contractormanagementcontractorlistrehirebadge"></a> `rehireBadge` | `"Rehire {{date}}"` |
 | <a id="property-contractormanagementcontractorlistrehirecta"></a> `rehireCta` | `"Rehire contractor"` |
 | <a id="property-contractormanagementcontractorlistremovecta"></a> `removeCta` | `"Remove"` |
 | <a id="property-contractormanagementcontractorlistremovedialog"></a> `removeDialog` | |
@@ -2704,6 +2705,33 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 | <a id="property-contractorprofilew9editwarning"></a> `w9EditWarning` | |
 | `w9EditWarning.body` | `"This contractor has already signed a form W-9. If you are making corrections, you’re also required to update and retain a new signed version of Form W-9 reflecting the corrected information."` |
 | `w9EditWarning.label` | `"Changes will require an updated Form W-9"` |
+
+***
+
+<a id="contractorrehire"></a>
+
+### ContractorRehire
+
+Translation keys for the `Contractor.Rehire` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorrehireactions"></a> `actions` | |
+| `actions.cancel` | `"Cancel"` |
+| `actions.submit` | `"Rehire contractor"` |
+| <a id="property-contractorrehirealert"></a> `alert` | |
+| `alert.label` | `"This can be cancelled"` |
+| `alert.text` | `"The rehire can be cancelled from the contractor list any time before the start date takes effect."` |
+| <a id="property-contractorrehireform"></a> `form` | |
+| `form.startDate` | |
+| `form.startDate.label` | `"Start date"` |
+| <a id="property-contractorrehiresubtitle"></a> `subtitle` | `"Schedule a start date for this contractor."` |
+| <a id="property-contractorrehiresuccessmessage"></a> `successMessage` | `"Rehire scheduled"` |
+| <a id="property-contractorrehiretitle"></a> `title` | `"Rehire {{name}}"` |
+| <a id="property-contractorrehirevalidation"></a> `validation` | |
+| `validation.startDateRequired` | `"Enter a start date"` |
 
 ***
 
@@ -6174,6 +6202,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorrehire"></a> `Contractor.Rehire` | [`ContractorRehire`](#contractorrehire) |
 | <a id="property-resourcescontractorselectcontractors"></a> `Contractor.SelectContractors` | [`ContractorSelectContractors`](#contractorselectcontractors) |
 | <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |
 | <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |

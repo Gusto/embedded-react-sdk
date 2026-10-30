@@ -8,6 +8,7 @@ import {
   ContractorListContextual,
   DashboardFlowContextual,
   DismissalContextual,
+  RehireContextual,
   type ContractorListFlowContextInterface,
 } from './ContractorListFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -20,6 +21,12 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_DISMISSAL_SCHEDULED]: {
     contractorId: string
     endDate: string
+    message: string
+  }
+  [componentEvents.CONTRACTOR_REHIRE]: { contractorId: string }
+  [componentEvents.CONTRACTOR_REHIRE_SCHEDULED]: {
+    contractorId: string
+    startDate: string
     message: string
   }
 }
@@ -77,6 +84,22 @@ export const contractorListStateMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.CONTRACTOR_REHIRE,
+      'rehire',
+      reduce(
+        (
+          ctx: ContractorListFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_REHIRE>,
+        ): ContractorListFlowContextInterface => ({
+          ...ctx,
+          component: RehireContextual,
+          header: backToListHeader,
+          contractorId: ev.payload.contractorId,
+          successMessage: undefined,
+        }),
+      ),
+    ),
     contractorCreateTransition,
     contractorUpdateTransition,
   ),
@@ -96,6 +119,26 @@ export const contractorListStateMachine = {
             EventPayloads,
             typeof componentEvents.CONTRACTOR_DISMISSAL_SCHEDULED
           >,
+        ): ContractorListFlowContextInterface => ({
+          ...ctx,
+          component: ContractorListContextual,
+          header: null,
+          contractorId: undefined,
+          successMessage: ev.payload.message,
+        }),
+      ),
+    ),
+  ),
+  rehire: state<MachineTransition>(
+    transition(componentEvents.CONTRACTOR_RETURN_TO_LIST, 'list', returnToList),
+    transition(componentEvents.CANCEL, 'list', returnToList),
+    transition(
+      componentEvents.CONTRACTOR_REHIRE_SCHEDULED,
+      'list',
+      reduce(
+        (
+          ctx: ContractorListFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_REHIRE_SCHEDULED>,
         ): ContractorListFlowContextInterface => ({
           ...ctx,
           component: ContractorListContextual,

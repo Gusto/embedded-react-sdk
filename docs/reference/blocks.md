@@ -55,6 +55,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.Profile](contractor/management/blocks#profile) | Management surface for viewing and editing a contractor's basic profile details after onboarding. |
 | [ContractorManagement.ProfileCard](contractor/management/blocks#profilecard) | Read-only card showing a contractor's basic profile details with an Edit action. |
 | [ContractorManagement.ProfileEditForm](contractor/management/blocks#profileeditform) | Standalone edit form for a contractor's basic profile details. |
+| [ContractorManagement.Rehire](contractor/management/blocks#rehire) | Standalone form for scheduling a dismissed contractor's rehire. |
 | [ContractorOnboarding.Address](contractor/onboarding/blocks#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
 | [ContractorOnboarding.ContractorList](contractor/onboarding/blocks#contractorlist) | Lists a company's contractors with controls to add, edit, delete, cancel self-onboarding, and continue onboarding. |
 | [ContractorOnboarding.ContractorProfile](contractor/onboarding/blocks#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
@@ -273,6 +274,7 @@ shape mixed into every public SDK feature component.
 - [`ManagementContractorListProps`](contractor/management/blocks.md#managementcontractorlistprops)
 - [`ContractorListFlowProps`](contractor/management/contractor-list-flow.md#contractorlistflowprops)
 - [`DismissalProps`](contractor/management/blocks.md#dismissalprops)
+- [`RehireProps`](contractor/management/blocks.md#rehireprops)
 - [`DashboardFlowProps`](contractor/management/dashboard-flow.md#dashboardflowprops)
 - [`DashboardProps`](contractor/management/blocks.md#dashboardprops)
 - [`ProfileProps`](contractor/management/blocks.md#profileprops)

@@ -1003,6 +1003,73 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="rehire"></a>
+
+## Rehire
+
+Standalone form for scheduling a dismissed contractor's rehire.
+
+### Remarks
+
+Fetches the contractor, renders a single "Start date" field bounded to the day
+after their dismissal date, and schedules the rehire on submit — creating a new
+employment record effective on that date. The contractor stays on the Dismissed
+tab until the date takes effect, and the rehire can be cancelled from the
+contractor list up until then.
+
+<br />
+
+### Example
+
+```tsx
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <ContractorManagement.Rehire
+      contractorId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+<br />
+
+### RehireProps
+
+<a id="rehireprops"></a>
+
+Props for [Rehire](#rehire).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The contractor identifier to rehire. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorRehire`](../../Translations/index.md#contractorrehire)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/rehire/scheduled` | Fired after the rehire is successfully scheduled | `{ contractorId: string, startDate: string, message: string }` |
+| `CANCEL` | Fired when the user clicks Cancel | — |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| POST | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire) |
+
+***
+
 ## Utility types
 
 <a id="contractortab"></a>

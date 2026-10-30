@@ -327,6 +327,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | DELETE | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/delete-v1-contractors-contractor_uuid-termination) |
 | **ContractorManagement.Dismissal** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
 |  | POST | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination) |
+| **ContractorManagement.Rehire** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+|  | POST | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire) |
 | **ContractorManagement.DashboardFlow** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
 | **ContractorManagement.Profile** | POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_uuid-contractors) |
 |  | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
@@ -368,7 +370,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Flow | Blocks included |
 | --- | --- |
-| **ContractorManagement.ContractorListFlow** | ContractorManagement.ContractorList, ContractorManagement.DashboardFlow, ContractorManagement.Dismissal, ContractorOnboarding.OnboardingFlow |
+| **ContractorManagement.ContractorListFlow** | ContractorManagement.ContractorList, ContractorManagement.DashboardFlow, ContractorManagement.Dismissal, ContractorManagement.Rehire, ContractorOnboarding.OnboardingFlow |
 | **ContractorManagement.CreatePaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentSummary |
 | **ContractorManagement.DashboardFlow** | ContractorManagement.Address, ContractorManagement.Compensation, ContractorManagement.DocumentsCard, ContractorManagement.PaymentMethod, ContractorManagement.Profile |
 | **ContractorManagement.HistoricalPaymentFlow** | ContractorManagement.CreateHistoricalPayment, ContractorManagement.HistoricalPaymentSummary |
@@ -395,9 +397,13 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_uuid) |
 | **useContractorPaymentMethodForm** | GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
 |  | PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method) |
+| **useContractorRehireForm** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+|  | POST | [`/v1/contractors/:contractorUuid/rehire`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-rehire) |
 | **useContractorSignatureForm** | GET | [`/v1/documents/:documentUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document) |
 |  | GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |
 |  | PUT | [`/v1/documents/:documentUuid/sign`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractor-document-sign) |
+| **useDismissal** | GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+|  | POST | [`/v1/contractors/:contractorUuid/termination`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-termination) |
 
 ## Payrolls
 

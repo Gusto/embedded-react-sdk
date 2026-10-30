@@ -1,0 +1,21 @@
+{
+  "title": "Rehire {{name}}",
+  "subtitle": "Schedule a start date for this contractor.",
+  "alert": {
+    "label": "This can be cancelled",
+    "text": "The rehire can be cancelled from the contractor list any time before the start date takes effect."
+  },
+  "form": {
+    "startDate": {
+      "label": "Start date"
+    }
+  },
+  "validation": {
+    "startDateRequired": "Enter a start date"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "submit": "Rehire contractor"
+  },
+  "successMessage": "Rehire scheduled"
+}

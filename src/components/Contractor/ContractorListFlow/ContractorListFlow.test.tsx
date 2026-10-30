@@ -10,6 +10,7 @@ import {
   handleGetContractor,
   handleGetContractorsList,
   handleScheduleContractorDismissal,
+  handleScheduleContractorRehire,
 } from '@/test/mocks/apis/contractors'
 
 const contractorFixture = {
@@ -100,6 +101,53 @@ describe('ContractorListFlow', () => {
       contractorId: 'contractor-123',
       endDate: '2026-09-01',
       message: 'Dismissal scheduled',
+    })
+  })
+
+  it('routes "Rehire contractor" to the rehire form, schedules the rehire, and returns to the list with a success banner', async () => {
+    const user = userEvent.setup()
+
+    const dismissedContractor = {
+      ...contractorFixture,
+      is_active: false,
+      dismissal_date: '2025-06-30',
+    }
+    const rehireResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 204 }),
+    )
+    server.use(
+      handleGetContractorsList(() =>
+        HttpResponse.json([dismissedContractor], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        }),
+      ),
+      handleGetContractor(() => HttpResponse.json(dismissedContractor)),
+      handleScheduleContractorRehire(rehireResolver),
+    )
+
+    renderWithProviders(<ContractorListFlow companyId="123" onEvent={onEvent} />)
+
+    await user.click(await screen.findByRole('tab', { name: 'Dismissed' }))
+    await user.click(await screen.findByRole('button', { name: 'Actions for Ada Lovelace' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Rehire contractor' }))
+
+    expect(onEvent).toHaveBeenCalledWith('contractor/rehire', { contractorId: 'contractor-123' })
+    expect(await screen.findByRole('heading', { name: 'Rehire Ada Lovelace' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Back to contractors' })).toBeInTheDocument()
+
+    const dateGroup = screen.getByRole('group', { name: /Start date/i })
+    await user.type(within(dateGroup).getByRole('spinbutton', { name: /^month/i }), '09')
+    await user.type(within(dateGroup).getByRole('spinbutton', { name: /^day/i }), '01')
+    await user.type(within(dateGroup).getByRole('spinbutton', { name: /^year/i }), '2026')
+
+    await user.click(screen.getByRole('button', { name: 'Rehire contractor' }))
+
+    expect(await screen.findByText('Rehire scheduled')).toBeInTheDocument()
+    expect(rehireResolver).toHaveBeenCalledTimes(1)
+    expect(onEvent).toHaveBeenCalledWith('contractor/rehire/scheduled', {
+      contractorId: 'contractor-123',
+      startDate: '2026-09-01',
+      message: 'Rehire scheduled',
     })
   })
 

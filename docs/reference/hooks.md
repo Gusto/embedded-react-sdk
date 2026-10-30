@@ -17,6 +17,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | Hook | Description |
 | --- | --- |
 | [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list) | Standalone data hook for a contractor's documents. |
+| [useDismissal](contractor/hooks/use-dismissal) | Fetches a contractor and exposes an action to schedule their dismissal. |
 | [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
 
 ## ✍️ Form hooks
@@ -31,6 +32,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | [useContractorDetailsForm](contractor/hooks/use-contractor-details-form) | Headless hook for creating or updating a contractor's profile details — individual vs. business type, wage type, names, SSN/EIN, work state, and the self-onboarding preference. |
 | [useContractorPayForm](contractor/hooks/use-contractor-pay-form) | Headless React Hook Form hook for editing a contractor's compensation. |
 | [useContractorPaymentMethodForm](contractor/hooks/use-contractor-payment-method-form) | Headless React Hook Form hook for managing a contractor's payment method type. |
+| [useContractorRehireForm](contractor/hooks/use-contractor-rehire-form) | Headless React Hook Form hook for scheduling a dismissed contractor's rehire. |
 | [useContractorSignatureForm](contractor/hooks/use-contractor-signature-form) | Headless hook for signing a contractor document — collects the document's fields plus a typed signature and consent. |
 | [useCurrentHomeAddressForm](employee/hooks/use-current-home-address-form) | Convenience wrapper around [useHomeAddressForm](employee/hooks/use-home-address-form.md#usehomeaddressform) that auto-resolves the employee's current home address. |
 | [useCurrentWorkAddressForm](employee/hooks/use-current-work-address-form) | Convenience wrapper around [useWorkAddressForm](employee/hooks/use-work-address-form.md#useworkaddressform) that auto-resolves the employee's current work address. |
@@ -347,6 +349,7 @@ narrowing. `isLoading: false` discriminates this branch from
 #### Extended by
 
 - [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
+- [`UseDismissalReady`](contractor/hooks/use-dismissal.md#usedismissalready)
 
 #### Type Parameters
 
@@ -454,6 +457,7 @@ parsed values (or `undefined` if invalid).
 - [`UseSignEmployeeFormReady`](employee/hooks/use-sign-employee-form.md#usesignemployeeformready)
 - [`UsePayScheduleFormReady`](company/hooks/use-pay-schedule-form.md#usepayscheduleformready)
 - [`UseSignCompanyFormReady`](company/hooks/use-sign-company-form.md#usesigncompanyformready)
+- [`UseContractorRehireFormReady`](contractor/hooks/use-contractor-rehire-form.md#usecontractorrehireformready)
 - [`UseContractorSignatureFormReady`](contractor/hooks/use-contractor-signature-form.md#usecontractorsignatureformready)
 
 #### Type Parameters
