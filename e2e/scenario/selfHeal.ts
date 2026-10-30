@@ -107,3 +107,54 @@ export async function ensureSignatoryAndSignedForms(
     })
   }
 }
+
+interface TransitionPayPeriod {
+  start_date: string
+  end_date: string
+  pay_schedule_uuid?: string
+  payroll?: { processed?: boolean } | null
+}
+
+/**
+ * Skip every unprocessed transition payroll. Moving the anchor dates of a pay
+ * schedule that already has payroll history (the shared/onboarded pay
+ * schedule decoration does this) opens transition payrolls for the gap
+ * between the old and new schedules. Until each one is run or skipped, the
+ * SDK disables every regular payroll row, so regular payroll specs would end
+ * up driving a transition payroll instead. The transition canary
+ * (99-transition-submit) creates its own by changing the schedule again.
+ *
+ * The skip endpoint rejects with a missing_forms payroll blocker while
+ * company forms are unsigned, so call this after
+ * ensureSignatoryAndSignedForms. Looks 90 days ahead, the same window the
+ * SDK's transition alert uses.
+ */
+export async function skipUnprocessedTransitionPayrolls(
+  api: ApiClient,
+  companyId: string,
+  log: (msg: string) => void,
+): Promise<void> {
+  const lookAheadEnd = new Date()
+  lookAheadEnd.setDate(lookAheadEnd.getDate() + 90)
+
+  const transitionPeriods = await api.get<TransitionPayPeriod[]>(
+    `/companies/${companyId}/pay_periods` +
+      `?payroll_types=transition&end_date=${lookAheadEnd.toISOString().split('T')[0]}`,
+  )
+  const unprocessed = transitionPeriods.filter(p => !p.payroll?.processed)
+
+  if (unprocessed.length === 0) {
+    log(`  No unprocessed transition payrolls`)
+    return
+  }
+
+  for (const period of unprocessed) {
+    log(`  Skipping transition payroll ${period.start_date} to ${period.end_date}`)
+    await api.post(`/companies/${companyId}/payrolls/skip`, {
+      payroll_type: 'Transition from old pay schedule',
+      start_date: period.start_date,
+      end_date: period.end_date,
+      ...(period.pay_schedule_uuid ? { pay_schedule_uuid: period.pay_schedule_uuid } : {}),
+    })
+  }
+}

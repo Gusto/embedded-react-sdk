@@ -6,7 +6,10 @@ import { CI_HEADERS } from './utils/ciHeaders'
 import { refreshTokenIfNeeded, createFreshDemo } from './scripts/refreshToken'
 import type { ScenarioContext } from './scenario/context'
 import { makeApi, provisionScenario } from './scenario/runner'
-import { ensureSignatoryAndSignedForms } from './scenario/selfHeal'
+import {
+  ensureSignatoryAndSignedForms,
+  skipUnprocessedTransitionPayrolls,
+} from './scenario/selfHeal'
 import { assertCompanyIsReadyForTests } from './scenario/healthGate'
 import { loadScenario } from './scenario/loader'
 
@@ -550,7 +553,14 @@ async function provisionAndWriteSharedScenarios(): Promise<void> {
         await ensureSignatoryAndSignedForms(api, ctx.companyId, msg => console.log(msg))
       }
 
-      // 3. Hard health gate. Refuses to proceed if any check fails — the
+      // 3. Skip the transition payrolls the pay schedule decoration opens,
+      //    so regular payroll rows stay runnable. Runs after self-heal
+      //    because the skip endpoint rejects while forms are unsigned.
+      if (scenario.decorations.paySchedule) {
+        await skipUnprocessedTransitionPayrolls(api, ctx.companyId, msg => console.log(msg))
+      }
+
+      // 4. Hard health gate. Refuses to proceed if any check fails — the
       //    artifact will not include this scenario and globalSetup throws.
       await assertCompanyIsReadyForTests(api, ctx.companyId, {
         requireOnboarded:

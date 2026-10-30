@@ -510,59 +510,17 @@ async function decoratePaySchedule(
       : {}),
   }
 
-  const [schedule] = existing
-  const saved = schedule
-    ? await api.put<{ uuid: string }>(`/companies/${companyId}/pay_schedules/${schedule.uuid}`, {
-        ...body,
-        ...(schedule.version ? { version: schedule.version } : {}),
-      })
-    : await api.post<{ uuid: string }>(`/companies/${companyId}/pay_schedules`, body)
-
-  await skipUnprocessedTransitionPayrolls(api, companyId, log)
-
-  return { uuid: saved.uuid }
-}
-
-interface TransitionPayPeriod {
-  start_date: string
-  end_date: string
-  pay_schedule_uuid?: string
-  payroll?: { processed?: boolean } | null
-}
-
-/**
- * Moving the anchor dates of a pay schedule that already has payroll history
- * makes the backend open transition payrolls for the gap between the old and
- * new schedules. Until each one is run or skipped, the SDK disables every
- * regular payroll row, so the regular payroll specs would end up driving a
- * transition payroll instead. Skip them here so the shared company starts with
- * only regular payrolls; the transition canary (99-transition-submit) creates
- * its own by changing the schedule again.
- *
- * Looks 90 days ahead, the same window the SDK's transition alert uses.
- */
-async function skipUnprocessedTransitionPayrolls(
-  api: ApiClient,
-  companyId: string,
-  log: ReturnType<typeof makeLog>,
-): Promise<void> {
-  const lookAheadEnd = new Date()
-  lookAheadEnd.setDate(lookAheadEnd.getDate() + 90)
-
-  const transitionPeriods = await api.get<TransitionPayPeriod[]>(
-    `/companies/${companyId}/pay_periods` +
-      `?payroll_types=transition&end_date=${lookAheadEnd.toISOString().split('T')[0]}`,
-  )
-
-  for (const period of transitionPeriods.filter(p => !p.payroll?.processed)) {
-    log(`  Skipping transition payroll ${period.start_date} to ${period.end_date}`)
-    await api.post(`/companies/${companyId}/payrolls/skip`, {
-      payroll_type: 'Transition from old pay schedule',
-      start_date: period.start_date,
-      end_date: period.end_date,
-      ...(period.pay_schedule_uuid ? { pay_schedule_uuid: period.pay_schedule_uuid } : {}),
-    })
+  if (existing.length > 0) {
+    const schedule = existing[0]!
+    const updated = await api.put<{ uuid: string }>(
+      `/companies/${companyId}/pay_schedules/${schedule.uuid}`,
+      { ...body, ...(schedule.version ? { version: schedule.version } : {}) },
+    )
+    return { uuid: updated.uuid }
   }
+
+  const created = await api.post<{ uuid: string }>(`/companies/${companyId}/pay_schedules`, body)
+  return { uuid: created.uuid }
 }
 
 interface PayPeriod {
