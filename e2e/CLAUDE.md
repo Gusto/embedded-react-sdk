@@ -37,7 +37,7 @@ New specs slot into the right range based on what they mutate. If a spec creates
 Tests declare the state they need via **scenarios** — JSON files in `e2e/scenarios/shared/` that describe the company, employees, pay schedules, and payrolls to provision. There are 2 shared scenarios:
 
 - **`shared/fresh-wizard`**: a fresh `react_sdk_demo` company with one HQ location. Used by every company-onboarding spec that drives the wizard from an empty state.
-- **`shared/onboarded`**: a fully-onboarded `react_sdk_demo_company_onboarded` company with biweekly pay schedule, two employees (`alice`, `selfee`), three contractors (`individual`, `business`, `payable`). Used by every non-wizard spec in every domain.
+- **`shared/onboarded`**: a fully-onboarded `react_sdk_demo_company_onboarded` company with biweekly pay schedule, two employees (`alice`, `selfee`), three contractors (`individual`, `business`, `payable`). Used by every non-wizard spec in every domain. Provisioning skips any transition payroll that setting the pay schedule opens, so specs start with only regular payrolls. A spec that needs a transition payroll creates one itself (see `changeScheduleAndRunTransitionPayroll` in `e2e/utils/payrollFlowDrivers.ts`).
 
 Plus shared fragments in `e2e/scenarios/fragments/` that scenarios `$ref` for common entity shapes (`w2-salaried-employee`, `contractor-1099`, etc.).
 
