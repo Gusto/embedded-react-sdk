@@ -2093,6 +2093,36 @@ Translation keys for the `Contractor.Management.PaymentMethod` i18n namespace.
 
 ***
 
+<a id="contractormanagementpayments"></a>
+
+### ContractorManagementPayments
+
+Translation keys for the `Contractor.Management.Payments` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractormanagementpaymentsbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-contractormanagementpaymentsemptyplaceholder"></a> `emptyPlaceholder` | `"–"` |
+| <a id="property-contractormanagementpaymentsemptystate"></a> `emptyState` | |
+| `emptyState.description` | `"Once you pay this contractor, payments will appear here."` |
+| `emptyState.title` | `"No payments yet"` |
+| <a id="property-contractormanagementpaymentserrors"></a> `errors` | |
+| `errors.contractorNotFound` | `"We could not load this contractor."` |
+| <a id="property-contractormanagementpaymentslistlabel"></a> `listLabel` | `"List of recent payments"` |
+| <a id="property-contractormanagementpaymentspaymentdatecolumn"></a> `paymentDateColumn` | `"Payment date"` |
+| <a id="property-contractormanagementpaymentspaymentmethodcolumn"></a> `paymentMethodColumn` | `"Payment method"` |
+| <a id="property-contractormanagementpaymentsstatus"></a> `status` | |
+| `status.funded` | `"Funded"` |
+| `status.unfunded` | `"Unfunded"` |
+| <a id="property-contractormanagementpaymentsstatuscolumn"></a> `statusColumn` | `"Status"` |
+| <a id="property-contractormanagementpaymentstitle"></a> `title` | `"Recent payments"` |
+| <a id="property-contractormanagementpaymentstotalcolumn"></a> `totalColumn` | `"Total"` |
+| <a id="property-contractormanagementpaymentsviewdetailscta"></a> `viewDetailsCta` | `"View details"` |
+
+***
+
 <a id="contractormanagementprofile"></a>
 
 ### ContractorManagementProfile
@@ -6161,6 +6191,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractormanagementcompensation"></a> `Contractor.Management.Compensation` | [`ContractorManagementCompensation`](#contractormanagementcompensation) |
 | <a id="property-resourcescontractormanagementdocuments"></a> `Contractor.Management.Documents` | [`ContractorManagementDocuments`](#contractormanagementdocuments) |
 | <a id="property-resourcescontractormanagementpaymentmethod"></a> `Contractor.Management.PaymentMethod` | [`ContractorManagementPaymentMethod`](#contractormanagementpaymentmethod) |
+| <a id="property-resourcescontractormanagementpayments"></a> `Contractor.Management.Payments` | [`ContractorManagementPayments`](#contractormanagementpayments) |
 | <a id="property-resourcescontractormanagementprofile"></a> `Contractor.Management.Profile` | [`ContractorManagementProfile`](#contractormanagementprofile) |
 | <a id="property-resourcescontractormanagementcontractorlist"></a> `Contractor.ManagementContractorList` | [`ContractorManagementContractorList`](#contractormanagementcontractorlist) |
 | <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |

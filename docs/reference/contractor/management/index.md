@@ -45,6 +45,7 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 | [PaymentMethod](blocks.md#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
 | [PaymentMethodCard](blocks.md#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
 | [PaymentMethodEditForm](blocks.md#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
+| [PaymentsCard](blocks.md#paymentscard) | Standalone read-only "Recent payments" card for a single contractor. |
 | [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
