@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { expect, describe, it } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import type { PayrollReceipt } from '@gusto/embedded-api/models/components/payrollreceipt'
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -60,6 +60,36 @@ const sampleReceiptData: PayrollReceipt = {
 }
 
 describe('PayrollReceiptsPresentation', () => {
+  it('totals all tax lines when withheld taxes are excluded from the tax debit', async () => {
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <PayrollReceiptsPresentation
+          receiptData={{
+            ...sampleReceiptData,
+            totals: { ...sampleReceiptData.totals, taxDebit: '835.02' },
+            taxes: [
+              { name: 'Federal Income Tax', amount: '835.02' },
+              { name: 'New York State Disability Insurance (SDI)', amount: '1.20' },
+              { name: 'NY Family Leave Insurance', amount: '8.59' },
+            ],
+          }}
+        />
+      </Suspense>,
+    )
+
+    const taxTable = await screen.findByRole('grid', { name: 'Tax' })
+    expect(
+      within(within(taxTable).getByRole('row', { name: 'Totals' })).getByText('$844.81'),
+    ).toBeInTheDocument()
+
+    const debitTable = screen.getByRole('grid', { name: 'Debited' })
+    expect(
+      within(
+        within(debitTable).getByRole('row', { name: 'Taxes (Employee and Employer)' }),
+      ).getByText('$835.02'),
+    ).toBeInTheDocument()
+  })
+
   describe('mobile layout (default test breakpoint)', () => {
     beforeEach(() => {
       mockUseContainerBreakpoints.mockReturnValue(['base'])
