@@ -173,12 +173,8 @@ function CompensationCardReady({
     c => c.uuid === singleJob.currentCompensationUuid,
   )
   const emptyPlaceholder = <span aria-label={t('card.listEmptyPlaceholder')}>–</span>
-  const singleJobPaymentTypeLabel = singleJob?.paymentUnit
-    ? singleJob.paymentUnit === 'Hour'
-      ? t('card.types.hourly')
-      : singleJob.paymentUnit === 'Salary' || singleJob.paymentUnit === 'Year'
-        ? t('card.types.salary')
-        : singleJob.paymentUnit
+  const singleJobPaymentTypeLabel = singleJobCurrentComp?.flsaStatus
+    ? t(`flsaStatusLabels.${singleJobCurrentComp.flsaStatus}`)
     : null
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)

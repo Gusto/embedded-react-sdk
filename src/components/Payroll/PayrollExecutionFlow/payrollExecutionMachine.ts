@@ -118,8 +118,7 @@ export const getPayrollExecutionBreadcrumbsNodes = (
   } satisfies Record<BreadcrumbNodeKeys, BreadcrumbNode>
 }
 
-/** @internal */
-export const calculatedTransition = transition(
+const calculatedTransition = transition(
   componentEvents.RUN_PAYROLL_CALCULATED,
   'overview',
   reduce(
@@ -146,8 +145,7 @@ export const calculatedTransition = transition(
   ),
 )
 
-/** @internal */
-export const alreadyProcessedTransition = transition(
+const alreadyProcessedTransition = transition(
   componentEvents.RUN_PAYROLL_ALREADY_PROCESSED,
   'overview',
   reduce(
@@ -178,8 +176,7 @@ export const alreadyProcessedTransition = transition(
   ),
 )
 
-/** @internal */
-export const employeeEditTransition = transition(
+const employeeEditTransition = transition(
   componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT,
   'editEmployee',
   reduce(
@@ -205,8 +202,7 @@ export const employeeEditTransition = transition(
   ),
 )
 
-/** @internal */
-export const blockersViewAllTransition = transition(
+const blockersViewAllTransition = transition(
   componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
   'blockers',
   reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => {
