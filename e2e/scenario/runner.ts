@@ -39,9 +39,7 @@ export function makeApi(gwsFlowsBase: string, flowToken: string): ApiClient {
       const errorBody = await response.text().catch(() => '')
       throw new Error(`${method} ${path} failed (${response.status}): ${errorBody}`)
     }
-    // Some endpoints (e.g. POST /payrolls/skip) succeed with an empty body.
-    const responseText = await response.text()
-    return (responseText ? JSON.parse(responseText) : undefined) as T
+    return response.json() as Promise<T>
   }
 
   return {

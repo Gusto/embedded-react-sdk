@@ -37,13 +37,13 @@ New specs slot into the right range based on what they mutate. If a spec creates
 Tests declare the state they need via **scenarios** — JSON files in `e2e/scenarios/shared/` that describe the company, employees, pay schedules, and payrolls to provision. There are 2 shared scenarios:
 
 - **`shared/fresh-wizard`**: a fresh `react_sdk_demo` company with one HQ location. Used by every company-onboarding spec that drives the wizard from an empty state.
-- **`shared/onboarded`**: a fully-onboarded `react_sdk_demo_company_onboarded` company with biweekly pay schedule, two employees (`alice`, `selfee`), three contractors (`individual`, `business`, `payable`). Used by every non-wizard spec in every domain. Provisioning skips any transition payroll that setting the pay schedule opens, so specs start with only regular payrolls. A spec that needs a transition payroll creates one itself (see `changeScheduleAndRunTransitionPayroll` in `e2e/utils/payrollFlowDrivers.ts`).
+- **`shared/onboarded`**: a fully-onboarded `react_sdk_demo_company_onboarded` company with biweekly pay schedule, two employees (`alice`, `selfee`), three contractors (`individual`, `business`, `payable`). Used by every non-wizard spec in every domain. It starts with no transition payroll: the pay schedule decoration sets only the frequency, and the health gate fails setup if a transition payroll exists. A spec that needs a transition payroll creates one itself (see `changeScheduleAndRunTransitionPayroll` in `e2e/utils/payrollFlowDrivers.ts`).
 
 Plus shared fragments in `e2e/scenarios/fragments/` that scenarios `$ref` for common entity shapes (`w2-salaried-employee`, `contractor-1099`, etc.).
 
 ### How provisioning works
 
-Both shared scenarios are provisioned **once** in the CI `e2e-setup` job, validated with a hard health gate (`onboarding_completed=true`, signatory with identity verification Pass, zero payroll blockers, at least one onboarded employee), and serialized to `e2e/.e2e-scenarios.json` which all downstream e2e shards download as an artifact. Tests load their scenario context via a Map lookup in milliseconds — no per-test demo creation, no race against the demo backend during test runs.
+Both shared scenarios are provisioned **once** in the CI `e2e-setup` job, validated with a hard health gate (`onboarding_completed=true`, signatory with identity verification Pass, zero payroll blockers and no unprocessed transition payroll, at least one onboarded employee), and serialized to `e2e/.e2e-scenarios.json` which all downstream e2e shards download as an artifact. Tests load their scenario context via a Map lookup in milliseconds — no per-test demo creation, no race against the demo backend during test runs.
 
 ### Writing a Test
 
