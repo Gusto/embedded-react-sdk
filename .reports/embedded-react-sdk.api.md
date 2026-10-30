@@ -143,6 +143,7 @@ import { Garnishment } from '@gusto/embedded-api/models/components/garnishment';
 import { GarnishmentChildSupport } from '@gusto/embedded-api/models/components/garnishmentchildsupport';
 import { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment';
 import { GeneratedDocumentStatus } from '@gusto/embedded-api/models/components/generateddocument';
+import { GetV1ContractorsContractorUuidPaymentsResponse } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidpayments';
 import { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HolidayPayPolicyEmployees } from '@gusto/embedded-api/models/components/holidaypaypolicy';
 import { HourlyCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype';
@@ -1497,6 +1498,8 @@ export const componentEvents: {
     readonly CONTRACTOR_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "contractor/management/compensation/alertDismissed";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "contractor/management/documents/card/viewRequested";
     readonly CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: "contractor/management/documents/card/viewed";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_VIEW_ALL_REQUESTED: "contractor/management/payments/card/viewAllRequested";
+    readonly CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED: "contractor/management/payments/card/paymentSelected";
     readonly CONTRACTOR_DASHBOARD_TAB_CHANGE: "contractor/dashboard/tabChange";
     readonly CONTRACTOR_DASHBOARD_ALERT_DISMISSED: "contractor/dashboard/alertDismissed";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
@@ -2028,6 +2031,8 @@ declare namespace ContractorManagement {
         CompensationEditFormProps_2 as CompensationEditFormProps,
         DocumentsCard_2 as DocumentsCard,
         DocumentsCardProps_2 as DocumentsCardProps,
+        PaymentsCard,
+        PaymentsCardProps,
         PaymentFlow,
         PaymentFlowProps,
         CreatePaymentFlow,
@@ -2132,6 +2137,9 @@ export type ContractorPayHourlyRateFieldProps = HookFieldProps<NumberInputHookFi
 
 // @public
 export type ContractorPayMaxHourlyRateValidation = typeof ContractorPayErrorCodes.MAX_HOURLY_RATE;
+
+// @public
+export type ContractorPaymentHistoryEntry = NonNullable<GetV1ContractorsContractorUuidPaymentsResponse['contractorPaymentListings']>[number];
 
 // @public
 export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
@@ -4334,6 +4342,16 @@ export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
 
 // @public
+function PaymentsCard(input: PaymentsCardProps): JSX;
+
+// @public
+interface PaymentsCardProps {
+    contractorId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
 function PaymentsList(props: PaymentsListProps): JSX;
 
 // @public
@@ -5085,6 +5103,8 @@ export interface Resources {
     'Contractor.Management.Documents': Translations.ContractorManagementDocuments
     // (undocumented)
     'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
+    // (undocumented)
+    'Contractor.Management.Payments': Translations.ContractorManagementPayments
     // (undocumented)
     'Contractor.Management.Profile': Translations.ContractorManagementProfile
     // (undocumented)
@@ -6420,6 +6440,29 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<C
 
 // @public
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
+
+// @public
+export function useContractorPaymentsList(input: UseContractorPaymentsListParams): UseContractorPaymentsListResult;
+
+// @public
+export interface UseContractorPaymentsListParams {
+    contractorId: string;
+    defaultItemsPerPage?: PaginationItemsPerPage;
+}
+
+// @public
+export interface UseContractorPaymentsListReady extends BaseHookReady<{
+    payments: ContractorPaymentHistoryEntry[];
+}, {
+    isFetching: boolean;
+}> {
+    pagination: {
+        payments?: PaginationControlProps;
+    };
+}
+
+// @public
+export type UseContractorPaymentsListResult = HookLoadingResult | UseContractorPaymentsListReady;
 
 // @public
 export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;

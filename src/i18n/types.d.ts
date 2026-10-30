@@ -90,6 +90,8 @@ export interface Resources {
   /** */
   'Contractor.Management.PaymentMethod': Translations.ContractorManagementPaymentMethod
   /** */
+  'Contractor.Management.Payments': Translations.ContractorManagementPayments
+  /** */
   'Contractor.Management.Profile': Translations.ContractorManagementProfile
   /** */
   'Contractor.ManagementContractorList': Translations.ContractorManagementContractorList
@@ -3080,6 +3082,39 @@ export namespace Translations {
         /** @defaultValue `"Enter a valid account number"` */
         accountNumber: string
       }
+    }
+  }
+  /** Translation keys for the `Contractor.Management.Payments` i18n namespace. */
+  export interface ContractorManagementPayments {
+    /** @defaultValue `"Recent payments"` */
+    title: string
+    /** @defaultValue `"List of recent payments"` */
+    listLabel: string
+    /** @defaultValue `"View all"` */
+    viewAllCta: string
+    /** @defaultValue `"View details"` */
+    viewDetailsCta: string
+    /** @defaultValue `"Payment date"` */
+    paymentDateColumn: string
+    /** @defaultValue `"Total"` */
+    totalColumn: string
+    /** @defaultValue `"Payment method"` */
+    paymentMethodColumn: string
+    /** @defaultValue `"Status"` */
+    statusColumn: string
+    /** @defaultValue `"–"` */
+    emptyPlaceholder: string
+    status: {
+      /** @defaultValue `"Funded"` */
+      funded: string
+      /** @defaultValue `"Unfunded"` */
+      unfunded: string
+    }
+    emptyState: {
+      /** @defaultValue `"No payments yet"` */
+      title: string
+      /** @defaultValue `"Once you pay this contractor, payments will appear here."` */
+      description: string
     }
   }
   /** Translation keys for the `Contractor.Management.Profile` i18n namespace. */

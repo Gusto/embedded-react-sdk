@@ -2508,6 +2508,18 @@
         "documentUuid"
       ]
     },
+    "ContractorManagement.PaymentsCard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.PaymentsList": {
       "endpoints": [
         {
@@ -2711,6 +2723,7 @@
         "ContractorManagement.Compensation",
         "ContractorManagement.DocumentsCard",
         "ContractorManagement.PaymentMethod",
+        "ContractorManagement.PaymentsCard",
         "ContractorManagement.Profile"
       ]
     },
@@ -3058,6 +3071,18 @@
           "method": "PUT",
           "path": "/v1/contractors/:contractorUuid/payment_method",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "useContractorPaymentsList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments"
         }
       ],
       "variables": [

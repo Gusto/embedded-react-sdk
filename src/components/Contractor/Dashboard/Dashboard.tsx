@@ -66,7 +66,13 @@ function DashboardRoot({
             <DetailsView contractorId={contractorId} onEvent={onEvent} />
           )}
 
-          {selectedTab === 'pay' && <PayView contractorId={contractorId} onEvent={onEvent} />}
+          {selectedTab === 'pay' && (
+            <PayView
+              contractorId={contractorId}
+              onEvent={onEvent}
+              LoaderComponent={LoaderComponent}
+            />
+          )}
 
           {selectedTab === 'documents' && (
             <DocumentsCard
