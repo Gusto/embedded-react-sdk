@@ -37,7 +37,9 @@ export interface PayrollExecutionFlowProps {
   companyId: string
   /**
    * The identifier of the payroll to execute. The payroll must already exist (e.g. created by a
-   * prior creation step or by the standard `PayrollFlow` selection).
+   * prior creation step or by the standard `PayrollFlow` selection). For a transition payroll,
+   * render {@link TransitionConfiguration} first and pass the same ID here after it emits
+   * `transition/configured`.
    */
   payrollId: string
   /** Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. */

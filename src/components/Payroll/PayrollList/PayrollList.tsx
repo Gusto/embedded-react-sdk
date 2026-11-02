@@ -51,11 +51,16 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * When the company has unprocessed transition pay periods within the next
  * 90 days, the Run Payroll action on Regular rows is disabled to prevent a
  * regular payroll from being run before the transition is resolved. Off-cycle
- * rows and the Run off-cycle action remain enabled, since off-cycle is the
- * path used to run a transition payroll. {@link PayrollLanding} pairs this
- * list with an alert that lets users run or skip the pending transition; when
- * using `PayrollList` directly, render an equivalent resolution surface
- * alongside it.
+ * rows, including transition payroll rows, and the Run off-cycle action stay
+ * enabled.
+ *
+ * Running a transition payroll row emits `transition/payrollSelected` instead
+ * of `runPayroll/selected`. Handle it by rendering
+ * {@link TransitionConfiguration} with the event's `payrollUuid` as
+ * `payrollId`, then render {@link PayrollExecutionFlow} for the same payroll on
+ * `transition/configured`. {@link PayrollLanding} also shows an alert that lets
+ * users run or skip each pending transition payroll. When using `PayrollList`
+ * directly, give users a way to run or skip those payrolls alongside it.
  *
  * @events
  * | Event | Description | Data |

@@ -46,3 +46,4 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 | [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
 | [PrintChecks](blocks.md#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
 | [RecoveryCases](blocks.md#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
+| [TransitionConfiguration](blocks.md#transitionconfiguration) | Lets the user change the settings of a transition payroll before running it. |

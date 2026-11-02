@@ -135,6 +135,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [Payroll.PayrollReceipts](payroll/blocks#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
 | [Payroll.PrintChecks](payroll/blocks#printchecks) | Displays a banner prompting the user to print checks for employees paid by check on a processed payroll, and walks them through choosing check stock and generating the check PDF. |
 | [Payroll.RecoveryCases](payroll/blocks#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
+| [Payroll.TransitionConfiguration](payroll/blocks#transitionconfiguration) | Lets the user change the settings of a transition payroll before running it. |
 | [TimeOff.AddEmployeesHoliday](time-off/blocks#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |
 | [TimeOff.AddEmployeesToPolicy](time-off/blocks#addemployeestopolicy) | Employee selection screen for assigning employees to a sick or vacation time off policy. |
 | [TimeOff.HolidaySelectionForm](time-off/blocks#holidayselectionform) | Lets a user select which US federal holidays are observed by the company's holiday pay policy. |
@@ -182,6 +183,7 @@ shape mixed into every public SDK feature component.
 - [`PayrollBlockerListProps`](payroll/blocks.md#payrollblockerlistprops)
 - [`OffCycleCreationProps`](payroll/blocks.md#offcyclecreationprops)
 - [`DismissalPayPeriodSelectionProps`](payroll/blocks.md#dismissalpayperiodselectionprops)
+- [`TransitionConfigurationProps`](payroll/blocks.md#transitionconfigurationprops)
 - [`PolicyListProps`](time-off/blocks.md#policylistprops)
 - [`PolicyTypeSelectorProps`](time-off/blocks.md#policytypeselectorprops)
 - [`PolicyConfigurationFormProps`](time-off/blocks.md#policyconfigurationformprops)

@@ -41,13 +41,30 @@ function isVersionedEmployeeCompensation(
  * Lets the user change the settings of a transition payroll before running it.
  *
  * @remarks
- * The API creates transition payrolls on its own. This component updates one. It never creates one.
+ * The API creates a transition payroll when a company changes pay schedules. This component
+ * updates that payroll. It never creates one.
  *
  * - The pay period, pay schedule, and payment date are shown but can't be changed.
  * - The user can choose to take or skip regular deductions, and how to withhold taxes.
  *
  * If a setting is empty, deductions are taken, the regular tax rate is used, and the pay frequency
- * matches the pay schedule. Saving can change the payment date.
+ * matches the pay schedule. The payment date is read only for now. Saving can still move it, and
+ * the form shows the new date.
+ *
+ * `PayrollFlow` renders this component for you. To build the screens yourself:
+ *
+ * 1. Get the transition payroll ID. {@link PayrollLanding} sends it as `payrollUuid` with
+ *    `transition/runPayroll`, and {@link PayrollList} sends it with `transition/payrollSelected`.
+ *    To look it up without those components, call
+ *    `GET /v1/companies/{company_id}/pay_periods?payroll_types=transition` and read
+ *    `payroll.payroll_uuid` from the pay period.
+ * 2. Render this component with that ID as `payrollId`.
+ * 3. On `transition/configured`, render {@link PayrollExecutionFlow} with the same `payrollId`.
+ *    It opens on `PayrollConfiguration`, then continues to review, submit, and receipts.
+ *
+ * This component replaces `Payroll.TransitionFlow`, `Payroll.TransitionPayroll`, and
+ * `Payroll.TransitionCreation`, which have been removed. The `transition/created` event is gone
+ * too. Listen for `transition/configured` instead.
  *
  * @events
  * | Event | Description | Data |
@@ -56,18 +73,29 @@ function isVersionedEmployeeCompensation(
  *
  * @param props - See {@link TransitionConfigurationProps}.
  * @returns The transition payroll settings form.
- * @alpha
+ * @public
  *
  * @example
  * ```tsx
- * import { Payroll } from '@gusto/embedded-react-sdk'
+ * import { useState } from 'react'
+ * import { componentEvents, Payroll } from '@gusto/embedded-react-sdk'
  *
- * function MyComponent() {
+ * function RunTransitionPayroll({ companyId, payrollId }: { companyId: string; payrollId: string }) {
+ *   const [isConfigured, setIsConfigured] = useState(false)
+ *
+ *   if (isConfigured) {
+ *     return <Payroll.PayrollExecutionFlow companyId={companyId} payrollId={payrollId} onEvent={() => {}} />
+ *   }
+ *
  *   return (
  *     <Payroll.TransitionConfiguration
- *       companyId="your-company-id"
- *       payrollId="your-transition-payroll-id"
- *       onEvent={() => {}}
+ *       companyId={companyId}
+ *       payrollId={payrollId}
+ *       onEvent={type => {
+ *         if (type === componentEvents.TRANSITION_CONFIGURED) {
+ *           setIsConfigured(true)
+ *         }
+ *       }}
  *     />
  *   )
  * }

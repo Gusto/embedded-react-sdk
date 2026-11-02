@@ -16,7 +16,7 @@ Hub for running and managing all payrolls across a company's pay schedules.
 
 ## Remarks
 
-Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow. Running a transition payroll opens TransitionConfiguration first. After it saves, the regular payroll steps open for the same payroll.
+Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow. Running a transition payroll opens [TransitionConfiguration](blocks.md#transitionconfiguration) first. After it saves, the regular payroll steps open for the same payroll.
 
 ## Example
 
@@ -75,7 +75,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 | [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
-| TransitionConfiguration | |
+| [TransitionConfiguration](blocks.md#transitionconfiguration) | Lets the user change the settings of a transition payroll before running it. |
 | [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 | [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
 | [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
@@ -83,7 +83,9 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 <!-- guide-source: src/components/Payroll/PayrollFlow/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving it (`transition/configured`) opens `PayrollExecutionFlow` for the same payroll; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
+`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving it (`transition/configured`) opens `PayrollExecutionFlow` for the same payroll (a transition payroll that's already calculated skips this step and opens for review with `payroll/review`); and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
+
+To build this routing yourself instead of using `PayrollFlow`, see the example on [`PayrollLanding`](./blocks.md#payrolllanding).
 
 ```mermaid
 flowchart LR
