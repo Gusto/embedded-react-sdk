@@ -495,7 +495,11 @@ describe('PayrollOverview tax totals', () => {
           fixedCompensations: [],
           hourlyCompensations: [],
           paidTimeOff: [],
-          taxes: [{ name: 'Social Security', employer: false, amount: '1' }],
+          taxes: [
+            { name: 'Social Security', employer: false, amount: '1' },
+            { name: 'New York State Disability Insurance (SDI)', employer: false, amount: '1.20' },
+            { name: 'NY Family Leave Insurance', employer: false, amount: '8.59' },
+          ],
         },
       ],
     }
@@ -510,6 +514,8 @@ describe('PayrollOverview tax totals', () => {
     // Aggregate amount ($100.00) is shown; the page-level sum ($1.00) is not.
     expect(screen.getAllByText('$100.00').length).toBeGreaterThan(0)
     expect(screen.queryByText('$1.00')).not.toBeInTheDocument()
+    expect(screen.queryByText('New York State Disability Insurance (SDI)')).not.toBeInTheDocument()
+    expect(screen.queryByText('NY Family Leave Insurance')).not.toBeInTheDocument()
   })
 })
 
