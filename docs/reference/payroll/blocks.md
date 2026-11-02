@@ -903,32 +903,21 @@ the form shows the new date.
 3. On `transition/configured`, render [PayrollExecutionFlow](payroll-execution-flow.md) with the same `payrollId`.
    It opens on `PayrollConfiguration`, then continues to review, submit, and receipts.
 
-This component replaces `Payroll.TransitionFlow`, `Payroll.TransitionPayroll`, and
-`Payroll.TransitionCreation`, which have been removed. The `transition/created` event is gone
-too. Listen for `transition/configured` instead.
-
 <br />
 
 ### Example
 
 ```tsx
-import { useState } from 'react'
 import { componentEvents, Payroll } from '@gusto/embedded-react-sdk'
 
-function RunTransitionPayroll({ companyId, payrollId }: { companyId: string; payrollId: string }) {
-  const [isConfigured, setIsConfigured] = useState(false)
-
-  if (isConfigured) {
-    return <Payroll.PayrollExecutionFlow companyId={companyId} payrollId={payrollId} onEvent={() => {}} />
-  }
-
+function TransitionPayrollPage({ companyId, payrollId }: { companyId: string; payrollId: string }) {
   return (
     <Payroll.TransitionConfiguration
       companyId={companyId}
       payrollId={payrollId}
       onEvent={type => {
         if (type === componentEvents.TRANSITION_CONFIGURED) {
-          setIsConfigured(true)
+          navigate(`/payrolls/${payrollId}/run`)
         }
       }}
     />
