@@ -83,7 +83,7 @@ describe('PayrollReceiptsPresentation', () => {
       ['Federal Income Tax', '$835.02'],
       ['New York State Disability Insurance (SDI)', '$1.20'],
       ['NY Family Leave Insurance', '$8.59'],
-    ]) {
+    ] as const) {
       expect(
         within(within(taxTable).getByRole('row', { name })).getByText(amount),
       ).toBeInTheDocument()
