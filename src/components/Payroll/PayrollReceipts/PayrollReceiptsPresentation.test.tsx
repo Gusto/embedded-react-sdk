@@ -60,7 +60,7 @@ const sampleReceiptData: PayrollReceipt = {
 }
 
 describe('PayrollReceiptsPresentation', () => {
-  it('totals all tax lines when withheld taxes are excluded from the tax debit', async () => {
+  it('lists all receipt taxes without a total and shows the tax debit separately', async () => {
     renderWithProviders(
       <Suspense fallback={<div>Loading...</div>}>
         <PayrollReceiptsPresentation
@@ -78,9 +78,18 @@ describe('PayrollReceiptsPresentation', () => {
     )
 
     const taxTable = await screen.findByRole('grid', { name: 'Tax' })
-    expect(
-      within(within(taxTable).getByRole('row', { name: 'Totals' })).getByText('$844.81'),
-    ).toBeInTheDocument()
+    expect(within(taxTable).getAllByRole('row')).toHaveLength(4)
+    for (const [name, amount] of [
+      ['Federal Income Tax', '$835.02'],
+      ['New York State Disability Insurance (SDI)', '$1.20'],
+      ['NY Family Leave Insurance', '$8.59'],
+    ]) {
+      expect(
+        within(within(taxTable).getByRole('row', { name })).getByText(amount),
+      ).toBeInTheDocument()
+    }
+    expect(within(taxTable).queryByRole('row', { name: 'Totals' })).not.toBeInTheDocument()
+    expect(within(taxTable).queryByText('$844.81')).not.toBeInTheDocument()
 
     const debitTable = screen.getByRole('grid', { name: 'Debited' })
     expect(

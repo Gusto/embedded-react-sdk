@@ -213,12 +213,6 @@ export const PayrollReceiptsPresentation = ({
           },
         ]}
         data={receiptData.taxes || []}
-        footer={() => ({
-          'column-0': t('breakdown.totals'),
-          'column-1': formatNumberAsCurrency(
-            (receiptData.taxes || []).reduce((sum, tax) => sum + parseFloat(tax.amount || '0'), 0),
-          ),
-        })}
       />
     </Flex>
   )
