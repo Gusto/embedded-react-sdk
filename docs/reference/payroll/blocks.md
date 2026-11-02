@@ -544,12 +544,21 @@ Payroll Alert. It looks ahead 90 days for upcoming transition periods and lists 
 that hasn't been run, grouped by pay schedule, with run and skip actions on each row.
 Clicking Run emits `transition/runPayroll`. If the payroll is already calculated, the button
 reads Review and submit and emits `payroll/review` instead, like the payroll list.
-To handle `transition/runPayroll`, or `transition/payrollSelected` from the payroll list,
-render `Payroll.TransitionConfiguration` with the `payrollUuid` from the event.
 Skipping opens a confirmation dialog — warning that employees will not be paid for the
 period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
 periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
 may reject regular payrolls while unresolved transition periods exist.
+
+`PayrollLanding` emits these events but doesn't change screens on them. `PayrollFlow`
+handles the routing for you. If you render `PayrollLanding` yourself, route on these events:
+
+- `transition/runPayroll` (alert) or `transition/payrollSelected` (payroll list): render
+  [TransitionConfiguration](#transitionconfiguration) with the event's `payrollUuid` as `payrollId`.
+- `transition/configured` (from `TransitionConfiguration`): render
+  [PayrollExecutionFlow](payroll-execution-flow.md) for the same payroll.
+- `runPayroll/selected`: render `PayrollExecutionFlow` for the event's `payrollUuid`.
+- `payroll/review`: render `PayrollExecutionFlow` for the event's `payrollUuid` with
+  `initialState="overview"`. Calculated transition payrolls use this event too.
 
 <br />
 
@@ -582,11 +591,16 @@ call-to-action starts an off-cycle payroll.
 When the company has unprocessed transition pay periods within the next
 90 days, the Run Payroll action on Regular rows is disabled to prevent a
 regular payroll from being run before the transition is resolved. Off-cycle
-rows and the Run off-cycle action remain enabled, since off-cycle is the
-path used to run a transition payroll. [PayrollLanding](#payrolllanding) pairs this
-list with an alert that lets users run or skip the pending transition; when
-using `PayrollList` directly, render an equivalent resolution surface
-alongside it.
+rows, including transition payroll rows, and the Run off-cycle action stay
+enabled.
+
+Running a transition payroll row emits `transition/payrollSelected` instead
+of `runPayroll/selected`. Handle it by rendering
+[TransitionConfiguration](#transitionconfiguration) with the event's `payrollUuid` as
+`payrollId`, then render [PayrollExecutionFlow](payroll-execution-flow.md) for the same payroll on
+`transition/configured`. [PayrollLanding](#payrolllanding) also shows an alert that lets
+users run or skip each pending transition payroll. When using `PayrollList`
+directly, give users a way to run or skip those payrolls alongside it.
 
 <br />
 
@@ -857,6 +871,95 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | --- | --- |
 | GET | [`/v1/companies/:companyUuid/recovery_cases`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-recovery-cases) |
 | PUT | [`/v1/recovery_cases/:recoveryCaseUuid/redebit`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/redebit-recovery-case) |
+
+***
+
+<a id="transitionconfiguration"></a>
+
+## TransitionConfiguration
+
+Lets the user change the settings of a transition payroll before running it.
+
+### Remarks
+
+The API creates a transition payroll when a company changes pay schedules. This component
+updates that payroll. It never creates one.
+
+- The pay period, pay schedule, and payment date are shown but can't be changed.
+- The user can choose to take or skip regular deductions, and how to withhold taxes.
+
+If a setting is empty, deductions are taken, the regular tax rate is used, and the pay frequency
+matches the pay schedule. The payment date is read only for now. Saving can still move it, and
+the form shows the new date.
+
+`PayrollFlow` renders this component for you. To build the screens yourself:
+
+1. Get the transition payroll ID. [PayrollLanding](#payrolllanding) sends it as `payrollUuid` with
+   `transition/runPayroll`, and [PayrollList](#payrolllist) sends it with `transition/payrollSelected`.
+   To look it up without those components, call
+   `GET /v1/companies/{company_id}/pay_periods?payroll_types=transition` and read
+   `payroll.payroll_uuid` from the pay period.
+2. Render this component with that ID as `payrollId`.
+3. On `transition/configured`, render [PayrollExecutionFlow](payroll-execution-flow.md) with the same `payrollId`.
+   It opens on `PayrollConfiguration`, then continues to review, submit, and receipts.
+
+<br />
+
+### Example
+
+```tsx
+import { componentEvents, Payroll } from '@gusto/embedded-react-sdk'
+
+function TransitionPayrollPage({ companyId, payrollId }: { companyId: string; payrollId: string }) {
+  return (
+    <Payroll.TransitionConfiguration
+      companyId={companyId}
+      payrollId={payrollId}
+      onEvent={type => {
+        if (type === componentEvents.TRANSITION_CONFIGURED) {
+          navigate(`/payrolls/${payrollId}/run`)
+        }
+      }}
+    />
+  )
+}
+```
+
+<br />
+
+### TransitionConfigurationProps
+
+<a id="transitionconfigurationprops"></a>
+
+Props for [TransitionConfiguration](#transitionconfiguration).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The company ID. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `payrollId` | `string` | The ID of the transition payroll to update. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionConfiguration`](../Translations/index.md#payrolltransitionconfiguration)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `transition/configured` | The settings were saved | `{ payrollUuid: string, payrollPrepared: PayrollPrepared }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
 
 ***
 

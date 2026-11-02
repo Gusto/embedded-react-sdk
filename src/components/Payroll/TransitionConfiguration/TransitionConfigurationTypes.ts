@@ -5,7 +5,7 @@ import type { BaseComponentInterface } from '@/components/Base/Base'
 /**
  * Props for {@link TransitionConfiguration}.
  *
- * @alpha
+ * @public
  */
 export interface TransitionConfigurationProps extends BaseComponentInterface<'Payroll.TransitionConfiguration'> {
   /** The company ID. */

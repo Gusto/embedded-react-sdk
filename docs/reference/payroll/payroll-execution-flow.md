@@ -52,7 +52,7 @@ Props for PayrollExecutionFlow.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
-| `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
+| `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). For a transition payroll, render [TransitionConfiguration](blocks.md#transitionconfiguration) first and pass the same ID here after it emits `transition/configured`. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
 | `initialPayPeriod?` | [`PayrollPayPeriodType`](../APIModels/index.md#payrollpayperiodtype) | Optional pay period metadata used to seed breadcrumb labels and date context. |
 | `initialState?` | [`PayrollExecutionInitialState`](blocks.md#payrollexecutioninitialstate) | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`. |

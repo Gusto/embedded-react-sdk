@@ -6051,10 +6051,10 @@ interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeO
 // @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
-// @alpha
+// @public
 function TransitionConfiguration(props: TransitionConfigurationProps): JSX;
 
-// @alpha
+// @public
 interface TransitionConfigurationProps extends BaseComponentInterface<'Payroll.TransitionConfiguration'> {
     companyId: string;
     payrollId: string;
