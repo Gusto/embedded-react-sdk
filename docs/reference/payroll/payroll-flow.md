@@ -85,7 +85,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 `PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving it (`transition/configured`) opens `PayrollExecutionFlow` for the same payroll (a transition payroll that's already calculated skips this step and opens for review with `payroll/review`); and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
 
-To build this routing yourself instead of using `PayrollFlow`, see the example on [`PayrollLanding`](./blocks.md#payrolllanding).
+To build this routing yourself instead of using `PayrollFlow`, see the event routing on [`PayrollLanding`](./blocks.md#payrolllanding).
 
 ```mermaid
 flowchart LR
