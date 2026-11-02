@@ -1,9 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { PayrollShow } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type {
+  PayrollShow,
+  PayrollShowEmployeeCompensations,
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import type { GetV1CompaniesCompanyIdEmployeesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
 import type { GetV1CompaniesCompanyIdPayrollsPayrollIdRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import { canCancelPayroll } from '../helpers'
 import { PayrollOverview } from './PayrollOverview'
@@ -83,10 +88,11 @@ let mockStaleDataPresent = false
 // When set, the poll's own `refetch` (reused from this query) rejects with this error instead of
 // resolving, independent of the render-driving `mockIsError`/`mockError` above.
 let mockRefetchError: unknown = null
-let mockShowEmployees: { uuid: string; flsaStatus?: string }[] = []
-const { mockPayrollsGetRequest } = vi.hoisted(() => ({
+let mockShowEmployees: Pick<Employee, 'uuid' | 'jobs'>[] = []
+const { mockPayrollsGetRequest, mockEmployeesListRequest } = vi.hoisted(() => ({
   mockPayrollsGetRequest:
     vi.fn<(request: GetV1CompaniesCompanyIdPayrollsPayrollIdRequest) => void>(),
+  mockEmployeesListRequest: vi.fn<(request: GetV1CompaniesCompanyIdEmployeesRequest) => void>(),
 }))
 
 const buildMockPayrollQueryData = () => ({
@@ -142,9 +148,10 @@ vi.mock('@gusto/embedded-api/react-query/wireInRequestsGet', () => ({
 }))
 
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
-  useEmployeesList: () => ({
-    data: { showEmployees: mockShowEmployees },
-  }),
+  useEmployeesList: (request: GetV1CompaniesCompanyIdEmployeesRequest) => {
+    mockEmployeesListRequest(request)
+    return { data: { showEmployees: mockShowEmployees } }
+  },
 }))
 
 vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
@@ -518,28 +525,49 @@ describe('PayrollOverview compensation type', () => {
     mockShowEmployees = []
   })
 
-  it('populates compensation type for a salaried employee with no hourlyCompensations entry', async () => {
+  const buildSalariedCompensation = (
+    employeeUuid: string,
+    lastName: string,
+  ): PayrollShowEmployeeCompensations => ({
+    employeeUuid,
+    firstName: 'Patricia',
+    lastName,
+    excluded: false,
+    fixedCompensations: [{ name: 'Salary', amount: '2000.0' }],
+    hourlyCompensations: [],
+    paidTimeOff: [],
+    grossPay: '2000',
+    netPay: '1600',
+    checkAmount: '1600',
+    paymentMethod: 'Direct Deposit',
+    memo: null,
+  })
+
+  it("reads a salaried employee's compensation type from their primary job, filtering employees by payroll", async () => {
     const user = userEvent.setup()
     mockPayrollData = {
       ...basePayrollData,
-      employeeCompensations: [
-        {
-          employeeUuid: 'emp-salaried',
-          firstName: 'Patricia',
-          lastName: 'Churchland',
-          excluded: false,
-          fixedCompensations: [{ name: 'Salary', amount: '2000.0' }],
-          hourlyCompensations: [],
-          paidTimeOff: [],
-          grossPay: '2000',
-          netPay: '1600',
-          checkAmount: '1600',
-          paymentMethod: 'Direct Deposit',
-          memo: null,
-        },
-      ],
+      employeeCompensations: [buildSalariedCompensation('emp-salaried', 'Churchland')],
     }
-    mockShowEmployees = [{ uuid: 'emp-salaried', flsaStatus: 'Exempt' }]
+    mockShowEmployees = [
+      {
+        uuid: 'emp-salaried',
+        jobs: [
+          {
+            uuid: 'job-secondary',
+            title: 'Tutor',
+            primary: false,
+            compensations: [{ uuid: 'comp-secondary', flsaStatus: 'Nonexempt' }],
+          },
+          {
+            uuid: 'job-primary',
+            title: 'Professor',
+            primary: true,
+            compensations: [{ uuid: 'comp-primary', flsaStatus: 'Exempt' }],
+          },
+        ],
+      },
+    ]
 
     renderWithProviders(
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
@@ -548,6 +576,32 @@ describe('PayrollOverview compensation type', () => {
     await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
 
     expect(await screen.findByText('Salaried / Exempt')).toBeInTheDocument()
+    expect(mockEmployeesListRequest).toHaveBeenLastCalledWith({
+      companyId: 'company-uuid',
+      payrollUuid: 'payroll-uuid',
+      page: 1,
+      per: 25,
+      sortBy: 'name',
+    })
+  })
+
+  it('leaves compensation type blank for an employee with no jobs', async () => {
+    const user = userEvent.setup()
+    mockPayrollData = {
+      ...basePayrollData,
+      employeeCompensations: [buildSalariedCompensation('emp-no-jobs', 'Jobless')],
+    }
+    mockShowEmployees = [{ uuid: 'emp-no-jobs', jobs: [] }]
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
+
+    const row = await screen.findByRole('row', { name: /Jobless/ })
+    const [compensationTypeCell] = within(row).getAllByRole('gridcell')
+    expect(compensationTypeCell).toHaveTextContent(/^$/)
   })
 })
 
