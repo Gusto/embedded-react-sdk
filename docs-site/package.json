@@ -30,7 +30,7 @@
     "typescript": "~5.8.0"
   },
   "overrides": {
-    "joi": "^17.13.8",
+    "joi": "^17.13.9",
     "js-yaml": "^4.2.0",
     "gray-matter": {
       "js-yaml": "^3.13.1"
