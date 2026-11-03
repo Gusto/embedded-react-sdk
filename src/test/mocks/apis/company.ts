@@ -1,4 +1,6 @@
+import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
+import type { GetV1CompanyIndustryRequest } from '@gusto/embedded-api/models/operations/getv1companyindustry'
 import { API_BASE_URL } from '@/test/constants'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
@@ -94,19 +96,19 @@ export const getCompanyOnboardingStatus = http.get(
     }),
 )
 
-export const getIndustrySelection = http.get(
-  `${API_BASE_URL}/v1/companies/:company_id/industry_selection`,
-  () =>
-    HttpResponse.json({
-      industry: {
-        uuid: 'industry-uuid-123',
-        company_uuid: '123',
-        naics_code: '541511',
-        title: 'Custom Computer Programming Services',
-        has_sic_codes: true,
-        sic_codes: ['7371'],
-      },
-    }),
+export function handleGetIndustrySelection(
+  resolver: HttpResponseResolver<PathParams, GetV1CompanyIndustryRequest>,
+) {
+  return http.get(`${API_BASE_URL}/v1/companies/:company_id/industry_selection`, resolver)
+}
+
+export const getIndustrySelection = handleGetIndustrySelection(() =>
+  HttpResponse.json({
+    company_uuid: '123',
+    naics_code: '541511',
+    title: 'Custom Computer Programming Services',
+    sic_codes: ['7371'],
+  }),
 )
 
 export const getPaymentConfigs = http.get(
@@ -121,15 +123,14 @@ export const updateIndustrySelection = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/industry_selection`,
   async ({ request }) => {
     const body = (await request.json()) as { naics_code?: string } | null
-    return HttpResponse.json({
-      industry: {
-        uuid: 'industry-uuid-123',
+    return HttpResponse.json(
+      {
         company_uuid: '123',
         naics_code: body?.naics_code ?? '541511',
         title: 'Custom Computer Programming Services',
-        has_sic_codes: true,
         sic_codes: ['7371'],
       },
-    })
+      { status: 201 },
+    )
   },
 )
