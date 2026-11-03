@@ -1,7 +1,6 @@
 export { useIndustryForm } from './useIndustryForm'
 export type {
   IndustrySubmitOptions,
-  IndustryOptionalFieldsToRequire,
   UseIndustryFormProps,
   UseIndustryFormResult,
   UseIndustryFormReady,

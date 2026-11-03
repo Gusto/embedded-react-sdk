@@ -625,7 +625,6 @@ export {
 } from '@/components/Company/Industry/shared/useIndustryForm'
 export type {
   IndustrySubmitOptions,
-  IndustryOptionalFieldsToRequire,
   UseIndustryFormProps,
   UseIndustryFormResult,
   UseIndustryFormReady,

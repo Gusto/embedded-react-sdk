@@ -68,7 +68,6 @@ Configuration options for [useIndustryForm](#useindustryform).
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company whose industry classification is being set. |
 | `defaultValues?` | `Partial`\<[`IndustryFormData`](#industryformdata)\> | Pre-fill form values. Server data takes precedence when a classification is already on file. |
-| `optionalFieldsToRequire?` | [`IndustryOptionalFieldsToRequire`](#industryoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `IndustryOptionalFieldsToRequire`. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"all"` \| `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
@@ -115,7 +114,7 @@ the industry-specific `data`, `status`, `actions`, and `form.Fields` shape.
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../hooks.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
-| `status.mode` | `"create"` \| `"update"` | - |
+| `status.mode` | `"update"` | - |
 
 ## Fields
 
@@ -239,17 +238,6 @@ Shape of the values managed by the industry form.
 | Property | Type |
 | ------ | ------ |
 | `naicsCode` | `string` |
-
-***
-
-<a id="industryoptionalfieldstorequire"></a>
-
-### IndustryOptionalFieldsToRequire
-
-> **IndustryOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
-
-Keys of optional industry fields that can be promoted to required via the
-hook's `optionalFieldsToRequire` option.
 
 ***
 

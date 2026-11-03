@@ -2,7 +2,6 @@ import { z } from 'zod'
 import {
   buildFormSchema,
   type RequiredFieldConfig,
-  type OptionalFieldsToRequire,
 } from '@/partner-hook-utils/form/buildFormSchema'
 
 // ── Error codes ────────────────────────────────────────────────────────
@@ -59,28 +58,11 @@ const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValida
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
-/**
- * Keys of optional industry fields that can be promoted to required via the
- * hook's `optionalFieldsToRequire` option.
- *
- * @public
- */
-export type IndustryOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>
-
 /** @internal */
-interface IndustrySchemaOptions {
-  mode?: 'create' | 'update'
-  optionalFieldsToRequire?: IndustryOptionalFieldsToRequire
-}
-
-/** @internal */
-export function createIndustrySchema(options: IndustrySchemaOptions = {}) {
-  const { mode = 'create', optionalFieldsToRequire } = options
-
+export function createIndustrySchema() {
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,
     requiredErrorCode: IndustryErrorCodes.REQUIRED,
-    mode,
-    optionalFieldsToRequire,
+    mode: 'update',
   })
 }

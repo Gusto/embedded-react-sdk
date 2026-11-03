@@ -3634,9 +3634,6 @@ export interface IndustryFormFields {
 }
 
 // @public
-export type IndustryOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
 interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
     companyId: string;
 }
@@ -6657,7 +6654,6 @@ export function useIndustryForm(input: UseIndustryFormProps): HookLoadingResult 
 export interface UseIndustryFormProps {
     companyId: string;
     defaultValues?: Partial<IndustryFormData>;
-    optionalFieldsToRequire?: IndustryOptionalFieldsToRequire;
     shouldFocusError?: boolean;
     validationMode?: UseFormProps['mode'];
 }
@@ -6673,7 +6669,7 @@ export interface UseIndustryFormReady extends BaseFormHookReady<IndustryFieldsMe
     };
     status: {
         isPending: boolean;
-        mode: 'create' | 'update';
+        mode: 'update';
     };
 }
 

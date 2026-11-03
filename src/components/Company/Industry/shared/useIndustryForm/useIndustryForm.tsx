@@ -1,14 +1,14 @@
 import type { ComponentType } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import type { Industry } from '@gusto/embedded-api/models/components/industry'
 import { useIndustrySelectionGet } from '@gusto/embedded-api/react-query/industrySelectionGet'
 import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
 import {
   createIndustrySchema,
-  type IndustryOptionalFieldsToRequire,
   type IndustryFormData,
   type IndustryFormOutputs,
 } from './industrySchema'
@@ -29,8 +29,6 @@ import type {
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { loadAll, type NaicsCode } from '@/models/NAICSCodes'
-
-export type { IndustryOptionalFieldsToRequire } from './industrySchema'
 
 /** @internal */
 function buildIndustryFieldsMetadata(
@@ -66,8 +64,6 @@ export interface IndustrySubmitOptions {
 export interface UseIndustryFormProps {
   /** UUID of the company whose industry classification is being set. */
   companyId: string
-  /** Override fields that are optional on a given mode to be required. See `IndustryOptionalFieldsToRequire`. */
-  optionalFieldsToRequire?: IndustryOptionalFieldsToRequire
   /** Pre-fill form values. Server data takes precedence when a classification is already on file. */
   defaultValues?: Partial<IndustryFormData>
   /** Passed through to react-hook-form. Defaults to `'onSubmit'`. */
@@ -114,7 +110,7 @@ export interface UseIndustryFormReady extends BaseFormHookReady<
     naicsCodes: NaicsCode[]
   }
   /** Reactive status flags. */
-  status: { isPending: boolean; mode: 'create' | 'update' }
+  status: { isPending: boolean; mode: 'update' }
   /** Available actions. */
   actions: {
     onSubmit: (options?: IndustrySubmitOptions) => Promise<HookSubmitResult<Industry> | undefined>
@@ -167,38 +163,31 @@ export interface UseIndustryFormReady extends BaseFormHookReady<
  */
 export function useIndustryForm({
   companyId,
-  optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseIndustryFormProps): HookLoadingResult | UseIndustryFormReady {
   const industryQuery = useIndustrySelectionGet({ companyId })
 
-  const [naicsCodes, setNaicsCodes] = useState<NaicsCode[] | undefined>(undefined)
-
-  useEffect(() => {
-    let cancelled = false
-    const load = async () => {
-      const codes = await loadAll()
-      if (!cancelled) setNaicsCodes(codes)
-    }
-    void load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  // The list is bundled rather than fetched, but routing it through a query keeps a
+  // failed chunk load in the same error surface as the classification request instead
+  // of leaving the form stuck on its loader with nothing to report.
+  // `retry` is set explicitly because the SDK's `retry: false` default is scoped to the
+  // API namespace, which this key sits outside of. Re-importing a module whose load just
+  // failed is not worth three backoff rounds of loader before the error is shown.
+  const naicsQuery = useQuery({
+    queryKey: ['naicsCodes'],
+    queryFn: loadAll,
+    staleTime: Infinity,
+    retry: false,
+  })
+  const naicsCodes = naicsQuery.data
 
   const industry = industryQuery.data?.industry
   const savedCode = industry?.naicsCode
   const savedTitle = industry?.title
 
-  const isCreateMode = !savedCode
-  const schemaMode = isCreateMode ? 'create' : 'update'
-
-  const [schema, metadataConfig] = useMemo(
-    () => createIndustrySchema({ mode: schemaMode, optionalFieldsToRequire }),
-    [schemaMode, optionalFieldsToRequire],
-  )
+  const [schema, metadataConfig] = useMemo(() => createIndustrySchema(), [])
 
   // The combo box matches the form value against option values, so a saved code with
   // no entry in the bundled six-digit list would render as a blank field while still
@@ -243,7 +232,10 @@ export function useIndustryForm({
     setError: setSubmitError,
   } = useBaseSubmit('IndustryForm')
 
-  const errorHandling = composeErrorHandler([industryQuery], { submitError, setSubmitError })
+  const errorHandling = composeErrorHandler([industryQuery, naicsQuery], {
+    submitError,
+    setSubmitError,
+  })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = buildIndustryFieldsMetadata(baseMetadata, {
@@ -267,9 +259,10 @@ export function useIndustryForm({
             }
 
             // When resubmitting a saved classification that is absent from the bundled
-            // list, send its title back too. The API derives a missing title by looking
-            // the code up externally, which does not reliably resolve for the shorter
-            // codes, and a classification without a title is rejected.
+            // list, send its title and SIC codes back too. The API derives both by looking
+            // the code up externally when they are omitted, and that lookup is keyed on
+            // six-digit codes — for a shorter one it resolves to another code's SIC codes
+            // or to nothing, so omitting them replaces what was already on file.
             const preservesUnlistedCode = savedCodeNeedsOption && payload.naicsCode === savedCode
 
             const result = await updateIndustryMutation.mutateAsync({
@@ -278,6 +271,9 @@ export function useIndustryForm({
                 companyIndustrySelectionRequiredBody: {
                   naicsCode: payload.naicsCode,
                   ...(preservesUnlistedCode && savedTitle ? { title: savedTitle } : {}),
+                  ...(preservesUnlistedCode && industry.sicCodes
+                    ? { sicCodes: industry.sicCodes }
+                    : {}),
                 },
               },
             })
@@ -287,7 +283,7 @@ export function useIndustryForm({
             }
 
             submitResult = {
-              mode: isCreateMode ? 'create' : 'update',
+              mode: 'update',
               data: result.industry,
             }
           })
@@ -304,7 +300,10 @@ export function useIndustryForm({
 
   const hookFormInternals = useHookFormInternals(formMethods)
 
-  if (industryQuery.isLoading || !naicsCodes) {
+  // Gated on the queries' own loading flags rather than on `naicsCodes` being present:
+  // a failed list load leaves the data undefined, and keying off that would spin forever
+  // instead of surfacing the error that `errorHandling` already carries.
+  if (industryQuery.isLoading || naicsQuery.isLoading) {
     return { isLoading: true as const, errorHandling }
   }
 
@@ -316,7 +315,7 @@ export function useIndustryForm({
     },
     status: {
       isPending,
-      mode: isCreateMode ? ('create' as const) : ('update' as const),
+      mode: 'update' as const,
     },
     actions: { onSubmit },
     errorHandling,
