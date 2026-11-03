@@ -18,6 +18,7 @@ import {
   getPayPeriodOrCheckDateLabel,
   getPayrollTypeLabel,
   getReimbursements,
+  getTotalOutstandingPtoHours,
   isDismissalPayroll,
 } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -417,6 +418,15 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) =>
                 getEmployeePtoHours(employeeCompensations),
             },
+            ...(isDismissal
+              ? [
+                  {
+                    title: t('tableHeaders.unusedHours'),
+                    render: (employeeCompensations: EmployeeCompensations) =>
+                      getTotalOutstandingPtoHours(employeeCompensations),
+                  },
+                ]
+              : []),
             {
               title: t('tableHeaders.totalHours'),
               render: (employeeCompensations: EmployeeCompensations) =>

@@ -181,6 +181,44 @@ describe('PayrollConfigurationPresentation', () => {
     },
   )
 
+  describe('unused hours column', () => {
+    const dismissalCompensation: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensations[0],
+      paidTimeOff: [
+        { name: 'Vacation Hours', hours: '8', finalPayoutUnusedHoursInput: '32.5' },
+        { name: 'Sick Hours', hours: '0', finalPayoutUnusedHoursInput: '8' },
+      ],
+    }
+
+    it('shows unused payout hours separately from time off on dismissal payrolls', async () => {
+      renderWithProviders(
+        <PayrollConfigurationPresentation
+          {...defaultProps}
+          employeeCompensations={[dismissalCompensation]}
+          payrollCategory={PayrollCategory.Dismissal}
+        />,
+      )
+
+      const table = await screen.findByRole('grid', { name: 'Employee compensations' })
+      const row = within(table).getByRole('row', { name: /John Doe/i })
+      expect(getCellByColumnHeader(table, row, 'Time off')).toHaveTextContent('8.0')
+      expect(getCellByColumnHeader(table, row, 'Unused hours')).toHaveTextContent('40.5')
+    })
+
+    it('hides the unused hours column on non-dismissal payrolls', async () => {
+      renderWithProviders(
+        <PayrollConfigurationPresentation
+          {...defaultProps}
+          employeeCompensations={[dismissalCompensation]}
+        />,
+      )
+
+      const table = await screen.findByRole('grid', { name: 'Employee compensations' })
+      expect(within(table).getByRole('columnheader', { name: 'Time off' })).toBeInTheDocument()
+      expect(within(table).queryByRole('columnheader', { name: 'Unused hours' })).toBeNull()
+    })
+  })
+
   it('shows excluded badge when employee is excluded', async () => {
     const excludedCompensation = {
       ...mockEmployeeCompensations[0],
