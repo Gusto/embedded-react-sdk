@@ -16,6 +16,14 @@ import { componentEvents } from '@/shared/constants'
 
 const COMPANY_ID = 'company-uuid-123'
 
+/**
+ * Cases that open the industry combo box render all 1012 bundled options. That runs
+ * ~1.5s locally in isolation but over 6s under parallel load with coverage, so it
+ * overruns the 5s default on CI. Shortening the typed query does not help — the cost
+ * is rendering the list at all, not the keystrokes.
+ */
+const COMBO_BOX_INTERACTION_TIMEOUT = 20000
+
 const SAVED_INDUSTRY = {
   naicsCode: '541511',
   apiTitle: 'Custom Computer Programming Services',
@@ -114,41 +122,45 @@ describe('Industry', () => {
     await waitForSavedIndustryToPrefill()
   })
 
-  it('submits the newly selected NAICS code and emits the selected event', async () => {
-    const { updateResolver, getUpdateBody } = setupIndustryHandlers()
+  it(
+    'submits the newly selected NAICS code and emits the selected event',
+    async () => {
+      const { updateResolver, getUpdateBody } = setupIndustryHandlers()
 
-    renderWithProviders(<Industry companyId={COMPANY_ID} onEvent={onEvent} />)
+      renderWithProviders(<Industry companyId={COMPANY_ID} onEvent={onEvent} />)
 
-    await waitForSavedIndustryToPrefill()
+      await waitForSavedIndustryToPrefill()
 
-    const comboBox = getIndustryComboBox()
-    await user.clear(comboBox)
-    await user.type(comboBox, OTHER_INDUSTRY.comboBoxLabel)
-    await user.click(await screen.findByRole('option', { name: OTHER_INDUSTRY.comboBoxLabel }))
+      const comboBox = getIndustryComboBox()
+      await user.clear(comboBox)
+      await user.type(comboBox, OTHER_INDUSTRY.comboBoxLabel)
+      await user.click(await screen.findByRole('option', { name: OTHER_INDUSTRY.comboBoxLabel }))
 
-    await waitFor(() => {
-      expect(getIndustryComboBox()).toHaveDisplayValue(OTHER_INDUSTRY.comboBoxLabel)
-    })
+      await waitFor(() => {
+        expect(getIndustryComboBox()).toHaveDisplayValue(OTHER_INDUSTRY.comboBoxLabel)
+      })
 
-    await user.click(screen.getByRole('button', { name: 'Continue' }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
 
-    await waitFor(() => {
-      expect(updateResolver).toHaveBeenCalledTimes(1)
-    })
-    expect(getUpdateBody()).toMatchObject({ naics_code: OTHER_INDUSTRY.naicsCode })
+      await waitFor(() => {
+        expect(updateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(getUpdateBody()).toMatchObject({ naics_code: OTHER_INDUSTRY.naicsCode })
 
-    await waitFor(() => {
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.COMPANY_INDUSTRY_SELECTED,
-        expect.objectContaining({
-          companyUuid: COMPANY_ID,
-          naicsCode: OTHER_INDUSTRY.naicsCode,
-          title: OTHER_INDUSTRY.apiTitle,
-          sicCodes: ['7371'],
-        }),
-      )
-    })
-  })
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.COMPANY_INDUSTRY_SELECTED,
+          expect.objectContaining({
+            companyUuid: COMPANY_ID,
+            naicsCode: OTHER_INDUSTRY.naicsCode,
+            title: OTHER_INDUSTRY.apiTitle,
+            sicCodes: ['7371'],
+          }),
+        )
+      })
+    },
+    COMBO_BOX_INTERACTION_TIMEOUT,
+  )
 
   it('re-submits the already saved NAICS code when the selection is left untouched', async () => {
     const { updateResolver, getUpdateBody } = setupIndustryHandlers()
@@ -241,25 +253,29 @@ describe('Industry', () => {
       })
     })
 
-    it('lets the user replace the short code with a listed industry', async () => {
-      const { getUpdateBody } = setupUnlistedHandlers(UNLISTED.title)
+    it(
+      'lets the user replace the short code with a listed industry',
+      async () => {
+        const { getUpdateBody } = setupUnlistedHandlers(UNLISTED.title)
 
-      renderWithProviders(<Industry companyId={COMPANY_ID} onEvent={onEvent} />)
+        renderWithProviders(<Industry companyId={COMPANY_ID} onEvent={onEvent} />)
 
-      await waitFor(() => {
-        expect(getIndustryComboBox()).toHaveDisplayValue(UNLISTED.title)
-      })
+        await waitFor(() => {
+          expect(getIndustryComboBox()).toHaveDisplayValue(UNLISTED.title)
+        })
 
-      const comboBox = getIndustryComboBox()
-      await user.clear(comboBox)
-      await user.type(comboBox, OTHER_INDUSTRY.comboBoxLabel)
-      await user.click(await screen.findByRole('option', { name: OTHER_INDUSTRY.comboBoxLabel }))
+        const comboBox = getIndustryComboBox()
+        await user.clear(comboBox)
+        await user.type(comboBox, OTHER_INDUSTRY.comboBoxLabel)
+        await user.click(await screen.findByRole('option', { name: OTHER_INDUSTRY.comboBoxLabel }))
 
-      await user.click(screen.getByRole('button', { name: 'Continue' }))
+        await user.click(screen.getByRole('button', { name: 'Continue' }))
 
-      await waitFor(() => {
-        expect(getUpdateBody()).toEqual({ naics_code: OTHER_INDUSTRY.naicsCode })
-      })
-    })
+        await waitFor(() => {
+          expect(getUpdateBody()).toEqual({ naics_code: OTHER_INDUSTRY.naicsCode })
+        })
+      },
+      COMBO_BOX_INTERACTION_TIMEOUT,
+    )
   })
 })
