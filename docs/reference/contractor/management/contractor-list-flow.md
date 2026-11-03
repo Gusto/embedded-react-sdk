@@ -34,6 +34,13 @@ the equivalent form for scheduling a dismissed contractor's start date.
 Submitting either returns to the list with a success banner; cancelling
 returns with none.
 
+Handling `contractor/rehire` in the host app is no longer necessary, and doing so now
+double-handles it: before this flow gained a Rehire step the event passed straight
+through for the host to act on, so an app that opened its own rehire screen on it will
+open that screen alongside this one. Drop that handler, or mount
+[ContractorList](blocks.md#contractorlist) directly instead of this
+flow to keep owning the step.
+
 The flow forwards every event emitted by its blocks to `onEvent`;
 see the events table on each block for the full set of events and
 payloads observable from this flow.
@@ -95,6 +102,8 @@ The dashboard is given a "Back to contractors" header that emits `contractor/ret
 "Dismiss" (`contractor/dismiss`) routes into `Dismissal`, a standalone form for scheduling the contractor's dismissal date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
 
 "Rehire" (`contractor/rehire`) routes into `Rehire`, the equivalent form for scheduling a dismissed contractor's start date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
+
+> **Changed in this release.** `contractor/rehire` previously passed straight through to the host app, which was expected to open its own rehire screen. This flow now handles it internally, so an app that still acts on the event will show both screens. Remove that handler, or mount `ContractorManagement.ContractorList` directly instead of this flow if you want to keep owning the step.
 
 ```mermaid
 flowchart LR

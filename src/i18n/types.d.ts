@@ -4164,6 +4164,8 @@ export namespace Translations {
     validation: {
       /** @defaultValue `"Enter a start date"` */
       startDateRequired: string
+      /** @defaultValue `"Start date must be after the dismissal date"` */
+      startDateBeforeMin: string
     }
     actions: {
       /** @defaultValue `"Cancel"` */

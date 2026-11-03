@@ -2731,6 +2731,7 @@ Translation keys for the `Contractor.Rehire` i18n namespace.
 | <a id="property-contractorrehiresuccessmessage"></a> `successMessage` | `"Rehire scheduled"` |
 | <a id="property-contractorrehiretitle"></a> `title` | `"Rehire {{name}}"` |
 | <a id="property-contractorrehirevalidation"></a> `validation` | |
+| `validation.startDateBeforeMin` | `"Start date must be after the dismissal date"` |
 | `validation.startDateRequired` | `"Enter a start date"` |
 
 ***

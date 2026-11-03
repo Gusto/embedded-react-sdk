@@ -17,6 +17,8 @@ The dashboard is given a "Back to contractors" header that emits `contractor/ret
 
 "Rehire" (`contractor/rehire`) routes into `Rehire`, the equivalent form for scheduling a dismissed contractor's start date. Submitting returns to the list with a success banner; cancelling (either the form's own Cancel button or the "Back to contractors" header) returns with no banner.
 
+> **Changed in this release.** `contractor/rehire` previously passed straight through to the host app, which was expected to open its own rehire screen. This flow now handles it internally, so an app that still acts on the event will show both screens. Remove that handler, or mount `ContractorManagement.ContractorList` directly instead of this flow if you want to keep owning the step.
+
 ```mermaid
 flowchart LR
   start@{ shape: sm-circ } --> ContractorList

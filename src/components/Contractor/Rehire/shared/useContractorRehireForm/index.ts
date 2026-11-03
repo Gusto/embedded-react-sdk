@@ -4,6 +4,7 @@ export type {
   UseContractorRehireFormResult,
   UseContractorRehireFormReady,
   ContractorRehireFormFields,
+  ContractorRehireSubmitResult,
   ContractorRehireFieldsMetadata,
 } from './useContractorRehireForm'
 export {
@@ -13,5 +14,5 @@ export {
   type ContractorRehireFormData,
   type ContractorRehireFormField,
 } from './contractorRehireSchema'
-export type { RequiredValidation as ContractorRehireRequiredValidation } from './fields'
+export type { StartDateValidation as ContractorRehireStartDateValidation } from './fields'
 export type { StartDateFieldProps } from './fields'

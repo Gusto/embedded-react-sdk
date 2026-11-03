@@ -655,7 +655,8 @@ export type {
   ContractorRehireErrorCode,
   ContractorRehireFormData,
   ContractorRehireFormField,
-  ContractorRehireRequiredValidation,
+  ContractorRehireStartDateValidation,
+  ContractorRehireSubmitResult,
   StartDateFieldProps as ContractorRehireStartDateFieldProps,
 } from '@/components/Contractor/Rehire/shared/useContractorRehireForm'
 export type {

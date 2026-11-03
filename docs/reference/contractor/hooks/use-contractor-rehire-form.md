@@ -20,10 +20,13 @@ Headless React Hook Form hook for scheduling a dismissed contractor's rehire.
 ## Remarks
 
 Fetches the contractor and manages a single required `startDate` field, bounded
-to the day after their dismissal date. On submit it schedules the rehire, which
-creates a new employment record effective on that date. The API returns no body,
-so the submit result carries `data: undefined` — read the refreshed contractor
-from a subsequent render rather than from the result.
+to the day after their dismissal date — a bound enforced by the schema as well as the
+date picker, so a typed-in or caller-supplied value surfaces a `START_DATE_BEFORE_MIN`
+message on the field rather than a generic API error. On submit it schedules the rehire,
+which creates a new employment record effective on that date. The API returns no body, so
+the submit result echoes back the date that was sent (see
+[ContractorRehireSubmitResult](#contractorrehiresubmitresult)); read the refreshed contractor from a subsequent
+render.
 
 The contractor must be inactive and must not already have an upcoming employment;
 either condition produces a `422` that surfaces through `errorHandling.errors`. A
@@ -101,7 +104,7 @@ Ready-state return value of [useContractorRehireForm](#usecontractorrehireform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Resolves to a result on success, or `undefined` on validation or mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<`undefined`\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../hooks.md#hooksubmitresult)\<[`ContractorRehireSubmitResult`](#contractorrehiresubmitresult)\> \| `undefined`\> | - |
 | `data` | `object` | The contractor being rehired, loaded from the API. |
 | `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) | - |
 | `errorHandling` | [`HookErrorHandling`](../../hooks.md#hookerrorhandling) | Error state and recovery actions. |
@@ -139,7 +142,7 @@ dismissal date leaves the field unbounded. Past dates are accepted.
 ```tsx
 <form.Fields.StartDate
   label="Start date"
-  validationMessages={{ REQUIRED: '…' }}
+  validationMessages={{ REQUIRED: '…', START_DATE_BEFORE_MIN: '…' }}
 />
 ```
 
@@ -147,7 +150,7 @@ dismissal date leaves the field unbounded. Past dates are accepted.
 
 #### ContractorRehireStartDateFieldProps
 
-> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`ContractorRehireRequiredValidation`](#contractorrehirerequiredvalidation)\>\>
+> [`HookFieldProps`](../../hooks.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../hooks.md#datepickerhookfieldprops)\<[`ContractorRehireStartDateValidation`](#contractorrehirestartdatevalidation)\>\>
 
 Props accepted by [useContractorRehireForm](#usecontractorrehireform)'s `Fields.StartDate` component.
 
@@ -155,27 +158,27 @@ Props accepted by [useContractorRehireForm](#usecontractorrehireform)'s `Fields.
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
-| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorRehireRequiredValidation`](#contractorrehirerequiredvalidation)\> | Custom error text keyed by validation error code. |
+| `validationMessages?` | [`ValidationMessages`](../../hooks.md#validationmessages)\<[`ContractorRehireStartDateValidation`](#contractorrehirestartdatevalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../hooks.md#datepickerhookfieldprops)._
 
 ## Validations
 
-<a id="contractorrehirerequiredvalidation"></a>
+<a id="contractorrehirestartdatevalidation"></a>
 
-### ContractorRehireRequiredValidation
+### ContractorRehireStartDateValidation
 
-> **ContractorRehireRequiredValidation** = `"REQUIRED"`
+> **ContractorRehireStartDateValidation** = `"REQUIRED"` \| `"START_DATE_BEFORE_MIN"`
 
-The required-field error code produced by [useContractorRehireForm](#usecontractorrehireform) fields.
-Use it to type the `validationMessages` map supplied to a field.
+The error codes produced by [useContractorRehireForm](#usecontractorrehireform)'s start-date field. Use it to
+type the `validationMessages` map supplied to the field.
 
 ## Utility types
 <a id="contractorrehireerrorcode"></a>
 
 ### ContractorRehireErrorCode
 
-> **ContractorRehireErrorCode** = `"REQUIRED"`
+> **ContractorRehireErrorCode** = `"REQUIRED"` \| `"START_DATE_BEFORE_MIN"`
 
 Union of validation error code strings emitted by the contractor rehire form schema.
 
@@ -190,11 +193,17 @@ Union of validation error code strings emitted by the contractor rehire form sch
 Validation error codes emitted by the contractor rehire form schema. Map these
 codes to localized copy in `validationMessages` when composing the hook.
 
+| Code | Meaning |
+| ---- | ------- |
+| `REQUIRED` | `startDate` is missing. |
+| `START_DATE_BEFORE_MIN` | `startDate` precedes the caller-supplied minimum (the day after the dismissal). |
+
 #### Type Declaration
 
 | Name | Type |
 | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` |
+| `START_DATE_BEFORE_MIN` | `"START_DATE_BEFORE_MIN"` |
 
 ***
 
@@ -233,6 +242,25 @@ Shape of the values managed by the contractor rehire form.
 Field names accepted by the contractor rehire form.
 
 ***
+
+<a id="contractorrehiresubmitresult"></a>
+
+### ContractorRehireSubmitResult
+
+Payload returned by [useContractorRehireForm](#usecontractorrehireform)'s `onSubmit` on success.
+
+#### Remarks
+
+The rehire endpoint responds `204` with no body, so this echoes back the value that was
+sent rather than anything the server returned. Read the date from here instead of from
+the live form — the field stays editable while the request is in flight, so re-reading it
+afterwards can report a value that was never submitted.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `startDate` | `string` | The `YYYY-MM-DD` start date the rehire was scheduled for. |
 
 ## Endpoints
 

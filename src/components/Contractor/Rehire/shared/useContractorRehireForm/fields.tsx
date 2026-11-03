@@ -4,19 +4,20 @@ import { DatePickerHookField } from '@/partner-hook-utils/form/fields'
 import type { HookFieldProps } from '@/partner-hook-utils/types'
 
 /**
- * The required-field error code produced by {@link useContractorRehireForm} fields.
- * Use it to type the `validationMessages` map supplied to a field.
+ * The error codes produced by {@link useContractorRehireForm}'s start-date field. Use it to
+ * type the `validationMessages` map supplied to the field.
  *
  * @public
  */
-export type RequiredValidation = typeof ContractorRehireErrorCodes.REQUIRED
+export type StartDateValidation = (typeof ContractorRehireErrorCodes)[
+  'REQUIRED' | 'START_DATE_BEFORE_MIN']
 
 /**
  * Props accepted by {@link useContractorRehireForm}'s `Fields.StartDate` component.
  *
  * @public
  */
-export type StartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<RequiredValidation>>
+export type StartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<StartDateValidation>>
 
 /** @internal */
 export function StartDateField(props: StartDateFieldProps) {

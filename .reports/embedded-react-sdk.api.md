@@ -2203,6 +2203,7 @@ export type ContractorRehireErrorCode = (typeof ContractorRehireErrorCodes)[keyo
 // @public
 export const ContractorRehireErrorCodes: {
     readonly REQUIRED: "REQUIRED";
+    readonly START_DATE_BEFORE_MIN: "START_DATE_BEFORE_MIN";
 };
 
 // @public
@@ -2220,10 +2221,15 @@ export interface ContractorRehireFormFields {
 }
 
 // @public
-export type ContractorRehireRequiredValidation = typeof ContractorRehireErrorCodes.REQUIRED;
+export type ContractorRehireStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorRehireStartDateValidation>>;
 
 // @public
-export type ContractorRehireStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorRehireRequiredValidation>>;
+export type ContractorRehireStartDateValidation = (typeof ContractorRehireErrorCodes)['REQUIRED' | 'START_DATE_BEFORE_MIN'];
+
+// @public
+export interface ContractorRehireSubmitResult {
+    startDate: string;
+}
 
 // @public
 export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
@@ -6420,7 +6426,7 @@ export interface UseContractorRehireFormProps {
 // @public
 export interface UseContractorRehireFormReady extends BaseFormHookReady<ContractorRehireFieldsMetadata, ContractorRehireFormData, ContractorRehireFormFields> {
     actions: {
-        onSubmit: () => Promise<HookSubmitResult<undefined> | undefined>;
+        onSubmit: () => Promise<HookSubmitResult<ContractorRehireSubmitResult> | undefined>;
     };
     data: {
         contractor: Contractor;

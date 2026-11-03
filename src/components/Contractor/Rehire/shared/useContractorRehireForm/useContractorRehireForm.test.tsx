@@ -97,7 +97,7 @@ describe('useContractorRehireForm', () => {
 
     expect(rehireResolver).toHaveBeenCalledTimes(1)
     expect(requestBody).toMatchObject({ start_date: '2026-09-01' })
-    expect(submitResult).toMatchObject({ mode: 'create' })
+    expect(submitResult).toMatchObject({ mode: 'create', data: { startDate: '2026-09-01' } })
   })
 
   it('does not call the API and returns no result when the start date is missing', async () => {
@@ -120,6 +120,63 @@ describe('useContractorRehireForm', () => {
 
     expect(rehireResolver).not.toHaveBeenCalled()
     expect(submitResult).toBeUndefined()
+  })
+
+  it('rejects a start date before the dismissal without calling the API', async () => {
+    const rehireResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 204 }),
+    )
+    server.use(handleScheduleContractorRehire(rehireResolver))
+
+    const { result } = renderRehireForm()
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    // dismissal_date is 2025-06-30, so the floor is 2025-07-01. The date picker blocks this in
+    // the UI, but the schema has to hold the line for typed-in and caller-supplied values.
+    act(() => {
+      assertReady(result.current)
+      result.current.form.hookFormInternals.formMethods.setValue('startDate', '2025-06-01')
+    })
+
+    let submitResult
+    await act(async () => {
+      assertReady(result.current)
+      submitResult = await result.current.actions.onSubmit()
+    })
+
+    expect(rehireResolver).not.toHaveBeenCalled()
+    expect(submitResult).toBeUndefined()
+  })
+
+  it('accepts a start date on the minimum boundary', async () => {
+    let requestBody: Record<string, unknown> | null = null
+    const rehireResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      requestBody = (await request.json()) as Record<string, unknown>
+      return new HttpResponse(null, { status: 204 })
+    })
+    server.use(handleScheduleContractorRehire(rehireResolver))
+
+    const { result } = renderRehireForm()
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    act(() => {
+      assertReady(result.current)
+      result.current.form.hookFormInternals.formMethods.setValue('startDate', '2025-07-01')
+    })
+
+    await act(async () => {
+      assertReady(result.current)
+      await result.current.actions.onSubmit()
+    })
+
+    expect(rehireResolver).toHaveBeenCalledTimes(1)
+    expect(requestBody).toMatchObject({ start_date: '2025-07-01' })
   })
 
   it('surfaces a mutation error via errorHandling', async () => {

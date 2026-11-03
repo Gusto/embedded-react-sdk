@@ -72,6 +72,22 @@ function buildContractorRehireFieldsMetadata(
 }
 
 /**
+ * Payload returned by {@link useContractorRehireForm}'s `onSubmit` on success.
+ *
+ * @remarks
+ * The rehire endpoint responds `204` with no body, so this echoes back the value that was
+ * sent rather than anything the server returned. Read the date from here instead of from
+ * the live form — the field stays editable while the request is in flight, so re-reading it
+ * afterwards can report a value that was never submitted.
+ *
+ * @public
+ */
+export interface ContractorRehireSubmitResult {
+  /** The `YYYY-MM-DD` start date the rehire was scheduled for. */
+  startDate: string
+}
+
+/**
  * Ready-state return value of {@link useContractorRehireForm}.
  *
  * @public
@@ -89,7 +105,7 @@ export interface UseContractorRehireFormReady extends BaseFormHookReady<
   status: { isPending: boolean; mode: 'create' }
   /** Submit the form. Resolves to a result on success, or `undefined` on validation or mutation failure. */
   actions: {
-    onSubmit: () => Promise<HookSubmitResult<undefined> | undefined>
+    onSubmit: () => Promise<HookSubmitResult<ContractorRehireSubmitResult> | undefined>
   }
 }
 
@@ -98,10 +114,13 @@ export interface UseContractorRehireFormReady extends BaseFormHookReady<
  *
  * @remarks
  * Fetches the contractor and manages a single required `startDate` field, bounded
- * to the day after their dismissal date. On submit it schedules the rehire, which
- * creates a new employment record effective on that date. The API returns no body,
- * so the submit result carries `data: undefined` — read the refreshed contractor
- * from a subsequent render rather than from the result.
+ * to the day after their dismissal date — a bound enforced by the schema as well as the
+ * date picker, so a typed-in or caller-supplied value surfaces a `START_DATE_BEFORE_MIN`
+ * message on the field rather than a generic API error. On submit it schedules the rehire,
+ * which creates a new employment record effective on that date. The API returns no body, so
+ * the submit result echoes back the date that was sent (see
+ * {@link ContractorRehireSubmitResult}); read the refreshed contractor from a subsequent
+ * render.
  *
  * The contractor must be inactive and must not already have an upcoming employment;
  * either condition produces a `422` that surfaces through `errorHandling.errors`. A
@@ -151,7 +170,20 @@ export function useContractorRehireForm({
   const contractorQuery = useContractorsGet({ contractorUuid: contractorId })
   const contractor = contractorQuery.data?.contractorShow
 
-  const [schema, metadataConfig] = useMemo(() => createContractorRehireSchema(), [])
+  // The rehire takes effect the day the new employment starts, so it can never predate the
+  // dismissal it reverses. The API itself only checks that the contractor is inactive with no
+  // upcoming employment, which leaves backdated rehires valid — hence a floor rather than
+  // pinning the field to today.
+  const dismissalDate = contractor?.dismissalDate
+  const minDate = useMemo(() => {
+    const parsed = dismissalDate ? normalizeToDate(dismissalDate) : null
+    return parsed ? formatDateToStringDate(addDays(parsed, 1)) : null
+  }, [dismissalDate])
+
+  const [schema, metadataConfig] = useMemo(
+    () => createContractorRehireSchema({ minStartDate: minDate }),
+    [minDate],
+  )
 
   // No `values` sync: `startDate` describes a rehire that doesn't exist yet, so there is no
   // server-side value for it to track — the field is only ever seeded from `defaultValues`.
@@ -173,21 +205,13 @@ export function useContractorRehireForm({
 
   const errorHandling = composeErrorHandler([contractorQuery], { submitError, setSubmitError })
 
-  // The rehire takes effect the day the new employment starts, so it can never predate the
-  // dismissal it reverses. The API itself only checks that the contractor is inactive with no
-  // upcoming employment, which leaves backdated rehires valid — hence a floor rather than
-  // pinning the field to today.
-  const dismissalDate = contractor?.dismissalDate
-  const minDate = useMemo(() => {
-    const parsed = dismissalDate ? normalizeToDate(dismissalDate) : null
-    return parsed ? formatDateToStringDate(addDays(parsed, 1)) : null
-  }, [dismissalDate])
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = buildContractorRehireFieldsMetadata(baseMetadata, { minDate })
 
-  const onSubmit = async (): Promise<HookSubmitResult<undefined> | undefined> => {
-    let submitResult: HookSubmitResult<undefined> | undefined
+  const onSubmit = async (): Promise<
+    HookSubmitResult<ContractorRehireSubmitResult> | undefined
+  > => {
+    let submitResult: HookSubmitResult<ContractorRehireSubmitResult> | undefined
 
     await new Promise<void>(resolve => {
       void formMethods.handleSubmit(
@@ -199,7 +223,7 @@ export function useContractorRehireForm({
                 requestBody: { startDate: new RFCDate(payload.startDate) },
               },
             })
-            submitResult = { mode: 'create', data: undefined }
+            submitResult = { mode: 'create', data: { startDate: payload.startDate } }
           })
           resolve()
         },

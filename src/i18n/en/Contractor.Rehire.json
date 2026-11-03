@@ -11,7 +11,8 @@
     }
   },
   "validation": {
-    "startDateRequired": "Enter a start date"
+    "startDateRequired": "Enter a start date",
+    "startDateBeforeMin": "Start date must be after the dismissal date"
   },
   "actions": {
     "cancel": "Cancel",

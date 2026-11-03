@@ -100,12 +100,9 @@ function RehireRoot({
     const result = await rehire.actions.onSubmit()
     if (!result) return
 
-    const values = rehire.form.getFormSubmissionValues()
-    if (!values) return
-
     onEvent(componentEvents.CONTRACTOR_REHIRE_SCHEDULED, {
       contractorId,
-      startDate: values.startDate,
+      startDate: result.data.startDate,
       message: t('successMessage'),
     })
   }
@@ -126,7 +123,10 @@ function RehireRoot({
             <Flex flexDirection="column" gap={24}>
               <Fields.StartDate
                 label={t('form.startDate.label')}
-                validationMessages={{ REQUIRED: t('validation.startDateRequired') }}
+                validationMessages={{
+                  REQUIRED: t('validation.startDateRequired'),
+                  START_DATE_BEFORE_MIN: t('validation.startDateBeforeMin'),
+                }}
               />
               <Alert status="info" label={t('alert.label')}>
                 <Text>{t('alert.text')}</Text>
