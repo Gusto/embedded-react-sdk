@@ -96,10 +96,14 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `contractor/management/compensation/editRequested` | Fired when "Edit" is clicked on the Compensation card | `{ contractorId: string }` |
 | `contractor/management/compensation/updated` | Fired after compensation is saved; the dashboard returns to the cards and surfaces the "Compensation updated" alert | Updated `Contractor` entity |
 | `contractor/management/compensation/editCancelled` | Fired when the user cancels editing compensation; the dashboard returns to the cards | — |
-| `contractor/management/documents/card/viewRequested` | Fired when a document row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` |
-| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` |
+| `contractor/management/documents/card/viewRequested` | Fired when a documents row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid?: string, formId?: string }` |
+| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid?: string, formId?: string }` |
 | `contractor/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'details' \| 'pay' \| 'documents' }` |
 | `contractor/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
+
+The two `documents/card` events carry exactly one row identifier:
+`documentUuid` for a document row (the W-9) and `formId` for a tax form row
+(a 1099). The other key is absent.
 
 ## Sub-components
 

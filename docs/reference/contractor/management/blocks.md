@@ -539,8 +539,12 @@ Props for [DocumentsCard](#documentscard).
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `contractor/management/documents/card/viewRequested` | Fired when a row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` for a document row, `{ contractorId: string, formId: string }` for a tax form row |
-| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` for a document row, `{ contractorId: string, formId: string }` for a tax form row |
+| `contractor/management/documents/card/viewRequested` | Fired when a row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid?: string, formId?: string }` |
+| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid?: string, formId?: string }` |
+
+Both events carry exactly one row identifier: `documentUuid` for a document
+row (the W-9) and `formId` for a tax form row (a 1099). The other key is
+absent.
 
 <br />
 
