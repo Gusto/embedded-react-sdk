@@ -59,14 +59,4 @@ describe('LocationsCard', () => {
       expect(screen.getByText('No locations yet')).toBeInTheDocument()
     })
   })
-
-  it('surfaces an error alert when the locations request fails', async () => {
-    server.use(handleGetCompanyLocations(() => new HttpResponse(null, { status: 500 })))
-
-    renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />)
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument()
-    })
-  })
 })

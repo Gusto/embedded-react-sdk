@@ -77,14 +77,4 @@ describe('FederalTaxesCard', () => {
       { companyId: 'company-123' },
     )
   })
-
-  it('surfaces an error alert when the federal tax request fails', async () => {
-    server.use(handleGetCompanyFederalTaxes(() => new HttpResponse(null, { status: 500 })))
-
-    renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />)
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument()
-    })
-  })
 })

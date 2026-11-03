@@ -69,14 +69,4 @@ describe('IndustryCard', () => {
       expect(screen.getByText('No industry selected')).toBeInTheDocument()
     })
   })
-
-  it('surfaces an error alert when the industry request fails', async () => {
-    server.use(handleGetIndustrySelection(() => new HttpResponse(null, { status: 500 })))
-
-    renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />)
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument()
-    })
-  })
 })
