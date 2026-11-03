@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { PrintChecks } from './PrintChecks'
 import {
   handlePayrollsGeneratePrintableChecks,
@@ -123,5 +123,80 @@ describe('PrintChecks', () => {
     expect(
       await screen.findByRole('heading', { level: 2, name: 'Choose check stock' }),
     ).toBeInTheDocument()
+  })
+
+  it.each([
+    { number: '1001', body: { printing_format: 'bottom', starting_check_number: 1001 } },
+    { number: '', body: { printing_format: 'bottom' } },
+  ])(
+    'submits blank stock with starting number "$number" through the modal',
+    async ({ number, body }) => {
+      let capturedBody: unknown
+      const generateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        capturedBody = await request.json()
+        return HttpResponse.json(createPayrollCheck())
+      })
+      server.use(
+        handlePayrollsGeneratePrintableChecks(generateResolver),
+        handleGeneratedDocumentsGet(() => HttpResponse.json(createGeneratedDocument())),
+      )
+      renderWithProviders(<PrintChecks {...defaultProps} />)
+      await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
+      await user.click(await screen.findByRole('radio', { name: 'Blank check stock' }))
+      const input = screen.getByLabelText(/Check number starts with/)
+      await user.clear(input)
+      if (number) await user.type(input, number)
+      await user.click(screen.getByRole('button', { name: 'View checks' }))
+
+      await waitFor(() => {
+        expect(generateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(capturedBody).toEqual(body)
+    },
+  )
+
+  it.each(['', '10000000000'])(
+    'submits custom stock after leaving blank-stock number "%s"',
+    async number => {
+      let capturedBody: unknown
+      const generateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        capturedBody = await request.json()
+        return HttpResponse.json(createPayrollCheck())
+      })
+      server.use(
+        handlePayrollsGeneratePrintableChecks(generateResolver),
+        handleGeneratedDocumentsGet(() => HttpResponse.json(createGeneratedDocument())),
+      )
+      renderWithProviders(<PrintChecks {...defaultProps} />)
+      await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
+      await user.click(await screen.findByRole('radio', { name: 'Blank check stock' }))
+      const input = screen.getByLabelText(/Check number starts with/)
+      await user.clear(input)
+      if (number) await user.type(input, number)
+      await user.click(screen.getByRole('radio', { name: 'Custom check stock' }))
+      await user.click(screen.getByRole('button', { name: 'View checks' }))
+
+      await waitFor(() => {
+        expect(generateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(capturedBody).toEqual({ printing_format: 'top' })
+    },
+  )
+
+  it('shows validation for an out-of-range blank-stock number without sending a request', async () => {
+    const generateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(createPayrollCheck()),
+    )
+    server.use(handlePayrollsGeneratePrintableChecks(generateResolver))
+    renderWithProviders(<PrintChecks {...defaultProps} />)
+    await user.click(await screen.findByRole('button', { name: 'View and print checks' }))
+    await user.click(await screen.findByRole('radio', { name: 'Blank check stock' }))
+    const input = screen.getByLabelText(/Check number starts with/)
+    await user.clear(input)
+    await user.type(input, '10000000000')
+    await user.click(screen.getByRole('button', { name: 'View checks' }))
+
+    expect(await screen.findByText('Enter a valid check number')).toBeInTheDocument()
+    expect(generateResolver).not.toHaveBeenCalled()
   })
 })

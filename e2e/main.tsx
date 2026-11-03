@@ -7,7 +7,6 @@ import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/On
 import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
 import { SelfOnboardingFlow as ContractorSelfOnboardingFlow } from '@/components/Contractor/SelfOnboardingFlow/SelfOnboardingFlow'
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
-import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
@@ -24,7 +23,6 @@ type FlowType =
   | 'contractor-onboarding'
   | 'contractor-self-onboarding'
   | 'payroll'
-  | 'transition'
   | 'contractor-payment'
   | 'termination'
   | 'dismissal'
@@ -38,9 +36,6 @@ interface E2EConfig {
   contractorId: string
   baseUrl: string
   isLocal: boolean
-  startDate: string
-  endDate: string
-  payScheduleUuid: string
   state: string
 }
 
@@ -61,16 +56,12 @@ function getConfigFromUrl(): E2EConfig {
     contractorId: params.get('contractorId') || '789',
     baseUrl,
     isLocal,
-    startDate: params.get('startDate') || '2025-08-14',
-    endDate: params.get('endDate') || '2025-08-27',
-    payScheduleUuid: params.get('payScheduleUuid') || '1478a82e-b45c-4980-843a-6ddc3b78268e',
     state: params.get('state') || 'WA',
   }
 }
 
 function FlowRenderer({ config }: { config: E2EConfig }) {
-  const { flow, companyId, employeeId, contractorId, startDate, endDate, payScheduleUuid, state } =
-    config
+  const { flow, companyId, employeeId, contractorId, state } = config
   // Real partner apps may update their own state in response to SDK events, which could
   // re-render the SDK's ancestor tree on every event, the same way sdk-app's event log does.
   // A no-op handler here would mask bugs that only surface under that re-render churn
@@ -99,16 +90,6 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       )
     case 'payroll':
       return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
-    case 'transition':
-      return (
-        <TransitionFlow
-          companyId={companyId}
-          startDate={startDate}
-          endDate={endDate}
-          payScheduleUuid={payScheduleUuid}
-          onEvent={handleEvent}
-        />
-      )
     case 'contractor-payment':
       return <PaymentFlow companyId={companyId} onEvent={handleEvent} />
     case 'termination':
@@ -131,7 +112,6 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
   { value: 'contractor-onboarding', label: 'Contractor Onboarding' },
   { value: 'contractor-self-onboarding', label: 'Contractor Self-Onboarding' },
   { value: 'payroll', label: 'Payroll' },
-  { value: 'transition', label: 'Transition' },
   { value: 'contractor-payment', label: 'Contractor Payment' },
   { value: 'termination', label: 'Termination' },
   { value: 'dismissal', label: 'Dismissal' },

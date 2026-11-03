@@ -94,6 +94,22 @@ describe('TransitionConfiguration', () => {
     expect(screen.getAllByText(/regular wages, paid every week/i)).toHaveLength(2)
   })
 
+  it('preserves saved withholding settings over the schedule frequency', async () => {
+    server.use(
+      handleGetPayroll(async () =>
+        HttpResponse.json(
+          await buildTransitionPayroll({
+            withholding_pay_period: 'Monthly',
+            fixed_withholding_rate: true,
+          }),
+        ),
+      ),
+    )
+    renderComponent()
+    expect(await screen.findByText(/regular wages, paid monthly/i)).toBeInTheDocument()
+    expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+  })
+
   it('prepares without employees, saves the settings with one compensation, and emits the updated payroll', async () => {
     let prepareBody: unknown = null
     const prepareResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {

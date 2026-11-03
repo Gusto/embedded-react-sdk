@@ -23,7 +23,6 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 | [Payroll execution](../reference/payroll/payroll-execution-flow.md)                            | Guided flow for a single payroll run.                                      |
 | [Off-cycle payroll](../reference/payroll/off-cycle-flow.md)                                    | Guided flow for off-cycle payroll.                                         |
 | [Dismissal payroll](../reference/payroll/dismissal-flow.md)                                    | Guided flow for dismissal payroll.                                         |
-| [Transition payroll](../reference/payroll/transition-flow.md)                                  | Guided flow for transition payroll.                                        |
 | [Time off](../reference/time-off/time-off-flow.md)                                             | Hub for managing time off policies and schedules.                          |
 
 ## Why should I use a workflow?

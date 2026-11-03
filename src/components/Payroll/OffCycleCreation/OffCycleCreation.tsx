@@ -5,11 +5,10 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
-import {
-  OffCycleReason as ApiOffCycleReason,
-  WithholdingPayPeriod,
-} from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { OffCycleReason as ApiOffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { getDefaultWithholdingPayPeriod } from '../OffCycleTaxWithholdingTable/getDefaultWithholdingPayPeriod'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
@@ -79,8 +78,11 @@ function Root({ dictionary, companyId, payrollType = 'bonus', className }: OffCy
     useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
+  const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
+  const paySchedule = paySchedulesData.payScheduleShowResponse?.find(schedule => schedule.active)
+
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
-    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
+    withholdingPayPeriod: getDefaultWithholdingPayPeriod(paySchedule?.frequency),
     withholdingRate: OFF_CYCLE_REASON_DEFAULTS[payrollType].withholdingType,
   })
   const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)

@@ -37,7 +37,9 @@ export interface PayrollExecutionFlowProps {
   companyId: string
   /**
    * The identifier of the payroll to execute. The payroll must already exist (e.g. created by a
-   * prior creation step or by the standard `PayrollFlow` selection).
+   * prior creation step or by the standard `PayrollFlow` selection). For a transition payroll,
+   * render {@link TransitionConfiguration} first and pass the same ID here after it emits
+   * `transition/configured`.
    */
   payrollId: string
   /** Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. */
@@ -89,10 +91,10 @@ const INITIAL_NAMESPACE_MAP = {
  *
  * @remarks
  * This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
- * by the off-cycle, dismissal, and transition flows after they have created their respective
- * payrolls. Render it directly when you have built your own payroll-creation step and want to hand
- * the user off to the standard execution experience without re-implementing it. The flow ships
- * with breadcrumb navigation and the standard wire-confirmation UX.
+ * by the off-cycle and dismissal flows after they have created their respective payrolls. Render it
+ * directly when you have built your own payroll-creation step and want to hand the user off to the
+ * standard execution experience without re-implementing it. The flow ships with breadcrumb
+ * navigation and the standard wire-confirmation UX.
  *
  * @events
  * | Event | Description | Data |
@@ -151,7 +153,7 @@ export function PayrollExecutionFlow(props: PayrollExecutionFlowProps) {
 /**
  * Flow-internal entry point for {@link PayrollExecutionFlow} that additionally accepts
  * flow-injected `prefixBreadcrumbs`. Partners use {@link PayrollExecutionFlow}; our own parent
- * flows (off-cycle, dismissal, transition, and `PayrollFlow`) render this directly to prepend
+ * flows (off-cycle, dismissal, and `PayrollFlow`) render this directly to prepend
  * their own breadcrumb trail.
  *
  * @internal
