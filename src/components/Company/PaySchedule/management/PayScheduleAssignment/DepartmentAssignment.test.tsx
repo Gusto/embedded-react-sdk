@@ -37,9 +37,7 @@ const savedAssignment = {
 
 function renderAssignment() {
   const onEvent = vi.fn()
-  renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />, {
-    unstableFeatures: { managePaySchedules: true },
-  })
+  renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />)
   return onEvent
 }
 
@@ -342,9 +340,6 @@ describe('department pay schedule assignment', () => {
   it('renders the department overview and routes Manage back to saved assignments', async () => {
     renderWithProviders(
       <PaySchedule companyId="123" onEvent={vi.fn()} enableAutoPilot enableMultipleSchedules />,
-      {
-        unstableFeatures: { managePaySchedules: true },
-      },
     )
     await screen.findByRole('grid', { name: /pay schedules by department/i })
     expect(screen.getByText('Engineering')).toBeInTheDocument()
@@ -358,7 +353,6 @@ describe('department pay schedule assignment', () => {
     const onEvent = vi.fn()
     renderWithProviders(
       <PaySchedule companyId="123" onEvent={onEvent} enableAutoPilot enableMultipleSchedules />,
-      { unstableFeatures: { managePaySchedules: true } },
     )
     const row = await screen.findByRole('row', { name: 'Engineering' })
     const user = userEvent.setup()
@@ -369,9 +363,7 @@ describe('department pay schedule assignment', () => {
   })
 
   it('hides Manage and AutoPilot in the department overview when disabled', async () => {
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />)
     const row = await screen.findByRole('row', { name: 'Engineering' })
     expect(screen.queryByRole('button', { name: /manage/i })).not.toBeInTheDocument()
     expect(screen.queryByText(/autopilot/i)).not.toBeInTheDocument()

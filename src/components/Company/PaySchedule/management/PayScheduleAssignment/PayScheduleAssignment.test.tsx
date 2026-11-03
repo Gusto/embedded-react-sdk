@@ -54,9 +54,7 @@ const twoPaySchedulesMock = http.get(`${API_BASE_URL}/v1/companies/:company_id/p
 const renderAssignment = ({
   onEvent = vi.fn(),
 }: { onEvent?: OnEventType<EventType, unknown> } = {}) => {
-  renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />, {
-    unstableFeatures: { managePaySchedules: true },
-  })
+  renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />)
   return { onEvent }
 }
 

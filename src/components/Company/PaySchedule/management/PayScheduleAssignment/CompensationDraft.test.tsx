@@ -66,9 +66,7 @@ describe('compensation assignment draft', () => {
   async function editCompensationSchedules() {
     const user = userEvent.setup()
     const onEvent = vi.fn()
-    renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />)
     await user.click(await screen.findByRole('button', { name: /continue/i }))
     await user.click(await screen.findByRole('button', { name: /hourly/i }))
     await user.click(screen.getByRole('option', { name: /monthly/i }))

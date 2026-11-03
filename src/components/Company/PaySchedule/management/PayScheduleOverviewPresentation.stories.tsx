@@ -1,6 +1,7 @@
 import { fn } from 'storybook/test'
 import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { PayScheduleOverviewPresentation } from './PayScheduleOverviewPresentation'
+import { useI18n } from '@/i18n'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 export default {
@@ -25,6 +26,7 @@ function StoryWrapper({
   enableAutoPilot?: boolean
   enableMultipleSchedules?: boolean
 }) {
+  useI18n('Company.Management.PaySchedule')
   return (
     <GustoTestProvider>
       <PayScheduleOverviewPresentation

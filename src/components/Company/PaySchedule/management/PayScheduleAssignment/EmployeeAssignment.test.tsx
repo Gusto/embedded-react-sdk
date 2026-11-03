@@ -50,9 +50,7 @@ const savedAssignment = {
 }
 function renderAssignment() {
   const onEvent = vi.fn()
-  const result = renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />, {
-    unstableFeatures: { managePaySchedules: true },
-  })
+  const result = renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />)
   return { ...result, onEvent }
 }
 async function enterEmployees(user: ReturnType<typeof userEvent.setup>) {
@@ -193,9 +191,7 @@ describe('employee pay schedule assignment', () => {
         ]),
       ),
     )
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />)
     expect(await screen.findByRole('alert')).toHaveTextContent('compensations:read')
     expect(screen.getByRole('button', { name: /manage/i })).toBeEnabled()
     expect(screen.queryByText('1 employee')).not.toBeInTheDocument()
@@ -561,7 +557,6 @@ describe('employee pay schedule assignment', () => {
     const onEvent = vi.fn()
     renderWithProviders(
       <PaySchedule companyId="123" onEvent={onEvent} enableAutoPilot enableMultipleSchedules />,
-      { unstableFeatures: { managePaySchedules: true } },
     )
     await screen.findByRole('grid', { name: /pay schedules by employee/i })
     expect(screen.getByText('6 employees')).toBeInTheDocument()
@@ -579,9 +574,7 @@ describe('employee pay schedule assignment', () => {
         HttpResponse.json({ errors: [{ category: 'missing_oauth_scopes' }] }, { status: 403 }),
       ),
     )
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />)
     expect(await screen.findByRole('alert')).toBeInTheDocument()
     expect(
       screen.queryByRole('grid', { name: /pay schedules by employee/i }),
@@ -622,9 +615,7 @@ describe('employee pay schedule assignment', () => {
         </BaseComponent>,
       )
     } else {
-      renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
-        unstableFeatures: { managePaySchedules: true },
-      })
+      renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />)
     }
     await waitFor(() => {
       expect(list).toHaveBeenCalledTimes(Number(delayedPage))
@@ -657,16 +648,12 @@ describe('employee pay schedule assignment', () => {
   })
 
   it('honors overview feature options and opens Manage on employee assignment', async () => {
-    const { unmount } = renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    const { unmount } = renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} />)
     await screen.findByRole('grid', { name: /pay schedules by employee/i })
     expect(screen.queryByRole('button', { name: /manage/i })).not.toBeInTheDocument()
     expect(screen.queryByText(/autopilot/i)).not.toBeInTheDocument()
     unmount()
-    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(<PaySchedule companyId="123" onEvent={vi.fn()} enableMultipleSchedules />)
     const user = userEvent.setup()
     await user.click(await screen.findByRole('button', { name: /manage/i }))
     expect(await screen.findByRole('radio', { name: /^by employee/i })).toBeChecked()

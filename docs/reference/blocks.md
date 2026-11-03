@@ -16,6 +16,8 @@ Individual form and UI components with SDK logic built in — use these for cust
 
 | Component | Description |
 | --- | --- |
+| [CompanyManagement.PaySchedule](company/management/blocks#payschedule) | Manages a company's pay schedule after onboarding. |
+| [CompanyManagement.PayScheduleAssignment](company/management/blocks#payscheduleassignment) | Assigns a company's employees to a pay schedule. |
 | [CompanyOnboarding.AssignSignatory](company/onboarding/blocks#assignsignatory) | Lets a user either create a new signatory with full details or invite someone else to become the signatory. |
 | [CompanyOnboarding.BankAccount](company/onboarding/blocks#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
 | [CompanyOnboarding.CreateSignatory](company/onboarding/blocks#createsignatory) | Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address. |
@@ -256,6 +258,7 @@ shape mixed into every public SDK feature component.
 - [`AssignSignatoryProps`](company/onboarding/blocks.md#assignsignatoryprops)
 - [`CreateSignatoryProps`](company/onboarding/blocks.md#createsignatoryprops)
 - [`InviteSignatoryProps`](company/onboarding/blocks.md#invitesignatoryprops)
+- [`PayScheduleAssignmentProps`](company/management/blocks.md#payscheduleassignmentprops)
 - [`OnboardingFlowProps`](contractor/onboarding/onboarding-flow.md#onboardingflowprops)
 - [`SelfOnboardingFlowProps`](contractor/onboarding/self-onboarding-flow.md#selfonboardingflowprops)
 - [`LandingProps`](contractor/onboarding/blocks.md#landingprops)

@@ -299,6 +299,24 @@ describe('buildPages — namespace routing', () => {
 // ---------------------------------------------------------------------------
 
 describe('buildPages — namespace flows/blocks splitting', () => {
+  it('routes a configured namespace containing only blocks to a blocks page and index', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'CompanyManagement', ReflectionKind.Namespace)
+    const paySchedule = makeChild(ns, 'PaySchedule', ReflectionKind.Function)
+    markAsComponent(paySchedule)
+    const props = makeChild(ns, 'PayScheduleProps', ReflectionKind.Interface)
+    attachPropsSignature(paySchedule, props, project)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(page => page.url)
+
+    expect(urls).toContain('company/management/blocks.md')
+    expect(urls).toContain('company/management/index.md')
+    expect(router.getFullUrl(paySchedule)).toBe('company/management/blocks.md#payschedule')
+    expect(router.getFullUrl(props)).toBe('company/management/blocks.md#payscheduleprops')
+  })
+
   it('namespace with Flow children produces per-flow pages, blocks.md, and index.md', () => {
     const project = makeProject()
     const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
