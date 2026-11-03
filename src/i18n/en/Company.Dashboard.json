@@ -1,0 +1,13 @@
+{
+  "companySettingsLabel": "Company settings",
+  "tabsLabel": "Company settings tabs",
+  "tabs": {
+    "companyDetails": "Company details",
+    "taxes": "Taxes"
+  },
+  "backToDashboardCta": "Back to company settings",
+  "alerts": {
+    "industryUpdated": "Industry updated",
+    "federalTaxesUpdated": "Federal tax settings updated"
+  }
+}

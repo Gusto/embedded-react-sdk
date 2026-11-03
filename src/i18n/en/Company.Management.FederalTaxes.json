@@ -1,0 +1,14 @@
+{
+  "card": {
+    "title": "Federal taxes",
+    "editCta": "Edit",
+    "legalName": "Legal name",
+    "ein": "EIN",
+    "taxPayerType": "Tax payer type",
+    "filingForm": "Federal filing form",
+    "listEmptyPlaceholder": "No value",
+    "einVerified": "Verified",
+    "einUnverified": "Awaiting verification",
+    "einMissing": "Not provided"
+  }
+}

@@ -24,6 +24,8 @@ export interface Resources {
   /** */
   'Company.BankAccount': Translations.CompanyBankAccount
   /** */
+  'Company.Dashboard': Translations.CompanyDashboard
+  /** */
   'Company.DocumentList': Translations.CompanyDocumentList
   /** */
   'Company.FederalTaxes': Translations.CompanyFederalTaxes
@@ -33,6 +35,12 @@ export interface Resources {
   'Company.Locations': Translations.CompanyLocations
   /** */
   'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+  /** */
+  'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
+  /** */
+  'Company.Management.Industry': Translations.CompanyManagementIndustry
+  /** */
+  'Company.Management.Locations': Translations.CompanyManagementLocations
   /** */
   'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
   /** */
@@ -470,6 +478,27 @@ export namespace Translations {
     deposit2Description: string
     /** @defaultValue `"Verify deposits"` */
     verifyCta: string
+  }
+  /** Translation keys for the `Company.Dashboard` i18n namespace. */
+  export interface CompanyDashboard {
+    /** @defaultValue `"Company settings"` */
+    companySettingsLabel: string
+    /** @defaultValue `"Company settings tabs"` */
+    tabsLabel: string
+    tabs: {
+      /** @defaultValue `"Company details"` */
+      companyDetails: string
+      /** @defaultValue `"Taxes"` */
+      taxes: string
+    }
+    /** @defaultValue `"Back to company settings"` */
+    backToDashboardCta: string
+    alerts: {
+      /** @defaultValue `"Industry updated"` */
+      industryUpdated: string
+      /** @defaultValue `"Federal tax settings updated"` */
+      federalTaxesUpdated: string
+    }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
   export interface CompanyDocumentList {
@@ -1024,6 +1053,77 @@ export namespace Translations {
         /** @defaultValue `"AutoPilot can't be enabled right now"` */
         title: string
         /** @defaultValue `"Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.FederalTaxes` i18n namespace. */
+  export interface CompanyManagementFederalTaxes {
+    card: {
+      /** @defaultValue `"Federal taxes"` */
+      title: string
+      /** @defaultValue `"Edit"` */
+      editCta: string
+      /** @defaultValue `"Legal name"` */
+      legalName: string
+      /** @defaultValue `"EIN"` */
+      ein: string
+      /** @defaultValue `"Tax payer type"` */
+      taxPayerType: string
+      /** @defaultValue `"Federal filing form"` */
+      filingForm: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      /** @defaultValue `"Verified"` */
+      einVerified: string
+      /** @defaultValue `"Awaiting verification"` */
+      einUnverified: string
+      /** @defaultValue `"Not provided"` */
+      einMissing: string
+    }
+  }
+  /** Translation keys for the `Company.Management.Industry` i18n namespace. */
+  export interface CompanyManagementIndustry {
+    card: {
+      /** @defaultValue `"Industry"` */
+      title: string
+      /** @defaultValue `"Edit"` */
+      editCta: string
+      /** @defaultValue `"Industry"` */
+      industry: string
+      /** @defaultValue `"NAICS code"` */
+      naicsCode: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      emptyState: {
+        /** @defaultValue `"No industry selected"` */
+        title: string
+        /** @defaultValue `"Choose the industry that best represents this company's primary business activity."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.Locations` i18n namespace. */
+  export interface CompanyManagementLocations {
+    card: {
+      /** @defaultValue `"Locations"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Company locations"` */
+      listLabel: string
+      /** @defaultValue `"Address"` */
+      addressColumn: string
+      /** @defaultValue `"Designations"` */
+      designationsColumn: string
+      /** @defaultValue `"Mailing"` */
+      mailingAddress: string
+      /** @defaultValue `"Filing"` */
+      filingAddress: string
+      emptyState: {
+        /** @defaultValue `"No locations yet"` */
+        title: string
+        /** @defaultValue `"Add a work address so this company can run payroll and file taxes in the right jurisdictions."` */
         description: string
       }
     }

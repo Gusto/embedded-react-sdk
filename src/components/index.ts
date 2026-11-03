@@ -73,7 +73,8 @@ export * as EmployeeManagement from './Employee/exports/employeeManagement'
 export * as CompanyOnboarding from './Company/exports/companyOnboarding'
 
 /**
- * Flows and blocks for managing a company's pay schedule after onboarding.
+ * Flows and blocks for managing a company after onboarding — settings overview, pay schedules,
+ * and tax payments.
  *
  * @remarks
  * ```ts
