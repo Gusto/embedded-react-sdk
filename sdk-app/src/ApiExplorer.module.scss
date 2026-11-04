@@ -1,0 +1,163 @@
+.root {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+
+  code {
+    background: var(--color-badge-bg);
+    padding: 0.0625rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+  }
+}
+
+.requestRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.methodSelect,
+.pathInput {
+  padding: 0.5rem 0.625rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  font-family: monospace;
+  outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+
+  &:focus {
+    border-color: var(--color-active);
+    box-shadow: 0 0 0 0.125rem var(--color-focus-ring);
+  }
+}
+
+.methodSelect {
+  flex-shrink: 0;
+}
+
+.pathInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.queryParams {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.queryParamsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03125rem;
+}
+
+.queryParamRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.queryParamInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.625rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  font-family: monospace;
+  outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+
+  &:focus {
+    border-color: var(--color-active);
+    box-shadow: 0 0 0 0.125rem var(--color-focus-ring);
+  }
+}
+
+.bodyInput {
+  width: 100%;
+  padding: 0.625rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  font-family: monospace;
+  outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+  resize: vertical;
+
+  &:focus {
+    border-color: var(--color-active);
+    box-shadow: 0 0 0 0.125rem var(--color-focus-ring);
+  }
+}
+
+.responsePane {
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.placeholder {
+  padding: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.error {
+  padding: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+}
+
+.statusLine {
+  padding: 0.625rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-bottom: 0.0625rem solid var(--color-border);
+}
+
+.statusOk {
+  color: var(--color-success);
+}
+
+.statusError {
+  color: var(--color-danger);
+}
+
+.body {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--color-badge-bg);
+  max-height: 32rem;
+}
