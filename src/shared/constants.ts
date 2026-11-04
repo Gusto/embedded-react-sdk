@@ -212,6 +212,7 @@ export const companyEvents = {
   COMPANY_DASHBOARD_TAB_CHANGE: 'company/dashboard/tabChange',
   COMPANY_DASHBOARD_ALERT_DISMISSED: 'company/dashboard/alertDismissed',
   COMPANY_DASHBOARD_BACK: 'company/dashboard/back',
+  COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: 'company/management/bankAccount/editRequested',
 } as const
 
 /**

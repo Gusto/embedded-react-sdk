@@ -20,6 +20,10 @@ export {
   type FederalTaxesCardProps,
 } from '../FederalTaxes/management/FederalTaxesCard'
 export {
+  BankAccountCard,
+  type BankAccountCardProps,
+} from '../BankAccount/management/BankAccountCard'
+export {
   Dashboard,
   DashboardFlow,
   type DashboardProps,
