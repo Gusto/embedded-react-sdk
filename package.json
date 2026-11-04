@@ -153,7 +153,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-router-dom": "^7.18.5",
-    "release-it": "^21.1.1",
+    "release-it": "^21.1.2",
     "sass-embedded": "^1.107.1",
     "storybook": "^10.6.3",
     "stylelint-config-standard": "^40.0.0",
