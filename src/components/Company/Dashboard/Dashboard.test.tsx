@@ -12,6 +12,7 @@ import {
   handleGetCompanyLocations,
 } from '@/test/mocks/apis/company_locations'
 import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
+import { handleGetCompanyBankAccounts } from '@/test/mocks/apis/company_bank_accounts'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -46,6 +47,19 @@ describe('Company Dashboard', () => {
           legal_name: 'Test Company Legal',
         }),
       ),
+      handleGetCompanyBankAccounts(() =>
+        HttpResponse.json([
+          {
+            uuid: 'bank-1',
+            company_uuid: 'company-123',
+            account_type: 'Checking',
+            routing_number: '851070439',
+            hidden_account_number: 'XXXX4087',
+            verification_status: 'verified',
+            name: 'Employer Funding Account',
+          },
+        ]),
+      ),
     )
   })
 
@@ -68,6 +82,7 @@ describe('Company Dashboard', () => {
     })
 
     expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Pay' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Taxes' })).toBeInTheDocument()
 
     // Company details is the default tab: its two cards render.
@@ -89,6 +104,20 @@ describe('Company Dashboard', () => {
 
     expect(await screen.findByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Industry' })).toBeNull()
+  })
+
+  it('switches to the Pay tab and renders the bank account card', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_DASHBOARD_TAB_CHANGE, {
+      tab: 'pay',
+    })
+    expect(await screen.findByRole('heading', { name: 'Bank account' })).toBeInTheDocument()
   })
 
   it('honours a controlled selectedTab', async () => {
@@ -146,6 +175,19 @@ describe('Company DashboardFlow', () => {
           ein_verified: true,
           legal_name: 'Test Company Legal',
         }),
+      ),
+      handleGetCompanyBankAccounts(() =>
+        HttpResponse.json([
+          {
+            uuid: 'bank-1',
+            company_uuid: 'company-123',
+            account_type: 'Checking',
+            routing_number: '851070439',
+            hidden_account_number: 'XXXX4087',
+            verification_status: 'verified',
+            name: 'Employer Funding Account',
+          },
+        ]),
       ),
     )
   })
