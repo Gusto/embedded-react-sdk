@@ -344,7 +344,7 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ### BankFormField
 
-> **BankFormField** = `"routingNumber"` \| `"accountNumber"` \| `"name"` \| `"accountType"`
+> **BankFormField** = `"routingNumber"` \| `"accountNumber"` \| `"accountType"` \| `"name"`
 
 Field names accepted by the bank account form.
 

@@ -75,6 +75,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `COMPANY_LOCATION_DONE` | `"company/location/done"` |
 | `COMPANY_LOCATION_EDIT` | `"company/location/edit"` |
 | `COMPANY_LOCATION_UPDATED` | `"company/location/edit/done"` |
+| `COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED` | `"company/management/bankAccount/editRequested"` |
 | `COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED` | `"company/management/federalTaxes/editRequested"` |
 | `COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED` | `"company/management/industry/editRequested"` |
 | `COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED` | `"company/management/locations/editRequested"` |
