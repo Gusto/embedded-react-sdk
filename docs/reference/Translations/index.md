@@ -355,12 +355,14 @@ Translation keys for the `Company.Dashboard` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-companydashboardalerts"></a> `alerts` | |
+| `alerts.bankAccountUpdated` | `"Bank account updated"` |
 | `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
 | `alerts.industryUpdated` | `"Industry updated"` |
 | <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
 | <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
 | <a id="property-companydashboardtabs"></a> `tabs` | |
 | `tabs.companyDetails` | `"Company details"` |
+| `tabs.pay` | `"Pay"` |
 | `tabs.taxes` | `"Taxes"` |
 | <a id="property-companydashboardtabslabel"></a> `tabsLabel` | `"Company settings tabs"` |
 
@@ -699,6 +701,36 @@ Translation keys for the `Company.Management.AutoPilotDialog` i18n namespace.
 | `saveError.title` | `"AutoPilot settings couldn't be saved"` |
 | <a id="property-companymanagementautopilotdialogtitle"></a> `title` | `"AutoPilot — {{scheduleName}}"` |
 | <a id="property-companymanagementautopilotdialogtogglelabel"></a> `toggleLabel` | `"Enable AutoPilot"` |
+
+***
+
+<a id="companymanagementbankaccount"></a>
+
+### CompanyManagementBankAccount
+
+Translation keys for the `Company.Management.BankAccount` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementbankaccountcard"></a> `card` |
+| `card.accountName` |
+| `card.accountNumber` |
+| `card.accountType` |
+| `card.addCta` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listEmptyPlaceholder` |
+| `card.manageCta` |
+| `card.routingNumber` |
+| `card.title` |
+| `card.verification` |
+| `card.verificationStatus` |
+| `card.verificationStatus.awaiting_deposits` |
+| `card.verificationStatus.ready_for_verification` |
+| `card.verificationStatus.verified` |
 
 ***
 
@@ -6185,6 +6217,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
 | <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
 | <a id="property-resourcescompanymanagementautopilotdialog"></a> `Company.Management.AutoPilotDialog` | [`CompanyManagementAutoPilotDialog`](#companymanagementautopilotdialog) |
+| <a id="property-resourcescompanymanagementbankaccount"></a> `Company.Management.BankAccount` | [`CompanyManagementBankAccount`](#companymanagementbankaccount) |
 | <a id="property-resourcescompanymanagementfederaltaxes"></a> `Company.Management.FederalTaxes` | [`CompanyManagementFederalTaxes`](#companymanagementfederaltaxes) |
 | <a id="property-resourcescompanymanagementindustry"></a> `Company.Management.Industry` | [`CompanyManagementIndustry`](#companymanagementindustry) |
 | <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |
