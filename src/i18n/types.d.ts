@@ -7973,6 +7973,8 @@ export namespace Translations {
       hours: string
       /** @defaultValue `"Time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Additional earnings"` */
       additionalEarnings: string
       /** @defaultValue `"Reimbursements"` */
@@ -8517,6 +8519,8 @@ export namespace Translations {
       doubleOT: string
       /** @defaultValue `"Paid time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Total hours"` */
       totalHours: string
       /** @defaultValue `"Payment type"` */

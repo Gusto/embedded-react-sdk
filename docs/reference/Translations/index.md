@@ -5344,6 +5344,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `tableColumns.reimbursements` | `"Reimbursements"` |
 | `tableColumns.timeOff` | `"Time off"` |
 | `tableColumns.totalPay` | `"Total pay"` |
+| `tableColumns.unusedHours` | `"Unused hours"` |
 | <a id="property-payrollpayrollconfigurationunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
@@ -5687,6 +5688,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `tableHeaders.timeOff` | `"Paid time off"` |
 | `tableHeaders.totalHours` | `"Total hours"` |
 | `tableHeaders.totalPayroll` | `"Total payroll"` |
+| `tableHeaders.unusedHours` | `"Unused hours"` |
 | `tableHeaders.wireAmount` | `"Wire amount"` |
 | `tableHeaders.wireTransferDeadline` | `"Wire transfer deadline"` |
 | <a id="property-payrollpayrolloverviewtaxeslabel"></a> `taxesLabel` | `"Taxes (Employees and Employers)"` |
