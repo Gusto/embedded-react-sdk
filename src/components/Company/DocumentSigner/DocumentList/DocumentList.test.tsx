@@ -2,6 +2,8 @@ import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { companyFormsGetPdf } from '@gusto/embedded-api/funcs/companyFormsGetPdf'
+import type * as CompanyFormsGetPdfModule from '@gusto/embedded-api/funcs/companyFormsGetPdf'
 import { DocumentList } from './DocumentList'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -11,9 +13,17 @@ import { handleGetAllCompanyForms, handleGetCompanyFormPdf } from '@/test/mocks/
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
+vi.mock('@gusto/embedded-api/funcs/companyFormsGetPdf', async importOriginal => {
+  const actual = await importOriginal<typeof CompanyFormsGetPdfModule>()
+  return { ...actual, companyFormsGetPdf: vi.fn(actual.companyFormsGetPdf) }
+})
+
 describe('DocumentList', () => {
+  let anchorClickSpy: ReturnType<typeof vi.spyOn>
+
   beforeEach(() => {
     setupApiTestMocks()
+    anchorClickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
   })
 
   describe('when user is the signatory', () => {
@@ -233,10 +243,7 @@ describe('DocumentList', () => {
       expect(screen.queryByRole('button', { name: 'View' })).not.toBeInTheDocument()
     })
 
-    it('fetches the pdf url and opens it when the view action is selected', async () => {
-      // window.open returns null in jsdom — the view handler tolerates this
-      // and simply skips the new-tab navigation.
-      const openSpy = vi.spyOn(window, 'open').mockReturnValue(null)
+    it('fetches the pdf url and opens it in an isolated tab when the view action is selected', async () => {
       const pdfResolver = vi.fn<HttpResponseResolver>(() =>
         HttpResponse.json({ uuid: 'form-123', document_url: 'https://example.com/form-123.pdf' }),
       )
@@ -255,8 +262,109 @@ describe('DocumentList', () => {
       await waitFor(() => {
         expect(pdfResolver).toHaveBeenCalledTimes(1)
       })
+      await waitFor(() => {
+        expect(anchorClickSpy).toHaveBeenCalledTimes(1)
+      })
+      expect(anchorClickSpy.mock.contexts[0]).toHaveProperty(
+        'href',
+        'https://example.com/form-123.pdf',
+      )
+      expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('target', '_blank')
+      expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('rel', 'noopener noreferrer')
+    })
 
-      openSpy.mockRestore()
+    it('shows an inline error and does not open a tab when the document URL is unsafe', async () => {
+      server.use(
+        handleGetCompanyFormPdf(() =>
+          HttpResponse.json({ uuid: 'form-123', document_url: 'javascript:alert(1)' }),
+        ),
+      )
+
+      const user = userEvent.setup()
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={() => {}} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Form')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'View' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Could not open this document, try again later.'),
+        ).toBeInTheDocument()
+      })
+      expect(anchorClickSpy).not.toHaveBeenCalled()
+    })
+
+    it('shows an inline error without reporting to observability when the pdf request fails', async () => {
+      server.use(
+        handleGetCompanyFormPdf(() =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'request',
+                  category: 'not_found',
+                  message: 'The requested resource was not found.',
+                },
+              ],
+            },
+            { status: 404 },
+          ),
+        ),
+      )
+      const onError = vi.fn()
+      const user = userEvent.setup()
+
+      render(
+        <GustoTestProvider observability={{ onError }}>
+          <DocumentList companyId="company-123" onEvent={() => {}} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Form')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'View' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Could not open this document, try again later.'),
+        ).toBeInTheDocument()
+      })
+
+      expect(onError).not.toHaveBeenCalled()
+    })
+
+    it('shows an inline error and reports to observability when fetching the pdf throws', async () => {
+      vi.mocked(companyFormsGetPdf).mockRejectedValueOnce(new Error('boom'))
+      const onError = vi.fn()
+      const user = userEvent.setup()
+
+      render(
+        <GustoTestProvider observability={{ onError }}>
+          <DocumentList companyId="company-123" onEvent={() => {}} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Form')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'View' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Could not open this document, try again later.'),
+        ).toBeInTheDocument()
+      })
+
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({ category: 'internal_error', message: 'boom' }),
+      )
     })
   })
 

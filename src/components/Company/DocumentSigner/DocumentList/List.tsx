@@ -1,12 +1,16 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useErrorBoundary } from 'react-error-boundary'
 import type { TFunction } from 'i18next'
 import type { Form as FormSchema } from '@gusto/embedded-api/models/components/form'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { companyFormsGetPdf } from '@gusto/embedded-api/funcs/companyFormsGetPdf'
 import { useDocumentList } from './useDocumentList'
 import { DocumentList, type FormData } from '@/components/Common/DocumentList'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useBase } from '@/components/Base/useBase'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError } from '@/types/sdkError'
+import { openLinkInNewTab } from '@/helpers/openLinkInNewTab'
 
 /**
  * Resolves a form's rendered description, preferring a partner-provided
@@ -26,9 +30,12 @@ function List() {
     useDocumentList()
 
   const { t } = useTranslation('Company.DocumentList')
-  const { showBoundary } = useErrorBoundary()
+  const Components = useComponentContext()
   const gustoEmbedded = useGustoEmbeddedContext()
+  const { componentName } = useBase()
+  const { observability } = useObservability()
   const [viewingUuid, setViewingUuid] = useState<string | null>(null)
+  const [viewError, setViewError] = useState(false)
 
   const onRequestSign = (requestedForm: FormData) => {
     const companyForm = companyForms.find(currentForm => currentForm.uuid === requestedForm.uuid)
@@ -37,49 +44,66 @@ function List() {
 
   const onView = useCallback(
     async (requestedForm: FormData) => {
+      setViewError(false)
       setViewingUuid(requestedForm.uuid)
       try {
         const result = await companyFormsGetPdf(gustoEmbedded, { formId: requestedForm.uuid })
         const documentUrl = result.ok ? result.value.formPdf?.documentUrl : undefined
-        if (documentUrl) {
-          window.open(documentUrl, '_blank', 'noopener,noreferrer')
+        if (!documentUrl || !openLinkInNewTab(documentUrl)) {
+          setViewError(true)
         }
       } catch (err) {
-        showBoundary(err instanceof Error ? err : new Error(String(err)))
+        observability?.onError?.({
+          ...normalizeToSDKError(err),
+          timestamp: Date.now(),
+          componentName,
+        })
+        setViewError(true)
       } finally {
         setViewingUuid(null)
       }
     },
-    [gustoEmbedded, showBoundary],
+    [gustoEmbedded, observability, componentName],
   )
 
   return (
-    <DocumentList
-      forms={companyForms.map(form => ({
-        uuid: form.uuid,
-        title: form.title,
-        description: resolveFormDescription(form, t),
-        requires_signing: form.requiresSigning,
-      }))}
-      onRequestSign={onRequestSign}
-      onView={form => void onView(form)}
-      viewingUuid={viewingUuid}
-      withError={!!documentListError}
-      label={t('documentListLabel')}
-      columnLabels={{
-        form: t('formColumnLabel'),
-        action: t('actionColumnLabel'),
-      }}
-      statusLabels={{
-        signCta: t('signDocumentCta'),
-        notSigned: t('notSigned'),
-        complete: t('signDocumentComplete'),
-        viewCta: t('viewCta'),
-      }}
-      emptyStateLabel={t('emptyTableTitle')}
-      errorLabel={t('documentListError')}
-      canSign={isSelfSignatory}
-    />
+    <>
+      {viewError && (
+        <Components.Alert
+          status="error"
+          label={t('viewDocumentError')}
+          onDismiss={() => {
+            setViewError(false)
+          }}
+        />
+      )}
+      <DocumentList
+        forms={companyForms.map(form => ({
+          uuid: form.uuid,
+          title: form.title,
+          description: resolveFormDescription(form, t),
+          requires_signing: form.requiresSigning,
+        }))}
+        onRequestSign={onRequestSign}
+        onView={form => void onView(form)}
+        viewingUuid={viewingUuid}
+        withError={!!documentListError}
+        label={t('documentListLabel')}
+        columnLabels={{
+          form: t('formColumnLabel'),
+          action: t('actionColumnLabel'),
+        }}
+        statusLabels={{
+          signCta: t('signDocumentCta'),
+          notSigned: t('notSigned'),
+          complete: t('signDocumentComplete'),
+          viewCta: t('viewCta'),
+        }}
+        emptyStateLabel={t('emptyTableTitle')}
+        errorLabel={t('documentListError')}
+        canSign={isSelfSignatory}
+      />
+    </>
   )
 }
 

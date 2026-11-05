@@ -505,6 +505,8 @@ export namespace Translations {
     viewCta: string
     /** @defaultValue `"Could not load your documents, try again later."` */
     documentListError: string
+    /** @defaultValue `"Could not open this document, try again later."` */
+    viewDocumentError: string
     /** @defaultValue `"No documents found"` */
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
