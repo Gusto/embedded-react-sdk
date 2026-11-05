@@ -433,7 +433,9 @@ export const PayrollOverviewPresentation = ({
                 Object.values(getEmployeeHours(employeeCompensations)).reduce(
                   (acc, hours) => acc + hours,
                   0,
-                ) + getEmployeePtoHours(employeeCompensations),
+                ) +
+                getEmployeePtoHours(employeeCompensations) +
+                (isDismissal ? getTotalOutstandingPtoHours(employeeCompensations) : 0),
             },
           ]}
           data={payrollData.employeeCompensations!}

@@ -615,7 +615,7 @@ describe('PayrollOverviewPresentation', () => {
       ],
     }
 
-    it('shows unused payout hours separately from paid time off on dismissal payrolls', async () => {
+    it('includes unused payout hours in dismissal totals while showing them separately', async () => {
       const user = userEvent.setup()
       renderWithProviders(
         <PayrollOverviewPresentation
@@ -634,7 +634,7 @@ describe('PayrollOverviewPresentation', () => {
       const row = within(table).getByRole('row', { name: /Jane Doe/i })
       expect(getCellByColumnHeader(table, row, 'Paid time off')).toHaveTextContent(/^8$/)
       expect(getCellByColumnHeader(table, row, 'Unused hours')).toHaveTextContent(/^40\.5$/)
-      expect(getCellByColumnHeader(table, row, 'Total hours')).toHaveTextContent(/^40$/)
+      expect(getCellByColumnHeader(table, row, 'Total hours')).toHaveTextContent(/^80\.5$/)
     })
 
     it('hides the unused hours column on non-dismissal payrolls', async () => {
@@ -648,6 +648,8 @@ describe('PayrollOverviewPresentation', () => {
       const table = await screen.findByRole('grid', { name: 'Hours worked by employee' })
       expect(within(table).getByRole('columnheader', { name: 'Paid time off' })).toBeInTheDocument()
       expect(within(table).queryByRole('columnheader', { name: 'Unused hours' })).toBeNull()
+      const row = within(table).getByRole('row', { name: /Jane Doe/i })
+      expect(getCellByColumnHeader(table, row, 'Total hours')).toHaveTextContent(/^40$/)
     })
   })
 
