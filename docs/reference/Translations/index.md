@@ -515,6 +515,7 @@ Translation keys for the `Company.DocumentList` i18n namespace.
 | <a id="property-companydocumentlistsigndocumentcomplete"></a> `signDocumentComplete` | `"Complete"` |
 | <a id="property-companydocumentlistsigndocumentcta"></a> `signDocumentCta` | `"Sign document"` |
 | <a id="property-companydocumentlistviewcta"></a> `viewCta` | `"View"` |
+| <a id="property-companydocumentlistviewdocumenterror"></a> `viewDocumentError` | `"Could not open this document, try again later."` |
 
 ***
 
