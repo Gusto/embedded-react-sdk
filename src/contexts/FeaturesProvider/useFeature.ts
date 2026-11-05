@@ -28,8 +28,8 @@ export interface Features {
    * `workweekStartDay` is not submitted.
    *
    * Every flow that renders these screens follows the flag, including `Payroll.PayrollFlow`,
-   * `Payroll.PayrollExecutionFlow`, `Payroll.OffCycleFlow`, `Payroll.DismissalFlow`,
-   * `Payroll.TransitionFlow`, `Payroll.TransitionPayroll`, and `CompanyOnboarding.OnboardingFlow`.
+   * `Payroll.PayrollExecutionFlow`, `Payroll.OffCycleFlow`, `Payroll.DismissalFlow`, and
+   * `CompanyOnboarding.OnboardingFlow`.
    *
    * @defaultValue `true`
    */

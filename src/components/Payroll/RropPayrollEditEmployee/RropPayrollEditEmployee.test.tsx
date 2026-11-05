@@ -7,6 +7,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployee } from '@/test/mocks/apis/employees'
+import { getEmptyEmployeeBankAccounts } from '@/test/mocks/apis/employeesBankAccounts'
 import { handlePayrollsPrepare, handlePayrollsUpdate } from '@/test/mocks/apis/payrolls'
 import { componentEvents } from '@/shared/constants'
 
@@ -236,6 +237,19 @@ describe('RropPayrollEditEmployee', () => {
     await waitFor(() => {
       expect(screen.queryByText('Client lunch')).not.toBeInTheDocument()
     })
+  })
+
+  it('shows reimbursements for an employee without a bank account', async () => {
+    server.use(
+      getEmptyEmployeeBankAccounts,
+      handlePayrollsPrepare(() => HttpResponse.json(multiWorkweekPrepare('0'))),
+    )
+    renderWithProviders(<RropPayrollEditEmployee {...PROPS} onEvent={onEvent} />)
+
+    expect(
+      await screen.findByRole('button', { name: 'Add one-time reimbursement' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('radio', { name: 'Direct deposit' })).not.toBeInTheDocument()
   })
 
   it('saves and emits runPayroll/employee/saved with the updated prepared payroll', async () => {

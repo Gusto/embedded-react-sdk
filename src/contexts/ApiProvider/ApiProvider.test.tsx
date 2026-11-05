@@ -5,6 +5,7 @@ import { apiVersionMismatchHook } from './apiVersionMismatchHook'
 import { informationRequestEnumHook } from './informationRequestEnumHook'
 import { payrollDeductionAmountHook } from './payrollDeductionAmountHook'
 import { payrollOffCycleReasonEnumHook } from './payrollOffCycleReasonEnumHook'
+import { payScheduleCustomNameHook } from './payScheduleCustomNameHook'
 import type { SDKHooks } from '@/types/hooks'
 
 const mockSDKHooksInstance = {
@@ -189,6 +190,7 @@ describe('ApiProvider', () => {
       [informationRequestEnumHook],
       [payrollDeductionAmountHook],
       [payrollOffCycleReasonEnumHook],
+      [payScheduleCustomNameHook],
     ])
     expect(mockSDKHooksInstance.registerAfterErrorHook.mock.calls).toEqual([
       [apiVersionMismatchHook],

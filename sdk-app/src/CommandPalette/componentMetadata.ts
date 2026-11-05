@@ -150,16 +150,6 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       'supplemental payroll',
     ],
   },
-  'Payroll.TransitionFlow': {
-    description: 'Run a transition payroll when migrating from another provider mid-quarter.',
-    keywords: [
-      'transition payroll',
-      'migration payroll',
-      'switch provider',
-      'historical payroll',
-      'mid quarter migration',
-    ],
-  },
   'Payroll.DismissalFlow': {
     description: 'Run a dismissal/final-paycheck payroll for a terminated employee.',
     keywords: [

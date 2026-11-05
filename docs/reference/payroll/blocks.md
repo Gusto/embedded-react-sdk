@@ -177,6 +177,7 @@ regular deductions and uses the regular rate.
 | Method | Path |
 | --- | --- |
 | GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
 | POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
 | GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
 | GET | [`/v1/companies/:companyUuid/payrolls/blockers`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid) |
@@ -543,12 +544,21 @@ Payroll Alert. It looks ahead 90 days for upcoming transition periods and lists 
 that hasn't been run, grouped by pay schedule, with run and skip actions on each row.
 Clicking Run emits `transition/runPayroll`. If the payroll is already calculated, the button
 reads Review and submit and emits `payroll/review` instead, like the payroll list.
-To handle `transition/runPayroll`, or `transition/payrollSelected` from the payroll list,
-render `Payroll.TransitionConfiguration` with the `payrollUuid` from the event.
 Skipping opens a confirmation dialog — warning that employees will not be paid for the
 period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
 periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
 may reject regular payrolls while unresolved transition periods exist.
+
+`PayrollLanding` emits these events but doesn't change screens on them. `PayrollFlow`
+handles the routing for you. If you render `PayrollLanding` yourself, route on these events:
+
+- `transition/runPayroll` (alert) or `transition/payrollSelected` (payroll list): render
+  [TransitionConfiguration](#transitionconfiguration) with the event's `payrollUuid` as `payrollId`.
+- `transition/configured` (from `TransitionConfiguration`): render
+  [PayrollExecutionFlow](payroll-execution-flow.md) for the same payroll.
+- `runPayroll/selected`: render `PayrollExecutionFlow` for the event's `payrollUuid`.
+- `payroll/review`: render `PayrollExecutionFlow` for the event's `payrollUuid` with
+  `initialState="overview"`. Calculated transition payrolls use this event too.
 
 <br />
 
@@ -581,11 +591,16 @@ call-to-action starts an off-cycle payroll.
 When the company has unprocessed transition pay periods within the next
 90 days, the Run Payroll action on Regular rows is disabled to prevent a
 regular payroll from being run before the transition is resolved. Off-cycle
-rows and the Run off-cycle action remain enabled, since off-cycle is the
-path used to run a transition payroll. [PayrollLanding](#payrolllanding) pairs this
-list with an alert that lets users run or skip the pending transition; when
-using `PayrollList` directly, render an equivalent resolution surface
-alongside it.
+rows, including transition payroll rows, and the Run off-cycle action stay
+enabled.
+
+Running a transition payroll row emits `transition/payrollSelected` instead
+of `runPayroll/selected`. Handle it by rendering
+[TransitionConfiguration](#transitionconfiguration) with the event's `payrollUuid` as
+`payrollId`, then render [PayrollExecutionFlow](payroll-execution-flow.md) for the same payroll on
+`transition/configured`. [PayrollLanding](#payrolllanding) also shows an alert that lets
+users run or skip each pending transition payroll. When using `PayrollList`
+directly, give users a way to run or skip those payrolls alongside it.
 
 <br />
 
@@ -859,96 +874,50 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 ***
 
-<a id="transitioncreation"></a>
+<a id="transitionconfiguration"></a>
 
-## TransitionCreation
+## TransitionConfiguration
 
-Creation form for transition payrolls covering the gap between an old and new pay schedule.
-
-Displays the transition pay period and pay schedule information, and collects a check
-date, deduction preference, and tax withholding configuration before submitting the
-resulting off-cycle payroll for execution.
-
-<br />
-
-### TransitionCreationProps
-
-<a id="transitioncreationprops"></a>
-
-Props for the [TransitionCreation](#transitioncreation) component.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `endDate` | `string` | The end date of the transition pay period (YYYY-MM-DD). |
-| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `payScheduleUuid` | `string` | The UUID of the pay schedule this transition is associated with. |
-| `startDate` | `string` | The start date of the transition pay period (YYYY-MM-DD). |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionCreation`](../Translations/index.md#payrolltransitioncreation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
-
-<br />
-
-### Events
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `transition/created` | The transition payroll has been created | `{ payrollUuid: string }` |
-
-The check date must be at least the company's ACH lead time (typically two business
-days) from today. Deductions default to included and tax withholding defaults to the
-regular rate with an every-other-week pay period.
-
-<br />
-
-### Endpoints
-
-| Method | Path |
-| --- | --- |
-| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
-| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls) |
-| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs) |
-
-***
-
-<a id="transitionpayroll"></a>
-
-## TransitionPayroll
-
-Resolves and runs a transition payroll for a pay-schedule change, picking up an existing
-unprocessed transition payroll when one exists and creating one otherwise.
+Lets the user change the settings of a transition payroll before running it.
 
 ### Remarks
 
-A transition payroll covers the gap that opens when a company changes its pay schedule. This
-component looks up whether one already exists for the pay period and picks the starting screen:
+The API creates a transition payroll when a company changes pay schedules. This component
+updates that payroll. It never creates one.
 
-- If it exists, it starts on [PayrollConfiguration](#payrollconfiguration) for that payroll.
-- Otherwise it starts on [TransitionCreation](#transitioncreation), then advances to [PayrollConfiguration](#payrollconfiguration)
-  once the payroll is created.
+- The pay period, pay schedule, and payment date are shown but can't be changed.
+- The user can choose to take or skip regular deductions, and how to withhold taxes.
 
-Configuration events (calculate, employee edit, blockers, etc.) are emitted through `onEvent` for
-the host to route. Compose it inside [TransitionFlow](transition-flow.md) for the full run-payroll experience,
-or handle the events yourself.
+If a setting is empty, deductions are taken, the regular tax rate is used, and the pay frequency
+matches the pay schedule. The payment date is read only for now. Saving can still move it, and
+the form shows the new date.
+
+`PayrollFlow` renders this component for you. To build the screens yourself:
+
+1. Get the transition payroll ID. [PayrollLanding](#payrolllanding) sends it as `payrollUuid` with
+   `transition/runPayroll`, and [PayrollList](#payrolllist) sends it with `transition/payrollSelected`.
+   To look it up without those components, call
+   `GET /v1/companies/{company_id}/pay_periods?payroll_types=transition` and read
+   `payroll.payroll_uuid` from the pay period.
+2. Render this component with that ID as `payrollId`.
+3. On `transition/configured`, render [PayrollExecutionFlow](payroll-execution-flow.md) with the same `payrollId`.
+   It opens on `PayrollConfiguration`, then continues to review, submit, and receipts.
 
 <br />
 
 ### Example
 
-```tsx title="App.tsx"
-import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+```tsx
+import { componentEvents, Payroll } from '@gusto/embedded-react-sdk'
 
-function MyApp() {
+function TransitionPayrollPage({ companyId, payrollId }: { companyId: string; payrollId: string }) {
   return (
-    <Payroll.TransitionPayroll
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      startDate="2025-01-16"
-      endDate="2025-01-31"
-      payScheduleUuid="c75c1ef6-2ec0-4cca-94a5-8b4cf7e5ea21"
-      onEvent={(eventType: EventType) => {
-        if (eventType === 'runPayroll/calculated') {
-          // Payroll calculated — navigate to your review screen
+    <Payroll.TransitionConfiguration
+      companyId={companyId}
+      payrollId={payrollId}
+      onEvent={type => {
+        if (type === componentEvents.TRANSITION_CONFIGURED) {
+          navigate(`/payrolls/${payrollId}/run`)
         }
       }}
     />
@@ -958,22 +927,18 @@ function MyApp() {
 
 <br />
 
-### TransitionPayrollProps
+### TransitionConfigurationProps
 
-<a id="transitionpayrollprops"></a>
+<a id="transitionconfigurationprops"></a>
 
-Props for [TransitionPayroll](#transitionpayroll).
+Props for [TransitionConfiguration](#transitionconfiguration).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `companyId` | `string` | The company running the transition payroll. |
-| `endDate` | `string` | The end date of the transition pay period (YYYY-MM-DD). |
+| `companyId` | `string` | The company ID. |
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `payScheduleUuid` | `string` | The UUID of the pay schedule the transition is associated with. |
-| `startDate` | `string` | The start date of the transition pay period (YYYY-MM-DD). |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`common`](../Translations/index.md#common)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyAddresses`](../Translations/index.md#companyaddresses)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyAssignSignatory`](../Translations/index.md#companyassignsignatory)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyBankAccount`](../Translations/index.md#companybankaccount)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyDocumentList`](../Translations/index.md#companydocumentlist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyFederalTaxes`](../Translations/index.md#companyfederaltaxes)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyIndustry`](../Translations/index.md#companyindustry)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyLocations`](../Translations/index.md#companylocations)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyManagementAutoPilotDialog`](../Translations/index.md#companymanagementautopilotdialog)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyManagementPaySchedule`](../Translations/index.md#companymanagementpayschedule)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyManagementPayScheduleAssignment`](../Translations/index.md#companymanagementpayscheduleassignment)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyManagementTaxPaymentDetail`](../Translations/index.md#companymanagementtaxpaymentdetail)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyManagementTaxPaymentsList`](../Translations/index.md#companymanagementtaxpaymentslist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyOnboardingOverview`](../Translations/index.md#companyonboardingoverview)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyPaySchedule`](../Translations/index.md#companypayschedule)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanySignatureForm`](../Translations/index.md#companysignatureform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyStateTaxes`](../Translations/index.md#companystatetaxes)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffCreateTimeOffPolicy`](../Translations/index.md#companytimeoffcreatetimeoffpolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffEmployeeTable`](../Translations/index.md#companytimeoffemployeetable)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffSelectEmployees`](../Translations/index.md#companytimeoffselectemployees)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffSelectPolicyType`](../Translations/index.md#companytimeoffselectpolicytype)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicies`](../Translations/index.md#companytimeofftimeoffpolicies)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicyDetails`](../Translations/index.md#companytimeofftimeoffpolicydetails)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffRequests`](../Translations/index.md#companytimeofftimeoffrequests)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorAddress`](../Translations/index.md#contractoraddress)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorBankAccountFields`](../Translations/index.md#contractorbankaccountfields)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorContractorList`](../Translations/index.md#contractorcontractorlist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorDashboard`](../Translations/index.md#contractordashboard)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorDismissal`](../Translations/index.md#contractordismissal)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorDocumentsList`](../Translations/index.md#contractordocumentslist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorLanding`](../Translations/index.md#contractorlanding)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementAddress`](../Translations/index.md#contractormanagementaddress)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementCompensation`](../Translations/index.md#contractormanagementcompensation)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementDocuments`](../Translations/index.md#contractormanagementdocuments)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementPaymentMethod`](../Translations/index.md#contractormanagementpaymentmethod)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementPayments`](../Translations/index.md#contractormanagementpayments)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementProfile`](../Translations/index.md#contractormanagementprofile)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorManagementContractorList`](../Translations/index.md#contractormanagementcontractorlist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorNewHireReport`](../Translations/index.md#contractornewhirereport)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorOnboardingSummary`](../Translations/index.md#contractoronboardingsummary)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentMethod`](../Translations/index.md#contractorpaymentmethod)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsCreateHistoricalPayment`](../Translations/index.md#contractorpaymentscreatehistoricalpayment)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsCreatePayment`](../Translations/index.md#contractorpaymentscreatepayment)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsHistoricalPaymentSummary`](../Translations/index.md#contractorpaymentshistoricalpaymentsummary)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentHistory`](../Translations/index.md#contractorpaymentspaymenthistory)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentStatement`](../Translations/index.md#contractorpaymentspaymentstatement)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentSummary`](../Translations/index.md#contractorpaymentspaymentsummary)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentsList`](../Translations/index.md#contractorpaymentspaymentslist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorProfile`](../Translations/index.md#contractorprofile)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorSelectContractors`](../Translations/index.md#contractorselectcontractors)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorSignatureForm`](../Translations/index.md#contractorsignatureform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`ContractorSubmit`](../Translations/index.md#contractorsubmit)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeBankAccount`](../Translations/index.md#employeebankaccount)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeBankFormBody`](../Translations/index.md#employeebankformbody)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeCompensation`](../Translations/index.md#employeecompensation)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeDashboard`](../Translations/index.md#employeedashboard)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeDeductions`](../Translations/index.md#employeedeductions)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeDeductionsForm`](../Translations/index.md#employeedeductionsform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeDocumentManager`](../Translations/index.md#employeedocumentmanager)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeDocumentSigner`](../Translations/index.md#employeedocumentsigner)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeEmployeeDocuments`](../Translations/index.md#employeeemployeedocuments)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeEmployeeList`](../Translations/index.md#employeeemployeelist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeEmploymentEligibility`](../Translations/index.md#employeeemploymenteligibility)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeFederalTaxes`](../Translations/index.md#employeefederaltaxes)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeFederalTaxesView`](../Translations/index.md#employeefederaltaxesview)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeHomeAddress`](../Translations/index.md#employeehomeaddress)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeI9SignatureForm`](../Translations/index.md#employeei9signatureform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeLanding`](../Translations/index.md#employeelanding)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementCompensation`](../Translations/index.md#employeemanagementcompensation)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementDeductions`](../Translations/index.md#employeemanagementdeductions)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementDocuments`](../Translations/index.md#employeemanagementdocuments)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementFederalTaxes`](../Translations/index.md#employeemanagementfederaltaxes)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementHomeAddress`](../Translations/index.md#employeemanagementhomeaddress)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementPaymentMethod`](../Translations/index.md#employeemanagementpaymentmethod)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementPaymentMethodBankForm`](../Translations/index.md#employeemanagementpaymentmethodbankform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementPaymentMethodSplitForm`](../Translations/index.md#employeemanagementpaymentmethodsplitform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementPaystubs`](../Translations/index.md#employeemanagementpaystubs)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementProfile`](../Translations/index.md#employeemanagementprofile)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementStateTaxes`](../Translations/index.md#employeemanagementstatetaxes)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementWorkAddress`](../Translations/index.md#employeemanagementworkaddress)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeManagementEmployeeList`](../Translations/index.md#employeemanagementemployeelist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeOnboardingSummary`](../Translations/index.md#employeeonboardingsummary)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeePaySchedules`](../Translations/index.md#employeepayschedules)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeePaymentMethod`](../Translations/index.md#employeepaymentmethod)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeProfile`](../Translations/index.md#employeeprofile)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeSplitPaycheck`](../Translations/index.md#employeesplitpaycheck)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeSplitPaymentsFormBody`](../Translations/index.md#employeesplitpaymentsformbody)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeStateTaxes`](../Translations/index.md#employeestatetaxes)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeStateTaxesView`](../Translations/index.md#employeestatetaxesview)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeTerminationsTerminateEmployee`](../Translations/index.md#employeeterminationsterminateemployee)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeTerminationsTerminationFlow`](../Translations/index.md#employeeterminationsterminationflow)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`EmployeeTerminationsTerminationSummary`](../Translations/index.md#employeeterminationsterminationsummary)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`InformationRequestsInformationRequestForm`](../Translations/index.md#informationrequestsinformationrequestform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`InformationRequestsInformationRequestList`](../Translations/index.md#informationrequestsinformationrequestlist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`InformationRequests`](../Translations/index.md#informationrequests)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollCommon`](../Translations/index.md#payrollcommon)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollConfirmWireDetailsBanner`](../Translations/index.md#payrollconfirmwiredetailsbanner)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollConfirmWireDetailsForm`](../Translations/index.md#payrollconfirmwiredetailsform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollDismissal`](../Translations/index.md#payrolldismissal)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollEmployeeSelection`](../Translations/index.md#payrollemployeeselection)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollGrossUpModal`](../Translations/index.md#payrollgrossupmodal)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycle`](../Translations/index.md#payrolloffcycle)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleCreation`](../Translations/index.md#payrolloffcyclecreation)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleDeductionsSetting`](../Translations/index.md#payrolloffcycledeductionssetting)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCyclePayPeriodDateForm`](../Translations/index.md#payrolloffcyclepayperioddateform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleReasonSelection`](../Translations/index.md#payrolloffcyclereasonselection)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleTaxWithholding`](../Translations/index.md#payrolloffcycletaxwithholding)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollBlocker`](../Translations/index.md#payrollpayrollblocker)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollConfiguration`](../Translations/index.md#payrollpayrollconfiguration)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollEditEmployee`](../Translations/index.md#payrollpayrolleditemployee)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollFlow`](../Translations/index.md#payrollpayrollflow)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollHistory`](../Translations/index.md#payrollpayrollhistory)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollLanding`](../Translations/index.md#payrollpayrolllanding)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollList`](../Translations/index.md#payrollpayrolllist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollOverview`](../Translations/index.md#payrollpayrolloverview)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollReceipts`](../Translations/index.md#payrollpayrollreceipts)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPrintChecksBanner`](../Translations/index.md#payrollprintchecksbanner)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPrintChecksFailure`](../Translations/index.md#payrollprintchecksfailure)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPrintChecksForm`](../Translations/index.md#payrollprintchecksform)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPrintChecksSummary`](../Translations/index.md#payrollprintcheckssummary)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollRecoveryCasesList`](../Translations/index.md#payrollrecoverycaseslist)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollRecoveryCasesResubmit`](../Translations/index.md#payrollrecoverycasesresubmit)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<`PayrollRropPayrollEditEmployee`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransition`](../Translations/index.md#payrolltransition)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionConfiguration`](../Translations/index.md#payrolltransitionconfiguration)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionCreation`](../Translations/index.md#payrolltransitioncreation)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionPayrollAlert`](../Translations/index.md#payrolltransitionpayrollalert)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollWireInstructions`](../Translations/index.md#payrollwireinstructions)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the component skips the lookup and starts on configuration for this payroll. When omitted, it resolves the payroll for the pay period. |
-| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown on the configuration screen. Defaults to `true`. |
+| `payrollId` | `string` | The ID of the transition payroll to update. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionConfiguration`](../Translations/index.md#payrolltransitionconfiguration)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../blocks.md#basecomponentinterface)._
 
@@ -983,17 +948,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `transition/created` | The transition payroll has been created and the flow advances to configuration | `{ payrollUuid: string }` |
-
-Once configuration begins, all standard run-payroll events are emitted as well (e.g.
-`runPayroll/calculated`, `runPayroll/employee/edit`, `runPayroll/blockers/viewAll`).
-
-<br />
-
-### Components
-
-- [TransitionCreation](#transitioncreation)
-- [PayrollConfiguration](#payrollconfiguration)
+| `transition/configured` | The settings were saved | `{ payrollUuid: string, payrollPrepared: PayrollPrepared }` |
 
 <br />
 
@@ -1001,7 +956,10 @@ Once configuration begins, all standard run-payroll events are emitted as well (
 
 | Method | Path |
 | --- | --- |
-| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls) |
+| PUT | [`/v1/companies/:companyId/payrolls/:payrollId/prepare`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare) |
 
 ***
 
@@ -1183,21 +1141,6 @@ Payload emitted with the `offCycle/selectReason` event when a reason is chosen.
 | ------ | ------ | ------ |
 | `defaults` | [`OffCycleReasonDefaults`](#offcyclereasondefaults) | Recommended deduction and withholding defaults for the selected reason. |
 | `reason` | [`OffCycleReason`](#offcyclereason) | The reason the user selected. |
-
-***
-
-<a id="transitioncreationformdata"></a>
-
-### TransitionCreationFormData
-
-Form values collected by the [TransitionCreation](#transitioncreation) component.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `checkDate` | `Date` \| `null` | The date employees will be paid. Must be at least the company's ACH lead time from today. |
-| `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
 
 ***
 
