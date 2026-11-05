@@ -501,6 +501,8 @@ export namespace Translations {
     signDocumentComplete: string
     /** @defaultValue `"Not signed"` */
     notSigned: string
+    /** @defaultValue `"View"` */
+    viewCta: string
     /** @defaultValue `"Could not load your documents, try again later."` */
     documentListError: string
     /** @defaultValue `"No documents found"` */

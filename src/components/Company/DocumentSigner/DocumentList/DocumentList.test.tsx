@@ -1,4 +1,4 @@
-import { HttpResponse } from 'msw'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -7,7 +7,7 @@ import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
-import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'
+import { handleGetAllCompanyForms, handleGetCompanyFormPdf } from '@/test/mocks/apis/company_forms'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -188,6 +188,75 @@ describe('DocumentList', () => {
           'Form 8655 authorizes us to pay and file federal payroll taxes on your behalf.',
         ),
       ).not.toBeInTheDocument()
+    })
+  })
+
+  describe('viewing a completed form', () => {
+    beforeEach(() => {
+      server.use(
+        handleGetAllSignatories(() => HttpResponse.json([])),
+        handleGetAllCompanyForms(() =>
+          HttpResponse.json([
+            {
+              uuid: 'form-123',
+              title: 'Test Form',
+              name: 'test name',
+              description: 'test description',
+              requires_signing: false,
+            },
+          ]),
+        ),
+      )
+    })
+
+    it('does not show a view action for a form that still requires signing', async () => {
+      server.use(
+        handleGetAllCompanyForms(() =>
+          HttpResponse.json([
+            {
+              uuid: 'form-123',
+              title: 'Test Form',
+              name: 'test name',
+              description: 'test description',
+              requires_signing: true,
+            },
+          ]),
+        ),
+      )
+
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={() => {}} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Form')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByRole('button', { name: 'View' })).not.toBeInTheDocument()
+    })
+
+    it('fetches the pdf url and opens it when the view action is selected', async () => {
+      // window.open returns null in jsdom — the view handler tolerates this
+      // and simply skips the new-tab navigation.
+      const openSpy = vi.spyOn(window, 'open').mockReturnValue(null)
+      const pdfResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({ uuid: 'form-123', document_url: 'https://example.com/form-123.pdf' }),
+      )
+      server.use(handleGetCompanyFormPdf(pdfResolver))
+
+      const user = userEvent.setup()
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={() => {}} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Form')).toBeInTheDocument()
+      })
+
+      const viewButton = screen.getByRole('button', { name: 'View' })
+      await user.click(viewButton)
+
+      await waitFor(() => {
+        expect(pdfResolver).toHaveBeenCalledTimes(1)
+      })
+
+      openSpy.mockRestore()
     })
   })
 

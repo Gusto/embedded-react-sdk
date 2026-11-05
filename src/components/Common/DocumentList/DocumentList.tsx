@@ -26,6 +26,10 @@ interface DocumentListProps {
    */
   canSign?: boolean | ((form: FormData) => boolean)
   onRequestSign?: (form: FormData) => void
+  /** Called when the view action is selected for a completed form. */
+  onView?: (form: FormData) => void
+  /** uuid of the form currently being viewed, to show a loading state on its action. */
+  viewingUuid?: string | null
   withError?: boolean
   label: string
   columnLabels: {
@@ -36,6 +40,8 @@ interface DocumentListProps {
     signCta: string
     notSigned: string
     complete: string
+    /** Required when `onView` is provided. */
+    viewCta?: string
   }
   emptyStateLabel: string
   errorLabel: string
@@ -46,6 +52,8 @@ function DocumentList({
   forms,
   canSign = true,
   onRequestSign,
+  onView,
+  viewingUuid,
   withError = false,
   label,
   columnLabels,
@@ -85,7 +93,20 @@ function DocumentList({
                   <Components.Badge status="warning">{statusLabels.notSigned}</Components.Badge>
                 )
               ) : (
-                <Components.Badge status="success">{statusLabels.complete}</Components.Badge>
+                <>
+                  <Components.Badge status="success">{statusLabels.complete}</Components.Badge>
+                  {onView && (
+                    <Components.Button
+                      variant="secondary"
+                      isLoading={viewingUuid === form.uuid}
+                      onClick={() => {
+                        onView(form)
+                      }}
+                    >
+                      {statusLabels.viewCta}
+                    </Components.Button>
+                  )}
+                </>
               )}
             </div>
           )
