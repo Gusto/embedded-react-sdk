@@ -9,6 +9,10 @@
     "listEmptyPlaceholder": "No value",
     "einVerified": "Verified",
     "einUnverified": "Awaiting verification",
-    "einMissing": "Not provided"
+    "einMissing": "Not provided",
+    "emptyState": {
+      "title": "No federal tax details yet",
+      "description": "Add this company's legal name, EIN, and filing form so payroll taxes can be filed."
+    }
   }
 }

@@ -6,7 +6,11 @@ import { Dashboard } from './Dashboard'
 import { DashboardFlow } from './DashboardFlow'
 import { server } from '@/test/mocks/server'
 import { handleGetIndustrySelection } from '@/test/mocks/apis/company'
-import { basicLocation, handleGetCompanyLocations } from '@/test/mocks/apis/company_locations'
+import {
+  basicLocation,
+  getLocation,
+  handleGetCompanyLocations,
+} from '@/test/mocks/apis/company_locations'
 import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
@@ -31,6 +35,7 @@ describe('Company Dashboard', () => {
         }),
       ),
       handleGetCompanyLocations(() => HttpResponse.json([basicLocation])),
+      getLocation,
       handleGetCompanyFederalTaxes(() =>
         HttpResponse.json({
           version: 'federal-tax-version',
@@ -131,6 +136,7 @@ describe('Company DashboardFlow', () => {
         }),
       ),
       handleGetCompanyLocations(() => HttpResponse.json([basicLocation])),
+      getLocation,
       handleGetCompanyFederalTaxes(() =>
         HttpResponse.json({
           version: 'federal-tax-version',
@@ -182,8 +188,54 @@ describe('Company DashboardFlow', () => {
     ).toBeInTheDocument()
   })
 
-  // The done-event -> alert transition itself is covered in dashboardStateMachine.test.ts;
-  // driving a real federal-taxes save through the form is out of scope here.
+  it('surfaces the Locations alert when the user leaves the spoke after a save', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage' }))
+
+    // Saving an address keeps the spoke open rather than returning to the dashboard...
+    // The list's rows arrive after its chrome, so wait for the row menu itself.
+    await screen.findByRole('button', { name: 'Continue' })
+    await user.click(await screen.findByRole('button', { name: 'Location actions' }))
+    await user.click(await screen.findByTestId('edit-location'))
+
+    // The edit form loads the address before it can be submitted.
+    await screen.findByLabelText('Street 1')
+    await user.click(await screen.findByTestId('location-submit'))
+
+    // ...so the alert only appears once the user actually leaves it.
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+    expect(await screen.findByText('Locations updated')).toBeInTheDocument()
+  })
+
+  it('leaves the Locations spoke without an alert when nothing was saved', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Back to company settings' }))
+
+    // The pending-alert slot is only filled by a save, so a look-and-leave visit
+    // must not announce a change that never happened.
+    expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
+    expect(screen.queryByText('Locations updated')).toBeNull()
+  })
+
+  // Covers routing into the spoke only; driving a real federal-taxes save through the
+  // form to assert the success alert is out of scope here.
   it('routes the Federal taxes card Edit CTA to its spoke from the Taxes tab', async () => {
     const user = userEvent.setup()
     renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {

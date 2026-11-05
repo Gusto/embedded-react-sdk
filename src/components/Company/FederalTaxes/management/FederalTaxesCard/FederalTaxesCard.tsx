@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useCompanyFederalTaxesSummary } from '../../shared/useCompanyFederalTaxesSummary'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Loading } from '@/components/Common'
+import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -118,7 +119,12 @@ function FederalTaxesCardContent({ companyId, onEvent, LoaderComponent }: Federa
             <Loading />
           ) : federalTaxDetails ? (
             <Components.DescriptionList items={items} />
-          ) : null}
+          ) : (
+            <EmptyData
+              title={t('card.emptyState.title')}
+              description={t('card.emptyState.description')}
+            />
+          )}
         </Flex>
       </Components.Box>
     </BaseLayout>

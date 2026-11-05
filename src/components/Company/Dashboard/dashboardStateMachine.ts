@@ -46,6 +46,7 @@ const toSpoke = (component: DashboardContextInterface['component']) =>
     component,
     header: spokeHeader,
     successAlert: null,
+    pendingAlert: null,
   }))
 
 const returnToIndex = reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -53,6 +54,7 @@ const returnToIndex = reduce((ctx: DashboardContextInterface): DashboardContextI
   component: DashboardViewContextual,
   header: null,
   successAlert: null,
+  pendingAlert: null,
 }))
 
 const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']) =>
@@ -61,6 +63,30 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
     component: DashboardViewContextual,
     header: null,
     successAlert: alert,
+    pendingAlert: null,
+  }))
+
+/**
+ * Leaves a spoke, promoting any alert it recorded mid-flow into the dashboard's
+ * success alert. Used by spokes whose saves must not themselves return to the
+ * dashboard — see {@link DashboardContextInterface.pendingAlert}.
+ *
+ * @internal
+ */
+const returnToIndexWithPendingAlert = reduce(
+  (ctx: DashboardContextInterface): DashboardContextInterface => ({
+    ...ctx,
+    component: DashboardViewContextual,
+    header: null,
+    successAlert: ctx.pendingAlert ?? null,
+    pendingAlert: null,
+  }),
+)
+
+const recordPendingAlert = (alert: DashboardContextInterface['pendingAlert']) =>
+  reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+    ...ctx,
+    pendingAlert: alert,
   }))
 
 /**
@@ -122,11 +148,22 @@ export const dashboardStateMachine = {
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
   locations: state<MachineTransition>(
-    // COMPANY_LOCATION_CREATED / _UPDATED are intentionally absent: they fire on
-    // every save *inside* the Locations sub-flow and must not eject the user
-    // from it. Only the list's own "done" signal returns to the dashboard.
-    transition(componentEvents.COMPANY_LOCATION_DONE, 'index', returnToIndex),
-    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+    // A company usually adds several addresses in one visit, so a save must not
+    // eject the user from the sub-flow. These self-transitions keep the spoke
+    // open and only record that something changed; the alert surfaces when the
+    // user actually leaves, via either exit below.
+    transition(
+      componentEvents.COMPANY_LOCATION_CREATED,
+      'locations',
+      recordPendingAlert('locationsUpdated'),
+    ),
+    transition(
+      componentEvents.COMPANY_LOCATION_UPDATED,
+      'locations',
+      recordPendingAlert('locationsUpdated'),
+    ),
+    transition(componentEvents.COMPANY_LOCATION_DONE, 'index', returnToIndexWithPendingAlert),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
   ),
   federalTaxes: state<MachineTransition>(
     // COMPANY_FEDERAL_TAXES_UPDATED also fires on save, immediately before

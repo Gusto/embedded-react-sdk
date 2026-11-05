@@ -8,6 +8,7 @@
   "backToDashboardCta": "Back to company settings",
   "alerts": {
     "industryUpdated": "Industry updated",
-    "federalTaxesUpdated": "Federal tax settings updated"
+    "federalTaxesUpdated": "Federal tax settings updated",
+    "locationsUpdated": "Locations updated"
   }
 }

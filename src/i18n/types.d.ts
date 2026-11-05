@@ -498,6 +498,8 @@ export namespace Translations {
       industryUpdated: string
       /** @defaultValue `"Federal tax settings updated"` */
       federalTaxesUpdated: string
+      /** @defaultValue `"Locations updated"` */
+      locationsUpdated: string
     }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
@@ -1080,6 +1082,12 @@ export namespace Translations {
       einUnverified: string
       /** @defaultValue `"Not provided"` */
       einMissing: string
+      emptyState: {
+        /** @defaultValue `"No federal tax details yet"` */
+        title: string
+        /** @defaultValue `"Add this company's legal name, EIN, and filing form so payroll taxes can be filed."` */
+        description: string
+      }
     }
   }
   /** Translation keys for the `Company.Management.Industry` i18n namespace. */

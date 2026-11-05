@@ -10,7 +10,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /** @internal */
-type DashboardSuccessAlert = 'industryUpdated' | 'federalTaxesUpdated'
+type DashboardSuccessAlert = 'industryUpdated' | 'federalTaxesUpdated' | 'locationsUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -18,6 +18,13 @@ export interface DashboardContextInterface extends FlowContextInterface {
   companyId: string
   /** Which success alert to surface above the dashboard cards, or `null` to clear it. */
   successAlert?: DashboardSuccessAlert | null
+  /**
+   * Alert to surface once the user leaves the current spoke. Spokes whose saves
+   * happen mid-flow — `Locations`, where a company usually adds several addresses
+   * in one visit — record the alert here instead of returning to the dashboard on
+   * each save, since transitioning would eject the user from the spoke.
+   */
+  pendingAlert?: DashboardSuccessAlert | null
   /** Persists the active Dashboard tab across spokes so Back returns to the
    *  originating tab instead of resetting to company details. */
   selectedTab?: DashboardTab
@@ -33,6 +40,7 @@ export function DashboardViewContextual() {
   const alertLabels: Record<DashboardSuccessAlert, string> = {
     industryUpdated: t('alerts.industryUpdated'),
     federalTaxesUpdated: t('alerts.federalTaxesUpdated'),
+    locationsUpdated: t('alerts.locationsUpdated'),
   }
 
   return (

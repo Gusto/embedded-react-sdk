@@ -2,7 +2,14 @@ import { useTranslation } from 'react-i18next'
 import type { Location } from '@gusto/embedded-api/models/components/location'
 import { useCompanyLocationsSummary } from '../../shared/useCompanyLocationsSummary'
 import styles from './LocationsCard.module.scss'
-import { DataView, useDataView, EmptyData, Loading, VisuallyHidden } from '@/components/Common'
+import {
+  DataView,
+  useDataView,
+  EmptyData,
+  Flex,
+  Loading,
+  VisuallyHidden,
+} from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -88,17 +95,14 @@ function LocationsCardContent({ companyId, onEvent, LoaderComponent }: Locations
         key: 'designations',
         title: <VisuallyHidden>{t('card.designationsColumn')}</VisuallyHidden>,
         render: (location: Location) => (
-          <>
+          <Flex gap={8} alignItems="center" flexWrap="wrap">
             {location.mailingAddress && (
               <Components.Badge status="info">{t('card.mailingAddress')}</Components.Badge>
             )}
             {location.filingAddress && (
-              <>
-                {' '}
-                <Components.Badge status="info">{t('card.filingAddress')}</Components.Badge>
-              </>
+              <Components.Badge status="info">{t('card.filingAddress')}</Components.Badge>
             )}
-          </>
+          </Flex>
         ),
       },
     ],
