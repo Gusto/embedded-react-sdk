@@ -724,6 +724,7 @@ Translation keys for the `Company.Management.BankAccount` i18n namespace.
 | `card.emptyState.description` |
 | `card.emptyState.title` |
 | `card.listEmptyPlaceholder` |
+| `card.manageAriaLabel` |
 | `card.manageCta` |
 | `card.routingNumber` |
 | `card.title` |
@@ -934,6 +935,35 @@ Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespa
 | `typeStep.options.single` | |
 | `typeStep.options.single.description` | `"Choose one pay schedule for all your employees"` |
 | `typeStep.options.single.label` | `"Everyone on one schedule"` |
+
+***
+
+<a id="companymanagementpayschedules"></a>
+
+### CompanyManagementPaySchedules
+
+Translation keys for the `Company.Management.PaySchedules` i18n namespace.
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-companymanagementpayschedulescard"></a> `card` |
+| `card.addCta` |
+| `card.assignmentMode` |
+| `card.assignmentMode.byDepartment` |
+| `card.assignmentMode.byEmployee` |
+| `card.assignmentMode.hourlySalaried` |
+| `card.assignmentMode.single` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
+| `card.listLabel` |
+| `card.manageAriaLabel` |
+| `card.manageCta` |
+| `card.scheduleColumn` |
+| `card.title` |
+| `card.unnamedSchedule` |
 
 ***
 
@@ -6227,6 +6257,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescompanymanagementlocations"></a> `Company.Management.Locations` | [`CompanyManagementLocations`](#companymanagementlocations) |
 | <a id="property-resourcescompanymanagementpayschedule"></a> `Company.Management.PaySchedule` | [`CompanyManagementPaySchedule`](#companymanagementpayschedule) |
 | <a id="property-resourcescompanymanagementpayscheduleassignment"></a> `Company.Management.PayScheduleAssignment` | [`CompanyManagementPayScheduleAssignment`](#companymanagementpayscheduleassignment) |
+| <a id="property-resourcescompanymanagementpayschedules"></a> `Company.Management.PaySchedules` | [`CompanyManagementPaySchedules`](#companymanagementpayschedules) |
 | <a id="property-resourcescompanymanagementtaxpaymentdetail"></a> `Company.Management.TaxPaymentDetail` | [`CompanyManagementTaxPaymentDetail`](#companymanagementtaxpaymentdetail) |
 | <a id="property-resourcescompanymanagementtaxpaymentslist"></a> `Company.Management.TaxPaymentsList` | [`CompanyManagementTaxPaymentsList`](#companymanagementtaxpaymentslist) |
 | <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
