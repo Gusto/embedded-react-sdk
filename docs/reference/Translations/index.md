@@ -514,6 +514,7 @@ Translation keys for the `Company.DocumentList` i18n namespace.
 | <a id="property-companydocumentlistselfsignatorytitle"></a> `selfSignatoryTitle` | `"Please note, only the signatory can sign documents."` |
 | <a id="property-companydocumentlistsigndocumentcomplete"></a> `signDocumentComplete` | `"Complete"` |
 | <a id="property-companydocumentlistsigndocumentcta"></a> `signDocumentCta` | `"Sign document"` |
+| <a id="property-companydocumentlistviewcta"></a> `viewCta` | `"View"` |
 
 ***
 
