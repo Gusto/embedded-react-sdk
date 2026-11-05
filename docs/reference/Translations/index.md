@@ -358,6 +358,7 @@ Translation keys for the `Company.Dashboard` i18n namespace.
 | `alerts.bankAccountUpdated` | `"Bank account updated"` |
 | `alerts.federalTaxesUpdated` | `"Federal tax settings updated"` |
 | `alerts.industryUpdated` | `"Industry updated"` |
+| `alerts.locationsUpdated` | `"Locations updated"` |
 | <a id="property-companydashboardbacktodashboardcta"></a> `backToDashboardCta` | `"Back to company settings"` |
 | <a id="property-companydashboardcompanysettingslabel"></a> `companySettingsLabel` | `"Company settings"` |
 | <a id="property-companydashboardtabs"></a> `tabs` | |
@@ -750,6 +751,9 @@ Translation keys for the `Company.Management.FederalTaxes` i18n namespace.
 | `card.einMissing` |
 | `card.einUnverified` |
 | `card.einVerified` |
+| `card.emptyState` |
+| `card.emptyState.description` |
+| `card.emptyState.title` |
 | `card.filingForm` |
 | `card.legalName` |
 | `card.listEmptyPlaceholder` |
