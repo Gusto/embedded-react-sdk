@@ -6,6 +6,7 @@ import {
   LocationsContextual,
   FederalTaxesContextual,
   BankAccountContextual,
+  PayScheduleContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -124,6 +125,11 @@ export const dashboardStateMachine = {
       toSpoke(BankAccountContextual),
     ),
     transition(
+      componentEvents.COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED,
+      'paySchedule',
+      toSpoke(PayScheduleContextual),
+    ),
+    transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -181,6 +187,14 @@ export const dashboardStateMachine = {
       'index',
       returnToIndexWithAlert('bankAccountUpdated'),
     ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
+  ),
+  paySchedule: state<MachineTransition>(
+    // PaySchedule is a hub in its own right: its edit form, assignment wizard and
+    // AutoPilot dialog all return to its own overview, so it has no completion
+    // event to exit on, and its editSchedule state transitions on the generic
+    // CANCEL. The back header is the only way out, and the spoke surfaces its own
+    // success alerts internally — hence no dashboard-level alert here.
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
   federalTaxes: state<MachineTransition>(

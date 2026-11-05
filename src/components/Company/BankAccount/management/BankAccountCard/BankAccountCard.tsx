@@ -117,7 +117,12 @@ function BankAccountCardContent({ companyId, onEvent, LoaderComponent }: BankAcc
           <Components.BoxHeader
             title={t('card.title')}
             action={
-              <Components.Button variant="secondary" onClick={handleManage} isDisabled={isLoading}>
+              <Components.Button
+                variant="secondary"
+                onClick={handleManage}
+                isDisabled={isLoading}
+                aria-label={bankAccount ? t('card.manageAriaLabel') : undefined}
+              >
                 {bankAccount ? t('card.manageCta') : t('card.addCta')}
               </Components.Button>
             }

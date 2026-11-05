@@ -34,7 +34,7 @@ describe('BankAccountCard', () => {
     renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
     })
 
     expect(screen.getByRole('heading', { name: 'Bank account' })).toBeInTheDocument()
@@ -49,10 +49,10 @@ describe('BankAccountCard', () => {
     renderWithProviders(<BankAccountCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage bank account' })).toBeEnabled()
     })
 
-    await user.click(screen.getByRole('button', { name: 'Manage' }))
+    await user.click(screen.getByRole('button', { name: 'Manage bank account' }))
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED,

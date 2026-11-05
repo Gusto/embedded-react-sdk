@@ -13,11 +13,31 @@ import {
 } from '@/test/mocks/apis/company_locations'
 import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { handleGetCompanyBankAccounts } from '@/test/mocks/apis/company_bank_accounts'
+import {
+  handleGetPaySchedules,
+  handleGetPayScheduleAssignments,
+} from '@/test/mocks/apis/payschedule'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const unstableFeatures = { companySettingsDashboard: true }
+const unstableFeaturesWithPaySchedules = {
+  companySettingsDashboard: true,
+  managePaySchedules: true,
+}
+
+const fixturePaySchedule = {
+  uuid: 'schedule-1',
+  version: 'schedule-version',
+  frequency: 'Every other week',
+  custom_name: 'Biweekly',
+  name: 'Biweekly',
+  anchor_pay_date: '2025-01-10',
+  anchor_end_of_pay_period: '2025-01-05',
+  active: true,
+  auto_payroll: false,
+}
 
 describe('Company Dashboard', () => {
   const onEvent = vi.fn()
@@ -60,6 +80,10 @@ describe('Company Dashboard', () => {
           },
         ]),
       ),
+      handleGetPayScheduleAssignments(() =>
+        HttpResponse.json({ type: 'single', default_pay_schedule_uuid: 'schedule-1' }),
+      ),
+      handleGetPaySchedules(() => HttpResponse.json([fixturePaySchedule])),
     )
   })
 
@@ -118,6 +142,32 @@ describe('Company Dashboard', () => {
       tab: 'pay',
     })
     expect(await screen.findByRole('heading', { name: 'Bank account' })).toBeInTheDocument()
+  })
+
+  it('renders the Pay schedules card on the Pay tab when managePaySchedules is also on', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithPaySchedules,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+
+    expect(await screen.findByRole('heading', { name: 'Pay schedules' })).toBeInTheDocument()
+    expect(await screen.findByText('Biweekly')).toBeInTheDocument()
+  })
+
+  it('omits the Pay schedules card without managePaySchedules, leaving the rest of the tab intact', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Dashboard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+
+    // The card is omitted rather than throwing: the dashboard still renders, and the
+    // rest of the Pay tab is unaffected.
+    expect(await screen.findByRole('heading', { name: 'Bank account' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Pay schedules' })).toBeNull()
   })
 
   it('honours a controlled selectedTab', async () => {
@@ -189,6 +239,10 @@ describe('Company DashboardFlow', () => {
           },
         ]),
       ),
+      handleGetPayScheduleAssignments(() =>
+        HttpResponse.json({ type: 'single', default_pay_schedule_uuid: 'schedule-1' }),
+      ),
+      handleGetPaySchedules(() => HttpResponse.json([fixturePaySchedule])),
     )
   })
 
@@ -274,6 +328,23 @@ describe('Company DashboardFlow', () => {
     // must not announce a change that never happened.
     expect(await screen.findByRole('tab', { name: 'Company details' })).toBeInTheDocument()
     expect(screen.queryByText('Locations updated')).toBeNull()
+  })
+
+  it('routes the Pay schedules card Manage CTA to the PaySchedule spoke', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<DashboardFlow companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures: unstableFeaturesWithPaySchedules,
+    })
+
+    await user.click(await screen.findByRole('tab', { name: 'Pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage pay schedules' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage pay schedules' }))
+
+    expect(
+      await screen.findByRole('button', { name: 'Back to company settings' }),
+    ).toBeInTheDocument()
   })
 
   // Covers routing into the spoke only; driving a real federal-taxes save through the

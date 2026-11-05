@@ -213,6 +213,7 @@ export const companyEvents = {
   COMPANY_DASHBOARD_ALERT_DISMISSED: 'company/dashboard/alertDismissed',
   COMPANY_DASHBOARD_BACK: 'company/dashboard/back',
   COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: 'company/management/bankAccount/editRequested',
+  COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: 'company/management/paySchedule/editRequested',
 } as const
 
 /**
