@@ -23,7 +23,7 @@ describe('LocationsCard', () => {
     renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage locations' })).toBeEnabled()
     })
 
     expect(screen.getByRole('heading', { name: 'Locations' })).toBeInTheDocument()
@@ -39,10 +39,10 @@ describe('LocationsCard', () => {
     renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Manage locations' })).toBeEnabled()
     })
 
-    await user.click(screen.getByRole('button', { name: 'Manage' }))
+    await user.click(screen.getByRole('button', { name: 'Manage locations' }))
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.COMPANY_MANAGEMENT_LOCATIONS_EDIT_REQUESTED,

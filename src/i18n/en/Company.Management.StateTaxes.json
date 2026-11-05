@@ -1,0 +1,22 @@
+{
+  "card": {
+    "title": "State taxes",
+    "manageCta": "Manage",
+    "manageAriaLabel": "Manage state taxes",
+    "stateColumn": "State",
+    "statusColumn": "Setup status",
+    "listLabel": "State tax requirements",
+    "unknownState": "Unknown state",
+    "defaultRatesApplied": "Default rates applied",
+    "readyToRunPayroll": "Ready to run payroll",
+    "setupStatus": {
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "complete": "Complete"
+    },
+    "emptyState": {
+      "title": "No state taxes yet",
+      "description": "State tax requirements appear once this company has a work address in a state."
+    }
+  }
+}

@@ -50,6 +50,8 @@ export interface Resources {
   /** */
   'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
   /** */
+  'Company.Management.StateTaxes': Translations.CompanyManagementStateTaxes
+  /** */
   'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
   /** */
   'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
@@ -508,6 +510,8 @@ export namespace Translations {
       locationsUpdated: string
       /** @defaultValue `"Bank account updated"` */
       bankAccountUpdated: string
+      /** @defaultValue `"State tax settings updated"` */
+      stateTaxesUpdated: string
     }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
@@ -1113,6 +1117,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Edit"` */
       editCta: string
+      /** @defaultValue `"Edit federal taxes"` */
+      editAriaLabel: string
       /** @defaultValue `"Legal name"` */
       legalName: string
       /** @defaultValue `"EIN"` */
@@ -1144,6 +1150,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Edit"` */
       editCta: string
+      /** @defaultValue `"Edit industry"` */
+      editAriaLabel: string
       /** @defaultValue `"Industry"` */
       industry: string
       /** @defaultValue `"NAICS code"` */
@@ -1165,6 +1173,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Manage"` */
       manageCta: string
+      /** @defaultValue `"Manage locations"` */
+      manageAriaLabel: string
       /** @defaultValue `"Company locations"` */
       listLabel: string
       /** @defaultValue `"Address"` */
@@ -1426,6 +1436,43 @@ export namespace Translations {
         /** @defaultValue `"No pay schedule yet"` */
         title: string
         /** @defaultValue `"Add a pay schedule to set when this company's employees are paid."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.StateTaxes` i18n namespace. */
+  export interface CompanyManagementStateTaxes {
+    card: {
+      /** @defaultValue `"State taxes"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage state taxes"` */
+      manageAriaLabel: string
+      /** @defaultValue `"State"` */
+      stateColumn: string
+      /** @defaultValue `"Setup status"` */
+      statusColumn: string
+      /** @defaultValue `"State tax requirements"` */
+      listLabel: string
+      /** @defaultValue `"Unknown state"` */
+      unknownState: string
+      /** @defaultValue `"Default rates applied"` */
+      defaultRatesApplied: string
+      /** @defaultValue `"Ready to run payroll"` */
+      readyToRunPayroll: string
+      setupStatus: {
+        /** @defaultValue `"Not started"` */
+        notStarted: string
+        /** @defaultValue `"In progress"` */
+        inProgress: string
+        /** @defaultValue `"Complete"` */
+        complete: string
+      }
+      emptyState: {
+        /** @defaultValue `"No state taxes yet"` */
+        title: string
+        /** @defaultValue `"State tax requirements appear once this company has a work address in a state."` */
         description: string
       }
     }

@@ -32,7 +32,7 @@ describe('IndustryCard', () => {
     renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit industry' })).toBeEnabled()
     })
 
     expect(screen.getByRole('heading', { name: 'Industry' })).toBeInTheDocument()
@@ -45,10 +45,10 @@ describe('IndustryCard', () => {
     renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit industry' })).toBeEnabled()
     })
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Edit industry' }))
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.COMPANY_MANAGEMENT_INDUSTRY_EDIT_REQUESTED,

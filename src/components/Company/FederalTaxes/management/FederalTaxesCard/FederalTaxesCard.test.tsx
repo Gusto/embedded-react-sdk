@@ -33,7 +33,7 @@ describe('FederalTaxesCard', () => {
     renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit federal taxes' })).toBeEnabled()
     })
 
     expect(screen.getByRole('heading', { name: 'Federal taxes' })).toBeInTheDocument()
@@ -67,10 +67,10 @@ describe('FederalTaxesCard', () => {
     renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Edit federal taxes' })).toBeEnabled()
     })
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.click(screen.getByRole('button', { name: 'Edit federal taxes' }))
 
     expect(onEvent).toHaveBeenCalledWith(
       componentEvents.COMPANY_MANAGEMENT_FEDERAL_TAXES_EDIT_REQUESTED,
