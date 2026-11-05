@@ -148,9 +148,9 @@ const wireValue = formatDateToStringDate(pickedDate)
 
 Multi-step components are driven by `robot3` state machines rendered through `<Flow>` (`src/components/Flow/Flow.tsx`). `Flow` re-emits every event to the upstream `onEvent` regardless of whether the local machine has a transition for it — so a parent already receives a step's completion signal without the child machine needing to transition anywhere for it.
 
-- **Guided flows** — top-level `*Flow` orchestrators driving a linear, wizard-style sequence with a real end (`OnboardingFlow`, `TimeOffFlow`) — may use a robot3 final state (`final()`, or an equivalent zero-transition `state()`) for their terminal step, since the parent app is expected to unmount the whole flow once it completes.
-- **Hub-and-spoke flows** — orchestrators the user can navigate through freely with no natural "end" — should not use a final state, since there's no terminal step to model one around.
-- **Public, standalone components with their own internal state machine** (a step component like `Compensation`, `Deductions`, or `DocumentSigner` that can also be mounted directly by a partner) must **not** model completion as a final state, guided or not. A robot3 final state has no transitions out — if the host doesn't unmount the component immediately after its completion event fires, every further interaction becomes a silent no-op while the last-rendered screen keeps looking interactive (SDK-1169). Let the completion event bubble via `onEvent` without transitioning the local machine, so a host that keeps the component mounted past completion keeps a fully working screen instead of a dead one.
+**Never model completion as a robot3 final state** (`final()`, or an equivalent zero-transition `state()`), in any flow — guided, hub-and-spoke, or a public standalone component. A final state has no transitions out: if the host doesn't unmount the component in the same tick its completion event fires, every further interaction becomes a silent no-op while the last-rendered screen keeps looking interactive. Let the completion event bubble via `onEvent` without transitioning the local machine instead.
+
+This holds even when the terminal step is a genuine dead-end screen with no actionable controls (e.g. `Company.OnboardingFlow`'s closing `overview` review step): `Flow` calls `onEvent` regardless of whether the local machine transitions, so the host unmounts the tree either way, and a final state would add nothing.
 
 ### Component & Feature Conventions
 

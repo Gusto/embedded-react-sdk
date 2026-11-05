@@ -48,11 +48,9 @@ export const employeeOnboardingMachine = {
         }),
       ),
     ),
-    transition(componentEvents.EMPLOYEE_ONBOARDING_DONE, 'final'),
   ),
   executing: state<MachineTransition>(
     transition(componentEvents.EMPLOYEES_LIST, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
-  final: state<MachineTransition>(),
 }

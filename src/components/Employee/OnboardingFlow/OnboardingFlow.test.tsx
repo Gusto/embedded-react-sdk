@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, it, vi, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OnboardingFlow } from './OnboardingFlow'
@@ -174,6 +174,41 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Completed
       await screen.findByText(/that's it/i)
+    })
+  })
+
+  describe('when embedded with showContinueButton', () => {
+    beforeEach(() => {
+      server.use(
+        createEmployee,
+        getCompanyEmployees('123'),
+        getEmployee,
+        getCompany,
+        getCompanyLocations,
+        getEmployeeWorkAddresses,
+        getEmployeeHomeAddresses,
+        getEmployeeJobs,
+        getMinimumWages,
+      )
+    })
+
+    it('stays interactive after Continue is clicked and the host keeps it mounted', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <OnboardingFlow companyId="123" onEvent={onEvent} showContinueButton />
+        </GustoProvider>,
+      )
+
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      expect(onEvent).toHaveBeenCalledWith('employee/onboarding/done', undefined)
+
+      // The host didn't unmount us on "done" — the list must still be usable,
+      // not stuck in a dead terminal state.
+      await user.click(await screen.findByRole('button', { name: /Add/i }))
+      await screen.findByLabelText(/social/i)
     })
   })
 })
