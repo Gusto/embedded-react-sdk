@@ -39,6 +39,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | [useEmployeeStateTaxesForm](employee/hooks/use-employee-state-taxes-form) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
 | [useFederalTaxesForm](employee/hooks/use-federal-taxes-form) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
 | [useHomeAddressForm](employee/hooks/use-home-address-form) | Form hook for creating or editing an employee's home address. |
+| [useIndustryForm](company/hooks/use-industry-form) | Form hook for selecting and saving a company's industry classification. |
 | [useJobForm](employee/hooks/use-job-form) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
 | [usePaymentMethodForm](employee/hooks/use-payment-method-form) | Headless React Hook Form hook for updating an employee's payment method. |
 | [usePayScheduleForm](company/hooks/use-pay-schedule-form) | Form hook for creating or updating a company pay schedule. |
@@ -453,6 +454,7 @@ parsed values (or `undefined` if invalid).
 - [`UseFederalTaxesFormReady`](employee/hooks/use-federal-taxes-form.md#usefederaltaxesformready)
 - [`UseSignEmployeeFormReady`](employee/hooks/use-sign-employee-form.md#usesignemployeeformready)
 - [`UsePayScheduleFormReady`](company/hooks/use-pay-schedule-form.md#usepayscheduleformready)
+- [`UseIndustryFormReady`](company/hooks/use-industry-form.md#useindustryformready)
 - [`UseSignCompanyFormReady`](company/hooks/use-sign-company-form.md#usesigncompanyformready)
 - [`UseContractorSignatureFormReady`](contractor/hooks/use-contractor-signature-form.md#usecontractorsignatureformready)
 
@@ -578,6 +580,7 @@ Common presentation props accepted by every hook field component.
 
 - [`TextInputHookFieldProps`](#textinputhookfieldprops)
 - [`SelectHookFieldProps`](#selecthookfieldprops)
+- [`ComboBoxHookFieldProps`](#comboboxhookfieldprops)
 - [`CheckboxHookFieldProps`](#checkboxhookfieldprops)
 - [`NumberInputHookFieldProps`](#numberinputhookfieldprops)
 - [`DatePickerHookFieldProps`](#datepickerhookfieldprops)
@@ -620,6 +623,50 @@ field attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+***
+
+<a id="comboboxhookfieldprops"></a>
+
+### ComboBoxHookFieldProps
+
+Props accepted by a combo box field surfaced through a form hook.
+Exposes `getOptionLabel` to customize how option entries are rendered as labels,
+`placeholder` text, `portalContainer` for correct stacking inside modals,
+and `validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+#### Remarks
+
+Prefer this over `SelectHookFieldProps` when the option list is long enough that
+the user needs type-ahead filtering to find an entry. The underlying control
+matches on the option's `value`, so a stored value with no matching option
+renders as empty — hooks are responsible for supplying an option for whatever
+value they place in the form.
+
+#### Extends
+
+- [`BaseFieldProps`](#basefieldprops).`Pick`\<[`ComboBoxProps`](component-inventory.md#comboboxprops), `"portalContainer"`\>
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
 ***

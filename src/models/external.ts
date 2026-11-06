@@ -233,6 +233,8 @@ export type {
 /** `DocumentType` entity from the Gusto Embedded API. */
 export { DocumentType } from '@gusto/embedded-api/models/components/i9authorization'
 export { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
+/** `Industry` entity from the Gusto Embedded API. */
+export type { Industry } from '@gusto/embedded-api/models/components/industry'
 /** `InformationRequestType` entity from the Gusto Embedded API. */
 export { InformationRequestType } from '@gusto/embedded-api/models/components/informationrequest'
 /** `RequiredQuestions` entity from the Gusto Embedded API. */

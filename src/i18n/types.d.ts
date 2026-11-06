@@ -873,6 +873,12 @@ export namespace Translations {
     placeholder: string
     /** @defaultValue `"Continue"` */
     submitCta: string
+    /** @defaultValue `"NAICS {{code}}"` */
+    unmatchedIndustry: string
+    validations: {
+      /** @defaultValue `"Select an industry to continue"` */
+      required: string
+    }
   }
   /** Translation keys for the `Company.Locations` i18n namespace. */
   export interface CompanyLocations {
