@@ -11,6 +11,7 @@ const labels = {
     signCta: 'Sign',
     notSigned: 'Awaiting signature',
     complete: 'Signed',
+    viewCta: 'View',
   },
   emptyStateLabel: 'No documents to sign',
   errorLabel: 'We couldn’t load your documents. Try again later.',
@@ -37,7 +38,7 @@ const forms: FormData[] = [
   },
 ]
 
-export const Populated = () => <DocumentList forms={forms} {...labels} />
+export const Populated = () => <DocumentList forms={forms} onView={() => {}} {...labels} />
 
 export const ReadOnly = () => <DocumentList forms={forms} canSign={false} {...labels} />
 

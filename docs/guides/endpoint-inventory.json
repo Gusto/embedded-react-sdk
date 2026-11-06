@@ -1645,11 +1645,17 @@
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/forms/:formId/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid"
+        "companyUuid",
+        "formId"
       ]
     },
     "CompanyOnboarding.Industry": {
