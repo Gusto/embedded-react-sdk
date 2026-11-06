@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.58.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.58.0...v0.58.1) (2026-11-06)
+
+### Features & Enhancements
+
+- Show unused PTO hours on dismissal payrolls ([#3065](https://github.com/Gusto/embedded-react-sdk/issues/3065))
+
+### Fixes
+
+- Add a view action to `Company.DocumentList` for completed forms ([#3075](https://github.com/Gusto/embedded-react-sdk/issues/3075))
+- Fix reimbursements not showing on RRoP when editing an employee without a bank account ([#3067](https://github.com/Gusto/embedded-react-sdk/issues/3067))
+- Fix `EmployeeOnboarding.OnboardingFlow` getting stuck after clicking Continue ([#3076](https://github.com/Gusto/embedded-react-sdk/issues/3076))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`vitest`, `@storybook/*`, `eslint-plugin-storybook`, `release-it`, `sass-embedded`, `@microsoft/api-extractor`, `@mswjs/interceptors`, `globals`)
+- Bump runtime dependencies (`@hookform/resolvers`, `i18next`, `react-i18next`, `react-router-dom`)
+
 ## [0.58.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.3...v0.58.0) (2026-11-02)
 
 ### Breaking Changes
