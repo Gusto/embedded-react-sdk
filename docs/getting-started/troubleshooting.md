@@ -5,19 +5,12 @@ description: Fixes for common SDK integration problems, including API version he
 
 ## Start here: forward the SDK's headers
 
-The SDK sends two headers on every request:
+The SDK adds two headers to every request. You don't set them or choose their values. The SDK handles that.
 
 - `X-Gusto-API-Version`: the API version this SDK release is built for.
-- `X-Gusto-SDK-Version`: the SDK package and version, for example `@gusto/embedded-react-sdk 0.55.7`. Sent starting in version 0.55.7.
+- `X-Gusto-SDK-Version`: the SDK package and version, for example `@gusto/embedded-react-sdk 0.55.7`. Added in version 0.55.7.
 
-Your proxy builds its own request to Gusto, so these headers are not passed along unless you copy them. Copy both, unchanged:
-
-```ts title="proxy.ts"
-for (const name of ['x-gusto-api-version', 'x-gusto-sdk-version']) {
-  const value = req.headers[name]
-  if (typeof value === 'string') outboundHeaders[name] = value
-}
-```
+Your proxy only needs to pass them through to Gusto unchanged. If your proxy forwards the incoming request headers, this already works. If it builds a new request with only certain headers, add these two.
 
 We strongly recommend forwarding `X-Gusto-SDK-Version`. It lets Gusto see which SDK version sent a request, so we can find and fix your issue much faster.
 
@@ -29,7 +22,7 @@ We strongly recommend forwarding `X-Gusto-SDK-Version`. It lets Gusto see which 
 
 **Cause:** Something replaced the SDK's `X-Gusto-API-Version` header. This is usually a proxy that sets its own version. It can also be `config.headers` or a [request interceptor](../guides/integration-guide/request-interceptors.md).
 
-**Fix:** Don't set `X-Gusto-API-Version` yourself for SDK requests. Forward the value the SDK sends, as shown above. Each SDK release reads responses in the shape of one API version. A different version can return data the SDK can't read.
+**Fix:** Don't set `X-Gusto-API-Version` yourself for SDK requests. Pass through the value the SDK sends. Each SDK release reads responses in the shape of one API version. A different version can return data the SDK can't read.
 
 ### Requests fail with `406 invalid_api_version`
 
