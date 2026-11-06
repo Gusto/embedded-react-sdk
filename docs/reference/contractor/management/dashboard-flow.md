@@ -96,10 +96,14 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `contractor/management/compensation/editRequested` | Fired when "Edit" is clicked on the Compensation card | `{ contractorId: string }` |
 | `contractor/management/compensation/updated` | Fired after compensation is saved; the dashboard returns to the cards and surfaces the "Compensation updated" alert | Updated `Contractor` entity |
 | `contractor/management/compensation/editCancelled` | Fired when the user cancels editing compensation; the dashboard returns to the cards | — |
-| `contractor/management/documents/card/viewRequested` | Fired when a document row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid: string }` |
-| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid: string }` |
+| `contractor/management/documents/card/viewRequested` | Fired when a documents row's "View" button is clicked, before the PDF is fetched | `{ contractorId: string, documentUuid?: string, formId?: string }` |
+| `contractor/management/documents/card/viewed` | Fired after the PDF is fetched and opened in a new tab | `{ contractorId: string, documentUuid?: string, formId?: string }` |
 | `contractor/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'details' \| 'pay' \| 'documents' }` |
 | `contractor/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
+
+The two `documents/card` events carry exactly one row identifier:
+`documentUuid` for a document row (the W-9) and `formId` for a tax form row
+(a 1099). The other key is absent.
 
 ## Sub-components
 
@@ -146,6 +150,8 @@ Each section handles missing data on its own: the payment method card shows "Che
 | GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
 | POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
 | GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-documents) |
+| GET | [`/v1/contractors/:contractorUuid/forms`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-forms) |
+| GET | [`/v1/contractors/:contractorUuid/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-form-pdf) |
 | GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payment_method) |
 | PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-contractors-contractor_id-payment_method) |
 | GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor-document-pdf) |

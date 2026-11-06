@@ -649,7 +649,7 @@ const Root = ({
                 })
               : null}
 
-            {PaymentMethodField ? (
+            {ReimbursementDraft || PaymentMethodField ? (
               <Flex flexDirection="column" gap={24}>
                 {ReimbursementDraft ? (
                   <ReimbursementsSection
@@ -663,20 +663,22 @@ const Root = ({
                   />
                 ) : null}
 
-                <Flex flexDirection="column" gap={12}>
-                  <Heading as="h3" styledAs="h4">
-                    {t('paymentMethodTitle')}
-                  </Heading>
-                  <PaymentMethodField
-                    label={t('paymentMethodLabel')}
-                    description={t('paymentMethodDescription')}
-                    getOptionLabel={value =>
-                      value === PayrollUpdatePaymentMethod.Check
-                        ? t('paymentMethodOptions.check')
-                        : t('paymentMethodOptions.directDeposit')
-                    }
-                  />
-                </Flex>
+                {PaymentMethodField ? (
+                  <Flex flexDirection="column" gap={12}>
+                    <Heading as="h3" styledAs="h4">
+                      {t('paymentMethodTitle')}
+                    </Heading>
+                    <PaymentMethodField
+                      label={t('paymentMethodLabel')}
+                      description={t('paymentMethodDescription')}
+                      getOptionLabel={value =>
+                        value === PayrollUpdatePaymentMethod.Check
+                          ? t('paymentMethodOptions.check')
+                          : t('paymentMethodOptions.directDeposit')
+                      }
+                    />
+                  </Flex>
+                ) : null}
               </Flex>
             ) : null}
           </Flex>

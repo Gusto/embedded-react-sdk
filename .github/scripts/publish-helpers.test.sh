@@ -181,7 +181,7 @@ MOCK
 chmod +x "$fixture/bin/curl"
 export VERSION=1.2.3 ANTHROPIC_API_KEY=fake SLACK_BOT_TOKEN=fake
 export CHANGELOG_CONTENT=$'- A "quoted" change\n- Another change'
-export CURL_RESPONSE='{"content":[{"text":"- Summary\nSUMMARY_EOF\n- More"}]}'
+export CURL_RESPONSE='{"stop_reason":"end_turn","content":[{"type":"thinking","thinking":""},{"type":"text","text":"- Summary\nSUMMARY_EOF\n- More"}]}'
 : > "$GITHUB_OUTPUT"
 bash "$script_directory/release-summary.sh"
 grep -Fx 'SUMMARY_EOF' "$GITHUB_OUTPUT"
@@ -199,6 +199,10 @@ jq -e --arg instructions "$summary_instructions" --arg changelog "$CHANGELOG_CON
   (.messages[0].content | fromjson | .changelog) == $changelog
 ' "$CURL_PAYLOAD" >/dev/null
 export CURL_RESPONSE='{"content":[]}'
+bash "$script_directory/release-summary.sh"
+grep -Fx 'See the full changelog for details.' "$GITHUB_OUTPUT"
+export CURL_RESPONSE='{"stop_reason":"max_tokens","content":[{"type":"thinking","thinking":""},{"type":"text","text":"- Half a bul"}]}'
+: > "$GITHUB_OUTPUT"
 bash "$script_directory/release-summary.sh"
 grep -Fx 'See the full changelog for details.' "$GITHUB_OUTPUT"
 export CURL_RESPONSE='not json'

@@ -503,8 +503,12 @@ export namespace Translations {
     signDocumentComplete: string
     /** @defaultValue `"Not signed"` */
     notSigned: string
+    /** @defaultValue `"View"` */
+    viewCta: string
     /** @defaultValue `"Could not load your documents, try again later."` */
     documentListError: string
+    /** @defaultValue `"Could not open this document, try again later."` */
+    viewDocumentError: string
     /** @defaultValue `"No documents found"` */
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
@@ -871,6 +875,12 @@ export namespace Translations {
     placeholder: string
     /** @defaultValue `"Continue"` */
     submitCta: string
+    /** @defaultValue `"NAICS {{code}}"` */
+    unmatchedIndustry: string
+    validations: {
+      /** @defaultValue `"Select an industry to continue"` */
+      required: string
+    }
   }
   /** Translation keys for the `Company.Locations` i18n namespace. */
   export interface CompanyLocations {
@@ -8010,6 +8020,8 @@ export namespace Translations {
       hours: string
       /** @defaultValue `"Time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Additional earnings"` */
       additionalEarnings: string
       /** @defaultValue `"Reimbursements"` */
@@ -8554,6 +8566,8 @@ export namespace Translations {
       doubleOT: string
       /** @defaultValue `"Paid time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Total hours"` */
       totalHours: string
       /** @defaultValue `"Payment type"` */

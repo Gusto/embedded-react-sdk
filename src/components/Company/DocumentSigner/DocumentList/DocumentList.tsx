@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
 import { useCompanyFormsGetAllSuspense } from '@gusto/embedded-api/react-query/companyFormsGetAll'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { companyFormsGetPdf } from '@gusto/embedded-api/funcs/companyFormsGetPdf'
 import { Head } from './Head'
 import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
@@ -11,6 +14,9 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Ba
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError } from '@/types/sdkError'
+import { openLinkInNewTab } from '@/helpers/openLinkInNewTab'
 
 /**
  * Props for {@link DocumentList}.
@@ -65,7 +71,11 @@ export function DocumentList(props: DocumentListProps) {
 function Root({ companyId, signatoryId, className, children, dictionary }: DocumentListProps) {
   useComponentDictionary('Company.DocumentList', dictionary)
   useI18n('Company.DocumentList')
-  const { onEvent } = useBase()
+  const { onEvent, componentName } = useBase()
+  const gustoEmbedded = useGustoEmbeddedContext()
+  const { observability } = useObservability()
+  const [viewingFormUuid, setViewingFormUuid] = useState<string | null>(null)
+  const [viewFormError, setViewFormError] = useState(false)
 
   const {
     data: { forms },
@@ -99,6 +109,41 @@ function Root({ companyId, signatoryId, className, children, dictionary }: Docum
     onEvent(companyEvents.COMPANY_FORMS_DONE)
   }
 
+  const handleViewForm = async (formUuid: string) => {
+    setViewFormError(false)
+    setViewingFormUuid(formUuid)
+    try {
+      const result = await companyFormsGetPdf(gustoEmbedded, { formId: formUuid })
+      if (!result.ok) {
+        reportUnlessApiError(result.error)
+        setViewFormError(true)
+        return
+      }
+      const documentUrl = result.value.formPdf?.documentUrl
+      if (!documentUrl || !openLinkInNewTab(documentUrl)) {
+        setViewFormError(true)
+      }
+    } catch (err) {
+      reportUnlessApiError(err)
+      setViewFormError(true)
+    } finally {
+      setViewingFormUuid(null)
+    }
+  }
+
+  function reportUnlessApiError(err: unknown) {
+    const sdkError = normalizeToSDKError(err)
+    // An `api_error` reached the server and is already visible via request logs; anything
+    // else (network failure, client-side validation, unexpected exception) never did.
+    if (sdkError.category !== 'api_error') {
+      observability?.onError?.({ ...sdkError, timestamp: Date.now(), componentName })
+    }
+  }
+
+  const dismissViewFormError = () => {
+    setViewFormError(false)
+  }
+
   return (
     <section className={className}>
       <DocumentListProvider
@@ -108,6 +153,10 @@ function Root({ companyId, signatoryId, className, children, dictionary }: Docum
           handleRequestFormToSign,
           handleChangeSignatory,
           handleContinue,
+          handleViewForm: formUuid => void handleViewForm(formUuid),
+          viewingFormUuid,
+          viewFormError,
+          dismissViewFormError,
           isSelfSignatory,
           signatory,
         }}

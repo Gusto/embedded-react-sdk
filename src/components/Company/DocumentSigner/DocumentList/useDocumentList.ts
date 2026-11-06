@@ -8,6 +8,10 @@ type DocumentListContextType = {
   handleRequestFormToSign: (form: FormSchema) => void
   handleChangeSignatory: () => void
   handleContinue: () => void
+  handleViewForm: (formUuid: string) => void
+  viewingFormUuid: string | null
+  viewFormError: boolean
+  dismissViewFormError: () => void
   isSelfSignatory: boolean
   signatory?: Signatory
 }

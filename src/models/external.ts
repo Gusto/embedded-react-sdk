@@ -196,6 +196,8 @@ export {
 export { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 /** `Form` entity from the Gusto Embedded API. */
 export type { Form } from '@gusto/embedded-api/models/components/form'
+/** `Form1099` entity from the Gusto Embedded API. */
+export type { Form1099 } from '@gusto/embedded-api/models/components/form1099'
 /** `GarnishmentType` entity from the Gusto Embedded API. */
 export { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
 export type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
@@ -233,6 +235,8 @@ export type {
 /** `DocumentType` entity from the Gusto Embedded API. */
 export { DocumentType } from '@gusto/embedded-api/models/components/i9authorization'
 export { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
+/** `Industry` entity from the Gusto Embedded API. */
+export type { Industry } from '@gusto/embedded-api/models/components/industry'
 /** `InformationRequestType` entity from the Gusto Embedded API. */
 export { InformationRequestType } from '@gusto/embedded-api/models/components/informationrequest'
 /** `RequiredQuestions` entity from the Gusto Embedded API. */

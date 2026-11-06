@@ -74,6 +74,7 @@
     "overtime": "Overtime (1.5x)",
     "doubleOT": "Overtime (2x)",
     "timeOff": "Paid time off",
+    "unusedHours": "Unused hours",
     "totalHours": "Total hours",
     "paymentType": "Payment type",
     "employeeTaxes": "Employee taxes",

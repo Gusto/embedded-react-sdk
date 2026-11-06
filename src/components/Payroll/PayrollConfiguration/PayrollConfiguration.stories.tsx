@@ -1,5 +1,7 @@
 import { fn } from 'storybook/test'
+import { EmployeePaymentMethod1 } from '@gusto/embedded-api/models/components/employee'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollCategory } from '../payrollTypes'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 
 export default {
@@ -346,3 +348,58 @@ export const WithLatePayrollBanner = () => {
     />
   )
 }
+
+export const DismissalWithUnusedHours = () => (
+  <PayrollConfigurationPresentation
+    payrollCategory={PayrollCategory.Dismissal}
+    employeeCompensations={[
+      {
+        excluded: false,
+        employeeUuid: 'test-employee-uuid',
+        paymentMethod: 'Direct Deposit',
+        fixedCompensations: [],
+        hourlyCompensations: [
+          {
+            name: 'Regular Hours',
+            hours: '32.000',
+            flsaStatus: 'Nonexempt',
+            jobUuid: 'test-job-uuid',
+            amount: '704.0',
+            compensationMultiplier: 1.0,
+          },
+        ],
+        paidTimeOff: [
+          { name: 'Vacation Hours', hours: '8.0', finalPayoutUnusedHoursInput: '40.0' },
+          { name: 'Sick Hours', hours: '0.0', finalPayoutUnusedHoursInput: '0.0' },
+        ],
+      },
+    ]}
+    employeeDetails={[
+      {
+        uuid: 'test-employee-uuid',
+        firstName: 'John',
+        lastName: 'Doe',
+        paymentMethod: EmployeePaymentMethod1.DirectDeposit,
+        jobs: [
+          {
+            uuid: 'test-job-uuid',
+            title: 'Software Engineer',
+            primary: true,
+            compensations: [
+              {
+                uuid: 'test-compensation-uuid',
+                rate: '22.00',
+                paymentUnit: 'Hour',
+                flsaStatus: 'Nonexempt',
+              },
+            ],
+          },
+        ],
+      },
+    ]}
+    onCalculatePayroll={fn().mockName('on_calculate')}
+    onEdit={fn().mockName('on_edit')}
+    onToggleExclude={fn().mockName('on_toggle_exclude')}
+    onViewBlockers={fn().mockName('on_view_blockers')}
+  />
+)

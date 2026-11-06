@@ -514,6 +514,8 @@ Translation keys for the `Company.DocumentList` i18n namespace.
 | <a id="property-companydocumentlistselfsignatorytitle"></a> `selfSignatoryTitle` | `"Please note, only the signatory can sign documents."` |
 | <a id="property-companydocumentlistsigndocumentcomplete"></a> `signDocumentComplete` | `"Complete"` |
 | <a id="property-companydocumentlistsigndocumentcta"></a> `signDocumentCta` | `"Sign document"` |
+| <a id="property-companydocumentlistviewcta"></a> `viewCta` | `"View"` |
+| <a id="property-companydocumentlistviewdocumenterror"></a> `viewDocumentError` | `"Could not open this document, try again later."` |
 
 ***
 
@@ -575,6 +577,9 @@ Translation keys for the `Company.Industry` i18n namespace.
 | <a id="property-companyindustryplaceholder"></a> `placeholder` | `"Type a few letters to search for your industry"` |
 | <a id="property-companyindustrysubmitcta"></a> `submitCta` | `"Continue"` |
 | <a id="property-companyindustrytitle"></a> `title` | `"Industry"` |
+| <a id="property-companyindustryunmatchedindustry"></a> `unmatchedIndustry` | `"NAICS {{code}}"` |
+| <a id="property-companyindustryvalidations"></a> `validations` | |
+| `validations.required` | `"Select an industry to continue"` |
 
 ***
 
@@ -5373,6 +5378,7 @@ Translation keys for the `Payroll.PayrollConfiguration` i18n namespace.
 | `tableColumns.reimbursements` | `"Reimbursements"` |
 | `tableColumns.timeOff` | `"Time off"` |
 | `tableColumns.totalPay` | `"Total pay"` |
+| `tableColumns.unusedHours` | `"Unused hours"` |
 | <a id="property-payrollpayrollconfigurationunknownemployeefallback"></a> `unknownEmployeeFallback` | `"Unknown employee"` |
 
 ***
@@ -5716,6 +5722,7 @@ Translation keys for the `Payroll.PayrollOverview` i18n namespace.
 | `tableHeaders.timeOff` | `"Paid time off"` |
 | `tableHeaders.totalHours` | `"Total hours"` |
 | `tableHeaders.totalPayroll` | `"Total payroll"` |
+| `tableHeaders.unusedHours` | `"Unused hours"` |
 | `tableHeaders.wireAmount` | `"Wire amount"` |
 | `tableHeaders.wireTransferDeadline` | `"Wire transfer deadline"` |
 | <a id="property-payrollpayrolloverviewtaxeslabel"></a> `taxesLabel` | `"Taxes (Employees and Employers)"` |
