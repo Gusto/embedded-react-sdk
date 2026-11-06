@@ -31,7 +31,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * This is a hub-and-spoke surface with no terminal step, so it can stay mounted indefinitely. Each
  * spoke renders an existing company component — `CompanyOnboarding.Industry`,
  * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes`, `CompanyOnboarding.BankAccount`,
- * `CompanyManagement.PaySchedule` —
+ * `CompanyManagement.PaySchedule`, `CompanyOnboarding.StateTaxes` —
  * beneath a "Back to company
  * settings" header, which is the reliable way back: those components are submit-only or open
  * directly into a form, and their own Cancel affordances belong to screens inside them.
@@ -74,6 +74,11 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `paySchedule/management/assignment/assigned` | Fired after employee assignment is saved; the manage screen stays open | The updated `PayScheduleAssignment` |
  * | `paySchedule/management/autoPilotEnabled` | Fired after AutoPilot is enabled for a schedule; the manage screen stays open | Updated `PayScheduleShow` entity |
  * | `paySchedule/management/autoPilotDisabled` | Fired after AutoPilot is disabled for a schedule; the manage screen stays open | Updated `PayScheduleShow` entity |
+ * | `company/management/stateTaxes/editRequested` | Fired when "Manage" is clicked on the State taxes card | `{ companyId: string }` |
+ * | `company/stateTaxes/edit` | Fired when a state is selected for editing on the manage screen; the manage screen stays open | `{ state: string }` |
+ * | `company/stateTaxes/manageRates` | Fired when a state's tax rate history is opened; the manage screen stays open | `{ state: string }` |
+ * | `company/stateTaxes/updated` | Fired after a state's requirements are saved; the manage screen stays open | — |
+ * | `company/stateTaxes/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "State tax settings updated" alert | — |
  * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' }` |
  * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards | — |
  * | `company/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
@@ -85,6 +90,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * - {@link BankAccountCard}
  * - {@link PaySchedulesCard}
  * - {@link FederalTaxesCard}
+ * - {@link StateTaxesCard}
  *
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.
