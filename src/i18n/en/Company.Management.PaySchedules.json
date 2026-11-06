@@ -1,0 +1,21 @@
+{
+  "card": {
+    "title": "Pay schedules",
+    "manageCta": "Manage",
+    "manageAriaLabel": "Manage pay schedules",
+    "addCta": "Add pay schedule",
+    "scheduleColumn": "Schedule",
+    "listLabel": "Pay schedules",
+    "unnamedSchedule": "Untitled schedule",
+    "assignmentMode": {
+      "single": "One schedule for all employees",
+      "hourlySalaried": "Separate schedules for hourly and salaried employees",
+      "byEmployee": "Assigned per employee",
+      "byDepartment": "Assigned per department"
+    },
+    "emptyState": {
+      "title": "No pay schedule yet",
+      "description": "Add a pay schedule to set when this company's employees are paid."
+    }
+  }
+}

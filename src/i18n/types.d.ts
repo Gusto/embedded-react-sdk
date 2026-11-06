@@ -48,6 +48,8 @@ export interface Resources {
   /** */
   'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
   /** */
+  'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
+  /** */
   'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
   /** */
   'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
@@ -1072,6 +1074,8 @@ export namespace Translations {
       title: string
       /** @defaultValue `"Manage"` */
       manageCta: string
+      /** @defaultValue `"Manage bank account"` */
+      manageAriaLabel: string
       /** @defaultValue `"Add bank account"` */
       addCta: string
       /** @defaultValue `"Account name"` */
@@ -1390,6 +1394,41 @@ export namespace Translations {
     }
     /** @defaultValue `"Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."` */
     employeeAccessDenied: string
+  }
+  /** Translation keys for the `Company.Management.PaySchedules` i18n namespace. */
+  export interface CompanyManagementPaySchedules {
+    card: {
+      /** @defaultValue `"Pay schedules"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Manage pay schedules"` */
+      manageAriaLabel: string
+      /** @defaultValue `"Add pay schedule"` */
+      addCta: string
+      /** @defaultValue `"Schedule"` */
+      scheduleColumn: string
+      /** @defaultValue `"Pay schedules"` */
+      listLabel: string
+      /** @defaultValue `"Untitled schedule"` */
+      unnamedSchedule: string
+      assignmentMode: {
+        /** @defaultValue `"One schedule for all employees"` */
+        single: string
+        /** @defaultValue `"Separate schedules for hourly and salaried employees"` */
+        hourlySalaried: string
+        /** @defaultValue `"Assigned per employee"` */
+        byEmployee: string
+        /** @defaultValue `"Assigned per department"` */
+        byDepartment: string
+      }
+      emptyState: {
+        /** @defaultValue `"No pay schedule yet"` */
+        title: string
+        /** @defaultValue `"Add a pay schedule to set when this company's employees are paid."` */
+        description: string
+      }
+    }
   }
   /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
   export interface CompanyManagementTaxPaymentDetail {

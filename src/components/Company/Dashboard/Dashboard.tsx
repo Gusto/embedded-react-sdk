@@ -131,12 +131,14 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * case it defaults to company details. Each tab composes the read-only section cards listed below.
  *
  * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the flag
- * throws.
+ * throws. The Pay tab's Pay schedules card additionally requires `managePaySchedules` and is
+ * omitted when that flag is off, leaving the tab rendering the Bank account card alone.
  *
  * @components
  * - {@link IndustryCard}
  * - {@link LocationsCard}
  * - {@link BankAccountCard}
+ * - {@link PaySchedulesCard}
  * - {@link FederalTaxesCard}
  *
  * @param props - Component props. See {@link DashboardProps}.

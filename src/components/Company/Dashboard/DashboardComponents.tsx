@@ -4,6 +4,7 @@ import { Industry } from '@/components/Company/Industry'
 import { Locations } from '@/components/Company/Locations/Locations'
 import { FederalTaxes } from '@/components/Company/FederalTaxes'
 import { BankAccount } from '@/components/Company/BankAccount/BankAccount'
+import { PaySchedule } from '@/components/Company/PaySchedule/management'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -30,6 +31,10 @@ export interface DashboardContextInterface extends FlowContextInterface {
   /** Persists the active Dashboard tab across spokes so Back returns to the
    *  originating tab instead of resetting to company details. */
   selectedTab?: DashboardTab
+  /** Forwarded to the pay schedule spoke to show the AutoPilot row and its Edit action. */
+  enableAutoPilot?: boolean
+  /** Forwarded to the pay schedule spoke to show its Manage action. */
+  enableMultipleSchedules?: boolean
 }
 
 /** @internal */
@@ -89,4 +94,18 @@ export function FederalTaxesContextual() {
 export function BankAccountContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   return <BankAccount companyId={ensureRequired(companyId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function PayScheduleContextual() {
+  const { companyId, onEvent, enableAutoPilot, enableMultipleSchedules } =
+    useFlow<DashboardContextInterface>()
+  return (
+    <PaySchedule
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      enableAutoPilot={enableAutoPilot}
+      enableMultipleSchedules={enableMultipleSchedules}
+    />
+  )
 }

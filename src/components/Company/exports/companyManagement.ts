@@ -24,6 +24,10 @@ export {
   type BankAccountCardProps,
 } from '../BankAccount/management/BankAccountCard'
 export {
+  PaySchedulesCard,
+  type PaySchedulesCardProps,
+} from '../PaySchedule/management/PaySchedulesCard'
+export {
   Dashboard,
   DashboardFlow,
   type DashboardProps,

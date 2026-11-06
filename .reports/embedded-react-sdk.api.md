@@ -1134,6 +1134,8 @@ declare namespace CompanyManagement {
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
         BankAccountCard,
         BankAccountCardProps,
+        PaySchedulesCard,
+        PaySchedulesCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1580,6 +1582,7 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
     readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
+    readonly COMPANY_MANAGEMENT_PAY_SCHEDULE_EDIT_REQUESTED: "company/management/paySchedule/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2489,6 +2492,8 @@ interface DashboardFlowProps extends BaseComponentInterface<never> {
 // @alpha
 interface DashboardFlowProps_2 extends BaseComponentInterface<never> {
     companyId: string;
+    enableAutoPilot?: boolean;
+    enableMultipleSchedules?: boolean;
 }
 
 // @public
@@ -4716,6 +4721,16 @@ interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Manage
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
+// @alpha
+function PaySchedulesCard(props: PaySchedulesCardProps): JSX;
+
+// @alpha
+interface PaySchedulesCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 export type PayScheduleWorkweekStartDay = WorkweekStartDay;
 
@@ -5115,6 +5130,8 @@ export interface Resources {
     'Company.Management.PaySchedule': Translations.CompanyManagementPaySchedule
     // (undocumented)
     'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
+    // (undocumented)
+    'Company.Management.PaySchedules': Translations.CompanyManagementPaySchedules
     // (undocumented)
     'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
     // (undocumented)

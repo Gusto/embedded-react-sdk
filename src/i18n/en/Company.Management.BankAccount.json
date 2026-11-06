@@ -2,6 +2,7 @@
   "card": {
     "title": "Bank account",
     "manageCta": "Manage",
+    "manageAriaLabel": "Manage bank account",
     "addCta": "Add bank account",
     "accountName": "Account name",
     "accountNumber": "Account number",
