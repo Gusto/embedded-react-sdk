@@ -3,14 +3,20 @@ title: Troubleshooting
 description: Fixes for common SDK integration problems, including API version header issues and CORS errors, plus how to help Gusto debug your integration.
 ---
 
-## Start here: forward the SDK's headers
+## Common issues
 
-The SDK sends two headers on every request:
+### Your proxy doesn't forward the SDK's headers
+
+**Signs:** Gusto can't tell which SDK version sent your requests, so support takes longer.
+
+**Cause:** The SDK sends two headers on every request:
 
 - `X-Gusto-API-Version`: the API version this SDK release is built for.
 - `X-Gusto-SDK-Version`: the SDK package and version, for example `@gusto/embedded-react-sdk 0.55.7`. Sent starting in version 0.55.7.
 
-Your proxy builds its own request to Gusto, so these headers are not passed along unless you copy them. Copy both, unchanged:
+Your proxy builds its own request to Gusto, so these headers are not passed along unless you copy them.
+
+**Fix:** Copy both headers to the outgoing request, unchanged:
 
 ```ts title="proxy.ts"
 for (const name of ['x-gusto-api-version', 'x-gusto-sdk-version']) {
@@ -21,15 +27,13 @@ for (const name of ['x-gusto-api-version', 'x-gusto-sdk-version']) {
 
 We strongly recommend forwarding `X-Gusto-SDK-Version`. It lets Gusto see which SDK version sent a request, so we can find and fix your issue much faster.
 
-## Common issues
-
 ### The API version is overridden
 
 **Signs:** Requests fail, or screens show missing or wrong data. The browser console may show `Requested API version ... but the response reported version ...`.
 
 **Cause:** Something replaced the SDK's `X-Gusto-API-Version` header. This is usually a proxy that sets its own version. It can also be `config.headers` or a [request interceptor](../guides/integration-guide/request-interceptors.md).
 
-**Fix:** Don't set `X-Gusto-API-Version` yourself for SDK requests. Forward the value the SDK sends, as shown above. Each SDK release reads responses in the shape of one API version. A different version can return data the SDK can't read.
+**Fix:** Don't set `X-Gusto-API-Version` yourself for SDK requests. Forward the value the SDK sends, as shown in [the first issue](#your-proxy-doesnt-forward-the-sdks-headers). Each SDK release reads responses in the shape of one API version. A different version can return data the SDK can't read.
 
 ### Requests fail with `406 invalid_api_version`
 
