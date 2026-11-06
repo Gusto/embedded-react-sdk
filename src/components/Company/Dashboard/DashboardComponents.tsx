@@ -12,10 +12,7 @@ import { componentEvents } from '@/shared/constants'
 
 /** @internal */
 type DashboardSuccessAlert =
-  | 'industryUpdated'
-  | 'federalTaxesUpdated'
-  | 'locationsUpdated'
-  | 'bankAccountUpdated'
+  'industryUpdated' | 'federalTaxesUpdated' | 'locationsUpdated' | 'bankAccountUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
