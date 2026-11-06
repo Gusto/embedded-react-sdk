@@ -148,9 +148,9 @@ const wireValue = formatDateToStringDate(pickedDate)
 
 Multi-step components are driven by `robot3` state machines rendered through `<Flow>` (`src/components/Flow/Flow.tsx`). `Flow` re-emits every event to the upstream `onEvent` regardless of whether the local machine has a transition for it — so a parent already receives a step's completion signal without the child machine needing to transition anywhere for it.
 
-**Never model completion as a robot3 final state** (`final()`, or an equivalent zero-transition `state()`), in any flow — guided, hub-and-spoke, or a public standalone component. A final state has no transitions out: if the host doesn't unmount the component in the same tick its completion event fires, every further interaction becomes a silent no-op while the last-rendered screen keeps looking interactive. Let the completion event bubble via `onEvent` without transitioning the local machine instead.
+**Treat every robot3 final state — `final()`, or any equivalent zero-transition `state()` — with caution; it's a known, recurring source of bugs here.** The specific trap: don't route a completion event into a dead-end state when the state you're leaving is a landing point — a hub screen the flow can sit at indefinitely with its own independently meaningful actions (e.g. `EmployeeList`'s `index`, which still needs `EMPLOYEE_CREATE`/`EMPLOYEE_UPDATE` to work after `EMPLOYEE_ONBOARDING_DONE` fires). Such a state can never transition anywhere again, so reaching one from a landing point kills those other, unrelated actions too. Let the completion event bubble via `onEvent` without transitioning the local machine instead.
 
-This holds even when the terminal step is a genuine dead-end screen with no actionable controls (e.g. `Company.OnboardingFlow`'s closing `overview` review step): `Flow` calls `onEvent` regardless of whether the local machine transitions, so the host unmounts the tree either way, and a final state would add nothing.
+A zero-transition state is fine for a genuine one-way terminal step with no hub to return to (`OnboardingExecutionFlow`'s `summary`, `HistoricalPaymentFlow`'s `historicalPaymentSummary`) — there's no other possible actions left to protect there.
 
 ### Component & Feature Conventions
 

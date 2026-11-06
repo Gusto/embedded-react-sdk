@@ -6,6 +6,7 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { componentEvents } from '@/shared/constants'
 import {
   createEmployee,
   getCompanyEmployees,
@@ -192,7 +193,7 @@ describe('EmployeeOnboardingFlow', () => {
       )
     })
 
-    it('stays interactive after Continue is clicked and the host keeps it mounted', async () => {
+    it('remains interactive after Continue is clicked when the host keeps it mounted', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
       render(
@@ -203,10 +204,8 @@ describe('EmployeeOnboardingFlow', () => {
 
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      expect(onEvent).toHaveBeenCalledWith('employee/onboarding/done', undefined)
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_ONBOARDING_DONE, undefined)
 
-      // The host didn't unmount us on "done" — the list must still be usable,
-      // not stuck in a dead terminal state.
       await user.click(await screen.findByRole('button', { name: /Add/i }))
       await screen.findByLabelText(/social/i)
     })
