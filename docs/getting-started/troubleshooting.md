@@ -18,7 +18,7 @@ We strongly recommend forwarding `X-Gusto-SDK-Version`. It lets Gusto see which 
 
 ### The API version is overridden
 
-**Signs:** Requests fail, or screens show missing or wrong data. The browser console may show `Requested API version ... but the response reported version ...`.
+**Signs:** Requests fail, or screens show missing or wrong data.
 
 **Cause:** Something replaced the SDK's `X-Gusto-API-Version` header. This is usually a proxy that sets its own version. It can also be `config.headers` or a [request interceptor](../guides/integration-guide/request-interceptors.md).
 
