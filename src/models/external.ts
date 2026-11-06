@@ -196,6 +196,8 @@ export {
 export { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 /** `Form` entity from the Gusto Embedded API. */
 export type { Form } from '@gusto/embedded-api/models/components/form'
+/** `Form1099` entity from the Gusto Embedded API. */
+export type { Form1099 } from '@gusto/embedded-api/models/components/form1099'
 /** `GarnishmentType` entity from the Gusto Embedded API. */
 export { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
 export type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
