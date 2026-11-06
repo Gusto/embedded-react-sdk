@@ -53,6 +53,21 @@ export interface UnstableFeatures {
    * @defaultValue `false`
    */
   taxPayments?: boolean
+  /**
+   * The centralized company settings dashboard.
+   *
+   * When `true`, `CompanyManagement.Dashboard` and `CompanyManagement.DashboardFlow` can be
+   * mounted. The dashboard's Pay schedules and Tax payments cards additionally require their own
+   * flags — `managePaySchedules` and `taxPayments` respectively — and are omitted from the
+   * dashboard when those are off; every other card renders regardless.
+   *
+   * When `false`, both components throw when mounted. The individual company components the
+   * dashboard composes, such as `CompanyOnboarding.Industry` and `CompanyOnboarding.Locations`,
+   * are not affected.
+   *
+   * @defaultValue `false`
+   */
+  companySettingsDashboard?: boolean
 }
 
 /**

@@ -5,8 +5,16 @@ import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUn
 import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyManagement.Dashboard': ['companyId'],
+  'CompanyManagement.DashboardFlow': ['companyId'],
+  'CompanyManagement.FederalTaxesCard': ['companyId'],
+  'CompanyManagement.IndustryCard': ['companyId'],
+  'CompanyManagement.LocationsCard': ['companyId'],
   'CompanyManagement.PaySchedule': ['companyId'],
   'CompanyManagement.PayScheduleAssignment': ['companyId'],
+  'CompanyManagement.TaxPaymentDetail': ['companyId'],
+  'CompanyManagement.TaxPaymentsFlow': ['companyId'],
+  'CompanyManagement.TaxPaymentsList': ['companyId'],
   'CompanyOnboarding.AssignSignatory': ['companyId'],
   'CompanyOnboarding.BankAccount': ['companyId'],
   'CompanyOnboarding.CreateSignatory': ['companyId'],
@@ -61,7 +69,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorOnboarding.ContractorSubmit': ['contractorId'],
   'ContractorOnboarding.DocumentSigner': ['contractorId'],
   'ContractorOnboarding.DocumentsList': ['contractorId'],
-  'ContractorOnboarding.Landing': ['contractorId', 'companyId'],
+  'ContractorOnboarding.Landing': ['contractorId'],
   'ContractorOnboarding.NewHireReport': ['contractorId'],
   'ContractorOnboarding.OnboardingFlow': ['companyId'],
   'ContractorOnboarding.OnboardingSummary': ['contractorId'],
@@ -117,7 +125,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeOnboarding.FederalTaxes': ['employeeId'],
   'EmployeeOnboarding.I9SignatureForm': ['employeeId'],
   'EmployeeOnboarding.JobsList': ['employeeId'],
-  'EmployeeOnboarding.Landing': ['employeeId', 'companyId'],
+  'EmployeeOnboarding.Landing': ['employeeId'],
   'EmployeeOnboarding.OnboardingExecutionFlow': ['companyId'],
   'EmployeeOnboarding.OnboardingFlow': ['companyId'],
   'EmployeeOnboarding.OnboardingSummary': ['employeeId'],
@@ -148,9 +156,6 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.PayrollReceipts': ['payrollId'],
   'Payroll.PrintChecks': ['companyId', 'payrollId'],
   'Payroll.RecoveryCases': ['companyId'],
-  'Payroll.TaxPaymentDetail': ['companyId'],
-  'Payroll.TaxPaymentsFlow': ['companyId'],
-  'Payroll.TaxPaymentsList': ['companyId'],
   'Payroll.TransitionConfiguration': ['companyId', 'payrollId'],
   'TimeOff.AddEmployeesHoliday': ['companyId'],
   'TimeOff.AddEmployeesToPolicy': ['companyId'],
@@ -169,6 +174,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
 }
 
 export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
+  'CompanyManagement.TaxPaymentDetail': ['taxPaymentId'],
   'CompanyOnboarding.SignatureForm': ['formId'],
   'CompanyOnboarding.StateTaxesForm': ['state'],
   'CompanyOnboarding.TaxRateManagement': ['state'],
@@ -183,7 +189,6 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'EmployeeOnboarding.I9SignatureForm': ['formId'],
   'EmployeeOnboarding.SignatureForm': ['formId'],
   'Payroll.OffCycleDeductionsSetting': ['skipRegularDeductions'],
-  'Payroll.TaxPaymentDetail': ['taxPaymentId'],
   'TimeOff.AddEmployeesToPolicy': ['policyId', 'policyType'],
   'TimeOff.PolicyConfigurationForm': ['policyType'],
   'TimeOff.PolicySettings': ['policyId'],
@@ -202,6 +207,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 }
 
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
+  companySettingsDashboard: false,
   historicalPayments: false,
   managePaySchedules: false,
   taxPayments: false,
