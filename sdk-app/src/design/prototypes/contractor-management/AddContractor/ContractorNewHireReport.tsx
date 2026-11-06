@@ -48,7 +48,7 @@ function Root({
   const Components = useComponentContext()
 
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
   const contractorDetails = contractor!
 

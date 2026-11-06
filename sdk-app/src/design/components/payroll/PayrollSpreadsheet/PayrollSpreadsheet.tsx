@@ -1,13 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type FocusEvent } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
-  EmployeeCompensations,
+  PayrollShowEmployeeCompensations as EmployeeCompensations,
   PayrollShowReimbursements,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { Skeleton } from '../../common/Skeleton'
 import { BreakdownModal } from './BreakdownModal'
 import styles from './PayrollSpreadsheet.module.scss'

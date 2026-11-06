@@ -43,7 +43,6 @@ export const onboardingMachine = {
         }),
       ),
     ),
-    transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
   ),
   locations: state<MachineTransition>(
     transition(
@@ -106,6 +105,4 @@ export const onboardingMachine = {
       ),
     ),
   ),
-
-  final: state<MachineTransition>(),
 }

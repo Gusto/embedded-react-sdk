@@ -106,6 +106,7 @@ function ManagementContractorListRoot({
         contractors={contractorList.data.contractors}
         isFetching={contractorList.status.isFetching}
         pagination={contractorList.pagination}
+        sort={contractorList.sort}
         status={contractorList.status}
         onEdit={handleEdit}
         onView={handleView}

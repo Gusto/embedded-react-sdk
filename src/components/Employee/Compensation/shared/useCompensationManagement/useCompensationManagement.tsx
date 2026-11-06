@@ -93,7 +93,7 @@ export function useCompensationManagement({
     setError: setSubmitError,
   } = useBaseSubmit('Employee.Management.Compensation')
 
-  const employee = employeeQuery.data?.employee
+  const employee = employeeQuery.data?.employeeShow
 
   const jobs = useMemo(() => jobsQuery.data?.jobs ?? [], [jobsQuery.data?.jobs])
   const primaryJob = useMemo(() => jobs.find(job => job.primary === true), [jobs])

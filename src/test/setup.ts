@@ -45,7 +45,7 @@ beforeEach(() => {
 })
 
 beforeAll(() => {
-  server.listen()
+  server.enable()
 })
 
 afterEach(() => {
@@ -66,7 +66,7 @@ afterEach(async () => {
 
 afterAll(() => {
   // Disable request interception and clean up.
-  server.close()
+  server.disable()
 })
 
 // Mock scrollIntoView — guard for non-jsdom environments (e.g. node-environment unit tests)

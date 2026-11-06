@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import styles from './PayScheduleOverviewPresentation.module.scss'
 import { Flex } from '@/components/Common/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

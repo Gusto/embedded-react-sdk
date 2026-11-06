@@ -1,0 +1,22 @@
+name: Release Readiness Events
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, ready_for_review, closed]
+  pull_request_review:
+    types: [submitted, dismissed, edited]
+  push:
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Requesting release readiness evaluation.'

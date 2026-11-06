@@ -8,7 +8,7 @@ import {
   QueryParamPayrollTypes,
   QueryParamSortOrder as SortOrder,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
+import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, BaseLayout } from '@/components/Base/Base'
@@ -98,11 +98,7 @@ const Root = ({
     {
       companyId,
       processingStatuses: [ProcessingStatuses.Processed],
-      payrollTypes: [
-        QueryParamPayrollTypes.Regular,
-        QueryParamPayrollTypes.OffCycle,
-        QueryParamPayrollTypes.External,
-      ],
+      payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
       includeOffCycle: true,
       include: ['totals', 'payroll_status_meta'],
       sortOrder: SortOrder.Desc,

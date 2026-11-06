@@ -24,6 +24,13 @@ interface TokenCache {
 /** Refresh this far before actual expiry so an in-flight request never races expiry. */
 const TOKEN_EXPIRY_BUFFER_MS = 5 * 60 * 1000
 
+/**
+ * Upstream response headers copied onto the proxied response, besides `Content-Type`: the
+ * pagination headers the SDK reads. Allowlisted rather than forwarded wholesale so upstream
+ * CORS (`Access-Control-*`), cookie, and body-framing headers never reach the browser.
+ */
+const FORWARDED_RESPONSE_HEADERS = ['x-total-pages', 'x-total-count', 'x-page', 'x-per-page']
+
 // Also caches the access token + expiry, not just the refresh token: Vite restarts on
 // every edit to this file or vite.config.ts, and without this, each restart would hit
 // the refresh grant unconditionally even when the previous access token is still valid
@@ -162,6 +169,10 @@ export function registerPartnerApiProxy(server: ViteDevServer, env: Record<strin
         const text = await upstream.text()
         res.statusCode = upstream.status
         res.setHeader('Content-Type', upstream.headers.get('content-type') ?? 'application/json')
+        for (const name of FORWARDED_RESPONSE_HEADERS) {
+          const value = upstream.headers.get(name)
+          if (value !== null) res.setHeader(name, value)
+        }
         res.end(text)
       } catch (err) {
         res.statusCode = 502

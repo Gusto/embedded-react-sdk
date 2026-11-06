@@ -1,4 +1,5 @@
 import { state, transition, reduce } from 'robot3'
+import { PayScheduleAssignmentBodyType } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
 import type { ComponentType } from 'react'
 import {
   AssignmentTypeStep,
@@ -31,11 +32,22 @@ export const payScheduleAssignmentStateMachine = {
             EventPayloads,
             typeof componentEvents.PAY_SCHEDULE_ASSIGNMENT_TYPE_SELECTED
           >,
-        ): PayScheduleAssignmentContextInterface => ({
-          ...ctx,
-          component: AssignmentScheduleStep as ComponentType,
-          assignmentType: ev.payload.type,
-        }),
+        ): PayScheduleAssignmentContextInterface => {
+          // Switching type invalidates every schedule already picked under the old one, so a
+          // Single → HourlySalaried → Back → Single round trip can't resurrect a stale uuid.
+          const isSameType = ctx.assignmentType === ev.payload.type
+
+          return {
+            ...ctx,
+            component: AssignmentScheduleStep as ComponentType,
+            assignmentType: ev.payload.type,
+            defaultPayScheduleUuid: isSameType ? ctx.defaultPayScheduleUuid : undefined,
+            hourlyPayScheduleUuid: isSameType ? ctx.hourlyPayScheduleUuid : undefined,
+            salariedPayScheduleUuid: isSameType ? ctx.salariedPayScheduleUuid : undefined,
+            departments: isSameType ? ctx.departments : undefined,
+            employees: isSameType ? ctx.employees : undefined,
+          }
+        },
       ),
     ),
   ),
@@ -44,8 +56,12 @@ export const payScheduleAssignmentStateMachine = {
       componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK,
       'assignmentType',
       reduce(
-        (ctx: PayScheduleAssignmentContextInterface): PayScheduleAssignmentContextInterface => ({
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_ASSIGNMENT_BACK>,
+        ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
+          ...ev.payload,
           component: AssignmentTypeStep as ComponentType,
         }),
       ),
@@ -54,8 +70,12 @@ export const payScheduleAssignmentStateMachine = {
       componentEvents.PAY_SCHEDULE_CREATE,
       'assignmentCreateSchedule',
       reduce(
-        (ctx: PayScheduleAssignmentContextInterface): PayScheduleAssignmentContextInterface => ({
+        (
+          ctx: PayScheduleAssignmentContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.PAY_SCHEDULE_CREATE>,
+        ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
+          ...ev.payload,
           component: AssignmentCreateScheduleStep as ComponentType,
         }),
       ),
@@ -73,7 +93,7 @@ export const payScheduleAssignmentStateMachine = {
         ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
           component: AssignmentReviewStep as ComponentType,
-          defaultPayScheduleUuid: ev.payload.defaultPayScheduleUuid,
+          ...ev.payload,
         }),
       ),
     ),
@@ -89,7 +109,11 @@ export const payScheduleAssignmentStateMachine = {
         ): PayScheduleAssignmentContextInterface => ({
           ...ctx,
           component: AssignmentScheduleStep as ComponentType,
-          defaultPayScheduleUuid: ev.payload.paySchedule.uuid,
+          defaultPayScheduleUuid:
+            ctx.assignmentType === PayScheduleAssignmentBodyType.ByDepartment ||
+            ctx.assignmentType === PayScheduleAssignmentBodyType.ByEmployee
+              ? ctx.defaultPayScheduleUuid
+              : ev.payload.paySchedule.uuid,
         }),
       ),
     ),

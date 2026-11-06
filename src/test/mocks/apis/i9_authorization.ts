@@ -17,7 +17,7 @@ export const getI9Authorization = handleGetI9Authorization(async () => {
 })
 
 export const getI9AuthorizationNotFound = handleGetI9Authorization(() => {
-  return new HttpResponse(null, { status: 404 })
+  return new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } })
 })
 
 export function handleUpdateI9Authorization(

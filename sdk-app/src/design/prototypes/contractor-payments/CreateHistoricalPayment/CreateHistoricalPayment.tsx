@@ -30,7 +30,10 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
   const previewMutation = useContractorPaymentGroupsPreviewMutation()
   const createMutation = useContractorPaymentGroupsCreateMutation()
 
-  const contractors = useMemo(() => toContractorOptions(data.contractors ?? []), [data.contractors])
+  const contractors = useMemo(
+    () => toContractorOptions(data.showContractors ?? []),
+    [data.showContractors],
+  )
 
   const [step, setStep] = useState<Step>('select')
   const [paidDate, setPaidDate] = useState('')

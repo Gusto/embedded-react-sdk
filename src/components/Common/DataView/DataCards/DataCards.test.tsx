@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
 import { DataCards } from '@/components/Common/DataView/DataCards/DataCards'
@@ -172,5 +172,74 @@ describe('DataCards', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(3)
     expect(screen.getByText('Total Records:')).toBeInTheDocument()
     expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
+  test('labels footer values with their column titles', () => {
+    renderCards({ footer: () => ({ name: 'Totals', age: '55' }) })
+    const footerCard = within(screen.getAllByRole('listitem').at(-1)!)
+    expect(footerCard.getByText('Age')).toBeInTheDocument()
+    expect(footerCard.getByText('55')).toBeInTheDocument()
+  })
+
+  test('renders the first column footer as the row label without its column title', () => {
+    renderCards({ footer: () => ({ name: 'Totals', age: '55' }) })
+    const footerCard = within(screen.getAllByRole('listitem').at(-1)!)
+    expect(footerCard.getByText('Totals').className).toMatch(/footerRowLabel/)
+    expect(footerCard.queryByText('Name')).toBeNull()
+  })
+
+  test('labels footer values for columns without a key by index', () => {
+    renderCards({
+      columns: [
+        { key: 'name', title: 'Name' },
+        { title: 'Summary', render: (item: MockData) => `${item.name} (${item.age})` },
+      ],
+      footer: () => ({ 'column-1': 'All records' }),
+    })
+    const footerCard = within(screen.getAllByRole('listitem').at(-1)!)
+    expect(footerCard.getByText('Summary')).toBeInTheDocument()
+    expect(footerCard.getByText('All records')).toBeInTheDocument()
+  })
+
+  test('should offer a sort control for sortable columns and report the chosen sort', async () => {
+    const user = userEvent.setup()
+    const onSortChange = vi.fn()
+    renderCards({
+      columns: [
+        { key: 'name', title: 'Name', isSortable: true },
+        { key: 'age', title: 'Age' },
+      ],
+      onSortChange,
+    })
+
+    await user.click(screen.getByRole('button', { name: /Sort by/ }))
+    const options = await screen.findAllByRole('option')
+    expect(options.map(option => option.textContent)).toEqual([
+      'Default order',
+      'Name (A\u2013Z)',
+      'Name (Z\u2013A)',
+    ])
+
+    await user.click(screen.getByRole('option', { name: 'Name (Z\u2013A)' }))
+
+    expect(onSortChange).toHaveBeenCalledWith({ columnKey: 'name', direction: 'descending' })
+  })
+
+  test('should return the data to its default order', async () => {
+    const user = userEvent.setup()
+    const onSortChange = vi.fn()
+    renderCards({
+      columns: [
+        { key: 'name', title: 'Name', isSortable: true },
+        { key: 'age', title: 'Age' },
+      ],
+      sortDescriptor: { columnKey: 'name', direction: 'descending' },
+      onSortChange,
+    })
+
+    await user.click(screen.getByRole('button', { name: /Sort by/ }))
+    await user.click(screen.getByRole('option', { name: 'Default order' }))
+
+    expect(onSortChange).toHaveBeenCalledWith(undefined)
   })
 })

@@ -1,9 +1,9 @@
 import { Trans, useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import type {
-  EmployeeCompensations,
+  PayrollShowEmployeeCompensations as EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type {
@@ -14,9 +14,11 @@ import type { PaymentSpeed } from '@gusto/embedded-api/models/components/payment
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
+  getCancelDeadlineValues,
   getPayPeriodOrCheckDateLabel,
   getPayrollTypeLabel,
   getReimbursements,
+  getTotalOutstandingPtoHours,
   isDismissalPayroll,
 } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -109,14 +111,6 @@ export const PayrollOverviewPresentation = ({
     <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
   )
   const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
-
-  // formatWithTime returns { time, date }, and the cancel dialog used to interpolate only
-  // `time` -- so it read "Run this payroll by 4:00 PM PDT" with no date at all (SDK-1286).
-  // Rendered as "<time> on <date>" to match how PayrollHistory shows the same deadline.
-  const cancelDeadline = (() => {
-    const { time, date } = dateFormatter.formatWithTime(payrollData.payrollDeadline)
-    return date ? `${time} on ${date}` : time
-  })()
 
   const pageSubtitle = (
     <Text>
@@ -424,13 +418,24 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) =>
                 getEmployeePtoHours(employeeCompensations),
             },
+            ...(isDismissal
+              ? [
+                  {
+                    title: t('tableHeaders.unusedHours'),
+                    render: (employeeCompensations: EmployeeCompensations) =>
+                      getTotalOutstandingPtoHours(employeeCompensations),
+                  },
+                ]
+              : []),
             {
               title: t('tableHeaders.totalHours'),
               render: (employeeCompensations: EmployeeCompensations) =>
                 Object.values(getEmployeeHours(employeeCompensations)).reduce(
                   (acc, hours) => acc + hours,
                   0,
-                ) + getEmployeePtoHours(employeeCompensations),
+                ) +
+                getEmployeePtoHours(employeeCompensations) +
+                (isDismissal ? getTotalOutstandingPtoHours(employeeCompensations) : 0),
             },
           ]}
           data={payrollData.employeeCompensations!}
@@ -837,9 +842,10 @@ export const PayrollOverviewPresentation = ({
                   <Text>{t('cancelDialogDescription')}</Text>
                   {Number(payrollData.totals?.netPayDebit ?? 0) > 0 && (
                     <Text>
-                      {t('cancelDialogDescriptionDeadline', {
-                        deadline: cancelDeadline,
-                      })}
+                      {t(
+                        'cancelDialogDescriptionDeadline',
+                        getCancelDeadlineValues(payrollData, dateFormatter),
+                      )}
                     </Text>
                   )}
                 </Flex>

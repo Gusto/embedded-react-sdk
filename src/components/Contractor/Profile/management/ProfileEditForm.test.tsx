@@ -127,10 +127,12 @@ describe('ProfileEditForm — individual contractor', () => {
       expect(updateResolver).toHaveBeenCalledTimes(1)
     })
     expect(requestBody).toMatchObject({ last_name: 'Byron' })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_MANAGEMENT_PROFILE_UPDATED,
-      expect.objectContaining({ lastName: 'Byron' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_MANAGEMENT_PROFILE_UPDATED,
+        expect.objectContaining({ lastName: 'Byron' }),
+      )
+    })
     expect(await screen.findByText('Profile updated')).toBeInTheDocument()
   })
 

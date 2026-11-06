@@ -282,6 +282,31 @@ function buildWeekMap(
 }
 
 /**
+ * Builds a job-UUID → compensation-name → value dictionary from flat entries.
+ * `Object.fromEntries` defines each key as a normal data property rather than
+ * going through `[[Set]]`, so an API-supplied `__proto__`/`constructor`/
+ * `prototype` key lands as an ordinary own property instead of touching
+ * `Object.prototype` — unlike building the dictionary via `dict[key] = value`
+ * assignment, this needs no null-prototype intermediate.
+ */
+function buildNestedDictionary<T>(
+  entries: ReadonlyArray<readonly [jobUuid: string, name: string, value: T]>,
+): Record<string, Record<string, T>> {
+  const byJob = new Map<string, Array<readonly [string, T]>>()
+  for (const [jobUuid, name, value] of entries) {
+    const pairs = byJob.get(jobUuid)
+    if (pairs) {
+      pairs.push([name, value])
+    } else {
+      byJob.set(jobUuid, [[name, value]])
+    }
+  }
+  return Object.fromEntries(
+    Array.from(byJob, ([jobUuid, pairs]) => [jobUuid, Object.fromEntries(pairs)]),
+  )
+}
+
+/**
  * Derives the form's default values from the employee's prepared compensation.
  *
  * @remarks
@@ -310,38 +335,40 @@ export function derivePayrollEditEmployeeDefaults(
   // seeds) flat, even on a multi-workweek payroll.
   const isSplit = workweeks.length > 1 && isOvertimeEligible && withOvertime
 
-  const hours: PayrollEditEmployeeFormData['hours'] = {}
+  const hourEntries: Array<readonly [string, string, Record<string, string>]> = []
   for (const compensation of employeeCompensation?.hourlyCompensations ?? []) {
     if (!compensation.jobUuid || !compensation.name) continue
-    const jobHours = (hours[compensation.jobUuid] ??= {})
-    jobHours[compensation.name] = buildWeekMap(
-      workweeks,
-      compensation.hours,
-      compensation.breakdowns,
-      isSplit,
-    )
+    hourEntries.push([
+      compensation.jobUuid,
+      compensation.name,
+      buildWeekMap(workweeks, compensation.hours, compensation.breakdowns, isSplit),
+    ])
   }
+  const hours = buildNestedDictionary(hourEntries)
 
   // Earnings whose earning type is included in the regular-rate-of-pay overtime
   // calculation stay workweek-breakdown; the rest are flat and land in `overtimeExcludedEarnings`.
   // The hook owns this bucketing so the UI just renders each section.
-  const overtimeIncludedEarnings: PayrollEditEmployeeFormData['overtimeIncludedEarnings'] = {}
-  const overtimeExcludedEarnings: PayrollEditEmployeeFormData['overtimeExcludedEarnings'] = {}
+  const overtimeIncludedEntries: Array<readonly [string, string, Record<string, string>]> = []
+  const overtimeExcludedEntries: Array<readonly [string, string, string]> = []
   for (const compensation of fixedCompensations) {
     if (!compensation.jobUuid || !compensation.name) continue
     if (overtimeEarningNames.has(compensation.name)) {
-      const jobEarnings = (overtimeIncludedEarnings[compensation.jobUuid] ??= {})
-      jobEarnings[compensation.name] = buildWeekMap(
-        workweeks,
-        compensation.amount,
-        compensation.breakdowns,
-        isSplit,
-      )
+      overtimeIncludedEntries.push([
+        compensation.jobUuid,
+        compensation.name,
+        buildWeekMap(workweeks, compensation.amount, compensation.breakdowns, isSplit),
+      ])
     } else {
-      const jobOther = (overtimeExcludedEarnings[compensation.jobUuid] ??= {})
-      jobOther[compensation.name] = formatAmountInput(compensation.amount)
+      overtimeExcludedEntries.push([
+        compensation.jobUuid,
+        compensation.name,
+        formatAmountInput(compensation.amount),
+      ])
     }
   }
+  const overtimeIncludedEarnings = buildNestedDictionary(overtimeIncludedEntries)
+  const overtimeExcludedEarnings = buildNestedDictionary(overtimeExcludedEntries)
 
   const timeOff: PayrollEditEmployeeFormData['timeOff'] = {}
   const finalPayout: PayrollEditEmployeeFormData['finalPayout'] = {}

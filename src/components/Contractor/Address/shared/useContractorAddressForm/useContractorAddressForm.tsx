@@ -210,7 +210,7 @@ export function useContractorAddressForm({
     { enabled: !!contractorId },
   )
 
-  const contractor = contractorQuery.data?.contractor
+  const contractor = contractorQuery.data?.contractorShow
   const contractorType = contractor?.type
   const fetchedAddress = addressQuery.data?.contractorAddress
 

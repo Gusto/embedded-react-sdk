@@ -4,9 +4,14 @@ import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
 import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
+import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 import { useSelectionState } from '@/components/Common/DataView/useSelectionState'
+import { getSortControls } from '@/components/Common/DataView/getSortControls'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+// Sentinel for the "default order" option, kept clear of the `<columnKey>:<direction>` values.
+const DEFAULT_ORDER_VALUE = 'none'
 
 /** @internal */
 export type DataCardsProps<T> = {
@@ -23,6 +28,8 @@ export type DataCardsProps<T> = {
   selectionMode?: SelectionMode
   isWithinBox?: TableProps['isWithinBox']
   isFetching?: useDataViewPropReturn<T>['isFetching']
+  sortDescriptor?: useDataViewPropReturn<T>['sortDescriptor']
+  onSortChange?: useDataViewPropReturn<T>['onSortChange']
 }
 
 /** @internal */
@@ -40,11 +47,41 @@ export const DataCards = <T,>({
   selectionMode = 'multiple',
   isWithinBox,
   isFetching,
+  sortDescriptor,
+  onSortChange,
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
   const { allSelected } = useSelectionState(data, getIsItemSelected)
+
+  const sortOptions: SelectOption[] = []
+  const applySortByValue = new Map<string, () => void>()
+  if (onSortChange) {
+    sortOptions.push({ value: DEFAULT_ORDER_VALUE, label: t('card.sortDefaultOption') })
+    applySortByValue.set(DEFAULT_ORDER_VALUE, () => {
+      onSortChange(undefined)
+    })
+  }
+  columns.forEach(column => {
+    // Options are labelled from the column title, so a column titled with a ReactNode
+    // has nothing usable to show in the dropdown.
+    if (!column.isSortable || !onSortChange || typeof column.title !== 'string') return
+    const controls = getSortControls(column.key, sortDescriptor, onSortChange)
+    const columnTitle = column.title
+    sortOptions.push(
+      {
+        value: `${column.key}:ascending`,
+        label: t('card.sortAscendingOption', { column: columnTitle }),
+      },
+      {
+        value: `${column.key}:descending`,
+        label: t('card.sortDescendingOption', { column: columnTitle }),
+      },
+    )
+    applySortByValue.set(`${column.key}:ascending`, controls.onSortAscending)
+    applySortByValue.set(`${column.key}:descending`, controls.onSortDescending)
+  })
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
@@ -83,6 +120,24 @@ export const DataCards = <T,>({
       data-testid="data-cards"
       aria-busy={Boolean(isFetching)}
     >
+      {sortOptions.length > 1 && (
+        <div className={styles.sortRow}>
+          <Components.Select
+            label={t('card.sortByLabel')}
+            // A value is always selected -- unsorted data resolves to the default-order option.
+            placeholder=""
+            options={sortOptions}
+            value={
+              sortDescriptor
+                ? `${sortDescriptor.columnKey}:${sortDescriptor.direction}`
+                : DEFAULT_ORDER_VALUE
+            }
+            onChange={value => {
+              applySortByValue.get(value)?.()
+            }}
+          />
+        </div>
+      )}
       {onSelect &&
         getIsItemSelected &&
         selectionMode === 'multiple' &&
@@ -129,16 +184,21 @@ export const DataCards = <T,>({
               {(() => {
                 const footerContent = footer()
 
-                return Object.entries(footerContent).map(([key, content]) => {
-                  const columnIndex = key.startsWith('column-')
-                    ? parseInt(key.replace('column-', ''), 10)
-                    : -1
-                  const columnTitle = columnIndex >= 0 ? columns[columnIndex]?.title : undefined
+                return columns.map((column, index) => {
+                  const columnKey = typeof column.key === 'string' ? column.key : `column-${index}`
+                  const content = footerContent[columnKey]
+                  if (content === undefined || content === '') return null
+
+                  const isRowLabel = index === 0
 
                   return (
-                    <Flex key={key} flexDirection="column" gap={0}>
-                      {columnTitle && <h5 className={styles.columnTitle}>{columnTitle}</h5>}
-                      <div className={styles.footerItem}>{content}</div>
+                    <Flex key={columnKey} flexDirection="column" gap={0}>
+                      {!isRowLabel && column.title && (
+                        <h5 className={styles.columnTitle}>{column.title}</h5>
+                      )}
+                      <div className={cn(styles.footerItem, isRowLabel && styles.footerRowLabel)}>
+                        {content}
+                      </div>
                     </Flex>
                   )
                 })

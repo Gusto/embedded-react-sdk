@@ -95,9 +95,11 @@ describe('PaymentMethodCard', () => {
     await waitFor(() => {
       expect(updateResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED,
-      expect.objectContaining({ type: 'Check' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED,
+        expect.objectContaining({ type: 'Check' }),
+      )
+    })
   })
 })

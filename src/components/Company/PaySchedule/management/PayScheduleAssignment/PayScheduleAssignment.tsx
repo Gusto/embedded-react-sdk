@@ -1,9 +1,15 @@
 import { createMachine } from 'robot3'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { usePaySchedulesGetAssignmentsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAssignments'
+import { PayScheduleAssignmentType } from '@gusto/embedded-api/models/components/payscheduleassignment'
+import type { PayScheduleAssignment as PayScheduleAssignmentEntity } from '@gusto/embedded-api/models/components/payscheduleassignment'
 import { payScheduleAssignmentStateMachine } from './payScheduleAssignmentStateMachine'
 import { AssignmentTypeStep } from './PayScheduleAssignmentComponents'
-import type { PayScheduleAssignmentContextInterface } from './usePayScheduleAssignment'
+import type {
+  PayScheduleAssignmentContextInterface,
+  SupportedAssignmentType,
+} from './usePayScheduleAssignment'
 import { stripNullAssignmentPreviewFields } from './stripNullAssignmentPreviewFields'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -11,6 +17,57 @@ import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+
+type AssignmentSeed = Pick<
+  PayScheduleAssignmentContextInterface,
+  | 'assignmentType'
+  | 'defaultPayScheduleUuid'
+  | 'hourlyPayScheduleUuid'
+  | 'salariedPayScheduleUuid'
+  | 'departments'
+  | 'employees'
+>
+
+function toSupportedType(
+  type: PayScheduleAssignmentType | null | undefined,
+): SupportedAssignmentType | undefined {
+  switch (type) {
+    case PayScheduleAssignmentType.Single:
+    case PayScheduleAssignmentType.HourlySalaried:
+    case PayScheduleAssignmentType.ByDepartment:
+    case PayScheduleAssignmentType.ByEmployee:
+      return type
+    default:
+      return undefined
+  }
+}
+
+/**
+ * Builds the flow's starting context from the company's current assignment, so the flow opens
+ * on what's already configured instead of proposing a change the user didn't ask for. The type
+ * and the uuids have to travel together — without the type, the type step's first Continue
+ * counts as a type change and clears the uuids.
+ */
+function toAssignmentSeed(assignment: PayScheduleAssignmentEntity | undefined): AssignmentSeed {
+  const assignmentType = toSupportedType(assignment?.type)
+
+  if (!assignmentType) {
+    return {}
+  }
+
+  return {
+    assignmentType,
+    defaultPayScheduleUuid: assignment?.defaultPayScheduleUuid ?? undefined,
+    hourlyPayScheduleUuid: assignment?.hourlyPayScheduleUuid ?? undefined,
+    salariedPayScheduleUuid: assignment?.salariedPayScheduleUuid ?? undefined,
+    employees: assignment?.employees?.flatMap(({ employeeUuid, payScheduleUuid }) =>
+      employeeUuid && payScheduleUuid ? [{ employeeUuid, payScheduleUuid }] : [],
+    ),
+    departments: assignment?.departments?.flatMap(({ departmentUuid, payScheduleUuid }) =>
+      departmentUuid && payScheduleUuid ? [{ departmentUuid, payScheduleUuid }] : [],
+    ),
+  }
+}
 
 /**
  * Props for {@link PayScheduleAssignment}.
@@ -27,22 +84,26 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  *
  * @remarks
  * Walks through choosing an assignment type, picking (or creating) a pay schedule, and reviewing
- * the employees and transition payrolls affected before submitting. Only the single-schedule
- * assignment type is currently supported. Can be mounted directly or launched from
+ * the employees and transition payrolls affected before submitting. Opens on the company's
+ * current assignment, so submitting without changing anything is a no-op rather than a
+ * reassignment. Supports one schedule for everyone (`single`), separate schedules for hourly
+ * and salaried employees (`hourly_salaried`), or schedules by department (`by_department`),
+ * including a default for employees without a department, or individually (`by_employee`).
+ * Employee assignment requires employee and compensation read access and excludes terminated,
+ * historical, incomplete-onboarding, and missing-compensation employees. Selecting one schedule for every
+ * group is submitted as `single`. Can be mounted directly or launched from
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
- * The internal step-to-step selection events (assignment type chosen, schedule picked) also
- * bubble through `onEvent` as a side effect of how the underlying `Flow` re-emits every event —
- * they carry no information a host needs mid-flow, since `assigned` reports the final outcome,
- * so they're intentionally left out of the table below.
+ * Step selection events also bubble through `onEvent`; the `assigned` event reports the
+ * final outcome. Adding a pay schedule can include the current selections in its event payload.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | — |
+ * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | Optional current selections: `{ defaultPayScheduleUuid?: string; hourlyPayScheduleUuid?: string; salariedPayScheduleUuid?: string; departments?: { departmentUuid: string; payScheduleUuid: string }[]; employees?: { employeeUuid: string; payScheduleUuid: string }[] }` |
  * | `paySchedule/created` | A new pay schedule was created from the picker step | `{ paySchedule: PayScheduleShow }` |
  * | `paySchedule/management/assignment/cancel` | The user backed out of the flow entirely, from the first step | — |
- * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ type: PayScheduleAssignmentBodyType; defaultPayScheduleUuid: string; employeeChanges: PayScheduleAssignmentEmployeeChange[] }` |
+ * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` or `{ type: 'by_department'; defaultPayScheduleUuid: string; departments: { departmentUuid: string; payScheduleUuid: string }[] }` or `{ type: 'by_employee'; employees: { employeeUuid: string; payScheduleUuid: string }[] }` |
  *
  * @alpha
  */
@@ -87,6 +148,15 @@ function Root({ companyId, dictionary }: Omit<PayScheduleAssignmentProps, BaseCo
     }
   }, [client])
 
+  const { data: assignments } = usePaySchedulesGetAssignmentsSuspense({ companyId })
+
+  /**
+   * Freeze the company's current assignment as the flow's starting point. Submitting the flow
+   * invalidates the whole SDK namespace, so this query refetches mid-submit — recomputing the
+   * seed would re-seat the machine back to the first step and orphan its interpreter.
+   */
+  const [seed] = useState(() => toAssignmentSeed(assignments.payScheduleAssignment))
+
   const machine = useMemo(
     () =>
       createMachine(
@@ -96,9 +166,10 @@ function Root({ companyId, dictionary }: Omit<PayScheduleAssignmentProps, BaseCo
           ...initialContext,
           component: AssignmentTypeStep,
           companyId,
+          ...seed,
         }),
       ),
-    [companyId],
+    [companyId, seed],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />

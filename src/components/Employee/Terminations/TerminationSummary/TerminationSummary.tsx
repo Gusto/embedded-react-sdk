@@ -97,7 +97,7 @@ const Root = ({
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
 
   const {
-    data: { employee },
+    data: { employeeShow: employee },
   } = useEmployeesGetSuspense({ employeeId })
 
   const { data: terminationsData } = useEmployeeEmploymentsGetTerminationsSuspense({ employeeId })

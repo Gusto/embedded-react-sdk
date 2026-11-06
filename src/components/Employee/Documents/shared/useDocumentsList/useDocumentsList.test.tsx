@@ -55,7 +55,11 @@ describe('useDocumentsList', () => {
   })
 
   it('surfaces query errors through errorHandling', async () => {
-    server.use(handleGetEmployeeForms(() => new HttpResponse(null, { status: 500 })))
+    server.use(
+      handleGetEmployeeForms(
+        () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
+      ),
+    )
 
     const { result } = renderHook(() => useDocumentsList({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,

@@ -59,5 +59,8 @@
     "maxReimbursementAmount": "Amount must be less than or equal to 1,000,000",
     "negativeAmount": "Amount cannot be negative",
     "maxHours": "Hours must be less than or equal to 99,999"
-  }
+  },
+  "preapprovedHoursColumn": "Preapproved hours",
+  "additionalHoursColumn": "Additional hours",
+  "timeOffTypeColumn": "Type"
 }

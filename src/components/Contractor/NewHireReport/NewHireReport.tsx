@@ -78,7 +78,7 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
   const Components = useComponentContext()
 
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
   const contractorDetails = contractor!
 

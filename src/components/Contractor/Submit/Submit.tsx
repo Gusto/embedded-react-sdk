@@ -63,7 +63,7 @@ const Root = ({ contractorId, selfOnboarding, dictionary, className }: Contracto
   const onboardingStatus = data.contractorOnboardingStatus?.onboardingStatus
 
   const { data: contractorData } = useContractorsGetSuspense({ contractorUuid: contractorId })
-  const contractor = contractorData.contractor
+  const contractor = contractorData.contractorShow
   const contractorName =
     contractor?.type === 'Individual' ? contractor.firstName : contractor?.businessName
 
@@ -263,7 +263,7 @@ const InviteContractor = ({
   const { Button, Heading, Text } = useComponentContext()
 
   const { data: contractorData } = useContractorsGetSuspense({ contractorUuid: contractorId })
-  const contractor = contractorData.contractor
+  const contractor = contractorData.contractorShow
 
   return (
     <Flex className={className} flexDirection="column">

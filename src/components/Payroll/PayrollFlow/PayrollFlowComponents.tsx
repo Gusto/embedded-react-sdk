@@ -7,6 +7,7 @@ import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
 import { PayrollBlockerList } from '../PayrollBlocker'
+import { TransitionConfiguration } from '../TransitionConfiguration'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -67,9 +68,6 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   showPayrollCancelledAlert?: boolean
   hasPayrollSubmissionStarted?: boolean
   executionInitialState?: 'configuration' | 'overview'
-  transitionStartDate?: string
-  transitionEndDate?: string
-  transitionPayScheduleUuid?: string
 }
 
 /** @internal */
@@ -161,6 +159,18 @@ export function PayrollReceiptsContextual() {
 export function PayrollBlockerContextual() {
   const { companyId, onEvent } = useFlow<PayrollFlowContextInterface>()
   return <PayrollBlockerList onEvent={onEvent} companyId={ensureRequired(companyId)} />
+}
+
+/** @internal */
+export function TransitionConfigurationContextual() {
+  const { companyId, payrollUuid, onEvent } = useFlow<PayrollFlowContextInterface>()
+  return (
+    <TransitionConfiguration
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      payrollId={ensureRequired(payrollUuid)}
+    />
+  )
 }
 
 /** @internal */

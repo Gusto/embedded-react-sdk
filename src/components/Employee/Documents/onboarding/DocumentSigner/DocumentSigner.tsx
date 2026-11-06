@@ -72,7 +72,8 @@ function Root({ employeeId, onEvent, dictionary, withEmployeeI9 = false }: Docum
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
   const { data: formsData } = useEmployeeFormsListSuspense({ employeeId })
 
-  const employeeHasI9Enabled = employeeData.employee?.onboardingDocumentsConfig?.i9Document === true
+  const employeeHasI9Enabled =
+    employeeData.employeeShow?.onboardingDocumentsConfig?.i9Document === true
 
   const i9Form = formsData.forms?.find(form => form.name === I9_FORM_NAME)
   const needsI9Form =

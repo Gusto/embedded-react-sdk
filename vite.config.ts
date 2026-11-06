@@ -111,7 +111,14 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
-      exclude: ['**/node_modules/**', '**/e2e/**', '**/docs-site/**', '**/.claude/worktrees/**'],
+      exclude: [
+        '**/node_modules/**',
+        '**/e2e/**',
+        '**/docs-site/**',
+        '**/typedoc/**',
+        '**/.claude/worktrees/**',
+        '**/.github/scripts/**',
+      ],
       env: {
         // RTL's default auto-cleanup afterEach fires before setup.ts's global
         // afterEach (inner hooks run before outer ones), unmounting the DOM

@@ -43,7 +43,11 @@
       "description": "Your contractor's first day of work at your company"
     },
     "wageType": {
-      "label": "Wage Type"
+      "label": "Wage Type",
+      "fixedLabel": "Fixed",
+      "hourlyLabel": "Hourly",
+      "fixedDescription": "Pay a fixed amount each pay period.",
+      "hourlyDescription": "Pay based on hours worked."
     },
     "hourlyRate": {
       "label": "Hourly Rate"

@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, it, vi, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OnboardingFlow } from './OnboardingFlow'
@@ -6,6 +6,7 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { componentEvents } from '@/shared/constants'
 import {
   createEmployee,
   getCompanyEmployees,
@@ -149,7 +150,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation pt 2
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await screen.findByLabelText('List of all jobs for the employee') // Wait for the page to load
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal Taxes (separate step)
@@ -174,6 +175,39 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Completed
       await screen.findByText(/that's it/i)
+    })
+  })
+
+  describe('when embedded with showContinueButton', () => {
+    beforeEach(() => {
+      server.use(
+        createEmployee,
+        getCompanyEmployees('123'),
+        getEmployee,
+        getCompany,
+        getCompanyLocations,
+        getEmployeeWorkAddresses,
+        getEmployeeHomeAddresses,
+        getEmployeeJobs,
+        getMinimumWages,
+      )
+    })
+
+    it('remains interactive after Continue is clicked when the host keeps it mounted', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <OnboardingFlow companyId="123" onEvent={onEvent} showContinueButton />
+        </GustoProvider>,
+      )
+
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_ONBOARDING_DONE, undefined)
+
+      await user.click(await screen.findByRole('button', { name: /Add/i }))
+      await screen.findByLabelText(/social/i)
     })
   })
 })

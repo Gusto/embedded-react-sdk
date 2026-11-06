@@ -47,7 +47,7 @@ const contractorPaymentGroup = {
 
 const receiptNotFoundMock = http.get(
   `${API_BASE_URL}/v1/contractor_payments/:contractor_payment_uuid/receipt`,
-  () => new HttpResponse(null, { status: 404 }),
+  () => new HttpResponse(null, { status: 404, headers: { 'content-length': '0' } }),
 )
 
 const renderScreen = (className?: string) => {

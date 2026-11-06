@@ -49,7 +49,7 @@ const Root = ({ paymentGroupId, contractorUuid, dictionary, className }: Payment
   const companyId = paymentGroupResponse.contractorPaymentGroup.companyUuid!
   // Fetching all contractors for the company
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = contractorList.contractors || []
+  const contractors = contractorList.showContractors || []
   // Locating the payment for the selectedcontractor
   const payment = paymentGroupResponse.contractorPaymentGroup.contractorPayments?.find(
     p => p.contractorUuid === contractorUuid,

@@ -10,7 +10,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -726,15 +726,34 @@ export const PayrollEditEmployeePresentation = ({
                   ? t('timeOffTitleDismissal')
                   : t('timeOffTitle')}
               </Heading>
-              <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                {timeOff.map(timeOffEntry => (
-                  <TimeOffField
-                    key={timeOffEntry.name}
-                    timeOff={timeOffEntry}
-                    employee={employee}
-                  />
-                ))}
-              </Grid>
+              <DataView
+                label={
+                  payrollCategory === PayrollCategory.Dismissal
+                    ? t('timeOffTitleDismissal')
+                    : t('timeOffTitle')
+                }
+                data={timeOff}
+                columns={[
+                  { title: t('timeOffTypeColumn'), render: entry => entry.name },
+                  {
+                    title: t('preapprovedHoursColumn'),
+                    justify: 'end',
+                    render: entry =>
+                      Number(entry.approvedRequestHours) > 0
+                        ? Number(entry.approvedRequestHours)
+                        : null,
+                  },
+                  {
+                    title: t('additionalHoursColumn'),
+                    justify: 'end',
+                    render: entry => (
+                      <div className={styles.timeOffInputContainer}>
+                        <TimeOffField timeOff={entry} employee={employee} shouldVisuallyHideLabel />
+                      </div>
+                    ),
+                  },
+                ]}
+              />
             </div>
           )}
           {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (

@@ -5,9 +5,9 @@ import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrolls
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type {
-  EmployeeCompensations,
+  PayrollShowEmployeeCompensations as EmployeeCompensations,
   PayrollPrepared,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'

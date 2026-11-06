@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
+import { screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { TransitionPayrollAlert } from './TransitionPayrollAlert'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -10,6 +11,8 @@ import { componentEvents } from '@/shared/constants'
 const COMPANY_ID = 'company-123'
 const payPeriodsPath = `${API_BASE_URL}/v1/companies/:company_id/pay_periods`
 const paySchedulesPath = `${API_BASE_URL}/v1/companies/:company_id/pay_schedules`
+const payrollsPath = `${API_BASE_URL}/v1/companies/:company_id/payrolls`
+const skipPayrollPath = `${API_BASE_URL}/v1/companies/:company_uuid/payrolls/skip`
 
 const paySchedulesResponse = [
   {
@@ -25,6 +28,20 @@ const transitionPayPeriod = {
   end_date: '2025-01-15',
   pay_schedule_uuid: 'schedule-1',
   payroll: { processed: false, payroll_type: 'transition' },
+}
+
+const firstTransitionPayPeriod = {
+  start_date: '2025-01-01',
+  end_date: '2025-01-15',
+  pay_schedule_uuid: 'schedule-1',
+  payroll: { payroll_uuid: 'transition-payroll-1', processed: false, payroll_type: 'transition' },
+}
+
+const secondTransitionPayPeriod = {
+  start_date: '2025-01-16',
+  end_date: '2025-01-31',
+  pay_schedule_uuid: 'schedule-1',
+  payroll: { payroll_uuid: 'transition-payroll-2', processed: false, payroll_type: 'transition' },
 }
 
 describe('TransitionPayrollAlert', () => {
@@ -53,6 +70,7 @@ describe('TransitionPayrollAlert', () => {
     server.use(
       http.get(payPeriodsPath, () => HttpResponse.json([transitionPayPeriod])),
       http.get(paySchedulesPath, () => HttpResponse.json(paySchedulesResponse)),
+      http.get(payrollsPath, () => HttpResponse.json([])),
     )
     const onEvent = vi.fn()
 
@@ -64,7 +82,10 @@ describe('TransitionPayrollAlert', () => {
   it('renders nothing and emits an ERROR event when a gate query fails', async () => {
     server.use(
       http.get(payPeriodsPath, () => HttpResponse.json([])),
-      http.get(paySchedulesPath, () => new HttpResponse(null, { status: 500 })),
+      http.get(
+        paySchedulesPath,
+        () => new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } }),
+      ),
     )
     const onEvent = vi.fn()
 
@@ -75,5 +96,112 @@ describe('TransitionPayrollAlert', () => {
     })
     expect(screen.queryByText(/Transition payroll/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  describe('with multiple transition payrolls', () => {
+    const renderMultiple = (
+      onEvent = vi.fn(),
+      payrollsResolver: HttpResponseResolver = () => HttpResponse.json([]),
+    ) => {
+      server.use(
+        http.get(payPeriodsPath, () =>
+          HttpResponse.json([firstTransitionPayPeriod, secondTransitionPayPeriod]),
+        ),
+        http.get(paySchedulesPath, () => HttpResponse.json(paySchedulesResponse)),
+        http.get(payrollsPath, payrollsResolver),
+      )
+      renderWithProviders(<TransitionPayrollAlert companyId={COMPANY_ID} onEvent={onEvent} />)
+      return onEvent
+    }
+
+    it('emits the payroll ID and dates of the row whose run button was clicked', async () => {
+      const user = userEvent.setup()
+      const onEvent = renderMultiple()
+
+      await screen.findByText('You have 2 transition payrolls to run or skip')
+      const runButtons = screen.getAllByRole('button', { name: /run transition payroll/i })
+      expect(runButtons).toHaveLength(2)
+
+      await user.click(runButtons[1]!)
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_TRANSITION_PAYROLL, {
+        payrollUuid: 'transition-payroll-2',
+        startDate: '2025-01-16',
+        endDate: '2025-01-31',
+        payScheduleUuid: 'schedule-1',
+      })
+    })
+
+    it('offers review for a calculated transition payroll and emits payroll/review', async () => {
+      const user = userEvent.setup()
+      let payrollsSearch = ''
+      const payrollsResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        payrollsSearch = new URL(request.url).search
+        return HttpResponse.json([
+          {
+            payroll_uuid: 'transition-payroll-2',
+            off_cycle: true,
+            off_cycle_reason: 'Transition from old pay schedule',
+            processed: false,
+            calculated_at: '2025-01-20T10:00:00Z',
+            pay_period: {
+              start_date: '2025-01-16',
+              end_date: '2025-01-31',
+              pay_schedule_uuid: 'schedule-1',
+            },
+          },
+        ])
+      })
+      const onEvent = renderMultiple(vi.fn(), payrollsResolver)
+
+      await user.click(await screen.findByRole('button', { name: /review and submit/i }))
+
+      expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeInTheDocument()
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.REVIEW_PAYROLL, {
+        payrollUuid: 'transition-payroll-2',
+        payPeriod: {
+          startDate: '2025-01-16',
+          endDate: '2025-01-31',
+          payScheduleUuid: 'schedule-1',
+        },
+      })
+      expect(Object.fromEntries(new URLSearchParams(payrollsSearch))).toMatchObject({
+        processing_statuses: 'unprocessed',
+        start_date: '2025-01-01',
+        end_date: '2025-01-31',
+      })
+    })
+
+    it('skips the selected row and emits its payroll ID', async () => {
+      const user = userEvent.setup()
+      let skipBody: Record<string, unknown> | null = null
+      const skipResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        skipBody = (await request.json()) as Record<string, unknown>
+        return new HttpResponse(null, { status: 202 })
+      })
+      server.use(http.post(skipPayrollPath, skipResolver))
+      const onEvent = renderMultiple()
+
+      await screen.findByText('You have 2 transition payrolls to run or skip')
+      await user.click(screen.getAllByRole('button', { name: /skip this payroll/i })[0]!)
+      const dialog = await screen.findByRole('dialog')
+      await user.click(within(dialog).getByRole('button', { name: 'Skip payroll' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TRANSITION_PAYROLL_SKIPPED, {
+          payrollUuid: 'transition-payroll-1',
+          startDate: '2025-01-01',
+          endDate: '2025-01-15',
+          payScheduleUuid: 'schedule-1',
+        })
+      })
+      expect(skipResolver).toHaveBeenCalledTimes(1)
+      expect(skipBody).toMatchObject({
+        payroll_type: 'Transition from old pay schedule',
+        start_date: '2025-01-01',
+        end_date: '2025-01-15',
+        pay_schedule_uuid: 'schedule-1',
+      })
+    })
   })
 })

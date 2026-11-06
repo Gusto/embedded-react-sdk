@@ -10,7 +10,6 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
 /**
  * Props for {@link CompensationEditForm}.
@@ -92,19 +91,6 @@ function CompensationEditFormRoot({
     onEvent(componentEvents.CONTRACTOR_MANAGEMENT_COMPENSATION_EDIT_CANCELLED)
   }
 
-  const WageTypeFieldComponent = (radioProps: RadioGroupProps) => (
-    <Components.RadioGroup
-      {...radioProps}
-      options={radioProps.options.map(option => ({
-        ...option,
-        description:
-          option.value === WageType.Hourly
-            ? t('form.hourlyDescription')
-            : t('form.fixedDescription'),
-      }))}
-    />
-  )
-
   return (
     <section className={classNames(styles.container, className)}>
       <BaseLayout error={payForm.errorHandling.errors} LoaderComponent={LoaderComponent}>
@@ -119,7 +105,9 @@ function CompensationEditFormRoot({
               getOptionLabel={(value: string) =>
                 value === WageType.Hourly ? t('hourlyLabel') : t('fixedLabel')
               }
-              FieldComponent={WageTypeFieldComponent}
+              getOptionDescription={(value: string) =>
+                value === WageType.Hourly ? t('form.hourlyDescription') : t('form.fixedDescription')
+              }
             />
             {payForm.status.isHourly && (
               <Fields.HourlyRate

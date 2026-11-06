@@ -51,14 +51,6 @@ export interface PayScheduleProps extends BaseComponentInterface<'Company.PaySch
   companyId: string
   /** Default values used to pre-fill the create form. Ignored fields not listed in {@link PayScheduleDefaultValues}. */
   defaultValues?: PayScheduleDefaultValues
-  /**
-   * Renders the workweek start day field disabled while still submitting its current value,
-   * for partners that compute the workweek start day themselves and don't want end users
-   * editing it directly. Defaults to `false`.
-   *
-   * @alpha
-   */
-  disableWorkweekStartDayEditing?: boolean
 }
 
 /**
@@ -81,28 +73,17 @@ export interface PayScheduleProps extends BaseComponentInterface<'Company.PaySch
 export const PaySchedule = ({
   companyId,
   defaultValues,
-  disableWorkweekStartDayEditing,
   dictionary,
   ...props
 }: PayScheduleProps) => {
   return (
     <BaseComponent {...props}>
-      <Root
-        companyId={companyId}
-        defaultValues={defaultValues}
-        disableWorkweekStartDayEditing={disableWorkweekStartDayEditing}
-        dictionary={dictionary}
-      />
+      <Root companyId={companyId} defaultValues={defaultValues} dictionary={dictionary} />
     </BaseComponent>
   )
 }
 
-function Root({
-  companyId,
-  defaultValues,
-  disableWorkweekStartDayEditing,
-  dictionary,
-}: Omit<PayScheduleProps, BaseComponentKeys>) {
+function Root({ companyId, defaultValues, dictionary }: Omit<PayScheduleProps, BaseComponentKeys>) {
   useI18n('Company.PaySchedule')
   useComponentDictionary('Company.PaySchedule', dictionary)
   const { onEvent } = useBase()
@@ -131,10 +112,9 @@ function Root({
           component: initialComponent,
           companyId,
           defaultValues,
-          disableWorkweekStartDayEditing,
         }),
       ),
-    [companyId, defaultValues, disableWorkweekStartDayEditing, initialState, initialComponent],
+    [companyId, defaultValues, initialState, initialComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />

@@ -122,18 +122,11 @@ function Root({
 
   const isPending = paymentMethodForm.status.isPending || bankAccountForm.status.isPending
 
+  // Only here to hide the fieldset legend — `shouldVisuallyHideLabel` isn't part of
+  // `BaseFieldProps`, so it can't be passed through the hook field. Option copy comes from
+  // `getOptionLabel` / `getOptionDescription` below.
   const TypeFieldComponent = (radioProps: RadioGroupProps) => (
-    <Components.RadioGroup
-      {...radioProps}
-      shouldVisuallyHideLabel
-      options={radioProps.options.map(option => ({
-        ...option,
-        description:
-          option.value === PAYMENT_METHODS.directDeposit
-            ? t('directDepositDescription')
-            : t('checkDescription'),
-      }))}
-    />
+    <Components.RadioGroup {...radioProps} shouldVisuallyHideLabel />
   )
 
   return (
@@ -149,6 +142,11 @@ function Root({
                   value === PAYMENT_METHODS.directDeposit
                     ? t('directDepositLabel')
                     : t('checkLabel')
+                }
+                getOptionDescription={(value: ContractorPaymentMethodFormType) =>
+                  value === PAYMENT_METHODS.directDeposit
+                    ? t('directDepositDescription')
+                    : t('checkDescription')
                 }
                 FieldComponent={TypeFieldComponent}
                 formHookResult={paymentMethodForm}

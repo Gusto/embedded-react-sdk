@@ -104,7 +104,7 @@ const Root = ({ employeeId, companyId, dictionary, className }: TerminateEmploye
   const { onEvent, baseSubmitHandler } = useBase()
 
   const {
-    data: { employee },
+    data: { employeeShow: employee },
   } = useEmployeesGetSuspense({ employeeId })
 
   const { data: terminationsData } = useEmployeeEmploymentsGetTerminationsSuspense({ employeeId })

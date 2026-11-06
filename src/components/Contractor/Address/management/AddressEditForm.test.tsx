@@ -104,10 +104,12 @@ describe('AddressEditForm — individual contractor', () => {
       expect(updateResolver).toHaveBeenCalledTimes(1)
     })
     expect(requestBody).toMatchObject({ city: 'Oakland' })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED,
-      expect.objectContaining({ city: 'Oakland' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_MANAGEMENT_ADDRESS_UPDATED,
+        expect.objectContaining({ city: 'Oakland' }),
+      )
+    })
     expect(await screen.findByText('Address updated')).toBeInTheDocument()
   })
 

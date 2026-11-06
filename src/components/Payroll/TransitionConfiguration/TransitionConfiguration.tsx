@@ -1,0 +1,202 @@
+import { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { getDefaultWithholdingPayPeriod } from '../OffCycleTaxWithholdingTable/getDefaultWithholdingPayPeriod'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
+import type {
+  TransitionConfigurationFormData,
+  TransitionConfigurationProps,
+} from './TransitionConfigurationTypes'
+import { createTransitionConfigurationSchema } from './TransitionConfigurationTypes'
+import { TransitionConfigurationPresentation } from './TransitionConfigurationPresentation'
+import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
+import { Form } from '@/components/Common/Form'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
+import { SDKInternalError } from '@/types/sdkError'
+
+const transitionConfigurationSchema = createTransitionConfigurationSchema()
+
+type VersionedEmployeeCompensation = PayrollEmployeeCompensationsType & {
+  employeeUuid: string
+  version: string
+}
+
+function isVersionedEmployeeCompensation(
+  compensation: PayrollEmployeeCompensationsType,
+): compensation is VersionedEmployeeCompensation {
+  return typeof compensation.employeeUuid === 'string' && typeof compensation.version === 'string'
+}
+
+/**
+ * Lets the user change the settings of a transition payroll before running it.
+ *
+ * @remarks
+ * The API creates a transition payroll when a company changes pay schedules. This component
+ * updates that payroll. It never creates one.
+ *
+ * - The pay period, pay schedule, and payment date are shown but can't be changed.
+ * - The user can choose to take or skip regular deductions, and how to withhold taxes.
+ *
+ * If a setting is empty, deductions are taken, the regular tax rate is used, and the pay frequency
+ * matches the pay schedule. The payment date is read only for now. Saving can still move it, and
+ * the form shows the new date.
+ *
+ * `PayrollFlow` renders this component for you. To build the screens yourself:
+ *
+ * 1. Get the transition payroll ID. {@link PayrollLanding} sends it as `payrollUuid` with
+ *    `transition/runPayroll`, and {@link PayrollList} sends it with `transition/payrollSelected`.
+ *    To look it up without those components, call
+ *    `GET /v1/companies/{company_id}/pay_periods?payroll_types=transition` and read
+ *    `payroll.payroll_uuid` from the pay period.
+ * 2. Render this component with that ID as `payrollId`.
+ * 3. On `transition/configured`, render {@link PayrollExecutionFlow} with the same `payrollId`.
+ *    It opens on `PayrollConfiguration`, then continues to review, submit, and receipts.
+ *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `transition/configured` | The settings were saved | `{ payrollUuid: string, payrollPrepared: PayrollPrepared }` |
+ *
+ * @param props - See {@link TransitionConfigurationProps}.
+ * @returns The transition payroll settings form.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { componentEvents, Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function TransitionPayrollPage({ companyId, payrollId }: { companyId: string; payrollId: string }) {
+ *   return (
+ *     <Payroll.TransitionConfiguration
+ *       companyId={companyId}
+ *       payrollId={payrollId}
+ *       onEvent={type => {
+ *         if (type === componentEvents.TRANSITION_CONFIGURED) {
+ *           navigate(`/payrolls/${payrollId}/run`)
+ *         }
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
+ */
+export function TransitionConfiguration(props: TransitionConfigurationProps) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props} />
+    </BaseComponent>
+  )
+}
+
+function Root({ dictionary, companyId, payrollId, className }: TransitionConfigurationProps) {
+  useComponentDictionary('Payroll.TransitionConfiguration', dictionary)
+  useI18n('Payroll.TransitionConfiguration')
+
+  const { t } = useTranslation('Payroll.TransitionConfiguration')
+  const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
+
+  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+  const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
+  const { mutateAsync: preparePayroll, isPending: isPreparePending } = usePayrollsPrepareMutation()
+  const { mutateAsync: updatePayroll, isPending: isUpdatePending } = usePayrollsUpdateMutation()
+
+  const payroll = payrollData.payrollShow
+  const paySchedule = paySchedulesData.payScheduleShowResponse?.find(
+    schedule => schedule.uuid === payroll?.payPeriod?.payScheduleUuid,
+  )
+
+  const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
+    withholdingPayPeriod: getDefaultWithholdingPayPeriod(
+      payroll?.withholdingPayPeriod ?? paySchedule?.frequency,
+    ),
+    withholdingRate: payroll?.fixedWithholdingRate ? 'supplemental' : 'regular',
+  })
+  const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)
+  const [savedCheckDate, setSavedCheckDate] = useState<string | null>(null)
+
+  const methods = useForm<TransitionConfigurationFormData>({
+    resolver: zodResolver(transitionConfigurationSchema),
+    defaultValues: {
+      skipRegularDeductions: payroll?.skipRegularDeductions ?? false,
+    },
+  })
+
+  const handleTaxWithholdingModalDone = (config: OffCycleTaxWithholdingConfig) => {
+    setTaxWithholdingConfig(config)
+    setIsTaxWithholdingModalOpen(false)
+  }
+
+  const onSubmit = async (data: TransitionConfigurationFormData) => {
+    await baseSubmitHandler(data, async ({ skipRegularDeductions }) => {
+      const prepareResponse = await preparePayroll({
+        request: { companyId, payrollId, requestBody: {} },
+      })
+
+      const compensation = prepareResponse.payrollPrepared?.employeeCompensations?.find(
+        isVersionedEmployeeCompensation,
+      )
+      if (!compensation) {
+        throw new SDKInternalError(t('errors.noEmployeeCompensations'))
+      }
+
+      const updateResponse = await updatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: {
+            employeeCompensations: [
+              { employeeUuid: compensation.employeeUuid, version: compensation.version },
+            ],
+            skipRegularDeductions,
+            withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,
+            fixedWithholdingRate: taxWithholdingConfig.withholdingRate === 'supplemental',
+          },
+        },
+      })
+
+      setSavedCheckDate(updateResponse.payrollPrepared?.checkDate ?? null)
+
+      await queryClient.invalidateQueries({ queryKey: [PREPARE_QUERY_KEY, payrollId] })
+
+      onEvent(componentEvents.TRANSITION_CONFIGURED, {
+        payrollUuid: payrollId,
+        payrollPrepared: updateResponse.payrollPrepared,
+      })
+    })
+  }
+
+  return (
+    <FormProvider {...methods}>
+      <Form onSubmit={methods.handleSubmit(onSubmit)}>
+        <TransitionConfigurationPresentation
+          className={className}
+          payPeriodStartDate={payroll?.payPeriod?.startDate}
+          payPeriodEndDate={payroll?.payPeriod?.endDate}
+          payScheduleName={paySchedule?.customName ?? paySchedule?.name ?? null}
+          checkDate={savedCheckDate ?? payroll?.checkDate ?? null}
+          isPending={isPreparePending || isUpdatePending}
+          taxWithholdingConfig={taxWithholdingConfig}
+          isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
+          onTaxWithholdingEditClick={() => {
+            setIsTaxWithholdingModalOpen(true)
+          }}
+          onTaxWithholdingModalDone={handleTaxWithholdingModalDone}
+          onTaxWithholdingModalCancel={() => {
+            setIsTaxWithholdingModalOpen(false)
+          }}
+        />
+      </Form>
+    </FormProvider>
+  )
+}

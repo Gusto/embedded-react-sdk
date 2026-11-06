@@ -269,7 +269,7 @@ export function useEmployeeDetailsForm({
 }: UseEmployeeDetailsFormProps): HookLoadingResult | UseEmployeeDetailsFormReady {
   const employeeQuery = useEmployeesGet({ employeeId: employeeId ?? '' }, { enabled: !!employeeId })
 
-  const employee = employeeQuery.data?.employee
+  const employee = employeeQuery.data?.employeeShow
 
   const isCreateMode = !employeeId
   const isSelfOnboardingToggleable = canToggleSelfOnboarding(employee)

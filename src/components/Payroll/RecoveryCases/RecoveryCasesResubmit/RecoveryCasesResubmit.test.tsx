@@ -184,7 +184,7 @@ describe('RecoveryCasesResubmit', () => {
   it('submits redebit and fires done event with response data', async () => {
     server.use(
       handleRedebitRecoveryCase(() => {
-        return new HttpResponse(null, { status: 202 })
+        return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
       }),
     )
 

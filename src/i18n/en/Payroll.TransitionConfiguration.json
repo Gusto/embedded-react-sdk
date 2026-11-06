@@ -1,0 +1,34 @@
+{
+  "pageTitle": "Edit transition payroll",
+  "pageDescription": "A transition payroll covers the gap between your old and new pay schedules.",
+  "transitionExplanation": "When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days.",
+  "detailsHeading": "Transition Details",
+  "payPeriodLabel": "Pay period",
+  "payScheduleLabel": "Pay schedule",
+  "checkDateLabel": "Payment date",
+  "continueCta": "Continue",
+  "errors": {
+    "noEmployeeCompensations": "This transition payroll has no employees to update, so its settings could not be saved."
+  },
+  "deductions": {
+    "title": "Deductions and contributions",
+    "description": "Employers often block deductions and contributions from certain checks (i.e. bonus checks), since they are calculated on a per-pay-period basis. Deductions and contributions include loan repayments, garnishments, benefits, etc. Taxes will be included regardless of what is chosen.",
+    "options": {
+      "include": "Make all the regular deductions and contributions.",
+      "skip": "Block all deductions and contributions, except 401(k). Taxes will be included."
+    }
+  },
+  "wageTypeGroups": {
+    "regular": {
+      "label": "Regular hours, regular wages, and tips",
+      "description": "These earnings should be taxed at a rate that matches your employees' regular pay schedule."
+    },
+    "supplemental": {
+      "label": "Supplemental wages, bonus wages, commission",
+      "description": "These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."
+    },
+    "reimbursement": {
+      "label": "Reimbursements"
+    }
+  }
+}

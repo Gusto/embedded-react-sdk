@@ -12,8 +12,8 @@ import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedules
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollshow'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayrollPrepared } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import {
   createPayrollEditEmployeeSchema,
@@ -302,7 +302,7 @@ export function usePayrollEditEmployeeForm({
     { enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid },
   )
 
-  const employee = employeeData.employee
+  const employee = employeeData.employeeShow
   const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
     comp => comp.employeeUuid === employeeId,
   )

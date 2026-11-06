@@ -164,7 +164,7 @@ describe('ManagementContractorList — Active tab', () => {
     mockList([{ ...baseContractor }])
 
     const dismissResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 200 }),
+      () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
     )
     server.use(handleScheduleContractorDismissal(dismissResolver))
 
@@ -210,8 +210,10 @@ describe('ManagementContractorList — Active tab', () => {
     await waitFor(() => {
       expect(cancelResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DISMISSAL_CANCELLED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DISMISSAL_CANCELLED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 
@@ -294,8 +296,10 @@ describe('ManagementContractorList — Onboarding tab', () => {
     await waitFor(() => {
       expect(deleteResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 })
@@ -328,7 +332,7 @@ describe('ManagementContractorList — Dismissed tab', () => {
     ])
 
     const rehireResolver = vi.fn<HttpResponseResolver>(
-      () => new HttpResponse(null, { status: 200 }),
+      () => new HttpResponse(null, { status: 200, headers: { 'content-length': '0' } }),
     )
     server.use(handleScheduleContractorRehire(rehireResolver))
 
@@ -377,8 +381,10 @@ describe('ManagementContractorList — Dismissed tab', () => {
     await waitFor(() => {
       expect(cancelResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_REHIRE_CANCELLED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_REHIRE_CANCELLED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 })
@@ -486,5 +492,50 @@ describe('ManagementContractorList — tab switching', () => {
     expect(
       await screen.findByRole('tab', { name: 'Onboarding', selected: true }),
     ).toBeInTheDocument()
+  })
+})
+
+describe('ManagementContractorList \u2014 sorting', () => {
+  it('sorts by contractor name server-side when the name column header is activated', async () => {
+    let lastUrl = ''
+    server.use(
+      handleGetContractorsList(({ request }) => {
+        lastUrl = request.url
+        return HttpResponse.json([{ ...baseContractor }], {
+          headers: { 'x-total-pages': '1', 'x-total-count': '1' },
+        })
+      }),
+    )
+
+    const user = userEvent.setup()
+    renderWithProviders(<ManagementContractorList companyId="company-123" onEvent={() => {}} />)
+
+    const nameHeader = await screen.findByRole('columnheader', { name: 'Contractor name' })
+    expect(lastUrl).not.toContain('sort_by')
+
+    await user.click(nameHeader)
+
+    await waitFor(() => {
+      expect(lastUrl).toContain('sort_by=name%3Aasc')
+    })
+    expect(await screen.findByRole('columnheader', { name: 'Contractor name' })).toHaveAttribute(
+      'aria-sort',
+      'ascending',
+    )
+
+    await user.click(nameHeader)
+    await waitFor(() => {
+      expect(lastUrl).toContain('sort_by=name%3Adesc')
+    })
+
+    // A third activation completes the cycle, returning the list to the API's default order.
+    await user.click(nameHeader)
+    await waitFor(() => {
+      expect(lastUrl).not.toContain('sort_by')
+    })
+    expect(screen.getByRole('columnheader', { name: 'Contractor name' })).toHaveAttribute(
+      'aria-sort',
+      'none',
+    )
   })
 })

@@ -56,9 +56,14 @@ export function handleGetEmployee(
   return http.get(`${API_BASE_URL}/v1/employees/:employee_id`, resolver)
 }
 
-export const getEmployee = handleGetEmployee(async () => {
+export const getEmployee = handleGetEmployee(async ({ request }) => {
   const responseFixture = await getFixture('get-v1-employees')
-  return HttpResponse.json(responseFixture)
+  const includesCompanyName = new URL(request.url).searchParams
+    .getAll('include')
+    .includes('company_name')
+  return HttpResponse.json(
+    includesCompanyName ? { ...responseFixture, company_name: 'Test Company' } : responseFixture,
+  )
 })
 
 export function handleCreateEmployee(

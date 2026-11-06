@@ -8,7 +8,7 @@ import {
   DOMAINS,
   SIDEBAR_GROUPS,
   STANDALONE_PAGES,
-} from './plugins/typedoc-custom/router.config.ts'
+} from '../typedoc/typedoc-custom/router.config.ts'
 import scopedHeadingIds from './plugins/scoped-heading-ids/index.ts'
 
 // Versioning is owned by Gusto/embedded-sdk-docs, not this repo. When this

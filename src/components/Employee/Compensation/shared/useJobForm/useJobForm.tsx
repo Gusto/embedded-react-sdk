@@ -300,7 +300,7 @@ export function useJobForm({
   const employeeJobs = jobsQuery.data?.jobs
   const workAddresses = addressesQuery.data?.employeeWorkAddressesList
   const currentWorkAddress = workAddresses?.find(address => address.active) ?? null
-  const employee = employeeQuery.data?.employee ?? null
+  const employee = employeeQuery.data?.employeeShow ?? null
   const companyUuid = employee?.companyUuid
 
   const taxQuery = useFederalTaxDetailsGet(

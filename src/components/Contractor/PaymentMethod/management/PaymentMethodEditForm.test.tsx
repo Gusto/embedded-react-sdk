@@ -69,10 +69,12 @@ describe('PaymentMethodEditForm', () => {
     await waitFor(() => {
       expect(createResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED,
-      expect.objectContaining({ name: 'New Nickname' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED,
+        expect.objectContaining({ name: 'New Nickname' }),
+      )
+    })
   })
 
   it('fires CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED when Cancel is clicked', async () => {

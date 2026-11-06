@@ -107,3 +107,26 @@ export const Default = () => {
     />
   )
 }
+
+export const PreapprovedTimeOff = () => (
+  <PayrollEditEmployeePresentation
+    onSave={fn().mockName('save')}
+    onCancel={fn().mockName('cancel')}
+    employee={{
+      ...mockEmployee,
+      eligiblePaidTimeOff: [
+        { name: 'Vacation Hours', accrualBalance: '40' },
+        { name: 'Sick Hours', accrualMethod: 'unlimited' },
+      ],
+    }}
+    employeeCompensation={{
+      ...mockEmployeeCompensation,
+      paidTimeOff: [
+        { name: 'Vacation Hours', hours: '0', approvedRequestHours: '8.5' },
+        { name: 'Sick Hours', hours: '0', approvedRequestHours: '0.0' },
+        { name: 'Holiday Hours', hours: '8' },
+      ],
+    }}
+    fixedCompensationTypes={[]}
+  />
+)

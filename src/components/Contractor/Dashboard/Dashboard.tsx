@@ -85,7 +85,7 @@ function DashboardHeader({ contractorId }: { contractorId: string }) {
   const { t } = useTranslation('Contractor.Dashboard')
   const Components = useComponentContext()
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
 
   const isBusiness = contractor?.type === CONTRACTOR_TYPE.BUSINESS

@@ -70,7 +70,7 @@ function RehireEmployeeContent() {
   const [effectiveDateError, setEffectiveDateError] = useState<string | null>(null)
 
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId: employeeId! })
-  const employee = employeeData.employee
+  const employee = employeeData.employeeShow
 
   const { data: locationsData } = useLocationsGetSuspense({ companyId: entities.companyId })
   const workLocations = (locationsData.companyLocationsList ?? []).filter(

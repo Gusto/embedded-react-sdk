@@ -1,101 +1,96 @@
+# No workflow_dispatch: a stable release always follows a verified "chore:
+# release" commit on main, so there's no legitimate manual-trigger path to
+# expose here.
 name: Publish to NPM
 on:
   workflow_run:
     workflows: [CI]
     types: [completed]
     branches: [main]
-  workflow_dispatch:
 jobs:
-  publish:
+  build:
     if: |
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       startsWith(github.event.workflow_run.head_commit.message, 'chore: release'))
-    # Needs gusto-ubuntu-default: this job pushes a release tag to the repo,
-    # and the org IP allowlist blocks pushes from GitHub-hosted runner IPs.
-    runs-on:
-      group: gusto-ubuntu-default
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_commit.message, 'chore: release')
+    uses: ./.github/workflows/build-sdk.yaml
+    with:
+      ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+  npm-publish:
+    needs: build
+    environment: npm-release
+    # npm trusted publishing requires a GitHub-hosted runner.
+    # GitHub writes run separately on Gusto's allowlisted runners.
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
+    # No actions/cache or npm ci here — this job can request npm OIDC credentials, and
+    # build-sdk.yaml already built dist/ on a separate, secret-less runner.
+    # See validate-release-workflows.test.sh.
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
-      - name: Restore node_modules cache
-        id: cache-node-modules
-        uses: actions/cache/restore@v5
+      - name: Install OIDC-compatible npm
+        run: npm install --global npm@11.21.0 --ignore-scripts
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v6
         with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
-
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
-
-      - name: Save node_modules cache
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
-
-      - name: Restore build cache
-        id: cache-build
-        uses: actions/cache/restore@v5
-        with:
+          name: dist
           path: dist
-          key: build-${{ github.sha }}
-
-      - name: Generate i18n translations
-        if: steps.cache-build.outputs.cache-hit != 'true'
-        run: npm run i18n:generate
-
-      - name: Build
-        if: steps.cache-build.outputs.cache-hit != 'true'
-        run: npx vite build
-
-      - name: Save build cache
-        if: steps.cache-build.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: dist
-          key: build-${{ github.sha }}
-
-      - name: Tag release
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
-            echo "Tag v$VERSION already exists, skipping."
-          else
-            git tag -a "v$VERSION" -m "Release v$VERSION"
-            git push origin "v$VERSION"
-          fi
 
       - name: Publish to NPM
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          version=$(jq -er '.version' package.json)
+          versions=$(npm view '@gusto/embedded-react-sdk' versions --json)
+          jq -e 'type == "array" and all(.[]; type == "string")' <<< "$versions" >/dev/null
+          if jq -e --arg version "$version" 'index($version) != null' <<< "$versions" >/dev/null; then
+            echo "$version is already on npm, skipping publish."
+          else
+            npm publish --access public --ignore-scripts
+          fi
+
+  release:
+    needs: npm-publish
+    # Tag pushes and GitHub Release API writes require Gusto's allowlisted runner IPs.
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Tag release
+        run: bash .github/scripts/tag-release.sh
 
       - name: Extract changelog for current version
         id: changelog
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          CHANGELOG_FILE=$(mktemp)
-          awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{if(found) exit} found{print}" CHANGELOG.md > "$CHANGELOG_FILE"
-          {
-            echo "content<<CHANGELOG_EOF"
-            cat "$CHANGELOG_FILE"
-            echo "CHANGELOG_EOF"
-          } >> "$GITHUB_OUTPUT"
-          rm -f "$CHANGELOG_FILE"
+        run: bash .github/scripts/release-changelog.sh
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ steps.changelog.outputs.version }}
+          NOTES_FILE: ${{ steps.changelog.outputs.notes_file }}
+        run: bash .github/scripts/github-release.sh "$VERSION" "$NOTES_FILE"
 
       - name: Generate release summary
         id: summary
@@ -103,34 +98,9 @@ jobs:
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          VERSION: ${{ steps.changelog.outputs.version }}
           CHANGELOG_CONTENT: ${{ steps.changelog.outputs.content }}
-        run: |
-          VERSION="${{ steps.changelog.outputs.version }}"
-          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-            -H "content-type: application/json" \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -d "$(jq -n \
-              --arg changelog "$CHANGELOG_CONTENT" \
-              --arg version "$VERSION" \
-              '{
-                model: "claude-sonnet-5",
-                max_tokens: 1024,
-                messages: [{
-                  role: "user",
-                  content: ("Summarize this changelog for v" + $version + " of the @gusto/embedded-react-sdk npm package. Write 2-4 concise bullet points covering the meaningful changes (features and fixes). Skip dependency bumps and chores unless they affect partners. Use plain language aimed at engineers integrating the SDK. No heading, just bullets.\n\n" + $changelog)
-                }]
-              }'
-            )")
-          SUMMARY=$(echo "$RESPONSE" | jq -r '.content[0].text // empty')
-          if [ -z "$SUMMARY" ]; then
-            SUMMARY="See the full changelog for details."
-          fi
-          {
-            echo "text<<SUMMARY_EOF"
-            echo "$SUMMARY"
-            echo "SUMMARY_EOF"
-          } >> "$GITHUB_OUTPUT"
+        run: bash .github/scripts/release-summary.sh
 
       - name: Post release notification to Slack
         if: steps.changelog.outputs.version != ''
@@ -139,21 +109,4 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           VERSION: ${{ steps.changelog.outputs.version }}
           SUMMARY: ${{ steps.summary.outputs.text }}
-        run: |
-          RELEASE_URL="https://github.com/Gusto/embedded-react-sdk/releases/tag/v${VERSION}"
-          if [ -z "$SUMMARY" ]; then
-            SUMMARY="A new version has been published. See the changelog for details."
-          fi
-          curl -sf -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg version "$VERSION" \
-              --arg summary "$SUMMARY" \
-              --arg url "$RELEASE_URL" \
-              '{
-                channel: "C04JMFQ001K",
-                text: (":package: *@gusto/embedded-react-sdk v" + $version + " published*\n\n" + $summary + "\n\n<" + $url + "|View full changelog>"),
-                unfurl_links: false
-              }'
-            )"
+        run: bash .github/scripts/release-notification.sh

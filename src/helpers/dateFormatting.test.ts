@@ -11,6 +11,7 @@ import {
   formatPayPeriod,
   formatPayPeriodRange,
   formatDateToStringDate,
+  toRFCDate,
   normalizeDateToLocal,
   normalizeToISOString,
   addBusinessDays,
@@ -191,6 +192,23 @@ describe('Date Formatting Helpers', () => {
     it('should return null for invalid dates', () => {
       expect(formatDateToStringDate(new Date('invalid'))).toBeNull()
       expect(formatDateToStringDate(new Date(NaN))).toBeNull()
+    })
+  })
+
+  describe('toRFCDate', () => {
+    const originalTz = process.env.TZ
+
+    afterEach(() => {
+      process.env.TZ = originalTz
+    })
+
+    it('keeps the local calendar day in a timezone ahead of UTC', () => {
+      process.env.TZ = 'Asia/Kolkata'
+      expect(toRFCDate(new Date(2026, 9, 26)).toString()).toBe('2026-10-26')
+    })
+
+    it('throws for an invalid date', () => {
+      expect(() => toRFCDate(new Date('invalid'))).toThrow(RangeError)
     })
   })
 

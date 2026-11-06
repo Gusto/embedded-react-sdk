@@ -19,6 +19,12 @@ import { normalizeToDate } from '@/helpers/dateFormatting'
 import type { LoaderComponentType } from '@/components/Base'
 
 interface PayScheduleFormProps extends UsePayScheduleFormProps {
+  variant?: 'onboarding' | 'management'
+  copy?: {
+    anchorPayDateDescription?: string
+    anchorEndOfPayPeriodDescription: string
+    payrollDeadline: string
+  }
   onEvent: OnEventType<EventType, unknown>
   /** Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. */
   LoaderComponent?: LoaderComponentType
@@ -38,7 +44,13 @@ export function PayScheduleForm({ onEvent, LoaderComponent, ...hookProps }: PayS
   )
 }
 
-function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PayScheduleFormProps) {
+function PayScheduleFormRoot({
+  onEvent,
+  LoaderComponent,
+  variant = 'onboarding',
+  copy,
+  ...hookProps
+}: PayScheduleFormProps) {
   const { t } = useTranslation('Company.PaySchedule')
   const Components = useComponentContext()
   const dateFormatter = useDateFormatter()
@@ -131,15 +143,20 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                     )}
                     <Fields.AnchorPayDate
                       label={t('labels.firstPayDate')}
-                      description={t('descriptions.anchorPayDateDescription', {
-                        count: paymentSpeedDays,
-                      })}
+                      description={
+                        copy
+                          ? copy.anchorPayDateDescription
+                          : t('descriptions.anchorPayDateDescription', { count: paymentSpeedDays })
+                      }
                       validationMessages={{ REQUIRED: t('validations.firstPayDate') }}
                       minDate={new Date()}
                     />
                     <Fields.AnchorEndOfPayPeriod
                       label={t('labels.firstPayPeriodEndDate')}
-                      description={t('descriptions.anchorEndOfPayPeriodDescription')}
+                      description={
+                        copy?.anchorEndOfPayPeriodDescription ??
+                        t('descriptions.anchorEndOfPayPeriodDescription')
+                      }
                       validationMessages={{ REQUIRED: t('validations.firstPayPeriodEndDate') }}
                     />
                     {Fields.Day1 && (
@@ -174,7 +191,7 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                 </div>
                 <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
                   {payPeriodPreview && payPeriodPreview[selectedPayPeriodIndex] ? (
-                    <div className={style.calendarContainer}>
+                    <div className={style.calendarContainer} data-variant={variant}>
                       {!payPreviewLoading && (
                         <Components.Select
                           label={t('labels.preview')}
@@ -182,10 +199,13 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                           isRequired
                           options={payPeriodPreview.map((period, index) => ({
                             value: String(index),
-                            label: dateFormatter.formatPayPeriodRange(
-                              period.startDate.toString(),
-                              period.endDate.toString(),
-                            ),
+                            label:
+                              variant === 'management'
+                                ? `${period.startDate.toString()} — ${period.endDate.toString()}`
+                                : dateFormatter.formatPayPeriodRange(
+                                    period.startDate.toString(),
+                                    period.endDate.toString(),
+                                  ),
                           }))}
                           value={String(selectedPayPeriodIndex)}
                           onChange={(value: string) => {
@@ -214,13 +234,13 @@ function PayScheduleFormRoot({ onEvent, LoaderComponent, ...hookProps }: PaySche
                               payPeriodPreview[selectedPayPeriodIndex].runPayrollBy,
                             ),
                             highlightColor: 'secondary',
-                            label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
+                            label: copy?.payrollDeadline ?? t('payPreview.payrollDeadline'),
                           },
                         ]}
                       />
                     </div>
                   ) : (
-                    <div className={style.calendarContainer}>
+                    <div className={style.calendarContainer} data-variant={variant}>
                       <Components.Alert
                         status="info"
                         label={t('previewAlert.title', 'Pay Schedule Preview')}

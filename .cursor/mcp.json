@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "gusto-payroll": {
-      "url": "https://gusto-partner-api.staging.zp-int.com/sse",
-      "transport": "sse"
-    }
-  }
-}

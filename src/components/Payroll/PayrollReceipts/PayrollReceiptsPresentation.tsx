@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import type {
   PayrollReceipt,
   Taxes as TaxBreakdownItem,
-  PayrollReceiptEmployeeCompensations as EmployeeBreakdownItem,
+  EmployeeCompensations as EmployeeBreakdownItem,
 } from '@gusto/embedded-api/models/components/payrollreceipt'
 import styles from './PayrollReceiptsPresentation.module.scss'
 import { DataView, DataTable, Flex } from '@/components/Common'
@@ -213,10 +213,6 @@ export const PayrollReceiptsPresentation = ({
           },
         ]}
         data={receiptData.taxes || []}
-        footer={() => ({
-          'column-0': t('breakdown.totals'),
-          'column-1': formatNumberAsCurrency(parseFloat(receiptData.totals?.taxDebit || '0')),
-        })}
       />
     </Flex>
   )

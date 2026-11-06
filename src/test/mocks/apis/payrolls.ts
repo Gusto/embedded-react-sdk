@@ -60,6 +60,10 @@ const getHistoricalPayrolls = http.get<PathParams, GetV1CompaniesCompanyIdPayrol
 
 let lastCreatedOffCycleReason: string | null = null
 
+export function handleGetPayroll(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, resolver)
+}
+
 const getSinglePayroll = http.get<
   PathParams,
   GetV1CompaniesCompanyIdPayrollsPayrollIdRequest,
@@ -140,7 +144,7 @@ const calculatePayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`,
   () => {
     currentPayrollPhase = 'calculated'
-    return new HttpResponse(null, { status: 202 })
+    return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
   },
 )
 
@@ -148,7 +152,7 @@ const submitPayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/submit`,
   () => {
     currentPayrollPhase = 'submitted'
-    return new HttpResponse(null, { status: 202 })
+    return new HttpResponse(null, { status: 202, headers: { 'content-length': '0' } })
   },
 )
 

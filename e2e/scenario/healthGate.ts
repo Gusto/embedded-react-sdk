@@ -29,12 +29,22 @@ interface PayrollBlocker {
   message: string
 }
 
+interface TransitionPayPeriod {
+  start_date: string
+  end_date: string
+  payroll?: { processed?: boolean } | null
+}
+
 export interface HealthGateRequirements {
   /** GET /companies/:id/onboarding_status must return onboarding_completed=true */
   requireOnboarded: boolean
   /** GET /companies/:id/signatories must include one with identity_verification_status='Pass' */
   requireSignatory: boolean
-  /** GET /companies/:id/payrolls/blockers must return an empty array */
+  /**
+   * GET /companies/:id/payrolls/blockers must return an empty array, and the
+   * company must have no unprocessed transition payroll in the next 90 days
+   * (the SDK disables every regular payroll row until it is run or skipped)
+   */
   requireNoBlockers: boolean
 }
 
@@ -100,6 +110,25 @@ export async function assertCompanyIsReadyForTests(
       }
     } catch (error) {
       failures.push(`could not read payroll blockers: ${String(error)}`)
+    }
+
+    try {
+      const lookAheadEnd = new Date()
+      lookAheadEnd.setDate(lookAheadEnd.getDate() + 90)
+      const transitionPeriods = await api.get<TransitionPayPeriod[]>(
+        `/companies/${companyId}/pay_periods` +
+          `?payroll_types=transition&end_date=${lookAheadEnd.toISOString().split('T')[0]}`,
+      )
+      const unprocessed = transitionPeriods.filter(p => !p.payroll?.processed)
+      if (unprocessed.length > 0) {
+        failures.push(
+          `${unprocessed.length} unprocessed transition payroll(s), which disable regular payrolls:\n${unprocessed
+            .map(p => `      - ${p.start_date} to ${p.end_date}`)
+            .join('\n')}`,
+        )
+      }
+    } catch (error) {
+      failures.push(`could not read transition pay periods: ${String(error)}`)
     }
   }
 

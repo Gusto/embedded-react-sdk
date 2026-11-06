@@ -329,9 +329,12 @@ describe('CreateHistoricalPayment', () => {
     const { onEvent } = renderScreen([hourlyContractor])
 
     await enterHoursAndContinue(user)
-    await user.click(await screen.findByRole('button', { name: 'Back' }))
+    await screen.findByRole('heading', { name: 'Review and submit' })
+    await user.click(screen.getByRole('button', { name: 'Back' }))
 
-    expect(screen.getByRole('heading', { name: 'Enter payment amounts' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Enter payment amounts' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled()
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT)
   })
@@ -378,10 +381,12 @@ describe('CreateHistoricalPayment', () => {
     })
     expect(createRequestBody?.creation_token).toBe('preview-token-123')
 
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
-      expect.objectContaining({ uuid: 'created-group-uuid' }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_HISTORICAL_PAYMENT_CREATED,
+        expect.objectContaining({ uuid: 'created-group-uuid' }),
+      )
+    })
   })
 
   it('replaces the Back and Submit buttons with a success message after submission', async () => {

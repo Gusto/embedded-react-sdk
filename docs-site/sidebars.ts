@@ -10,7 +10,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'getting-started/quick-start',
         'getting-started/authentication',
-        'getting-started/proxy-security-partner-guidance',
+        'getting-started/reviewing-sdk-api-access',
         'getting-started/component-types',
         'getting-started/example-app',
       ],
@@ -36,7 +36,7 @@ const sidebars: SidebarsConfig = {
             'guides/integration-guide/error-handling',
             'guides/integration-guide/observability',
             'guides/integration-guide/observability-examples',
-            'guides/integration-guide/proxy-examples',
+            'guides/integration-guide/content-security-policy',
           ],
         },
         'guides/theming',

@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
+import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import {
   getPayrollTypeLabel,
   calculateTotalPayroll,
   canCancelPayroll,
+  getCancelDeadlineValues,
   getPayPeriodOrCheckDateLabel,
 } from '../helpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
@@ -57,33 +58,6 @@ export const PayrollHistoryPresentation = ({
   useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
   const dateFormatter = useDateFormatter()
-
-  const formatDeadlineForDialog = (item: Payroll): string => {
-    const deadline = item.payrollDeadline
-    if (!deadline) return ''
-
-    const deadlineDate = new Date(deadline)
-    const timeZone = 'America/New_York'
-
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      timeZone,
-    })
-
-    const timeFormatter = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      timeZoneName: 'short',
-      timeZone,
-    })
-
-    const dateStr = formatter.format(deadlineDate)
-    const timeStr = timeFormatter.format(deadlineDate)
-
-    return `${timeStr} on ${dateStr}`
-  }
 
   const handleCancelClick = (item: Payroll) => {
     onCancelDialogOpen(item)
@@ -152,7 +126,7 @@ export const PayrollHistoryPresentation = ({
           cancelLabel={t('dateFilter.cancel')}
           resetLabel={t('dateFilter.reset')}
           selectDatesLabel={t('dateFilter.selectDates')}
-          triggerLabel={t('dateFilter.trigger')}
+          getTriggerLabel={selection => t('dateFilter.triggerLabel', { selection })}
           maxEndDate={dateRangeFilter.getMaxEndDate()}
           minStartDate={dateRangeFilter.getMinStartDate()}
         />
@@ -228,9 +202,10 @@ export const PayrollHistoryPresentation = ({
             <Text>{t('cancelDialog.body')}</Text>
             {cancelDialogItem.payrollDeadline && (
               <Text>
-                {t('cancelDialog.deadline', {
-                  deadline: formatDeadlineForDialog(cancelDialogItem),
-                })}
+                {t(
+                  'cancelDialog.deadline',
+                  getCancelDeadlineValues(cancelDialogItem, dateFormatter),
+                )}
               </Text>
             )}
           </Flex>

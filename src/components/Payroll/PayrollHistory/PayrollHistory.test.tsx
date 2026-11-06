@@ -92,7 +92,7 @@ describe('PayrollHistory', () => {
         screen.getByText("When you run payrolls, they'll appear here for easy reference."),
       ).toBeInTheDocument()
 
-      expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Filter by date,/ })).toBeInTheDocument()
     })
 
     test('applies custom className', async () => {
@@ -707,7 +707,7 @@ describe('PayrollHistory', () => {
         expect(screen.getByText('Payroll history')).toBeInTheDocument()
       })
 
-      const filterButton = screen.getByRole('button', { name: 'Filter by date' })
+      const filterButton = screen.getByRole('button', { name: /^Filter by date,/ })
       expect(filterButton).toBeInTheDocument()
 
       await user.click(filterButton)

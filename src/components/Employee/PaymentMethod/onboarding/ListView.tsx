@@ -25,7 +25,6 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { LoaderComponentType } from '@/components/Base'
-import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Flex } from '@/components/Common/Flex/Flex'
 
@@ -141,23 +140,6 @@ function ListViewReady({
     ),
   })
 
-  const TypeFieldComponent = (props: RadioGroupProps) => (
-    <Components.RadioGroup
-      {...props}
-      options={props.options.map(option => ({
-        ...option,
-        description:
-          option.value === PAYMENT_METHODS.directDeposit
-            ? isAdmin
-              ? t('directDepositDescription')
-              : t('directDepositDescriptionSelf')
-            : isAdmin
-              ? t('checkDescription')
-              : t('checkDescriptionSelf'),
-      }))}
-    />
-  )
-
   const handleContinue = async () => {
     const result = await paymentMethodForm.actions.onSubmit()
     if (result) {
@@ -224,7 +206,15 @@ function ListViewReady({
                       ? t('directDepositLabel')
                       : t('checkLabel')
                   }
-                  FieldComponent={TypeFieldComponent}
+                  getOptionDescription={(value: PaymentMethodType) =>
+                    value === PAYMENT_METHODS.directDeposit
+                      ? isAdmin
+                        ? t('directDepositDescription')
+                        : t('directDepositDescriptionSelf')
+                      : isAdmin
+                        ? t('checkDescription')
+                        : t('checkDescriptionSelf')
+                  }
                 />
               </div>
               {watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 && (

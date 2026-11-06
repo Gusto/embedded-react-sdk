@@ -99,6 +99,16 @@ function toSummaryReducer(ctx: TerminationFlowContextInterface): TerminationFlow
   }
 }
 
+function toPayrollLandingReducer(
+  ctx: TerminationFlowContextInterface,
+): TerminationFlowContextInterface {
+  return {
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+    component: PayrollLandingContextual,
+    payrollOption: undefined,
+  }
+}
+
 const formBreadcrumbTransition = transition(
   componentEvents.BREADCRUMB_NAVIGATE,
   'form',
@@ -220,11 +230,12 @@ export const terminationMachine = {
     transition(
       componentEvents.PAYROLL_EXIT_FLOW,
       'payrollLanding',
-      reduce((ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
-        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
-        component: PayrollLandingContextual,
-        payrollOption: undefined,
-      })),
+      reduce(toPayrollLandingReducer),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_NOT_CALCULATED_BACK_TO_LIST,
+      'payrollLanding',
+      reduce(toPayrollLandingReducer),
     ),
     summaryBreadcrumbTransition,
     formBreadcrumbTransition,

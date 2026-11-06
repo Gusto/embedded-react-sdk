@@ -49,7 +49,7 @@ export interface ContractorProfileContextInterface extends FlowContextInterface 
 
 function useContractorData(contractorId: string) {
   const { data } = useContractorsGetSuspense({ contractorUuid: contractorId })
-  return data.contractor
+  return data.contractorShow
 }
 
 function ProfileSkeleton() {

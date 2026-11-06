@@ -177,7 +177,7 @@ export function useHomeAddressManagement({
   const employeeQuery = useEmployeesGet({ employeeId }, { enabled: !!employeeId })
 
   const employeeDisplayName = useMemo(() => {
-    const employee = employeeQuery.data?.employee
+    const employee = employeeQuery.data?.employeeShow
     if (!employee) {
       return ''
     }
@@ -185,7 +185,7 @@ export function useHomeAddressManagement({
       first_name: employee.firstName,
       last_name: employee.lastName,
     }).trim()
-  }, [employeeQuery.data?.employee])
+  }, [employeeQuery.data?.employeeShow])
 
   // Form hooks are intentionally excluded here so their submit errors don't render in the
   // page-level BaseLayout outside the edit/create modal (SDK-930). The view renders those

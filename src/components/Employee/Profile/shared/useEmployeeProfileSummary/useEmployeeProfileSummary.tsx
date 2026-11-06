@@ -58,7 +58,7 @@ export function useEmployeeProfileSummary({
 
   const errorHandling = composeErrorHandler([employeeQuery])
 
-  const employee = employeeQuery.data?.employee
+  const employee = employeeQuery.data?.employeeShow
 
   if (employeeQuery.isLoading || !employee) {
     return { isLoading: true, errorHandling }

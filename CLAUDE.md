@@ -13,7 +13,7 @@ npm run test:e2e       # Run E2E tests (requires gws-flows + ZenPayroll running)
 npm run dev:setup      # Link SDK into gws-flows for local development
 npm run i18n:generate  # Generate translation types
 npm run derive         # Regenerate all derived files (runs build first; standalone)
-                       # Prerequisite: cd docs-site && npm ci (if docs-site deps not yet installed)
+                       # Prerequisite: cd typedoc && npm ci (if typedoc deps not yet installed)
 ```
 
 ## SDK Dev App
@@ -38,6 +38,9 @@ See [sdk-app/README.md](sdk-app/README.md) for all available commands and enviro
 - Use descriptive variable/function names that eliminate the need for comments
 - NEVER use `!important` in CSS/SCSS files — use proper CSS specificity instead
 - Do not include `@use` imports in `.module.scss` for modules globally available via Vite (e.g., `@/styles/Helpers` is auto-injected)
+- Avoid `useMemo`, `useCallback`, or `React.memo` unless there's a demonstrated or obvious performance problem. Memoizing a deep object that's recreated every render fails its own equality check on re-render — it buys nothing and adds a maintenance trap.
+- Avoid `as SomeType` casts unless there's clearly no alternative — every cast bypasses TypeScript's safety checks. Prefer a type guard, discriminated union narrowing, or a generic instead.
+- Don't use `!` non-null assertions, in source or tests. They hide a missing check. Narrow with a type guard or an explicit check instead.
 
 ## Documentation
 
@@ -63,6 +66,8 @@ return <Components.TextInput {...props} />
 ### Field Components for react-hook-form
 
 Use Field components from `src/components/Common/Fields/` inside `FormProvider`. For inputs outside react-hook-form, use UI primitives from `useComponentContext()` directly.
+
+**No react-hook-form internals in SDK components (non-negotiable).** Components must consume form hooks only through their documented surface (`data`, `status`, `actions`, `errorHandling`, `form.Fields`, etc.) — never raw `useForm`, `useWatch`, `setValue`, `watch`, `getValues`, `trigger`, `register`, or `hookResult.form.hookFormInternals.formMethods.*`. Each such use is a sign the hook is missing functionality; move the logic into the hook instead. (`AdminProfile.tsx`'s screen-local `startDate` `useForm` is a documented historical exception, not a template.) New or migrated partner-facing `use*Form` hooks must follow the scaffolding in `.claude/commands/create-hook.md` and the playbook in `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md`.
 
 ### Component Organization
 
@@ -143,9 +148,9 @@ const wireValue = formatDateToStringDate(pickedDate)
 
 Multi-step components are driven by `robot3` state machines rendered through `<Flow>` (`src/components/Flow/Flow.tsx`). `Flow` re-emits every event to the upstream `onEvent` regardless of whether the local machine has a transition for it — so a parent already receives a step's completion signal without the child machine needing to transition anywhere for it.
 
-- **Guided flows** — top-level `*Flow` orchestrators driving a linear, wizard-style sequence with a real end (`OnboardingFlow`, `TimeOffFlow`) — may use a robot3 final state (`final()`, or an equivalent zero-transition `state()`) for their terminal step, since the parent app is expected to unmount the whole flow once it completes.
-- **Hub-and-spoke flows** — orchestrators the user can navigate through freely with no natural "end" — should not use a final state, since there's no terminal step to model one around.
-- **Public, standalone components with their own internal state machine** (a step component like `Compensation`, `Deductions`, or `DocumentSigner` that can also be mounted directly by a partner) must **not** model completion as a final state, guided or not. A robot3 final state has no transitions out — if the host doesn't unmount the component immediately after its completion event fires, every further interaction becomes a silent no-op while the last-rendered screen keeps looking interactive (SDK-1169). Let the completion event bubble via `onEvent` without transitioning the local machine, so a host that keeps the component mounted past completion keeps a fully working screen instead of a dead one.
+**Treat every robot3 final state — `final()`, or any equivalent zero-transition `state()` — with caution; it's a known, recurring source of bugs here.** The specific trap: don't route a completion event into a dead-end state when the state you're leaving is a landing point — a hub screen the flow can sit at indefinitely with its own independently meaningful actions (e.g. `EmployeeList`'s `index`, which still needs `EMPLOYEE_CREATE`/`EMPLOYEE_UPDATE` to work after `EMPLOYEE_ONBOARDING_DONE` fires). Such a state can never transition anywhere again, so reaching one from a landing point kills those other, unrelated actions too. Let the completion event bubble via `onEvent` without transitioning the local machine instead.
+
+A zero-transition state is fine for a genuine one-way terminal step with no hub to return to (`OnboardingExecutionFlow`'s `summary`, `HistoricalPaymentFlow`'s `historicalPaymentSummary`) — there's no other possible actions left to protect there.
 
 ### Component & Feature Conventions
 
@@ -154,11 +159,14 @@ Durable conventions that apply SDK-wide to any component or feature:
 - **One i18n namespace per self-contained component.** A self-contained component owns a single translation namespace and reads only from it — never reach across namespaces. Run `npm run i18n:generate` after changing translations.
 - **Scoped, unique events.** Prefer unique event names scoped to the component/surface that fires them over sharing or borrowing names across flows (e.g. don't reuse an onboarding event from a different surface).
 - **Standalone components take IDs, not entities.** Public/standalone components accept entity IDs (e.g. `employeeId`, `jobId`) and fetch their own data rather than receiving full entity objects across the public API. Passing data structures is fine for internal-only components.
+- **Partner-facing component APIs stay minimal.** The primary prop is typically an entity ID; feature flags and opt-in behaviors (e.g. `withI9`, `isSelfOnboardingEnabled`) are fine as named booleans. Internal implementation details — sub-component props, internal state shapes, handler signatures — shouldn't leak into the public surface. If a new prop doesn't clearly belong in a partner integration contract, question it.
+- **API response data in `onEvent`.** Any `onEvent` call following a mutation should include the API response as payload, across every event type (not just `_DONE`). Pass the inner data value (e.g. `result.data`), not the top-level mutation result, which includes transport fields like `httpMeta` that partners don't need.
 - **Non-form data hooks return the standard union.** Data-fetching hooks return the `HookLoadingResult | BaseHookReady<…>` discriminated union (see `src/partner-hook-utils/types.ts`) for consistent loading/error/action ergonomics.
 - **Shared UI stays presentational.** UI reused across multiple flows takes its copy via props or an injected `dictionary` so a partner's copy override in one surface doesn't leak into another (e.g. the `DeductionsForm` + `useFormDictionary` pattern).
 - **Partial, in-place loading.** Prefer consistent partial loading — component chrome plus an inline loader — over full-surface loaders.
 - **Thin orchestrators.** Orchestrators stay thin and compose standalone, independently-consumable pieces.
 - **Gate epic-level in-progress work behind `@alpha` + a flag.** If a change is a slice of a larger feature that will eventually ship as its own announced capability (i.e. it maps to a Jira epic, not just a task/subtask), land it incrementally behind an `@alpha` TSDoc release tag and a new flag in `UnstableFeatures` (see `useUnstableFeature`) rather than merging partially-finished behavior that's reachable by default. Small in-progress changes to an already-stable surface (bug fixes, minor additions within an existing epic) don't need this — reserve it for work a partner could stumble into before it's ready to announce.
+- **Graduate to `Features` when a released feature still needs a toggle.** When an `UnstableFeatures` flag graduates but partners still need a way to turn it off, move it to `Features` (see `useFeature`) instead of deleting it outright. `Features` flags are `@public` and each one documents its own default with `@defaultValue`; keep the interface-level docs general rather than promising every flag is on by default or temporary. `useFeature` currently treats a flag as on unless it is explicitly `false`. Drop the `@alpha` tags on the graduated surface in the same change.
 
 ## PR and Commit Conventions
 
@@ -190,6 +198,7 @@ Build and test components in Storybook (`npm run storybook`) before integrating 
 - Run with coverage: `npm run test -- --run --coverage`
 - Update snapshots: `npm run test -- --run -u`
 - E2E tests require gws-flows and ZenPayroll running. See `e2e/local.config.example.env`.
+- Prefer a small set of representative test cases (happy path, key error path, meaningful edge case) over many shallow variations that assert the same behavior with different data — e.g. don't write separate tests for rendering with the name "Alice", "Bob", and "Charlie" when one case covers the behavior.
 
 ### Assertion style: prefer positive contracts
 
@@ -246,12 +255,10 @@ expect(createJobResolver).toHaveBeenCalledTimes(1)
 expect(createJobBody).toMatchObject({ title: 'Engineer', hire_date: '2025-01-15' })
 ```
 
-Cross-endpoint ordering — use `mock.invocationCallOrder` (vitest assigns a global counter to every spy invocation):
+Cross-endpoint ordering — use `toHaveBeenCalledBefore`:
 
 ```ts
-expect(createJobResolver.mock.invocationCallOrder[0]!).toBeLessThan(
-  updateCompensationResolver.mock.invocationCallOrder[0]!,
-)
+expect(createJobResolver).toHaveBeenCalledBefore(updateCompensationResolver)
 ```
 
 Path assertions when the path itself encodes IDs (e.g., `PUT /v1/jobs/:id`) — capture the URL inside the resolver:

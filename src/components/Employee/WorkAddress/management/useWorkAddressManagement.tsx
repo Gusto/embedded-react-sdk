@@ -151,7 +151,7 @@ export function useWorkAddressManagement({
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
 
   const employeeQuery = useEmployeesGet({ employeeId }, { enabled: !!employeeId })
-  const companyId = employeeQuery.data?.employee?.companyUuid
+  const companyId = employeeQuery.data?.employeeShow?.companyUuid
 
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId },
@@ -197,7 +197,7 @@ export function useWorkAddressManagement({
   })
 
   const employeeDisplayName = useMemo(() => {
-    const employee = employeeQuery.data?.employee
+    const employee = employeeQuery.data?.employeeShow
     if (!employee) {
       return ''
     }
@@ -205,9 +205,9 @@ export function useWorkAddressManagement({
       first_name: employee.firstName,
       last_name: employee.lastName,
     }).trim()
-  }, [employeeQuery.data?.employee])
+  }, [employeeQuery.data?.employeeShow])
 
-  const isMissingCompany = !!employeeQuery.data?.employee && !companyId
+  const isMissingCompany = !!employeeQuery.data?.employeeShow && !companyId
 
   const errorHandling: HookErrorHandling = composeErrorHandler(
     [

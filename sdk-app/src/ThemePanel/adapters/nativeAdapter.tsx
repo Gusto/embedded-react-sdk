@@ -953,7 +953,17 @@ function NativeMenu({ items, isOpen, onClose, 'aria-label': ariaLabel }: MenuPro
   )
 }
 
-function NativeTable({ headers, rows, footer, ...rest }: TableProps) {
+// `rest` is spread onto a DOM <table>, so every non-DOM prop has to be pulled out here or
+// React warns about an unknown attribute.
+function NativeTable({
+  headers,
+  rows,
+  footer,
+  emptyState,
+  isWithinBox,
+  hasCheckboxColumn,
+  ...rest
+}: TableProps) {
   return (
     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }} {...rest}>
       <thead>
@@ -961,6 +971,7 @@ function NativeTable({ headers, rows, footer, ...rest }: TableProps) {
           {headers.map(h => (
             <th
               key={h.key}
+              aria-sort={h.isSortable ? h.sortDirection : undefined}
               style={{
                 textAlign: 'left',
                 padding: '0.5rem 0.75rem',
@@ -969,7 +980,34 @@ function NativeTable({ headers, rows, footer, ...rest }: TableProps) {
                 color: '#374151',
               }}
             >
-              {h.content}
+              {h.isSortable ? (
+                <button
+                  type="button"
+                  onClick={h.onSort}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    padding: 0,
+                    background: 'none',
+                    border: 'none',
+                    font: 'inherit',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {h.content}
+                  <span aria-hidden="true">
+                    {h.sortDirection === 'ascending'
+                      ? '\u2191'
+                      : h.sortDirection === 'descending'
+                        ? '\u2193'
+                        : '\u2195'}
+                  </span>
+                </button>
+              ) : (
+                h.content
+              )}
             </th>
           ))}
         </tr>

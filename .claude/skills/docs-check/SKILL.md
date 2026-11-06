@@ -11,7 +11,7 @@ description: >-
 Run from the repo root, in order. Stop at the first failure and report its output.
 
 ```bash
-test -d docs-site/node_modules || npm run docs:install
+test -d docs-site/node_modules && test -d typedoc/node_modules || npm run docs:install
 npm run derive        # 1. regenerate reference so checks run against what publishes
 npm run docs:lint     # 2. every docs/**/*.md needs title + description frontmatter
 npm run docs:build    # 3. the real gate — broken links/anchors throw

@@ -1,3 +1,5 @@
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+
 /**
  * Normalizes any date input (string, Date, or undefined) to a Date object.
  *
@@ -252,6 +254,25 @@ export const formatDateToStringDate = (date: Date): string | null => {
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
+}
+
+/**
+ * Converts a `Date` into an `RFCDate` for the same local calendar day.
+ *
+ * @remarks Use this instead of `new RFCDate(date)`, which serializes through
+ * `toISOString()` and shifts the day back by one in timezones ahead of UTC.
+ *
+ * @param date - The date to convert.
+ * @returns An `RFCDate` carrying the local year, month, and day of `date`.
+ * @throws RangeError when `date` is an invalid date.
+ * @internal
+ */
+export const toRFCDate = (date: Date): RFCDate => {
+  const dateString = formatDateToStringDate(date)
+  if (!dateString) {
+    throw new RangeError(`Cannot convert an invalid date to RFCDate: ${String(date)}`)
+  }
+  return new RFCDate(dateString)
 }
 
 /**

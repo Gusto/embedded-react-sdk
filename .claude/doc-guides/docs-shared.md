@@ -5,22 +5,24 @@ Canonical facts shared by the docs skills (`docs-check`, `docs-regen`,
 
 ## npm scripts (run from the repo root)
 
-All docs scripts live in the **root** `package.json` and delegate into `docs-site/`.
+All docs scripts live in the **root** `package.json` and delegate into `docs-site/`
+(the Docusaurus site) or `typedoc/` (standalone reference generation).
 
-| Script                      | What it does                                                                   |
-| --------------------------- | ------------------------------------------------------------------------------ |
-| `npm run docs`              | Docusaurus **dev server** (hot reload) at http://localhost:3000                |
-| `npm run docs:install`      | Install `docs-site/` deps (`npm install` inside `docs-site/`)                  |
-| `npm run docs:build`        | **Production build**. Throws on any broken link/anchor — the real gate         |
-| `npm run docs:lint`         | Verify every `docs/**/*.md` has `title` + `description` frontmatter            |
-| `npm run docs:serve`        | Serve the already-built production site locally                                |
-| `npm run docs:api:generate` | Regenerate **reference docs only** (TypeDoc). Fast iterate path                |
-| `npm run derive`            | Full derived pipeline: SDK build + endpoint inventory + api report + reference |
+| Script                      | What it does                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| `npm run docs`              | Docusaurus **dev server** (hot reload) at http://localhost:3000                 |
+| `npm run docs:install`      | Install both `docs-site/` and `typedoc/` deps                                   |
+| `npm run docs:build`        | **Production build**. Throws on any broken link/anchor — the real gate          |
+| `npm run docs:lint`         | Verify every `docs/**/*.md` has `title` + `description` frontmatter             |
+| `npm run docs:serve`        | Serve the already-built production site locally                                 |
+| `npm run docs:api:generate` | Regenerate **reference docs only** (TypeDoc, via `typedoc/`). Fast iterate path |
+| `npm run derive`            | Full derived pipeline: SDK build + endpoint inventory + api report + reference  |
 
-Any script that builds or generates needs `docs-site/` deps installed first:
+`docs:build`/`docs`/`docs:serve` need `docs-site/` deps installed; `docs:api:generate`/
+`derive` need `typedoc/` deps installed:
 
 ```bash
-test -d docs-site/node_modules || npm run docs:install
+test -d docs-site/node_modules && test -d typedoc/node_modules || npm run docs:install
 ```
 
 ## Two kinds of content — know which you're touching

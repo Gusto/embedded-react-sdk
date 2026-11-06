@@ -18,7 +18,20 @@ import { normalizeToSDKError } from '@/types/sdkError'
 
 const COMPONENT_NAME = 'Payroll.PrintChecksForm'
 
+const isValidHttpsUrl = (value: string): boolean => {
+  try {
+    return new URL(value).protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 type PrintChecksOutcome = { type: 'succeeded'; url: string | null } | { type: 'failed' }
+
+const toPrintChecksOutcome = (data: GeneratedDocumentsGetQueryData | null): PrintChecksOutcome => {
+  const url = data?.generatedDocument?.documentUrls?.[0] ?? null
+  return url !== null && !isValidHttpsUrl(url) ? { type: 'failed' } : { type: 'succeeded', url }
+}
 
 // Verify against the last-known data before reporting failure: a document that already
 // finished generating must never be reported as a failure just because the deadline hit first.
@@ -27,7 +40,7 @@ const verifiedPrintChecksOutcome = (
 ): PrintChecksOutcome => {
   const status = lastData?.generatedDocument?.status
   if (status === GeneratedDocumentStatus.Succeeded) {
-    return { type: 'succeeded', url: lastData?.generatedDocument?.documentUrls?.[0] ?? null }
+    return toPrintChecksOutcome(lastData)
   }
   return { type: 'failed' }
 }
@@ -45,7 +58,7 @@ const evaluatePrintChecksOutcome = (
   if (status === GeneratedDocumentStatus.Succeeded) {
     return {
       status: 'done',
-      value: { type: 'succeeded', url: outcome.data.generatedDocument?.documentUrls?.[0] ?? null },
+      value: toPrintChecksOutcome(outcome.data),
     }
   }
   if (status === GeneratedDocumentStatus.Failed) {

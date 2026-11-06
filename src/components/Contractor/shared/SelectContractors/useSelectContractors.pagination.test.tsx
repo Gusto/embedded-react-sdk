@@ -36,7 +36,7 @@ const contractors = Array.from({ length: 52 }, (_, i) =>
 vi.mock('@gusto/embedded-api/react-query/contractorsList', () => ({
   useContractorsList: () => ({
     data: {
-      contractors,
+      showContractors: contractors,
       httpMeta: { response: { headers: new Headers() } },
     },
     isFetching: false,
@@ -45,7 +45,7 @@ vi.mock('@gusto/embedded-api/react-query/contractorsList', () => ({
   }),
   buildContractorsListQuery: () => ({
     queryKey: ['noop'],
-    queryFn: () => Promise.resolve({ contractors: [] }),
+    queryFn: () => Promise.resolve({ showContractors: [] }),
   }),
 }))
 

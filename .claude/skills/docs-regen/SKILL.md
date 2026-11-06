@@ -18,15 +18,15 @@ doesn't need this; the dev server hot-reloads it.
 After changing any of:
 
 - **TSDoc** in `src/` (descriptions, `@group` tags, params, examples).
-- `docs-site/plugins/typedoc-custom/router.config.ts` (reference IA — domains, pages).
-- `docs-site/typedoc.config.ts` or `docs-site/typedoc-utils.mjs` (grouping / ordering).
+- `typedoc/typedoc-custom/router.config.ts` (reference IA — domains, pages).
+- `typedoc/typedoc.config.ts` or `typedoc/typedoc-utils.ts` (grouping / ordering).
 
 ## Steps
 
 Run from the repo root:
 
 ```bash
-test -d docs-site/node_modules || npm run docs:install   # one-time prerequisite
+test -d typedoc/node_modules || npm run docs:install      # one-time prerequisite
 npm run docs:api:generate                                # fast path: reference only
 git diff docs/reference/                                 # confirm only intended changes
 npm run docs:build                                       # broken links/anchors throw
@@ -43,6 +43,6 @@ npm run docs:build                                       # broken links/anchors 
 Reference _structure_ — domains, standalone pages, on-page ordering, folding prose into
 generated pages via `GUIDE.md` — is documented in `docs-change-ia/REFERENCE.md`. Read it
 before changing structure rather than just refreshing content. If you changed routing
-_logic_ (not just config), run the router tests: `npm --prefix docs-site test`.
+_logic_ (not just config), run the router tests: `npm --prefix typedoc test`.
 
 Script map and content model: [`docs-shared.md`](../../doc-guides/docs-shared.md).

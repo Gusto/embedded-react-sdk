@@ -1,4 +1,5 @@
 import { Input as AriaInput } from 'react-aria-components'
+import type { KeyboardEvent } from 'react'
 import classNames from 'classnames'
 import styles from './Input.module.scss'
 import type { InputProps } from './InputTypes'
@@ -27,6 +28,16 @@ export function Input(rawProps: InputProps) {
     ...otherProps
   } = resolvedProps
 
+  // A native <input type="number"> still accepts the scientific-notation
+  // characters "e"/"E". They are never valid in our numeric fields and are
+  // silently dropped when the value is saved (the DOM coerces a lone "e" to an
+  // empty string), so block them at the keystroke instead.
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (otherProps.type === 'number' && (event.key === 'e' || event.key === 'E')) {
+      event.preventDefault()
+    }
+  }
+
   return (
     <div
       className={classNames(
@@ -45,6 +56,7 @@ export function Input(rawProps: InputProps) {
           ref={inputRef}
           disabled={isDisabled}
           aria-invalid={ariaInvalid}
+          onKeyDown={handleKeyDown}
           {...otherProps}
         />
         <div className={styles.invalidIcon}>

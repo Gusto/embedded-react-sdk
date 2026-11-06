@@ -3,6 +3,7 @@ import type { EntityIds } from '../useEntities'
 import { useResolvedTheme } from '../useThemeModeContext'
 import { darkTheme } from '../darkTheme'
 import { useUnstableFeaturesPanel } from '../UnstableFeaturesPanelContext'
+import { useFeaturesPanel } from '../FeaturesPanelContext'
 import { breakpointToMaxWidth, parseBreakpointParam } from './breakpointConstants'
 import styles from './DesignLayout.module.scss'
 import { GustoProvider } from '@/contexts/GustoProvider/GustoProvider'
@@ -11,6 +12,7 @@ export function DesignLayout() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const resolvedTheme = useResolvedTheme()
   const { unstableFeatures } = useUnstableFeaturesPanel()
+  const { features } = useFeaturesPanel()
 
   // The active viewport lives in the URL (`?vw=`) and is driven app-wide by the
   // switcher in App; here we only read it to constrain the preview column.
@@ -21,6 +23,7 @@ export function DesignLayout() {
     <GustoProvider
       config={{ baseUrl: `${window.location.origin}/api/` }}
       theme={resolvedTheme === 'dark' ? darkTheme : undefined}
+      features={features}
       unstableFeatures={unstableFeatures}
     >
       <div className={styles.shell}>

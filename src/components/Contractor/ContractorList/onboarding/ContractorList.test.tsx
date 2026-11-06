@@ -130,8 +130,10 @@ describe('ContractorList delete action', () => {
     await waitFor(() => {
       expect(deleteResolver).toHaveBeenCalledTimes(1)
     })
-    expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
-      contractorId: 'contractor-123',
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(contractorEvents.CONTRACTOR_DELETED, {
+        contractorId: 'contractor-123',
+      })
     })
   })
 })
@@ -201,11 +203,13 @@ describe('ContractorList cancel self-onboarding action', () => {
     expect(requestBody).toMatchObject({
       onboarding_status: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
     })
-    expect(onEvent).toHaveBeenCalledWith(
-      contractorEvents.CONTRACTOR_SELF_ONBOARDING_CANCELLED,
-      expect.objectContaining({
-        onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
-      }),
-    )
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_SELF_ONBOARDING_CANCELLED,
+        expect.objectContaining({
+          onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+        }),
+      )
+    })
   })
 })

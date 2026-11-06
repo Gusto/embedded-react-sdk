@@ -69,7 +69,7 @@ const Root = ({ employeeId, className, isAdmin = false, dictionary }: Onboarding
   const Components = useComponentContext()
 
   const {
-    data: { employee },
+    data: { employeeShow: employee },
   } = useEmployeesGetSuspense({ employeeId })
   const { firstName, lastName } = employee!
 

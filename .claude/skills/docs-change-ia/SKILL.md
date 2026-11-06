@@ -24,7 +24,7 @@ are overwritten. To change generated content or structure, see `REFERENCE.md`.
 - `docs-site/sidebars.ts` — the sidebar tree. **This is your main lever.**
 - `docs-site/docusaurus.config.ts` — site config, **navbar/footer links**. These are
   hardcoded `to:` paths; if you move a page they point to, update them here too.
-- `docs-site/plugins/typedoc-custom/router.config.ts` — the reference IA (see `REFERENCE.md`).
+- `typedoc/typedoc-custom/router.config.ts` — the reference IA (see `REFERENCE.md`).
 
 ## Verify before you're done
 

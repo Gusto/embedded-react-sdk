@@ -39,26 +39,40 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid: string, payPeriod: object }` |
+ * | `transition/payrollSelected` | User selected a transition payroll to run from the payroll list | `{ payrollUuid: string, payPeriod: object }` |
  * | `payroll/review` | User selected a calculated payroll to review | `{ payrollUuid: string, payPeriod: object }` |
  * | `payroll/skipped` | A payroll was skipped | `{ payrollId: string }` |
  * | `payroll/deleted` | A cancellable off-cycle payroll was deleted | `{ payrollId: string }` |
  * | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
- * | `transition/runPayroll` | User chose to run an unprocessed transition payroll from the Transition Payroll Alert | `{ startDate: string, endDate: string, payScheduleUuid?: string }` |
- * | `transition/payrollSkipped` | User skipped an unprocessed transition payroll from the Transition Payroll Alert | `{ startDate: string, endDate: string, payScheduleUuid?: string }` |
+ * | `transition/runPayroll` | User chose to run an unprocessed transition payroll from the Transition Payroll Alert | `{ payrollUuid?: string, startDate: string, endDate: string, payScheduleUuid?: string }` |
+ * | `transition/payrollSkipped` | User skipped an unprocessed transition payroll from the Transition Payroll Alert | `{ payrollUuid?: string, startDate: string, endDate: string, payScheduleUuid?: string }` |
  * | `runPayroll/summary/viewed` | User opened a payroll's summary view | `{ payrollId: string }` |
  * | `runPayroll/receipt/viewed` | User opened a payroll's receipt view | `{ payrollId: string }` |
  * | `runPayroll/blockers/viewAll` | User opened the full list of payroll blockers | — |
  * | `runPayroll/cancelled` | A payroll was cancelled | `{ payrollId: string, result: object }` |
+ * | `runPayroll/notCalculated/backToList` | User returns to the payroll list from a payroll that is no longer calculated | — |
  * | `runPayroll/cancelled/alertDismissed` | User dismissed the payroll-cancelled success alert | — |
  *
  * When unprocessed transition pay periods exist, the landing surface renders a Transition
- * Payroll Alert. It looks ahead 90 days for upcoming transition periods, groups them by pay
- * schedule, and offers to run or skip each one. Choosing to run emits `transition/runPayroll`
- * (handle it by rendering `Payroll.TransitionFlow` with the supplied dates and pay schedule).
+ * Payroll Alert. It looks ahead 90 days for upcoming transition periods and lists every one
+ * that hasn't been run, grouped by pay schedule, with run and skip actions on each row.
+ * Clicking Run emits `transition/runPayroll`. If the payroll is already calculated, the button
+ * reads Review and submit and emits `payroll/review` instead, like the payroll list.
  * Skipping opens a confirmation dialog — warning that employees will not be paid for the
  * period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
  * periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
  * may reject regular payrolls while unresolved transition periods exist.
+ *
+ * `PayrollLanding` emits these events but doesn't change screens on them. `PayrollFlow`
+ * handles the routing for you. If you render `PayrollLanding` yourself, route on these events:
+ *
+ * - `transition/runPayroll` (alert) or `transition/payrollSelected` (payroll list): render
+ *   {@link TransitionConfiguration} with the event's `payrollUuid` as `payrollId`.
+ * - `transition/configured` (from `TransitionConfiguration`): render
+ *   {@link PayrollExecutionFlow} for the same payroll.
+ * - `runPayroll/selected`: render `PayrollExecutionFlow` for the event's `payrollUuid`.
+ * - `payroll/review`: render `PayrollExecutionFlow` for the event's `payrollUuid` with
+ *   `initialState="overview"`. Calculated transition payrolls use this event too.
  *
  * @param props - See {@link PayrollLandingProps}.
  * @returns The payroll landing flow.

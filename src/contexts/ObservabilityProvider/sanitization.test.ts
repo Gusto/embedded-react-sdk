@@ -37,6 +37,83 @@ describe('sanitizeString', () => {
 })
 
 describe('sanitizeObject', () => {
+  it.each([
+    'dateOfBirth',
+    'date_of_birth',
+    'birthDate',
+    'birth_date',
+    'birthday',
+    'dob',
+    'firstName',
+    'first_name',
+    'lastName',
+    'last_name',
+    'middleName',
+    'middle_name',
+    'fullName',
+    'full_name',
+    'employeeName',
+    'employee_name',
+    'signatureText',
+    'signature_text',
+    'retirementLoanIdentifier',
+    'retirement_loan_identifier',
+    'zipCode',
+    'zip_code',
+    'zip',
+    'postalCode',
+    'postal_code',
+    'preparerCity',
+    'preparer_city',
+    'preparerZip',
+    'preparer_zip',
+    'preparer2City',
+    'preparer2_city',
+    'preparer2Zip',
+    'preparer2_zip',
+    'preparer3City',
+    'preparer3_city',
+    'preparer3Zip',
+    'preparer3_zip',
+    'preparer4City',
+    'preparer4_city',
+    'preparer4Zip',
+    'preparer4_zip',
+    'address',
+    'street1',
+    'street_1',
+    'street2',
+    'street_2',
+    'city',
+    'phone',
+    'ein',
+    'caseNumber',
+    'case_number',
+    'orderNumber',
+    'order_number',
+    'remittanceNumber',
+    'remittance_number',
+    'documentNumber',
+    'document_number',
+  ])('redacts %s values inside nested arrays regardless of their format', field => {
+    expect(sanitizeObject({ records: [{ [field.toUpperCase()]: 'sensitive value' }] })).toEqual({
+      records: [{ [field.toUpperCase()]: '[REDACTED]' }],
+    })
+  })
+
+  it('preserves unrelated keys containing short sensitive names', () => {
+    const metadata = {
+      middleInitial: 'Q',
+      deductionReducesTaxableIncome: true,
+      hasEin: true,
+      gzip: true,
+      capacity: 10,
+      paymentState: 'paid',
+      name: 'sdk.form.submit_duration',
+    }
+    expect(sanitizeObject(metadata)).toEqual(metadata)
+  })
+
   it('should remove sensitive fields', () => {
     const obj = {
       name: 'John Doe',
@@ -75,7 +152,7 @@ describe('sanitizeObject', () => {
         ssn: '[REDACTED]',
         contact: {
           email: '[EMAIL-REDACTED]',
-          phone: '[PHONE-REDACTED]',
+          phone: '[REDACTED]',
         },
       },
     })

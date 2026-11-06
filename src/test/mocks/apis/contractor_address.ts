@@ -12,11 +12,6 @@ export function handleGetContractor(
   return http.get(`${API_BASE_URL}/v1/contractors/:contractorUuid`, resolver)
 }
 
-export const getContractor = handleGetContractor(async () => {
-  const responseFixture = await getFixture('get-v1-contractors-contractor_id')
-  return HttpResponse.json(responseFixture)
-})
-
 export function handleGetContractorAddress(
   resolver: HttpResponseResolver<PathParams, GetV1ContractorsContractorUuidAddressRequest>,
 ) {
@@ -43,4 +38,4 @@ export const updateContractorAddress = handleUpdateContractorAddress(async ({ re
   })
 })
 
-export default [getContractor, getContractorAddress, updateContractorAddress]
+export default [getContractorAddress, updateContractorAddress]

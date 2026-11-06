@@ -49,6 +49,23 @@ To see the SDK running in GWS Flows, visit it [locally](http://localhost:7777/de
 Components and Flows will be shown at the top of the page in a `nav`. Company Components will automatically appear as they are added.
 Select a Flow or Component to view it
 
+## Payroll approved hours (SDK-1443)
+
+Approved request hours are read-only metadata. Both employee payroll editors show
+positive approved hours as text, leave zero/missing approved hours blank, and keep
+`hours` as the editable additional-hours value. Existing additional hours remain
+prepopulated; an unset value starts at zero. Final-payout inputs keep their existing
+meaning and presentation.
+
+Only additional hours are submitted in `paid_time_off[].hours`. The response's
+`approvedRequestHours` must never be copied into that input or added to the update
+payload. The API combines approved and additional hours during calculation.
+PayrollConfiguration receives prepared payroll data, where `hours` contains only
+additional hours, so its Time off column displays the sum of additional and approved
+hours. This display-only sum never changes the underlying compensation or gross-pay
+arithmetic. Calculated summary and payout tables continue using the API's existing
+totals; approved hours are not added again to those totals or remaining balances.
+
 ## How to leverage Translations
 
 Translations are stored in [/src/i18n](/src/i18n).
@@ -394,35 +411,63 @@ gh pr create --title "chore: release <version>"
 
 Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow from the Actions UI (`Run workflow`). It accepts an optional version override; if left blank it auto-detects from commits. The workflow creates the branch, commits the changes, and opens a PR automatically.
 
-### Documentation versioning
+### Stable releases
 
-The published docs site uses Docusaurus versioning so partners on older SDK versions can read the docs that match their installed version. **All versioned content lives in `Gusto/embedded-sdk-docs`, not this repo.** This repo only ever carries the live (current) docs in `docs/`; versioned snapshots (`versioned_docs/version-X.Y/`, `versions.json`, `versioned_sidebars/`) accumulate in the downstream repo as releases land.
+PRs that change the root `package.json` version are checked by `release-readiness`, regardless of branch name or PR title. Update the branch with the latest `main`, refresh the changelog, then get approval from another maintainer on the final commit. Any subsequent commit, including a merge from `main`, requires fresh approval. PRs without a version change pass this check without additional review requirements.
 
-Snapshots are **keyed by minor**, not by patch. A new minor creates a new snapshot in downstream; patch releases refresh the existing minor's snapshot content. The dropdown stays clean (`0.47`, `0.48`, …).
+The check updates independently of the build when a PR or review changes, or when `main` advances. Merge queue checks use approvals of the original PR commits. To refresh the result manually, run [Release Readiness](https://github.com/Gusto/embedded-react-sdk/actions/workflows/release-readiness.yaml) from `main`.
 
-#### What happens automatically
+After a release PR merges to `main` with a `chore: release` commit and CI passes, [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) starts automatically. The workflow uses `npm-release` to publish to npm, create a Git tag and GitHub Release with changelog notes, and send the release notification.
 
-The [Sync Docs Source](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-docs.yaml) workflow does all the work:
+The intended configuration for `npm-release` allows workflows from `main` without a separate publishing approval once `release-readiness` is enforced. During rollout, keep the existing publishing approval until the new check is verified and required.
 
-- **After Publish to NPM completes** (release): if the released minor isn't in downstream's `versions.json` yet, the workflow runs `npx docusaurus docs:version <minor>` inside the freshly-synced downstream working tree — copying the new `docs/` into `versioned_docs/version-<minor>/`, capturing the sidebar, and prepending the minor to `versions.json`. If the minor is already there (patch release), the workflow refreshes the existing snapshot's file contents from the synced `docs/`.
-- **On any push to `docs/**`or`docs-site/**`** on `main`: source is synced to downstream so the live (`current`) docs refresh. Versioned snapshots are not touched.
-- **On manual workflow_dispatch**: same as push by default. If downstream's `versions.json` is missing the current `package.json` minor (e.g., bootstrapping a clean downstream), the snapshot is created.
+### One-off builds
 
-`docs-site/docusaurus.config.ts` is the same file in both places. It reads `versions.json` at config-load time: if absent (this repo), versioning is disabled and the build serves only the live docs; if present (downstream), versioning is active, `lastVersion` is derived from `versions.json[0]`, and the navbar dropdown appears.
+Use [Publish RC to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-rc.yaml) for a one-off build from a branch or commit. Run the workflow from `main` and choose the source using its inputs. It publishes under `rc`, leaving `latest` unchanged, with no Git tag or GitHub Release.
 
-#### Editing docs in a released version
+When finished, use [Retire RC](https://github.com/Gusto/embedded-react-sdk/actions/workflows/retire-rc.yaml), supplying the version currently tagged `rc`. It removes the tag; exact-version installs remain available. Both flows support `dry_run`; retirement defaults to preview, so set `dry_run=false` to remove the tag.
 
-To change content for a partner on an older minor:
+Both RC publishing and retirement use `npm-release-manual` and wait for another member of the Embedded SDK team to approve through the workflow run's **Review deployments** prompt. The release owner arranges this approval. Before approving, check the selected source commit and version in the run summary, or the expected version for retirement.
 
-- For a typo / clarification that should propagate on the **next patch release** of that minor: edit `docs/` here. The next patch refresh will copy the change into the versioned snapshot in downstream.
-- To add, remove, or rename a doc in an already-released minor: edit `versioned_docs/version-X.Y/` directly in [Gusto/embedded-sdk-docs](https://github.com/Gusto/embedded-sdk-docs). The patch refresh is content-only — it won't add new files or remove orphaned ones from a versioned snapshot.
-- After any such manual edit downstream, also update `versioned_sidebars/version-X.Y-sidebars.json` there if the change affects navigation. Patch refresh does not regenerate the versioned sidebar.
+### Manual stable release
 
-#### When does the variable matter
+[Publish to NPM (Manual)](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-manual.yaml) is the escape hatch for when the automatic [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) path doesn't fire even though the release itself is fine — e.g. a release commit's CI run got cancelled by merge-queue churn, or failed on a flaky/unrelated job. It is not a way to bypass a real CI failure.
 
-When the repo variable `DOCS_PUBLISH_ENABLED=true` is set (the current default), the `workflow_run` and `push` triggers above fire automatically. If unset, only manual `workflow_dispatch` runs publish docs. `workflow_dispatch` is allowed any time, so the pipeline can be exercised end-to-end before flipping the variable.
+Run it from `main`, supplying the exact commit SHA of the `chore: release` commit to publish. It refuses anything that isn't an already-merged `chore: release` commit on `main`, and like automatic publishing, no-ops if that version is already on npm. It shares the `npm-release-manual` environment with RC publishing/retirement, so it needs the same Embedded SDK team approval through **Review deployments** — check the commit, message, and version in the run summary before approving.
 
-#### Markdown links
+### Retiring a stable version
+
+Stable versions should normally remain available. If one needs to be retired, ask an npm maintainer to deprecate the version and coordinate any GitHub Release cleanup.
+
+### Removing a harmful version
+
+If a version accidentally contains secrets or malicious content, ask an npm maintainer to fully unpublish that version, subject to [npm's unpublish policy](https://docs.npmjs.com/policies/unpublish). RC retirement leaves the package downloadable and is insufficient for this case. Rotate any exposed credentials and coordinate GitHub Release cleanup.
+
+### Testing release workflows
+
+Publishing helpers live in `.github/scripts/`; each helper documents its invocation. Run the publishing helper tests locally with:
+
+```bash
+bash .github/scripts/publish-helpers.test.sh
+```
+
+These tests exercise inline publishing commands and helpers using mocked npm and HTTP responses plus local Git repositories, without publishing or sending notifications. CI also runs input validation, workflow guards, GitHub Release creation tests, and RC retirement tests. Live workflow runs are still needed to verify npm trust, environment approvals, and runner configuration.
+
+Run release readiness tests without installing dependencies:
+
+```bash
+node --test .github/scripts/release-readiness.test.cjs
+```
+
+The event workflow is read-only; the evaluator runs trusted code from `main` and reads candidate files through the GitHub API without executing them.
+
+To roll out the approval changes:
+
+1. Configure `npm-release-manual` to require another Embedded SDK team member's approval and prevent self-approval. All three environments must permit workflows from `main` only; RC and manual-publish sources are selected through workflow inputs. Update the npm trusted publisher configuration for RC publishing, retirement, and manual stable publishing to match `npm-release-manual`, then verify all three workflows' OIDC and approval behavior.
+2. After the readiness workflows land on `main`, verify PR push, review approval/dismissal, `main` advancement, and merge queue events. Add `release-readiness` as a required check on `main`, selecting GitHub Actions as its source.
+3. Only after the check is verified and required, remove the stable publishing approval from `npm-release`. Keep approval required in `npm-release-manual`.
+
+### Markdown links
 
 Inside `docs/`, use relative links between files (e.g. `[link](../getting-started/index.md)`), not `/docs/...` absolute links. Absolute links don't resolve correctly when the same file is served at a versioned URL like `/docs/0.47/...`.
 
@@ -435,9 +480,3 @@ See the [Getting Started guide](../getting-started/index.md).
 
 See the [Getting Started guide](/docs/getting-started/index.md).
 ```
-
-### After the PR is merged
-
-Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM.
-
-If you need to trigger a publish manually (e.g. CI was re-run after the auto-trigger fired, or something went wrong), you can still run the workflow manually from the Actions UI (`Run workflow`).

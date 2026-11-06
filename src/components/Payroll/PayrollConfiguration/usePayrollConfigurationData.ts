@@ -9,7 +9,7 @@ import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unpr
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PayrollCategory } from '../payrollTypes'
 import { derivePayrollCategory } from '../payrollTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -76,7 +76,7 @@ export function usePayrollConfigurationData({
       page: currentPage,
       sortBy: 'name',
     },
-    { placeholderData: keepPreviousData },
+    { placeholderData: keepPreviousData, throwOnError: true },
   )
 
   const employeeDataRef = useRef(employeeData)
@@ -130,6 +130,7 @@ export function usePayrollConfigurationData({
     enabled: employeeUuids.length > 0 && !disablePrepare,
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
+    throwOnError: error => !isAlreadyProcessedError(error),
     // An "already processed" prepare failure is terminal — retrying it wastes time. Other
     // errors (network blips, etc.) still get the standard retry treatment.
     retry: (failureCount, error) =>
@@ -169,7 +170,7 @@ export function usePayrollConfigurationData({
 
       return results
         .filter(result => result.ok)
-        .map(result => result.value.employee)
+        .map(result => result.value.employeeShow)
         .filter((e): e is Employee => e != null)
     },
     enabled: missingExcludedUuids.length > 0 && !disablePrepare,

@@ -1,6 +1,8 @@
 # Docs Site Infrastructure
 
-**Status:** Approved | **Author:** Jeff Johnson | **Date:** 2026-06-12
+**Status:** Partially superseded | **Author:** Jeff Johnson | **Date:** 2026-06-12
+
+> **Partially superseded:** Decisions #2 and #4 (GitHub Pages via the `Gusto/embedded-sdk-docs` publish pipeline) no longer apply — `sdk.gusto.com` is now hosted internally as a static site, and that pipeline has been removed. Decisions #1, #3, and #5 still stand.
 
 ---
 

@@ -947,7 +947,7 @@ describe('useJobForm', () => {
       const updateCompResolver = vi.fn<HttpResponseResolver>(({ request }) => {
         const compensationId = new URL(request.url).pathname.split('/').pop() ?? ''
         if (compensationId === 'compensation-uuid-secondary-a') {
-          return new HttpResponse(null, { status: 500 })
+          return new HttpResponse(null, { status: 500, headers: { 'content-length': '0' } })
         }
         return HttpResponse.json(buildCompensation({ uuid: compensationId }))
       })

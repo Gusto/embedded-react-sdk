@@ -1,5 +1,210 @@
 # Changelog
 
+## [0.58.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.3...v0.58.0) (2026-11-02)
+
+### Breaking Changes
+
+#### Removed `Payroll.TransitionFlow`, `Payroll.TransitionPayroll`, and `Payroll.TransitionCreation` ([#3030](https://github.com/Gusto/embedded-react-sdk/issues/3030))
+
+The API now creates transition payrolls, so the SDK no longer has a creation step. These components are removed along with their props types, `TransitionCreationFormData`, the `Payroll.Transition` and `Payroll.TransitionCreation` translation namespaces, and the `transition/created` event (`componentEvents.TRANSITION_CREATED`).
+
+Render `Payroll.PayrollFlow` to run transition payrolls. It routes them to `Payroll.TransitionConfiguration`, then to `PayrollConfiguration` and the rest of the execution steps.
+
+```tsx
+// Before
+<Payroll.TransitionFlow
+  companyId={companyId}
+  startDate={startDate}
+  endDate={endDate}
+  payScheduleUuid={payScheduleUuid}
+  onEvent={onEvent}
+/>
+
+// After
+<Payroll.PayrollFlow companyId={companyId} onEvent={onEvent} />
+```
+
+If you compose the payroll screens yourself, render `Payroll.TransitionConfiguration` with the transition payroll's ID:
+
+```tsx
+<Payroll.TransitionConfiguration companyId={companyId} payrollId={payrollId} onEvent={onEvent} />
+```
+
+#### `PayrollList` emits `transition/payrollSelected` for transition payrolls ([#3021](https://github.com/Gusto/embedded-react-sdk/issues/3021))
+
+Clicking a transition payroll row in `PayrollList` no longer emits `runPayroll/selected`. It now emits `transition/payrollSelected` with the same `{ payrollUuid, payPeriod }` payload.
+
+```tsx
+// Before
+if (eventType === componentEvents.RUN_PAYROLL_SELECTED) {
+  // fired for regular and transition payrolls
+}
+
+// After
+if (eventType === componentEvents.RUN_PAYROLL_SELECTED) {
+  // regular payrolls only
+}
+if (eventType === componentEvents.TRANSITION_PAYROLL_SELECTED) {
+  // render Payroll.TransitionConfiguration with data.payrollUuid
+}
+```
+
+#### Regular rate of pay graduated from `UnstableFeatures` to `Features` ([#3009](https://github.com/Gusto/embedded-react-sdk/issues/3009))
+
+`GustoProvider` has a new `features` prop for released functionality that is on by default. `UnstableFeatures.payrollRegularRateOfPay` is replaced by `Features.regularRateOfPay`, which defaults to `true`. Only an explicit `false` turns it off. The `@alpha` `disableWorkweekStartDayEditing` prop is removed from `PaySchedule` and `usePayScheduleForm`.
+
+```tsx
+// Before: opt in
+<GustoProvider config={config} unstableFeatures={{ payrollRegularRateOfPay: true }}>
+
+// After: on by default. To opt out:
+<GustoProvider config={config} features={{ regularRateOfPay: false }}>
+```
+
+### Features & Enhancements
+
+- `Payroll.TransitionConfiguration` is now public. It updates the settings of an API-created transition payroll and hands off to `PayrollConfiguration` ([#3000](https://github.com/Gusto/embedded-react-sdk/issues/3000), [#3050](https://github.com/Gusto/embedded-react-sdk/issues/3050))
+- `PayrollFlow` routes transition payrolls to `TransitionConfiguration`, then continues to `PayrollConfiguration` for the same payroll ([#3021](https://github.com/Gusto/embedded-react-sdk/issues/3021))
+- The transition payroll alert lists every open transition payroll, with its own Run and Skip buttons. Run and skip events include the payroll ID. A calculated transition payroll offers Review and submit and emits `payroll/review` ([#3008](https://github.com/Gusto/embedded-react-sdk/issues/3008), [#3021](https://github.com/Gusto/embedded-react-sdk/issues/3021))
+- The `PaySchedule` workweek start day API is now public ([#3009](https://github.com/Gusto/embedded-react-sdk/issues/3009))
+- Payroll employee editors show approved PTO request hours separately from additional hours entered during payroll. Approved hours are read only. The headless payroll form exposes approved hours so custom editors can show the same split ([#2986](https://github.com/Gusto/embedded-react-sdk/issues/2986))
+- Sort `ContractorManagement.ContractorList` by last name. `TableProps` gains optional `sortDescriptor` and `onSortChange` for sortable columns in custom component adapters ([#2997](https://github.com/Gusto/embedded-react-sdk/issues/2997))
+- Add `getOptionDescription` to `RadioGroupHookField` for per-option descriptions ([#2996](https://github.com/Gusto/embedded-react-sdk/issues/2996))
+
+### Fixes
+
+- Prevent a fast double-click from submitting a composed form twice, which could create duplicate records such as a second job ([#3028](https://github.com/Gusto/embedded-react-sdk/issues/3028))
+- Create dismissal payroll for the selected employee when two dismissed employees share a pay period ([#3024](https://github.com/Gusto/embedded-react-sdk/issues/3024))
+- Default off-cycle payroll withholding to the company's pay schedule frequency instead of always every other week ([#3040](https://github.com/Gusto/embedded-react-sdk/issues/3040))
+- Show the correct compensation type (for example "Salary/Eligible for overtime") on the single-job `Compensation` card ([#3042](https://github.com/Gusto/embedded-react-sdk/issues/3042))
+- Show the compensation type for salaried employees in the payroll overview's Hours worked table ([#3031](https://github.com/Gusto/embedded-react-sdk/issues/3031))
+- Show estimated total pay instead of $0.00 when the API leaves out gross pay ([#3025](https://github.com/Gusto/embedded-react-sdk/issues/3025))
+- Stop a pay schedule with a `null` custom name from failing the whole pay schedule list ([#3049](https://github.com/Gusto/embedded-react-sdk/issues/3049))
+- Let "View checks" submit after switching print check stock types with a cleared starting number ([#3032](https://github.com/Gusto/embedded-react-sdk/issues/3032))
+- Remove the misleading Totals row from the payroll receipt's tax table. Lines like SDI and Paid Family Leave are not part of the tax debit, which the Debited section still shows ([#3027](https://github.com/Gusto/embedded-react-sdk/issues/3027))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `react-i18next`) ([#3018](https://github.com/Gusto/embedded-react-sdk/issues/3018), [#3020](https://github.com/Gusto/embedded-react-sdk/issues/3020))
+- Bump dev dependencies (`@microsoft/api-extractor`, `@mswjs/interceptors`, Storybook addons, `typescript-eslint`, `sass-embedded`, `pixelmatch`) ([#3044](https://github.com/Gusto/embedded-react-sdk/issues/3044), [#3036](https://github.com/Gusto/embedded-react-sdk/issues/3036), [#3045](https://github.com/Gusto/embedded-react-sdk/issues/3045), [#3035](https://github.com/Gusto/embedded-react-sdk/issues/3035), [#3034](https://github.com/Gusto/embedded-react-sdk/issues/3034), [#3033](https://github.com/Gusto/embedded-react-sdk/issues/3033), [#3047](https://github.com/Gusto/embedded-react-sdk/issues/3047), [#3037](https://github.com/Gusto/embedded-react-sdk/issues/3037), [#3043](https://github.com/Gusto/embedded-react-sdk/issues/3043), [#3019](https://github.com/Gusto/embedded-react-sdk/issues/3019))
+
+## [0.57.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.2...v0.57.3) (2026-10-27)
+
+### Features & Enhancements
+
+- Add department- and employee-level pay schedule assignment to the in-development `CompanyManagement.PaySchedule` flow. Released as `@alpha` behind the existing `managePaySchedules` flag in `UnstableFeatures` ([#2949](https://github.com/Gusto/embedded-react-sdk/issues/2949), [#2956](https://github.com/Gusto/embedded-react-sdk/issues/2956))
+
+### Fixes
+
+- Include reimbursements in the Total pay column shown before payroll calculation ([#3010](https://github.com/Gusto/embedded-react-sdk/issues/3010))
+- Preserve pay schedule assignment selections when navigating back and forth between steps ([#2948](https://github.com/Gusto/embedded-react-sdk/issues/2948))
+- Include the visible filter text, not just the icon label, in the date filter trigger's accessible name ([#2985](https://github.com/Gusto/embedded-react-sdk/issues/2985))
+- Reduce redundant API calls on the contractor/employee self-onboarding `Landing` screen ([#2989](https://github.com/Gusto/embedded-react-sdk/issues/2989))
+
+### Chores & Maintenance
+
+- Bump `@gusto/embedded-api` from `0.3.1` to `0.3.2` ([#2988](https://github.com/Gusto/embedded-react-sdk/issues/2988))
+- Bump `@hookform/resolvers` from `5.9.1` to `6.0.0` ([#2979](https://github.com/Gusto/embedded-react-sdk/issues/2979))
+- Bump runtime dependencies (`i18next`, `react-i18next`, `react-hook-form`) ([#2983](https://github.com/Gusto/embedded-react-sdk/issues/2983), [#3003](https://github.com/Gusto/embedded-react-sdk/issues/3003), [#2993](https://github.com/Gusto/embedded-react-sdk/issues/2993), [#3004](https://github.com/Gusto/embedded-react-sdk/issues/3004), [#3015](https://github.com/Gusto/embedded-react-sdk/issues/3015), [#3014](https://github.com/Gusto/embedded-react-sdk/issues/3014))
+- Bump dev dependencies (`storybook`, `typescript-eslint`, `dotenv`, `sass-embedded`, `vite`, `globals`, `@storybook/addon-onboarding`, docs site `vitest`, `postcss-selector-parser`, docs site `qs`)
+
+## [0.57.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.1...v0.57.2) (2026-10-22)
+
+### Fixes
+
+- Fix off-cycle and transition payroll dates being sent one day early for users in timezones ahead of UTC. Dates picked in `OffCycleCreation` and `TransitionCreation` are now sent exactly as picked ([#2976](https://github.com/Gusto/embedded-react-sdk/issues/2976))
+- Fix the cancel payroll dialog crashing with `RangeError: timeZone is not supported` when the host app polyfills `Intl.DateTimeFormat`. The deadline in `PayrollOverview` and `PayrollHistory` now uses the SDK locale, and translations can place `{{time}}` and `{{date}}` separately. Existing `{{deadline}}` overrides keep working ([#2968](https://github.com/Gusto/embedded-react-sdk/issues/2968))
+- Align the pay schedule management forms with design, including a "Run payroll by" deadline and a description for the first pay period end date ([#2947](https://github.com/Gusto/embedded-react-sdk/issues/2947))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `react-i18next`) ([#2971](https://github.com/Gusto/embedded-react-sdk/issues/2971), [#2972](https://github.com/Gusto/embedded-react-sdk/issues/2972))
+- Bump dev dependencies (`@playwright/test`, `@commitlint/cli`, `@storybook/addon-a11y`, `smol-toml`, docs site `launch-editor`)
+
+## [0.57.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.57.0...v0.57.1) (2026-10-21)
+
+### Features & Enhancements
+
+- Add `Payroll.TaxPaymentsFlow`, a tax payments hub with a payment list and detail view built on the tax payments endpoints. Released as `@alpha` behind the new `taxPayments` flag in `UnstableFeatures` ([#2872](https://github.com/Gusto/embedded-react-sdk/issues/2872))
+- Show a recoverable screen instead of a hard error when a payroll is no longer calculated, so the payroll can be recalculated in place ([#2955](https://github.com/Gusto/embedded-react-sdk/issues/2955))
+
+### Fixes
+
+- Fix Payroll History crashing for a company when the API returns an off-cycle reason outside the documented enum (e.g. `Max out 401k`, `Other`) — those payrolls now render as generic off-cycle payrolls instead of failing response validation for the whole list ([#2919](https://github.com/Gusto/embedded-react-sdk/issues/2919))
+- Fix "Payroll is not calculated" being thrown for processed payrolls that never run the calculate step — wage corrections, reversals, disability distributions, external payrolls, and tax reconciliations are now viewable ([#2922](https://github.com/Gusto/embedded-react-sdk/issues/2922))
+- Block the exponent characters `e` / `E` in numeric `Input` fields. The DOM coerced a lone `e` to an empty string, so the value was silently dropped on save and the field reverted with no error. Sign keys (`+` / `-`) are unaffected ([#2847](https://github.com/Gusto/embedded-react-sdk/issues/2847))
+- Only offer the cancel action on payrolls the API will actually accept for cancellation, instead of surfacing a cancel that fails server-side ([#2936](https://github.com/Gusto/embedded-react-sdk/issues/2936))
+- Validate generated check URLs in `PrintChecksForm` before opening them ([#2937](https://github.com/Gusto/embedded-react-sdk/issues/2937))
+- Show server-side field errors on `StateTaxesForm`, including value errors from every requirement set ([#2917](https://github.com/Gusto/embedded-react-sdk/issues/2917))
+- Keep workweek inputs usable in Run Regular Payroll when a pay period has many workweek columns — inputs now have a fixed column width and the workweek tables scroll horizontally, instead of being crushed beside their adornments ([#2939](https://github.com/Gusto/embedded-react-sdk/issues/2939))
+- Label `DataCards` footer values with their column titles when footers are keyed by column key (e.g. `PayrollOverview` totals), which previously rendered as bare values ([#2933](https://github.com/Gusto/embedded-react-sdk/issues/2933))
+
+### Chores & Maintenance
+
+- Bump runtime dependencies (`i18next`, `react-hook-form`, `robot3`, `dompurify`) ([#2929](https://github.com/Gusto/embedded-react-sdk/issues/2929), [#2945](https://github.com/Gusto/embedded-react-sdk/issues/2945), [#2931](https://github.com/Gusto/embedded-react-sdk/issues/2931), [#2961](https://github.com/Gusto/embedded-react-sdk/issues/2961), [#2927](https://github.com/Gusto/embedded-react-sdk/issues/2927))
+- Bump dev dependencies (`vitest`, `typescript-eslint`, `prettier`, `sass-embedded`, `cspell`, `lint-staged`, `@microsoft/api-extractor`, `@testing-library/user-event`, Storybook packages, Playwright accessibility tooling)
+
+## [0.57.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.7...v0.57.0) (2026-10-15)
+
+### ⚠ BREAKING CHANGES
+
+- `customErrorSanitizer` and `customMetricSanitizer` (via `ObservabilityProvider`'s `sanitization` config) now run **inside** the SDK's own redaction instead of replacing it — your function receives already-redacted input, and its output is redacted again before being forwarded. Raw errors are stripped unless `includeRawError: true`, even if your sanitizer re-adds them, and this applies independently of `enabled: false`. Built-in sensitive-key coverage has also expanded ([#2908](https://github.com/Gusto/embedded-react-sdk/issues/2908))
+
+  ```tsx
+  // Before — sanitizer output was forwarded as-is, so returning the raw
+  // error bypassed SDK redaction entirely.
+  sanitization={{
+    customErrorSanitizer: (error) => ({ ...error, raw: originalError }),
+  }}
+
+  // After — raw is stripped again after your sanitizer runs unless you opt in.
+  sanitization={{
+    includeRawError: true,
+    customErrorSanitizer: (error) => ({ ...error, raw: originalError }),
+  }}
+  ```
+
+### Features & Enhancements
+
+- Add support for assignment by compensation type ([#2881](https://github.com/Gusto/embedded-react-sdk/issues/2881))
+
+### Fixes
+
+- Fix external payrolls incorrectly appearing in the payroll list and history ([#2909](https://github.com/Gusto/embedded-react-sdk/issues/2909))
+- `@gusto/embedded-api` queries and mutations now run regardless of network state, instead of silently stalling when the browser reports itself offline ([#2895](https://github.com/Gusto/embedded-react-sdk/issues/2895))
+- Trim whitespace from name fields and clarify the invalid-name error copy ([#2896](https://github.com/Gusto/embedded-react-sdk/issues/2896))
+- Fix payroll employee edit defaults being skipped for employees with a `constructor`, `toString`, or other inherited `Object.prototype` key as their UUID ([#2900](https://github.com/Gusto/embedded-react-sdk/issues/2900))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@internationalized/number`, `@playwright/test`, `@storybook/addon-a11y`, `@storybook/addon-onboarding`, `axe-core`, `cspell`, `eslint-plugin-tsdoc`, `vite`, `vite-plugin-dts`) ([#2907](https://github.com/Gusto/embedded-react-sdk/issues/2907), [#2905](https://github.com/Gusto/embedded-react-sdk/issues/2905), [#2912](https://github.com/Gusto/embedded-react-sdk/issues/2912), [#2903](https://github.com/Gusto/embedded-react-sdk/issues/2903), [#2914](https://github.com/Gusto/embedded-react-sdk/issues/2914), [#2851](https://github.com/Gusto/embedded-react-sdk/issues/2851), [#2904](https://github.com/Gusto/embedded-react-sdk/issues/2904), [#2915](https://github.com/Gusto/embedded-react-sdk/issues/2915), [#2913](https://github.com/Gusto/embedded-react-sdk/issues/2913))
+- Bump `msw` to 3.0.3 ([#2916](https://github.com/Gusto/embedded-react-sdk/issues/2916))
+- Bump `katex` in `/docs-site` ([#2891](https://github.com/Gusto/embedded-react-sdk/issues/2891))
+
+## [0.56.7](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.6...v0.56.7) (2026-10-13)
+
+### Fixes
+
+- Fix employees going missing from the payroll configuration screen when the API returns a deduction amount as a decimal string rather than a number. Prepare-payroll failures now surface as errors instead of silently rendering an incomplete employee list ([#2890](https://github.com/Gusto/embedded-react-sdk/issues/2890))
+
+### Chores & Maintenance
+
+- Bump `dompurify` to 3.4.16 ([#2888](https://github.com/Gusto/embedded-react-sdk/issues/2888))
+- Bump dev dependencies (`prettier`, `typescript-eslint`, `sass-embedded`, `dotenv`) ([#2852](https://github.com/Gusto/embedded-react-sdk/issues/2852), [#2853](https://github.com/Gusto/embedded-react-sdk/issues/2853), [#2854](https://github.com/Gusto/embedded-react-sdk/issues/2854), [#2855](https://github.com/Gusto/embedded-react-sdk/issues/2855))
+- Bump transitive dependencies for security advisories (`axios`, `brace-expansion`, `markdown-it`, `shell-quote`, `undici`, `qs`, `ip-address`, and others) ([#2857](https://github.com/Gusto/embedded-react-sdk/issues/2857), [#2858](https://github.com/Gusto/embedded-react-sdk/issues/2858), [#2888](https://github.com/Gusto/embedded-react-sdk/issues/2888), [#2889](https://github.com/Gusto/embedded-react-sdk/issues/2889))
+
+## [0.56.6](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.5...v0.56.6) (2026-10-12)
+
+### Features & Enhancements
+
+- Add the alpha `AutoPilotDialog` to `CompanyManagement.PaySchedule`'s overview, letting a company toggle AutoPilot for its pay schedule and see any blocking eligibility issues inline. Gated behind the `managePaySchedules` unstable feature flag ([#2871](https://github.com/Gusto/embedded-react-sdk/issues/2871))
+- Add `isSelfOnboardingEnabled` and `withEmployeeI9` props to `EmployeeListFlow`, matching the options already available on the standalone onboarding flow ([#2885](https://github.com/Gusto/embedded-react-sdk/issues/2885))
+
+### Fixes
+
+- Stop stale alerts from persisting across payroll run screens after transitioning between states ([#2879](https://github.com/Gusto/embedded-react-sdk/issues/2879))
+- Stop stale alerts from reappearing in the contractor payment information-request round-trip and on the wire-confirmation screen ([#2882](https://github.com/Gusto/embedded-react-sdk/issues/2882))
+
 ## [0.56.5](https://github.com/Gusto/embedded-react-sdk/compare/v0.56.4...v0.56.5) (2026-10-07)
 
 ### Features & Enhancements

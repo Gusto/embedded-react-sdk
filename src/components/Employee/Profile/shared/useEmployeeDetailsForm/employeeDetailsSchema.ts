@@ -36,11 +36,13 @@ export type EmployeeDetailsErrorCode =
 const fieldValidators = {
   firstName: z
     .string()
+    .trim()
     .min(1, { message: EmployeeDetailsErrorCodes.REQUIRED })
     .regex(NAME_REGEX, { message: EmployeeDetailsErrorCodes.INVALID_NAME }),
   middleInitial: z.string(),
   lastName: z
     .string()
+    .trim()
     .min(1, { message: EmployeeDetailsErrorCodes.REQUIRED })
     .regex(NAME_REGEX, { message: EmployeeDetailsErrorCodes.INVALID_NAME }),
   email: z.email({ error: () => EmployeeDetailsErrorCodes.INVALID_EMAIL }),

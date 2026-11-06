@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payrollshow'
+import userEvent from '@testing-library/user-event'
+import type { Payroll } from '@gusto/embedded-api/models/components/unprocessedpayroll'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -104,6 +105,137 @@ describe('PayrollHistoryPresentation', () => {
 
       expect(await screen.findByText('January 1–January 15, 2025')).toBeInTheDocument()
       expect(screen.getAllByText('Sep 30, 2026').length).toBe(2)
+    })
+  })
+
+  describe('cancel action', () => {
+    const cancellableRegularPayroll: Payroll = {
+      ...mockRegularPayroll,
+      payrollDeadline: new Date('2025-01-14T23:00:00Z'),
+      payrollStatusMeta: {
+        cancellable: true,
+        expectedCheckDate: '2025-01-15',
+        initialCheckDate: '2025-01-15',
+        expectedDebitTime: '2025-01-14T23:00:00Z',
+        payrollLate: false,
+        initialDebitCutoffTime: '2025-01-14T23:00:00Z',
+      },
+    }
+
+    const openRowMenu = async () => {
+      const user = userEvent.setup()
+      await user.click(await screen.findByRole('button', { name: 'Open menu' }))
+      await screen.findByRole('menuitem', { name: 'View payroll summary' })
+    }
+
+    beforeEach(() => {
+      vi.setSystemTime(new Date('2025-01-13T18:00:00Z'))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('offers Cancel payroll for a processed regular payroll the API flags cancellable', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[cancellableRegularPayroll]}
+        />,
+      )
+
+      await openRowMenu()
+
+      expect(screen.getByRole('menuitem', { name: 'Cancel payroll' })).toBeInTheDocument()
+    })
+
+    it('hides Cancel payroll when the payroll has no cancellable flag', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[{ ...cancellableRegularPayroll, payrollStatusMeta: undefined }]}
+        />,
+      )
+
+      await openRowMenu()
+
+      expect(screen.queryByRole('menuitem', { name: 'Cancel payroll' })).toBeNull()
+    })
+
+    it('hides Cancel payroll for a disability insurance distribution even when flagged cancellable', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[
+            {
+              ...cancellableRegularPayroll,
+              offCycle: true,
+              offCycleReason: OffCycleReasonType.DisabilityInsuranceDistribution,
+            },
+          ]}
+        />,
+      )
+
+      await openRowMenu()
+
+      expect(screen.queryByRole('menuitem', { name: 'Cancel payroll' })).toBeNull()
+    })
+  })
+
+  describe('cancel dialog deadline', () => {
+    const payrollWithDeadline: Payroll = {
+      ...mockRegularPayroll,
+      payrollDeadline: new Date('2025-01-14T23:00:00Z'),
+    }
+    const expectedDeadlineText =
+      'Run this payroll by 4:00 PM MST on Tue, Jan 14 to pay your employees on time.'
+
+    beforeEach(() => {
+      vi.stubEnv('TZ', 'America/Denver')
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+      vi.unstubAllEnvs()
+    })
+
+    it('shows the deadline in the local time zone, matching the payroll overview cancel dialog', async () => {
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[payrollWithDeadline]}
+          cancelDialogItem={payrollWithDeadline}
+        />,
+      )
+
+      expect(await screen.findByText(expectedDeadlineText)).toBeInTheDocument()
+    })
+
+    it('shows the deadline when the host replaces Intl.DateTimeFormat with a UTC-only polyfill', async () => {
+      const NativeDateTimeFormat = Intl.DateTimeFormat
+      function UtcOnlyDateTimeFormat(
+        locales?: string | string[],
+        options?: Intl.DateTimeFormatOptions,
+      ) {
+        if (options?.timeZone && options.timeZone.toUpperCase() !== 'UTC') {
+          throw new RangeError('timeZone is not supported.')
+        }
+        return new NativeDateTimeFormat(locales, options)
+      }
+      vi.stubGlobal(
+        'Intl',
+        Object.assign(Object.create(Intl), { DateTimeFormat: UtcOnlyDateTimeFormat }),
+      )
+
+      renderWithProviders(
+        <PayrollHistoryPresentation
+          {...defaultProps}
+          payrollHistory={[payrollWithDeadline]}
+          cancelDialogItem={payrollWithDeadline}
+        />,
+      )
+
+      expect(await screen.findByText(expectedDeadlineText)).toBeInTheDocument()
     })
   })
 })

@@ -1,0 +1,33 @@
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.inputContainer {
+  max-width: toRem(160);
+}
+
+$data-view-small-breakpoint: 40rem;
+
+.workweekTableScroll {
+  container-type: inline-size;
+  overflow-x: auto;
+}
+
+.workweekInputContainer {
+  max-width: none;
+
+  @include container-query($data-view-small-breakpoint) {
+    min-width: toRem(160);
+    max-width: toRem(160);
+  }
+}
+
+.earningsAlert {
+  padding: toRem(20) toRem(20) 0;
+}
+
+.earningsGroupLabel {
+  padding: toRem(12) toRem(20);
+  border-top: 1px solid var(--g-colorBorderSecondary);
+}

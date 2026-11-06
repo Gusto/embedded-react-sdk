@@ -460,7 +460,7 @@ export function useCompensationForm({
   const workAddresses = addressesQuery.data?.employeeWorkAddressesList
   const currentWorkAddress = workAddresses?.find(address => address.active)
   const locationUuid = currentWorkAddress?.locationUuid
-  const employee = employeeQuery.data?.employee
+  const employee = employeeQuery.data?.employeeShow
 
   const minWagesQuery = useLocationsGetMinimumWages(
     { locationUuid: locationUuid ?? '' },

@@ -1307,7 +1307,9 @@ describe('Compensation', () => {
       })
 
       expect(deletedJobPath).toBe('/v1/jobs/job-uuid-2')
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_DELETED, undefined)
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_DELETED, undefined)
+      })
     })
   })
 })

@@ -7,3 +7,9 @@ export {
   PayScheduleAssignment,
   type PayScheduleAssignmentProps,
 } from '../PaySchedule/management/PayScheduleAssignment'
+export { TaxPaymentsFlow, TaxPaymentsList, TaxPaymentDetail } from '../TaxPayments'
+export type {
+  TaxPaymentsFlowProps,
+  TaxPaymentsListProps,
+  TaxPaymentDetailProps,
+} from '../TaxPayments'

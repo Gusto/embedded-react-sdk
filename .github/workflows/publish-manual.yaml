@@ -1,0 +1,166 @@
+# Manual escape hatch for when the automatic publish.yaml gate (CI's
+# workflow_run conclusion == success) is stuck or flaky rather than the
+# release actually being bad — e.g. a release commit's CI run got cancelled
+# by merge-queue churn, or failed on an unrelated job (see SDK e2e incident,
+# 2026-10-22). Requires an approver and one specific already-merged release
+# commit; never a branch, so it can't publish anything beyond the intended
+# version bump.
+name: Publish to NPM (Manual)
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Exact commit SHA of the chore(release) commit to publish (must already be on main)'
+        required: true
+        type: string
+jobs:
+  validate:
+    # Belt-and-suspenders: workflow_dispatch runs whatever copy of this file
+    # lives on the ref the dispatcher picked. Refuse to do anything
+    # privileged unless that ref is main, so a modified copy on another
+    # branch can't run with this workflow's permissions.
+    if: github.ref == 'refs/heads/main'
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: read
+    env:
+      INPUT_COMMIT: ${{ github.event.inputs.commit }}
+    outputs:
+      ref: ${{ steps.resolve-ref.outputs.sha }}
+    steps:
+      # Untargeted on purpose — the validator comes from the trusted
+      # dispatch ref (main), not from the untrusted commit input.
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit input
+        run: .github/scripts/validate-release-input.sh commit-sha "$INPUT_COMMIT"
+
+      - name: Verify commit is an already-merged release commit
+        run: |
+          if ! git merge-base --is-ancestor "$INPUT_COMMIT" origin/main; then
+            echo "::error::$INPUT_COMMIT is not on main. This workflow only republishes an already-merged release commit." >&2
+            exit 1
+          fi
+          message=$(git log -1 --format=%s "$INPUT_COMMIT")
+          if [[ "$message" != "chore: release"* ]]; then
+            echo "::error::$INPUT_COMMIT is not a 'chore: release' commit (got: $message)." >&2
+            exit 1
+          fi
+
+      - name: Resolve ref to commit SHA
+        id: resolve-ref
+        run: echo "sha=$(git rev-parse "$INPUT_COMMIT")" >> "$GITHUB_OUTPUT"
+
+      - name: Summarize for approval
+        run: |
+          {
+            echo '## Manual publish request'
+            printf 'Commit: `%s`\n' "$(git rev-parse "$INPUT_COMMIT")"
+            printf 'Message: `%s`\n' "$(git log -1 --format=%s "$INPUT_COMMIT")"
+            printf 'Version: `%s`\n' "$(git show "$INPUT_COMMIT":package.json | jq -r .version)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    needs: validate
+    uses: ./.github/workflows/build-sdk.yaml
+    with:
+      ref: ${{ needs.validate.outputs.ref }}
+
+  npm-publish:
+    needs: [validate, build]
+    concurrency:
+      group: npm-publish-manual
+      cancel-in-progress: false
+    environment: npm-release-manual
+    # npm trusted publishing requires a GitHub-hosted runner.
+    # GitHub writes run separately on Gusto's allowlisted runners.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    # No actions/cache or npm ci here — this job can request npm OIDC credentials, and
+    # build-sdk.yaml already built dist/ on a separate, secret-less runner.
+    # See validate-release-workflows.test.sh.
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.validate.outputs.ref }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Install OIDC-compatible npm
+        run: npm install --global npm@11.21.0 --ignore-scripts
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to NPM
+        run: |
+          version=$(jq -er '.version' package.json)
+          versions=$(npm view '@gusto/embedded-react-sdk' versions --json)
+          jq -e 'type == "array" and all(.[]; type == "string")' <<< "$versions" >/dev/null
+          if jq -e --arg version "$version" 'index($version) != null' <<< "$versions" >/dev/null; then
+            echo "$version is already on npm, skipping publish."
+          else
+            npm publish --access public --ignore-scripts
+          fi
+
+  release:
+    needs: [validate, npm-publish]
+    # Tag pushes and GitHub Release API writes require Gusto's allowlisted runner IPs.
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.validate.outputs.ref }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Tag release
+        run: bash .github/scripts/tag-release.sh
+
+      - name: Extract changelog for current version
+        id: changelog
+        run: bash .github/scripts/release-changelog.sh
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ steps.changelog.outputs.version }}
+          NOTES_FILE: ${{ steps.changelog.outputs.notes_file }}
+        run: bash .github/scripts/github-release.sh "$VERSION" "$NOTES_FILE"
+
+      - name: Generate release summary
+        id: summary
+        if: steps.changelog.outputs.content != ''
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          VERSION: ${{ steps.changelog.outputs.version }}
+          CHANGELOG_CONTENT: ${{ steps.changelog.outputs.content }}
+        run: bash .github/scripts/release-summary.sh
+
+      - name: Post release notification to Slack
+        if: steps.changelog.outputs.version != ''
+        continue-on-error: true
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          VERSION: ${{ steps.changelog.outputs.version }}
+          SUMMARY: ${{ steps.summary.outputs.text }}
+        run: bash .github/scripts/release-notification.sh

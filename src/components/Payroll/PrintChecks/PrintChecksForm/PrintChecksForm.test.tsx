@@ -186,8 +186,8 @@ describe('PrintChecksForm', () => {
     expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('href', 'https://example.com/checks.pdf')
   })
 
-  it('does not open any window or navigate anywhere when generation succeeds', async () => {
-    const openSpy = vi.spyOn(window, 'open')
+  it('opens the document in an isolated tab without changing the application location', async () => {
+    const applicationUrl = window.location.href
     server.use(
       handlePayrollsGeneratePrintableChecks(() =>
         HttpResponse.json(createPayrollCheck(), { status: 200 }),
@@ -211,7 +211,37 @@ describe('PrintChecksForm', () => {
     await waitFor(() => {
       expect(anchorClickSpy).toHaveBeenCalledTimes(1)
     })
-    expect(openSpy).not.toHaveBeenCalled()
+    expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('target', '_blank')
+    expect(anchorClickSpy.mock.contexts[0]).toHaveProperty('rel', 'noopener noreferrer')
+    expect(window.location.href).toBe(applicationUrl)
+  })
+
+  it.each([
+    'javascript:alert(1)',
+    'data:text/html,unsafe',
+    'http://example.com/checks.pdf',
+    'invalid',
+    '/checks.pdf',
+    '',
+  ])('rejects an unsafe document URL: %s', async url => {
+    server.use(
+      handlePayrollsGeneratePrintableChecks(() => HttpResponse.json(createPayrollCheck())),
+      handleGeneratedDocumentsGet(() =>
+        HttpResponse.json(createGeneratedDocument({ status: 'succeeded', document_urls: [url] })),
+      ),
+    )
+    renderForm()
+    await user.click(await screen.findByRole('button', { name: 'View checks' }))
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(printChecksEvents.PRINT_CHECKS_GENERATE_FAILED, {
+        errorMessage: null,
+      })
+    })
+    expect(anchorClickSpy).not.toHaveBeenCalled()
+    expect(onEvent).not.toHaveBeenCalledWith(
+      printChecksEvents.PRINT_CHECKS_GENERATE_SUCCEEDED,
+      expect.anything(),
+    )
   })
 
   it('fires PRINT_CHECKS_GENERATE_FAILED when the poll reports failure', async () => {

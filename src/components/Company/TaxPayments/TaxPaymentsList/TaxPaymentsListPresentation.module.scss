@@ -1,0 +1,35 @@
+// Mobile-first, matching the rest of the SDK: narrow is the base case and the
+// `small` global breakpoint (40em) opts into the wide layout. `container-query`
+// is injected globally via @/styles/Responsive and resolves against the nearest
+// ancestor container, which is the root Flex this toolbar sits in.
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: toRem(12);
+
+  @include container-query(40em) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.filters {
+  display: flex;
+  flex-shrink: 0;
+  gap: toRem(12);
+}
+
+.filter {
+  flex: 1 1 0;
+
+  @include container-query(40em) {
+    flex: 0 0 toRem(180);
+  }
+}

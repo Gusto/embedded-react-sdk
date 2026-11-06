@@ -602,5 +602,102 @@ describe('StateTaxesForm', () => {
       expect(alert).not.toHaveTextContent('API error occurred')
       expect(onEvent).not.toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
     })
+
+    it('shows the server message on the offending field when a value is invalid', async () => {
+      setupApiTestMocks()
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'requirement_sets',
+                  category: 'nested_errors',
+                  metadata: { key: 'registrations', effective_from: null, state: 'CO' },
+                  errors: [
+                    {
+                      error_key: 'requirements',
+                      category: 'nested_errors',
+                      metadata: { key: 'cdle-account-number' },
+                      errors: [
+                        {
+                          error_key: 'value',
+                          category: 'invalid_attribute_value',
+                          message: 'ID format is invalid.',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            { status: 422 },
+          ),
+        ),
+      )
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CO" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      await user.click(await screen.findByRole('button', { name: /Save/i }))
+
+      const field = await screen.findByLabelText(/CDLE Account Number/i)
+      await waitFor(() => {
+        expect(field).toBeInvalid()
+      })
+      expect(await screen.findByText('ID format is invalid.')).toBeInTheDocument()
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'Some values in Registrations for CO are invalid. Correct the highlighted fields and try again.',
+      )
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+    })
+
+    it('shows server messages on fields in every section reported in one response', async () => {
+      setupApiTestMocks()
+      const valueError = (key: string, message: string) => ({
+        error_key: 'requirements',
+        category: 'nested_errors',
+        metadata: { key },
+        errors: [{ error_key: 'value', category: 'invalid_attribute_value', message }],
+      })
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`, () =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'requirement_sets',
+                  category: 'nested_errors',
+                  metadata: { key: 'registrations', effective_from: null, state: 'CO' },
+                  errors: [valueError('cdle-account-number', 'ID format is invalid.')],
+                },
+                {
+                  error_key: 'requirement_sets',
+                  category: 'nested_errors',
+                  metadata: { key: 'taxrates', effective_from: '2022-01-01', state: 'CO' },
+                  errors: [valueError('sui-rate', 'Rate is out of range.')],
+                },
+              ],
+            },
+            { status: 422 },
+          ),
+        ),
+      )
+      render(
+        <GustoTestProvider>
+          <StateTaxesForm companyId="company-123" state="CO" onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+      await user.click(await screen.findByRole('button', { name: /Save/i }))
+
+      expect(await screen.findByText('ID format is invalid.')).toBeInTheDocument()
+      expect(await screen.findByText('Rate is out of range.')).toBeInTheDocument()
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'Some values in Registrations, Tax Rates for CO are invalid.',
+      )
+    })
   })
 })

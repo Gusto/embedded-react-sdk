@@ -29,7 +29,7 @@ const Root = ({ contractorId, companyId, className }: ContractorLandingProps) =>
   const onEvent = _onEvent as (type: string, data?: unknown) => void
 
   const {
-    data: { contractor },
+    data: { contractorShow: contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
 
   const {

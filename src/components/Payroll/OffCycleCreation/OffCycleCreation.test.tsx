@@ -1,11 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { PayScheduleListItem } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { OffCycleCreation } from './OffCycleCreation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockCreateOffCyclePayroll = vi.fn()
+let mockPaySchedules: PayScheduleListItem[] = []
+
+vi.mock('@gusto/embedded-api/react-query/paySchedulesGetAll', () => ({
+  usePaySchedulesGetAllSuspense: () => ({
+    data: { payScheduleShowResponse: mockPaySchedules },
+  }),
+}))
 
 let mockBlockers: Array<{ key: string; message?: string }> = []
 
@@ -77,6 +85,7 @@ describe('OffCycleCreation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockBlockers = []
+    mockPaySchedules = [{ uuid: 'weekly', version: 'v1', active: true, frequency: 'Every week' }]
 
     HTMLDialogElement.prototype.showModal = vi.fn()
     HTMLDialogElement.prototype.close = vi.fn()
@@ -487,49 +496,55 @@ describe('OffCycleCreation', () => {
       })
     })
 
-    it('sends all employee UUIDs when include all employees is toggled on', async () => {
-      mockCreateOffCyclePayroll.mockResolvedValueOnce({
-        payrollUnprocessed: { payrollUuid: 'new-payroll-uuid' },
-      })
+    it.each(['bonus', 'correction'])(
+      'submits the weekly frequency for %s with all employees',
+      async payrollType => {
+        mockCreateOffCyclePayroll.mockResolvedValueOnce({
+          payrollUnprocessed: { payrollUuid: 'new-payroll-uuid' },
+        })
 
-      const user = userEvent.setup()
-      renderComponent()
+        const user = userEvent.setup()
+        renderComponent({ payrollType })
 
-      await waitFor(() => {
-        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
-      })
+        await waitFor(() => {
+          expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
+        })
 
-      await user.click(screen.getByRole('switch', { name: /include all employees/i }))
+        await user.click(screen.getByRole('switch', { name: /include all employees/i }))
 
-      const startDateGroup = screen.getByRole('group', { name: 'Start date' })
-      await user.type(within(startDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
-      await user.type(within(startDateGroup).getByRole('spinbutton', { name: /day/i }), '01')
-      await user.type(within(startDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+        const startDateGroup = screen.getByRole('group', { name: 'Start date' })
+        await user.type(within(startDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+        await user.type(within(startDateGroup).getByRole('spinbutton', { name: /day/i }), '01')
+        await user.type(within(startDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
 
-      const endDateGroup = screen.getByRole('group', { name: 'End date' })
-      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
-      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /day/i }), '14')
-      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+        const endDateGroup = screen.getByRole('group', { name: 'End date' })
+        await user.type(within(endDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+        await user.type(within(endDateGroup).getByRole('spinbutton', { name: /day/i }), '14')
+        await user.type(within(endDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
 
-      const paymentDateGroup = screen.getByRole('group', { name: 'Payment date' })
-      await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
-      await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
-      await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+        const paymentDateGroup = screen.getByRole('group', { name: 'Payment date' })
+        await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+        await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
+        await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
 
-      await user.click(screen.getByRole('button', { name: /continue/i }))
+        await user.click(screen.getByRole('button', { name: /continue/i }))
 
-      await waitFor(() => {
-        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
-      })
+        await waitFor(() => {
+          expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+        })
 
-      const callArgs = mockCreateOffCyclePayroll.mock.calls[0]![0]
-      expect(callArgs.request.requestBody.employeeUuids).toEqual([
-        'emp-4',
-        'emp-2',
-        'emp-3',
-        'emp-1',
-      ])
-    })
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalledWith({
+          request: {
+            companyId: defaultProps.companyId,
+            requestBody: expect.objectContaining({
+              employeeUuids: ['emp-4', 'emp-2', 'emp-3', 'emp-1'],
+              withholdingPayPeriod: 'Every week',
+              fixedWithholdingRate: payrollType === 'bonus',
+            }),
+          },
+        })
+      },
+    )
 
     it('shows validation error when submitting with no employees selected', async () => {
       const user = userEvent.setup()
@@ -547,7 +562,81 @@ describe('OffCycleCreation', () => {
     })
   })
 
+  describe('in a timezone ahead of UTC', () => {
+    const originalTz = process.env.TZ
+
+    beforeEach(() => {
+      process.env.TZ = 'Asia/Kolkata'
+    })
+
+    afterEach(() => {
+      process.env.TZ = originalTz
+    })
+
+    it('sends the picked calendar dates without shifting them a day earlier', async () => {
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-uuid' },
+      })
+
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('switch', { name: /include all employees/i }))
+
+      const typeDate = async (groupName: string, month: string, day: string, year: string) => {
+        const group = screen.getByRole('group', { name: groupName })
+        await user.type(within(group).getByRole('spinbutton', { name: /month/i }), month)
+        await user.type(within(group).getByRole('spinbutton', { name: /day/i }), day)
+        await user.type(within(group).getByRole('spinbutton', { name: /year/i }), year)
+      }
+
+      await typeDate('Start date', '12', '01', '2026')
+      await typeDate('End date', '12', '14', '2026')
+      await typeDate('Payment date', '12', '15', '2026')
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const { requestBody } = mockCreateOffCyclePayroll.mock.calls[0]![0].request
+      expect({
+        startDate: String(requestBody.startDate),
+        endDate: String(requestBody.endDate),
+        checkDate: String(requestBody.checkDate),
+      }).toEqual({
+        startDate: '2026-12-01',
+        endDate: '2026-12-14',
+        checkDate: '2026-12-15',
+      })
+    })
+  })
+
   describe('tax withholding rates', () => {
+    it('uses the first active schedule, skipping inactive schedules', async () => {
+      mockPaySchedules = [
+        { uuid: 'inactive', version: 'v1', active: false, frequency: 'Monthly' },
+        { uuid: 'weekly', version: 'v1', active: true, frequency: 'Every week' },
+        { uuid: 'monthly', version: 'v1', active: true, frequency: 'Monthly' },
+      ]
+      renderComponent()
+      expect(await screen.findByText(/regular wages, paid every week/i)).toBeInTheDocument()
+      expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+    })
+
+    it.each([
+      { schedules: [] },
+      { schedules: [{ uuid: 'missing-frequency', version: 'v1', active: true }] },
+    ])('falls back when an active frequency is unavailable: %j', async ({ schedules }) => {
+      mockPaySchedules = schedules
+      renderComponent()
+      expect(await screen.findByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+    })
+
     it('renders the tax withholding rates table', async () => {
       renderComponent()
 
@@ -600,7 +689,7 @@ describe('OffCycleCreation', () => {
         expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
       })
 
-      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+      expect(screen.getByText(/regular wages, paid every week/i)).toBeInTheDocument()
       expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
 
       await user.click(screen.getByRole('button', { name: /edit/i }))
@@ -616,7 +705,7 @@ describe('OffCycleCreation', () => {
         expect(screen.queryByText('Rate for regular wages and earnings')).not.toBeInTheDocument()
       })
 
-      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+      expect(screen.getByText(/regular wages, paid every week/i)).toBeInTheDocument()
       expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
     })
 
@@ -628,7 +717,7 @@ describe('OffCycleCreation', () => {
         expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
       })
 
-      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+      expect(screen.getByText(/regular wages, paid every week/i)).toBeInTheDocument()
 
       await user.click(screen.getByRole('button', { name: /edit/i }))
 
@@ -643,7 +732,7 @@ describe('OffCycleCreation', () => {
         expect(screen.queryByText('Rate for regular wages and earnings')).not.toBeInTheDocument()
       })
 
-      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+      expect(screen.getByText(/regular wages, paid every week/i)).toBeInTheDocument()
     })
 
     it('shows supplemental tax rate text for bonus payroll by default', async () => {
@@ -673,9 +762,9 @@ describe('OffCycleCreation', () => {
       })
     })
 
-    it('updates supplemental row when changing from supplemental to regular rate', async () => {
+    it('preserves an edited rate and frequency when schedules refetch', async () => {
       const user = userEvent.setup()
-      renderComponent()
+      const { rerender } = renderComponent()
 
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
@@ -691,6 +780,13 @@ describe('OffCycleCreation', () => {
         ).toBeInTheDocument()
       })
 
+      await user.selectOptions(
+        within(screen.getByRole('dialog', { hidden: true })).getByRole('combobox', {
+          hidden: true,
+        }),
+        'Monthly',
+      )
+
       const regularRateRadio = screen.getByLabelText(/use rate for regular wages/i)
       await user.click(regularRateRadio)
 
@@ -704,8 +800,10 @@ describe('OffCycleCreation', () => {
       })
 
       expect(screen.queryByText(/supplemental 22%/i)).not.toBeInTheDocument()
-      const regularWagesTexts = screen.getAllByText(/regular wages, paid every other week/i)
-      expect(regularWagesTexts).toHaveLength(2)
+      mockPaySchedules = [{ uuid: 'weekly', version: 'v1', active: true, frequency: 'Quarterly' }]
+      rerender(<OffCycleCreation {...defaultProps} />)
+      expect(screen.getAllByText(/regular wages, paid monthly/i)).toHaveLength(2)
+      expect(screen.queryByText(/supplemental 22%/i)).not.toBeInTheDocument()
     })
   })
 

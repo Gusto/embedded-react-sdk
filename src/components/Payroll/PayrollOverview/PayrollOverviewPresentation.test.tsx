@@ -1,14 +1,15 @@
 import { expect, describe, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {
   type PayrollShow,
   OffCycleReasonType,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { getCellByColumnHeader } from '@/test-utils/tableQueries'
 import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const mockPayrollData: PayrollShow = {
@@ -590,6 +591,68 @@ describe('PayrollOverviewPresentation', () => {
     expect(screen.getByText('Hourly / Nonexempt')).toBeInTheDocument()
   })
 
+  describe('unused hours column', () => {
+    const payrollWithPayout: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [{ name: 'Regular Hours', hours: '32.0', amount: '640.0' }],
+          paidTimeOff: [
+            { name: 'Vacation Hours', hours: '8', finalPayoutUnusedHoursInput: '32.5' },
+            { name: 'Sick Hours', hours: '0', finalPayoutUnusedHoursInput: '8' },
+          ],
+          grossPay: '1450',
+          netPay: '1100',
+          checkAmount: '1100',
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    it('includes unused payout hours in dismissal totals while showing them separately', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          payrollData={{
+            ...payrollWithPayout,
+            offCycle: true,
+            offCycleReason: OffCycleReasonType.DismissedEmployee,
+          }}
+        />,
+      )
+
+      await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
+
+      const table = await screen.findByRole('grid', { name: 'Hours worked by employee' })
+      const row = within(table).getByRole('row', { name: /Jane Doe/i })
+      expect(getCellByColumnHeader(table, row, 'Paid time off')).toHaveTextContent(/^8$/)
+      expect(getCellByColumnHeader(table, row, 'Unused hours')).toHaveTextContent(/^40\.5$/)
+      expect(getCellByColumnHeader(table, row, 'Total hours')).toHaveTextContent(/^80\.5$/)
+    })
+
+    it('hides the unused hours column on non-dismissal payrolls', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithPayout} />,
+      )
+
+      await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
+
+      const table = await screen.findByRole('grid', { name: 'Hours worked by employee' })
+      expect(within(table).getByRole('columnheader', { name: 'Paid time off' })).toBeInTheDocument()
+      expect(within(table).queryByRole('columnheader', { name: 'Unused hours' })).toBeNull()
+      const row = within(table).getByRole('row', { name: /Jane Doe/i })
+      expect(getCellByColumnHeader(table, row, 'Total hours')).toHaveTextContent(/^40$/)
+    })
+  })
+
   it('includes reimbursements in the employee take-home Payment total', async () => {
     const user = userEvent.setup()
     const payrollWithReimbursement: PayrollShow = {
@@ -679,6 +742,8 @@ describe('PayrollOverviewPresentation', () => {
             hourlyCompensations: [],
             paidTimeOff: [],
             employeeUuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
           },
         ],
       }
@@ -717,6 +782,8 @@ describe('PayrollOverviewPresentation', () => {
             hourlyCompensations: [],
             paidTimeOff: [],
             employeeUuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
           },
         ],
       }
@@ -776,6 +843,8 @@ describe('PayrollOverviewPresentation', () => {
             hourlyCompensations: [],
             paidTimeOff: [],
             employeeUuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
           },
         ],
       }

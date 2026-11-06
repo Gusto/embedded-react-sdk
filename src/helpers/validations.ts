@@ -15,7 +15,7 @@ export const NAME_REGEX = /^([a-zA-Z\xC0-\uFFFF]+([ \-']{0,1}[a-zA-Z\xC0-\uFFFF]
  *
  * @internal
  */
-export const nameValidation = z.string().min(1).regex(NAME_REGEX)
+export const nameValidation = z.string().trim().min(1).regex(NAME_REGEX)
 
 /**
  * Zod schema validating a US ZIP code in either 5-digit (`12345`) or ZIP+4 (`12345-6789`) form.

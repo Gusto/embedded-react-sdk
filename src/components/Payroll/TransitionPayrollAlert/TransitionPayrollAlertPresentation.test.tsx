@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import { TransitionPayrollAlertPresentation } from './TransitionPayrollAlertPresentation'
@@ -111,7 +111,7 @@ describe('TransitionPayrollAlertPresentation', () => {
       expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeInTheDocument()
     })
 
-    it('renders multiple pay schedule groups with headers', async () => {
+    it('lists every transition payroll as its own row with its dates and pay schedule', async () => {
       renderWithSuspense(
         <TransitionPayrollAlertPresentation
           groupedPayPeriods={mockMultipleGroupedPayPeriods}
@@ -123,13 +123,17 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      const alerts = await screen.findAllByText(/Transition payroll -/)
-      expect(alerts).toHaveLength(3)
-      expect(alerts[0]).toHaveTextContent(/Dec 1.*Dec 15, 2024/)
-      expect(alerts[1]).toHaveTextContent(/Dec 16.*Dec 31, 2024/)
-      expect(alerts[2]).toHaveTextContent(/Dec 1.*Dec 31, 2024/)
-      expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
-      expect(screen.getByText('Monthly Schedule')).toBeInTheDocument()
+      expect(
+        await screen.findByText('You have 3 transition payrolls to run or skip'),
+      ).toBeInTheDocument()
+      expect(screen.getAllByText('Weekly Schedule')).toHaveLength(2)
+      expect(screen.getAllByText('Monthly Schedule')).toHaveLength(1)
+
+      const runButtons = screen.getAllByRole('button', { name: /run transition payroll/i })
+      expect(runButtons).toHaveLength(3)
+      expect(runButtons[1]).toHaveAccessibleDescription('Dec 16–Dec 31, 2024 Weekly Schedule')
+      expect(runButtons[2]).toHaveAccessibleDescription('Dec 1–Dec 31, 2024 Monthly Schedule')
+      expect(screen.getAllByRole('button', { name: /skip this payroll/i })).toHaveLength(3)
     })
   })
 
@@ -190,6 +194,35 @@ describe('TransitionPayrollAlertPresentation', () => {
       await user.click(runButton)
 
       expect(onRunPayroll).toHaveBeenCalledWith(mockPayPeriod)
+    })
+
+    it('runs and skips the pay period of the clicked row', async () => {
+      const user = userEvent.setup()
+      const onRunPayroll = vi.fn()
+      const onSkipPayroll = vi.fn()
+
+      renderWithSuspense(
+        <TransitionPayrollAlertPresentation
+          groupedPayPeriods={mockMultipleGroupedPayPeriods}
+          onRunPayroll={onRunPayroll}
+          onSkipPayroll={onSkipPayroll}
+          showSkipSuccessAlert={false}
+          onDismissSkipSuccessAlert={() => {}}
+          skippingPayPeriod={null}
+        />,
+      )
+
+      await screen.findByText(/transition payrolls to run or skip/)
+      await user.click(screen.getAllByRole('button', { name: /run transition payroll/i })[1]!)
+      expect(onRunPayroll).toHaveBeenCalledWith(mockPayPeriod2)
+
+      await user.click(screen.getAllByRole('button', { name: /skip this payroll/i })[1]!)
+      const dialog = await screen.findByRole('dialog')
+      expect(
+        within(dialog).getByText('Skip Dec 16–Dec 31, 2024 transition payroll?'),
+      ).toBeInTheDocument()
+      await user.click(within(dialog).getByRole('button', { name: 'Skip payroll' }))
+      expect(onSkipPayroll).toHaveBeenCalledWith(mockPayPeriod2)
     })
 
     it('renders skip button for each pay period', async () => {

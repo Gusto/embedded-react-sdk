@@ -9,7 +9,6 @@ export interface PayScheduleContextInterface extends FlowContextInterface {
   companyId: string
   payScheduleId?: string
   defaultValues?: PayScheduleDefaultValues
-  disableWorkweekStartDayEditing?: boolean
   component: React.ComponentType | null
 }
 
@@ -21,7 +20,7 @@ export function PayScheduleListContextual() {
 
 /** @internal */
 export function PayScheduleFormContextual() {
-  const { companyId, payScheduleId, defaultValues, disableWorkweekStartDayEditing, onEvent } =
+  const { companyId, payScheduleId, defaultValues, onEvent } =
     useFlow<PayScheduleContextInterface>()
 
   return (
@@ -29,7 +28,6 @@ export function PayScheduleFormContextual() {
       companyId={ensureRequired(companyId)}
       payScheduleId={payScheduleId}
       defaultValues={defaultValues}
-      disableWorkweekStartDayEditing={disableWorkweekStartDayEditing}
       onEvent={onEvent}
     />
   )

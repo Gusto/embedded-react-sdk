@@ -18,12 +18,8 @@ function assertReady(hookResult: UsePayScheduleFormResult): asserts hookResult i
   }
 }
 
-function withRegularRateOfPay({ children }: { children: React.ReactNode }) {
-  return (
-    <GustoTestProvider unstableFeatures={{ payrollRegularRateOfPay: true }}>
-      {children}
-    </GustoTestProvider>
-  )
+function withoutRegularRateOfPay({ children }: { children: React.ReactNode }) {
+  return <GustoTestProvider features={{ regularRateOfPay: false }}>{children}</GustoTestProvider>
 }
 
 function setupPaymentConfigsMock() {
@@ -257,7 +253,7 @@ describe('usePayScheduleForm', () => {
               workweekStartDay: 'Monday',
             },
           }),
-        { wrapper: withRegularRateOfPay },
+        { wrapper: GustoTestProvider },
       )
 
       await waitFor(() => {
@@ -275,7 +271,7 @@ describe('usePayScheduleForm', () => {
       expect(createRequestBody?.workweek_start_day).toBe('Monday')
     })
 
-    it('hides Fields.WorkweekStartDay and omits it from the payload without the payrollRegularRateOfPay flag', async () => {
+    it('hides Fields.WorkweekStartDay and omits it from the payload when regularRateOfPay is opted out', async () => {
       const { result } = renderHook(
         () =>
           usePayScheduleForm({
@@ -288,7 +284,7 @@ describe('usePayScheduleForm', () => {
               workweekStartDay: 'Monday',
             },
           }),
-        { wrapper: GustoTestProvider },
+        { wrapper: withoutRegularRateOfPay },
       )
 
       await waitFor(() => {
@@ -336,24 +332,6 @@ describe('usePayScheduleForm', () => {
 
       expect(createRequestBody).not.toBeNull()
       expect(createRequestBody?.workweek_start_day).toBeUndefined()
-    })
-
-    it('disables the WorkweekStartDay field when disableWorkweekStartDayEditing is true', async () => {
-      const { result } = renderHook(
-        () =>
-          usePayScheduleForm({
-            companyId: 'company-1',
-            disableWorkweekStartDayEditing: true,
-          }),
-        { wrapper: GustoTestProvider },
-      )
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
-      })
-
-      assertReady(result.current)
-      expect(result.current.form.fieldsMetadata.workweekStartDay.isDisabled).toBe(true)
     })
   })
 
@@ -496,34 +474,6 @@ describe('usePayScheduleForm', () => {
 
       expect(updateRequestBody).not.toBeNull()
       expect(updateRequestBody?.workweek_start_day).toBeUndefined()
-    })
-
-    it('still submits the current workweekStartDay value while disabled for editing', async () => {
-      const { result } = renderHook(
-        () =>
-          usePayScheduleForm({
-            companyId: 'company-1',
-            payScheduleId: 'schedule-1',
-            defaultValues: { workweekStartDay: 'Sunday' },
-            disableWorkweekStartDayEditing: true,
-          }),
-        { wrapper: withRegularRateOfPay },
-      )
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
-      })
-
-      const readyResult = result.current
-      assertReady(readyResult)
-      expect(readyResult.form.fieldsMetadata.workweekStartDay.isDisabled).toBe(true)
-
-      await act(async () => {
-        await readyResult.actions.onSubmit()
-      })
-
-      expect(updateRequestBody).not.toBeNull()
-      expect(updateRequestBody?.workweek_start_day).toBe('Sunday')
     })
   })
 })

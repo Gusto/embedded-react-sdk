@@ -25,7 +25,7 @@ const buildContractorsListQueryMock = vi.fn()
 vi.mock('@gusto/embedded-api/react-query/contractorsList', () => ({
   useContractorsList: () => ({
     data: {
-      contractors: page1Contractors,
+      showContractors: page1Contractors,
       httpMeta: {
         response: {
           headers: new Headers({ 'x-total-pages': String(mockTotalPages) }),
@@ -40,7 +40,7 @@ vi.mock('@gusto/embedded-api/react-query/contractorsList', () => ({
     buildContractorsListQueryMock(...args)
     return {
       queryKey: ['mock-contractors-list', args],
-      queryFn: () => Promise.resolve({ contractors: page2Contractors }),
+      queryFn: () => Promise.resolve({ showContractors: page2Contractors }),
     }
   },
 }))
@@ -59,7 +59,7 @@ vi.mock('@tanstack/react-query', async importActual => {
     ...actual,
     useQueries: ({ queries }: { queries: unknown[] }) =>
       queries.map(() => ({
-        data: { contractors: page2Contractors },
+        data: { showContractors: page2Contractors },
         isFetching: false,
         error: null,
         refetch: vi.fn(),

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { PayScheduleForm } from '../PayScheduleForm'
 import type { PayScheduleDefaultValues } from '../PaySchedule'
 import { PayScheduleOverview } from './PayScheduleOverview'
@@ -76,11 +76,17 @@ export function PayScheduleAssignmentContextual() {
 
 /** @internal */
 export function PayScheduleEditFormContextual() {
+  const { t } = useTranslation('Company.Management.PaySchedule')
   const { companyId, payScheduleId, defaultValues, onEvent } =
     useFlow<PayScheduleManagementContextInterface>()
 
   return (
     <PayScheduleForm
+      variant="management"
+      copy={{
+        anchorEndOfPayPeriodDescription: t('scheduleForm.anchorEndOfPayPeriodDescription'),
+        payrollDeadline: t('scheduleForm.payrollDeadline'),
+      }}
       companyId={ensureRequired(companyId)}
       payScheduleId={payScheduleId}
       defaultValues={defaultValues}

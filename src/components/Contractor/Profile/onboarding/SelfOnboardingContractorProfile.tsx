@@ -40,7 +40,7 @@ export function SelfOnboardingContractorProfile({
   useI18n('Contractor.Profile')
 
   const contractorQuery = useContractorsGet({ contractorUuid: contractorId })
-  const contractor = contractorQuery.data?.contractor
+  const contractor = contractorQuery.data?.contractorShow
 
   if (contractorQuery.isLoading || !contractor) {
     const errorHandling = composeErrorHandler([contractorQuery])

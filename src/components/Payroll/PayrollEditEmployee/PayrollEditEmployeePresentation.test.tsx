@@ -1,5 +1,5 @@
 import { expect, describe, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import {
   type Employee,
   EmployeePaymentMethod1,
@@ -615,6 +615,7 @@ describe('PayrollEditEmployeePresentation', () => {
     })
 
     it('renders unused time off payout section for dismissal payrolls', async () => {
+      mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
       renderWithProviders(
         <PayrollEditEmployeePresentation
           {...defaultProps}
@@ -625,6 +626,9 @@ describe('PayrollEditEmployeePresentation', () => {
       await waitFor(() => {
         expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
       })
+      expect(
+        screen.getByRole('grid', { name: 'Time off hours used this pay period' }),
+      ).toBeInTheDocument()
     })
 
     it('shows remaining balance in unused time off payout section for dismissal payrolls', async () => {
@@ -1952,4 +1956,73 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.queryByLabelText('Reimbursement')).not.toBeInTheDocument()
     })
   })
+})
+
+describe('preapproved time off', () => {
+  it.each(['0', '2.5'])(
+    'keeps approved hours separate from %s additional hours on save',
+    async additionalHours => {
+      mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
+      const user = userEvent.setup()
+      const onSave = vi.fn<(compensation: PayrollEmployeeCompensationsType) => void>()
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          employee={mockEmployee}
+          employeeCompensation={{
+            ...mockEmployeeCompensation,
+            paidTimeOff: [
+              { name: 'Vacation Hours', hours: additionalHours, approvedRequestHours: '8.5' },
+              { name: 'Sick Hours', hours: '0', approvedRequestHours: '0.0' },
+              { name: 'Holiday Hours', hours: '8' },
+            ],
+          }}
+          fixedCompensationTypes={[]}
+          onSave={onSave}
+          onCancel={vi.fn()}
+        />,
+      )
+
+      const table = await screen.findByRole('grid', { name: 'Time off' })
+      expect(
+        within(table).getByRole('columnheader', { name: 'Preapproved hours' }),
+      ).toBeInTheDocument()
+      expect(
+        within(table).getByRole('columnheader', { name: 'Additional hours' }),
+      ).toBeInTheDocument()
+      expect(within(table).getByText('8.5')).toBeInTheDocument()
+      expect(within(table).getAllByRole('spinbutton')).toHaveLength(3)
+      expect(within(table).queryByText('N/A')).not.toBeInTheDocument()
+      expect(within(table).getByRole('row', { name: /Sick Hours/ }).children[1]?.textContent).toBe(
+        '',
+      )
+      expect(
+        within(table).getByRole('row', { name: /Holiday Hours/ }).children[1]?.textContent,
+      ).toBe('')
+      const input = within(table).getByRole('spinbutton', { name: /^Vacation Hours/ })
+      expect(input).toHaveValue(Number(additionalHours))
+      expect(
+        within(table).getByText(`${(40 - Number(additionalHours)).toFixed(1)} remaining`),
+      ).toBeInTheDocument()
+
+      await user.clear(input)
+      await user.type(input, '3')
+      expect(within(table).getByText('37.0 remaining')).toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(onSave).toHaveBeenCalledOnce()
+      })
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              hours: '3',
+              approvedRequestHours: '8.5',
+            }),
+          ]),
+        }),
+      )
+    },
+  )
 })

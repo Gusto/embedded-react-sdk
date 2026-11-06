@@ -121,7 +121,7 @@ const Root = ({ companyId, dictionary, onEvent, className }: CreatePaymentProps)
   } = useContractorPaymentGroupsPreviewMutation()
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = (contractorList.contractors || []).filter(
+  const contractors = (contractorList.showContractors || []).filter(
     contractor =>
       contractor.isActive &&
       contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,

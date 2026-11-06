@@ -38,6 +38,10 @@ export interface Resources {
   /** */
   'Company.Management.PayScheduleAssignment': Translations.CompanyManagementPayScheduleAssignment
   /** */
+  'Company.Management.TaxPaymentDetail': Translations.CompanyManagementTaxPaymentDetail
+  /** */
+  'Company.Management.TaxPaymentsList': Translations.CompanyManagementTaxPaymentsList
+  /** */
   'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
   /** */
   'Company.PaySchedule': Translations.CompanyPaySchedule
@@ -257,14 +261,12 @@ export interface Resources {
   'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
   /** */
   'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+  /** @internal */
+  'Payroll.RropPayrollEditEmployee': Translations.PayrollRropPayrollEditEmployee
   /** */
-  'Payroll.Transition': Translations.PayrollTransition
-  /** */
-  'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
+  'Payroll.TransitionConfiguration': Translations.PayrollTransitionConfiguration
   /** */
   'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
-  /** @internal */
-  'Payroll.UNSTABLE_PayrollEditEmployee': Translations.PayrollUNSTABLE_PayrollEditEmployee
   /** */
   'Payroll.WireInstructions': Translations.PayrollWireInstructions
   /** */
@@ -380,9 +382,9 @@ export namespace Translations {
       email: string
       /** @defaultValue `"Email addresses must match"` */
       emailMismatch: string
-      /** @defaultValue `"First name is required"` */
+      /** @defaultValue `"Enter a valid first name"` */
       firstName: string
-      /** @defaultValue `"Last name is required"` */
+      /** @defaultValue `"Enter a valid last name"` */
       lastName: string
       /** @defaultValue `"Phone number must be 10 digits"` */
       phone: string
@@ -499,8 +501,12 @@ export namespace Translations {
     signDocumentComplete: string
     /** @defaultValue `"Not signed"` */
     notSigned: string
+    /** @defaultValue `"View"` */
+    viewCta: string
     /** @defaultValue `"Could not load your documents, try again later."` */
     documentListError: string
+    /** @defaultValue `"Could not open this document, try again later."` */
+    viewDocumentError: string
     /** @defaultValue `"No documents found"` */
     emptyTableTitle: string
     /** @defaultValue `"Continue"` */
@@ -1032,19 +1038,39 @@ export namespace Translations {
     title: string
     /** @defaultValue `"You have assigned everyone to be on one pay schedule."` */
     description: string
+    /** @defaultValue `"You have assigned employees to pay schedules by compensation type."` */
+    compensationDescription: string
+    /** @defaultValue `"Pay schedules by compensation type"` */
+    compensationTableLabel: string
     /** @defaultValue `"Manage"` */
     manageCta: string
     /** @defaultValue `"Edit"` */
     editCta: string
+    /** @defaultValue `"Edit schedule"` */
+    editScheduleCta: string
     /** @defaultValue `"Edit pay schedule"` */
     editScheduleAriaLabel: string
     /** @defaultValue `"Edit AutoPilot"` */
     editAutoPilotAriaLabel: string
+    /** @defaultValue `"Pay schedule actions"` */
+    rowMenuTriggerLabel: string
     labels: {
       /** @defaultValue `"Name"` */
       name: string
       /** @defaultValue `"Frequency"` */
       frequency: string
+      /** @defaultValue `"Schedule"` */
+      schedule: string
+      /** @defaultValue `"Department"` */
+      department: string
+      /** @defaultValue `"Employees"` */
+      employees: string
+    }
+    compensationTypes: {
+      /** @defaultValue `"Hourly"` */
+      hourly: string
+      /** @defaultValue `"Salaried"` */
+      salaried: string
     }
     autoPilot: {
       /** @defaultValue `"AutoPilot"` */
@@ -1058,6 +1084,30 @@ export namespace Translations {
       /** @defaultValue `"Pay schedule assignment updated."` */
       assignmentUpdated: string
     }
+    /** @defaultValue `"You have assigned employees to pay schedules by department."` */
+    departmentDescription: string
+    /** @defaultValue `"Pay schedules by department"` */
+    departmentTableLabel: string
+    /** @defaultValue `"Uncategorized employees"` */
+    uncategorizedEmployees: string
+    /** @defaultValue `"Unnamed department"` */
+    unnamedDepartment: string
+    scheduleForm: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
+    }
+    /** @defaultValue `"You have assigned pay schedules per employee."` */
+    employeeDescription: string
+    /** @defaultValue `"Pay schedules by employee"` */
+    employeeTableLabel: string
+    /** @defaultValue `"{{count}} employee"` */
+    employeeCount_one: string
+    /** @defaultValue `"{{count}} employees"` */
+    employeeCount_other: string
+    /** @defaultValue `"Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."` */
+    employeeAccessDenied: string
   }
   /** Translation keys for the `Company.Management.PayScheduleAssignment` i18n namespace. */
   export interface CompanyManagementPayScheduleAssignment {
@@ -1073,6 +1123,24 @@ export namespace Translations {
           /** @defaultValue `"Choose one pay schedule for all your employees"` */
           description: string
         }
+        hourlySalaried: {
+          /** @defaultValue `"Separate schedules by compensation type"` */
+          label: string
+          /** @defaultValue `"Choose one pay schedule for hourly employees and another for salaried employees"` */
+          description: string
+        }
+        byDepartment: {
+          /** @defaultValue `"By department"` */
+          label: string
+          /** @defaultValue `"Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."` */
+          description: string
+        }
+        byEmployee: {
+          /** @defaultValue `"By employee"` */
+          label: string
+          /** @defaultValue `"Assign a pay schedule to each individual employee."` */
+          description: string
+        }
       }
     }
     scheduleStep: {
@@ -1082,6 +1150,20 @@ export namespace Translations {
       payScheduleLabel: string
       /** @defaultValue `"The pay schedule to use for all employees."` */
       payScheduleDescription: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
+    compensationStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Hourly employees"` */
+      hourlyPayScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for hourly employees."` */
+      hourlyPayScheduleDescription: string
+      /** @defaultValue `"Salaried employees"` */
+      salariedPayScheduleLabel: string
+      /** @defaultValue `"The pay schedule to use for salaried employees."` */
+      salariedPayScheduleDescription: string
       /** @defaultValue `"Add pay schedule"` */
       addPayScheduleCta: string
     }
@@ -1111,6 +1193,198 @@ export namespace Translations {
     continueCta: string
     /** @defaultValue `"Submit"` */
     submitCta: string
+    departmentStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Uncategorized employees"` */
+      defaultPayScheduleLabel: string
+      /** @defaultValue `"Select a pay schedule for employees who aren't assigned to any department."` */
+      defaultPayScheduleDescription: string
+      /** @defaultValue `"Unnamed department"` */
+      unnamedDepartment: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+    }
+    scheduleForm: {
+      /** @defaultValue `"The last date of the first pay period; can be the same as the first pay date."` */
+      anchorEndOfPayPeriodDescription: string
+      /** @defaultValue `"Run payroll by"` */
+      payrollDeadline: string
+    }
+    /** @defaultValue `"Department schedules are unavailable because access to departments is missing. You can choose another schedule type or contact your administrator."` */
+    departmentAccessDenied: string
+    employeeStep: {
+      /** @defaultValue `"Assign employees"` */
+      heading: string
+      /** @defaultValue `"Employees"` */
+      employeesLabel: string
+      /** @defaultValue `"Employee"` */
+      employeeLabel: string
+      /** @defaultValue `"Pay schedule"` */
+      payScheduleLabel: string
+      /** @defaultValue `"Pay schedule for {{name}}"` */
+      scheduleForEmployee: string
+      /** @defaultValue `"Employee pay schedule assignments"` */
+      tableLabel: string
+      /** @defaultValue `"Add pay schedule"` */
+      addPayScheduleCta: string
+      /** @defaultValue `"Type"` */
+      typeLabel: string
+      types: {
+        /** @defaultValue `"Salaried / Exempt"` */
+        salariedExempt: string
+        /** @defaultValue `"Hourly / Nonexempt"` */
+        hourly: string
+        /** @defaultValue `"Salaried / Nonexempt"` */
+        salariedNonexempt: string
+        /** @defaultValue `"Owner"` */
+        owner: string
+      }
+    }
+    /** @defaultValue `"Employee assignments are unavailable because required employee or compensation data is missing. Check employees:read and compensations:read access, or contact your administrator."` */
+    employeeAccessDenied: string
+  }
+  /** Translation keys for the `Company.Management.TaxPaymentDetail` i18n namespace. */
+  export interface CompanyManagementTaxPaymentDetail {
+    /** @defaultValue `"Back to tax payments"` */
+    backCta: string
+    /** @defaultValue `"Unknown agency"` */
+    unknownAgency: string
+    /** @defaultValue `"Federal"` */
+    federal: string
+    /** @defaultValue `"State · {{jurisdiction}}"` */
+    state: string
+    /** @defaultValue `"—"` */
+    notAvailable: string
+    status: {
+      /** @defaultValue `"Paid"` */
+      paid: string
+      /** @defaultValue `"Scheduled"` */
+      scheduled: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"Refund / Credit"` */
+      refund: string
+    }
+    overdueAlert: {
+      /** @defaultValue `"Payment overdue"` */
+      label: string
+      /** @defaultValue `"This payment was due on {{dueDate}} and has not been sent. Take action to avoid penalties."` */
+      description: string
+    }
+    details: {
+      /** @defaultValue `"Payment details"` */
+      title: string
+      /** @defaultValue `"Jurisdiction"` */
+      jurisdiction: string
+      /** @defaultValue `"Period"` */
+      period: string
+      /** @defaultValue `"Due date"` */
+      dueDate: string
+      /** @defaultValue `"Payment sent on"` */
+      paymentSentOn: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Amount paid"` */
+      amountPaid: string
+    }
+    liabilities: {
+      /** @defaultValue `"Tax liabilities"` */
+      title: string
+      /** @defaultValue `"Tax liabilities"` */
+      tableLabel: string
+      /** @defaultValue `"Tax ID"` */
+      taxIdColumn: string
+      /** @defaultValue `"Payroll"` */
+      payrollColumn: string
+      /** @defaultValue `"Amount"` */
+      amountColumn: string
+      /** @defaultValue `"No tax liabilities."` */
+      emptyState: string
+    }
+    errors: {
+      /** @defaultValue `"Tax payment not found"` */
+      taxPaymentNotFound: string
+    }
+  }
+  /** Translation keys for the `Company.Management.TaxPaymentsList` i18n namespace. */
+  export interface CompanyManagementTaxPaymentsList {
+    /** @defaultValue `"Tax payments"` */
+    title: string
+    /** @defaultValue `"Tax payments"` */
+    tableLabel: string
+    /** @defaultValue `"Search tax payments"` */
+    searchLabel: string
+    /** @defaultValue `"Search by agency..."` */
+    searchPlaceholder: string
+    /** @defaultValue `"Jurisdiction"` */
+    jurisdictionFilterLabel: string
+    /** @defaultValue `"All jurisdictions"` */
+    allJurisdictions: string
+    /** @defaultValue `"Federal (US)"` */
+    federalJurisdictionOption: string
+    /** @defaultValue `"Status"` */
+    statusFilterLabel: string
+    /** @defaultValue `"All statuses"` */
+    allStatuses: string
+    columns: {
+      /** @defaultValue `"Agency"` */
+      agency: string
+      /** @defaultValue `"Jurisdiction"` */
+      jurisdiction: string
+      /** @defaultValue `"Period"` */
+      period: string
+      /** @defaultValue `"Due date"` */
+      dueDate: string
+      /** @defaultValue `"Amount"` */
+      amount: string
+      /** @defaultValue `"Status"` */
+      status: string
+    }
+    /** @defaultValue `"Federal"` */
+    federal: string
+    /** @defaultValue `"State · {{jurisdiction}}"` */
+    state: string
+    /** @defaultValue `"Unknown agency"` */
+    unknownAgency: string
+    /** @defaultValue `"—"` */
+    notAvailable: string
+    /** @defaultValue `"View"` */
+    viewCta: string
+    /** @defaultValue `"View {{agency}} tax payment"` */
+    viewPaymentLabel: string
+    status: {
+      /** @defaultValue `"Paid"` */
+      paid: string
+      /** @defaultValue `"Scheduled"` */
+      scheduled: string
+      /** @defaultValue `"Overdue"` */
+      overdue: string
+      /** @defaultValue `"Refund / Credit"` */
+      refund: string
+    }
+    overdueAlert: {
+      /** @defaultValue `"{{count}} tax payment is overdue and may require immediate attention."` */
+      label_one: string
+      /** @defaultValue `"{{count}} tax payments are overdue and may require immediate attention."` */
+      label_other: string
+    }
+    emptyState: {
+      /** @defaultValue `"No tax payments yet"` */
+      title: string
+      /** @defaultValue `"Tax payments appear here after payroll is processed."` */
+      description: string
+    }
+    noResults: {
+      /** @defaultValue `"No matching tax payments"` */
+      title: string
+      /** @defaultValue `"Try a different search or adjust the filters."` */
+      description: string
+    }
+    truncatedAlert: {
+      /** @defaultValue `"Showing the most recent tax payments. Older payments are not included."` */
+      label: string
+    }
   }
   /** Translation keys for the `Company.OnboardingOverview` i18n namespace. */
   export interface CompanyOnboardingOverview {
@@ -1411,6 +1685,8 @@ export namespace Translations {
       errors: {
         /** @defaultValue `"{{section}} for {{state}} is incomplete. Complete all required fields and try again."` */
         incompleteRequirementSet: string
+        /** @defaultValue `"Some values in {{section}} for {{state}} are invalid. Correct the highlighted fields and try again."` */
+        invalidRequirementSet: string
       }
       validations: {
         /** @defaultValue `"Minimum value is {{min}}%"` */
@@ -3806,6 +4082,14 @@ export namespace Translations {
       wageType: {
         /** @defaultValue `"Wage Type"` */
         label: string
+        /** @defaultValue `"Fixed"` */
+        fixedLabel: string
+        /** @defaultValue `"Hourly"` */
+        hourlyLabel: string
+        /** @defaultValue `"Pay a fixed amount each pay period."` */
+        fixedDescription: string
+        /** @defaultValue `"Pay based on hours worked."` */
+        hourlyDescription: string
       }
       hourlyRate: {
         /** @defaultValue `"Hourly Rate"` */
@@ -7693,6 +7977,8 @@ export namespace Translations {
       hours: string
       /** @defaultValue `"Time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Additional earnings"` */
       additionalEarnings: string
       /** @defaultValue `"Reimbursements"` */
@@ -7875,6 +8161,12 @@ export namespace Translations {
       /** @defaultValue `"Hours must be less than or equal to 99,999"` */
       maxHours: string
     }
+    /** @defaultValue `"Preapproved hours"` */
+    preapprovedHoursColumn: string
+    /** @defaultValue `"Additional hours"` */
+    additionalHoursColumn: string
+    /** @defaultValue `"Type"` */
+    timeOffTypeColumn: string
   }
   /** Translation keys for the `Payroll.PayrollFlow` i18n namespace. */
   export interface PayrollPayrollFlow {
@@ -7898,8 +8190,8 @@ export namespace Translations {
       reset: string
       /** @defaultValue `"Select dates"` */
       selectDates: string
-      /** @defaultValue `"Filter by date"` */
-      trigger: string
+      /** @defaultValue `"Filter by date, {{selection}}"` */
+      triggerLabel: string
     }
     dataView: {
       /** @defaultValue `"Payroll history"` */
@@ -7948,7 +8240,7 @@ export namespace Translations {
       title: string
       /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
       body: string
-      /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
+      /** @defaultValue `"Run this payroll by {{time}} on {{date}} to pay your employees on time."` */
       deadline: string
       /** @defaultValue `"Yes, cancel payroll"` */
       primaryAction: string
@@ -7975,6 +8267,8 @@ export namespace Translations {
     breadcrumbs: {
       /** @defaultValue `"Run payroll"` */
       landing: string
+      /** @defaultValue `"Transition payroll"` */
+      transitionConfiguration: string
       /** @defaultValue `"Summary for {{startDate}}-{{endDate}}"` */
       overview: string
       /** @defaultValue `"Payroll receipt for {{startDate}}-{{endDate}}"` */
@@ -8014,8 +8308,8 @@ export namespace Translations {
       reset: string
       /** @defaultValue `"Select dates"` */
       selectDates: string
-      /** @defaultValue `"Filter by date"` */
-      trigger: string
+      /** @defaultValue `"Filter by date, {{selection}}"` */
+      triggerLabel: string
     }
     /** @defaultValue `"Payrolls"` */
     payrollsListLabel: string
@@ -8110,7 +8404,7 @@ export namespace Translations {
     cancelDialogTitleDismissal: string
     /** @defaultValue `"You may cancel this payroll and run it again later. Your changes will be saved."` */
     cancelDialogDescription: string
-    /** @defaultValue `"Run this payroll by {{deadline}} to pay your employees on time."` */
+    /** @defaultValue `"Run this payroll by {{time}} on {{date}} to pay your employees on time."` */
     cancelDialogDescriptionDeadline: string
     /** @defaultValue `"Yes, cancel payroll"` */
     confirmCancelCta: string
@@ -8132,11 +8426,15 @@ export namespace Translations {
     cancellingTitle: string
     /** @defaultValue `"This payroll has been cancelled."` */
     cancelledEmptyState: string
+    /** @defaultValue `"This payroll has changed"` */
+    notCalculatedErrorTitle: string
+    /** @defaultValue `"Refresh or return to your payrolls to continue."` */
+    notCalculatedErrorDescription: string
+    /** @defaultValue `"Back to payrolls"` */
+    notCalculatedErrorCta: string
     /** @defaultValue `"Skipped"` */
     skippedBadge: string
     alerts: {
-      /** @defaultValue `"Payroll is not calculated"` */
-      payrollNotCalculated: string
       /** @defaultValue `"There was an issue loading this payroll. Please try again."` */
       payrollLoadFailed: string
       /** @defaultValue `"To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}."` */
@@ -8225,6 +8523,8 @@ export namespace Translations {
       doubleOT: string
       /** @defaultValue `"Paid time off"` */
       timeOff: string
+      /** @defaultValue `"Unused hours"` */
+      unusedHours: string
       /** @defaultValue `"Total hours"` */
       totalHours: string
       /** @defaultValue `"Payment type"` */
@@ -8574,67 +8874,8 @@ export namespace Translations {
       }
     }
   }
-  /** Translation keys for the `Payroll.Transition` i18n namespace. */
-  export interface PayrollTransition {
-    /** @defaultValue `"Transition Payroll"` */
-    breadcrumbLabel: string
-  }
-  /** Translation keys for the `Payroll.TransitionCreation` i18n namespace. */
-  export interface PayrollTransitionCreation {
-    /** @defaultValue `"Transition Payroll"` */
-    breadcrumbLabel: string
-    /** @defaultValue `"Transition Payroll"` */
-    pageTitle: string
-    /** @defaultValue `"A transition payroll covers the gap between your old and new pay schedules."` */
-    pageDescription: string
-    /** @defaultValue `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` */
-    transitionExplanation: string
-    /** @defaultValue `"Transition Details"` */
-    detailsHeading: string
-    /** @defaultValue `"Pay period"` */
-    payPeriodLabel: string
-    /** @defaultValue `"Pay schedule"` */
-    payScheduleLabel: string
-    /** @defaultValue `"Check date"` */
-    checkDateLabel: string
-    /** @defaultValue `"Continue"` */
-    continueCta: string
-    errors: {
-      /** @defaultValue `"Transition payroll was created but no payroll ID was returned"` */
-      missingPayrollId: string
-      /** @defaultValue `"Check date is required"` */
-      checkDateRequired: string
-      /** @defaultValue `"Check date must be at least {{count}} business day from today"` */
-      checkDateAchLeadTime_one: string
-      /** @defaultValue `"Check date must be at least {{count}} business days from today"` */
-      checkDateAchLeadTime_other: string
-    }
-  }
-  /** Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace. */
-  export interface PayrollTransitionPayrollAlert {
-    /** @defaultValue `"Transition payroll - {{dateRange}}"` */
-    alertTitle: string
-    /** @defaultValue `"Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly. Regular payroll functionality is blocked until you either run or skip transition payrolls."` */
-    alertDescription: string
-    /** @defaultValue `"Run Transition Payroll"` */
-    runPayroll: string
-    /** @defaultValue `"Skip this payroll"` */
-    skipPayroll: string
-    /** @defaultValue `"Transition payroll skipped"` */
-    skipSuccessAlert: string
-    skipDialog: {
-      /** @defaultValue `"Skip {{dateRange}} transition payroll?"` */
-      title: string
-      /** @defaultValue `"Skipping this payroll means employees will not be paid for the transition period. It is your responsibility to ensure employees are paid properly."` */
-      body: string
-      /** @defaultValue `"Skip payroll"` */
-      confirmCta: string
-      /** @defaultValue `"Cancel"` */
-      cancelCta: string
-    }
-  }
-  /** Translation keys for the `Payroll.UNSTABLE_PayrollEditEmployee` i18n namespace. @internal */
-  export interface PayrollUNSTABLE_PayrollEditEmployee {
+  /** Translation keys for the `Payroll.RropPayrollEditEmployee` i18n namespace. @internal */
+  export interface PayrollRropPayrollEditEmployee {
     /** @defaultValue `"Edit payroll for {{employeeName}}"` */
     pageTitle: string
     /** @defaultValue `"{{firstName}} {{lastName}}"` */
@@ -8766,6 +9007,90 @@ export namespace Translations {
       requiredWorkweek: string
       /** @defaultValue `"Hours must be less than or equal to 99,999"` */
       maxHours: string
+    }
+    /** @defaultValue `"Preapproved hours"` */
+    preapprovedHoursColumn: string
+    /** @defaultValue `"Additional hours"` */
+    additionalHoursColumn: string
+  }
+  /** Translation keys for the `Payroll.TransitionConfiguration` i18n namespace. */
+  export interface PayrollTransitionConfiguration {
+    /** @defaultValue `"Edit transition payroll"` */
+    pageTitle: string
+    /** @defaultValue `"A transition payroll covers the gap between your old and new pay schedules."` */
+    pageDescription: string
+    /** @defaultValue `"When a pay schedule changes, there may be workdays that fall between the end of the old schedule and the start of the new one. This transition payroll ensures employees are paid for those days."` */
+    transitionExplanation: string
+    /** @defaultValue `"Transition Details"` */
+    detailsHeading: string
+    /** @defaultValue `"Pay period"` */
+    payPeriodLabel: string
+    /** @defaultValue `"Pay schedule"` */
+    payScheduleLabel: string
+    /** @defaultValue `"Payment date"` */
+    checkDateLabel: string
+    /** @defaultValue `"Continue"` */
+    continueCta: string
+    errors: {
+      /** @defaultValue `"This transition payroll has no employees to update, so its settings could not be saved."` */
+      noEmployeeCompensations: string
+    }
+    deductions: {
+      /** @defaultValue `"Deductions and contributions"` */
+      title: string
+      /** @defaultValue `"Employers often block deductions and contributions from certain checks (i.e. bonus checks), since they are calculated on a per-pay-period basis. Deductions and contributions include loan repayments, garnishments, benefits, etc. Taxes will be included regardless of what is chosen."` */
+      description: string
+      options: {
+        /** @defaultValue `"Make all the regular deductions and contributions."` */
+        include: string
+        /** @defaultValue `"Block all deductions and contributions, except 401(k). Taxes will be included."` */
+        skip: string
+      }
+    }
+    wageTypeGroups: {
+      regular: {
+        /** @defaultValue `"Regular hours, regular wages, and tips"` */
+        label: string
+        /** @defaultValue `"These earnings should be taxed at a rate that matches your employees' regular pay schedule."` */
+        description: string
+      }
+      supplemental: {
+        /** @defaultValue `"Supplemental wages, bonus wages, commission"` */
+        label: string
+        /** @defaultValue `"These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes."` */
+        description: string
+      }
+      reimbursement: {
+        /** @defaultValue `"Reimbursements"` */
+        label: string
+      }
+    }
+  }
+  /** Translation keys for the `Payroll.TransitionPayrollAlert` i18n namespace. */
+  export interface PayrollTransitionPayrollAlert {
+    /** @defaultValue `"Transition payroll - {{dateRange}}"` */
+    alertTitle: string
+    /** @defaultValue `"You have {{count}} transition payrolls to run or skip"` */
+    multipleAlertTitle: string
+    /** @defaultValue `"Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly. Regular payroll functionality is blocked until you either run or skip transition payrolls."` */
+    alertDescription: string
+    /** @defaultValue `"Run Transition Payroll"` */
+    runPayroll: string
+    /** @defaultValue `"Review and submit"` */
+    reviewPayroll: string
+    /** @defaultValue `"Skip this payroll"` */
+    skipPayroll: string
+    /** @defaultValue `"Transition payroll skipped"` */
+    skipSuccessAlert: string
+    skipDialog: {
+      /** @defaultValue `"Skip {{dateRange}} transition payroll?"` */
+      title: string
+      /** @defaultValue `"Skipping this payroll means employees will not be paid for the transition period. It is your responsibility to ensure employees are paid properly."` */
+      body: string
+      /** @defaultValue `"Skip payroll"` */
+      confirmCta: string
+      /** @defaultValue `"Cancel"` */
+      cancelCta: string
     }
   }
   /** Translation keys for the `Payroll.WireInstructions` i18n namespace. */
@@ -9124,6 +9449,14 @@ export namespace Translations {
       selectRowLabel: string
       /** @defaultValue `"Select all rows"` */
       selectAllRowsLabel: string
+      /** @defaultValue `"Sort by"` */
+      sortByLabel: string
+      /** @defaultValue `"Default order"` */
+      sortDefaultOption: string
+      /** @defaultValue `"{{column}} (A–Z)"` */
+      sortAscendingOption: string
+      /** @defaultValue `"{{column}} (Z–A)"` */
+      sortDescendingOption: string
     }
     signatoryTitles: {
       /** @defaultValue `"Owner"` */

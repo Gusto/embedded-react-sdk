@@ -1,6 +1,6 @@
 import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
-import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import type { PayScheduleManagementContextInterface } from './PayScheduleManagementComponents'
 import {
   PayScheduleOverviewContextual,

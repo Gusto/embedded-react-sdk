@@ -186,6 +186,11 @@
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-payroll-blockers-company_uuid"
         },
@@ -418,6 +423,11 @@
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
@@ -497,7 +507,7 @@
         "payrollId"
       ]
     },
-    "Payroll.TransitionCreation": {
+    "Payroll.TransitionConfiguration": {
       "endpoints": [
         {
           "method": "GET",
@@ -505,31 +515,24 @@
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-payrolls"
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
         },
         {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/payment_configs",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-payment-configs"
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/put-v1-companies-company_id-payrolls-payroll_id-prepare"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid"
-      ]
-    },
-    "Payroll.TransitionPayroll": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
-        }
-      ],
-      "variables": [
-        "companyId"
+        "payrollId"
       ]
     },
     "TimeOff.PolicyList": {
@@ -877,17 +880,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-employees"
         }
       ],
       "variables": [
-        "companyId",
         "employeeId"
       ]
     },
@@ -1648,11 +1645,17 @@
           "method": "GET",
           "path": "/v1/companies/:companyUuid/signatories",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_uuid-signatories"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/forms/:formId/pdf",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-company-form-pdf"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid"
+        "companyUuid",
+        "formId"
       ]
     },
     "CompanyOnboarding.Industry": {
@@ -1762,6 +1765,11 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
@@ -1792,8 +1800,18 @@
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/assignments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-assignments"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/preview",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-preview"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/departments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-departments"
         },
         {
           "method": "GET",
@@ -1983,6 +2001,11 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules"
         },
@@ -2005,15 +2028,31 @@
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules/assignment_preview",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/assignments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-assignments"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/departments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-departments"
         }
       ],
       "variables": [
         "companyId",
+        "companyUuid",
         "payScheduleId"
       ]
     },
     "CompanyManagement.PayScheduleAssignment": {
       "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-employees"
+        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules",
@@ -2028,19 +2067,55 @@
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules/assignment_preview",
           "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/post-v1-companies-company_id-pay_schedules-assignment_preview"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/assignments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-pay_schedules-assignments"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/departments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-companies-departments"
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "companyUuid"
+      ]
+    },
+    "CompanyManagement.TaxPaymentsFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies-company_id-payrolls-payroll_id"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_payments",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-tax-payments"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_payments/:uuid",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-tax-payment"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "payrollId",
+        "uuid"
       ]
     },
     "ContractorOnboarding.Landing": {
       "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId",
-          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-companies"
-        },
         {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid",
@@ -2048,7 +2123,6 @@
         }
       ],
       "variables": [
-        "companyId",
         "contractorUuid"
       ]
     },
@@ -2577,6 +2651,9 @@
     }
   },
   "flows": {
+    "CompanyManagement.TaxPaymentsFlow": {
+      "blocks": []
+    },
     "CompanyOnboarding.OnboardingFlow": {
       "blocks": [
         "CompanyOnboarding.BankAccount",
@@ -2745,13 +2822,7 @@
         "Payroll.PayrollLanding",
         "Payroll.PayrollOverview",
         "Payroll.PayrollReceipts",
-        "Payroll.TransitionFlow"
-      ]
-    },
-    "Payroll.TransitionFlow": {
-      "blocks": [
-        "Payroll.PayrollExecutionFlow",
-        "Payroll.TransitionPayroll"
+        "Payroll.TransitionConfiguration"
       ]
     },
     "TimeOff.TimeOffFlow": {

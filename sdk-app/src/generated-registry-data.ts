@@ -2,6 +2,7 @@
 // Run: npx tsx sdk-app/scripts/analyze-component-props.ts
 
 import type { UnstableFeatures } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import type { Features } from '@/contexts/FeaturesProvider/useFeature'
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'CompanyManagement.PaySchedule': ['companyId'],
@@ -147,9 +148,10 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.PayrollReceipts': ['payrollId'],
   'Payroll.PrintChecks': ['companyId', 'payrollId'],
   'Payroll.RecoveryCases': ['companyId'],
-  'Payroll.TransitionCreation': ['companyId'],
-  'Payroll.TransitionFlow': ['companyId'],
-  'Payroll.TransitionPayroll': ['companyId'],
+  'Payroll.TaxPaymentDetail': ['companyId'],
+  'Payroll.TaxPaymentsFlow': ['companyId'],
+  'Payroll.TaxPaymentsList': ['companyId'],
+  'Payroll.TransitionConfiguration': ['companyId', 'payrollId'],
   'TimeOff.AddEmployeesHoliday': ['companyId'],
   'TimeOff.AddEmployeesToPolicy': ['companyId'],
   'TimeOff.HolidaySelectionForm': ['companyId'],
@@ -181,9 +183,7 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'EmployeeOnboarding.I9SignatureForm': ['formId'],
   'EmployeeOnboarding.SignatureForm': ['formId'],
   'Payroll.OffCycleDeductionsSetting': ['skipRegularDeductions'],
-  'Payroll.TransitionCreation': ['startDate', 'endDate', 'payScheduleUuid'],
-  'Payroll.TransitionFlow': ['startDate', 'endDate', 'payScheduleUuid'],
-  'Payroll.TransitionPayroll': ['startDate', 'endDate', 'payScheduleUuid'],
+  'Payroll.TaxPaymentDetail': ['taxPaymentId'],
   'TimeOff.AddEmployeesToPolicy': ['policyId', 'policyType'],
   'TimeOff.PolicyConfigurationForm': ['policyType'],
   'TimeOff.PolicySettings': ['policyId'],
@@ -204,5 +204,9 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
 export const UNSTABLE_FEATURES_VALUES: Required<UnstableFeatures> = {
   historicalPayments: false,
   managePaySchedules: false,
-  payrollRegularRateOfPay: false,
+  taxPayments: false,
+}
+
+export const FEATURES_VALUES: Required<Features> = {
+  regularRateOfPay: true,
 }

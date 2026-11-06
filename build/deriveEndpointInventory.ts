@@ -11,7 +11,7 @@ import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { spawnSync } from 'child_process'
 import { Project, SourceFile, SyntaxKind } from 'ts-morph'
-import { DOMAINS } from '../docs-site/plugins/typedoc-custom/router.config'
+import { DOMAINS } from '../typedoc/typedoc-custom/router.config'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -830,7 +830,7 @@ function generateMarkdown(inventory: Inventory, hookDomains: Record<string, stri
     '',
     '# Endpoint reference',
     '',
-    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.mdx) navigation. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
+    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.mdx) navigation. For guidance on using these lists to decide which requests to allow for a session, see [Reviewing SDK API access](../getting-started/reviewing-sdk-api-access.md).',
     '',
     "Within each domain, **Components** and **Hooks** list the endpoints they call, and **Flows** list the blocks they compose (a flow's endpoints are the union of its blocks' endpoints).",
     '',

@@ -14,7 +14,10 @@ import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api/models/components/payrollshow'
+import {
+  OffCycleReasonType,
+  type Payroll,
+} from '@gusto/embedded-api/models/components/unprocessedpayroll'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'
@@ -48,16 +51,22 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * When the company has unprocessed transition pay periods within the next
  * 90 days, the Run Payroll action on Regular rows is disabled to prevent a
  * regular payroll from being run before the transition is resolved. Off-cycle
- * rows and the Run off-cycle action remain enabled, since off-cycle is the
- * path used to run a transition payroll. {@link PayrollLanding} pairs this
- * list with an alert that lets users run or skip the pending transition; when
- * using `PayrollList` directly, render an equivalent resolution surface
- * alongside it.
+ * rows, including transition payroll rows, and the Run off-cycle action stay
+ * enabled.
+ *
+ * Running a transition payroll row emits `transition/payrollSelected` instead
+ * of `runPayroll/selected`. Handle it by rendering
+ * {@link TransitionConfiguration} with the event's `payrollUuid` as
+ * `payrollId`, then render {@link PayrollExecutionFlow} for the same payroll on
+ * `transition/configured`. {@link PayrollLanding} also shows an alert that lets
+ * users run or skip each pending transition payroll. When using `PayrollList`
+ * directly, give users a way to run or skip those payrolls alongside it.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
+ * | `transition/payrollSelected` | User selected a transition payroll to run | `{ payrollUuid, payPeriod }` |
  * | `payroll/review` | User selected a calculated payroll to review and submit | `{ payrollUuid, payPeriod }` |
  * | `payroll/skipped` | A payroll was successfully skipped | `{ payrollId }` |
  * | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
@@ -115,11 +124,7 @@ const Root = ({
       processingStatuses: [ProcessingStatuses.Unprocessed],
       startDate: dateFilterParams.startDate,
       endDate: dateFilterParams.endDate,
-      payrollTypes: [
-        QueryParamPayrollTypes.Regular,
-        QueryParamPayrollTypes.OffCycle,
-        QueryParamPayrollTypes.External,
-      ],
+      payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
       includeOffCycle: true,
       page: currentPage,
       per: itemsPerPage,
@@ -157,7 +162,16 @@ const Root = ({
   const { mutateAsync: deletePayrollMutation } = usePayrollsDeleteMutation()
 
   const onRunPayroll = ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
-    onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollUuid, payPeriod })
+    const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
+    const isTransitionPayroll =
+      payroll?.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
+
+    onEvent(
+      isTransitionPayroll
+        ? componentEvents.TRANSITION_PAYROLL_SELECTED
+        : componentEvents.RUN_PAYROLL_SELECTED,
+      { payrollUuid, payPeriod },
+    )
   }
   const onRunOffCyclePayroll = () => {
     onEvent(componentEvents.RUN_OFF_CYCLE_PAYROLL)

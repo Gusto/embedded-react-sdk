@@ -127,8 +127,8 @@ export function useSelectContractors(
   const eligibleContractors = useMemo<Contractor[]>(() => {
     if (!firstPage) return []
     const contractors = [
-      ...(firstPage.contractors ?? []),
-      ...restPageResults.flatMap(r => r.data?.contractors ?? []),
+      ...(firstPage.showContractors ?? []),
+      ...restPageResults.flatMap(r => r.data?.showContractors ?? []),
     ]
     return contractors.filter(isEligibleContractor)
   }, [firstPage, restPageResults])

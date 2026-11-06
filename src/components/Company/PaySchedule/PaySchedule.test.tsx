@@ -363,7 +363,7 @@ describe('PaySchedule', () => {
       expect(dayInput).toHaveValue(1)
     })
 
-    it('renders the workweek start day field disabled and still submits its value when disableWorkweekStartDayEditing is true', async () => {
+    it('renders the workweek start day field and submits its value by default', async () => {
       const user = userEvent.setup()
       const requestBodies: Array<Record<string, unknown>> = []
       const createPayScheduleResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
@@ -380,10 +380,7 @@ describe('PaySchedule', () => {
       )
 
       render(
-        <GustoProvider
-          config={{ baseUrl: API_BASE_URL }}
-          unstableFeatures={{ payrollRegularRateOfPay: true }}
-        >
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule
             companyId="123"
             onEvent={() => {}}
@@ -394,7 +391,6 @@ describe('PaySchedule', () => {
               customName: 'Default Schedule',
               workweekStartDay: 'Sunday',
             }}
-            disableWorkweekStartDayEditing
           />
         </GustoProvider>,
       )
@@ -408,9 +404,9 @@ describe('PaySchedule', () => {
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
       await waitForFormToLoad()
 
-      const workweekStartDaySelect = screen.getByRole('button', { name: /workweek start day/i })
-      expect(workweekStartDaySelect).toBeDisabled()
-      expect(workweekStartDaySelect).toHaveTextContent('Sunday')
+      expect(screen.getByRole('button', { name: /workweek start day/i })).toHaveTextContent(
+        'Sunday',
+      )
 
       await user.click(screen.getByRole('button', { name: /save/i }))
 
@@ -420,11 +416,11 @@ describe('PaySchedule', () => {
       expect(requestBodies[0]).toMatchObject({ workweek_start_day: 'Sunday' })
     })
 
-    it('does not render the workweek start day field without the payrollRegularRateOfPay flag', async () => {
+    it('does not render the workweek start day field when regularRateOfPay is opted out', async () => {
       const user = userEvent.setup()
 
       render(
-        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }} features={{ regularRateOfPay: false }}>
           <PaySchedule
             companyId="123"
             onEvent={() => {}}

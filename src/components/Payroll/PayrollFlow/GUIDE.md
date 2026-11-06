@@ -4,25 +4,26 @@
 
 ## Step flow <!-- slot: appendix -->
 
-`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) or a pending transition payroll (`transition/runPayroll`) hands off to `OffCycleFlow` or `TransitionFlow`; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
+`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) hands off to `OffCycleFlow`; running a transition payroll from the alert (`transition/runPayroll`) or the payroll list (`transition/payrollSelected`) opens `TransitionConfiguration`, and saving it (`transition/configured`) opens `PayrollExecutionFlow` for the same payroll (a transition payroll that's already calculated skips this step and opens for review with `payroll/review`); and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
+
+To build this routing yourself instead of using `PayrollFlow`, see the event routing on [`PayrollLanding`](./blocks.md#payrolllanding).
 
 ```mermaid
 flowchart LR
   start@{ shape: sm-circ } --> Landing["PayrollLanding"]
   Landing <--> Execution["PayrollExecutionFlow"]
   Landing <--> OffCycle["OffCycleFlow"]
-  Landing <--> Transition["TransitionFlow"]
+  Landing <--> Transition["TransitionConfiguration"]
   Landing <--> Blockers["PayrollBlockerList"]
+  Transition --> Execution
   Execution --> SubmittedOverview["PayrollOverview"]
   OffCycle --> SubmittedOverview
-  Transition --> SubmittedOverview
   SubmittedOverview --> SubmittedReceipts["PayrollReceipts"]
   SubmittedOverview --> Landing
   SubmittedReceipts --> Landing
   class Execution flow
   class OffCycle flow
-  class Transition flow
   linkStyle 1,2,3,4 stroke-width:2.5px
 ```
 
-When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown.
+When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown. If the overview finds the payroll is no longer calculated (for example, it was cancelled in another session), it shows an error state whose **Back to payrolls** action (`runPayroll/notCalculated/backToList`) returns to landing.

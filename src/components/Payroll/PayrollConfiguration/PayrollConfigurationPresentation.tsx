@@ -4,13 +4,14 @@ import classNames from 'classnames'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedulelistitem'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   useFormatEmployeePayRate,
   getRegularHours,
   getOvertimeHours,
   getTotalPtoHours,
+  getTotalOutstandingPtoHours,
   getAdditionalEarnings,
   getReimbursements,
   formatHoursDisplay,
@@ -32,7 +33,7 @@ import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
+import { useFeature } from '@/contexts/FeaturesProvider/useFeature'
 
 interface PayrollConfigurationPresentationProps {
   /** CSS class name applied to the root element. */
@@ -100,7 +101,7 @@ export const PayrollConfigurationPresentation = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const dateFormatter = useDateFormatter()
   const formatEmployeePayRate = useFormatEmployeePayRate()
-  const isRegularRateOfPayEnabled = useUnstableFeature('payrollRegularRateOfPay')
+  const isRegularRateOfPayEnabled = useFeature('regularRateOfPay')
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
@@ -233,10 +234,24 @@ export const PayrollConfigurationPresentation = ({
                     title: t('tableColumns.timeOff'),
                     justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
-                      const ptoHours = getTotalPtoHours(item)
-                      return formatHoursDisplay(ptoHours)
+                      const additionalHours = getTotalPtoHours(item)
+                      const approvedHours = (item.paidTimeOff ?? []).reduce(
+                        (total, timeOff) => total + parseFloat(timeOff.approvedRequestHours || '0'),
+                        0,
+                      )
+                      return formatHoursDisplay(additionalHours + approvedHours)
                     },
                   },
+                  ...(payrollCategory === PayrollCategory.Dismissal
+                    ? [
+                        {
+                          title: t('tableColumns.unusedHours'),
+                          justify: 'end' as const,
+                          render: (item: PayrollEmployeeCompensationsType) =>
+                            formatHoursDisplay(getTotalOutstandingPtoHours(item)),
+                        },
+                      ]
+                    : []),
                   {
                     title: t('tableColumns.additionalEarnings'),
                     justify: 'end',
@@ -261,8 +276,14 @@ export const PayrollConfigurationPresentation = ({
                     title: t('tableColumns.totalPay'),
                     justify: 'end',
                     render: (item: PayrollEmployeeCompensationsType) => {
-                      if (isRegularRateOfPayEnabled) {
-                        return formatNumberAsCurrency(Number(item.grossPay ?? 0))
+                      // TODO: The API leaves the grossPay key out of unprocessed payrolls until
+                      // regular rate of pay is enabled for the partner, so fall back to the client
+                      // estimate only when the key is absent. Remove the fallback once it's enabled
+                      // for every partner and the regularRateOfPay flag is removed.
+                      if (isRegularRateOfPayEnabled && 'grossPay' in item) {
+                        return formatNumberAsCurrency(
+                          Number(item.grossPay ?? 0) + getReimbursements(item),
+                        )
                       }
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const calculatedGrossPay = employee
@@ -274,7 +295,7 @@ export const PayrollConfigurationPresentation = ({
                             payrollCategory,
                           )
                         : 0
-                      return formatNumberAsCurrency(calculatedGrossPay)
+                      return formatNumberAsCurrency(calculatedGrossPay + getReimbursements(item))
                     },
                   },
                 ]}
