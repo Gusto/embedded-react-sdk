@@ -16,7 +16,6 @@ import { BaseComponent, useBase, type BaseComponentInterface } from '@/component
 import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 
 type AssignmentSeed = Pick<
   PayScheduleAssignmentContextInterface,
@@ -72,7 +71,8 @@ function toAssignmentSeed(assignment: PayScheduleAssignmentEntity | undefined): 
 /**
  * Props for {@link PayScheduleAssignment}.
  *
- * @alpha
+ * @public
+ * @group Component props
  */
 export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Company.Management.PayScheduleAssignment'> {
   /** Company whose pay schedule assignment is managed. */
@@ -85,35 +85,68 @@ export interface PayScheduleAssignmentProps extends BaseComponentInterface<'Comp
  * @remarks
  * Walks through choosing an assignment type, picking (or creating) a pay schedule, and reviewing
  * the employees and transition payrolls affected before submitting. Opens on the company's
- * current assignment, so submitting without changing anything is a no-op rather than a
- * reassignment. Supports one schedule for everyone (`single`), separate schedules for hourly
+ * current assignment and preserves selections when navigating back or creating a schedule.
+ * Changing the assignment type clears selections from the previous type. Supports one schedule for everyone (`single`), separate schedules for hourly
  * and salaried employees (`hourly_salaried`), or schedules by department (`by_department`),
  * including a default for employees without a department, or individually (`by_employee`).
- * Employee assignment requires employee and compensation read access and excludes terminated,
+ * Department assignment requires department read access. Employee assignment requires employee
+ * and compensation read access and excludes terminated,
  * historical, incomplete-onboarding, and missing-compensation employees. Selecting one schedule for every
  * group is submitted as `single`. Can be mounted directly or launched from
  * `CompanyManagement.PaySchedule`'s Manage action.
  *
  * Step selection events also bubble through `onEvent`; the `assigned` event reports the
  * final outcome. Adding a pay schedule can include the current selections in its event payload.
+ * Completion and cancellation bubble through `onEvent`; when mounted directly, handle them
+ * to close or navigate away from this component. Assignment previews transition pay periods
+ * but does not run transition payrolls.
+ * The `dictionary` prop overrides `Company.Management.PayScheduleAssignment` copy; the nested
+ * schedule creation form uses the separate `Company.PaySchedule` namespace.
  *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
+ * | `paySchedule/management/assignment/typeSelected` | Continue from assignment type | `{ type: 'single' \| 'hourly_salaried' \| 'by_department' \| 'by_employee' }` |
+ * | `paySchedule/management/assignment/scheduleSelected` | Continue to review | Current schedule selections for the chosen assignment type |
+ * | `paySchedule/management/assignment/back` | Return to the previous step | Current selections when leaving a picker; otherwise no data |
+ * | `CANCEL` | Cancel nested schedule creation and return to the picker | — |
  * | `paySchedule/create` | The user chose to add a new pay schedule from the picker step | Optional current selections: `{ defaultPayScheduleUuid?: string; hourlyPayScheduleUuid?: string; salariedPayScheduleUuid?: string; departments?: { departmentUuid: string; payScheduleUuid: string }[]; employees?: { employeeUuid: string; payScheduleUuid: string }[] }` |
  * | `paySchedule/created` | A new pay schedule was created from the picker step | `{ paySchedule: PayScheduleShow }` |
  * | `paySchedule/management/assignment/cancel` | The user backed out of the flow entirely, from the first step | — |
  * | `paySchedule/management/assignment/assigned` | The assignment was submitted successfully | `{ employeeChanges: PayScheduleAssignmentEmployeeChange[] }` plus either `{ type: 'single'; defaultPayScheduleUuid: string }` or `{ type: 'hourly_salaried'; hourlyPayScheduleUuid: string; salariedPayScheduleUuid: string }` or `{ type: 'by_department'; defaultPayScheduleUuid: string; departments: { departmentUuid: string; payScheduleUuid: string }[] }` or `{ type: 'by_employee'; employees: { employeeUuid: string; payScheduleUuid: string }[] }` |
  *
- * @alpha
+ * @param props - See {@link PayScheduleAssignmentProps}.
+ * @returns The pay schedule assignment experience.
+ * @public
+ * @group Block components
+ *
+ * @example
+ * ```tsx
+ * import { CompanyManagement, componentEvents } from '@gusto/embedded-react-sdk'
+ *
+ * export function AssignPaySchedules({ companyId, onClose }: {
+ *   companyId: string
+ *   onClose: () => void
+ * }) {
+ *   return (
+ *     <CompanyManagement.PayScheduleAssignment
+ *       companyId={companyId}
+ *       onEvent={event => {
+ *         if (
+ *           event === componentEvents.PAY_SCHEDULE_ASSIGNED ||
+ *           event === componentEvents.PAY_SCHEDULE_ASSIGNMENT_CANCEL
+ *         ) onClose()
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export const PayScheduleAssignment = ({
   companyId,
   dictionary,
   ...props
 }: PayScheduleAssignmentProps) => {
-  useUnstableFeature('managePaySchedules', { throwIfDisabled: true })
-
   return (
     <BaseComponent {...props}>
       <Root companyId={companyId} dictionary={dictionary} />

@@ -48,7 +48,6 @@ const renderPaySchedule = ({
       enableAutoPilot={enableAutoPilot}
       enableMultipleSchedules={enableMultipleSchedules}
     />,
-    { unstableFeatures: { managePaySchedules: true } },
   )
   return { onEvent }
 }

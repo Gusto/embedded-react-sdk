@@ -81,7 +81,7 @@ export * as CompanyOnboarding from './Company/exports/companyOnboarding'
  * ```
  *
  * @group Component namespaces
- * @alpha
+ * @public
  */
 export * as CompanyManagement from './Company/exports/companyManagement'
 

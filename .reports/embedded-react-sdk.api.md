@@ -4556,13 +4556,13 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 // @public
 const PaySchedule: (input: PayScheduleProps) => JSX;
 
-// @alpha
+// @public
 const PaySchedule_2: (input: PayScheduleProps_2) => JSX;
 
-// @alpha
+// @public
 const PayScheduleAssignment_2: (input: PayScheduleAssignmentProps) => JSX;
 
-// @alpha
+// @public
 interface PayScheduleAssignmentProps extends BaseComponentInterface<'Company.Management.PayScheduleAssignment'> {
     companyId: string;
 }
@@ -4575,7 +4575,7 @@ type PayScheduleDefaultFields = {
 // @public
 type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefaultFields>>;
 
-// @alpha
+// @public
 type PayScheduleDictionary = {
     [Lang in SupportedLanguages]?: {
         'Company.Management.PaySchedule'?: DeepPartial<Resources['Company.Management.PaySchedule']>;
@@ -4625,7 +4625,7 @@ interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'>
     defaultValues?: PayScheduleDefaultValues;
 }
 
-// @alpha
+// @public
 interface PayScheduleProps_2 extends Omit<BaseComponentInterface<'Company.Management.PaySchedule'>, 'dictionary'> {
     companyId: string;
     dictionary?: PayScheduleDictionary;
@@ -6085,7 +6085,6 @@ export interface UnorderedListProps extends BaseListProps {
 // @alpha
 export interface UnstableFeatures {
     historicalPayments?: boolean;
-    managePaySchedules?: boolean;
     taxPayments?: boolean;
 }
 

@@ -43,6 +43,7 @@ import {
   domainFromSources,
   hasGroup,
   hookDirFromSources,
+  isComponent,
   isHookSourceFile,
   NAMESPACE_PATHS,
   pathToSourceDir,
@@ -1130,8 +1131,8 @@ export class SDKRouter extends MemberRouter {
   /**
    * Override page building for namespaces and unmapped project-level members.
    *
-   * - Namespace with Flow children: split into blocks.md, flows, and index.md.
-   * - Namespace without Flow children: one page, all children as anchors.
+   * - Configured component namespace or namespace with Flow children: split into blocks, flows, and index.
+   * - Other namespaces: one page, all children as anchors.
    * - Domain hook (in handledHooks): skip — already registered in buildPages.
    * - Other project-level reflection: anchor onto the project's index page.
    */
@@ -1155,7 +1156,11 @@ export class SDKRouter extends MemberRouter {
         ? []
         : children.filter(c => c.name.endsWith('Flow'))
 
-      if (flows.length > 0) {
+      const hasDomainComponents =
+        reflection.name in NAMESPACE_PATHS &&
+        children.some(child => child instanceof DeclarationReflection && isComponent(child))
+
+      if (flows.length > 0 || hasDomainComponents) {
         // Each Flow component gets its own page; block components share blocks.md.
         // The namespace's canonical URL points to index.md for cross-references.
         const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name

@@ -13,7 +13,6 @@ import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { Flow } from '@/components/Flow/Flow'
-import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import type {
   DeepPartial,
   ResourceDictionary,
@@ -26,7 +25,8 @@ import type {
  * `Company.Management.AutoPilotDialog` — the AutoPilot dialog is an internal spoke of this
  * flow with no standalone `dictionary` prop of its own.
  *
- * @alpha
+ * @public
+ * @group Utility types
  */
 export type PayScheduleDictionary = {
   [Lang in SupportedLanguages]?: {
@@ -59,7 +59,8 @@ function pickNamespaceDictionary<K extends keyof Resources>(
 /**
  * Props for {@link PaySchedule}.
  *
- * @alpha
+ * @public
+ * @group Component props
  */
 export interface PayScheduleProps extends Omit<
   BaseComponentInterface<'Company.Management.PaySchedule'>,
@@ -67,9 +68,15 @@ export interface PayScheduleProps extends Omit<
 > {
   /** Company whose pay schedule is managed. */
   companyId: string
-  /** Shows the AutoPilot row and its Edit action. */
+  /**
+   * Shows AutoPilot status and its Edit action for each displayed schedule.
+   * @defaultValue `false`
+   */
   enableAutoPilot?: boolean
-  /** Shows the Manage action. */
+  /**
+   * Shows the Manage action that opens pay schedule assignment.
+   * @defaultValue `false`
+   */
   enableMultipleSchedules?: boolean
   /** Overrides for this flow's i18n strings, including the AutoPilot dialog's. */
   dictionary?: PayScheduleDictionary
@@ -79,10 +86,54 @@ export interface PayScheduleProps extends Omit<
  * Manages a company's pay schedule after onboarding.
  *
  * @remarks
- * Renders the overview when the company already has a pay schedule, or the create form
- * directly when it doesn't.
+ * Renders the current assignment overview, or the create form when no pay schedules exist.
+ * Supports single, compensation-type, department, and employee assignments. Set
+ * `enableMultipleSchedules` to show Manage and `enableAutoPilot` to show AutoPilot controls;
+ * both default to `false`. These props control the available actions, not the saved assignment.
+ * AutoPilot eligibility is checked before enabling; an enabled schedule can be disabled.
+ * Creating, editing, or assigning schedules returns to the overview. Assignment and AutoPilot
+ * events bubble through `onEvent`. This component stays mounted after those events.
  *
- * @alpha
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `paySchedule/update` | Edit a schedule | `{ uuid: string }` |
+ * | `paySchedule/created` | A schedule was created | `{ paySchedule: PayScheduleShow }` |
+ * | `paySchedule/updated` | A schedule was updated | `{ paySchedule: PayScheduleShow }` |
+ * | `CANCEL` | Cancel editing or creating a schedule; an initial create has no overview to return to | — |
+ * | `paySchedule/management/manageAssignment` | Open assignment | — |
+ * | `paySchedule/management/autoPilotEdit` | Open the AutoPilot dialog | `{ schedule: PayScheduleShow }` |
+ * | `paySchedule/management/autoPilotEnabled` | AutoPilot was enabled | `null` |
+ * | `paySchedule/management/autoPilotDisabled` | AutoPilot was disabled | `null` |
+ * | `paySchedule/management/autoPilotDismissed` | Close AutoPilot without saving a change | `null` |
+ * | `paySchedule/management/alertDismissed` | Dismiss the assignment success alert | `null` |
+ *
+ * Assignment also emits the selection, creation, navigation, and completion events documented
+ * on {@link PayScheduleAssignment}.
+ *
+ * @param props - See {@link PayScheduleProps}.
+ * @returns The pay schedule management experience.
+ * @public
+ * @group Block components
+ *
+ * @example
+ * ```tsx
+ * import { CompanyManagement } from '@gusto/embedded-react-sdk'
+ *
+ * export function ManagePaySchedules({ companyId, onEvent }: {
+ *   companyId: string
+ *   onEvent: CompanyManagement.PayScheduleProps['onEvent']
+ * }) {
+ *   return (
+ *     <CompanyManagement.PaySchedule
+ *       companyId={companyId}
+ *       onEvent={onEvent}
+ *       enableMultipleSchedules
+ *       enableAutoPilot
+ *     />
+ *   )
+ * }
+ * ```
  */
 export const PaySchedule = ({
   companyId,
@@ -91,8 +142,6 @@ export const PaySchedule = ({
   dictionary,
   ...props
 }: PayScheduleProps) => {
-  useUnstableFeature('managePaySchedules', { throwIfDisabled: true })
-
   return (
     <BaseComponent {...props}>
       <Root

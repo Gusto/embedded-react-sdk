@@ -31,18 +31,6 @@ export interface UnstableFeatures {
    */
   historicalPayments?: boolean
   /**
-   * Managing pay schedules and their employee assignments after onboarding.
-   *
-   * When `true`, `CompanyManagement.PaySchedule` and `CompanyManagement.PayScheduleAssignment` can
-   * be mounted.
-   *
-   * When `false`, both components throw when mounted. `CompanyOnboarding.PaySchedule` is not
-   * affected.
-   *
-   * @defaultValue `false`
-   */
-  managePaySchedules?: boolean
-  /**
    * Reviewing a company's tax payments and their liabilities.
    *
    * When `true`, `CompanyManagement.TaxPaymentsFlow`, `CompanyManagement.TaxPaymentsList`, and

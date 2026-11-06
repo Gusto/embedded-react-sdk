@@ -43,9 +43,7 @@ describe('single-schedule assignment draft', () => {
   async function editSchedule() {
     const user = userEvent.setup()
     const onEvent = vi.fn()
-    renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />, {
-      unstableFeatures: { managePaySchedules: true },
-    })
+    renderWithProviders(<PayScheduleAssignment companyId="123" onEvent={onEvent} />)
     await user.click(await screen.findByRole('button', { name: /continue/i }))
     await user.click(await screen.findByRole('button', { name: /weekly/i }))
     await user.click(screen.getByRole('option', { name: /monthly/i }))
