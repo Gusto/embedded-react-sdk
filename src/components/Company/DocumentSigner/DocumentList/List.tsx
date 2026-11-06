@@ -1,16 +1,9 @@
-import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import type { Form as FormSchema } from '@gusto/embedded-api/models/components/form'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { companyFormsGetPdf } from '@gusto/embedded-api/funcs/companyFormsGetPdf'
 import { useDocumentList } from './useDocumentList'
 import { DocumentList, type FormData } from '@/components/Common/DocumentList'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useBase } from '@/components/Base/useBase'
-import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
-import { normalizeToSDKError } from '@/types/sdkError'
-import { openLinkInNewTab } from '@/helpers/openLinkInNewTab'
 
 /**
  * Resolves a form's rendered description, preferring a partner-provided
@@ -26,55 +19,36 @@ function resolveFormDescription(form: FormSchema, t: TFunction<'Company.Document
 
 /** @internal */
 function List() {
-  const { companyForms, handleRequestFormToSign, documentListError, isSelfSignatory } =
-    useDocumentList()
+  const {
+    companyForms,
+    handleRequestFormToSign,
+    handleViewForm,
+    viewingFormUuid,
+    viewFormError,
+    dismissViewFormError,
+    documentListError,
+    isSelfSignatory,
+  } = useDocumentList()
 
   const { t } = useTranslation('Company.DocumentList')
   const Components = useComponentContext()
-  const gustoEmbedded = useGustoEmbeddedContext()
-  const { componentName } = useBase()
-  const { observability } = useObservability()
-  const [viewingUuid, setViewingUuid] = useState<string | null>(null)
-  const [viewError, setViewError] = useState(false)
 
   const onRequestSign = (requestedForm: FormData) => {
     const companyForm = companyForms.find(currentForm => currentForm.uuid === requestedForm.uuid)
     handleRequestFormToSign(companyForm || requestedForm)
   }
 
-  const onView = useCallback(
-    async (requestedForm: FormData) => {
-      setViewError(false)
-      setViewingUuid(requestedForm.uuid)
-      try {
-        const result = await companyFormsGetPdf(gustoEmbedded, { formId: requestedForm.uuid })
-        const documentUrl = result.ok ? result.value.formPdf?.documentUrl : undefined
-        if (!documentUrl || !openLinkInNewTab(documentUrl)) {
-          setViewError(true)
-        }
-      } catch (err) {
-        observability?.onError?.({
-          ...normalizeToSDKError(err),
-          timestamp: Date.now(),
-          componentName,
-        })
-        setViewError(true)
-      } finally {
-        setViewingUuid(null)
-      }
-    },
-    [gustoEmbedded, observability, componentName],
-  )
+  const onView = (requestedForm: FormData) => {
+    handleViewForm(requestedForm.uuid)
+  }
 
   return (
     <>
-      {viewError && (
+      {viewFormError && (
         <Components.Alert
           status="error"
           label={t('viewDocumentError')}
-          onDismiss={() => {
-            setViewError(false)
-          }}
+          onDismiss={dismissViewFormError}
         />
       )}
       <DocumentList
@@ -85,8 +59,8 @@ function List() {
           requires_signing: form.requiresSigning,
         }))}
         onRequestSign={onRequestSign}
-        onView={form => void onView(form)}
-        viewingUuid={viewingUuid}
+        onView={onView}
+        viewingUuid={viewingFormUuid}
         withError={!!documentListError}
         label={t('documentListLabel')}
         columnLabels={{
