@@ -73,6 +73,7 @@ The SDK is designed to take on your application's look and feel via theming and 
 ## Next steps
 
 - Read [Authentication](./authentication.md) for how your proxy uses company tokens and authenticates application users
+- Read [Troubleshooting](./troubleshooting.md) for fixes to common setup problems, including which SDK headers your proxy must forward
 - Read [Reviewing SDK API access](./reviewing-sdk-api-access.md) to identify the requests your components use when deciding what to allow for a session
 - Explore [Workflows overview](../guides/workflows-overview.md) for the pre-built flows you can drop into your app
 - Dig into the [Integration guide](../guides/integration-guide/integration-guide.md) for more detailed guides on building with the SDK, covering topics like versioning, events, customization, and observability

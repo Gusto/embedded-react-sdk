@@ -116,6 +116,6 @@ Use those permissions to decide which SDK components to display, and enforce the
 
 Set `GustoProvider`'s `config.baseUrl` to your proxy's address. Use your application's authentication mechanism to identify the user making each request. If that mechanism requires request headers, the SDK supports static headers through `config.headers` and headers computed at request time through [request interceptors](../guides/integration-guide/request-interceptors.md). These browser-side headers authenticate requests to your proxy; supply Gusto credentials only on the backend request to the API.
 
-Your proxy forwards the authorized request and returns the API response to the SDK. Add the `x-gusto-client-ip` header using a client IP established by your backend; signature workflows require it. We also recommend forwarding the SDK's `X-Gusto-SDK-Version` request header so Gusto can identify the SDK version when investigating API traffic.
+Your proxy forwards the authorized request and returns the API response to the SDK. Add the `x-gusto-client-ip` header using a client IP established by your backend; signature workflows require it. Forward the SDK's `X-Gusto-API-Version` header unchanged, and forward its `X-Gusto-SDK-Version` header so Gusto can identify the SDK version when investigating API traffic. See [Troubleshooting](./troubleshooting.md).
 
 The [demo application](./example-app.md) provides a runnable example of token management and forwarding. Its proxy does not currently implement user authentication or authorization.

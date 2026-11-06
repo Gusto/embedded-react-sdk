@@ -13,6 +13,7 @@ const sidebars: SidebarsConfig = {
         'getting-started/reviewing-sdk-api-access',
         'getting-started/component-types',
         'getting-started/example-app',
+        'getting-started/troubleshooting',
       ],
     },
     {
