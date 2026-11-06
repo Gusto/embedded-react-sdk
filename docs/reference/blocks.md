@@ -49,6 +49,7 @@ Individual form and UI components with SDK logic built in — use these for cust
 | [ContractorManagement.PaymentMethod](contractor/management/blocks#paymentmethod) | Management surface for viewing and editing a contractor's payment method after onboarding. |
 | [ContractorManagement.PaymentMethodCard](contractor/management/blocks#paymentmethodcard) | Standalone "Payment" card showing a contractor's payment method. |
 | [ContractorManagement.PaymentMethodEditForm](contractor/management/blocks#paymentmethodeditform) | Standalone bank-account form for a contractor's payment method. |
+| [ContractorManagement.PaymentsCard](contractor/management/blocks#paymentscard) | Standalone read-only "Recent payments" card for a single contractor. |
 | [ContractorManagement.PaymentsList](contractor/management/blocks#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [ContractorManagement.PaymentStatement](contractor/management/blocks#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [ContractorManagement.PaymentSummary](contractor/management/blocks#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |

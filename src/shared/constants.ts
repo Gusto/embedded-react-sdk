@@ -279,6 +279,10 @@ export const contractorEvents = {
   CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED:
     'contractor/management/documents/card/viewRequested',
   CONTRACTOR_MANAGEMENT_DOCUMENTS_CARD_VIEWED: 'contractor/management/documents/card/viewed',
+  CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED:
+    'contractor/management/payments/card/paymentSelected',
+  CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED:
+    'contractor/management/payments/statement/closed',
   CONTRACTOR_DASHBOARD_TAB_CHANGE: 'contractor/dashboard/tabChange',
   CONTRACTOR_DASHBOARD_ALERT_DISMISSED: 'contractor/dashboard/alertDismissed',
 } as const

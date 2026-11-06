@@ -642,6 +642,14 @@ export type {
   UseContractorDocumentsListReady,
 } from '@/components/Contractor/Documents/shared/useContractorDocumentsList'
 
+export { useContractorPaymentsList } from '@/components/Contractor/Payments/shared/useContractorPaymentsList'
+export type {
+  ContractorPaymentHistoryEntry,
+  UseContractorPaymentsListParams,
+  UseContractorPaymentsListResult,
+  UseContractorPaymentsListReady,
+} from '@/components/Contractor/Payments/shared/useContractorPaymentsList'
+
 export {
   useContractorSignatureForm,
   ContractorSignatureFormErrorCodes,

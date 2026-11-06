@@ -17,6 +17,7 @@ Headless utilities that handle data fetching, form state, validation, and API su
 | Hook | Description |
 | --- | --- |
 | [useContractorDocumentsList](contractor/hooks/use-contractor-documents-list) | Standalone data hook for a contractor's documents. |
+| [useContractorPaymentsList](contractor/hooks/use-contractor-payments-list) | Standalone data hook for a single contractor's payment history, most recent first. |
 | [useEmployeeList](employee/hooks/use-employee-list) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
 
 ## ✍️ Form hooks
@@ -347,6 +348,7 @@ narrowing. `isLoading: false` discriminates this branch from
 #### Extended by
 
 - [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
+- [`UseContractorPaymentsListReady`](contractor/hooks/use-contractor-payments-list.md#usecontractorpaymentslistready)
 
 #### Type Parameters
 

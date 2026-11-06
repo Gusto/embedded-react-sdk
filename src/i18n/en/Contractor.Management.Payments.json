@@ -1,0 +1,22 @@
+{
+  "title": "Recent payments",
+  "listLabel": "List of recent payments",
+  "viewDetailsCta": "View details",
+  "backCta": "Back",
+  "paymentDateColumn": "Payment date",
+  "totalColumn": "Total",
+  "paymentMethodColumn": "Payment method",
+  "statusColumn": "Status",
+  "emptyPlaceholder": "–",
+  "status": {
+    "funded": "Funded",
+    "unfunded": "Unfunded"
+  },
+  "emptyState": {
+    "title": "No payments yet",
+    "description": "Once you pay this contractor, payments will appear here."
+  },
+  "errors": {
+    "contractorNotFound": "We could not load this contractor."
+  }
+}

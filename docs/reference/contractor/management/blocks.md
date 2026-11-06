@@ -744,6 +744,70 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ***
 
+<a id="paymentscard"></a>
+
+## PaymentsCard
+
+Standalone read-only "Recent payments" card for a single contractor.
+
+### Remarks
+
+Fetches its own data via [useContractorPaymentsList](../hooks/use-contractor-payments-list.md#usecontractorpaymentslist) and renders the
+contractor's payment history — most recent first — with the payment date,
+total, payment method, and funding status. Read-only: creating and cancelling
+payments happen elsewhere, so each row's "View details" action only emits an
+event for the host to route on.
+
+The underlying endpoint returns **cancelled payments alongside active ones**
+and exposes no field distinguishing them (`status` is only `Funded` or
+`Unfunded`), so cancelled payments appear in this list. Note that fetching a
+cancelled payment by UUID responds `404`, so a handler that routes
+`paymentSelected` to a payment-detail surface should expect that case.
+
+<br />
+
+### Example
+
+```tsx
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+
+<ContractorManagement.PaymentsCard contractorId="contractor-uuid" onEvent={() => {}} />
+```
+
+<br />
+
+### PaymentsCardProps
+
+<a id="paymentscardprops"></a>
+
+Props for [PaymentsCard](#paymentscard).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user asks to see all payments or selects a single payment. |
+| `LoaderComponent?` | [`LoaderComponentType`](../../blocks.md#loadercomponenttype) | Custom loading indicator rendered while this component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this instance only. |
+
+<br />
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/management/payments/card/paymentSelected` | Fired when a row's "View details" action is clicked | `{ contractorId: string, payment: ContractorPaymentHistoryEntry }` |
+
+<br />
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractor_payments/:contractorPaymentUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractor_payments-contractor_payment_uuid-receipt) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/payments`](https://docs.gusto.com/embedded-payroll/v2026-06-15/reference/get-v1-contractors-contractor_uuid-payments) |
+
+***
+
 <a id="paymentslist"></a>
 
 ## PaymentsList

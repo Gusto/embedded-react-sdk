@@ -121,6 +121,8 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED` | `"contractor/management/paymentMethod/card/addRequested"` |
 | `CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_EDIT_REQUESTED` | `"contractor/management/paymentMethod/card/editRequested"` |
 | `CONTRACTOR_MANAGEMENT_PAYMENT_METHOD_CARD_REMOVED` | `"contractor/management/paymentMethod/card/removed"` |
+| `CONTRACTOR_MANAGEMENT_PAYMENTS_CARD_PAYMENT_SELECTED` | `"contractor/management/payments/card/paymentSelected"` |
+| `CONTRACTOR_MANAGEMENT_PAYMENTS_STATEMENT_CLOSED` | `"contractor/management/payments/statement/closed"` |
 | `CONTRACTOR_MANAGEMENT_PROFILE_ALERT_DISMISSED` | `"contractor/management/profile/alertDismissed"` |
 | `CONTRACTOR_MANAGEMENT_PROFILE_EDIT_CANCELLED` | `"contractor/management/profile/editCancelled"` |
 | `CONTRACTOR_MANAGEMENT_PROFILE_EDIT_REQUESTED` | `"contractor/management/profile/editRequested"` |
