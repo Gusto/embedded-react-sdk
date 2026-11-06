@@ -25,10 +25,18 @@ import { Flow } from '@/components/Flow/Flow'
  * from any step, returns to this list.
  *
  * "Dismiss" routes into {@link Dismissal}, a standalone form for scheduling
- * the contractor's dismissal date. "Rehire" has no corresponding sub-flow yet
- * and is not handled internally — it continues to fire its documented event
- * (`contractor/rehire`) straight through `onEvent` for the host app to
- * handle, exactly as it does outside this flow.
+ * the contractor's dismissal date, and "Rehire" routes into {@link Rehire},
+ * the equivalent form for scheduling a dismissed contractor's start date.
+ * Submitting either returns to the list with a success banner; cancelling
+ * returns with none.
+ *
+ *
+ * Handling `contractor/rehire` in the host app is no longer necessary, and doing so now
+ * double-handles it: before this flow gained a Rehire step the event passed straight
+ * through for the host to act on, so an app that opened its own rehire screen on it will
+ * open that screen alongside this one. Drop that handler, or mount
+ * {@link ContractorManagement.ContractorList | ContractorList} directly instead of this
+ * flow to keep owning the step.
  *
  * The flow forwards every event emitted by its blocks to `onEvent`;
  * see the events table on each block for the full set of events and
@@ -38,6 +46,7 @@ import { Flow } from '@/components/Flow/Flow'
  * - {@link ContractorList}
  * - {@link DashboardFlow}
  * - {@link Dismissal}
+ * - {@link Rehire}
  * - {@link ContractorOnboarding.ContractorProfile | ContractorProfile}
  * - {@link ContractorOnboarding.Address | Address}
  * - {@link ContractorOnboarding.PaymentMethod | PaymentMethod}

@@ -1,6 +1,7 @@
 import { ManagementContractorList } from '../ContractorList/management/ManagementContractorList'
 import { DashboardFlow } from '../Dashboard'
 import { Dismissal } from '../Dismissal/Dismissal'
+import { Rehire } from '../Rehire/Rehire'
 import { type OnboardingFlowContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -46,4 +47,10 @@ export function DashboardFlowContextual() {
 export function DismissalContextual() {
   const { contractorId, onEvent } = useFlow<ContractorListFlowContextInterface>()
   return <Dismissal contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function RehireContextual() {
+  const { contractorId, onEvent } = useFlow<ContractorListFlowContextInterface>()
+  return <Rehire contractorId={ensureRequired(contractorId)} onEvent={onEvent} />
 }
