@@ -5,6 +5,7 @@ import { Loading } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -35,6 +36,9 @@ export interface FederalTaxesCardProps {
  * renders no alerts: alert presentation is the surrounding surface's
  * responsibility.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -45,6 +49,8 @@ export interface FederalTaxesCardProps {
  * @alpha
  */
 export function FederalTaxesCard(props: FederalTaxesCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.FederalTaxes"

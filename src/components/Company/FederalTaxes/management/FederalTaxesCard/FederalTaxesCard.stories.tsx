@@ -1,14 +1,17 @@
 import { fn } from 'storybook/test'
 import { FederalTaxesCard } from './FederalTaxesCard'
 import { BaseComponent } from '@/components/Base'
+import { UnstableFeaturesProvider } from '@/contexts/UnstableFeaturesProvider/UnstableFeaturesProvider'
 
 export default {
   title: 'Domain/CompanyManagement/FederalTaxes/FederalTaxesCard',
   decorators: [
     (Story: React.ComponentType) => (
-      <BaseComponent onEvent={fn().mockName('onEvent')}>
-        <Story />
-      </BaseComponent>
+      <UnstableFeaturesProvider value={{ companySettingsDashboard: true }}>
+        <BaseComponent onEvent={fn().mockName('onEvent')}>
+          <Story />
+        </BaseComponent>
+      </UnstableFeaturesProvider>
     ),
   ],
 }

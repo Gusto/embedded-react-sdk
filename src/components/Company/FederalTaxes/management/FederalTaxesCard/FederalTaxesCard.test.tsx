@@ -19,6 +19,8 @@ const fixtureFederalTaxes = {
   legal_name: 'foobarbaz',
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('FederalTaxesCard', () => {
   const onEvent = vi.fn()
 
@@ -29,8 +31,23 @@ describe('FederalTaxesCard', () => {
     server.use(handleGetCompanyFederalTaxes(() => HttpResponse.json(fixtureFederalTaxes)))
   })
 
-  it('renders the card title, the federal tax details, and an enabled Edit button once loaded', async () => {
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('renders the card title, the federal tax details, and an enabled Edit button once loaded', async () => {
+    renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
@@ -43,7 +60,9 @@ describe('FederalTaxesCard', () => {
   })
 
   it('reports EIN verification status rather than the EIN itself', async () => {
-    renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     // has_ein: true, ein_verified: false
     await waitFor(() => {
@@ -55,7 +74,9 @@ describe('FederalTaxesCard', () => {
         HttpResponse.json({ ...fixtureFederalTaxes, has_ein: false, ein_verified: false }),
       ),
     )
-    renderWithProviders(<FederalTaxesCard companyId="company-456" onEvent={onEvent} />)
+    renderWithProviders(<FederalTaxesCard companyId="company-456" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Not provided')).toBeInTheDocument()
@@ -64,7 +85,9 @@ describe('FederalTaxesCard', () => {
 
   it('emits the edit-requested event with the company id when Edit is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<FederalTaxesCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()

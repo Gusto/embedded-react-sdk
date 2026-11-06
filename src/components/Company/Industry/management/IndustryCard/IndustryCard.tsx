@@ -5,6 +5,7 @@ import { Loading } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -33,6 +34,9 @@ export interface IndustryCardProps {
  * The card does not render success alerts itself — alert presentation is the
  * surrounding surface's responsibility.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -43,6 +47,8 @@ export interface IndustryCardProps {
  * @alpha
  */
 export function IndustryCard(props: IndustryCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.Industry"

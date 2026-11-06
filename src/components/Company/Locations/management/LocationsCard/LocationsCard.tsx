@@ -12,6 +12,7 @@ import {
 } from '@/components/Common'
 import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnstableFeature'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { formatStreetForDisplay, getCityStateZip } from '@/helpers/formattedStrings'
@@ -42,6 +43,9 @@ export interface LocationsCardProps {
  * screen the parent routes to — and renders no alerts: alert presentation is
  * the surrounding surface's responsibility.
  *
+ * Requires the `companySettingsDashboard` unstable feature flag; mounting it without the
+ * flag throws.
+ *
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -52,6 +56,8 @@ export interface LocationsCardProps {
  * @alpha
  */
 export function LocationsCard(props: LocationsCardProps) {
+  useUnstableFeature('companySettingsDashboard', { throwIfDisabled: true })
+
   return (
     <BaseBoundaries
       componentName="Company.Management.Locations"

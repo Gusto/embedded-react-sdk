@@ -57,12 +57,11 @@ export interface UnstableFeatures {
    * The centralized company settings dashboard.
    *
    * When `true`, `CompanyManagement.Dashboard` and `CompanyManagement.DashboardFlow` can be
-   * mounted. The dashboard's Pay schedules and Tax payments cards additionally require their own
-   * flags — `managePaySchedules` and `taxPayments` respectively — and are omitted from the
-   * dashboard when those are off; every other card renders regardless.
+   * mounted, along with the section cards they compose: `CompanyManagement.IndustryCard`,
+   * `CompanyManagement.LocationsCard` and `CompanyManagement.FederalTaxesCard`.
    *
-   * When `false`, both components throw when mounted. The individual company components the
-   * dashboard composes, such as `CompanyOnboarding.Industry` and `CompanyOnboarding.Locations`,
+   * When `false`, all five components throw when mounted. The individual company components the
+   * dashboard routes to, such as `CompanyOnboarding.Industry` and `CompanyOnboarding.Locations`,
    * are not affected.
    *
    * @defaultValue `false`

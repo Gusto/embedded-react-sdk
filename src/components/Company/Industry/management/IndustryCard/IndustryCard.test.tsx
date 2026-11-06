@@ -18,6 +18,8 @@ const fixtureIndustry = {
   sic_codes: ['7371'],
 }
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('IndustryCard', () => {
   const onEvent = vi.fn()
 
@@ -28,8 +30,23 @@ describe('IndustryCard', () => {
     server.use(handleGetIndustrySelection(() => HttpResponse.json(fixtureIndustry)))
   })
 
-  it('renders the card title, the industry classification, and an enabled Edit button once loaded', async () => {
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('renders the card title, the industry classification, and an enabled Edit button once loaded', async () => {
+    renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
@@ -42,7 +59,9 @@ describe('IndustryCard', () => {
 
   it('emits the edit-requested event with the company id when Edit is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
@@ -63,7 +82,9 @@ describe('IndustryCard', () => {
       ),
     )
 
-    renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<IndustryCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('No industry selected')).toBeInTheDocument()

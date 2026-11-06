@@ -9,6 +9,8 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
+const unstableFeatures = { companySettingsDashboard: true }
+
 describe('LocationsCard', () => {
   const onEvent = vi.fn()
 
@@ -19,8 +21,23 @@ describe('LocationsCard', () => {
     server.use(handleGetCompanyLocations(() => HttpResponse.json([basicLocation])))
   })
 
-  it('renders the card title, each address, and its designation badges once loaded', async () => {
+  it('renders the SDK error card instead of the card without the companySettingsDashboard flag', async () => {
+    // The flag check throws; GustoProvider's top-level ErrorBoundary catches it
+    // and renders InternalError in place of the card.
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />)
+
+    expect(await screen.findByTestId('internal-error-card')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Manage' })).toBeNull()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('renders the card title, each address, and its designation badges once loaded', async () => {
+    renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
@@ -36,7 +53,9 @@ describe('LocationsCard', () => {
 
   it('emits the edit-requested event with the company id when Manage is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
@@ -53,7 +72,9 @@ describe('LocationsCard', () => {
   it('renders the empty state when the company has no locations', async () => {
     server.use(handleGetCompanyLocations(() => HttpResponse.json([])))
 
-    renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />)
+    renderWithProviders(<LocationsCard companyId="company-123" onEvent={onEvent} />, {
+      unstableFeatures,
+    })
 
     await waitFor(() => {
       expect(screen.getByText('No locations yet')).toBeInTheDocument()
