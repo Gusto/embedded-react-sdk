@@ -20,13 +20,14 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * Hub for viewing and managing a company's settings.
  *
  * @remarks
- * Renders a tabbed view of a company's settings (Company details, Taxes), wires each card's
+ * Renders a tabbed view of a company's settings (Company details, Pay, Taxes), wires each card's
  * Edit or Manage CTA to the matching company component, and surfaces success alerts at the top of
  * the dashboard after a successful edit. Wraps the dashboard in error and suspense boundaries.
  *
  * This is a hub-and-spoke surface with no terminal step, so it can stay mounted indefinitely. Each
  * spoke renders an existing company component — `CompanyOnboarding.Industry`,
- * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes` — beneath a "Back to company
+ * `CompanyOnboarding.Locations`, `CompanyOnboarding.FederalTaxes`, `CompanyOnboarding.BankAccount` —
+ * beneath a "Back to company
  * settings" header, which is the reliable way back: those components are submit-only or open
  * directly into a form, and their own Cancel affordances belong to screens inside them.
  *
@@ -49,10 +50,16 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `company/location/edit` | Fired when a location's "Edit" menu item is chosen; the manage screen stays open | — |
  * | `company/location/edit/done` | Fired after a location is updated; the manage screen stays open | Updated `Location` entity |
  * | `company/location/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards | — |
+ * | `company/management/bankAccount/editRequested` | Fired when "Manage" or "Add bank account" is clicked on the Bank account card | `{ companyId: string }` |
+ * | `company/bankAccount/change` | Fired when "Change bank account" is clicked on the manage screen; the manage screen stays open | — |
+ * | `company/bankAccount/created` | Fired after a bank account is created; the manage screen stays open | Created `CompanyBankAccount` entity |
+ * | `company/bankAccount/verify` | Fired when "Verify bank account" is clicked; the manage screen stays open | The `CompanyBankAccount` being verified |
+ * | `company/bankAccount/verified` | Fired after micro-deposits are verified; the manage screen stays open | Verified `CompanyBankAccount` entity |
+ * | `company/bankAccount/done` | Fired when Continue is clicked on the manage screen; the dashboard returns to the cards and surfaces the "Bank account updated" alert | — |
  * | `company/management/federalTaxes/editRequested` | Fired when "Edit" is clicked on the Federal taxes card | `{ companyId: string }` |
  * | `company/federalTaxes/updated` | Fired after a federal-taxes save succeeds, immediately before `company/federalTaxes/done` | Updated `FederalTaxDetails` entity |
  * | `company/federalTaxes/done` | Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal tax settings updated" alert | — |
- * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'taxes' }` |
+ * | `company/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'companyDetails' \| 'pay' \| 'taxes' }` |
  * | `company/dashboard/back` | Fired when the user clicks "Back to company settings" on a spoke; the dashboard returns to the cards | — |
  * | `company/dashboard/alertDismissed` | Fired when the user dismisses a top-of-dashboard success alert | — |
  *
@@ -60,6 +67,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * - {@link Dashboard}
  * - {@link IndustryCard}
  * - {@link LocationsCard}
+ * - {@link BankAccountCard}
  * - {@link FederalTaxesCard}
  *
  * @param props - See {@link DashboardFlowProps}.

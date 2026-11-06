@@ -36,6 +36,8 @@ export interface Resources {
   /** */
   'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
   /** */
+  'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
+  /** */
   'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
   /** */
   'Company.Management.Industry': Translations.CompanyManagementIndustry
@@ -488,6 +490,8 @@ export namespace Translations {
     tabs: {
       /** @defaultValue `"Company details"` */
       companyDetails: string
+      /** @defaultValue `"Pay"` */
+      pay: string
       /** @defaultValue `"Taxes"` */
       taxes: string
     }
@@ -500,6 +504,8 @@ export namespace Translations {
       federalTaxesUpdated: string
       /** @defaultValue `"Locations updated"` */
       locationsUpdated: string
+      /** @defaultValue `"Bank account updated"` */
+      bankAccountUpdated: string
     }
   }
   /** Translation keys for the `Company.DocumentList` i18n namespace. */
@@ -1055,6 +1061,43 @@ export namespace Translations {
         /** @defaultValue `"AutoPilot can't be enabled right now"` */
         title: string
         /** @defaultValue `"Something is preventing AutoPilot from being enabled for this schedule. Contact support if this continues."` */
+        description: string
+      }
+    }
+  }
+  /** Translation keys for the `Company.Management.BankAccount` i18n namespace. */
+  export interface CompanyManagementBankAccount {
+    card: {
+      /** @defaultValue `"Bank account"` */
+      title: string
+      /** @defaultValue `"Manage"` */
+      manageCta: string
+      /** @defaultValue `"Add bank account"` */
+      addCta: string
+      /** @defaultValue `"Account name"` */
+      accountName: string
+      /** @defaultValue `"Account number"` */
+      accountNumber: string
+      /** @defaultValue `"Routing number"` */
+      routingNumber: string
+      /** @defaultValue `"Account type"` */
+      accountType: string
+      /** @defaultValue `"Verification"` */
+      verification: string
+      /** @defaultValue `"No value"` */
+      listEmptyPlaceholder: string
+      verificationStatus: {
+        /** @defaultValue `"Verified"` */
+        verified: string
+        /** @defaultValue `"Verification pending"` */
+        awaiting_deposits: string
+        /** @defaultValue `"Ready to verify"` */
+        ready_for_verification: string
+      }
+      emptyState: {
+        /** @defaultValue `"No bank account yet"` */
+        title: string
+        /** @defaultValue `"Add a checking account so this company can be debited for wages and taxes."` */
         description: string
       }
     }

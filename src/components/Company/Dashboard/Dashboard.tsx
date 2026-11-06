@@ -2,6 +2,7 @@ import { Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
 import { CompanyDetailsView } from './CompanyDetailsView'
+import { PayView } from './PayView'
 import { FederalTaxesCard } from '@/components/Company/FederalTaxes/management/FederalTaxesCard'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -15,7 +16,7 @@ import { useUnstableFeature } from '@/contexts/UnstableFeaturesProvider/useUnsta
  *
  * @alpha
  */
-export type DashboardTab = 'companyDetails' | 'taxes'
+export type DashboardTab = 'companyDetails' | 'pay' | 'taxes'
 
 /**
  * Props for {@link Dashboard}.
@@ -48,6 +49,11 @@ function DashboardRoot({
     {
       id: 'companyDetails' as const,
       label: t('tabs.companyDetails'),
+      content: null,
+    },
+    {
+      id: 'pay' as const,
+      label: t('tabs.pay'),
       content: null,
     },
     {
@@ -84,6 +90,10 @@ function DashboardRoot({
             />
           )}
 
+          {selectedTab === 'pay' && (
+            <PayView companyId={companyId} onEvent={onEvent} LoaderComponent={LoaderComponent} />
+          )}
+
           {selectedTab === 'taxes' && (
             <FederalTaxesCard
               companyId={companyId}
@@ -113,7 +123,7 @@ function DashboardHeader({ companyId }: { companyId: string }) {
 }
 
 /**
- * Company settings dashboard summarizing a company's details and taxes.
+ * Company settings dashboard summarizing a company's details, pay setup, and taxes.
  *
  * @remarks
  * Renders a tabbed overview of the company, wrapped in the SDK's standard error and suspense
@@ -126,6 +136,7 @@ function DashboardHeader({ companyId }: { companyId: string }) {
  * @components
  * - {@link IndustryCard}
  * - {@link LocationsCard}
+ * - {@link BankAccountCard}
  * - {@link FederalTaxesCard}
  *
  * @param props - Component props. See {@link DashboardProps}.

@@ -800,6 +800,16 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 // @public
 function BankAccount(props: BankAccountProps): JSX;
 
+// @alpha
+function BankAccountCard(props: BankAccountCardProps): JSX;
+
+// @alpha
+interface BankAccountCardProps {
+    companyId: string;
+    LoaderComponent?: LoaderComponentType;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // @public
 interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
     companyId: string;
@@ -1122,6 +1132,8 @@ declare namespace CompanyManagement {
         LocationsCardProps,
         FederalTaxesCard_2 as FederalTaxesCard,
         FederalTaxesCardProps_2 as FederalTaxesCardProps,
+        BankAccountCard,
+        BankAccountCardProps,
         Dashboard_2 as Dashboard,
         DashboardFlow_2 as DashboardFlow,
         DashboardProps_2 as DashboardProps,
@@ -1567,6 +1579,7 @@ export const componentEvents: {
     readonly COMPANY_DASHBOARD_TAB_CHANGE: "company/dashboard/tabChange";
     readonly COMPANY_DASHBOARD_ALERT_DISMISSED: "company/dashboard/alertDismissed";
     readonly COMPANY_DASHBOARD_BACK: "company/dashboard/back";
+    readonly COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED: "company/management/bankAccount/editRequested";
     readonly EMPLOYEE_CREATE: "employee/create";
     readonly EMPLOYEE_CREATED: "employee/created";
     readonly EMPLOYEE_UPDATE: "employee/update";
@@ -2505,7 +2518,7 @@ interface DashboardProps_3 extends BaseComponentInterface<'Contractor.Dashboard'
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
 
 // @alpha
-type DashboardTab_2 = 'companyDetails' | 'taxes';
+type DashboardTab_2 = 'companyDetails' | 'pay' | 'taxes';
 
 // @public (undocumented)
 type DashboardTab_3 = 'details' | 'pay' | 'documents';
@@ -5090,6 +5103,8 @@ export interface Resources {
     'Company.Locations': Translations.CompanyLocations
     // (undocumented)
     'Company.Management.AutoPilotDialog': Translations.CompanyManagementAutoPilotDialog
+    // (undocumented)
+    'Company.Management.BankAccount': Translations.CompanyManagementBankAccount
     // (undocumented)
     'Company.Management.FederalTaxes': Translations.CompanyManagementFederalTaxes
     // (undocumented)

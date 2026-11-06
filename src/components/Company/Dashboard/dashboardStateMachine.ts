@@ -5,6 +5,7 @@ import {
   IndustryContextual,
   LocationsContextual,
   FederalTaxesContextual,
+  BankAccountContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -118,6 +119,11 @@ export const dashboardStateMachine = {
       toSpoke(FederalTaxesContextual),
     ),
     transition(
+      componentEvents.COMPANY_MANAGEMENT_BANK_ACCOUNT_EDIT_REQUESTED,
+      'bankAccount',
+      toSpoke(BankAccountContextual),
+    ),
+    transition(
       componentEvents.COMPANY_DASHBOARD_ALERT_DISMISSED,
       'index',
       reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -164,6 +170,18 @@ export const dashboardStateMachine = {
     ),
     transition(componentEvents.COMPANY_LOCATION_DONE, 'index', returnToIndexWithPendingAlert),
     transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndexWithPendingAlert),
+  ),
+  bankAccount: state<MachineTransition>(
+    // COMPANY_BANK_ACCOUNT_CREATED / _VERIFIED and the component's own
+    // COMPANY_BANK_ACCOUNT_CANCEL are intentionally absent: they fire on screens
+    // *inside* the BankAccount sub-flow (add, then micro-deposit verify) and must
+    // not eject the user from it.
+    transition(
+      componentEvents.COMPANY_BANK_ACCOUNT_DONE,
+      'index',
+      returnToIndexWithAlert('bankAccountUpdated'),
+    ),
+    transition(componentEvents.COMPANY_DASHBOARD_BACK, 'index', returnToIndex),
   ),
   federalTaxes: state<MachineTransition>(
     // COMPANY_FEDERAL_TAXES_UPDATED also fires on save, immediately before

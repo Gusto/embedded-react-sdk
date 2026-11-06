@@ -3,6 +3,7 @@ import { Dashboard, type DashboardTab } from './Dashboard'
 import { Industry } from '@/components/Company/Industry'
 import { Locations } from '@/components/Company/Locations/Locations'
 import { FederalTaxes } from '@/components/Company/FederalTaxes'
+import { BankAccount } from '@/components/Company/BankAccount/BankAccount'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -10,7 +11,8 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /** @internal */
-type DashboardSuccessAlert = 'industryUpdated' | 'federalTaxesUpdated' | 'locationsUpdated'
+type DashboardSuccessAlert =
+  'industryUpdated' | 'federalTaxesUpdated' | 'locationsUpdated' | 'bankAccountUpdated'
 
 /** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -41,6 +43,7 @@ export function DashboardViewContextual() {
     industryUpdated: t('alerts.industryUpdated'),
     federalTaxesUpdated: t('alerts.federalTaxesUpdated'),
     locationsUpdated: t('alerts.locationsUpdated'),
+    bankAccountUpdated: t('alerts.bankAccountUpdated'),
   }
 
   return (
@@ -80,4 +83,10 @@ export function LocationsContextual() {
 export function FederalTaxesContextual() {
   const { companyId, onEvent } = useFlow<DashboardContextInterface>()
   return <FederalTaxes companyId={ensureRequired(companyId)} onEvent={onEvent} />
+}
+
+/** @internal */
+export function BankAccountContextual() {
+  const { companyId, onEvent } = useFlow<DashboardContextInterface>()
+  return <BankAccount companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
